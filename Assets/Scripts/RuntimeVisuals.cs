@@ -45,14 +45,14 @@ public static class RuntimeVisuals
             for (int col = 0; col < 4; col++)
             {
                 Rect(window(parent, 40 + col * 100, 60 + row * 110, 70, 80),
-                    highlight with { a = 180 }).gameObject.name = $"Window_{row}_{col}";
+                    WithAlpha(highlight, 180)).gameObject.name = $"Window_{row}_{col}";
             }
         }
 
         // Roof triangle
         Image roof = CreateImage("Roof", parent, RectAnchor(0, 0, 480, 40), accent);
         // Door
-        Image door = CreateImage("Door", parent, RectAnchor(200, 280, 80, 140), accent with { a = 200 });
+        Image door = CreateImage("Door", parent, RectAnchor(200, 280, 80, 140), WithAlpha(accent, 200));
 
         // Label
         Text label = CreateText("Label", parent, RectAnchor(20, 20, 440, 36), 22, TextAnchor.MiddleLeft);
@@ -65,17 +65,17 @@ public static class RuntimeVisuals
         // Beaker shapes (vertical rectangles)
         for (int i = 0; i < 3; i++)
         {
-            RectTransform beaker = Rect(panel(parent, 60 + i * 140, 100, 50, 160), highlight with { a = 100 });
+            RectTransform beaker = Rect(panel(parent, 60 + i * 140, 100, 50, 160), WithAlpha(highlight, 100));
             // Liquid fill
-            Rect(labFill(beaker, 0, 30 + i * 15, 50, 60), accent with { a = 180 });
+            Rect(labFill(beaker, 0, 30 + i * 15, 50, 60), WithAlpha(accent, 180));
         }
 
         // Lab bench
-        Rect(bench(parent, 40, 300, 400, 16), accent with { a = 200 });
+        Rect(bench(parent, 40, 300, 400, 16), WithAlpha(accent, 200));
         // Small flasks on bench
         for (int i = 0; i < 5; i++)
         {
-            Rect(flask(parent, 60 + i * 70, 270, 18, 30), highlight with { a = 140 });
+            Rect(flask(parent, 60 + i * 70, 270, 18, 30), WithAlpha(highlight, 140));
         }
 
         // Label
@@ -87,18 +87,18 @@ public static class RuntimeVisuals
     private static void BuildTweedeKans(Transform parent, Color32 accent, Color32 highlight)
     {
         // Counter top (horizontal bar)
-        Rect(panel(parent, 40, 180, 400, 18), accent with { a = 220 });
+        Rect(panel(parent, 40, 180, 400, 18), WithAlpha(accent, 220));
         // Counter front
-        Rect(panel(parent, 40, 198, 400, 80), accent with { a = 120 });
+        Rect(panel(parent, 40, 198, 400, 80), WithAlpha(accent, 120));
 
         // Glass shapes on counter
         for (int i = 0; i < 5; i++)
         {
-            Rect(panel(parent, 60 + i * 72, 140, 20, 40), highlight with { a = 160 });
+            Rect(panel(parent, 60 + i * 72, 140, 20, 40), WithAlpha(highlight, 160));
         }
 
         // Shelf behind bar
-        Rect(panel(parent, 40, 60, 400, 10), highlight with { a = 140 });
+        Rect(panel(parent, 40, 60, 400, 10), WithAlpha(highlight, 140));
         // Bottles on shelf
         Color32[] bottleColors = new[] {
             new Color32(82, 37, 30, 180),
@@ -118,7 +118,7 @@ public static class RuntimeVisuals
         // Label
         Text label = CreateText("Label", parent, RectAnchor(20, 20, 440, 36), 22, TextAnchor.MiddleLeft);
         label.text = "Tweede Kans — De Wallen";
-        label.color = ColorFrom(highlight with { a = 230 });
+        label.color = ColorFrom(WithAlpha(highlight, 230));
     }
 
     // --- shape helpers ---
@@ -193,6 +193,11 @@ public static class RuntimeVisuals
     }
 
     private static Color ColorFrom(Color32 c) => new Color32(c.r, c.g, c.b, c.a);
+
+    private static Color32 WithAlpha(Color32 color, byte alpha)
+    {
+        return new Color32(color.r, color.g, color.b, alpha);
+    }
 
     private static void ApplyRect(RectTransform rt, RectSpec spec)
     {

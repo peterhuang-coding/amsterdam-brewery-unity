@@ -56,3 +56,21 @@ Unity Editor is not installed on this machine, so Unity compilation/play-mode ve
 - `RuntimeVisuals.cs` generates visuals as pure colored rectangles; no textures or sprites.
 - Scene visuals are designed placeholders, not final art.
 - Dialogue choices are loaded in data but not interactive yet.
+- Validator now checks: C# .meta files exist, dialogue choice id uniqueness, event id uniqueness, speaker-to-characters cross-ref, events dialogue_id cross-ref.
+
+## GitHub
+
+- Repo: `https://github.com/peterhuang-coding/amsterdam-brewery-unity`
+- Main branch pushed successfully at initial scaffold.
+
+## Latest Worktree
+
+- Branch: `agent/unity-data-systems`
+- Last commit: see below after checkpoint
+
+## Next Steps
+
+1. Install Unity Editor, open `PlayablePrototype.unity`, and run in Play mode to verify all loops.
+2. Add visual default sprites/UI artwork for bar, characters, and dialogue background.
+3. Add audio triggers to match GameController events.
+4. Wire interactive dialogue choices to `GameController`.

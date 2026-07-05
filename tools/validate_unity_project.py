@@ -17,8 +17,11 @@ REQUIRED_FILES = [
     "ProjectSettings/ProjectVersion.txt",
     "ProjectSettings/EditorBuildSettings.asset",
     "Assets/Scenes/PlayablePrototype.unity",
+    "Assets/Scenes/PlayablePrototype.unity.meta",
     "Assets/Scripts/GameController.cs",
+    "Assets/Scripts/GameController.cs.meta",
     "Assets/Scripts/GameDataModels.cs",
+    "Assets/Scripts/GameDataModels.cs.meta",
     "Assets/Scripts/README.md",
     "Assets/Resources/Data/characters.json",
     "Assets/Resources/Data/events.json",
@@ -101,6 +104,25 @@ def check_data_schema() -> None:
                 fail(f"{path.name}: unknown speaker id in lines[{index}]: {speaker}")
             if not isinstance(text, str) or not text:
                 fail(f"{path.name}: lines[{index}].text must be non-empty")
+
+        # choices id uniqueness
+        choices = data.get("choices")
+        if choices is not None:
+            if not isinstance(choices, list):
+                fail(f"{path.name}: 'choices' must be an array if present")
+            choice_ids: set[str] = set()
+            for cindex, ch in enumerate(choices):
+                if not isinstance(ch, dict):
+                    fail(f"{path.name}: choices[{cindex}] must be an object")
+                cid = ch.get("id")
+                if not isinstance(cid, str) or cid.strip() == "":
+                    fail(f"{path.name}: choices[{cindex}] missing or empty 'id'")
+                if cid in choice_ids:
+                    fail(f"{path.name}: duplicate choice id '{cid}' at index {cindex}")
+                choice_ids.add(cid)
+                ctext = ch.get("text")
+                if not isinstance(ctext, str) or ctext.strip() == "":
+                    fail(f"{path.name}: choices[{cindex}] missing or empty 'text'")
 
     events = read_json("Assets/Resources/Data/events.json").get("events", [])
     if not isinstance(events, list) or not events:

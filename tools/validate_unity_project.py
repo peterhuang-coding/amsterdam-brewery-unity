@@ -22,6 +22,8 @@ REQUIRED_FILES = [
     "Assets/Scripts/GameController.cs.meta",
     "Assets/Scripts/GameDataModels.cs",
     "Assets/Scripts/GameDataModels.cs.meta",
+    "Assets/Scripts/RuntimeVisuals.cs",
+    "Assets/Scripts/RuntimeVisuals.cs.meta",
     "Assets/Scripts/README.md",
     "Assets/Resources/Data/characters.json",
     "Assets/Resources/Data/events.json",

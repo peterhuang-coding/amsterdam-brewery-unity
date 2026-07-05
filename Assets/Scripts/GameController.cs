@@ -12,8 +12,8 @@ public sealed class GameController : MonoBehaviour
         {
             "de_pijp",
             new LocationView(
-                "De Pijp Apartment",
-                "A small borrowed room above the market. Rent is due; ideas are cheap.",
+                "De Pijp",
+                "A small borrowed room above the market.\nRent is due; ideas are cheap.",
                 new Color32(47, 55, 66, 255),
                 new Color32(194, 87, 52, 255),
                 new Color32(245, 177, 90, 255))
@@ -21,8 +21,8 @@ public sealed class GameController : MonoBehaviour
         {
             "science_park",
             new LocationView(
-                "Science Park Lab",
-                "Morning lectures, prototype ethics, and fluorescent coffee.",
+                "Science Park",
+                "Morning lectures, prototype ethics,\nand fluorescent coffee.",
                 new Color32(24, 56, 66, 255),
                 new Color32(55, 151, 164, 255),
                 new Color32(142, 223, 210, 255))
@@ -30,8 +30,8 @@ public sealed class GameController : MonoBehaviour
         {
             "tweede_kans",
             new LocationView(
-                "Tweede Kans Bar",
-                "An old Amsterdam bar running on habit, memory, and unpaid favors.",
+                "Tweede Kans",
+                "An old Amsterdam bar running on\nhabit, memory, and unpaid favors.",
                 new Color32(42, 35, 28, 255),
                 new Color32(154, 111, 45, 255),
                 new Color32(233, 194, 119, 255))
@@ -52,16 +52,22 @@ public sealed class GameController : MonoBehaviour
     private int _dialogueLineIndex;
 
     private Font _font;
-    private Image _background;
-    private Image _accentPanel;
+
+    // HUD elements
     private Text _timeText;
     private Text _locationText;
-    private Text _barText;
+    private Text _barStatusText;
     private Text _moneyText;
-    private Text _titleText;
-    private Text _subtitleText;
-    private Text _hintText;
     private Text _feedbackText;
+    private Text _hintText;
+    private Image _hintBackplate;
+
+    // Location scene
+    private GameObject _locationScene;
+    private Text _locationTitle;
+    private Text _locationDesc;
+
+    // Dialogue
     private GameObject _dialoguePanel;
     private Text _dialogueSpeakerText;
     private Text _dialogueBodyText;
@@ -118,6 +124,8 @@ public sealed class GameController : MonoBehaviour
         }
     }
 
+    // ── Data ──────────────────────────────────────────────
+
     private void LoadData()
     {
         TextAsset eventsAsset = Resources.Load<TextAsset>("Data/events");
@@ -132,13 +140,17 @@ public sealed class GameController : MonoBehaviour
         }
     }
 
+    // ── Interface Construction ────────────────────────────
+
     private void BuildInterface()
     {
+        // Camera
         Camera camera = new GameObject("Main Camera").AddComponent<Camera>();
         camera.clearFlags = CameraClearFlags.SolidColor;
-        camera.backgroundColor = new Color32(12, 14, 18, 255);
+        camera.backgroundColor = new Color32(8, 10, 14, 255);
         camera.orthographic = true;
 
+        // Canvas
         Canvas canvas = new GameObject("Prototype Canvas").AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         CanvasScaler scaler = canvas.gameObject.AddComponent<CanvasScaler>();
@@ -148,40 +160,153 @@ public sealed class GameController : MonoBehaviour
         canvas.gameObject.AddComponent<GraphicRaycaster>();
         new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
 
-        _background = CreateImage("Location Background", canvas.transform, StretchFull(), new Color32(30, 34, 40, 255));
-        CreateImage("Top HUD Backplate", canvas.transform, StretchTop(96), new Color32(10, 14, 18, 225));
-        CreateImage("Bottom Hint Backplate", canvas.transform, StretchBottom(58), new Color32(10, 14, 18, 215));
+        Transform root = canvas.transform;
 
-        _accentPanel = CreateImage("Location Accent Panel", canvas.transform, Anchored(760, 260, 460, 120), new Color32(194, 87, 52, 255));
-        CreateImage("Left Info Plate", canvas.transform, Anchored(42, 132, 470, 392), new Color32(255, 255, 255, 24));
-        CreateImage("Right Mood Plate", canvas.transform, Anchored(760, 420, 460, 170), new Color32(255, 255, 255, 22));
+        BuildTopHud(root);
+        BuildLocationArea(root);
+        BuildFeedbackArea(root);
+        BuildBottomHints(root);
+        BuildDialoguePanel(root);
+    }
 
-        _timeText = CreateText("Time Text", canvas.transform, Anchored(36, 22, 260, 34), 21, TextAnchor.MiddleLeft);
-        _locationText = CreateText("Location Text", canvas.transform, Anchored(330, 22, 310, 34), 21, TextAnchor.MiddleLeft);
-        _barText = CreateText("Bar Text", canvas.transform, Anchored(674, 22, 390, 34), 19, TextAnchor.MiddleLeft);
-        _moneyText = CreateText("Money Text", canvas.transform, Anchored(1084, 22, 160, 34), 21, TextAnchor.MiddleRight);
+    private void BuildTopHud(Transform parent)
+    {
+        // HUD bar background
+        Image hudBg = MakeImage("HUD Background", parent, StretchTop(68, 0, 0), new Color32(10, 14, 18, 235));
 
-        _titleText = CreateText("Location Title", canvas.transform, Anchored(58, 152, 620, 52), 38, TextAnchor.MiddleLeft);
-        _subtitleText = CreateText("Location Subtitle", canvas.transform, Anchored(60, 214, 560, 92), 21, TextAnchor.UpperLeft);
-        _feedbackText = CreateText("Feedback Text", canvas.transform, Anchored(62, 330, 610, 52), 20, TextAnchor.MiddleLeft);
-        _hintText = CreateText("Input Hint", canvas.transform, StretchBottom(58), 18, TextAnchor.MiddleCenter);
+        // Divider line
+        Image divider = MakeImage("HUD Divider", parent, StretchTop(2, 0, 0, 0, 68), new Color32(255, 255, 255, 30));
 
-        BuildDialoguePanel(canvas.transform);
+        // Day / Time
+        MakeImage("Time Icon Plate", parent, Anchored(16, 10, 44, 44), new Color32(194, 87, 52, 140));
+        Text timeIcon = MakeText("Time Icon", parent, Anchored(16, 10, 44, 44), 28, TextAnchor.MiddleCenter);
+        timeIcon.text = "☀"; // sun
+        timeIcon.alignment = TextAnchor.MiddleCenter;
+        timeIcon.color = new Color32(245, 177, 90, 255);
+        _timeText = MakeText("Time Text", parent, Anchored(68, 10, 220, 28), 20, TextAnchor.MiddleLeft);
+        _timeText.text = "Day 1 / dawn";
+
+        // Location
+        MakeImage("Loc Icon Plate", parent, Anchored(290, 10, 44, 44), new Color32(55, 151, 164, 120));
+        Text locIcon = MakeText("Loc Icon", parent, Anchored(290, 10, 44, 44), 28, TextAnchor.MiddleCenter);
+        locIcon.text = "⌂"; // house
+        locIcon.color = new Color32(142, 223, 210, 255);
+        _locationText = MakeText("Location Text", parent, Anchored(342, 10, 180, 28), 20, TextAnchor.MiddleLeft);
+        _locationText.text = "De Pijp";
+
+        // Bar status
+        MakeImage("Bar Icon Plate", parent, Anchored(530, 10, 44, 44), new Color32(154, 111, 45, 120));
+        Text barIcon = MakeText("Bar Icon", parent, Anchored(530, 10, 44, 44), 28, TextAnchor.MiddleCenter);
+        barIcon.text = "☕"; // coffee/beer
+        barIcon.color = new Color32(233, 194, 119, 255);
+        _barStatusText = MakeText("Bar Text", parent, Anchored(582, 6, 330, 24), 18, TextAnchor.MiddleLeft);
+        _barStatusText.text = "Closed  |  Served 0  |  Rev $0";
+
+        // Money
+        MakeImage("Money Icon Plate", parent, Anchored(930, 10, 44, 44), new Color32(86, 125, 56, 120));
+        Text moneyIcon = MakeText("Money Icon", parent, Anchored(930, 10, 44, 44), 28, TextAnchor.MiddleCenter);
+        moneyIcon.text = "$";
+        moneyIcon.color = new Color32(160, 220, 120, 255);
+        moneyIcon.fontStyle = FontStyle.Bold;
+        _moneyText = MakeText("Money Text", parent, Anchored(982, 10, 280, 28), 22, TextAnchor.MiddleLeft);
+        _moneyText.text = "$250";
+        _moneyText.color = new Color32(160, 220, 120, 255);
+    }
+
+    private void BuildLocationArea(Transform parent)
+    {
+        // Central scene container (RuntimeVisuals fills this)
+        _locationScene = new GameObject("LocationScene", typeof(RectTransform));
+        _locationScene.transform.SetParent(parent, false);
+        RectTransform srt = _locationScene.GetComponent<RectTransform>();
+        srt.anchorMin = new Vector2(0, 0.15f);
+        srt.anchorMax = new Vector2(0.58f, 0.82f);
+        srt.offsetMin = new Vector2(20, 0);
+        srt.offsetMax = new Vector2(0, -10);
+
+        // Right info panel
+        Image infoPanel = MakeImage("Info Panel", parent,
+            new RectSpec(new Vector2(0.60f, 0.15f), new Vector2(0.98f, 0.82f),
+                new Vector2(0, 0), new Vector2(0, -10)),
+            new Color32(255, 255, 255, 18));
+
+        _locationTitle = MakeText("Location Title", infoPanel.transform,
+            new RectSpec(Vector2.zero, Vector2.one,
+                new Vector2(20, -20), new Vector2(-20, -64)),
+            34, TextAnchor.LowerLeft);
+        _locationTitle.color = new Color32(246, 240, 229, 255);
+        _locationTitle.fontStyle = FontStyle.Bold;
+
+        _locationDesc = MakeText("Location Desc", infoPanel.transform,
+            new RectSpec(Vector2.zero, Vector2.one,
+                new Vector2(20, -80), new Vector2(-20, -20)),
+            20, TextAnchor.UpperLeft);
+        _locationDesc.color = new Color32(200, 196, 186, 255);
+    }
+
+    private void BuildFeedbackArea(Transform parent)
+    {
+        // Feedback line between scene and hints
+        Image fbBg = MakeImage("Feedback BG", parent, StretchBottom(46, 0, 0, 0, 58), new Color32(255, 255, 255, 12));
+        _feedbackText = MakeText("Feedback Text", parent, StretchBottom(46, 16, 16, 0, 58), 18, TextAnchor.MiddleLeft);
+        _feedbackText.color = new Color32(220, 210, 190, 255);
+        _feedbackText.fontStyle = FontStyle.Italic;
+        _feedbackText.text = "Your story begins in De Pijp. Explore, work, and find your place.";
+    }
+
+    private void BuildBottomHints(Transform parent)
+    {
+        _hintBackplate = MakeImage("Hint Backplate", parent, StretchBottom(58, 0, 0), new Color32(10, 14, 18, 230));
+
+        // Divider
+        MakeImage("Hint Divider", parent, StretchBottom(2, 0, 0, 0, 58), new Color32(255, 255, 255, 24));
+
+        _hintText = MakeText("Input Hint", parent, StretchBottom(58, 8, 8), 16, TextAnchor.MiddleCenter);
+        _hintText.color = new Color32(180, 175, 165, 255);
+        _hintText.text = "Space: advance time / dialogue next    1 De Pijp    2 Science Park    3 Tweede Kans    B open bar    S serve    C close";
     }
 
     private void BuildDialoguePanel(Transform parent)
     {
-        _dialoguePanel = CreateImage("Dialogue Panel", parent, StretchBottom(190, 28, 28), new Color32(15, 17, 22, 242)).gameObject;
-        _dialogueSpeakerText = CreateText("Dialogue Speaker", _dialoguePanel.transform, StretchTop(42, 24, 18), 22, TextAnchor.MiddleLeft);
-        _dialogueBodyText = CreateText("Dialogue Body", _dialoguePanel.transform, StretchFull(24, 54, 178, 54), 22, TextAnchor.UpperLeft);
+        // Full-width bottom panel, taller, doesn't overlap HUD
+        _dialoguePanel = MakeImage("Dialogue Panel", parent,
+            new RectSpec(new Vector2(0.02f, 0.12f), new Vector2(0.98f, 0.88f),
+                Vector2.zero, Vector2.zero),
+            new Color32(15, 17, 22, 248)).gameObject;
 
-        GameObject buttonObject = CreateImage("Dialogue Next Button", _dialoguePanel.transform, AnchoredBottomRight(148, 42, 22, 18), new Color32(236, 180, 87, 255)).gameObject;
-        Button button = buttonObject.AddComponent<Button>();
+        // Speaker name bar
+        Image speakerBg = MakeImage("Speaker BG", _dialoguePanel.transform,
+            new RectSpec(new Vector2(0, 1), new Vector2(1, 1),
+                new Vector2(24, -52), new Vector2(-24, 0)),
+            new Color32(194, 87, 52, 180));
+        _dialogueSpeakerText = MakeText("Dialogue Speaker", _dialoguePanel.transform,
+            new RectSpec(new Vector2(0, 1), new Vector2(1, 1),
+                new Vector2(32, -50), new Vector2(-32, -6)),
+            24, TextAnchor.MiddleLeft);
+        _dialogueSpeakerText.fontStyle = FontStyle.Bold;
+
+        // Body text — lots of space for Chinese text
+        _dialogueBodyText = MakeText("Dialogue Body", _dialoguePanel.transform,
+            new RectSpec(new Vector2(0, 0), new Vector2(1, 1),
+                new Vector2(32, 72), new Vector2(-32, -80)),
+            22, TextAnchor.UpperLeft);
+        _dialogueBodyText.color = new Color32(235, 228, 215, 255);
+
+        // Next/Finish button
+        Image btnBg = MakeImage("Dialogue Button", _dialoguePanel.transform,
+            new RectSpec(new Vector2(1, 0), new Vector2(1, 0),
+                new Vector2(-180, 24), new Vector2(-24, 64)),
+            new Color32(236, 180, 87, 255));
+        Button button = btnBg.gameObject.AddComponent<Button>();
         button.onClick.AddListener(AdvanceDialogue);
-        _dialogueButtonText = CreateText("Dialogue Button Text", buttonObject.transform, StretchFull(), 18, TextAnchor.MiddleCenter);
+        _dialogueButtonText = MakeText("Button Text", btnBg.transform, StretchFull(8, 8, 8, 8), 18, TextAnchor.MiddleCenter);
         _dialogueButtonText.color = new Color32(20, 22, 26, 255);
+        _dialogueButtonText.fontStyle = FontStyle.Bold;
+
         _dialoguePanel.SetActive(false);
     }
+
+    // ── Game Actions ──────────────────────────────────────
 
     private void AdvanceTime()
     {
@@ -243,6 +368,8 @@ public sealed class GameController : MonoBehaviour
         SetFeedback($"Shift closed: {_barServed} served, ${_barRevenue} earned.");
         RefreshHud();
     }
+
+    // ── Story Events ──────────────────────────────────────
 
     private void CheckStoryEvents()
     {
@@ -313,72 +440,77 @@ public sealed class GameController : MonoBehaviour
 
     private string SpeakerName(string speakerId)
     {
-        if (speakerId == "player")
-        {
-            return "Lu Jian";
-        }
-        if (speakerId == "pablo")
-        {
-            return "Pablo";
-        }
-        if (speakerId == "erik")
-        {
-            return "Erik";
-        }
+        if (speakerId == "player") return "Lu Jian";
+        if (speakerId == "pablo") return "Pablo";
+        if (speakerId == "erik") return "Erik";
         return speakerId;
     }
 
+    // ── Visual Rendering ──────────────────────────────────
+
     private void RenderLocation()
     {
-        LocationView location = _locations[_currentLocation];
-        _background.color = location.background;
-        _accentPanel.color = location.accent;
-        _titleText.text = location.title;
-        _subtitleText.text = location.subtitle;
-        _feedbackText.text = "Pick a loop: move time, switch places, work the bar, or find a conversation.";
-        _hintText.text = "Space: advance / dialogue next    1 De Pijp    2 Science Park    3 Tweede Kans    B open bar    S serve    C close";
+        LocationView loc = _locations[_currentLocation];
+
+        // Destroy old scene
+        if (_locationScene != null)
+        {
+            foreach (Transform child in _locationScene.transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        // Build new location scene via RuntimeVisuals
+        RuntimeVisuals.BuildLocationScene(_currentLocation, _locationScene.transform,
+            loc.accent, loc.highlight, loc.background);
+
+        _locationTitle.text = loc.title;
+        _locationDesc.text = loc.subtitle;
+        _feedbackText.text = "";
+        UpdateHintText();
     }
 
     private void RefreshHud()
     {
         _timeText.text = $"Day {_currentDay} / {CurrentTimeLabel()}";
         _locationText.text = _locations[_currentLocation].title;
-        _barText.text = $"Bar: {(_barOpen ? "Open" : "Closed")}  Served: {_barServed}  Revenue: ${_barRevenue}";
-        _moneyText.text = $"Money ${_money}";
+        _barStatusText.text = $"{( _barOpen ? "Open" : "Closed" )}  |  Served {_barServed}  |  Rev ${_barRevenue}";
+        _moneyText.text = $"${_money}";
     }
 
-    private string CurrentTime()
-    {
-        return _timesOfDay[_timeIndex];
-    }
+    private string CurrentTime() => _timesOfDay[_timeIndex];
 
-    private string CurrentTimeLabel()
-    {
-        string raw = CurrentTime();
-        return raw.Replace("_", " ");
-    }
+    private string CurrentTimeLabel() => CurrentTime().Replace("_", " ");
 
     private void SetFeedback(string message)
     {
         _feedbackText.text = message;
     }
 
-    private Image CreateImage(string objectName, Transform parent, RectSpec rect, Color color)
+    private void UpdateHintText()
     {
-        GameObject gameObject = new GameObject(objectName, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-        gameObject.transform.SetParent(parent, false);
-        ApplyRect(gameObject.GetComponent<RectTransform>(), rect);
-        Image image = gameObject.GetComponent<Image>();
-        image.color = color;
-        return image;
+        _hintText.text = "Space: advance time / dialogue next    1 De Pijp    2 Science Park    3 Tweede Kans    B open bar    S serve    C close";
     }
 
-    private Text CreateText(string objectName, Transform parent, RectSpec rect, int fontSize, TextAnchor alignment)
+    // ── UI Factory Helpers ────────────────────────────────
+
+    private Image MakeImage(string name, Transform parent, RectSpec rect, Color32 color)
     {
-        GameObject gameObject = new GameObject(objectName, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
-        gameObject.transform.SetParent(parent, false);
-        ApplyRect(gameObject.GetComponent<RectTransform>(), rect);
-        Text text = gameObject.GetComponent<Text>();
+        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        go.transform.SetParent(parent, false);
+        ApplyRect(go.GetComponent<RectTransform>(), rect);
+        Image img = go.GetComponent<Image>();
+        img.color = color;
+        return img;
+    }
+
+    private Text MakeText(string name, Transform parent, RectSpec rect, int fontSize, TextAnchor alignment)
+    {
+        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+        go.transform.SetParent(parent, false);
+        ApplyRect(go.GetComponent<RectTransform>(), rect);
+        Text text = go.GetComponent<Text>();
         text.font = _font;
         text.fontSize = fontSize;
         text.alignment = alignment;
@@ -388,70 +520,47 @@ public sealed class GameController : MonoBehaviour
         return text;
     }
 
-    private static void ApplyRect(RectTransform transform, RectSpec rect)
+    private static void ApplyRect(RectTransform rt, RectSpec spec)
     {
-        transform.anchorMin = rect.anchorMin;
-        transform.anchorMax = rect.anchorMax;
-        transform.offsetMin = rect.offsetMin;
-        transform.offsetMax = rect.offsetMax;
+        rt.anchorMin = spec.anchorMin;
+        rt.anchorMax = spec.anchorMax;
+        rt.offsetMin = spec.offsetMin;
+        rt.offsetMax = spec.offsetMax;
     }
 
-    private static RectSpec StretchFull(float left = 0, float bottom = 0, float right = 0, float top = 0)
-    {
-        return new RectSpec(Vector2.zero, Vector2.one, new Vector2(left, bottom), new Vector2(-right, -top));
-    }
+    // ── RectSpec Builders ─────────────────────────────────
 
-    private static RectSpec StretchTop(float height, float left = 0, float right = 0)
-    {
-        return new RectSpec(new Vector2(0, 1), Vector2.one, new Vector2(left, -height), new Vector2(-right, 0));
-    }
+    private static RectSpec StretchFull(float l = 0, float b = 0, float r = 0, float t = 0) =>
+        new RectSpec(Vector2.zero, Vector2.one, new Vector2(l, b), new Vector2(-r, -t));
 
-    private static RectSpec StretchBottom(float height, float left = 0, float right = 0)
-    {
-        return new RectSpec(Vector2.zero, new Vector2(1, 0), new Vector2(left, 0), new Vector2(-right, height));
-    }
+    private static RectSpec StretchTop(float height, float l = 0, float r = 0, float b = 0, float offset = 0) =>
+        new RectSpec(new Vector2(0, 1), Vector2.one, new Vector2(l, -height - offset), new Vector2(-r, -offset));
 
-    private static RectSpec Anchored(float left, float top, float width, float height)
-    {
-        return new RectSpec(new Vector2(0, 1), new Vector2(0, 1), new Vector2(left, -top - height), new Vector2(left + width, -top));
-    }
+    private static RectSpec StretchBottom(float height, float l = 0, float r = 0, float t = 0, float offset = 0) =>
+        new RectSpec(Vector2.zero, new Vector2(1, 0), new Vector2(l, offset), new Vector2(-r, height + offset));
 
-    private static RectSpec AnchoredBottomRight(float width, float height, float right, float bottom)
-    {
-        return new RectSpec(new Vector2(1, 0), new Vector2(1, 0), new Vector2(-right - width, bottom), new Vector2(-right, bottom + height));
-    }
+    private static RectSpec Anchored(float left, float top, float w, float h) =>
+        new RectSpec(new Vector2(0, 1), new Vector2(0, 1),
+            new Vector2(left, -top - h), new Vector2(left + w, -top));
+
+    // ── Types ─────────────────────────────────────────────
 
     private readonly struct RectSpec
     {
-        public readonly Vector2 anchorMin;
-        public readonly Vector2 anchorMax;
-        public readonly Vector2 offsetMin;
-        public readonly Vector2 offsetMax;
-
-        public RectSpec(Vector2 anchorMin, Vector2 anchorMax, Vector2 offsetMin, Vector2 offsetMax)
+        public readonly Vector2 anchorMin, anchorMax, offsetMin, offsetMax;
+        public RectSpec(Vector2 amin, Vector2 amax, Vector2 omin, Vector2 omax)
         {
-            this.anchorMin = anchorMin;
-            this.anchorMax = anchorMax;
-            this.offsetMin = offsetMin;
-            this.offsetMax = offsetMax;
+            anchorMin = amin; anchorMax = amax; offsetMin = omin; offsetMax = omax;
         }
     }
 
     private sealed class LocationView
     {
-        public readonly string title;
-        public readonly string subtitle;
-        public readonly Color background;
-        public readonly Color accent;
-        public readonly Color highlight;
-
-        public LocationView(string title, string subtitle, Color background, Color accent, Color highlight)
+        public readonly string title, subtitle;
+        public readonly Color background, accent, highlight;
+        public LocationView(string t, string s, Color bg, Color ac, Color hl)
         {
-            this.title = title;
-            this.subtitle = subtitle;
-            this.background = background;
-            this.accent = accent;
-            this.highlight = highlight;
+            title = t; subtitle = s; background = bg; accent = ac; highlight = hl;
         }
     }
 }

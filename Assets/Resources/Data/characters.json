@@ -1,0 +1,28 @@
+{
+  "characters": [
+    {
+      "id": "player",
+      "name": "Lu Jian",
+      "role": "MSc student and part-time bar worker",
+      "first_location": "de_pijp"
+    },
+    {
+      "id": "erik",
+      "name": "Erik de Vries",
+      "role": "Tweede Kans owner",
+      "first_location": "tweede_kans"
+    },
+    {
+      "id": "pablo",
+      "name": "Pablo Castillo",
+      "role": "AI safety professor",
+      "first_location": "science_park"
+    },
+    {
+      "id": "fatima",
+      "name": "Fatima El Idrissi",
+      "role": "Market cook and future food mentor",
+      "first_location": "de_pijp_market"
+    }
+  ]
+}

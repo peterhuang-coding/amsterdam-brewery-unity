@@ -1,0 +1,19 @@
+{
+  "events": [
+    {
+      "id": "first_class_ai_safety",
+      "day": 2,
+      "time": "morning",
+      "location": "science_park",
+      "dialogue_id": "pablo_first_class"
+    },
+    {
+      "id": "first_shift_tweede_kans",
+      "day": 5,
+      "time": "evening",
+      "location": "tweede_kans",
+      "dialogue_id": "erik_first_shift",
+      "unlocks": ["bar"]
+    }
+  ]
+}

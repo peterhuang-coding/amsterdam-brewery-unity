@@ -173,9 +173,9 @@ public static class RuntimeVisuals
         return CreateImage("bottle", parent, RectAnchor(left, top, w, h), Color.white);
     }
 
-    private static RectTransform labFill(Transform parent, float left, float top, float w, float h)
+    private static Image labFill(Transform parent, float left, float top, float w, float h)
     {
-        return Rect(CreateImage("fill", parent, RectAnchor(left, top, w, h), Color.white).GetComponent<RectTransform>(), Color.white);
+        return CreateImage("fill", parent, RectAnchor(left, top, w, h), Color.white);
     }
 
     private static RectTransform Rect(Image image, Color32 color)

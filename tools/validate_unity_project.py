@@ -18,6 +18,8 @@ REQUIRED_FILES = [
     "ProjectSettings/EditorBuildSettings.asset",
     "Assets/Scenes/PlayablePrototype.unity",
     "Assets/Scenes/PlayablePrototype.unity.meta",
+    "Assets/Editor/PlayablePrototypeAutoOpen.cs",
+    "Assets/Editor/PlayablePrototypeAutoOpen.cs.meta",
     "Assets/Scripts/GameController.cs",
     "Assets/Scripts/GameController.cs.meta",
     "Assets/Scripts/GameDataModels.cs",

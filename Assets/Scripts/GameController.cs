@@ -3,8 +3,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+[ExecuteAlways]
 public sealed class GameController : MonoBehaviour
 {
+    private const string RuntimeRootName = "AB Runtime View";
+
     private readonly string[] _timesOfDay = { "dawn", "morning", "afternoon", "evening", "night", "late_night" };
     private readonly HashSet<string> _triggeredDialogueIds = new HashSet<string>();
     private readonly Dictionary<string, LocationView> _locations = new Dictionary<string, LocationView>
@@ -72,19 +75,50 @@ public sealed class GameController : MonoBehaviour
     private Text _dialogueSpeakerText;
     private Text _dialogueBodyText;
     private Text _dialogueButtonText;
+    private GameObject _runtimeRoot;
 
     private void Awake()
     {
+        BootstrapView();
+    }
+
+    private void OnEnable()
+    {
+        if (!Application.isPlaying)
+        {
+            BootstrapView();
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (!Application.isPlaying)
+        {
+            CleanupGeneratedView();
+        }
+    }
+
+    private void BootstrapView()
+    {
         _font = Resources.GetBuiltinResource<Font>("Arial.ttf");
         LoadData();
+        CleanupGeneratedView();
         BuildInterface();
         RenderLocation();
         RefreshHud();
-        CheckStoryEvents();
+        if (Application.isPlaying)
+        {
+            CheckStoryEvents();
+        }
     }
 
     private void Update()
     {
+        if (!Application.isPlaying)
+        {
+            return;
+        }
+
         if (_activeDialogue != null)
         {
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
@@ -144,21 +178,28 @@ public sealed class GameController : MonoBehaviour
 
     private void BuildInterface()
     {
+        _runtimeRoot = new GameObject(RuntimeRootName);
+        _runtimeRoot.hideFlags = HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild;
+        _runtimeRoot.transform.SetParent(transform, false);
+
         // Camera
         Camera camera = new GameObject("Main Camera").AddComponent<Camera>();
+        camera.transform.SetParent(_runtimeRoot.transform, false);
         camera.clearFlags = CameraClearFlags.SolidColor;
         camera.backgroundColor = new Color32(8, 10, 14, 255);
         camera.orthographic = true;
 
         // Canvas
         Canvas canvas = new GameObject("Prototype Canvas").AddComponent<Canvas>();
+        canvas.transform.SetParent(_runtimeRoot.transform, false);
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         CanvasScaler scaler = canvas.gameObject.AddComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1280, 720);
         scaler.matchWidthOrHeight = 0.5f;
         canvas.gameObject.AddComponent<GraphicRaycaster>();
-        new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
+        GameObject eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
+        eventSystem.transform.SetParent(_runtimeRoot.transform, false);
 
         Transform root = canvas.transform;
 
@@ -455,10 +496,7 @@ public sealed class GameController : MonoBehaviour
         // Destroy old scene
         if (_locationScene != null)
         {
-            foreach (Transform child in _locationScene.transform)
-            {
-                Destroy(child.gameObject);
-            }
+            DestroyChildren(_locationScene.transform);
         }
 
         // Build new location scene via RuntimeVisuals
@@ -526,6 +564,56 @@ public sealed class GameController : MonoBehaviour
         rt.anchorMax = spec.anchorMax;
         rt.offsetMin = spec.offsetMin;
         rt.offsetMax = spec.offsetMax;
+    }
+
+    private void CleanupGeneratedView()
+    {
+        Transform existingRoot = transform.Find(RuntimeRootName);
+        if (existingRoot != null)
+        {
+            DestroyGeneratedObject(existingRoot.gameObject);
+        }
+
+        _runtimeRoot = null;
+        _locationScene = null;
+        _timeText = null;
+        _locationText = null;
+        _barStatusText = null;
+        _moneyText = null;
+        _feedbackText = null;
+        _hintText = null;
+        _hintBackplate = null;
+        _locationTitle = null;
+        _locationDesc = null;
+        _dialoguePanel = null;
+        _dialogueSpeakerText = null;
+        _dialogueBodyText = null;
+        _dialogueButtonText = null;
+    }
+
+    private static void DestroyChildren(Transform parent)
+    {
+        for (int index = parent.childCount - 1; index >= 0; index--)
+        {
+            DestroyGeneratedObject(parent.GetChild(index).gameObject);
+        }
+    }
+
+    private static void DestroyGeneratedObject(GameObject target)
+    {
+        if (target == null)
+        {
+            return;
+        }
+
+        if (Application.isPlaying)
+        {
+            Destroy(target);
+        }
+        else
+        {
+            DestroyImmediate(target);
+        }
     }
 
     // ── RectSpec Builders ─────────────────────────────────

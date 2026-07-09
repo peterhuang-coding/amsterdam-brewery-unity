@@ -39,6 +39,15 @@ public sealed class GameController : MonoBehaviour
                 new Color32(154, 111, 45, 255),
                 new Color32(233, 194, 119, 255))
         },
+        {
+            "bloemenmarkt",
+            new LocationView(
+                "Bloemenmarkt",
+                "Sofie's flower stall at the floating market.\nTulips, gossip, and canal water.",
+                new Color32(30, 50, 30, 255),
+                new Color32(220, 110, 140, 255),
+                new Color32(240, 235, 210, 255))
+        },
     };
 
     private int _currentDay = 1;
@@ -100,7 +109,7 @@ public sealed class GameController : MonoBehaviour
 
     private void BootstrapView()
     {
-        _font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         LoadData();
         CleanupGeneratedView();
         BuildInterface();
@@ -143,6 +152,10 @@ public sealed class GameController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             SwitchLocation("tweede_kans");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            SwitchLocation("bloemenmarkt");
         }
         else if (Input.GetKeyDown(KeyCode.B))
         {
@@ -304,7 +317,7 @@ public sealed class GameController : MonoBehaviour
 
         _hintText = MakeText("Input Hint", parent, StretchBottom(58, 8, 8), 16, TextAnchor.MiddleCenter);
         _hintText.color = new Color32(180, 175, 165, 255);
-        _hintText.text = "Space: advance time / dialogue next    1 De Pijp    2 Science Park    3 Tweede Kans    B open bar    S serve    C close";
+        _hintText.text = "Space: advance time / dialogue next    1 De Pijp    2 Science Park    3 Tweede Kans    4 Bloemenmarkt    B open bar    S serve    C close";
     }
 
     private void BuildDialoguePanel(Transform parent)
@@ -528,7 +541,7 @@ public sealed class GameController : MonoBehaviour
 
     private void UpdateHintText()
     {
-        _hintText.text = "Space: advance time / dialogue next    1 De Pijp    2 Science Park    3 Tweede Kans    B open bar    S serve    C close";
+        _hintText.text = "Space: advance time / dialogue next    1 De Pijp    2 Science Park    3 Tweede Kans    4 Bloemenmarkt    B open bar    S serve    C close";
     }
 
     // ── UI Factory Helpers ────────────────────────────────

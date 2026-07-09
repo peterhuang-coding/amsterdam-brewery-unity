@@ -139,7 +139,7 @@ public static class RuntimeVisuals
         go.transform.SetParent(parent, false);
         ApplyRect(go.GetComponent<RectTransform>(), spec);
         Text t = go.GetComponent<Text>();
-        t.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        t.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         t.fontSize = fontSize;
         t.alignment = align;
         t.color = new Color32(246, 240, 229, 255);

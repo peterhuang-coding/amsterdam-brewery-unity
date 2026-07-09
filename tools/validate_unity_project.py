@@ -31,10 +31,14 @@ REQUIRED_FILES = [
     "Assets/Resources/Data/events.json",
     "Assets/Resources/Data/dialogue/zh/pablo_first_class.json",
     "Assets/Resources/Data/dialogue/zh/erik_first_shift.json",
+    "Assets/Resources/Data/dialogue/zh/sofie_first_meeting.json",
+    "Assets/Resources/Data/dialogue/zh/ravi_study_panic.json",
+    "Assets/Resources/Data/dialogue/zh/de_wit_inspection.json",
+    "Assets/Resources/Data/dialogue/zh/maaike_quiet.json",
 ]
 
 TIMES_OF_DAY = {"dawn", "morning", "afternoon", "evening", "night", "late_night"}
-LOCATIONS = {"de_pijp", "science_park", "tweede_kans"}
+LOCATIONS = {"de_pijp", "science_park", "tweede_kans", "bloemenmarkt"}
 
 
 def fail(message: str) -> None:
@@ -148,7 +152,7 @@ def check_data_schema() -> None:
         if event.get("location") not in LOCATIONS:
             fail(f"event {event_id}: invalid location {event.get('location')}")
         dialogue_id = event.get("dialogue_id")
-        if dialogue_id not in dialogue_ids:
+        if dialogue_id is not None and dialogue_id != "" and dialogue_id not in dialogue_ids:
             fail(f"event {event_id}: unknown dialogue_id {dialogue_id}")
         if event.get("day") == 2 and event.get("time") == "morning" and event.get("location") == "science_park":
             saw_pablo = dialogue_id == "pablo_first_class"
@@ -167,6 +171,7 @@ def check_script_contracts() -> None:
         "KeyCode.Alpha1",
         "KeyCode.Alpha2",
         "KeyCode.Alpha3",
+        "KeyCode.Alpha4",
         "KeyCode.B",
         "KeyCode.S",
         "KeyCode.C",

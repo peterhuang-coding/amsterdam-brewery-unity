@@ -89,6 +89,57 @@ public sealed class GameController : MonoBehaviour
     private void Awake()
     {
         BootstrapView();
+        // Auto-bootstrap the 2.5D game systems if not already present
+        if (Application.isPlaying && FindObjectOfType<PlayerController>() == null)
+        {
+            AutoBootstrap25D();
+        }
+    }
+
+    private void AutoBootstrap25D()
+    {
+        // DontDestroyOnLoad singletons
+        if (SceneTransitionManager.Instance == null)
+        {
+            GameObject smGO = new GameObject("SceneTransitionManager");
+            smGO.AddComponent<SceneTransitionManager>();
+        }
+        if (DialogueManager.Instance == null) { var _ = DialogueManager.Instance; }
+        if (InventorySystem.Instance == null) { var _ = InventorySystem.Instance; }
+        if (WeatherSystem.Instance == null) { var _ = WeatherSystem.Instance; }
+        if (BarMinigame.Instance == null) { var _ = BarMinigame.Instance; }
+        SoundManager.Init();
+
+        // Create Player
+        GameObject playerGO = new GameObject("Player");
+        playerGO.AddComponent<PlayerController>();
+
+        // Setup camera
+        GameObject camGO = new GameObject("MainCamera");
+        Camera cam = camGO.AddComponent<Camera>();
+        cam.clearFlags = CameraClearFlags.SolidColor;
+        cam.backgroundColor = new Color32(8, 10, 14, 255);
+        cam.orthographic = true;
+        cam.orthographicSize = 5;
+        CameraFollow follow = camGO.AddComponent<CameraFollow>();
+        follow.target = playerGO.transform;
+        follow.smoothSpeed = 5f;
+        follow.offset = new Vector3(0, 0, -10);
+
+        // UICamera
+        Camera bgCam = new GameObject("UICamera").AddComponent<Camera>();
+        bgCam.transform.SetParent(transform);
+        bgCam.clearFlags = CameraClearFlags.Depth;
+        bgCam.depth = -1;
+        bgCam.orthographic = true;
+        bgCam.orthographicSize = 5;
+        bgCam.backgroundColor = new Color32(8, 10, 14, 255);
+
+        // Initial weather
+        WeatherSystem.Instance.NewDay(1);
+        OnSceneChanged("de_pijp");
+
+        Debug.Log("Amsterdam Brewery 2.5D auto-bootstrapped!");
     }
 
     private void OnEnable()
@@ -195,6 +246,19 @@ public sealed class GameController : MonoBehaviour
         _runtimeRoot.hideFlags = HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild;
         _runtimeRoot.transform.SetParent(transform, false);
 
+        // In Play mode, build a minimal HUD overlay instead of full-screen UI
+        if (Application.isPlaying)
+        {
+            BuildMinimalHud();
+            return;
+        }
+
+        // Editor mode: full build
+        BuildEditorInterface();
+    }
+
+    private void BuildEditorInterface()
+    {
         // Camera
         Camera camera = new GameObject("Main Camera").AddComponent<Camera>();
         camera.transform.SetParent(_runtimeRoot.transform, false);
@@ -206,6 +270,7 @@ public sealed class GameController : MonoBehaviour
         Canvas canvas = new GameObject("Prototype Canvas").AddComponent<Canvas>();
         canvas.transform.SetParent(_runtimeRoot.transform, false);
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 100;
         CanvasScaler scaler = canvas.gameObject.AddComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1280, 720);
@@ -221,6 +286,73 @@ public sealed class GameController : MonoBehaviour
         BuildFeedbackArea(root);
         BuildBottomHints(root);
         BuildDialoguePanel(root);
+    }
+
+    private void BuildMinimalHud()
+    {
+        // Small HUD overlay for play mode — just shows day/time/money at top
+        Canvas canvas = new GameObject("Play HUD").AddComponent<Canvas>();
+        canvas.transform.SetParent(_runtimeRoot.transform, false);
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 90;
+        CanvasScaler scaler = canvas.gameObject.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1280, 720);
+        canvas.gameObject.AddComponent<GraphicRaycaster>();
+        GameObject eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
+        eventSystem.transform.SetParent(_runtimeRoot.transform, false);
+
+        Transform root = canvas.transform;
+
+        // Create empty location scene container (needed by RenderLocation)
+        _locationScene = new GameObject("LocationScene", typeof(RectTransform));
+        _locationScene.transform.SetParent(_runtimeRoot.transform, false);
+        _locationScene.SetActive(false); // Hidden — 2D scene is handled by SceneVisuals
+
+        // Semi-transparent top bar
+        Image hudBg = MakeImage("HUD Bg", root,
+            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(1, 1),
+                new Vector2(0, -32), new Vector2(0, 0)),
+            new Color32(10, 14, 18, 180));
+
+        // Time/date
+        _timeText = MakeText("Time", root,
+            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(0, 1),
+                new Vector2(8, -28), new Vector2(160, -4)),
+            14, TextAnchor.MiddleLeft);
+        _timeText.text = "Day 1 / dawn";
+
+        // Location
+        _locationText = MakeText("Location", root,
+            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(0, 1),
+                new Vector2(170, -28), new Vector2(320, -4)),
+            14, TextAnchor.MiddleLeft);
+        _locationText.text = "De Pijp";
+
+        // Bar status
+        _barStatusText = MakeText("Bar", root,
+            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(0, 1),
+                new Vector2(330, -28), new Vector2(530, -4)),
+            13, TextAnchor.MiddleLeft);
+        _barStatusText.text = "Closed";
+
+        // Money
+        _moneyText = MakeText("Money", root,
+            new UIFactory.RectSpec(new Vector2(1, 1), new Vector2(1, 1),
+                new Vector2(-120, -28), new Vector2(-8, -4)),
+            14, TextAnchor.MiddleRight);
+        _moneyText.text = "$250";
+        _moneyText.color = new Color32(160, 220, 120, 255);
+        _moneyText.fontStyle = FontStyle.Bold;
+
+        // Feedback text (small, above bottom)
+        _feedbackText = MakeText("Feedback", root,
+            new UIFactory.RectSpec(new Vector2(0, 0), new Vector2(1, 0),
+                new Vector2(8, 32), new Vector2(-8, 54)),
+            12, TextAnchor.LowerLeft);
+        _feedbackText.color = new Color32(180, 175, 165, 200);
+        _feedbackText.fontStyle = FontStyle.Italic;
+        _feedbackText.text = "WASD: Move | E: Interact | F: Surf | I: Inventory";
     }
 
     private void BuildTopHud(Transform parent)
@@ -280,19 +412,19 @@ public sealed class GameController : MonoBehaviour
 
         // Right info panel
         Image infoPanel = MakeImage("Info Panel", parent,
-            new RectSpec(new Vector2(0.60f, 0.15f), new Vector2(0.98f, 0.82f),
+            new UIFactory.RectSpec(new Vector2(0.60f, 0.15f), new Vector2(0.98f, 0.82f),
                 new Vector2(0, 0), new Vector2(0, -10)),
             new Color32(255, 255, 255, 18));
 
         _locationTitle = MakeText("Location Title", infoPanel.transform,
-            new RectSpec(Vector2.zero, Vector2.one,
+            new UIFactory.RectSpec(Vector2.zero, Vector2.one,
                 new Vector2(20, -20), new Vector2(-20, -64)),
             34, TextAnchor.LowerLeft);
         _locationTitle.color = new Color32(246, 240, 229, 255);
         _locationTitle.fontStyle = FontStyle.Bold;
 
         _locationDesc = MakeText("Location Desc", infoPanel.transform,
-            new RectSpec(Vector2.zero, Vector2.one,
+            new UIFactory.RectSpec(Vector2.zero, Vector2.one,
                 new Vector2(20, -80), new Vector2(-20, -20)),
             20, TextAnchor.UpperLeft);
         _locationDesc.color = new Color32(200, 196, 186, 255);
@@ -324,31 +456,31 @@ public sealed class GameController : MonoBehaviour
     {
         // Full-width bottom panel, taller, doesn't overlap HUD
         _dialoguePanel = MakeImage("Dialogue Panel", parent,
-            new RectSpec(new Vector2(0.02f, 0.12f), new Vector2(0.98f, 0.88f),
+            new UIFactory.RectSpec(new Vector2(0.02f, 0.12f), new Vector2(0.98f, 0.88f),
                 Vector2.zero, Vector2.zero),
             new Color32(15, 17, 22, 248)).gameObject;
 
         // Speaker name bar
         Image speakerBg = MakeImage("Speaker BG", _dialoguePanel.transform,
-            new RectSpec(new Vector2(0, 1), new Vector2(1, 1),
+            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(1, 1),
                 new Vector2(24, -52), new Vector2(-24, 0)),
             new Color32(194, 87, 52, 180));
         _dialogueSpeakerText = MakeText("Dialogue Speaker", _dialoguePanel.transform,
-            new RectSpec(new Vector2(0, 1), new Vector2(1, 1),
+            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(1, 1),
                 new Vector2(32, -50), new Vector2(-32, -6)),
             24, TextAnchor.MiddleLeft);
         _dialogueSpeakerText.fontStyle = FontStyle.Bold;
 
         // Body text — lots of space for Chinese text
         _dialogueBodyText = MakeText("Dialogue Body", _dialoguePanel.transform,
-            new RectSpec(new Vector2(0, 0), new Vector2(1, 1),
+            new UIFactory.RectSpec(new Vector2(0, 0), new Vector2(1, 1),
                 new Vector2(32, 72), new Vector2(-32, -80)),
             22, TextAnchor.UpperLeft);
         _dialogueBodyText.color = new Color32(235, 228, 215, 255);
 
         // Next/Finish button
         Image btnBg = MakeImage("Dialogue Button", _dialoguePanel.transform,
-            new RectSpec(new Vector2(1, 0), new Vector2(1, 0),
+            new UIFactory.RectSpec(new Vector2(1, 0), new Vector2(1, 0),
                 new Vector2(-180, 24), new Vector2(-24, 64)),
             new Color32(236, 180, 87, 255));
         Button button = btnBg.gameObject.AddComponent<Button>();
@@ -421,6 +553,19 @@ public sealed class GameController : MonoBehaviour
         _money += _barRevenue;
         SetFeedback($"Shift closed: {_barServed} served, ${_barRevenue} earned.");
         RefreshHud();
+    }
+
+    /// <summary>
+    /// Public method for other systems (DialogueManager, BarMinigame) to add/remove money.
+    /// </summary>
+    public void AddMoney(int amount)
+    {
+        _money += amount;
+        RefreshHud();
+        if (amount > 0)
+            SetFeedback($"+${amount} earned.");
+        else
+            SetFeedback($"-${-amount} spent.");
     }
 
     // ── Story Events ──────────────────────────────────────
@@ -502,9 +647,35 @@ public sealed class GameController : MonoBehaviour
 
     // ── Visual Rendering ──────────────────────────────────
 
+    /// <summary>
+    /// Called by SceneTransitionManager when the player moves to a new location.
+    /// Updates the HUD and location info.
+    /// </summary>
+    public void OnSceneChanged(string locationId)
+    {
+        if (!_locations.ContainsKey(locationId))
+            return;
+
+        _currentLocation = locationId;
+        LocationView loc = _locations[_currentLocation];
+        _locationTitle.text = loc.title;
+        _locationDesc.text = loc.subtitle;
+        _feedbackText.text = "";
+        RefreshHud();
+    }
+
     private void RenderLocation()
     {
         LocationView loc = _locations[_currentLocation];
+
+        // In play mode, skip RuntimeVisuals — SceneVisuals handles the 2D scene
+        if (Application.isPlaying)
+        {
+            if (_locationTitle != null) _locationTitle.text = loc.title;
+            if (_locationDesc != null) _locationDesc.text = loc.subtitle;
+            _feedbackText.text = "";
+            return;
+        }
 
         // Destroy old scene
         if (_locationScene != null)
@@ -546,21 +717,21 @@ public sealed class GameController : MonoBehaviour
 
     // ── UI Factory Helpers ────────────────────────────────
 
-    private Image MakeImage(string name, Transform parent, RectSpec rect, Color32 color)
+    private Image MakeImage(string name, Transform parent, UIFactory.RectSpec rect, Color32 color)
     {
         GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
         go.transform.SetParent(parent, false);
-        ApplyRect(go.GetComponent<RectTransform>(), rect);
+        UIFactory.ApplyRect(go.GetComponent<RectTransform>(), rect);
         Image img = go.GetComponent<Image>();
         img.color = color;
         return img;
     }
 
-    private Text MakeText(string name, Transform parent, RectSpec rect, int fontSize, TextAnchor alignment)
+    private Text MakeText(string name, Transform parent, UIFactory.RectSpec rect, int fontSize, TextAnchor alignment)
     {
         GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
         go.transform.SetParent(parent, false);
-        ApplyRect(go.GetComponent<RectTransform>(), rect);
+        UIFactory.ApplyRect(go.GetComponent<RectTransform>(), rect);
         Text text = go.GetComponent<Text>();
         text.font = _font;
         text.fontSize = fontSize;
@@ -569,14 +740,6 @@ public sealed class GameController : MonoBehaviour
         text.horizontalOverflow = HorizontalWrapMode.Wrap;
         text.verticalOverflow = VerticalWrapMode.Truncate;
         return text;
-    }
-
-    private static void ApplyRect(RectTransform rt, RectSpec spec)
-    {
-        rt.anchorMin = spec.anchorMin;
-        rt.anchorMax = spec.anchorMax;
-        rt.offsetMin = spec.offsetMin;
-        rt.offsetMax = spec.offsetMax;
     }
 
     private void CleanupGeneratedView()
@@ -631,29 +794,20 @@ public sealed class GameController : MonoBehaviour
 
     // ── RectSpec Builders ─────────────────────────────────
 
-    private static RectSpec StretchFull(float l = 0, float b = 0, float r = 0, float t = 0) =>
-        new RectSpec(Vector2.zero, Vector2.one, new Vector2(l, b), new Vector2(-r, -t));
+    private static UIFactory.RectSpec StretchFull(float l = 0, float b = 0, float r = 0, float t = 0) =>
+        new UIFactory.RectSpec(Vector2.zero, Vector2.one, new Vector2(l, b), new Vector2(-r, -t));
 
-    private static RectSpec StretchTop(float height, float l = 0, float r = 0, float b = 0, float offset = 0) =>
-        new RectSpec(new Vector2(0, 1), Vector2.one, new Vector2(l, -height - offset), new Vector2(-r, -offset));
+    private static UIFactory.RectSpec StretchTop(float height, float l = 0, float r = 0, float b = 0, float offset = 0) =>
+        new UIFactory.RectSpec(new Vector2(0, 1), Vector2.one, new Vector2(l, -height - offset), new Vector2(-r, -offset));
 
-    private static RectSpec StretchBottom(float height, float l = 0, float r = 0, float t = 0, float offset = 0) =>
-        new RectSpec(Vector2.zero, new Vector2(1, 0), new Vector2(l, offset), new Vector2(-r, height + offset));
+    private static UIFactory.RectSpec StretchBottom(float height, float l = 0, float r = 0, float t = 0, float offset = 0) =>
+        new UIFactory.RectSpec(Vector2.zero, new Vector2(1, 0), new Vector2(l, offset), new Vector2(-r, height + offset));
 
-    private static RectSpec Anchored(float left, float top, float w, float h) =>
-        new RectSpec(new Vector2(0, 1), new Vector2(0, 1),
+    private static UIFactory.RectSpec Anchored(float left, float top, float w, float h) =>
+        new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(0, 1),
             new Vector2(left, -top - h), new Vector2(left + w, -top));
 
     // ── Types ─────────────────────────────────────────────
-
-    private readonly struct RectSpec
-    {
-        public readonly Vector2 anchorMin, anchorMax, offsetMin, offsetMax;
-        public RectSpec(Vector2 amin, Vector2 amax, Vector2 omin, Vector2 omax)
-        {
-            anchorMin = amin; anchorMax = amax; offsetMin = omin; offsetMax = omax;
-        }
-    }
 
     private sealed class LocationView
     {

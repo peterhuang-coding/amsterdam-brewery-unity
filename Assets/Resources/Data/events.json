@@ -1,11 +1,25 @@
 {
   "events": [
     {
+      "id": "first_meeting_chen",
+      "day": 1,
+      "time": "morning",
+      "location": "science_park",
+      "dialogue_id": "chen_first_meeting"
+    },
+    {
       "id": "first_class_ai_safety",
       "day": 2,
       "time": "morning",
       "location": "science_park",
       "dialogue_id": "pablo_first_class"
+    },
+    {
+      "id": "day_two_afternoon",
+      "day": 2,
+      "time": "afternoon",
+      "location": "de_pijp",
+      "dialogue_id": ""
     },
     {
       "id": "first_shift_tweede_kans",
@@ -14,6 +28,73 @@
       "location": "tweede_kans",
       "dialogue_id": "erik_first_shift",
       "unlocks": ["bar"]
+    },
+    {
+      "id": "chen_sees_change",
+      "day": 7,
+      "time": "morning",
+      "location": "science_park",
+      "dialogue_id": "chen_seeing_change"
+    },
+    {
+      "id": "week2_sofie_meeting",
+      "day": 8,
+      "time": "morning",
+      "location": "de_pijp",
+      "dialogue_id": "sofie_first_meeting"
+    },
+    {
+      "id": "week2_ravi_panic",
+      "day": 8,
+      "time": "afternoon",
+      "location": "science_park",
+      "dialogue_id": "ravi_study_panic"
+    },
+    {
+      "id": "week2_market_walk",
+      "day": 9,
+      "time": "morning",
+      "location": "bloemenmarkt",
+      "dialogue_id": "",
+      "summary": "The floating market glitters in the morning light. Sofie waves from behind a wall of tulips."
+    },
+    {
+      "id": "week2_quiet_study",
+      "day": 9,
+      "time": "afternoon",
+      "location": "science_park",
+      "dialogue_id": "",
+      "summary": "Afternoon at the library. The silence is broken only by the coffee machine and someone's hushed phone call."
+    },
+    {
+      "id": "week2_de_wit_inspection",
+      "day": 10,
+      "time": "evening",
+      "location": "tweede_kans",
+      "dialogue_id": "de_wit_inspection"
+    },
+    {
+      "id": "week2_flower_errand",
+      "day": 11,
+      "time": "morning",
+      "location": "bloemenmarkt",
+      "dialogue_id": "",
+      "summary": "Sofie's stall is busy today. She's arguing with a supplier in rapid Dutch, then switches to English to hand you a free tulip."
+    },
+    {
+      "id": "week2_maaike_quiet",
+      "day": 12,
+      "time": "evening",
+      "location": "tweede_kans",
+      "dialogue_id": "maaike_quiet"
+    },
+    {
+      "id": "week2_ending",
+      "day": 14,
+      "time": "night",
+      "location": "de_pijp",
+      "dialogue_id": "",
+      "summary": "Your second week in Amsterdam draws to a close. The canals are quiet, the streetlights glow, and somewhere Sofie is still closing up her flower stall. Tomorrow the story continues."
     }
   ]
 }

@@ -32,6 +32,9 @@ public static class RuntimeVisuals
             case "tweede_kans":
                 BuildTweedeKans(container.transform, accent, highlight);
                 break;
+            case "bloemenmarkt":
+                BuildBloemenmarkt(container.transform, accent, highlight);
+                break;
         }
 
         return container;
@@ -121,9 +124,46 @@ public static class RuntimeVisuals
         label.color = ColorFrom(WithAlpha(highlight, 230));
     }
 
+    private static void BuildBloemenmarkt(Transform parent, Color32 accent, Color32 highlight)
+    {
+        // Flower stall canopy (horizontal bar)
+        Rect(panel(parent, 40, 60, 400, 12), WithAlpha(accent, 200));
+        // Canopy supports
+        Rect(panel(parent, 60, 72, 8, 120), WithAlpha(accent, 140));
+        Rect(panel(parent, 412, 72, 8, 120), WithAlpha(accent, 140));
+
+        // Flower rows (3 rows of colorful dots/blocks)
+        Color32[] flowerColors = new[] {
+            new Color32(220, 80, 120, 200),
+            new Color32(240, 200, 80, 200),
+            new Color32(200, 60, 180, 200),
+            new Color32(80, 160, 220, 200),
+            new Color32(240, 140, 60, 200),
+        };
+        for (int row = 0; row < 3; row++)
+        {
+            for (int col = 0; col < 6; col++)
+            {
+                Color32 fc = flowerColors[(row + col) % flowerColors.Length];
+                Rect(panel(parent, 65 + col * 60, 90 + row * 30, 20, 20), WithAlpha(fc, 180));
+            }
+        }
+
+        // Counter/table
+        Rect(panel(parent, 40, 190, 400, 14), WithAlpha(highlight, 180));
+
+        // Floating market water hint
+        Rect(panel(parent, 40, 300, 400, 6), new Color32(60, 140, 200, 100));
+
+        // Label
+        Text label = CreateText("Label", parent, RectAnchor(20, 20, 440, 36), 22, TextAnchor.MiddleLeft);
+        label.text = "Bloemenmarkt — Floating Market";
+        label.color = ColorFrom(WithAlpha(highlight, 230));
+    }
+
     // --- shape helpers ---
 
-    private static Image CreateImage(string name, Transform parent, RectSpec spec, Color32 color)
+    private static Image CreateImage(string name, Transform parent, UIFactory.RectSpec spec, Color32 color)
     {
         GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
         go.transform.SetParent(parent, false);
@@ -133,7 +173,7 @@ public static class RuntimeVisuals
         return img;
     }
 
-    private static Text CreateText(string name, Transform parent, RectSpec spec, int fontSize, TextAnchor align)
+    private static Text CreateText(string name, Transform parent, UIFactory.RectSpec spec, int fontSize, TextAnchor align)
     {
         GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
         go.transform.SetParent(parent, false);
@@ -184,9 +224,9 @@ public static class RuntimeVisuals
         return image.GetComponent<RectTransform>();
     }
 
-    private static RectSpec RectAnchor(float left, float top, float w, float h)
+    private static UIFactory.RectSpec RectAnchor(float left, float top, float w, float h)
     {
-        return new RectSpec(
+        return new UIFactory.RectSpec(
             new Vector2(0, 1), new Vector2(0, 1),
             new Vector2(left, -top - h),
             new Vector2(left + w, -top));
@@ -199,24 +239,10 @@ public static class RuntimeVisuals
         return new Color32(color.r, color.g, color.b, alpha);
     }
 
-    private static void ApplyRect(RectTransform rt, RectSpec spec)
+    private static void ApplyRect(RectTransform rt, UIFactory.RectSpec spec)
     {
-        rt.anchorMin = spec.anchorMin;
-        rt.anchorMax = spec.anchorMax;
-        rt.offsetMin = spec.offsetMin;
-        rt.offsetMax = spec.offsetMax;
+        UIFactory.ApplyRect(rt, spec);
     }
 
-    public struct RectSpec
-    {
-        public Vector2 anchorMin;
-        public Vector2 anchorMax;
-        public Vector2 offsetMin;
-        public Vector2 offsetMax;
-
-        public RectSpec(Vector2 amin, Vector2 amax, Vector2 omin, Vector2 omax)
-        {
-            anchorMin = amin; anchorMax = amax; offsetMin = omin; offsetMax = omax;
-        }
-    }
+    // Reuse UIFactory.RectSpec instead of defining our own
 }

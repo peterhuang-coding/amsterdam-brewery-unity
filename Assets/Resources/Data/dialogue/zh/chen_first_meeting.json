@@ -1,0 +1,50 @@
+{
+  "id": "chen_first_meeting",
+  "trigger": {
+    "scene": "science_park",
+    "day": 1,
+    "time": "morning"
+  },
+  "lines": [
+    {
+      "speaker": "chen",
+      "text": "你就是新来的硕士生？我叫陈薇，你的导师。",
+      "expression": "neutral"
+    },
+    {
+      "speaker": "player",
+      "text": "是的，陈老师。我之前做的是机器学习安全方向。",
+      "expression": "polite"
+    },
+    {
+      "speaker": "chen",
+      "text": "安全……这个词在工业界和学术界是两个意思。你选哪一个？",
+      "expression": "curious"
+    },
+    {
+      "speaker": "player",
+      "text": "我还没想清楚。可能正是因为这样才来读研的。",
+      "expression": "honest"
+    },
+    {
+      "speaker": "chen",
+      "text": "好答案。我这边做的偏向对齐——不是让模型更聪明，而是让它们不犯蠢。",
+      "expression": "warm"
+    },
+    {
+      "speaker": "chen",
+      "text": "实验室在二楼。先去注册，下午咖啡角聊。",
+      "expression": "neutral"
+    }
+  ],
+  "choices": [
+    {
+      "id": "ask_about_lab",
+      "text": "实验室目前有多少人？"
+    },
+    {
+      "id": "accept_direction",
+      "text": "好的，我先去注册。"
+    }
+  ]
+}

@@ -23,6 +23,36 @@
       "name": "Fatima El Idrissi",
       "role": "Market cook and future food mentor",
       "first_location": "de_pijp_market"
+    },
+    {
+      "id": "chen",
+      "name": "Chen Wei",
+      "role": "PhD supervisor",
+      "first_location": "science_park"
+    },
+    {
+      "id": "sofie",
+      "name": "Sofie van den Berg",
+      "role": "Flower shop owner",
+      "first_location": "de_pijp"
+    },
+    {
+      "id": "ravi",
+      "name": "Ravi Patel",
+      "role": "Exchange student",
+      "first_location": "science_park"
+    },
+    {
+      "id": "de_wit",
+      "name": "Inspector de Wit",
+      "role": "Neighborhood officer",
+      "first_location": "tweede_kans"
+    },
+    {
+      "id": "maaike",
+      "name": "Maaike Brouwer",
+      "role": "Erik's ex-wife",
+      "first_location": "de_pijp"
     }
   ]
 }

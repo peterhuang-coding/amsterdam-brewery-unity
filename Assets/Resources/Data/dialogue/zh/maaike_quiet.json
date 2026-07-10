@@ -1,0 +1,19 @@
+{
+  "id": "maaike_quiet",
+  "trigger": {"scene": "tweede_kans", "day": 12, "time": "evening"},
+  "lines": [
+    {"speaker": "maaike", "text": "快打烊了吗？我可以在角落里坐一会儿吗。", "expression": "tentative"},
+    {"speaker": "erik", "text": "当然。要喝什么？老样子？", "expression": "quiet"},
+    {"speaker": "maaike", "text": "老样子。你知道我从来不换。", "expression": "familiar"},
+    {"speaker": "player", "text": "（低声）Erik，这位是……？", "expression": "whisper"},
+    {"speaker": "erik", "text": "Maaike。她以前住这附近。只是……不跟我住了。", "expression": "careful"},
+    {"speaker": "maaike", "text": "今天的天气比昨天好。昨天下午的雨太大了。", "expression": "light"},
+    {"speaker": "erik", "text": "是啊。我看了一本讲荷兰水利史的书。三百年了，还在跟水较劲。", "expression": "light"},
+    {"speaker": "maaike", "text": "你什么时候开始看水利史了？你以前只看足球杂志。", "expression": "teasing"},
+    {"speaker": "erik", "text": "人总会变的。虽然变得不多。", "expression": "wistful"}
+  ],
+  "choices": [
+    {"id": "stay_silent", "text": "安静地擦杯子，不打扰他们。", "outcome": {"erik_affection": 2, "maaike_affection": 1}},
+    {"id": "bring_drinks", "text": "端两杯喝的过去，说一声晚上好。", "outcome": {"maaike_affection": 2, "erik_affection": 1}}
+  ]
+}

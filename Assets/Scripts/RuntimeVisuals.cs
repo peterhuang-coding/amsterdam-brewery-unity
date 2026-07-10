@@ -7,9 +7,11 @@ using UnityEngine.UI;
 /// </summary>
 public static class RuntimeVisuals
 {
-    public static GameObject BuildLocationScene(string locationId, Transform parent,
-        Color32 accent, Color32 highlight, Color32 bg)
+    public static GameObject BuildLocationScene(string locationId, Transform parent, LocationView view)
     {
+        Color32 accent = view.accent;
+        Color32 highlight = view.highlight;
+        Color32 bg = view.background;
         GameObject container = new GameObject($"Scene_{locationId}", typeof(RectTransform));
         RectTransform ct = container.GetComponent<RectTransform>();
         ct.SetParent(parent, false);

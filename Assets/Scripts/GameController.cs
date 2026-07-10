@@ -6,6 +6,9 @@ using UnityEngine.UI;
 [ExecuteAlways]
 public sealed class GameController : MonoBehaviour
 {
+    // ── Singleton (T5) ────────────────────────────────
+    public static GameController Instance { get; private set; }
+
     private const string RuntimeRootName = "AB Runtime View";
 
     private readonly string[] _timesOfDay = { "dawn", "morning", "afternoon", "evening", "night", "late_night" };
@@ -65,6 +68,12 @@ public sealed class GameController : MonoBehaviour
 
     private Font _font;
 
+    // ── Dialogue cache (T2) ───────────────────────────
+    private readonly Dictionary<string, DialogueData> _dialogueCache = new Dictionary<string, DialogueData>();
+
+    // ── Daily Goals (F1) ──────────────────────────────
+    private readonly List<DailyGoal> _dailyGoals = new List<DailyGoal>();
+
     // HUD elements
     private Text _timeText;
     private Text _locationText;
@@ -73,6 +82,18 @@ public sealed class GameController : MonoBehaviour
     private Text _feedbackText;
     private Text _hintText;
     private Image _hintBackplate;
+
+    // F1: Daily goals HUD
+    private Text _goalText1;
+    private Text _goalText2;
+
+    // F7: Affection progress bar
+    private Text _affectionBarText;
+
+    // F2: Result feedback (show outcome text, clear after delay)
+    private string _pendingFeedback;
+    private float _feedbackTimer;
+    private bool _showingResultFeedback;
 
     // Location scene
     private GameObject _locationScene;
@@ -88,6 +109,7 @@ public sealed class GameController : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this; // (T5)
         BootstrapView();
         // Auto-bootstrap the 2.5D game systems if not already present
         if (Application.isPlaying && FindObjectOfType<PlayerController>() == null)
@@ -165,6 +187,11 @@ public sealed class GameController : MonoBehaviour
         CleanupGeneratedView();
         BuildInterface();
         RenderLocation();
+        // F1: Generate initial daily goals
+        if (Application.isPlaying && _dailyGoals.Count == 0)
+        {
+            GenerateDailyGoals();
+        }
         RefreshHud();
         if (Application.isPlaying)
         {
@@ -219,6 +246,18 @@ public sealed class GameController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.C))
         {
             CloseBar();
+        }
+
+        // F2: Auto-clear feedback timer
+        if (_showingResultFeedback)
+        {
+            _feedbackTimer -= Time.deltaTime;
+            if (_feedbackTimer <= 0f)
+            {
+                _showingResultFeedback = false;
+                _feedbackText.text = _pendingFeedback ?? "";
+                _pendingFeedback = null;
+            }
         }
     }
 
@@ -353,6 +392,29 @@ public sealed class GameController : MonoBehaviour
         _feedbackText.color = new Color32(180, 175, 165, 200);
         _feedbackText.fontStyle = FontStyle.Italic;
         _feedbackText.text = "WASD: Move | E: Interact | F: Surf | I: Inventory";
+
+        // F1: Daily Goals text (center-left, below top bar)
+        _goalText1 = MakeText("Goal1", root,
+            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(0, 1),
+                new Vector2(8, -60), new Vector2(300, -36)),
+            11, TextAnchor.MiddleLeft);
+        _goalText1.color = new Color32(236, 180, 87, 255);
+        _goalText1.text = "";
+
+        _goalText2 = MakeText("Goal2", root,
+            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(0, 1),
+                new Vector2(8, -84), new Vector2(300, -60)),
+            11, TextAnchor.MiddleLeft);
+        _goalText2.color = new Color32(236, 180, 87, 255);
+        _goalText2.text = "";
+
+        // F7: Affection bar (right side, top area)
+        _affectionBarText = MakeText("Affection", root,
+            new UIFactory.RectSpec(new Vector2(1, 1), new Vector2(1, 1),
+                new Vector2(-300, -28), new Vector2(-130, -4)),
+            11, TextAnchor.MiddleRight);
+        _affectionBarText.color = new Color32(200, 185, 160, 220);
+        _affectionBarText.text = "";
     }
 
     private void BuildTopHud(Transform parent)
@@ -501,6 +563,10 @@ public sealed class GameController : MonoBehaviour
         {
             _timeIndex = 0;
             _currentDay++;
+            // F1: Regenerate daily goals at dawn
+            GenerateDailyGoals();
+            // F8: Update weather for new day
+            WeatherSystem.Instance.NewDay(_currentDay);
         }
         SetFeedback("Time moves. The city keeps its own schedule.");
         RefreshHud();
@@ -510,6 +576,8 @@ public sealed class GameController : MonoBehaviour
     private void SwitchLocation(string locationId)
     {
         _currentLocation = locationId;
+        // F1: Mark goals for this location as completed
+        MarkLocationGoalsCompleted(locationId);
         RenderLocation();
         RefreshHud();
         CheckStoryEvents();
@@ -536,10 +604,35 @@ public sealed class GameController : MonoBehaviour
             SetFeedback("The bar is closed. Press B to open it first.");
             return;
         }
+
+        // F8: Weather affects bar revenue
+        int revenuePerCustomer = GetBarRevenuePerCustomer();
+
         _barServed++;
-        _barRevenue += 6;
-        SetFeedback("Served one regular. Revenue +$6.");
+        _barRevenue += revenuePerCustomer;
+        SetFeedback($"Served one. Revenue +${revenuePerCustomer}.");
         RefreshHud();
+    }
+
+    // F8: Weather-based revenue multiplier
+    private int GetBarRevenuePerCustomer()
+    {
+        WeatherSystem.WeatherType weather = WeatherSystem.Instance.CurrentWeather;
+        switch (weather)
+        {
+            case WeatherSystem.WeatherType.Sunny:
+            case WeatherSystem.WeatherType.Cloudy:
+                return 6; // Standard
+            case WeatherSystem.WeatherType.Rainy:
+            case WeatherSystem.WeatherType.Storm:
+                return 8; // Tip increase, but fewer customers
+            case WeatherSystem.WeatherType.Foggy:
+                return 5; // Slow business
+            case WeatherSystem.WeatherType.Snowy:
+                return 7; // Cozy atmosphere
+            default:
+                return 6;
+        }
     }
 
     private void CloseBar()
@@ -597,15 +690,27 @@ public sealed class GameController : MonoBehaviour
         }
     }
 
+    // T2: Cached dialogue loading
     private void ShowDialogue(string dialogueId)
     {
+        DialogueData data;
+        if (_dialogueCache.TryGetValue(dialogueId, out data))
+        {
+            _activeDialogue = data;
+            _dialogueLineIndex = 0;
+            RenderDialogueLine();
+            return;
+        }
+
         TextAsset dialogueAsset = Resources.Load<TextAsset>($"Data/dialogue/zh/{dialogueId}");
         if (dialogueAsset == null)
         {
             SetFeedback($"Missing dialogue: {dialogueId}");
             return;
         }
-        _activeDialogue = JsonUtility.FromJson<DialogueData>(dialogueAsset.text);
+        data = JsonUtility.FromJson<DialogueData>(dialogueAsset.text);
+        _dialogueCache[dialogueId] = data; // Cache for future
+        _activeDialogue = data;
         _dialogueLineIndex = 0;
         RenderDialogueLine();
     }
@@ -643,6 +748,144 @@ public sealed class GameController : MonoBehaviour
         if (speakerId == "pablo") return "Pablo";
         if (speakerId == "erik") return "Erik";
         return speakerId;
+    }
+
+    // ── F1: Daily Goals ──────────────────────────────────
+
+    private void GenerateDailyGoals()
+    {
+        _dailyGoals.Clear();
+        if (_eventDatabase == null || _eventDatabase.events == null) return;
+
+        // Find events for current day
+        foreach (StoryEvent ev in _eventDatabase.events)
+        {
+            if (ev.day != _currentDay) continue;
+            // Create a goal description from the event
+            string desc = GenerateGoalDescription(ev);
+            _dailyGoals.Add(new DailyGoal
+            {
+                eventId = ev.id,
+                description = desc,
+                location = ev.location,
+                completed = false,
+                day = _currentDay
+            });
+        }
+
+        // If no events today, add a default goal: visit a location
+        if (_dailyGoals.Count == 0)
+        {
+            _dailyGoals.Add(new DailyGoal
+            {
+                eventId = "default_explore",
+                description = "Explore Amsterdam",
+                location = "",
+                completed = false,
+                day = _currentDay
+            });
+        }
+    }
+
+    private string GenerateGoalDescription(StoryEvent ev)
+    {
+        if (!string.IsNullOrEmpty(ev.dialogue_id))
+        {
+            // Dialogue events: talk to someone
+            string speaker = ev.dialogue_id.Contains("pablo") ? "Pablo" :
+                             ev.dialogue_id.Contains("erik") ? "Erik" :
+                             ev.dialogue_id.Contains("sofie") ? "Sofie" :
+                             ev.dialogue_id.Contains("chen") ? "Chen" :
+                             ev.dialogue_id.Contains("ravi") ? "Ravi" :
+                             ev.dialogue_id.Contains("de_wit") ? "De Wit" :
+                             ev.dialogue_id.Contains("maaike") ? "Maaike" : "Someone";
+            return $"Talk to {speaker}";
+        }
+        if (!string.IsNullOrEmpty(ev.summary))
+        {
+            if (ev.summary.Length > 40) return ev.summary.Substring(0, 40) + "...";
+            return ev.summary;
+        }
+        return "Visit " + (ev.location ?? "a location");
+    }
+
+    private void MarkLocationGoalsCompleted(string locationId)
+    {
+        bool allCompleted = true;
+        foreach (DailyGoal goal in _dailyGoals)
+        {
+            if (goal.completed) continue;
+            if (goal.location == locationId || string.IsNullOrEmpty(goal.location))
+            {
+                goal.completed = true;
+            }
+            if (!goal.completed) allCompleted = false;
+        }
+
+        // F1: All goals completed notification
+        if (allCompleted && _dailyGoals.Count > 0)
+        {
+            ShowResultFeedback("All goals complete! Well done.");
+        }
+    }
+
+    // ── F2: Result Feedback ──────────────────────────────
+
+    /// <summary>
+    /// Show a floating result message (e.g., "+1 Erik affection", "+$6")
+    /// Auto-clears after 2 seconds. Called by DialogueManager on choice outcomes.
+    /// </summary>
+    public void ShowResultFeedback(string message)
+    {
+        _showingResultFeedback = true;
+        _feedbackTimer = 2f;
+        _feedbackText.text = message;
+        _feedbackText.color = new Color32(255, 220, 100, 255);
+        _feedbackText.fontStyle = FontStyle.Bold;
+        _feedbackText.fontSize = 16;
+    }
+
+    // ── F7: Affection Bar Update ─────────────────────────
+
+    private void UpdateAffectionBar()
+    {
+        if (_affectionBarText == null) return;
+
+        string currentLocation = _currentLocation;
+        // Map location to NPC character
+        string npcId = null;
+        string npcName = null;
+        switch (currentLocation)
+        {
+            case "de_pijp":
+                npcId = "sofie";
+                npcName = "Sofie";
+                break;
+            case "science_park":
+                npcId = "chen";
+                npcName = "Chen";
+                break;
+            case "tweede_kans":
+                npcId = "erik";
+                npcName = "Erik";
+                break;
+            case "bloemenmarkt":
+                npcId = "sofie";
+                npcName = "Sofie";
+                break;
+        }
+
+        if (npcId == null)
+        {
+            _affectionBarText.text = "";
+            return;
+        }
+
+        int affection = InventorySystem.Instance.GetAffection(npcId);
+        int filled = Mathf.Clamp(affection, 0, 10);
+        int empty = 10 - filled;
+        string bar = new string('█', filled) + new string('░', empty);
+        _affectionBarText.text = $"{npcName}: {bar}";
     }
 
     // ── Visual Rendering ──────────────────────────────────
@@ -683,9 +926,8 @@ public sealed class GameController : MonoBehaviour
             DestroyChildren(_locationScene.transform);
         }
 
-        // Build new location scene via RuntimeVisuals
-        RuntimeVisuals.BuildLocationScene(_currentLocation, _locationScene.transform,
-            loc.accent, loc.highlight, loc.background);
+        // Build new location scene via RuntimeVisuals (T6: pass LocationView)
+        RuntimeVisuals.BuildLocationScene(_currentLocation, _locationScene.transform, loc);
 
         _locationTitle.text = loc.title;
         _locationDesc.text = loc.subtitle;
@@ -699,6 +941,51 @@ public sealed class GameController : MonoBehaviour
         _locationText.text = _locations[_currentLocation].title;
         _barStatusText.text = $"{( _barOpen ? "Open" : "Closed" )}  |  Served {_barServed}  |  Rev ${_barRevenue}";
         _moneyText.text = $"${_money}";
+
+        // F1: Update daily goal display
+        UpdateGoalDisplay();
+
+        // F7: Update affection bar
+        UpdateAffectionBar();
+    }
+
+    private void UpdateGoalDisplay()
+    {
+        if (_goalText1 == null || _goalText2 == null) return;
+
+        // Regenerate goals if on a new day and none exist
+        if (_dailyGoals.Count == 0)
+        {
+            GenerateDailyGoals();
+        }
+
+        if (_dailyGoals.Count >= 1)
+        {
+            DailyGoal g1 = _dailyGoals[0];
+            string prefix1 = g1.completed ? "✓ " : "○ ";
+            _goalText1.text = prefix1 + g1.description;
+            _goalText1.color = g1.completed
+                ? new Color32(120, 120, 120, 200)
+                : new Color32(236, 180, 87, 255);
+        }
+        else
+        {
+            _goalText1.text = "";
+        }
+
+        if (_dailyGoals.Count >= 2)
+        {
+            DailyGoal g2 = _dailyGoals[1];
+            string prefix2 = g2.completed ? "✓ " : "○ ";
+            _goalText2.text = prefix2 + g2.description;
+            _goalText2.color = g2.completed
+                ? new Color32(120, 120, 120, 200)
+                : new Color32(236, 180, 87, 255);
+        }
+        else if (_goalText2 != null)
+        {
+            _goalText2.text = "";
+        }
     }
 
     private string CurrentTime() => _timesOfDay[_timeIndex];
@@ -809,13 +1096,5 @@ public sealed class GameController : MonoBehaviour
 
     // ── Types ─────────────────────────────────────────────
 
-    private sealed class LocationView
-    {
-        public readonly string title, subtitle;
-        public readonly Color background, accent, highlight;
-        public LocationView(string t, string s, Color bg, Color ac, Color hl)
-        {
-            title = t; subtitle = s; background = bg; accent = ac; highlight = hl;
-        }
-    }
+    // LocationView moved to GameDataModels.cs (T6)
 }

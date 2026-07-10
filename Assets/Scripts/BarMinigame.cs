@@ -247,10 +247,10 @@ public class BarMinigame : MonoBehaviour
         }
 
         // Find GameController to add earnings
-        GameController gc = FindObjectOfType<GameController>();
+        GameController gc = GameController.Instance;
         if (gc != null)
         {
-            // Access money via reflection or public method
+            // Access money via public method
             gc.AddMoney(_earnings);
         }
 

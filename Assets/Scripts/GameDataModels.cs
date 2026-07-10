@@ -83,6 +83,31 @@ public sealed class DialogueOutcome
     public string lore_unlock;
 }
 
+// ── Location View (moved from GameController T6) ─────
+
+[Serializable]
+public sealed class LocationView
+{
+    public readonly string title, subtitle;
+    public readonly Color background, accent, highlight;
+    public LocationView(string t, string s, Color bg, Color ac, Color hl)
+    {
+        title = t; subtitle = s; background = bg; accent = ac; highlight = hl;
+    }
+}
+
+// ── Daily Goal (for F1) ──────────────────────────────
+
+[Serializable]
+public sealed class DailyGoal
+{
+    public string eventId;
+    public string description;
+    public string location;
+    public bool completed;
+    public int day;
+}
+
 // ── Shared UI helpers ─────────────────────────────────
 
 public static class UIFactory

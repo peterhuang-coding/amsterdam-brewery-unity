@@ -353,7 +353,7 @@ public class DialogueManager : MonoBehaviour
         // Update money
         if (outcome.money != 0)
         {
-            GameController gc = FindObjectOfType<GameController>();
+            GameController gc = GameController.Instance;
             if (gc != null)
             {
                 if (outcome.money > 0)
@@ -374,6 +374,34 @@ public class DialogueManager : MonoBehaviour
         // Unlock lore
         if (!string.IsNullOrEmpty(outcome.lore_unlock))
             InventorySystem.Instance.UnlockLore(outcome.lore_unlock, $"Lore: {outcome.lore_unlock}");
+
+        // F2: Show feedback based on outcome
+        ShowOutcomeFeedback(outcome);
+    }
+
+    // F2: Display dialogue choice result feedback
+    private void ShowOutcomeFeedback(DialogueOutcome outcome)
+    {
+        string feedback = "";
+        if (outcome.erik_affection > 0) feedback += $"+{outcome.erik_affection} Erik affection ";
+        if (outcome.pablo_affection > 0) feedback += $"+{outcome.pablo_affection} Pablo affection ";
+        if (outcome.sofie_affection > 0) feedback += $"+{outcome.sofie_affection} Sofie affection ";
+        if (outcome.ravi_affection > 0) feedback += $"+{outcome.ravi_affection} Ravi affection ";
+        if (outcome.de_wit_affection > 0) feedback += $"+{outcome.de_wit_affection} De Wit affection ";
+        if (outcome.maaike_affection > 0) feedback += $"+{outcome.maaike_affection} Maaike affection ";
+        if (outcome.chen_affection > 0) feedback += $"+{outcome.chen_affection} Chen affection ";
+        if (outcome.money > 0) feedback += $"+${outcome.money} ";
+        if (!string.IsNullOrEmpty(outcome.unlock_system)) feedback += $"Unlocked: {outcome.unlock_system} ";
+        if (!string.IsNullOrEmpty(outcome.item)) feedback += $"+1 {outcome.item} ";
+
+        if (!string.IsNullOrEmpty(feedback))
+        {
+            GameController gc = GameController.Instance;
+            if (gc != null)
+            {
+                gc.ShowResultFeedback(feedback.Trim());
+            }
+        }
     }
 
     private void EndDialogue()

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -73,6 +74,17 @@ public sealed class GameController : MonoBehaviour
 
     // ── Daily Goals (F1) ──────────────────────────────
     private readonly List<DailyGoal> _dailyGoals = new List<DailyGoal>();
+
+    // ── UI Animation (F3/F4/F6/T7) ────────────────────
+    private CanvasGroup _dialogueGroup;       // For dialogue panel fade
+    private CanvasGroup _flashOverlay;        // For time-advance flash
+    private CanvasGroup _feedbackGroup;       // For feedback fade
+    private Coroutine _typewriterCoroutine;
+    private Coroutine _feedbackCoroutine;
+    private bool _textFullyRevealed;
+    private string _fullDialogueText;
+    private string _currentSpeaker;
+    private bool _isDialogueAnimating;
 
     // HUD elements
     private Text _timeText;
@@ -206,10 +218,38 @@ public sealed class GameController : MonoBehaviour
             return;
         }
 
+        // F2: Auto-clear feedback timer
+        if (_showingResultFeedback)
+        {
+            _feedbackTimer -= Time.deltaTime;
+            if (_feedbackTimer <= 0f)
+            {
+                _showingResultFeedback = false;
+                _feedbackText.text = _pendingFeedback ?? "";
+                _pendingFeedback = null;
+            }
+        }
+
+        HandleInput();
+    }
+
+    // T4: Extracted input handling for readability
+    private void HandleInput()
+    {
         if (_activeDialogue != null)
         {
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
             {
+                // F3: If typewriter is still animating, finish it instantly
+                if (!_textFullyRevealed && _typewriterCoroutine != null)
+                {
+                    StopCoroutine(_typewriterCoroutine);
+                    _typewriterCoroutine = null;
+                    _dialogueBodyText.text = _fullDialogueText;
+                    _textFullyRevealed = true;
+                    ShowDialogueButton();
+                    return;
+                }
                 AdvanceDialogue();
             }
             return;
@@ -246,18 +286,6 @@ public sealed class GameController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.C))
         {
             CloseBar();
-        }
-
-        // F2: Auto-clear feedback timer
-        if (_showingResultFeedback)
-        {
-            _feedbackTimer -= Time.deltaTime;
-            if (_feedbackTimer <= 0f)
-            {
-                _showingResultFeedback = false;
-                _feedbackText.text = _pendingFeedback ?? "";
-                _pendingFeedback = null;
-            }
         }
     }
 
@@ -353,6 +381,12 @@ public sealed class GameController : MonoBehaviour
             new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(1, 1),
                 new Vector2(0, -32), new Vector2(0, 0)),
             new Color32(10, 14, 18, 180));
+
+        // F6: Flash overlay for time transitions
+        Image flashImg = MakeImage("Flash Overlay", root, StretchFull(), new Color32(255, 255, 255, 0));
+        _flashOverlay = flashImg.gameObject.AddComponent<CanvasGroup>();
+        _flashOverlay.alpha = 0f;
+        _flashOverlay.blocksRaycasts = false;
 
         // Time/date
         _timeText = MakeText("Time", root,
@@ -500,6 +534,17 @@ public sealed class GameController : MonoBehaviour
         _feedbackText.color = new Color32(220, 210, 190, 255);
         _feedbackText.fontStyle = FontStyle.Italic;
         _feedbackText.text = "Your story begins in De Pijp. Explore, work, and find your place.";
+
+        // F6: Flash overlay for time transitions (editor mode)
+        Image flashImg = MakeImage("Flash Overlay", parent, StretchFull(), new Color32(255, 255, 255, 0));
+        _flashOverlay = flashImg.gameObject.AddComponent<CanvasGroup>();
+        _flashOverlay.alpha = 0f;
+        _flashOverlay.blocksRaycasts = false;
+
+        // T7: Add CanvasGroup to feedback text for fade animations
+        _feedbackGroup = _feedbackText.gameObject.GetComponent<CanvasGroup>();
+        if (_feedbackGroup == null) _feedbackGroup = _feedbackText.gameObject.AddComponent<CanvasGroup>();
+        _feedbackGroup.alpha = 1f;
     }
 
     private void BuildBottomHints(Transform parent)
@@ -521,6 +566,15 @@ public sealed class GameController : MonoBehaviour
             new UIFactory.RectSpec(new Vector2(0.02f, 0.12f), new Vector2(0.98f, 0.88f),
                 Vector2.zero, Vector2.zero),
             new Color32(15, 17, 22, 248)).gameObject;
+
+        // F4: Add CanvasGroup for fade animation
+        _dialogueGroup = _dialoguePanel.GetComponent<CanvasGroup>();
+        if (_dialogueGroup == null) _dialogueGroup = _dialoguePanel.AddComponent<CanvasGroup>();
+        _dialogueGroup.alpha = 0f;
+
+        // Store initial anchored position for slide animation
+        RectTransform dlgRect = _dialoguePanel.GetComponent<RectTransform>();
+        Vector2 origPos = dlgRect.anchoredPosition;
 
         // Speaker name bar
         Image speakerBg = MakeImage("Speaker BG", _dialoguePanel.transform,
@@ -559,18 +613,53 @@ public sealed class GameController : MonoBehaviour
     private void AdvanceTime()
     {
         _timeIndex++;
+        bool newDay = false;
         if (_timeIndex >= _timesOfDay.Length)
         {
             _timeIndex = 0;
             _currentDay++;
+            newDay = true;
             // F1: Regenerate daily goals at dawn
             GenerateDailyGoals();
             // F8: Update weather for new day
             WeatherSystem.Instance.NewDay(_currentDay);
         }
+
+        // F5: Time advance sound
+        SoundManager.Play(SoundManager.SoundType.TimeAdvance);
+
+        // F6: Flash transition
+        if (_flashOverlay != null)
+        {
+            StartCoroutine(FlashTransition());
+        }
+
         SetFeedback("Time moves. The city keeps its own schedule.");
         RefreshHud();
         CheckStoryEvents();
+    }
+
+    // F6: Flash screen on time advance
+    private IEnumerator FlashTransition()
+    {
+        float duration = 0.15f;
+        float half = duration / 2f;
+
+        // Flash in
+        for (float t = 0; t < half; t += Time.deltaTime)
+        {
+            _flashOverlay.alpha = Mathf.Lerp(0f, 0.35f, t / half);
+            yield return null;
+        }
+        _flashOverlay.alpha = 0.35f;
+
+        // Flash out
+        for (float t = 0; t < half; t += Time.deltaTime)
+        {
+            _flashOverlay.alpha = Mathf.Lerp(0.35f, 0f, t / half);
+            yield return null;
+        }
+        _flashOverlay.alpha = 0f;
     }
 
     private void SwitchLocation(string locationId)
@@ -581,6 +670,8 @@ public sealed class GameController : MonoBehaviour
         RenderLocation();
         RefreshHud();
         CheckStoryEvents();
+        // F5: Location switch sound
+        SoundManager.Play(SoundManager.SoundType.UIClick);
     }
 
     private void OpenBar()
@@ -593,6 +684,8 @@ public sealed class GameController : MonoBehaviour
         _barOpen = true;
         _barServed = 0;
         _barRevenue = 0;
+        // F5: Bar open sound
+        SoundManager.Play(SoundManager.SoundType.Success);
         SetFeedback("You open the bar. The first glasses wait behind the counter.");
         RefreshHud();
     }
@@ -602,6 +695,7 @@ public sealed class GameController : MonoBehaviour
         if (!_barOpen)
         {
             SetFeedback("The bar is closed. Press B to open it first.");
+            SoundManager.Play(SoundManager.SoundType.Error);
             return;
         }
 
@@ -611,6 +705,8 @@ public sealed class GameController : MonoBehaviour
         _barServed++;
         _barRevenue += revenuePerCustomer;
         SetFeedback($"Served one. Revenue +${revenuePerCustomer}.");
+        // F5: Money earn sound
+        SoundManager.Play(SoundManager.SoundType.MoneyEarn);
         RefreshHud();
     }
 
@@ -644,6 +740,8 @@ public sealed class GameController : MonoBehaviour
         }
         _barOpen = false;
         _money += _barRevenue;
+        // F5: Bar close sound
+        SoundManager.Play(SoundManager.SoundType.Collect);
         SetFeedback($"Shift closed: {_barServed} served, ${_barRevenue} earned.");
         RefreshHud();
     }
@@ -656,9 +754,15 @@ public sealed class GameController : MonoBehaviour
         _money += amount;
         RefreshHud();
         if (amount > 0)
+        {
             SetFeedback($"+${amount} earned.");
+            SoundManager.Play(SoundManager.SoundType.MoneyEarn);
+        }
         else
+        {
             SetFeedback($"-${-amount} spent.");
+            SoundManager.Play(SoundManager.SoundType.Error);
+        }
     }
 
     // ── Story Events ──────────────────────────────────────
@@ -685,6 +789,8 @@ public sealed class GameController : MonoBehaviour
                 continue;
             }
             _triggeredDialogueIds.Add(storyEvent.dialogue_id);
+            // F5: Story event trigger sound
+            SoundManager.Play(SoundManager.SoundType.EventTrigger);
             ShowDialogue(storyEvent.dialogue_id);
             return;
         }
@@ -699,6 +805,11 @@ public sealed class GameController : MonoBehaviour
             _activeDialogue = data;
             _dialogueLineIndex = 0;
             RenderDialogueLine();
+            // F4: Animate dialogue panel in
+            if (_dialoguePanel != null)
+            {
+                StartCoroutine(AnimateDialogueIn());
+            }
             return;
         }
 
@@ -713,6 +824,58 @@ public sealed class GameController : MonoBehaviour
         _activeDialogue = data;
         _dialogueLineIndex = 0;
         RenderDialogueLine();
+        // F4: Animate dialogue panel in
+        if (_dialoguePanel != null)
+        {
+            StartCoroutine(AnimateDialogueIn());
+        }
+    }
+
+    // F4: Slide + fade dialogue panel in
+    private IEnumerator AnimateDialogueIn()
+    {
+        _dialoguePanel.SetActive(true);
+        RectTransform rt = _dialoguePanel.GetComponent<RectTransform>();
+        Vector2 targetPos = rt.anchoredPosition;
+        float duration = 0.3f;
+
+        // Start slightly below
+        rt.anchoredPosition = targetPos + new Vector2(0, -50f);
+        rt.localScale = new Vector3(0.9f, 0.9f, 1f);
+        _dialogueGroup.alpha = 0f;
+
+        for (float t = 0; t < duration; t += Time.deltaTime)
+        {
+            float p = Mathf.Min(t / duration, 1f);
+            float smooth = p * p * (3f - 2f * p); // Smoothstep
+            rt.anchoredPosition = Vector2.Lerp(targetPos + new Vector2(0, -50f), targetPos, smooth);
+            rt.localScale = Vector3.Lerp(new Vector3(0.9f, 0.9f, 1f), Vector3.one, smooth);
+            _dialogueGroup.alpha = Mathf.Lerp(0f, 1f, smooth);
+            yield return null;
+        }
+        rt.anchoredPosition = targetPos;
+        rt.localScale = Vector3.one;
+        _dialogueGroup.alpha = 1f;
+    }
+
+    // F4: Slide + fade dialogue panel out
+    private IEnumerator AnimateDialogueOut()
+    {
+        RectTransform rt = _dialoguePanel.GetComponent<RectTransform>();
+        Vector2 startPos = rt.anchoredPosition;
+        float duration = 0.2f;
+
+        for (float t = 0; t < duration; t += Time.deltaTime)
+        {
+            float p = Mathf.Min(t / duration, 1f);
+            float smooth = p * p * (3f - 2f * p);
+            rt.anchoredPosition = Vector2.Lerp(startPos, startPos + new Vector2(0, -50f), smooth);
+            rt.localScale = Vector3.Lerp(Vector3.one, new Vector3(0.9f, 0.9f, 1f), smooth);
+            _dialogueGroup.alpha = Mathf.Lerp(1f, 0f, smooth);
+            yield return null;
+        }
+        _dialogueGroup.alpha = 0f;
+        _dialoguePanel.SetActive(false);
     }
 
     private void AdvanceDialogue()
@@ -722,6 +885,15 @@ public sealed class GameController : MonoBehaviour
             return;
         }
         _dialogueLineIndex++;
+        // F4: If closing, animate out
+        if (_activeDialogue == null || _activeDialogue.lines == null || _dialogueLineIndex >= _activeDialogue.lines.Length)
+        {
+            // Dialogue ending — animate out
+            StartCoroutine(AnimateDialogueOut());
+            _activeDialogue = null;
+            SetFeedback("Dialogue finished.");
+            return;
+        }
         RenderDialogueLine();
     }
 
@@ -730,16 +902,76 @@ public sealed class GameController : MonoBehaviour
         if (_activeDialogue == null || _activeDialogue.lines == null || _dialogueLineIndex >= _activeDialogue.lines.Length)
         {
             _activeDialogue = null;
-            _dialoguePanel.SetActive(false);
+            StartCoroutine(AnimateDialogueOut());
             SetFeedback("Dialogue finished.");
             return;
         }
 
         DialogueLine line = _activeDialogue.lines[_dialogueLineIndex];
         _dialogueSpeakerText.text = SpeakerName(line.speaker);
-        _dialogueBodyText.text = line.text;
+        _currentSpeaker = line.speaker;
+        _fullDialogueText = line.text;
+
+        // F3: Start typewriter effect
+        if (_typewriterCoroutine != null)
+        {
+            StopCoroutine(_typewriterCoroutine);
+        }
+        _dialogueBodyText.text = "";
+        _textFullyRevealed = false;
+        HideDialogueButton();
+        _typewriterCoroutine = StartCoroutine(TypewriterEffect(_fullDialogueText));
+
         _dialogueButtonText.text = _dialogueLineIndex >= _activeDialogue.lines.Length - 1 ? "Finish" : "Next";
         _dialoguePanel.SetActive(true);
+    }
+
+    // F3: Typewriter effect — reveal text one character at a time
+    private IEnumerator TypewriterEffect(string fullText)
+    {
+        _dialogueBodyText.text = "";
+        if (string.IsNullOrEmpty(fullText))
+        {
+            _textFullyRevealed = true;
+            ShowDialogueButton();
+            yield break;
+        }
+
+        float charDelay = 0.05f;
+        for (int i = 0; i < fullText.Length; i++)
+        {
+            _dialogueBodyText.text += fullText[i];
+            // Speed up when space is held
+            if (Input.GetKey(KeyCode.Space))
+            {
+                charDelay = 0.01f;
+            }
+            else
+            {
+                charDelay = 0.05f;
+            }
+            yield return new WaitForSeconds(charDelay);
+        }
+
+        _textFullyRevealed = true;
+        ShowDialogueButton();
+        _typewriterCoroutine = null;
+    }
+
+    private void HideDialogueButton()
+    {
+        if (_dialogueButtonText != null && _dialogueButtonText.transform.parent != null)
+        {
+            _dialogueButtonText.transform.parent.gameObject.SetActive(false);
+        }
+    }
+
+    private void ShowDialogueButton()
+    {
+        if (_dialogueButtonText != null && _dialogueButtonText.transform.parent != null)
+        {
+            _dialogueButtonText.transform.parent.gameObject.SetActive(true);
+        }
     }
 
     private string SpeakerName(string speakerId)
@@ -843,6 +1075,8 @@ public sealed class GameController : MonoBehaviour
         _feedbackText.color = new Color32(255, 220, 100, 255);
         _feedbackText.fontStyle = FontStyle.Bold;
         _feedbackText.fontSize = 16;
+        // F5: Result feedback sound
+        SoundManager.Play(SoundManager.SoundType.Collect);
     }
 
     // ── F7: Affection Bar Update ─────────────────────────
@@ -992,9 +1226,46 @@ public sealed class GameController : MonoBehaviour
 
     private string CurrentTimeLabel() => CurrentTime().Replace("_", " ");
 
+    // T7: Feedback fade — smoothly show and auto-hide feedback text
     private void SetFeedback(string message)
     {
         _feedbackText.text = message;
+        if (_feedbackCoroutine != null)
+        {
+            StopCoroutine(_feedbackCoroutine);
+        }
+        _feedbackCoroutine = StartCoroutine(FeedbackFade());
+    }
+
+    // T7: Fade feedback in, hold, then fade out
+    private IEnumerator FeedbackFade()
+    {
+        if (_feedbackGroup == null)
+        {
+            _feedbackGroup = _feedbackText.gameObject.GetComponent<CanvasGroup>();
+            if (_feedbackGroup == null) _feedbackGroup = _feedbackText.gameObject.AddComponent<CanvasGroup>();
+        }
+
+        // Fade in (0.15s)
+        _feedbackGroup.alpha = 0f;
+        for (float t = 0; t < 0.15f; t += Time.deltaTime)
+        {
+            _feedbackGroup.alpha = t / 0.15f;
+            yield return null;
+        }
+        _feedbackGroup.alpha = 1f;
+
+        // Hold (2s)
+        yield return new WaitForSeconds(2f);
+
+        // Fade out (0.4s)
+        for (float t = 0; t < 0.4f; t += Time.deltaTime)
+        {
+            _feedbackGroup.alpha = 1f - (t / 0.4f);
+            yield return null;
+        }
+        _feedbackGroup.alpha = 0f;
+        _feedbackCoroutine = null;
     }
 
     private void UpdateHintText()
@@ -1052,6 +1323,12 @@ public sealed class GameController : MonoBehaviour
         _dialogueSpeakerText = null;
         _dialogueBodyText = null;
         _dialogueButtonText = null;
+        _goalText1 = null;
+        _goalText2 = null;
+        _affectionBarText = null;
+        _flashOverlay = null;
+        _feedbackGroup = null;
+        _dialogueGroup = null;
     }
 
     private static void DestroyChildren(Transform parent)

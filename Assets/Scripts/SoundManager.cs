@@ -1,13 +1,17 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
 /// Generates procedural sound effects using sine/square wave synthesis.
-/// No external audio files needed.
+/// No external audio files needed. All clips are cached for performance.
 /// </summary>
 public static class SoundManager
 {
     private static AudioSource _sharedSource;
     private static bool _initialized = false;
+
+    // T1: Audio clip cache — pre-generate all clips at init
+    private static readonly Dictionary<SoundType, AudioClip> _clipCache = new Dictionary<SoundType, AudioClip>();
 
     public static void Init()
     {
@@ -18,24 +22,28 @@ public static class SoundManager
         _sharedSource = go.AddComponent<AudioSource>();
         _sharedSource.volume = 0.3f;
         Object.DontDestroyOnLoad(go);
+
+        // T1: Pre-generate all sound clips
+        _clipCache[SoundType.Walk] = GenerateClick(0.05f, 800f);
+        _clipCache[SoundType.Interact] = GenerateTone(440f, 0.15f, WaveType.Sine);
+        _clipCache[SoundType.Collect] = GenerateCollect();
+        _clipCache[SoundType.Success] = GenerateSuccess();
+        _clipCache[SoundType.Fail] = GenerateFail();
+        _clipCache[SoundType.Ambience] = GenerateHum(2f, 60f);
+        _clipCache[SoundType.UIClick] = GenerateClick(0.03f, 1000f);
+        _clipCache[SoundType.MoneyEarn] = GenerateTone(880f, 0.1f, WaveType.Sine);
+        _clipCache[SoundType.TimeAdvance] = GenerateTone(220f, 0.3f, WaveType.Sine);
+        _clipCache[SoundType.EventTrigger] = GenerateEventChime();
+        _clipCache[SoundType.Error] = GenerateFail();
     }
 
     public static void Play(SoundType type)
     {
         if (!_initialized) Init();
 
-        AudioClip clip = type switch
-        {
-            SoundType.Walk => GenerateClick(0.05f, 800f),
-            SoundType.Interact => GenerateTone(440f, 0.15f, WaveType.Sine),
-            SoundType.Collect => GenerateCollect(),
-            SoundType.Success => GenerateSuccess(),
-            SoundType.Fail => GenerateFail(),
-            SoundType.Ambience => GenerateHum(2f, 60f),
-            _ => null
-        };
-
-        if (clip != null)
+        // T1: Use cached clip
+        AudioClip clip;
+        if (_clipCache.TryGetValue(type, out clip))
         {
             _sharedSource.PlayOneShot(clip);
         }
@@ -169,6 +177,28 @@ public static class SoundManager
         return clip;
     }
 
-    public enum SoundType { Walk, Interact, Collect, Success, Fail, Ambience }
+    // F5: New event chime sound — rising two-note chime
+    private static AudioClip GenerateEventChime()
+    {
+        int sampleRate = 44100;
+        float duration = 0.5f;
+        int samples = Mathf.FloorToInt(sampleRate * duration);
+        float[] data = new float[samples];
+
+        for (int i = 0; i < samples; i++)
+        {
+            float t = (float)i / sampleRate;
+            float freq = t < duration / 2 ? 660f : 880f; // E5 then A5
+            float value = Mathf.Sin(2 * Mathf.PI * freq * t);
+            float envelope = Mathf.Clamp01(1f - (t / duration));
+            data[i] = value * envelope * 0.2f;
+        }
+
+        AudioClip clip = AudioClip.Create("EventChime", samples, 1, sampleRate, false);
+        clip.SetData(data, 0);
+        return clip;
+    }
+
+    public enum SoundType { Walk, Interact, Collect, Success, Fail, Ambience, UIClick, MoneyEarn, TimeAdvance, EventTrigger, Error }
     public enum WaveType { Sine, Square, Sawtooth, Noise }
 }

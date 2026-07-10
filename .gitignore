@@ -18,3 +18,4 @@ Recordings/
 *.opendb
 *.VC.db
 .DS_Store
+.claude/worktrees/

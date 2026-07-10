@@ -240,6 +240,9 @@ public sealed class GameController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
             {
+                // F5: Dialogue advance sound
+                SoundManager.Play(SoundManager.SoundType.UIClick);
+
                 // F3: If typewriter is still animating, finish it instantly
                 if (!_textFullyRevealed && _typewriterCoroutine != null)
                 {

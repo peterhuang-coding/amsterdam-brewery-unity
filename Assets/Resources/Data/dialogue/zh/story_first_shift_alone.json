@@ -1,0 +1,19 @@
+{
+  "id": "story_first_shift_alone",
+  "trigger": {"scene": "tweede_kans", "day": 2, "time": "evening"},
+  "prerequisite": {"bar_level": "part_time"},
+  "lines": [
+    {"speaker": "erik", "text": "Lu Jian，今天晚上我得去趟市政厅。店你帮我看两小时。", "expression": "apologetic"},
+    {"speaker": "player", "text": "我一个人？现在？", "expression": "nervous"},
+    {"speaker": "erik", "text": "别慌。七点到九点，本来就没什么客人。这是钥匙，这是收款机密码——1234。简单吧？", "expression": "reassuring"},
+    {"speaker": "erik", "text": "如果有人点酒，啤酒杯在冷冻柜里。倒酒的时候倾斜45度，不要着急。", "expression": "instructional"},
+    {"speaker": "player", "text": "如果有人点鸡尾酒呢？", "expression": "worried"},
+    {"speaker": "erik", "text": "那就告诉他调酒师不在。诚实是最好的策略。", "expression": "wry"},
+    {"speaker": "erik", "text": "我九点十五分回来。如果出了什么解决不了的事，给我打电话。", "expression": "trusting"}
+  ],
+  "choices": [
+    {"id": "confident_accept", "text": "没问题，我搞得定。", "outcome": {"erik_affection": 2, "money": 20}},
+    {"id": "careful_check", "text": "走之前能带我过一遍各种酒的价位吗？", "outcome": {"erik_affection": 1, "lore_unlock": "bar_menu"}},
+    {"id": "ask_for_help", "text": "要不让Sofie过来帮忙？她说过她以前帮过你。", "outcome": {"sofie_affection": 1, "erik_affection": 1}}
+  ]
+}

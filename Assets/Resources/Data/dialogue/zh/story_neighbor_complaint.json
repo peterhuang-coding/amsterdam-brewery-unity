@@ -1,0 +1,18 @@
+{
+  "id": "story_neighbor_complaint",
+  "trigger": {"scene": "de_pijp", "day": 2, "time": "morning"},
+  "lines": [
+    {"speaker": "sofie", "text": "早上好！昨晚睡得好吗？", "expression": "cheerful"},
+    {"speaker": "player", "text": "还行，不过隔壁好像有人在吵架？", "expression": "tired"},
+    {"speaker": "sofie", "text": "哦——那是楼下的Meneer Bakker。他抱怨你半夜关门声音太大。", "expression": "amused"},
+    {"speaker": "player", "text": "我才刚搬进来一天……", "expression": "defensive"},
+    {"speaker": "sofie", "text": "别放在心上。Bakker先生抱怨一切。去年他投诉过鸽子太吵。", "expression": "teasing"},
+    {"speaker": "sofie", "text": "不过说正经的——这门确实有点锈了。我认识一个修锁的，可以帮你调一下。", "expression": "helpful"},
+    {"speaker": "player", "text": "多少钱？", "expression": "cautious"},
+    {"speaker": "sofie", "text": "一束花换一次上门维修。公平交易。", "expression": "playful"}
+  ],
+  "choices": [
+    {"id": "accept_offer", "text": "好，成交。明天给你带花过来。", "outcome": {"sofie_affection": 2, "money": -5}},
+    {"id": "handle_myself", "text": "我自己买瓶WD-40试试。", "outcome": {"money": -3}}
+  ]
+}

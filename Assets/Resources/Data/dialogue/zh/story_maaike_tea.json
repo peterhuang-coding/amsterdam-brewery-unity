@@ -1,0 +1,17 @@
+{
+  "id": "story_maaike_tea",
+  "trigger": {"scene": "tweede_kans", "day": 3, "time": "afternoon"},
+  "lines": [
+    {"speaker": "maaike", "text": "打扰了。Erik在吗？", "expression": "tentative"},
+    {"speaker": "player", "text": "他出去进货了，应该半小时后回来。您要等他吗？", "expression": "polite"},
+    {"speaker": "maaike", "text": "嗯……那就等一会儿吧。给我一杯茶就好。不加糖。", "expression": "quiet"},
+    {"speaker": "player", "text": "好的，稍等。您和Erik是老朋友？", "expression": "casual"},
+    {"speaker": "maaike", "text": "老朋友……算是吧。我在这家店待过很多年。比你坐的那张椅子还多。", "expression": "wistful"},
+    {"speaker": "player", "text": "您是这里的常客？", "expression": "curious"},
+    {"speaker": "maaike", "text": "以前是。后来……有些事情变了。但茶的味道没变。Erik泡茶还行，酒更在行。", "expression": "bittersweet"}
+  ],
+  "choices": [
+    {"id": "offer_company", "text": "我陪您聊会儿？反正现在不忙。", "outcome": {"maaike_affection": 2, "erik_affection": 1}},
+    {"id": "give_space", "text": "好的，茶马上来。您自便。", "outcome": {"maaike_affection": 1}}
+  ]
+}

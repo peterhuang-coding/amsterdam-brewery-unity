@@ -1,0 +1,14 @@
+{
+  "id": "story_rent_reminder",
+  "trigger": {"scene": "de_pijp", "day": 1, "time": "night"},
+  "lines": [
+    {"speaker": "sofie", "text": "嘿，新邻居。第一天感觉怎么样？", "expression": "warm"},
+    {"speaker": "player", "text": "还不错。阿姆斯特丹比我想象中要热闹。", "expression": "curious"},
+    {"speaker": "sofie", "text": "热闹？你会习惯的。不过有件事得提醒你——房租。楼下信箱里有你的租赁合同，明天之前得签字。", "expression": "practical"},
+    {"speaker": "player", "text": "啊，对。差点忘了。多少钱来着？", "expression": "sheepish"},
+    {"speaker": "sofie", "text": "850欧一个月，包水电。在这个地段算良心价了。Erik介绍的房子从不坑人。", "expression": "reassuring"},
+    {"speaker": "player", "text": "Erik——那个酒吧老板？你认识他很久了？", "expression": "curious"},
+    {"speaker": "sofie", "text": "这条街上谁都认识Erik。好了，别熬夜太晚。明天才是真正的开始。", "expression": "gentle"}
+  ],
+  "choices": []
+}

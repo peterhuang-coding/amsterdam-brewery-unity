@@ -1,0 +1,15 @@
+{
+  "id": "story_morning_routine",
+  "trigger": {"scene": "de_pijp", "day": 4, "time": "morning"},
+  "lines": [
+    {"speaker": "player", "text": "（伸了个懒腰。又是新的一天。）", "expression": "tired"},
+    {"speaker": "sofie", "text": "每天早上都能看到你匆匆忙忙地走过。你今天看起来精神不错。", "expression": "warm"},
+    {"speaker": "player", "text": "昨晚睡得早。终于适应了这里的节奏。", "expression": "smiling"},
+    {"speaker": "sofie", "text": "一周就能适应阿姆斯特丹的人不多。你让我刮目相看。", "expression": "impressed"},
+    {"speaker": "player", "text": "今天实验室有组会，下午去Erik那边。你呢？", "expression": "casual"},
+    {"speaker": "sofie", "text": "我？每天早上五点半起床进货，八点摆摊，下午去花田。你问我哪天不是一样？", "expression": "amused"},
+    {"speaker": "player", "text": "听起来很辛苦。", "expression": "sympathetic"},
+    {"speaker": "sofie", "text": "习惯了就不辛苦了。就像你习惯了这里的自行车铃铛和雨天气味一样。", "expression": "wise"}
+  ],
+  "choices": []
+}

@@ -1,0 +1,19 @@
+{
+  "id": "story_business_decision",
+  "trigger": {"scene": "tweede_kans", "day": 5, "time": "morning"},
+  "lines": [
+    {"speaker": "erik", "text": "Lu Jian，坐下。有件事想听听你的意见。", "expression": "serious"},
+    {"speaker": "player", "text": "什么事？", "expression": "curious"},
+    {"speaker": "erik", "text": "对面那条街新开了一家精酿吧。你知道的，De Gouden Drank。他们的运营模式很激进。", "expression": "concerned"},
+    {"speaker": "erik", "text": "我在想——我们是不是也该做点什么。不改变的话可能会被市场淘汰。", "expression": "worried"},
+    {"speaker": "player", "text": "你的意思是？", "expression": "attentive"},
+    {"speaker": "erik", "text": "两个方向：一是翻新店面、更新菜单，吸引年轻客群。二是保持原样，靠老客人撑下去。", "expression": "pensive"},
+    {"speaker": "player", "text": "这可是个大决定。", "expression": "thoughtful"},
+    {"speaker": "erik", "text": "所以我才问你。你从外面来，看得比我清楚。", "expression": "trusting"}
+  ],
+  "choices": [
+    {"id": "recommend_renovation", "text": "翻新吧。老客人会理解，新客人会被吸引过来。", "outcome": {"erik_affection": 1, "money": -50, "unlock_system": "bar_renovation"}},
+    {"id": "recommend_tradition", "text": "保持原样。Tweede Kans的魅力就在于它不变。", "outcome": {"erik_affection": 2, "lore_unlock": "bar_tradition"}},
+    {"id": "suggest_survey", "text": "先问问常客的意见再决定。", "outcome": {"erik_affection": 1, "maaike_affection": 1, "lore_unlock": "customer_voice"}}
+  ]
+}

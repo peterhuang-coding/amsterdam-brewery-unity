@@ -1,0 +1,20 @@
+{
+  "id": "story_lab_visit",
+  "trigger": {"scene": "science_park", "day": 2, "time": "afternoon"},
+  "prerequisite": {"academic_level": "msc"},
+  "lines": [
+    {"speaker": "chen", "text": "下午有空吗？我带你看看实验室。", "expression": "neutral"},
+    {"speaker": "player", "text": "当然有空，陈老师。", "expression": "eager"},
+    {"speaker": "chen", "text": "这边走。我们实验室不大，但设备还算齐全。这台GPU集群是我们自己搭的。", "expression": "proud"},
+    {"speaker": "player", "text": "四块A100？这预算……", "expression": "surprised"},
+    {"speaker": "chen", "text": "合作项目的成果。做对齐研究没有算力寸步难行。", "expression": "matter_of_fact"},
+    {"speaker": "chen", "text": "那个角落是Pablo的博士生们，他们在做可解释性。再里面是我的小组——偏好建模和红队测试。", "expression": "professional"},
+    {"speaker": "player", "text": "我下周开始跟哪个组？", "expression": "curious"},
+    {"speaker": "chen", "text": "先都看看。别急着选方向。前两周是观察期。", "expression": "warm"},
+    {"speaker": "chen", "text": "对了，晚上的时间你自己安排。我知道你在Erik那边有份工——不影响研究工作就行。", "expression": "knowing"}
+  ],
+  "choices": [
+    {"id": "focus_alignment", "text": "我对偏好建模更感兴趣。", "outcome": {"chen_affection": 1, "academic_progress": 1}},
+    {"id": "ask_about_pablo", "text": "Pablo教授的可解释性方向听起来也很有意思。", "outcome": {"pablo_affection": 1, "lore_unlock": "lab_rivalry"}}
+  ]
+}

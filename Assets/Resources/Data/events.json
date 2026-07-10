@@ -1,100 +1,219 @@
 {
   "events": [
     {
-      "id": "first_meeting_chen",
+      "id": "day1_arrival",
+      "day": 1,
+      "time": "morning",
+      "location": "de_pijp",
+      "dialogue_id": "",
+      "summary": "Arriving at Amsterdam. A flower shop owner greets you on the bridge.",
+      "unlocks": []
+    },
+    {
+      "id": "day1_first_class",
       "day": 1,
       "time": "morning",
       "location": "science_park",
-      "dialogue_id": "chen_first_meeting"
+      "dialogue_id": "",
+      "summary": "Pablo's first lecture. He talks about toy robots and consciousness.",
+      "unlocks": []
     },
     {
-      "id": "first_class_ai_safety",
-      "day": 2,
-      "time": "morning",
-      "location": "science_park",
-      "dialogue_id": "pablo_first_class"
-    },
-    {
-      "id": "day_two_afternoon",
-      "day": 2,
+      "id": "day1_erik_intro",
+      "day": 1,
       "time": "afternoon",
-      "location": "de_pijp",
-      "dialogue_id": ""
-    },
-    {
-      "id": "first_shift_tweede_kans",
-      "day": 5,
-      "time": "evening",
       "location": "tweede_kans",
-      "dialogue_id": "erik_first_shift",
+      "dialogue_id": "",
+      "summary": "Erik introduces you to the bar. Your first shift at Tweede Kans.",
       "unlocks": ["bar"]
     },
     {
-      "id": "chen_sees_change",
+      "id": "day1_market_explore",
+      "day": 1,
+      "time": "afternoon",
+      "location": "bloemenmarkt",
+      "dialogue_id": "",
+      "summary": "Exploring the floating flower market. The colors and scents are overwhelming."
+    },
+    {
+      "id": "day1_rent_reminder",
+      "day": 1,
+      "time": "night",
+      "location": "de_pijp",
+      "dialogue_id": "story_rent_reminder",
+      "summary": "Sofie reminds you about the rent contract waiting in your mailbox."
+    },
+    {
+      "id": "day2_lab_visit",
+      "day": 2,
+      "time": "afternoon",
+      "location": "science_park",
+      "dialogue_id": "story_lab_visit",
+      "summary": "Chen gives you a tour of the lab. GPU clusters and research groups."
+    },
+    {
+      "id": "day2_first_shift_alone",
+      "day": 2,
+      "time": "evening",
+      "location": "tweede_kans",
+      "dialogue_id": "story_first_shift_alone",
+      "summary": "Erik leaves you alone to watch the bar for two hours."
+    },
+    {
+      "id": "day2_neighbor_complaint",
+      "day": 2,
+      "time": "morning",
+      "location": "de_pijp",
+      "dialogue_id": "story_neighbor_complaint",
+      "summary": "Sofie tells you about the neighbor complaining about your door noise."
+    },
+    {
+      "id": "day3_ravi_study",
+      "day": 3,
+      "time": "afternoon",
+      "location": "science_park",
+      "dialogue_id": "story_ravi_study",
+      "summary": "Ravi is panicking about Pablo's assignment. You help him find a way through."
+    },
+    {
+      "id": "day3_maaike_tea",
+      "day": 3,
+      "time": "afternoon",
+      "location": "tweede_kans",
+      "dialogue_id": "story_maaike_tea",
+      "summary": "Maaike comes looking for Erik. She orders tea and waits quietly."
+    },
+    {
+      "id": "day3_bloemenmarkt_talk",
+      "day": 3,
+      "time": "morning",
+      "location": "bloemenmarkt",
+      "dialogue_id": "story_bloemenmarkt_talk",
+      "summary": "You visit the flower market. Sofie tells you stories about her customers."
+    },
+    {
+      "id": "day4_morning_routine",
+      "day": 4,
+      "time": "morning",
+      "location": "de_pijp",
+      "dialogue_id": "story_morning_routine",
+      "summary": "A quiet morning. Sofie notices you've finally adjusted to Amsterdam's rhythm."
+    },
+    {
+      "id": "day4_pablo_class2",
+      "day": 4,
+      "time": "morning",
+      "location": "science_park",
+      "dialogue_id": "",
+      "summary": "Pablo's second lecture dives into reward misspecification. Ravi looks less lost this time."
+    },
+    {
+      "id": "day4_bar_flow",
+      "day": 4,
+      "time": "evening",
+      "location": "tweede_kans",
+      "dialogue_id": "",
+      "summary": "The bar is busier tonight. You handle orders more naturally. Erik nods approvingly."
+    },
+    {
+      "id": "day5_business_decision",
+      "day": 5,
+      "time": "morning",
+      "location": "tweede_kans",
+      "dialogue_id": "story_business_decision",
+      "summary": "Erik asks for your advice on how to handle competition from a new craft beer bar."
+    },
+    {
+      "id": "day5_de_wit_inspection",
+      "day": 5,
+      "time": "evening",
+      "location": "tweede_kans",
+      "dialogue_id": "story_de_wit_inspection",
+      "summary": "Inspector de Wit makes another visit. Someone reported a new exhaust pipe."
+    },
+    {
+      "id": "day5_sofie_close",
+      "day": 5,
+      "time": "afternoon",
+      "location": "bloemenmarkt",
+      "dialogue_id": "",
+      "summary": "Sofie is closing up early. She offers you a cutting from her favorite rose bush."
+    },
+    {
+      "id": "day6_chen_seeing_change",
+      "day": 6,
+      "time": "afternoon",
+      "location": "science_park",
+      "dialogue_id": "story_chen_seeing_change",
+      "summary": "Chen notices you've changed. She wants to see your first research direction."
+    },
+    {
+      "id": "day6_erik_trust",
+      "day": 6,
+      "time": "evening",
+      "location": "tweede_kans",
+      "dialogue_id": "",
+      "summary": "Erik tells you he's thinking about expanding the menu. He values your opinion more than he admits.",
+      "unlocks": ["bar_expansion"]
+    },
+    {
+      "id": "day6_evening_reflection",
+      "day": 6,
+      "time": "night",
+      "location": "de_pijp",
+      "dialogue_id": "story_evening_reflection",
+      "summary": "You sit by the canal and reflect on everything that happened this week."
+    },
+    {
+      "id": "day7_final_market",
+      "day": 7,
+      "time": "morning",
+      "location": "bloemenmarkt",
+      "dialogue_id": "",
+      "summary": "A final morning at the flower market. Sofie gives you a tulip bulb to remember your first week."
+    },
+    {
+      "id": "day7_lab_checkin",
       "day": 7,
       "time": "morning",
       "location": "science_park",
-      "dialogue_id": "chen_seeing_change"
-    },
-    {
-      "id": "week2_sofie_meeting",
-      "day": 8,
-      "time": "morning",
-      "location": "de_pijp",
-      "dialogue_id": "sofie_first_meeting"
-    },
-    {
-      "id": "week2_ravi_panic",
-      "day": 8,
-      "time": "afternoon",
-      "location": "science_park",
-      "dialogue_id": "ravi_study_panic"
-    },
-    {
-      "id": "week2_market_walk",
-      "day": 9,
-      "time": "morning",
-      "location": "bloemenmarkt",
       "dialogue_id": "",
-      "summary": "The floating market glitters in the morning light. Sofie waves from behind a wall of tulips."
+      "summary": "Chen signs off on your first week. She says the real work starts Monday."
     },
     {
-      "id": "week2_quiet_study",
-      "day": 9,
-      "time": "afternoon",
-      "location": "science_park",
-      "dialogue_id": "",
-      "summary": "Afternoon at the library. The silence is broken only by the coffee machine and someone's hushed phone call."
-    },
-    {
-      "id": "week2_de_wit_inspection",
-      "day": 10,
+      "id": "day7_farewell_shift",
+      "day": 7,
       "time": "evening",
       "location": "tweede_kans",
-      "dialogue_id": "de_wit_inspection"
-    },
-    {
-      "id": "week2_flower_errand",
-      "day": 11,
-      "time": "morning",
-      "location": "bloemenmarkt",
       "dialogue_id": "",
-      "summary": "Sofie's stall is busy today. She's arguing with a supplier in rapid Dutch, then switches to English to hand you a free tulip."
+      "summary": "Your last shift of the week. The regulars are in a good mood. Erik pours you a drink on the house."
     },
     {
-      "id": "week2_maaike_quiet",
-      "day": 12,
-      "time": "evening",
-      "location": "tweede_kans",
-      "dialogue_id": "maaike_quiet"
-    },
-    {
-      "id": "week2_ending",
-      "day": 14,
+      "id": "ending_good",
+      "day": 7,
       "time": "night",
       "location": "de_pijp",
       "dialogue_id": "",
-      "summary": "Your second week in Amsterdam draws to a close. The canals are quiet, the streetlights glow, and somewhere Sofie is still closing up her flower stall. Tomorrow the story continues."
+      "unlocks": ["ending_good"],
+      "summary": "The canals are quiet under the streetlights. You've built real connections this week. Sofie waves from across the bridge. Chen sent an encouraging email. Erik told you to come back Monday. Amsterdam is starting to feel like home."
+    },
+    {
+      "id": "ending_normal",
+      "day": 7,
+      "time": "night",
+      "location": "de_pijp",
+      "dialogue_id": "",
+      "unlocks": ["ending_normal"],
+      "summary": "Another week in Amsterdam passes. You did your work, kept your head down, and learned a few things about yourself. Nothing spectacular, but nothing lost either. Survival is a kind of success."
+    },
+    {
+      "id": "ending_bad",
+      "day": 7,
+      "time": "night",
+      "location": "de_pijp",
+      "dialogue_id": "",
+      "unlocks": ["ending_bad"],
+      "summary": "The week ends with a heavy silence. Too many things left unsaid. Money is tight, and the people you might have called friends feel distant. The room is cold. Tomorrow is another day, but the weight of this one lingers."
     }
   ]
 }

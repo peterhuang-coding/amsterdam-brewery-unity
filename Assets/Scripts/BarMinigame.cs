@@ -458,7 +458,7 @@ public class BarMinigame : MonoBehaviour
         // Customer image
         _customerImage = CreateImage("CustomerImage", _customerBlock.transform,
             new Vector2(0.35f, 0.25f), new Vector2(0.65f, 0.75f),
-            Vector2.zero, Vector2.zero, _guestColors[0]);
+            Vector2.zero, Vector2.zero, _guestColors[0]).GetComponent<Image>();
 
         // Guest type label (above customer)
         _guestTypeText = CreateTextOn("GuestType", _customerBlock.transform, "",

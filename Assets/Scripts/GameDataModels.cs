@@ -30,6 +30,7 @@ public sealed class StoryEvent
     public string time;
     public string location;
     public string dialogue_id;
+    public string summary;
     public string[] unlocks;
 }
 

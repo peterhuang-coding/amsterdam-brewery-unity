@@ -14,6 +14,28 @@ public sealed class GameController : MonoBehaviour
 
     private readonly string[] _timesOfDay = { "dawn", "morning", "afternoon", "evening", "night", "late_night" };
     private readonly HashSet<string> _triggeredDialogueIds = new HashSet<string>();
+
+    // ── Location POI tags (UI upgrade) ────────────────────
+    private static readonly Dictionary<string, string[]> LocationPois = new Dictionary<string, string[]>
+    {
+        { "de_pijp", new[] { "Albert Cuypmarkt", "Cafe de Jaren", "Sarphatipark", "Brouwerij 't IJ" } },
+        { "science_park", new[] { "Amsterdam Science Park", "Lab42", "Matrix Building", "Green Village" } },
+        { "tweede_kans", new[] { "Tweede Kans Bar", "Brouwerij de Prael", "De Waag", "Nieuwezijds Voorburgwal" } },
+        { "bloemenmarkt", new[] { "Singel Canal", "Royal FloraHolland", "Tulip Museum", "Leidseplein" } },
+    };
+
+    // ── Speaker colors for dialogue (UI upgrade) ──────────
+    private static readonly Dictionary<string, Color32> SpeakerColors = new Dictionary<string, Color32>
+    {
+        { "player", new Color32(100, 200, 120, 255) },
+        { "pablo", new Color32(245, 200, 80, 255) },
+        { "erik", new Color32(200, 160, 100, 255) },
+        { "sofie", new Color32(220, 140, 180, 255) },
+        { "chen", new Color32(120, 200, 220, 255) },
+        { "ravi", new Color32(220, 180, 100, 255) },
+        { "maaike", new Color32(180, 160, 200, 255) },
+        { "de_wit", new Color32(200, 80, 80, 255) },
+    };
     private readonly Dictionary<string, LocationView> _locations = new Dictionary<string, LocationView>
     {
         {
@@ -58,6 +80,12 @@ public sealed class GameController : MonoBehaviour
     private int _timeIndex;
     private int _money = 250;
     public int Money => _money;
+    public int CurrentDay => _currentDay;
+    public string CurrentTimeLabel => CurrentTime().Replace("_", " ");
+    public string CurrentLocationName => _locations.ContainsKey(_currentLocation) ? _locations[_currentLocation].title : _currentLocation;
+    public int TriggeredEventCount => _triggeredDialogueIds.Count;
+    public int BarServed => _barServed;
+    public int BarRevenue => _barRevenue;
     private string _currentLocation = "de_pijp";
 
     private bool _barOpen;
@@ -96,6 +124,13 @@ public sealed class GameController : MonoBehaviour
     private Text _hintText;
     private Image _hintBackplate;
 
+    // UI upgrade: HUD icon plate references for color transitions
+    private Image _hudBgImage;
+    private Image _timeIconPlate;
+    private Image _locIconPlate;
+    private Image _barIconPlate;
+    private Image _moneyIconPlate;
+
     // F1: Daily goals HUD
     private Text _goalText1;
     private Text _goalText2;
@@ -113,6 +148,12 @@ public sealed class GameController : MonoBehaviour
     private Text _locationTitle;
     private Text _locationDesc;
 
+    // UI upgrade: POI tags container
+    private GameObject _poiTagContainer;
+
+    // UI upgrade: speaker name bar in dialogue
+    private Image _speakerBar;
+
     // Dialogue
     private GameObject _dialoguePanel;
     private Text _dialogueSpeakerText;
@@ -128,6 +169,14 @@ public sealed class GameController : MonoBehaviour
         if (Application.isPlaying && FindAnyObjectByType<PlayerController>(FindObjectsInactive.Include) == null)
         {
             AutoBootstrap25D();
+        }
+        // Initialize new system singletons (safe to call multiple times)
+        if (Application.isPlaying)
+        {
+            var _ = InventoryUI.Instance;
+            var _c = CharacterPanel.Instance;
+            var _a = AchievementSystem.Instance;
+            var _t = TutorialSystem.Instance;
         }
     }
 
@@ -237,6 +286,23 @@ public sealed class GameController : MonoBehaviour
     // T4: Extracted input handling for readability
     private void HandleInput()
     {
+        // System panel keys (I/C/P) — check before game action keys
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (InventoryUI.Instance != null) InventoryUI.Instance.Toggle();
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            if (CharacterPanel.Instance != null) CharacterPanel.Instance.Toggle();
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            if (AchievementSystem.Instance != null) AchievementSystem.Instance.TogglePanel();
+            return;
+        }
+
         if (_activeDialogue != null)
         {
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
@@ -287,7 +353,7 @@ public sealed class GameController : MonoBehaviour
         {
             ServeCustomer();
         }
-        else if (Input.GetKeyDown(KeyCode.C))
+        else if (Input.GetKeyDown(KeyCode.F))
         {
             CloseBar();
         }
@@ -458,13 +524,13 @@ public sealed class GameController : MonoBehaviour
     private void BuildTopHud(Transform parent)
     {
         // HUD bar background
-        Image hudBg = MakeImage("HUD Background", parent, StretchTop(68, 0, 0), new Color32(10, 14, 18, 235));
+        _hudBgImage = MakeImage("HUD Background", parent, StretchTop(68, 0, 0), new Color32(10, 14, 18, 235));
 
         // Divider line
         Image divider = MakeImage("HUD Divider", parent, StretchTop(2, 0, 0, 0, 68), new Color32(255, 255, 255, 30));
 
         // Day / Time
-        MakeImage("Time Icon Plate", parent, Anchored(16, 10, 44, 44), new Color32(194, 87, 52, 140));
+        _timeIconPlate = MakeImage("Time Icon Plate", parent, Anchored(16, 10, 44, 44), new Color32(194, 87, 52, 180));
         Text timeIcon = MakeText("Time Icon", parent, Anchored(16, 10, 44, 44), 28, TextAnchor.MiddleCenter);
         timeIcon.text = "☀"; // sun
         timeIcon.alignment = TextAnchor.MiddleCenter;
@@ -473,7 +539,7 @@ public sealed class GameController : MonoBehaviour
         _timeText.text = "Day 1 / dawn";
 
         // Location
-        MakeImage("Loc Icon Plate", parent, Anchored(290, 10, 44, 44), new Color32(55, 151, 164, 120));
+        _locIconPlate = MakeImage("Loc Icon Plate", parent, Anchored(290, 10, 44, 44), new Color32(55, 151, 164, 160));
         Text locIcon = MakeText("Loc Icon", parent, Anchored(290, 10, 44, 44), 28, TextAnchor.MiddleCenter);
         locIcon.text = "⌂"; // house
         locIcon.color = new Color32(142, 223, 210, 255);
@@ -481,7 +547,7 @@ public sealed class GameController : MonoBehaviour
         _locationText.text = "De Pijp";
 
         // Bar status
-        MakeImage("Bar Icon Plate", parent, Anchored(530, 10, 44, 44), new Color32(154, 111, 45, 120));
+        _barIconPlate = MakeImage("Bar Icon Plate", parent, Anchored(530, 10, 44, 44), new Color32(154, 111, 45, 160));
         Text barIcon = MakeText("Bar Icon", parent, Anchored(530, 10, 44, 44), 28, TextAnchor.MiddleCenter);
         barIcon.text = "☕"; // coffee/beer
         barIcon.color = new Color32(233, 194, 119, 255);
@@ -489,7 +555,7 @@ public sealed class GameController : MonoBehaviour
         _barStatusText.text = "Closed  |  Served 0  |  Rev $0";
 
         // Money
-        MakeImage("Money Icon Plate", parent, Anchored(930, 10, 44, 44), new Color32(86, 125, 56, 120));
+        _moneyIconPlate = MakeImage("Money Icon Plate", parent, Anchored(930, 10, 44, 44), new Color32(86, 125, 56, 160));
         Text moneyIcon = MakeText("Money Icon", parent, Anchored(930, 10, 44, 44), 28, TextAnchor.MiddleCenter);
         moneyIcon.text = "$";
         moneyIcon.color = new Color32(160, 220, 120, 255);
@@ -528,6 +594,15 @@ public sealed class GameController : MonoBehaviour
                 new Vector2(20, -80), new Vector2(-20, -20)),
             20, TextAnchor.UpperLeft);
         _locationDesc.color = new Color32(200, 196, 186, 255);
+
+        // POI tags container (UI upgrade)
+        _poiTagContainer = new GameObject("POI Tags", typeof(RectTransform));
+        _poiTagContainer.transform.SetParent(infoPanel.transform, false);
+        RectTransform poiRT = _poiTagContainer.GetComponent<RectTransform>();
+        poiRT.anchorMin = Vector2.zero;
+        poiRT.anchorMax = Vector2.one;
+        poiRT.offsetMin = new Vector2(20, -200);
+        poiRT.offsetMax = new Vector2(-20, -90);
     }
 
     private void BuildFeedbackArea(Transform parent)
@@ -560,7 +635,7 @@ public sealed class GameController : MonoBehaviour
 
         _hintText = MakeText("Input Hint", parent, StretchBottom(58, 8, 8), 16, TextAnchor.MiddleCenter);
         _hintText.color = new Color32(180, 175, 165, 255);
-        _hintText.text = "Space: advance time / dialogue next    1 De Pijp    2 Science Park    3 Tweede Kans    4 Bloemenmarkt    B open bar    S serve    C close";
+        _hintText.text = "Space: advance time    1 De Pijp    2 Science Park    3 Tweede Kans    4 Bloemenmarkt    B open bar    S serve    F close    I inventory    C character    P achievements";
     }
 
     private void BuildDialoguePanel(Transform parent)
@@ -580,8 +655,8 @@ public sealed class GameController : MonoBehaviour
         RectTransform dlgRect = _dialoguePanel.GetComponent<RectTransform>();
         Vector2 origPos = dlgRect.anchoredPosition;
 
-        // Speaker name bar
-        Image speakerBg = MakeImage("Speaker BG", _dialoguePanel.transform,
+        // Speaker name bar (UI upgrade: store reference for color transitions)
+        _speakerBar = MakeImage("Speaker BG", _dialoguePanel.transform,
             new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(1, 1),
                 new Vector2(24, -52), new Vector2(-24, 0)),
             new Color32(194, 87, 52, 180));
@@ -639,29 +714,10 @@ public sealed class GameController : MonoBehaviour
         SetFeedback("Time moves. The city keeps its own schedule.");
         RefreshHud();
         CheckStoryEvents();
-    }
 
-    // F6: Flash screen on time advance
-    private IEnumerator FlashTransition()
-    {
-        float duration = 0.15f;
-        float half = duration / 2f;
-
-        // Flash in
-        for (float t = 0; t < half; t += Time.deltaTime)
-        {
-            _flashOverlay.alpha = Mathf.Lerp(0f, 0.35f, t / half);
-            yield return null;
-        }
-        _flashOverlay.alpha = 0.35f;
-
-        // Flash out
-        for (float t = 0; t < half; t += Time.deltaTime)
-        {
-            _flashOverlay.alpha = Mathf.Lerp(0.35f, 0f, t / half);
-            yield return null;
-        }
-        _flashOverlay.alpha = 0f;
+        // Notify tutorial
+        if (Application.isPlaying && TutorialSystem.Instance != null)
+            TutorialSystem.Instance.OnTimeAdvanced();
     }
 
     private void SwitchLocation(string locationId)
@@ -674,6 +730,14 @@ public sealed class GameController : MonoBehaviour
         CheckStoryEvents();
         // F5: Location switch sound
         SoundManager.Play(SoundManager.SoundType.UIClick);
+        // UI upgrade: animate HUD to location theme
+        AnimateHudToTheme();
+        // Notify achievement system (for explorer achievement)
+        if (Application.isPlaying && AchievementSystem.Instance != null)
+        {
+            AchievementSystem.Instance.RegisterLocationVisited(locationId);
+            TutorialSystem.Instance?.OnLocationChanged();
+        }
     }
 
     private void OpenBar()
@@ -690,6 +754,9 @@ public sealed class GameController : MonoBehaviour
         SoundManager.Play(SoundManager.SoundType.Success);
         SetFeedback("You open the bar. The first glasses wait behind the counter.");
         RefreshHud();
+        // Notify tutorial
+        if (Application.isPlaying && TutorialSystem.Instance != null)
+            TutorialSystem.Instance.OnBarOpened();
     }
 
     private void ServeCustomer()
@@ -710,6 +777,17 @@ public sealed class GameController : MonoBehaviour
         // F5: Money earn sound
         SoundManager.Play(SoundManager.SoundType.MoneyEarn);
         RefreshHud();
+        // Notify achievement and tutorial
+        if (Application.isPlaying)
+        {
+            if (AchievementSystem.Instance != null)
+            {
+                AchievementSystem.Instance.CheckFirstSale();
+                AchievementSystem.Instance.RegisterCustomerServed();
+                AchievementSystem.Instance.RegisterDailyRevenue(_barRevenue);
+            }
+            TutorialSystem.Instance?.OnCustomerServed();
+        }
     }
 
     // F8: Weather-based revenue multiplier
@@ -759,6 +837,7 @@ public sealed class GameController : MonoBehaviour
         {
             SetFeedback($"+${amount} earned.");
             SoundManager.Play(SoundManager.SoundType.MoneyEarn);
+            StartCoroutine(MoneyFlashAnimation());
         }
         else
         {
@@ -924,6 +1003,18 @@ public sealed class GameController : MonoBehaviour
         _dialogueSpeakerText.text = SpeakerName(line.speaker);
         _currentSpeaker = line.speaker;
         _fullDialogueText = line.text;
+
+        // UI upgrade: color speaker name and bar by character
+        Color32 speakerColor;
+        if (SpeakerColors.TryGetValue(line.speaker, out speakerColor))
+        {
+            _dialogueSpeakerText.color = speakerColor;
+            if (_speakerBar != null) _speakerBar.color = new Color32(
+                (byte)(speakerColor.r * 0.7f),
+                (byte)(speakerColor.g * 0.7f),
+                (byte)(speakerColor.b * 0.7f),
+                200);
+        }
 
         // F3: Start typewriter effect
         if (_typewriterCoroutine != null)
@@ -1171,6 +1262,7 @@ public sealed class GameController : MonoBehaviour
             if (_locationTitle != null) _locationTitle.text = loc.title;
             if (_locationDesc != null) _locationDesc.text = loc.subtitle;
             _feedbackText.text = "";
+            BuildPoiTags();
             return;
         }
 
@@ -1187,6 +1279,135 @@ public sealed class GameController : MonoBehaviour
         _locationDesc.text = loc.subtitle;
         _feedbackText.text = "";
         UpdateHintText();
+    }
+
+    // ── UI upgrade: POI tags ─────────────────────────────
+
+    private void BuildPoiTags()
+    {
+        if (_poiTagContainer == null) return;
+
+        // Clear existing tags
+        DestroyChildren(_poiTagContainer.transform);
+
+        string[] pois;
+        if (!LocationPois.TryGetValue(_currentLocation, out pois) || pois == null)
+            return;
+
+        LocationView loc = _locations[_currentLocation];
+        float yOffset = 0f;
+        foreach (string poi in pois)
+        {
+            GameObject tagGo = new GameObject("POI_" + poi, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            tagGo.transform.SetParent(_poiTagContainer.transform, false);
+            RectTransform tr = tagGo.GetComponent<RectTransform>();
+            tr.anchorMin = new Vector2(0, 1);
+            tr.anchorMax = new Vector2(0, 1);
+            tr.sizeDelta = new Vector2(Mathf.Min(poi.Length * 10 + 20, 200), 22);
+            tr.anchoredPosition = new Vector2(0, -yOffset);
+            tr.pivot = new Vector2(0, 1);
+            Image img = tagGo.GetComponent<Image>();
+            img.color = new Color32(loc.accent.r, loc.accent.g, loc.accent.b, 60);
+
+            // Tag text
+            GameObject textGo = new GameObject("Text", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+            textGo.transform.SetParent(tagGo.transform, false);
+            RectTransform textRt = textGo.GetComponent<RectTransform>();
+            textRt.anchorMin = Vector2.zero;
+            textRt.anchorMax = Vector2.one;
+            textRt.offsetMin = new Vector2(6, 2);
+            textRt.offsetMax = new Vector2(-6, -2);
+            Text tagText = textGo.GetComponent<Text>();
+            tagText.font = _font;
+            tagText.text = "▸ " + poi;
+            tagText.fontSize = 11;
+            tagText.color = new Color32(220, 215, 200, 200);
+            tagText.alignment = TextAnchor.MiddleLeft;
+            tagText.horizontalOverflow = HorizontalWrapMode.Overflow;
+
+            yOffset += 26f;
+        }
+    }
+
+    // ── UI upgrade: HUD theme transition ─────────────────
+
+    public void AnimateHudToTheme()
+    {
+        if (!Application.isPlaying) return;
+        if (_hudBgImage == null || _timeIconPlate == null) return;
+        StartCoroutine(AnimateHudToThemeRoutine());
+    }
+
+    private IEnumerator AnimateHudToThemeRoutine()
+    {
+        LocationView loc = _locations[_currentLocation];
+        Color targetBg = new Color32(
+            (byte)(loc.background.r * 0.6f),
+            (byte)(loc.background.g * 0.6f),
+            (byte)(loc.background.b * 0.6f),
+            235);
+        Color targetAccent = loc.accent;
+
+        Color startBg = _hudBgImage.color;
+        Color startAccent = _timeIconPlate.color;
+        float duration = 0.5f;
+
+        for (float t = 0; t < duration; t += Time.deltaTime)
+        {
+            float p = t / duration;
+            float smooth = p * p * (3f - 2f * p); // smoothstep
+
+            _hudBgImage.color = Color.Lerp(startBg, targetBg, smooth);
+            Color accentLerp = Color.Lerp(startAccent, targetAccent, smooth);
+            if (_timeIconPlate != null) _timeIconPlate.color = accentLerp;
+            if (_locIconPlate != null) _locIconPlate.color = new Color32(
+                (byte)(targetAccent.r * 0.5f), (byte)(targetAccent.g * 0.5f),
+                (byte)(targetAccent.b * 0.5f), 160);
+            if (_barIconPlate != null) _barIconPlate.color = new Color32(
+                (byte)(targetAccent.r * 0.7f), (byte)(targetAccent.g * 0.7f),
+                (byte)(targetAccent.b * 0.7f), 160);
+            if (_moneyIconPlate != null) _moneyIconPlate.color = new Color32(
+                (byte)(targetAccent.r * 0.4f), (byte)(targetAccent.g * 0.4f),
+                (byte)(targetAccent.b * 0.4f), 160);
+            yield return null;
+        }
+
+        _hudBgImage.color = targetBg;
+    }
+
+    // ── UI upgrade: Flash transition ─────────────────────
+
+    private IEnumerator FlashTransition()
+    {
+        if (_flashOverlay == null) yield break;
+        float half = 0.075f;
+        _flashOverlay.alpha = 0f;
+        for (float t = 0; t < half; t += Time.deltaTime)
+        {
+            float p = t / half;
+            _flashOverlay.alpha = p * p;
+            yield return null;
+        }
+        _flashOverlay.alpha = 1f;
+        for (float t = 0; t < half; t += Time.deltaTime)
+        {
+            float p = t / half;
+            _flashOverlay.alpha = 1f - p * p;
+            yield return null;
+        }
+        _flashOverlay.alpha = 0f;
+    }
+
+    // ── UI upgrade: Money flash animation ────────────────
+
+    private IEnumerator MoneyFlashAnimation()
+    {
+        if (_moneyText == null) yield break;
+        Color origColor = _moneyText.color;
+        _moneyText.color = new Color32(255, 220, 80, 255);
+        _moneyText.fontStyle = FontStyle.Bold;
+        yield return new WaitForSeconds(0.15f);
+        _moneyText.color = origColor;
     }
 
     private void RefreshHud()
@@ -1350,6 +1571,13 @@ public sealed class GameController : MonoBehaviour
         _flashOverlay = null;
         _feedbackGroup = null;
         _dialogueGroup = null;
+        _hudBgImage = null;
+        _timeIconPlate = null;
+        _locIconPlate = null;
+        _barIconPlate = null;
+        _moneyIconPlate = null;
+        _poiTagContainer = null;
+        _speakerBar = null;
     }
 
     private static void DestroyChildren(Transform parent)

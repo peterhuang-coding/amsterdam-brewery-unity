@@ -808,10 +808,10 @@ public class BarMinigame : MonoBehaviour
         GameController.Instance.AddMoney(grossRevenue);
 
         // Wait a beat, then build settlement
-        StartCoroutine(ShowSettlementUI(netIncome, grossRevenue, stars, servedCustomers, totalCustomers));
+        StartCoroutine(ShowSettlementUI(netIncome, grossRevenue, stars, servedCustomers, totalCustomers, accuracy));
     }
 
-    private IEnumerator ShowSettlementUI(int netIncome, int grossRevenue, int stars, int served, int total)
+    private IEnumerator ShowSettlementUI(int netIncome, int grossRevenue, int stars, int served, int total, float accuracy)
     {
         // Fade out serve panel
         if (_panel != null)
@@ -842,23 +842,28 @@ public class BarMinigame : MonoBehaviour
             new Vector2(0, -50), new Vector2(0, -10),
             24, TextAnchor.MiddleCenter, FontStyle.Bold, GoldColor);
 
-        // Star rating
+        // Star rating (colored text stars for compatibility)
         string starString = "";
         for (int i = 0; i < 5; i++)
-            starString += (i < stars) ? "⭐" : "☆";
+            starString += (i < stars) ? "★" : "☆";
+        Color32 starColor = stars >= 4 ? new Color32(255, 215, 0, 255) :
+                           stars >= 3 ? new Color32(255, 200, 80, 255) :
+                           stars >= 2 ? new Color32(220, 180, 100, 255) :
+                                        new Color32(180, 160, 140, 255);
         _ = CreateTextOn("StarRating", settlePanel.transform, starString,
             new Vector2(0, 1), new Vector2(1, 1),
             new Vector2(0, -80), new Vector2(0, -56),
-            22, TextAnchor.MiddleCenter, FontStyle.Normal, GoldColor);
+            24, TextAnchor.MiddleCenter, FontStyle.Normal, starColor);
 
         // Data rows
         float rowY = 0.72f;
         float rowH = 0.06f;
 
         CreateDataRow(settlePanel.transform, "Customers Served", $"{served} / {total}", rowY, rowH, WarmText, GoldColor);
-        CreateDataRow(settlePanel.transform, "Revenue", $"${_earnings}", rowY - 0.08f, rowH, WarmText, new Color32(200, 200, 180, 255));
-        CreateDataRow(settlePanel.transform, "Tips", $"${_tips}", rowY - 0.16f, rowH, WarmText, new Color32(200, 200, 180, 255));
-        CreateDataRow(settlePanel.transform, "Stock Cost", $"${_stockingCost}", rowY - 0.24f, rowH, WarmText, new Color32(200, 200, 180, 255));
+        CreateDataRow(settlePanel.transform, "Revenue", $"${_earnings}", rowY - 0.08f, rowH, WarmText, new Color32(160, 220, 120, 255));
+        CreateDataRow(settlePanel.transform, "Tips", $"${_tips}", rowY - 0.16f, rowH, WarmText, new Color32(220, 200, 120, 255));
+        CreateDataRow(settlePanel.transform, "Stock Cost", $"${_stockingCost}", rowY - 0.24f, rowH, WarmText, new Color32(220, 140, 120, 255));
+        CreateDataRow(settlePanel.transform, "Accuracy", $"{(accuracy * 100):F0}%", rowY - 0.32f, rowH, WarmText, new Color32(180, 200, 220, 255));
 
         // Separator line
         _ = CreateBar("Separator", settlePanel.transform,

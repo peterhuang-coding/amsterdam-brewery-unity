@@ -29,12 +29,18 @@ REQUIRED_FILES = [
     "Assets/Scripts/README.md",
     "Assets/Resources/Data/characters.json",
     "Assets/Resources/Data/events.json",
-    "Assets/Resources/Data/dialogue/zh/pablo_first_class.json",
-    "Assets/Resources/Data/dialogue/zh/erik_first_shift.json",
-    "Assets/Resources/Data/dialogue/zh/sofie_first_meeting.json",
-    "Assets/Resources/Data/dialogue/zh/ravi_study_panic.json",
-    "Assets/Resources/Data/dialogue/zh/de_wit_inspection.json",
-    "Assets/Resources/Data/dialogue/zh/maaike_quiet.json",
+    "Assets/Resources/Data/dialogue/zh/story_rent_reminder.json",
+    "Assets/Resources/Data/dialogue/zh/story_lab_visit.json",
+    "Assets/Resources/Data/dialogue/zh/story_first_shift_alone.json",
+    "Assets/Resources/Data/dialogue/zh/story_neighbor_complaint.json",
+    "Assets/Resources/Data/dialogue/zh/story_ravi_study.json",
+    "Assets/Resources/Data/dialogue/zh/story_maaike_tea.json",
+    "Assets/Resources/Data/dialogue/zh/story_bloemenmarkt_talk.json",
+    "Assets/Resources/Data/dialogue/zh/story_morning_routine.json",
+    "Assets/Resources/Data/dialogue/zh/story_business_decision.json",
+    "Assets/Resources/Data/dialogue/zh/story_de_wit_inspection.json",
+    "Assets/Resources/Data/dialogue/zh/story_chen_seeing_change.json",
+    "Assets/Resources/Data/dialogue/zh/story_evening_reflection.json",
 ]
 
 TIMES_OF_DAY = {"dawn", "morning", "afternoon", "evening", "night", "late_night"}
@@ -154,14 +160,14 @@ def check_data_schema() -> None:
         dialogue_id = event.get("dialogue_id")
         if dialogue_id is not None and dialogue_id != "" and dialogue_id not in dialogue_ids:
             fail(f"event {event_id}: unknown dialogue_id {dialogue_id}")
-        if event.get("day") == 2 and event.get("time") == "morning" and event.get("location") == "science_park":
-            saw_pablo = dialogue_id == "pablo_first_class"
+        if event.get("day") == 2 and event.get("time") == "evening" and event.get("location") == "tweede_kans":
+            saw_pablo = dialogue_id == "story_first_shift_alone"
         if event.get("day") == 5 and event.get("time") == "evening" and event.get("location") == "tweede_kans":
-            saw_erik = dialogue_id == "erik_first_shift"
+            saw_erik = dialogue_id == "story_de_wit_inspection"
     if not saw_pablo:
-        fail("missing smoke event: day 2 morning science_park -> pablo_first_class")
+        fail("missing smoke event: day 2 evening tweede_kans -> story_first_shift_alone")
     if not saw_erik:
-        fail("missing smoke event: day 5 evening tweede_kans -> erik_first_shift")
+        fail("missing smoke event: day 5 evening tweede_kans -> story_de_wit_inspection")
 
 
 def check_script_contracts() -> None:
@@ -174,7 +180,9 @@ def check_script_contracts() -> None:
         "KeyCode.Alpha4",
         "KeyCode.B",
         "KeyCode.S",
-        "KeyCode.C",
+        "KeyCode.F",
+        "KeyCode.I",
+        "KeyCode.P",
         "ShowDialogue",
         "CheckStoryEvents",
         "ServeCustomer",

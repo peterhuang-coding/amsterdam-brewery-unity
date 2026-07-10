@@ -198,3 +198,23 @@ public static class DataLoader
         return JsonUtility.FromJson<CustomerDatabase>(asset.text);
     }
 }
+
+// ── Achievement and Tutorial models (new systems) ────
+
+[Serializable]
+public sealed class Achievement
+{
+    public string id;
+    public string title;
+    public string description;
+    public bool unlocked;
+}
+
+[Serializable]
+public sealed class TutorialStep
+{
+    public string id;
+    public string message;
+    public string inputKey;
+    public bool completed;
+}

@@ -176,6 +176,137 @@ public static class SceneVisuals
         PlaceTile(parent, $"{name}_3", x + w * 0.2f, y, w * 0.4f, h * 0.8f, cloudColor);
     }
 
+    // ── New helpers for enhanced visuals ──
+
+    private static void PlaceBird(GameObject parent, string name, float x, float y)
+    {
+        // Small V-shaped bird using two small tiles
+        PlaceTile(parent, $"{name}_WingL", x - 0.15f, y, 0.2f, 0.08f, new Color32(50, 50, 55, 180));
+        PlaceTile(parent, $"{name}_WingR", x + 0.15f, y, 0.2f, 0.08f, new Color32(50, 50, 55, 180));
+        PlaceTile(parent, $"{name}_Body", x, y + 0.02f, 0.06f, 0.06f, new Color32(60, 60, 65, 200));
+    }
+
+    private static void PlaceBridge(GameObject parent, string name, float x, float y, float width)
+    {
+        // Arch bridge made of multiple tiles
+        float half = width * 0.5f;
+        // Deck
+        PlaceTile(parent, $"{name}_Deck", x, y, width, 0.15f, new Color32(140, 115, 85, 255));
+        // Railings
+        PlaceTile(parent, $"{name}_RailingL", x - half + 0.2f, y + 0.2f, 0.08f, 0.25f, new Color32(90, 75, 55, 255));
+        PlaceTile(parent, $"{name}_RailingR", x + half - 0.2f, y + 0.2f, 0.08f, 0.25f, new Color32(90, 75, 55, 255));
+        // Arch posts
+        PlaceTile(parent, $"{name}_PostL", x - half, y - 0.1f, 0.15f, 0.3f, new Color32(120, 95, 65, 255));
+        PlaceTile(parent, $"{name}_PostR", x + half, y - 0.1f, 0.15f, 0.3f, new Color32(120, 95, 65, 255));
+        // Arch curve (simplified)
+        PlaceTile(parent, $"{name}_ArchL", x - half * 0.5f, y + 0.35f, 0.5f, 0.08f, new Color32(130, 105, 75, 180));
+        PlaceTile(parent, $"{name}_ArchR", x + half * 0.5f, y + 0.35f, 0.5f, 0.08f, new Color32(130, 105, 75, 180));
+    }
+
+    private static void PlaceWindmill(GameObject parent, string name, float x, float y, float scale)
+    {
+        // Windmill as a distant landmark using tile combinations
+        float s = scale;
+        // Base tower
+        PlaceTile(parent, $"{name}_Tower", x, y, 0.6f * s, 1.2f * s, new Color32(130, 110, 90, 255));
+        PlaceTile(parent, $"{name}_TowerTop", x, y + 0.6f * s, 0.7f * s, 0.15f * s, new Color32(150, 125, 100, 255));
+        // Cap (conical-ish, using stepped tiles)
+        PlaceTile(parent, $"{name}_Cap1", x, y + 0.75f * s, 0.5f * s, 0.1f * s, new Color32(100, 80, 60, 255));
+        PlaceTile(parent, $"{name}_Cap2", x, y + 0.85f * s, 0.35f * s, 0.1f * s, new Color32(90, 70, 50, 255));
+        PlaceTile(parent, $"{name}_Cap3", x, y + 0.95f * s, 0.2f * s, 0.1f * s, new Color32(80, 60, 40, 255));
+        // Blades (cross shape using thin tiles)
+        PlaceTile(parent, $"{name}_BladeH", x + 0.35f * s, y + 0.65f * s, 0.5f * s, 0.04f * s, new Color32(180, 180, 180, 150));
+        PlaceTile(parent, $"{name}_BladeV", x, y + 0.8f * s, 0.04f * s, 0.4f * s, new Color32(180, 180, 180, 150));
+    }
+
+    private static void PlaceBoat(GameObject parent, string name, float x, float y, float width)
+    {
+        // Small boat on water
+        float h = width * 0.3f;
+        PlaceTile(parent, $"{name}_Hull", x, y, width, h, new Color32(80, 55, 35, 255));
+        PlaceTile(parent, $"{name}_HullTop", x, y + h * 0.4f, width * 0.8f, h * 0.2f, new Color32(100, 70, 45, 255));
+        PlaceTile(parent, $"{name}_Mast", x, y + h * 0.6f, 0.05f, h * 0.6f, new Color32(60, 40, 20, 255));
+        // Sail
+        PlaceTile(parent, $"{name}_Sail", x + width * 0.15f, y + h * 0.7f, width * 0.25f, h * 0.5f, new Color32(220, 215, 200, 180));
+    }
+
+    private static void PlaceBikeRack(GameObject parent, string name, float x, float y)
+    {
+        // Small bike rack cluster
+        for (int i = 0; i < 3; i++)
+        {
+            float bx = x + (i - 1) * 0.25f;
+            PlaceTile(parent, $"{name}_Bike{i}", bx, y, 0.15f, 0.25f, new Color32(60, 60, 75, 255));
+            PlaceTile(parent, $"{name}_Wheel{i}", bx - 0.08f, y - 0.12f, 0.1f, 0.1f, new Color32(50, 50, 60, 255));
+            PlaceTile(parent, $"{name}_Wheel{i}_R", bx + 0.08f, y - 0.12f, 0.1f, 0.1f, new Color32(50, 50, 60, 255));
+        }
+    }
+
+    private static void PlaceMarketStall(GameObject parent, string name, float x, float y, float width, Color32 canopyColor)
+    {
+        float h = width * 0.5f;
+        // Canopy
+        PlaceTile(parent, $"{name}_Canopy", x, y + h * 0.3f, width, h * 0.3f, canopyColor);
+        // Counter
+        PlaceTile(parent, $"{name}_Counter", x, y - h * 0.1f, width * 0.9f, h * 0.25f, new Color32(140, 105, 70, 255));
+        // Posts
+        PlaceTile(parent, $"{name}_PostL", x - width * 0.4f, y - h * 0.1f, 0.08f, h * 0.6f, new Color32(90, 65, 40, 255));
+        PlaceTile(parent, $"{name}_PostR", x + width * 0.4f, y - h * 0.1f, 0.08f, h * 0.6f, new Color32(90, 65, 40, 255));
+        // Goods on counter (small colored squares)
+        PlaceTile(parent, $"{name}_Goods1", x - width * 0.15f, y - h * 0.05f, 0.1f, 0.08f, new Color32(240, 200, 80, 255));
+        PlaceTile(parent, $"{name}_Goods2", x, y - h * 0.03f, 0.12f, 0.08f, new Color32(220, 80, 120, 255));
+        PlaceTile(parent, $"{name}_Goods3", x + width * 0.15f, y - h * 0.05f, 0.1f, 0.06f, new Color32(80, 200, 120, 255));
+    }
+
+    private static void PlaceInteractiveMarker(GameObject parent, string name, float x, float y)
+    {
+        // Glowing golden marker for interactable points
+        PlaceTile(parent, $"{name}_OuterGlow", x, y, 0.7f, 0.7f, new Color32(255, 220, 80, 20));
+        PlaceTile(parent, $"{name}_InnerGlow", x, y, 0.5f, 0.5f, new Color32(255, 200, 60, 40));
+        PlaceTile(parent, $"{name}_Marker", x, y, 0.3f, 0.3f, new Color32(255, 180, 40, 200));
+    }
+
+    private static void PlaceFootstepGlow(GameObject parent, string name, float x, float y)
+    {
+        // Subtle circular glow under player feet
+        PlaceTile(parent, $"{name}_Glow", x, y - 0.05f, 0.5f, 0.15f, new Color32(255, 220, 150, 15));
+    }
+
+    private static void PlaceCanalRipple(GameObject parent, string name, float x, float y)
+    {
+        // Canal ripple effect using small offset tiles
+        PlaceTile(parent, $"{name}_1", x, y, 0.8f, 0.04f, new Color32(100, 200, 240, 30));
+        PlaceTile(parent, $"{name}_2", x + 0.15f, y - 0.05f, 0.6f, 0.03f, new Color32(100, 200, 240, 20));
+        PlaceTile(parent, $"{name}_3", x - 0.1f, y + 0.04f, 0.5f, 0.02f, new Color32(100, 200, 240, 15));
+    }
+
+    private static void PlacePavementDetail(GameObject parent, string name, float x, float y, float width, float height)
+    {
+        // Cobblestone pavement detail tile with grid pattern
+        PlaceTile(parent, $"{name}_Base", x, y, width, height, new Color32(155, 150, 140, 255));
+        float cellW = width / 4f;
+        float cellH = height / 3f;
+        for (int r = 0; r < 3; r++)
+        {
+            for (int c = 0; c < 4; c++)
+            {
+                float cx = x - width * 0.5f + cellW * (c + 0.5f);
+                float cy = y - height * 0.5f + cellH * (r + 0.5f);
+                PlaceTile(parent, $"{name}_Stone_{r}_{c}", cx, cy, cellW * 0.85f, cellH * 0.85f, new Color32(160, 155, 145, 255));
+            }
+        }
+    }
+
+    private static void PlaceOutdoorTable(GameObject parent, string name, float x, float y)
+    {
+        // Small outdoor table with chair indicators
+        PlaceTile(parent, $"{name}_Table", x, y, 0.4f, 0.4f, new Color32(80, 60, 40, 255));
+        PlaceTile(parent, $"{name}_ChairT", x, y + 0.3f, 0.25f, 0.1f, new Color32(100, 80, 55, 255));
+        PlaceTile(parent, $"{name}_ChairB", x, y - 0.3f, 0.25f, 0.1f, new Color32(100, 80, 55, 255));
+        PlaceTile(parent, $"{name}_ChairL", x - 0.3f, y, 0.1f, 0.25f, new Color32(100, 80, 55, 255));
+        PlaceTile(parent, $"{name}_ChairR", x + 0.3f, y, 0.1f, 0.25f, new Color32(100, 80, 55, 255));
+    }
+
     public static GameObject BuildScene(string locationId, Transform parent)
     {
         GameObject scene = new GameObject($"Scene_{locationId}");
@@ -232,10 +363,11 @@ public static class SceneVisuals
 
     private static void BuildDePijp(GameObject parent)
     {
-        // Sidewalk (front)
-        PlaceTile(parent, "Sidewalk", 0, -3.2f, 20, 1.2f, new Color32(150, 145, 135, 255));
-        // Sidewalk detail line
-        PlaceTile(parent, "SidewalkLine", 0, -3.8f, 20, 0.08f, new Color32(130, 125, 115, 255));
+        // Ground base
+        PlaceTile(parent, "GroundBase", 0, -3.5f, 22, 6f, new Color32(140, 135, 125, 255));
+
+        // Pavement detail (front sidewalk)
+        PlacePavementDetail(parent, "Pavement", 0, -3.2f, 20, 1.2f);
 
         // Street / cobblestone
         PlaceTile(parent, "Street", 0, -1.5f, 20, 1.6f, new Color32(65, 60, 55, 255));
@@ -245,6 +377,21 @@ public static class SceneVisuals
             PlaceTile(parent, $"Cobble_{i}", -8 + i * 1.8f, -1.5f, 0.8f, 0.8f, new Color32(72, 66, 60, 200));
         }
 
+        // Market building (large centerpiece)
+        PlaceTile(parent, "MarketBldg", 0, 1f, 5f, 4f, new Color32(160, 110, 80, 255));
+        PlaceTile(parent, "MarketRoof", 0, 3.8f, 5.5f, 0.5f, new Color32(100, 65, 40, 255));
+        PlaceTile(parent, "MarketRoofPeak", 0, 4.3f, 3f, 0.3f, new Color32(80, 50, 30, 255));
+        // Market entrance (large arch)
+        PlaceTile(parent, "MarketArch", 0, -0.5f, 1.5f, 1.8f, new Color32(100, 65, 40, 255));
+        PlaceTile(parent, "MarketDoor", 0, -0.5f, 0.8f, 1.2f, new Color32(55, 35, 20, 255));
+        // Market windows
+        PlaceTile(parent, "MarketWinL", -1.5f, 1.5f, 0.8f, 0.8f, new Color32(255, 230, 150, 180));
+        PlaceTile(parent, "MarketWinR", 1.5f, 1.5f, 0.8f, 0.8f, new Color32(255, 230, 150, 180));
+
+        // Market stalls (front of market)
+        PlaceMarketStall(parent, "Stall1", -2.2f, -0.5f, 0.8f, new Color32(200, 80, 60, 255));
+        PlaceMarketStall(parent, "Stall2", 2.2f, -0.5f, 0.8f, new Color32(60, 160, 200, 255));
+
         // Canal (background)
         PlaceTile(parent, "Canal", 0, 2.5f, 20, 2f, new Color32(45, 100, 150, 220));
         // Canal reflection lines
@@ -253,32 +400,41 @@ public static class SceneVisuals
             PlaceTile(parent, $"Reflect_{i}", -8 + i * 3f, 2.5f + (i % 2 == 0 ? 0.3f : -0.3f),
                 1.5f, 0.06f, new Color32(80, 180, 220, 50));
         }
+        // Canal ripples
+        PlaceCanalRipple(parent, "Ripple1", -5, 2.5f);
+        PlaceCanalRipple(parent, "Ripple2", 0, 2.8f);
+        PlaceCanalRipple(parent, "Ripple3", 5, 2.3f);
 
-        // Buildings (left row)
+        // Bridge over canal
+        PlaceBridge(parent, "Bridge", 0, 2.5f, 3f);
+
+        // Buildings (left row - residential)
         Color32 brickColor = new Color32(130, 85, 65, 255);
         PlaceTile(parent, "Bldg1", -6, 0.5f, 3.2f, 3.5f, brickColor);
         PlaceTile(parent, "Bldg2", -3, 0.8f, 2.8f, 3f, new Color32(140, 95, 75, 255));
-        PlaceTile(parent, "Bldg3", 0, 0.3f, 3.2f, 3.8f, new Color32(120, 80, 60, 255));
         PlaceTile(parent, "Bldg4", 3, 0.5f, 3.2f, 3.5f, brickColor);
+        // Additional buildings right side
+        PlaceTile(parent, "Bldg5", 6, 0.3f, 2.8f, 3.2f, new Color32(120, 80, 60, 255));
 
         // Building roofs
         PlaceTile(parent, "Roof1", -6, 3.8f, 3.6f, 0.4f, new Color32(70, 45, 25, 255));
         PlaceTile(parent, "Roof2", -3, 3.5f, 3.2f, 0.4f, new Color32(75, 48, 28, 255));
-        PlaceTile(parent, "Roof3", 0, 4f, 3.6f, 0.4f, new Color32(65, 42, 22, 255));
         PlaceTile(parent, "Roof4", 3, 3.8f, 3.6f, 0.4f, new Color32(70, 45, 25, 255));
+        PlaceTile(parent, "Roof5", 6, 3.2f, 3.2f, 0.4f, new Color32(65, 42, 22, 255));
 
         // Windows (warm lit)
         Color32 windowLit = new Color32(255, 220, 100, 220);
         Color32 windowDim = new Color32(100, 80, 60, 100);
-        for (int b = 0; b < 4; b++)
+        float[] bxs = { -6, -3, 3, 6 };
+        for (int bi = 0; bi < bxs.Length; bi++)
         {
-            float bx = -6 + b * 3;
+            float bx = bxs[bi];
             for (int row = 0; row < 2; row++)
             {
                 for (int col = 0; col < 2; col++)
                 {
-                    bool lit = (b + row + col) % 2 == 0;
-                    PlaceTile(parent, $"Win_{b}_{row}_{col}",
+                    bool lit = (bi + row + col) % 2 == 0;
+                    PlaceTile(parent, $"Win_{bi}_{row}_{col}",
                         bx - 0.8f + col * 1.6f, 1.5f + row * 1.2f,
                         0.5f, 0.6f, lit ? windowLit : windowDim);
                 }
@@ -287,17 +443,42 @@ public static class SceneVisuals
 
         // Doors
         PlaceTile(parent, "Door1", -6, -1.5f, 0.7f, 1f, new Color32(55, 35, 20, 255));
-        PlaceTile(parent, "Door2", 0, -1.8f, 0.7f, 1f, new Color32(55, 35, 20, 255));
-        PlaceTile(parent, "Door3", 3, -1.5f, 0.7f, 1f, new Color32(55, 35, 20, 255));
+        PlaceTile(parent, "Door2", 3, -1.5f, 0.7f, 1f, new Color32(55, 35, 20, 255));
+        PlaceTile(parent, "Door3", 6, -1.2f, 0.7f, 1f, new Color32(55, 35, 20, 255));
 
-        // Street lamps
+        // Bike racks (near market)
+        PlaceBikeRack(parent, "BikeRack1", -4.5f, -2.8f);
+        PlaceBikeRack(parent, "BikeRack2", 4.5f, -2.8f);
+
+        // Street lamps (sequence along street)
         PlaceLamp(parent, "Lamp1", -7, -2.5f);
-        PlaceLamp(parent, "Lamp2", 6, -2.5f);
+        PlaceLamp(parent, "Lamp2", -3.5f, -2.5f);
+        PlaceLamp(parent, "Lamp3", 0.5f, -2.5f);
+        PlaceLamp(parent, "Lamp4", 4.5f, -2.5f);
+        PlaceLamp(parent, "Lamp5", 7.5f, -2.5f);
 
-        // Trees
-        PlaceTree(parent, "Tree1", -7.5f, -2f);
-        PlaceTree(parent, "Tree2", 7.5f, -2f);
-        PlaceTree(parent, "Tree3", -7.5f, 0.5f);
+        // Trees forming avenue
+        PlaceTree(parent, "Tree1", -8.5f, -2f);
+        PlaceTree(parent, "Tree2", -6f, -2f);
+        PlaceTree(parent, "Tree3", 6f, -2f);
+        PlaceTree(parent, "Tree4", 8.5f, -2f);
+        PlaceTree(parent, "Tree5", -8.5f, 0.5f);
+        PlaceTree(parent, "Tree6", 8.5f, 0.5f);
+
+        // Interactive markers
+        PlaceInteractiveMarker(parent, "InteractMarket", 0, -1f);
+        PlaceInteractiveMarker(parent, "InteractBridge", 0, 2.8f);
+
+        // Player footstep glow
+        PlaceFootstepGlow(parent, "FootstepGlow", 0, -1f);
+
+        // Birds
+        PlaceBird(parent, "Bird1", -2, 5.5f);
+        PlaceBird(parent, "Bird2", 4, 5.8f);
+        PlaceBird(parent, "Bird3", -6, 5f);
+
+        // Boat on canal
+        PlaceBoat(parent, "Boat1", -4, 3.2f, 0.8f);
 
         // Clouds
         PlaceCloud(parent, "Cloud1", -5, 5.2f, 3, 0.5f);
@@ -317,28 +498,57 @@ public static class SceneVisuals
             float gx = -7 + i * 3.5f;
             PlaceTile(parent, $"GrassPatch_{i}", gx, -1.5f, 1.2f, 0.8f, new Color32(60, 85, 55, 200));
         }
-
-        // Main building
-        PlaceTile(parent, "MainBldg", -1.5f, 1f, 6, 3.5f, new Color32(175, 175, 185, 255));
-        // Building accent stripe
-        PlaceTile(parent, "BldgAccent", -1.5f, 3f, 6.2f, 0.15f, new Color32(120, 120, 130, 255));
-        // Building roof
-        PlaceTile(parent, "BldgRoof", -1.5f, 4.2f, 6.4f, 0.35f, new Color32(100, 100, 110, 255));
-
-        // Windows (bright academic)
-        for (int row = 0; row < 2; row++)
+        // Grass texture stripes
+        for (int i = 0; i < 8; i++)
         {
-            for (int col = 0; col < 4; col++)
+            PlaceTile(parent, $"GrassStripe_{i}", -8 + i * 2.2f, -1.5f, 0.6f, 2.8f, new Color32(50, 70, 45, 80));
+        }
+
+        // Bicycle lane (red path through campus)
+        PlaceTile(parent, "BikeLane", -5, -1.5f, 1.5f, 3f, new Color32(140, 50, 50, 220));
+        PlaceTile(parent, "BikeLane2", 5, -1.5f, 1.5f, 3f, new Color32(140, 50, 50, 220));
+        // Bike lane markings
+        for (int i = 0; i < 4; i++)
+        {
+            float by = -2.5f + i * 1.5f;
+            PlaceTile(parent, $"BikeMark_{i}", -5, by, 0.06f, 0.3f, new Color32(255, 255, 255, 120));
+            PlaceTile(parent, $"BikeMark2_{i}", 5, by, 0.06f, 0.3f, new Color32(255, 255, 255, 120));
+        }
+
+        // Main building (glass curtain wall style - cyan/blue)
+        PlaceTile(parent, "MainBldg", -1.5f, 1f, 6, 3.5f, new Color32(100, 170, 200, 255));
+        // Glass panels (cyan-tinted)
+        for (int row = 0; row < 3; row++)
+        {
+            for (int col = 0; col < 5; col++)
             {
-                PlaceTile(parent, $"BldgWin_{row}_{col}",
-                    -3.5f + col * 1.6f, 1.5f + row * 1.2f,
-                    0.5f, 0.7f, new Color32(190, 230, 255, 220));
+                PlaceTile(parent, $"Glass_{row}_{col}",
+                    -3.2f + col * 1.3f, 0.5f + row * 1f,
+                    0.4f, 0.4f, new Color32(140, 210, 230, 120));
+                // Glass highlight
+                PlaceTile(parent, $"GlassHL_{row}_{col}",
+                    -3.2f + col * 1.3f + 0.1f, 0.5f + row * 1f + 0.1f,
+                    0.15f, 0.15f, new Color32(200, 240, 255, 50));
             }
         }
+        // Building accent stripe
+        PlaceTile(parent, "BldgAccent", -1.5f, 3f, 6.2f, 0.15f, new Color32(60, 120, 150, 255));
+        // Building roof
+        PlaceTile(parent, "BldgRoof", -1.5f, 4.2f, 6.4f, 0.35f, new Color32(50, 100, 130, 255));
 
         // Entrance
         PlaceTile(parent, "Entrance", -1.5f, -0.5f, 1.5f, 0.8f, new Color32(60, 80, 100, 255));
         PlaceTile(parent, "EntranceDoor", -1.5f, -0.5f, 0.6f, 0.8f, new Color32(40, 55, 70, 255));
+
+        // Lab building (side)
+        PlaceTile(parent, "LabBldg", -6, 0.5f, 3f, 2.8f, new Color32(180, 180, 190, 255));
+        PlaceTile(parent, "LabRoof", -6, 2.9f, 3.2f, 0.25f, new Color32(120, 120, 130, 255));
+        PlaceTile(parent, "LabAccent", -6, 1.5f, 0.08f, 2.5f, new Color32(200, 80, 60, 255));
+        // Lab windows
+        for (int i = 0; i < 4; i++)
+        {
+            PlaceTile(parent, $"LabWin_{i}", -6.8f + i * 0.8f, 1.5f, 0.3f, 0.4f, new Color32(150, 200, 230, 200));
+        }
 
         // Lecture hall
         PlaceTile(parent, "LectureHall", 4, 0.5f, 3.5f, 2.5f, new Color32(160, 155, 165, 255));
@@ -348,7 +558,21 @@ public static class SceneVisuals
             PlaceTile(parent, $"LHWin_{i}", 4.3f + i * 0.8f, 1.5f, 0.4f, 0.6f, new Color32(180, 220, 255, 200));
         }
 
-        // Bike racks
+        // Science sculpture / art installation
+        PlaceTile(parent, "SculptureBase", 0, -1f, 1.5f, 0.2f, new Color32(120, 120, 130, 255));
+        PlaceTile(parent, "SculpturePole", 0, -0.2f, 0.15f, 1.2f, new Color32(180, 180, 190, 255));
+        // Sculpture geometric shapes
+        PlaceTile(parent, "SculptureSphere", 0, 0.5f, 0.5f, 0.5f, new Color32(220, 180, 60, 200));
+        PlaceTile(parent, "SculptureRing", 0.3f, 0.2f, 0.3f, 0.3f, new Color32(200, 80, 80, 150));
+        PlaceTile(parent, "SculptureRing2", -0.3f, 0.8f, 0.25f, 0.25f, new Color32(80, 200, 200, 150));
+
+        // Coffee kiosk
+        PlaceTile(parent, "CoffeeKiosk", 7, -1f, 1.2f, 1f, new Color32(80, 50, 30, 255));
+        PlaceTile(parent, "CoffeeCanopy", 7, -0.2f, 1.4f, 0.2f, new Color32(60, 120, 60, 255));
+        PlaceTile(parent, "CoffeeCounter", 7, -0.8f, 1f, 0.3f, new Color32(120, 80, 50, 255));
+        PlaceTile(parent, "CoffeeSign", 7, 0f, 0.6f, 0.15f, new Color32(240, 200, 100, 200));
+
+        // Bike racks (campus style)
         for (int i = 0; i < 5; i++)
         {
             float bx = -6 + i * 0.6f;
@@ -360,15 +584,31 @@ public static class SceneVisuals
         PlaceTile(parent, "Path", 0, -1f, 2f, 2f, new Color32(150, 145, 135, 220));
         PlaceTile(parent, "PathEdge", 0, -0.5f, 2.2f, 0.08f, new Color32(130, 125, 115, 200));
 
-        // Trees
-        PlaceTree(parent, "Tree1", -7, -1.5f);
-        PlaceTree(parent, "Tree2", -7, 1.5f);
-        PlaceTree(parent, "Tree3", 7.5f, -1f);
-        PlaceTree(parent, "Tree4", 7.5f, 1.5f);
-
-        // Bushes
+        // Green belt / bushes
         PlaceTile(parent, "Bush1", -4, -2.5f, 1f, 0.5f, new Color32(45, 110, 45, 255));
         PlaceTile(parent, "Bush2", 2, -2.5f, 1f, 0.5f, new Color32(45, 110, 45, 255));
+        PlaceTile(parent, "Bush3", 6.5f, -2f, 0.8f, 0.4f, new Color32(50, 120, 50, 255));
+
+        // Trees
+        PlaceTree(parent, "Tree1", -7.5f, -1.5f);
+        PlaceTree(parent, "Tree2", -7.5f, 1.5f);
+        PlaceTree(parent, "Tree3", 7.5f, -1.5f);
+        PlaceTree(parent, "Tree4", 7.5f, 1.5f);
+        PlaceTree(parent, "Tree5", -3.5f, 1.8f);
+        PlaceTree(parent, "Tree6", 6.5f, 1.8f);
+
+        // Interactive markers
+        PlaceInteractiveMarker(parent, "InteractEntrance", -1.5f, -0.8f);
+        PlaceInteractiveMarker(parent, "InteractSculpture", 0, -1.5f);
+        PlaceInteractiveMarker(parent, "InteractCoffee", 7, -1.3f);
+
+        // Player footstep glow
+        PlaceFootstepGlow(parent, "FootstepGlow", 0, -1f);
+
+        // Birds
+        PlaceBird(parent, "Bird1", -5, 5f);
+        PlaceBird(parent, "Bird2", 3, 5.5f);
+        PlaceBird(parent, "Bird3", -1, 5.2f);
 
         // Clouds
         PlaceCloud(parent, "Cloud1", -5, 5f, 3.5f, 0.5f);
@@ -380,23 +620,76 @@ public static class SceneVisuals
 
     private static void BuildTweedeKans(GameObject parent)
     {
-        // Dark interior background
-        PlaceTile(parent, "BackWall", 0, 1.5f, 14, 3.5f, new Color32(40, 30, 20, 255));
-        // Wall texture
-        PlaceTile(parent, "WallTexture", 0, 1.5f, 14, 3.5f, new Color32(50, 38, 25, 100));
+        // Exterior: dark street
+        PlaceTile(parent, "Street", 0, -3f, 18, 2f, new Color32(50, 45, 40, 255));
+        PlaceTile(parent, "Sidewalk", 0, -1.5f, 18, 1f, new Color32(130, 125, 115, 255));
+        // Pavement detail
+        PlacePavementDetail(parent, "Pavement", 0, -1.5f, 18, 1f);
 
-        // Floor (wooden)
-        PlaceTile(parent, "Floor", 0, -2f, 14, 3.5f, new Color32(55, 38, 25, 255));
-        // Floor boards
-        for (int i = 0; i < 6; i++)
+        // Neighbor buildings (row houses)
+        Color32 neighborColor = new Color32(80, 65, 50, 255);
+        Color32 neighborRoof = new Color32(60, 45, 30, 255);
+        // Left row houses
+        for (int i = 0; i < 3; i++)
         {
-            PlaceTile(parent, $"Board_{i}", -6 + i * 2.3f, -2f, 0.08f, 3.5f, new Color32(65, 45, 30, 100));
+            float nx = -7 + i * 2.5f;
+            PlaceTile(parent, $"NeighborL_{i}", nx, 1.5f, 2.2f, 3f, neighborColor);
+            PlaceTile(parent, $"NeighborRoofL_{i}", nx, 3.5f, 2.4f, 0.3f, neighborRoof);
+            // Windows
+            PlaceTile(parent, $"NeighborWinL_{i}_0", nx - 0.5f, 1.5f, 0.4f, 0.5f, new Color32(200, 180, 100, 120));
+            PlaceTile(parent, $"NeighborWinL_{i}_1", nx + 0.5f, 1.5f, 0.4f, 0.5f, new Color32(200, 180, 100, 120));
+        }
+        // Right row houses
+        for (int i = 0; i < 3; i++)
+        {
+            float nx = 2 + i * 2.5f;
+            PlaceTile(parent, $"NeighborR_{i}", nx, 1.5f, 2.2f, 3f, neighborColor);
+            PlaceTile(parent, $"NeighborRoofR_{i}", nx, 3.5f, 2.4f, 0.3f, neighborRoof);
+            PlaceTile(parent, $"NeighborWinR_{i}_0", nx - 0.5f, 1.5f, 0.4f, 0.5f, new Color32(200, 180, 100, 120));
+            PlaceTile(parent, $"NeighborWinR_{i}_1", nx + 0.5f, 1.5f, 0.4f, 0.5f, new Color32(200, 180, 100, 120));
         }
 
-        // Warm ambient light overlay
+        // Alley between buildings
+        PlaceTile(parent, "Alley", -8.5f, -0.5f, 1.2f, 3f, new Color32(35, 30, 25, 255));
+        PlaceTile(parent, "AlleyLamp", -8.5f, 0.5f, 0.3f, 0.3f, new Color32(255, 200, 100, 30));
+
+        // Bar building (warm colors - main feature)
+        PlaceTile(parent, "BarBldg", 0, 1f, 5f, 3.5f, new Color32(140, 75, 45, 255));
+        PlaceTile(parent, "BarBldgAccent", 0, 2.5f, 5.2f, 0.12f, new Color32(160, 90, 55, 255));
+        PlaceTile(parent, "BarRoof", 0, 3.8f, 5.5f, 0.4f, new Color32(80, 50, 30, 255));
+        // Bar windows (warm glow)
+        for (int i = 0; i < 3; i++)
+        {
+            PlaceTile(parent, $"BarWin_{i}", -1.5f + i * 1.5f, 0.5f, 0.6f, 0.8f, new Color32(255, 200, 80, 180));
+        }
+        // Bar door
+        PlaceTile(parent, "BarDoor", 0, -1f, 0.8f, 1.2f, new Color32(60, 40, 25, 255));
+        PlaceTile(parent, "BarDoorGlow", 0, -1f, 0.9f, 1.3f, new Color32(255, 200, 80, 20));
+
+        // Neon sign (enhanced)
+        PlaceTile(parent, "Neon", 0, 3.5f, 4f, 0.7f, new Color32(255, 180, 60, 80));
+        PlaceTile(parent, "NeonGlow", 0, 3.5f, 4.5f, 0.9f, new Color32(255, 180, 60, 20));
+        PlaceTile(parent, "NeonText", 0, 3.5f, 2.5f, 0.35f, new Color32(255, 200, 80, 140));
+        // Extra neon glow pools
+        PlaceTile(parent, "NeonPoolL", -2.5f, 0f, 1.5f, 3f, new Color32(255, 180, 60, 6));
+        PlaceTile(parent, "NeonPoolR", 2.5f, 0f, 1.5f, 3f, new Color32(255, 180, 60, 6));
+
+        // Outdoor seating area
+        PlaceOutdoorTable(parent, "OutdoorTable1", -3f, -1f);
+        PlaceOutdoorTable(parent, "OutdoorTable2", 3f, -1f);
+        PlaceOutdoorTable(parent, "OutdoorTable3", -3f, -2.2f);
+        PlaceOutdoorTable(parent, "OutdoorTable4", 3f, -2.2f);
+
+        // Street lamps
+        PlaceLamp(parent, "Lamp1", -6, -1.5f);
+        PlaceLamp(parent, "Lamp2", 6, -1.5f);
+        PlaceLamp(parent, "Lamp3", -3, -1.5f);
+        PlaceLamp(parent, "Lamp4", 3, -1.5f);
+
+        // Interior: warm ambient light overlay
         PlaceTile(parent, "WarmGlow", 0, 0, 14, 6, new Color32(255, 200, 100, 12));
 
-        // Bar counter
+        // Bar counter (inside)
         PlaceTile(parent, "CounterTop", 0, -0.3f, 8, 0.6f, new Color32(110, 70, 45, 255));
         PlaceTile(parent, "CounterFront", 0, -1.2f, 8, 0.9f, new Color32(85, 55, 35, 255));
         PlaceTile(parent, "CounterSurface", 0, 0.05f, 7.5f, 0.08f, new Color32(130, 85, 55, 200));
@@ -422,28 +715,21 @@ public static class SceneVisuals
             PlaceTile(parent, $"BottleHL_{i}", -4.5f + i * 1.6f, 1.7f, 0.1f, 0.15f, new Color32(255, 255, 255, 25));
         }
 
-        // Neon sign
-        PlaceTile(parent, "Neon", 0, 2.8f, 3.5f, 0.6f, new Color32(255, 180, 60, 70));
-        PlaceTile(parent, "NeonGlow", 0, 2.8f, 4f, 0.8f, new Color32(255, 180, 60, 15));
-        // Neon text simulation
-        PlaceTile(parent, "NeonText", 0, 2.8f, 2f, 0.3f, new Color32(255, 200, 80, 120));
-
         // Wall decorations
         PlaceTile(parent, "Picture1", -3.5f, 2.5f, 1f, 0.7f, new Color32(90, 70, 50, 200));
         PlaceTile(parent, "Picture2", 3.5f, 2.5f, 1f, 0.7f, new Color32(90, 70, 50, 200));
         PlaceTile(parent, "PictureFrame1", -3.5f, 2.5f, 1.1f, 0.8f, new Color32(120, 90, 60, 100));
         PlaceTile(parent, "PictureFrame2", 3.5f, 2.5f, 1.1f, 0.8f, new Color32(120, 90, 60, 100));
 
-        // Tables
-        for (int i = 0; i < 2; i++)
-        {
-            float tx = i == 0 ? -4f : 3.5f;
-            PlaceTile(parent, $"TableTop_{i}", tx, -2.3f, 1.5f, 0.1f, new Color32(90, 60, 35, 255));
-            PlaceTile(parent, $"TableLeg_{i}", tx, -2f, 0.1f, 0.3f, new Color32(60, 40, 20, 255));
-        }
-
         // Warm light pool under neon
         PlaceTile(parent, "LightPool", 0, -1f, 6, 2, new Color32(255, 200, 100, 8));
+
+        // Interactive markers
+        PlaceInteractiveMarker(parent, "InteractBar", 0, -1.5f);
+        PlaceInteractiveMarker(parent, "InteractOutdoor", -3f, -1.5f);
+
+        // Player footstep glow
+        PlaceFootstepGlow(parent, "FootstepGlow", 0, -1f);
 
         AddLabel(parent, "Tweede Kans — De Wallen", 0, 3.5f);
     }
@@ -454,58 +740,108 @@ public static class SceneVisuals
         PlaceTile(parent, "Canal", 0, -1f, 18, 4f, new Color32(45, 100, 155, 200));
         // Water depth variation
         PlaceTile(parent, "CanalDeep", 0, -2f, 18, 1.5f, new Color32(35, 85, 135, 180));
+        // Canal banks (left and right)
+        PlaceTile(parent, "CanalBankL", -9, 1f, 0.5f, 4f, new Color32(120, 105, 85, 255));
+        PlaceTile(parent, "CanalBankR", 9, 1f, 0.5f, 4f, new Color32(120, 105, 85, 255));
         // Water ripples
         for (int i = 0; i < 8; i++)
         {
             PlaceTile(parent, $"Ripple_{i}", -7 + i * 2f, -1.5f + (i % 3) * 0.5f,
                 1.2f, 0.06f, new Color32(80, 160, 210, 40));
         }
+        // Canal ripple detail
+        PlaceCanalRipple(parent, "CRipple1", -4, 0.5f);
+        PlaceCanalRipple(parent, "CRipple2", 0, -1f);
+        PlaceCanalRipple(parent, "CRipple3", 4, 0f);
 
-        // Floating platform / dock
-        PlaceTile(parent, "Platform", 0, -0.3f, 10, 0.8f, new Color32(130, 90, 60, 255));
-        PlaceTile(parent, "PlatformTop", 0, 0.1f, 10, 0.12f, new Color32(150, 105, 70, 255));
-        // Platform supports
-        PlaceTile(parent, "PlatformSupport1", -4.5f, -0.8f, 0.3f, 0.5f, new Color32(90, 60, 35, 255));
-        PlaceTile(parent, "PlatformSupport2", 4.5f, -0.8f, 0.3f, 0.5f, new Color32(90, 60, 35, 255));
+        // Bridge connecting canal banks
+        PlaceBridge(parent, "CanalBridge", 0, 1.5f, 4f);
 
-        // Stall canopy (striped)
-        PlaceTile(parent, "Canopy", 0, 1.2f, 8, 0.5f, new Color32(200, 100, 60, 255));
-        for (int i = 0; i < 8; i++)
+        // Floating flower boats (multiple stalls in a row)
+        // Boat 1 (left)
+        PlaceTile(parent, "Boat1_Hull", -4, 0f, 2.5f, 0.6f, new Color32(80, 55, 35, 255));
+        PlaceTile(parent, "Boat1_Deck", -4, 0.3f, 2.2f, 0.1f, new Color32(100, 70, 45, 255));
+        // Boat 2 (center)
+        PlaceTile(parent, "Boat2_Hull", 0, 0f, 2.5f, 0.6f, new Color32(80, 55, 35, 255));
+        PlaceTile(parent, "Boat2_Deck", 0, 0.3f, 2.2f, 0.1f, new Color32(100, 70, 45, 255));
+        // Boat 3 (right)
+        PlaceTile(parent, "Boat3_Hull", 4, 0f, 2.5f, 0.6f, new Color32(80, 55, 35, 255));
+        PlaceTile(parent, "Boat3_Deck", 4, 0.3f, 2.2f, 0.1f, new Color32(100, 70, 45, 255));
+
+        // Boat stall canopies (striped per boat)
+        Color32[] boatCanopies = {
+            new Color32(200, 80, 60, 255),
+            new Color32(60, 160, 200, 255),
+            new Color32(200, 180, 60, 255),
+        };
+        for (int b = 0; b < 3; b++)
         {
-            Color32 stripeColor = i % 2 == 0 ? new Color32(220, 120, 70, 255) : new Color32(240, 220, 200, 255);
-            PlaceTile(parent, $"Stripe_{i}", -3.5f + i * 1f, 1.2f, 0.4f, 0.5f, stripeColor);
+            float bx = -4 + b * 4;
+            Color32 canopyColor = boatCanopies[b];
+            PlaceTile(parent, $"BoatCanopy_{b}", bx, 1f, 2f, 0.4f, canopyColor);
+            // Stripes
+            for (int s = 0; s < 4; s++)
+            {
+                Color32 stripeCol = s % 2 == 0 ? canopyColor : new Color32(240, 240, 230, 255);
+                PlaceTile(parent, $"BoatStripe_{b}_{s}", bx - 0.75f + s * 0.5f, 1f, 0.3f, 0.4f, stripeCol);
+            }
+            // Boat posts
+            PlaceTile(parent, $"BoatPostL_{b}", bx - 0.9f, 0.3f, 0.08f, 0.8f, new Color32(90, 60, 30, 255));
+            PlaceTile(parent, $"BoatPostR_{b}", bx + 0.9f, 0.3f, 0.08f, 0.8f, new Color32(90, 60, 30, 255));
         }
 
-        // Stall posts
-        PlaceTile(parent, "Post1", -4, 0.2f, 0.15f, 1.5f, new Color32(90, 60, 30, 255));
-        PlaceTile(parent, "Post2", 4, 0.2f, 0.15f, 1.5f, new Color32(90, 60, 30, 255));
-
-        // Flowers (colorful 3x8 grid)
+        // Flowers on each boat (colorful dense grid)
         Color32[] flowerColors = {
             new Color32(220, 80, 120, 255), new Color32(240, 200, 80, 255),
             new Color32(200, 60, 180, 255), new Color32(80, 160, 220, 255),
             new Color32(240, 140, 60, 255), new Color32(180, 220, 80, 255),
+            new Color32(255, 100, 100, 255), new Color32(140, 220, 180, 255),
         };
-        for (int row = 0; row < 3; row++)
+        for (int boat = 0; boat < 3; boat++)
         {
-            for (int col = 0; col < 8; col++)
+            float bx = -4 + boat * 4;
+            for (int row = 0; row < 3; row++)
             {
-                float fx = -3.5f + col * 1f;
-                float fy = 0.1f + row * 0.3f;
-                Color32 fc = flowerColors[(row * 2 + col) % flowerColors.Length];
-                PlaceTile(parent, $"Flower_{row}_{col}", fx, fy, 0.2f, 0.2f, fc);
-                // Stem
-                PlaceTile(parent, $"Stem_{row}_{col}", fx, fy - 0.15f, 0.04f, 0.15f, new Color32(40, 120, 40, 150));
+                for (int col = 0; col < 5; col++)
+                {
+                    float fx = bx - 0.8f + col * 0.4f;
+                    float fy = 0.1f + row * 0.2f;
+                    Color32 fc = flowerColors[(boat * 3 + row * 2 + col) % flowerColors.Length];
+                    PlaceTile(parent, $"Flower_{boat}_{row}_{col}", fx, fy, 0.12f, 0.12f, fc);
+                    PlaceTile(parent, $"Stem_{boat}_{row}_{col}", fx, fy - 0.08f, 0.03f, 0.08f, new Color32(40, 120, 40, 150));
+                }
             }
         }
 
-        // Sofie's sign
+        // Walkway along canal
+        PlaceTile(parent, "Walkway", 0, -2f, 18, 0.6f, new Color32(150, 140, 130, 255));
+        PlaceTile(parent, "WalkwayEdge", 0, -1.7f, 18, 0.05f, new Color32(130, 120, 110, 255));
+
+        // Sofie's sign (enhanced)
         PlaceTile(parent, "Sign", 0, 1.8f, 1.5f, 0.3f, new Color32(60, 120, 60, 255));
         PlaceTile(parent, "SignPost", 0, 1.3f, 0.08f, 0.5f, new Color32(80, 50, 25, 255));
+        PlaceTile(parent, "SignGlow", 0, 1.8f, 1.8f, 0.5f, new Color32(60, 120, 60, 20));
+
+        // Windmill (distant landmark)
+        PlaceWindmill(parent, "Windmill", -8, 3.5f, 1f);
+
+        // Interactive markers
+        PlaceInteractiveMarker(parent, "InteractBoat1", -4, -0.3f);
+        PlaceInteractiveMarker(parent, "InteractBoat2", 0, -0.3f);
+        PlaceInteractiveMarker(parent, "InteractBoat3", 4, -0.3f);
+        PlaceInteractiveMarker(parent, "InteractBridge", 0, 1.8f);
+
+        // Player footstep glow
+        PlaceFootstepGlow(parent, "FootstepGlow", 0, -2.3f);
+
+        // Birds
+        PlaceBird(parent, "Bird1", -2, 4.5f);
+        PlaceBird(parent, "Bird2", 5, 4.8f);
 
         // Clouds
         PlaceCloud(parent, "Cloud1", -5, 4.5f, 3f, 0.5f);
         PlaceCloud(parent, "Cloud2", 4, 5f, 3.5f, 0.4f);
+        PlaceCloud(parent, "Cloud3", -1, 5.2f, 2f, 0.3f);
 
         AddLabel(parent, "Bloemenmarkt — Floating Market", 0, 4f);
     }
@@ -550,7 +886,22 @@ public static class SceneVisuals
 
         // Add collider for solid tiles
         if (name != "Canal" && !name.StartsWith("Flower") && !name.StartsWith("Window")
-            && !name.StartsWith("Ripple") && !name.StartsWith("Bottle"))
+            && !name.StartsWith("Ripple") && !name.StartsWith("Bottle")
+            && !name.StartsWith("Bird") && !name.StartsWith("Cloud")
+            && !name.StartsWith("Glow") && !name.StartsWith("Blade")
+            && !name.StartsWith("Canopy") && !name.StartsWith("Stripe")
+            && !name.StartsWith("Stem") && !name.StartsWith("Reflect")
+            && !name.StartsWith("Goods") && !name.StartsWith("Marker")
+            && !name.StartsWith("Bike") && !name.StartsWith("Wheel")
+            && !name.StartsWith("Wing") && !name.StartsWith("Body")
+            && !name.StartsWith("Mast") && !name.StartsWith("Sail")
+            && !name.StartsWith("Post") && !name.StartsWith("Railing")
+            && !name.StartsWith("Arch") && !name.StartsWith("Deck")
+            && !name.StartsWith("Chair") && !name.StartsWith("Table")
+            && !name.StartsWith("GrassPatch") && !name.StartsWith("Cobble")
+            && !name.StartsWith("Stone_") && !name.StartsWith("Hull")
+            && !name.StartsWith("Stall") && !name.StartsWith("Bush")
+            && !name.StartsWith("Cap") && !name.StartsWith("TowerTop"))
         {
             BoxCollider2D col = tile.AddComponent<BoxCollider2D>();
             col.isTrigger = name.StartsWith("Interact") || name == "Neon" || name.StartsWith("Stool");

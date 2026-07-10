@@ -248,6 +248,8 @@ public class PlayerController : MonoBehaviour
         {
             _nearbyInteractable = interactable;
             interactable.ShowPrompt(true);
+            // Scale effect: make interactable grow slightly when player is near
+            interactable.transform.localScale = new Vector3(1.2f, 1.2f, 1f);
         }
     }
 
@@ -257,7 +259,8 @@ public class PlayerController : MonoBehaviour
         if (interactable != null && interactable == _nearbyInteractable)
         {
             interactable.ShowPrompt(false);
+            // Reset scale
+            interactable.transform.localScale = Vector3.one;
             _nearbyInteractable = null;
         }
     }
-}

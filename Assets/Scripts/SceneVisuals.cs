@@ -20,6 +20,9 @@ public class SceneTransitionManager : MonoBehaviour
     // Player reference (set by GameController or found at runtime)
     private PlayerController _player;
 
+    // Minimap
+    private MinimapController _minimap;
+
     private void Awake()
     {
         if (Instance == null)
@@ -36,8 +39,14 @@ public class SceneTransitionManager : MonoBehaviour
 
     private void Start()
     {
-        _player = FindObjectOfType<PlayerController>();
+        _player = FindAnyObjectByType<PlayerController>(FindObjectsInactive.Include);
         BuildScene(_currentLocation);
+
+        // Initialize minimap
+        GameObject mmGO = new GameObject("MinimapController");
+        mmGO.transform.SetParent(transform);
+        _minimap = mmGO.AddComponent<MinimapController>();
+        _minimap.Initialize();
     }
 
     private void CreateFadeCanvas()
@@ -116,7 +125,7 @@ public class SceneTransitionManager : MonoBehaviour
         }
 
         // Update location title
-        GameController gc = FindObjectOfType<GameController>();
+        GameController gc = FindAnyObjectByType<GameController>(FindObjectsInactive.Include);
         if (gc != null)
         {
             gc.OnSceneChanged(locationId);
@@ -570,5 +579,131 @@ public static class SceneVisuals
     {
         if (scene != null)
             Object.Destroy(scene);
+    }
+}
+
+// ── Minimap Controller ──────────────────────────────────
+// Attached to the SceneTransitionManager. Creates a second camera
+// with a RenderTexture and displays it as a RawImage in the HUD.
+
+public class MinimapController : MonoBehaviour
+{
+    private Camera _minimapCam;
+    private RenderTexture _renderTex;
+    private RawImage _minimapImage;
+    private Canvas _minimapCanvas;
+    private GameObject _playerDot;
+
+    private const int TexSize = 256;
+    private const float MapSize = 28f;
+
+    public void Initialize()
+    {
+        // Create RenderTexture
+        _renderTex = new RenderTexture(TexSize, TexSize, 16, RenderTextureFormat.ARGB32);
+        _renderTex.name = "MinimapRT";
+        _renderTex.Create();
+
+        // Create minimap camera
+        GameObject camGO = new GameObject("MinimapCamera");
+        camGO.transform.SetParent(transform);
+        _minimapCam = camGO.AddComponent<Camera>();
+        _minimapCam.orthographic = true;
+        _minimapCam.orthographicSize = MapSize / 2f;
+        _minimapCam.clearFlags = CameraClearFlags.SolidColor;
+        _minimapCam.backgroundColor = new Color32(10, 14, 18, 200);
+        _minimapCam.cullingMask = ~(1 << 5); // Render everything except UI layer
+        _minimapCam.depth = -10;
+        _minimapCam.targetTexture = _renderTex;
+
+        // Create minimap Canvas (overlay, top-right corner)
+        GameObject canvasGO = new GameObject("MinimapCanvas");
+        canvasGO.transform.SetParent(transform);
+        _minimapCanvas = canvasGO.AddComponent<Canvas>();
+        _minimapCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        _minimapCanvas.sortingOrder = 300;
+        CanvasScaler scaler = canvasGO.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1280, 720);
+        canvasGO.AddComponent<GraphicRaycaster>();
+
+        // Background circle/border
+        GameObject bgGO = new GameObject("MinimapBG", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        bgGO.transform.SetParent(_minimapCanvas.transform, false);
+        Image bgImg = bgGO.GetComponent<Image>();
+        bgImg.color = new Color32(0, 0, 0, 180);
+        RectTransform bgRT = bgGO.GetComponent<RectTransform>();
+        bgRT.anchorMin = new Vector2(1, 1);
+        bgRT.anchorMax = new Vector2(1, 1);
+        bgRT.sizeDelta = new Vector2(180, 180);
+        bgRT.anchoredPosition = new Vector2(-100, -100);
+
+        // RawImage for the render texture
+        GameObject riGO = new GameObject("MinimapImage", typeof(RectTransform), typeof(CanvasRenderer), typeof(RawImage));
+        riGO.transform.SetParent(_minimapCanvas.transform, false);
+        _minimapImage = riGO.GetComponent<RawImage>();
+        _minimapImage.texture = _renderTex;
+        _minimapImage.color = new Color32(255, 255, 255, 200);
+        RectTransform riRT = riGO.GetComponent<RectTransform>();
+        riRT.anchorMin = new Vector2(1, 1);
+        riRT.anchorMax = new Vector2(1, 1);
+        riRT.sizeDelta = new Vector2(160, 160);
+        riRT.anchoredPosition = new Vector2(-100, -100);
+
+        // Player dot
+        GameObject dotGO = new GameObject("PlayerDot", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        dotGO.transform.SetParent(_minimapCanvas.transform, false);
+        _playerDot = dotGO;
+        Image dotImg = dotGO.GetComponent<Image>();
+        dotImg.color = new Color32(255, 220, 60, 255);
+        dotImg.raycastTarget = false;
+        RectTransform dotRT = dotGO.GetComponent<RectTransform>();
+        dotRT.anchorMin = new Vector2(1, 1);
+        dotRT.anchorMax = new Vector2(1, 1);
+        dotRT.sizeDelta = new Vector2(8, 8);
+        dotRT.anchoredPosition = new Vector2(-100, -100);
+    }
+
+    private void LateUpdate()
+    {
+        if (_minimapCam == null) return;
+
+        // Follow player
+        PlayerController player = FindAnyObjectByType<PlayerController>(FindObjectsInactive.Include);
+        if (player != null)
+        {
+            Vector3 pos = player.transform.position;
+            _minimapCam.transform.position = new Vector3(pos.x, pos.y, -10);
+
+            // Update player dot on minimap
+            if (_playerDot != null)
+            {
+                // Map world space to minimap UV space
+                float halfMap = MapSize / 2f;
+                float u = (pos.x + halfMap) / MapSize;
+                float v = (pos.y + halfMap) / MapSize;
+                u = Mathf.Clamp01(u);
+                v = Mathf.Clamp01(v);
+
+                // Convert to pixel space on the 160x160 minimap
+                RectTransform dotRT = _playerDot.GetComponent<RectTransform>();
+                float px = (u - 0.5f) * 160f;
+                float py = (v - 0.5f) * 160f;
+                dotRT.anchoredPosition = new Vector2(-100 + px, -100 + py);
+            }
+        }
+    }
+
+    public void Cleanup()
+    {
+        if (_renderTex != null)
+        {
+            _renderTex.Release();
+            Destroy(_renderTex);
+        }
+        if (_minimapCam != null)
+            Destroy(_minimapCam.gameObject);
+        if (_minimapCanvas != null)
+            Destroy(_minimapCanvas.gameObject);
     }
 }

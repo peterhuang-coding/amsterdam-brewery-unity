@@ -125,7 +125,7 @@ public sealed class GameController : MonoBehaviour
         Instance = this; // (T5)
         BootstrapView();
         // Auto-bootstrap the 2.5D game systems if not already present
-        if (Application.isPlaying && FindObjectOfType<PlayerController>() == null)
+        if (Application.isPlaying && FindAnyObjectByType<PlayerController>(FindObjectsInactive.Include) == null)
         {
             AutoBootstrap25D();
         }
@@ -226,7 +226,7 @@ public sealed class GameController : MonoBehaviour
             if (_feedbackTimer <= 0f)
             {
                 _showingResultFeedback = false;
-                _feedbackText.text = _pendingFeedback ?? "";
+                if (_feedbackText != null) _feedbackText.text = _pendingFeedback ?? "";
                 _pendingFeedback = null;
             }
         }
@@ -249,7 +249,7 @@ public sealed class GameController : MonoBehaviour
                 {
                     StopCoroutine(_typewriterCoroutine);
                     _typewriterCoroutine = null;
-                    _dialogueBodyText.text = _fullDialogueText;
+                    if (_dialogueBodyText != null) _dialogueBodyText.text = _fullDialogueText;
                     _textFullyRevealed = true;
                     ShowDialogueButton();
                     return;
@@ -617,12 +617,10 @@ public sealed class GameController : MonoBehaviour
     private void AdvanceTime()
     {
         _timeIndex++;
-        bool newDay = false;
         if (_timeIndex >= _timesOfDay.Length)
         {
             _timeIndex = 0;
             _currentDay++;
-            newDay = true;
             // F1: Regenerate daily goals at dawn
             GenerateDailyGoals();
             // F8: Update weather for new day
@@ -838,6 +836,7 @@ public sealed class GameController : MonoBehaviour
     // F4: Slide + fade dialogue panel in
     private IEnumerator AnimateDialogueIn()
     {
+        if (_dialoguePanel == null) yield break;
         _dialoguePanel.SetActive(true);
         RectTransform rt = _dialoguePanel.GetComponent<RectTransform>();
         Vector2 targetPos = rt.anchoredPosition;
@@ -865,6 +864,7 @@ public sealed class GameController : MonoBehaviour
     // F4: Slide + fade dialogue panel out
     private IEnumerator AnimateDialogueOut()
     {
+        if (_dialoguePanel == null) yield break;
         RectTransform rt = _dialoguePanel.GetComponent<RectTransform>();
         Vector2 startPos = rt.anchoredPosition;
         float duration = 0.2f;
@@ -911,6 +911,15 @@ public sealed class GameController : MonoBehaviour
             return;
         }
 
+        // Guard: if minimal HUD doesn't have dialogue UI elements, skip rendering
+        if (_dialogueSpeakerText == null || _dialogueBodyText == null || _dialogueButtonText == null)
+        {
+            // In minimal mode (no dialogue panel), just show feedback instead
+            SetFeedback("(Dialogue skipped — no UI panel)");
+            _activeDialogue = null;
+            return;
+        }
+
         DialogueLine line = _activeDialogue.lines[_dialogueLineIndex];
         _dialogueSpeakerText.text = SpeakerName(line.speaker);
         _currentSpeaker = line.speaker;
@@ -933,6 +942,12 @@ public sealed class GameController : MonoBehaviour
     // F3: Typewriter effect — reveal text one character at a time
     private IEnumerator TypewriterEffect(string fullText)
     {
+        if (_dialogueBodyText == null)
+        {
+            _textFullyRevealed = true;
+            _typewriterCoroutine = null;
+            yield break;
+        }
         _dialogueBodyText.text = "";
         if (string.IsNullOrEmpty(fullText))
         {
@@ -1073,6 +1088,7 @@ public sealed class GameController : MonoBehaviour
     /// </summary>
     public void ShowResultFeedback(string message)
     {
+        if (_feedbackText == null) return;
         _showingResultFeedback = true;
         _feedbackTimer = 2f;
         _feedbackText.text = message;
@@ -1139,9 +1155,9 @@ public sealed class GameController : MonoBehaviour
 
         _currentLocation = locationId;
         LocationView loc = _locations[_currentLocation];
-        _locationTitle.text = loc.title;
-        _locationDesc.text = loc.subtitle;
-        _feedbackText.text = "";
+        if (_locationTitle != null) _locationTitle.text = loc.title;
+        if (_locationDesc != null) _locationDesc.text = loc.subtitle;
+        if (_feedbackText != null) _feedbackText.text = "";
         RefreshHud();
     }
 
@@ -1233,6 +1249,7 @@ public sealed class GameController : MonoBehaviour
     // T7: Feedback fade — smoothly show and auto-hide feedback text
     private void SetFeedback(string message)
     {
+        if (_feedbackText == null) return;
         _feedbackText.text = message;
         if (_feedbackCoroutine != null)
         {

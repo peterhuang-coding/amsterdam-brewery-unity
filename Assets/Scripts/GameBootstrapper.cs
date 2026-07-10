@@ -72,7 +72,7 @@ public class GameBootstrapper : MonoBehaviour
         WeatherSystem.Instance.NewDay(1);
 
         // Find and notify the existing GameController
-        GameController gc = FindObjectOfType<GameController>();
+        GameController gc = FindAnyObjectByType<GameController>(FindObjectsInactive.Include);
         if (gc != null)
         {
             gc.OnSceneChanged("de_pijp");

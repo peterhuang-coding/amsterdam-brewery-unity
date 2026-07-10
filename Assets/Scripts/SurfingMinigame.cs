@@ -51,7 +51,6 @@ public class SurfingMinigame : MonoBehaviour
     private float _stamina = 100f;
     private int _fragmentsCollected = 0;
     private float _progress = 0f;
-    private float _waveSpeed = 2f;
     private float _timeElapsed = 0f;
     private float _maxDuration = 30f;
     private bool _isComplete = false;

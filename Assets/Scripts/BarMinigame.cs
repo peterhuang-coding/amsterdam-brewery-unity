@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// Bar shift minigame — serve customers by matching their drink order.
-/// Walk up to the bar counter and press E to start a shift.
+/// Walk up to the bar counter and press B to start a shift.
 /// </summary>
 public class BarMinigame : MonoBehaviour
 {
@@ -23,27 +25,107 @@ public class BarMinigame : MonoBehaviour
         }
     }
 
-    private Canvas _canvas;
-    private GameObject _panel;
-    private Text _customerText;
-    private Text _orderText;
-    private Text _earningsText;
-    private Text _statusText;
-    private Image _customerImage;
+    // ── Enums ──────────────────────────────────────────────
+    private enum GuestType { Normal, Regular, Picky, Drunk, Group }
+    private enum DrinkType { Beer, Whiskey, Wine }
 
-    private int _customersServed = 0;
-    private int _totalCustomers = 5;
-    private int _earnings = 0;
-    private int _currentDrink = -1;
-    private bool _isActive = false;
-    private System.Action<int> _onComplete;
-
+    // ── Constants ──────────────────────────────────────────
     private readonly string[] _drinkNames = { "🍺 Beer", "🥃 Whiskey", "🍷 Wine" };
+    private readonly string[] _drinkShortNames = { "Beer", "Whiskey", "Wine" };
     private readonly Color32[] _drinkColors = {
         new Color32(255, 200, 50, 255),
         new Color32(180, 120, 60, 255),
         new Color32(180, 50, 80, 255)
     };
+    private readonly Color32[] _drinkColorsLight = {
+        new Color32(255, 220, 100, 255),
+        new Color32(210, 150, 90, 255),
+        new Color32(210, 90, 120, 255)
+    };
+    private readonly int[] _drinkCosts = { 3, 5, 4 };
+    private readonly int[] _drinkPrices = { 6, 8, 7 };
+
+    private readonly Color32[] _guestColors = {
+        new Color32(200, 200, 200, 255),
+        new Color32(200, 180, 100, 255),
+        new Color32(255, 100, 100, 255),
+        new Color32(160, 120, 200, 255),
+        new Color32(100, 180, 220, 255)
+    };
+
+    private readonly string[] _guestTypeLabels = {
+        "Normal", "Regular", "Picky", "Drunk", "Group"
+    };
+
+    // ── Theme Colors ───────────────────────────────────────
+    private static readonly Color32 DarkBrown = new Color32(35, 28, 22, 255);
+    private static readonly Color32 MediumBrown = new Color32(55, 45, 35, 255);
+    private static readonly Color32 LightBrown = new Color32(75, 60, 45, 255);
+    private static readonly Color32 GoldColor = new Color32(255, 200, 50, 255);
+    private static readonly Color32 WarmText = new Color32(246, 240, 229, 255);
+    private static readonly Color32 GreenColor = new Color32(60, 200, 80, 255);
+    private static readonly Color32 RedColor = new Color32(220, 60, 60, 255);
+    private static readonly Color32 GreyColor = new Color32(120, 120, 120, 255);
+    private static readonly Color32 DarkOverlay = new Color32(0, 0, 0, 200);
+
+    // ── UI Fields ──────────────────────────────────────────
+    private Canvas _canvas;
+    private CanvasGroup _canvasGroup;
+    private GameObject _background;
+    private GameObject _flashOverlay;
+    private GameObject _panel;
+    private Text _earningsText;
+    private Text _statusText;
+    private Text _comboText;
+
+    // ── Serving UI ─────────────────────────────────────────
+    private Text _inventoryBeer;
+    private Text _inventoryWhiskey;
+    private Text _inventoryWine;
+    private GameObject _customerBlock;
+    private Image _customerImage;
+    private Text _customerLabel;
+    private Text _orderText;
+    private Text _guestTypeText;
+    private Image _patienceBar;
+    private Text _patienceText;
+    private GameObject[] _drinkBtns = new GameObject[3];
+    private Button[] _drinkBtnComponents = new Button[3];
+
+    // ── Inventory / Stocking ───────────────────────────────
+    private int[] _stock = { 0, 0, 0 };
+    private int _stockingCost = 0;
+    private bool _isStocking = false;
+
+    // ── Stocking UI ────────────────────────────────────────
+    private GameObject _stockPanel;
+    private Text[] _stockQtyTexts = new Text[3];
+    private Text _stockCostText;
+    private Text _playerMoneyText;
+
+    // ── Game State ─────────────────────────────────────────
+    private int _customersServed = 0;
+    private int _totalCustomers = 0;
+    private int _earnings = 0;
+    private int _tips = 0;
+    private int _currentDrink = -1;
+    private bool _isActive = false;
+    private bool _isServing = false;
+    private bool _apologyMode = false;
+    private float _apologyTipMultiplier = 1.0f;
+    private System.Action<int> _onComplete;
+
+    // ── Guest State ────────────────────────────────────────
+    private GuestType _currentGuestType;
+    private int _correctCount = 0;
+    private float _patienceTimer = 0f;
+    private float _patienceMax = 5f;
+    private bool _hasPatience = false;
+    private int _groupCount = 0;
+    private int _groupIndex = 0;
+
+    // ── Combo ──────────────────────────────────────────────
+    private int _comboCount = 0;
 
     private void Awake()
     {
@@ -58,6 +140,54 @@ public class BarMinigame : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (!_isActive) return;
+
+        // Patience countdown for Picky guests
+        if (_isServing && _hasPatience && _currentGuestType == GuestType.Picky)
+        {
+            _patienceTimer -= Time.deltaTime;
+            if (_patienceBar != null)
+            {
+                float fill = Mathf.Clamp01(_patienceTimer / _patienceMax);
+                _patienceBar.fillAmount = fill;
+                // Color shift: green -> yellow -> red
+                if (fill > 0.5f)
+                    _patienceBar.color = Color32.Lerp(new Color32(220, 220, 60, 255), GreenColor, (fill - 0.5f) * 2f);
+                else
+                    _patienceBar.color = Color32.Lerp(RedColor, new Color32(220, 220, 60, 255), fill * 2f);
+            }
+            if (_patienceTimer <= 0f)
+            {
+                _orderText.text = "😤 Too slow! I'm leaving!";
+                _orderText.color = RedColor;
+                _hasPatience = false;
+                _currentDrink = -1;
+                _isServing = false;
+                if (_patienceBar != null)
+                    _patienceBar.fillAmount = 0f;
+                StartCoroutine(NextCustomerAfterDelay(0.5f));
+            }
+        }
+
+        // Check stock for button interactability
+        if (_isServing && _panel != null && _panel.activeInHierarchy)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                if (_drinkBtnComponents[i] != null)
+                {
+                    bool hasStock = _stock[i] > 0;
+                    _drinkBtnComponents[i].interactable = hasStock;
+                    Image img = _drinkBtns[i].GetComponent<Image>();
+                    if (img != null) img.color = hasStock ? _drinkColors[i] : GreyColor;
+                }
+            }
+        }
+    }
+
+    // ── Entry Point ────────────────────────────────────────
     public void StartShift(System.Action<int> onComplete)
     {
         if (_isActive) return;
@@ -65,13 +195,22 @@ public class BarMinigame : MonoBehaviour
         _onComplete = onComplete;
         _customersServed = 0;
         _earnings = 0;
+        _tips = 0;
+        _comboCount = 0;
+        _correctCount = 0;
+        _apologyTipMultiplier = 1.0f;
+        _apologyMode = false;
         _totalCustomers = Random.Range(5, 9);
 
-        BuildUI();
-        NextCustomer();
+        for (int i = 0; i < 3; i++) _stock[i] = 0;
+        _stockingCost = 0;
+
+        BuildCanvas();
+        ShowStockingUI();
     }
 
-    private void BuildUI()
+    // ── Canvas Build ───────────────────────────────────────
+    private void BuildCanvas()
     {
         GameObject canvasGO = new GameObject("BarCanvas");
         canvasGO.transform.SetParent(transform);
@@ -82,105 +221,312 @@ public class BarMinigame : MonoBehaviour
         canvasGO.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1280, 720);
         canvasGO.AddComponent<GraphicRaycaster>();
 
+        _canvasGroup = canvasGO.AddComponent<CanvasGroup>();
+
         // Background overlay
-        GameObject bgGO = new GameObject("Background", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-        bgGO.transform.SetParent(_canvas.transform, false);
-        Image bgImg = bgGO.GetComponent<Image>();
-        bgImg.color = new Color32(0, 0, 0, 180);
-        RectTransform bgRT = bgGO.GetComponent<RectTransform>();
+        _background = new GameObject("Background", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        _background.transform.SetParent(_canvas.transform, false);
+        Image bgImg = _background.GetComponent<Image>();
+        bgImg.color = DarkOverlay;
+        RectTransform bgRT = _background.GetComponent<RectTransform>();
         bgRT.anchorMin = Vector2.zero;
         bgRT.anchorMax = Vector2.one;
         bgRT.offsetMin = Vector2.zero;
         bgRT.offsetMax = Vector2.zero;
 
-        // Main panel
-        _panel = new GameObject("Panel", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-        _panel.transform.SetParent(_canvas.transform, false);
-        Image panelImg = _panel.GetComponent<Image>();
-        panelImg.color = new Color32(25, 28, 35, 240);
-        RectTransform pRT = _panel.GetComponent<RectTransform>();
-        pRT.anchorMin = new Vector2(0.2f, 0.15f);
-        pRT.anchorMax = new Vector2(0.8f, 0.85f);
-        pRT.offsetMin = Vector2.zero;
-        pRT.offsetMax = Vector2.zero;
+        // Flash overlay (for correct/wrong feedback)
+        _flashOverlay = new GameObject("FlashOverlay", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        _flashOverlay.transform.SetParent(_canvas.transform, false);
+        Image flashImg = _flashOverlay.GetComponent<Image>();
+        flashImg.color = new Color32(0, 0, 0, 0);
+        RectTransform flashRT = _flashOverlay.GetComponent<RectTransform>();
+        flashRT.anchorMin = Vector2.zero;
+        flashRT.anchorMax = Vector2.one;
+        flashRT.offsetMin = Vector2.zero;
+        flashRT.offsetMax = Vector2.zero;
+        _flashOverlay.SetActive(false);
+    }
 
-        // Title
-        Text title = CreateText("Title", _panel.transform,
+    // ── Stocking UI ────────────────────────────────────────
+    private void ShowStockingUI()
+    {
+        _isStocking = true;
+        _stockPanel = BuildStockPanel();
+        _stockPanel.SetActive(true);
+
+        // Fade in
+        StartCoroutine(FadePanel(_stockPanel, 0f, 1f, 0.2f));
+    }
+
+    private GameObject BuildStockPanel()
+    {
+        GameObject panel = CreatePanel("StockPanel", MediumBrown, new Vector2(0.2f, 0.12f), new Vector2(0.8f, 0.88f));
+
+        // Title bar
+        GameObject titleBar = CreateBar("TitleBar", panel.transform, new Vector2(0, 1), new Vector2(1, 1),
+            new Vector2(0, -50), new Vector2(0, 0), DarkBrown);
+        _ = CreateTextOn("TitleText", titleBar.transform, "🛒 Restock Supplies",
+            new Vector2(0, 0), new Vector2(1, 1), new Vector2(12, 4), new Vector2(-12, -4),
+            22, TextAnchor.MiddleLeft, FontStyle.Bold, GoldColor);
+
+        // Player money
+        _playerMoneyText = CreateTextOn("PlayerMoney", panel.transform,
+            $"Your Money: ${GameController.Instance.Money}",
+            new Vector2(0.1f, 0.78f), new Vector2(0.9f, 0.86f), Vector2.zero, Vector2.zero,
+            14, TextAnchor.MiddleCenter, FontStyle.Normal, new Color32(200, 190, 170, 255));
+
+        // Drink cards
+        for (int i = 0; i < 3; i++)
+        {
+            int idx = i;
+            float xMin = 0.05f + i * 0.32f;
+            float xMax = xMin + 0.27f;
+
+            // Card background
+            GameObject card = CreateBar($"Card_{i}", panel.transform,
+                new Vector2(xMin, 0.28f), new Vector2(xMax, 0.72f),
+                Vector2.zero, Vector2.zero, DarkBrown);
+
+            // Icon emoji
+            _ = CreateTextOn($"Icon_{i}", card.transform, _drinkNames[i].Substring(0, 2),
+                new Vector2(0, 1), new Vector2(1, 1), new Vector2(0, -28), new Vector2(0, -6),
+                24, TextAnchor.MiddleCenter, FontStyle.Normal, _drinkColors[i]);
+
+            // Name
+            _ = CreateTextOn($"Name_{i}", card.transform, _drinkShortNames[i],
+                new Vector2(0, 0.55f), new Vector2(1, 0.75f), Vector2.zero, Vector2.zero,
+                16, TextAnchor.MiddleCenter, FontStyle.Bold, WarmText);
+
+            // Price
+            _ = CreateTextOn($"Price_{i}", card.transform, $"${_drinkCosts[i]}/ea",
+                new Vector2(0, 0.35f), new Vector2(1, 0.55f), Vector2.zero, Vector2.zero,
+                12, TextAnchor.MiddleCenter, FontStyle.Normal, GoldColor);
+
+            // Quantity display
+            _stockQtyTexts[i] = CreateTextOn($"Qty_{i}", card.transform, "x0",
+                new Vector2(0, 0.12f), new Vector2(1, 0.32f), Vector2.zero, Vector2.zero,
+                20, TextAnchor.MiddleCenter, FontStyle.Bold, WarmText);
+
+            // [-] button
+            _ = CreateButton($"MinusBtn_{i}", card.transform,
+                new Vector2(0.08f, 0.0f), new Vector2(0.35f, 0.12f),
+                LightBrown, LightBrown, "−", 18, () => {
+                    AdjustStock(idx, -1);
+                });
+
+            // [+] button
+            _ = CreateButton($"PlusBtn_{i}", card.transform,
+                new Vector2(0.65f, 0.0f), new Vector2(0.92f, 0.12f),
+                GreenColor, new Color32(100, 240, 120, 255), "+", 20, () => {
+                    AdjustStock(idx, 1);
+                });
+        }
+
+        // Total cost (gold highlight)
+        _stockCostText = CreateTextOn("StockCost", panel.transform, "Total: $0",
+            new Vector2(0.1f, 0.08f), new Vector2(0.6f, 0.20f), Vector2.zero, Vector2.zero,
+            22, TextAnchor.MiddleLeft, FontStyle.Bold, GoldColor);
+
+        // Cancel button
+        _ = CreateButton("CancelBtn", panel.transform,
+            new Vector2(0.62f, 0.06f), new Vector2(0.78f, 0.18f),
+            GreyColor, new Color32(150, 150, 150, 255), "Cancel", 16, () => {
+                CancelStocking();
+            });
+
+        // Confirm button (green)
+        _ = CreateButton("ConfirmBtn", panel.transform,
+            new Vector2(0.82f, 0.06f), new Vector2(0.96f, 0.18f),
+            GreenColor, new Color32(100, 240, 120, 255), "✅ Confirm", 16, () => {
+                ConfirmStocking();
+            });
+
+        return panel;
+    }
+
+    private void AdjustStock(int drinkIndex, int delta)
+    {
+        int newQty = _stock[drinkIndex] + delta;
+        if (newQty < 0) return;
+
+        int costDelta = delta * _drinkCosts[drinkIndex];
+        int currentMoney = GameController.Instance.Money;
+        int newCost = _stockingCost + costDelta;
+        if (delta > 0 && newCost > currentMoney)
+        {
+            _stockCostText.text = "Not enough money!";
+            _stockCostText.color = RedColor;
+            StartCoroutine(ResetStockCostText());
+            return;
+        }
+
+        _stock[drinkIndex] = newQty;
+        _stockingCost = newCost;
+        _stockQtyTexts[drinkIndex].text = $"x{newQty}";
+        _stockCostText.text = $"Total: ${_stockingCost}";
+        _stockCostText.color = GoldColor;
+        _playerMoneyText.text = $"Your Money: ${GameController.Instance.Money}  |  Cost: ${_stockingCost}";
+        SoundManager.Play(SoundManager.SoundType.UIClick);
+    }
+
+    private IEnumerator ResetStockCostText()
+    {
+        yield return new WaitForSeconds(1.0f);
+        if (_stockCostText != null)
+        {
+            _stockCostText.text = $"Total: ${_stockingCost}";
+            _stockCostText.color = GoldColor;
+        }
+    }
+
+    private void ConfirmStocking()
+    {
+        if (_stockingCost <= 0)
+        {
+            return;
+        }
+
+        GameController.Instance.AddMoney(-_stockingCost);
+
+        // Fade out stocking panel
+        StartCoroutine(FadeAndDestroyPanel(_stockPanel, 0.2f));
+        _stockPanel = null;
+        _isStocking = false;
+
+        BuildServeUI();
+    }
+
+    private void CancelStocking()
+    {
+        _isStocking = false;
+        _isActive = false;
+        var cb = _onComplete;
+        _onComplete = null;
+        Destroy(_canvas.gameObject);
+        cb?.Invoke(0);
+    }
+
+    // ── Serve UI ───────────────────────────────────────────
+    private void BuildServeUI()
+    {
+        _panel = CreatePanel("ServePanel", MediumBrown, new Vector2(0.15f, 0.05f), new Vector2(0.85f, 0.95f));
+
+        // ── Top inventory bar ──
+        GameObject invBar = CreateBar("InventoryBar", _panel.transform,
             new Vector2(0, 1), new Vector2(1, 1),
-            new Vector2(20, -36), new Vector2(-20, -4),
-            24, TextAnchor.MiddleLeft);
-        title.text = "🍺 Bar Shift";
-        title.fontStyle = FontStyle.Bold;
+            new Vector2(0, -56), new Vector2(0, 0), DarkBrown);
 
-        // Earnings display
-        _earningsText = CreateText("Earnings", _panel.transform,
-            new Vector2(1, 1), new Vector2(1, 1),
-            new Vector2(-200, -36), new Vector2(-20, -6),
-            18, TextAnchor.MiddleRight);
-        _earningsText.text = "Earnings: $0";
+        _ = CreateTextOn("InvTitle", invBar.transform, "🍺 Bar Inventory",
+            new Vector2(0, 0), new Vector2(1, 1), new Vector2(12, 4), new Vector2(-12, -4),
+            18, TextAnchor.MiddleLeft, FontStyle.Bold, GoldColor);
 
-        // Customer image area
-        _customerImage = new GameObject("Customer", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image)).GetComponent<Image>();
-        _customerImage.transform.SetParent(_panel.transform, false);
-        RectTransform ciRT = _customerImage.GetComponent<RectTransform>();
-        ciRT.anchorMin = new Vector2(0.4f, 0.45f);
-        ciRT.anchorMax = new Vector2(0.6f, 0.75f);
-        ciRT.offsetMin = Vector2.zero;
-        ciRT.offsetMax = Vector2.zero;
-        _customerImage.color = new Color32(200, 180, 150, 255);
+        // 3 stock blocks with color dots
+        float[] stockX = { 0.55f, 0.72f, 0.89f };
+        for (int i = 0; i < 3; i++)
+        {
+            GameObject block = CreateBar($"Stock_{i}", invBar.transform,
+                new Vector2(stockX[i], 0.1f), new Vector2(stockX[i] + 0.12f, 0.9f),
+                Vector2.zero, Vector2.zero, DarkBrown);
+            // Color dot
+            _ = CreateBar($"Dot_{i}", block.transform,
+                new Vector2(0.1f, 0.5f), new Vector2(0.9f, 0.9f),
+                Vector2.zero, Vector2.zero, _drinkColors[i]);
+
+            Text stockText = CreateTextOn($"StockText_{i}", block.transform, "0",
+                new Vector2(0, 0), new Vector2(1, 0.5f), new Vector2(2, 2), new Vector2(-2, -2),
+                16, TextAnchor.MiddleCenter, FontStyle.Bold, WarmText);
+            switch (i) { case 0: _inventoryBeer = stockText; break; case 1: _inventoryWhiskey = stockText; break; case 2: _inventoryWine = stockText; break; }
+        }
+
+        // Earnings display (top right)
+        _earningsText = CreateTextOn("Earnings", _panel.transform,
+            "Revenue: $0  |  Tips: $0",
+            new Vector2(0.5f, 0.88f), new Vector2(0.98f, 0.96f), Vector2.zero, Vector2.zero,
+            16, TextAnchor.MiddleRight, FontStyle.Bold, GoldColor);
+
+        // Combo text
+        _comboText = CreateTextOn("ComboText", _panel.transform, "",
+            new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
+            new Vector2(-100, 120), new Vector2(100, 160),
+            24, TextAnchor.MiddleCenter, FontStyle.Bold, new Color32(255, 220, 60, 255));
+
+        // ── Customer area ──
+        _customerBlock = CreateBar("CustomerBlock", _panel.transform,
+            new Vector2(0.15f, 0.38f), new Vector2(0.85f, 0.78f),
+            Vector2.zero, Vector2.zero, new Color32(45, 38, 30, 255));
+
+        // Customer image
+        _customerImage = CreateImage("CustomerImage", _customerBlock.transform,
+            new Vector2(0.35f, 0.25f), new Vector2(0.65f, 0.75f),
+            Vector2.zero, Vector2.zero, _guestColors[0]);
+
+        // Guest type label (above customer)
+        _guestTypeText = CreateTextOn("GuestType", _customerBlock.transform, "",
+            new Vector2(0.2f, 0.82f), new Vector2(0.8f, 0.95f),
+            Vector2.zero, Vector2.zero, 14, TextAnchor.MiddleCenter, FontStyle.Bold, WarmText);
+
+        // Patience bar background
+        GameObject patienceBg = CreateBar("PatienceBG", _customerBlock.transform,
+            new Vector2(0.2f, 0.15f), new Vector2(0.8f, 0.22f),
+            Vector2.zero, Vector2.zero, new Color32(30, 25, 20, 255));
+
+        // Patience fill
+        _patienceBar = new GameObject("PatienceFill", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image)).GetComponent<Image>();
+        _patienceBar.transform.SetParent(patienceBg.transform, false);
+        RectTransform pbfRT = _patienceBar.GetComponent<RectTransform>();
+        pbfRT.anchorMin = Vector2.zero;
+        pbfRT.anchorMax = Vector2.one;
+        pbfRT.offsetMin = Vector2.zero;
+        pbfRT.offsetMax = Vector2.zero;
+        _patienceBar.type = Image.Type.Filled;
+        _patienceBar.fillMethod = Image.FillMethod.Horizontal;
+        _patienceBar.fillAmount = 0f;
+        _patienceBar.color = GreenColor;
+        patienceBg.SetActive(false);
+
+        // Patience label
+        _patienceText = CreateTextOn("PatienceLabel", _customerBlock.transform, "Patience",
+            new Vector2(0.2f, 0.06f), new Vector2(0.8f, 0.14f),
+            Vector2.zero, Vector2.zero, 11, TextAnchor.MiddleCenter, FontStyle.Normal, GreyColor);
 
         // Customer label
-        _customerText = CreateText("CustomerLabel", _panel.transform,
-            new Vector2(0.3f, 0.35f), new Vector2(0.7f, 0.45f),
-            Vector2.zero, Vector2.zero,
-            20, TextAnchor.MiddleCenter);
-        _customerText.text = "Customer";
+        _customerLabel = CreateTextOn("CustomerLabel", _customerBlock.transform, "Customer 1",
+            new Vector2(0.1f, 0.02f), new Vector2(0.9f, 0.12f),
+            Vector2.zero, Vector2.zero, 14, TextAnchor.MiddleCenter, FontStyle.Normal, WarmText);
 
-        // Order text
-        _orderText = CreateText("OrderText", _panel.transform,
-            new Vector2(0.3f, 0.28f), new Vector2(0.7f, 0.35f),
-            Vector2.zero, Vector2.zero,
-            18, TextAnchor.MiddleCenter);
-        _orderText.text = "What'll it be?";
+        // Order text (below customer block)
+        _orderText = CreateTextOn("OrderText", _panel.transform, "What'll it be?",
+            new Vector2(0.1f, 0.28f), new Vector2(0.9f, 0.36f),
+            Vector2.zero, Vector2.zero, 16, TextAnchor.MiddleCenter, FontStyle.Normal, WarmText);
 
-        // Drink buttons
+        // ── Drink buttons (big, 60% width) ──
+        _statusText = CreateTextOn("Status", _panel.transform,
+            $"Customer 1 / {_totalCustomers}",
+            new Vector2(0.05f, 0.02f), new Vector2(0.5f, 0.08f),
+            Vector2.zero, Vector2.zero, 14, TextAnchor.MiddleLeft, FontStyle.Normal, GreyColor);
+
         for (int i = 0; i < 3; i++)
         {
             int drinkIndex = i;
-            GameObject btnGO = new GameObject($"DrinkBtn_{i}", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-            btnGO.transform.SetParent(_panel.transform, false);
-            Image btnImg = btnGO.GetComponent<Image>();
-            btnImg.color = _drinkColors[i];
-            btnImg.raycastTarget = true;
-            RectTransform btnRT = btnGO.GetComponent<RectTransform>();
-            float bx = 0.15f + i * 0.35f;
-            btnRT.anchorMin = new Vector2(bx, 0.08f);
-            btnRT.anchorMax = new Vector2(bx + 0.25f, 0.18f);
-            btnRT.offsetMin = Vector2.zero;
-            btnRT.offsetMax = Vector2.zero;
+            float xCenter = 0.15f + i * 0.35f;
+            float w = 0.28f;
 
-            Text btnText = CreateText($"BtnText_{i}", btnGO.transform,
-                Vector2.zero, Vector2.one,
-                new Vector2(4, 4), new Vector2(-4, -4),
-                16, TextAnchor.MiddleCenter);
-            btnText.text = _drinkNames[i];
-            btnText.color = new Color32(20, 22, 26, 255);
-            btnText.fontStyle = FontStyle.Bold;
+            _drinkBtns[i] = CreateButton($"DrinkBtn_{i}", _panel.transform,
+                new Vector2(xCenter, 0.08f), new Vector2(xCenter + w, 0.24f),
+                _drinkColors[i], _drinkColorsLight[i],
+                _drinkNames[i], 20, () => ServeDrink(drinkIndex));
 
-            Button btn = btnGO.AddComponent<Button>();
-            btn.targetGraphic = btnImg;
-            btn.onClick.AddListener(() => ServeDrink(drinkIndex));
+            _drinkBtnComponents[i] = _drinkBtns[i].GetComponent<Button>();
         }
 
-        // Status text
-        _statusText = CreateText("Status", _panel.transform,
-            new Vector2(0.3f, 0.02f), new Vector2(0.7f, 0.08f),
-            Vector2.zero, Vector2.zero,
-            16, TextAnchor.MiddleCenter);
-        _statusText.text = "Customer 1 / " + _totalCustomers;
-        _statusText.color = new Color32(150, 150, 150, 255);
+        // Slide in customer block
+        StartCoroutine(SlideInElement(_customerBlock, 60f, 0.3f));
+
+        // Start first customer
+        StartCoroutine(NextCustomerAfterDelay(0.5f));
     }
 
+    // ── Customer Generation ────────────────────────────────
     private void NextCustomer()
     {
         _customersServed++;
@@ -190,81 +536,578 @@ public class BarMinigame : MonoBehaviour
             return;
         }
 
-        _currentDrink = Random.Range(0, 3);
-        _customerImage.color = new Color32(
-            (byte)Random.Range(150, 220),
-            (byte)Random.Range(120, 200),
-            (byte)Random.Range(100, 180),
-            255);
-        _customerText.text = $"Customer {_customersServed}";
-        _orderText.text = $"I'd like a... {_drinkNames[_currentDrink]}?";
-        _orderText.color = _drinkColors[_currentDrink];
-        _statusText.text = $"Customer {_customersServed} / {_totalCustomers}";
-    }
+        _currentGuestType = (GuestType)Random.Range(0, 5);
 
-    private void ServeDrink(int drinkIndex)
-    {
-        if (_currentDrink < 0) return;
-
-        if (drinkIndex == _currentDrink)
+        string prefix = "";
+        if (_currentGuestType == GuestType.Group)
         {
-            // Correct!
-            _earnings += 6;
-            _earningsText.text = $"Earnings: ${_earnings}";
-            _orderText.text = "✅ Cheers! Correct!";
-            _orderText.color = new Color32(60, 255, 100, 255);
-            StartCoroutine(NextCustomerAfterDelay(1f));
+            _groupCount = 3;
+            _groupIndex = 0;
+            prefix = " (1/3)";
+        }
+
+        int drinkIndex;
+        if (_currentGuestType == GuestType.Drunk && Random.value < 0.4f)
+        {
+            drinkIndex = Random.Range(0, 3);
         }
         else
         {
-            // Wrong!
-            _earnings -= 2;
-            _earningsText.text = $"Earnings: ${_earnings}";
-            _orderText.text = $"❌ Nope, I wanted {_drinkNames[_currentDrink]}!";
-            _orderText.color = new Color32(255, 80, 80, 255);
-            StartCoroutine(NextCustomerAfterDelay(1.2f));
+            drinkIndex = Random.Range(0, 3);
+        }
+        _currentDrink = drinkIndex;
+
+        // Customer color (fixed by type)
+        _customerImage.color = _guestColors[(int)_currentGuestType];
+
+        string guestName = _guestTypeLabels[(int)_currentGuestType];
+        if (_currentGuestType == GuestType.Group) guestName = "Group";
+
+        _guestTypeText.text = $"[{guestName}]";
+        _guestTypeText.color = _guestColors[(int)_currentGuestType];
+
+        _customerLabel.text = $"Customer {_customersServed}{prefix}";
+
+        switch (_currentGuestType)
+        {
+            case GuestType.Regular:
+                _orderText.text = $"Hey, good to see you again!\nI'll have a {_drinkNames[drinkIndex]}!";
+                _orderText.color = _drinkColors[drinkIndex];
+                break;
+            case GuestType.Drunk:
+                _orderText.text = $"Hiccup... gimme a... {_drinkNames[drinkIndex]}... or something...";
+                _orderText.color = _drinkColors[drinkIndex];
+                break;
+            case GuestType.Group:
+                _orderText.text = $"Group order {_groupIndex + 1}/3:\n{_drinkNames[drinkIndex]} please!";
+                _orderText.color = _drinkColors[drinkIndex];
+                break;
+            default:
+                _orderText.text = $"I'd like a... {_drinkNames[drinkIndex]}?";
+                _orderText.color = _drinkColors[drinkIndex];
+                break;
+        }
+
+        // Setup patience for Picky type
+        if (_currentGuestType == GuestType.Picky)
+        {
+            _hasPatience = true;
+            _patienceTimer = _patienceMax;
+            Transform patienceParent = _customerBlock.transform.Find("PatienceBG");
+            if (patienceParent != null)
+                patienceParent.gameObject.SetActive(true);
+            if (_patienceBar != null)
+                _patienceBar.fillAmount = 1f;
+        }
+        else
+        {
+            _hasPatience = false;
+            Transform patienceParent = _customerBlock.transform.Find("PatienceBG");
+            if (patienceParent != null)
+                patienceParent.gameObject.SetActive(false);
+        }
+
+        _statusText.text = $"Customer {_customersServed} / {_totalCustomers}";
+        _isServing = true;
+
+        // Slide in customer block animation
+        StartCoroutine(SlideInElement(_customerBlock, 60f, 0.3f));
+        UpdateInventoryDisplay();
+    }
+
+    // ── Serving ────────────────────────────────────────────
+    private void ServeDrink(int drinkIndex)
+    {
+        if (!_isServing || _currentDrink < 0 || _isStocking) return;
+
+        if (_stock[drinkIndex] <= 0)
+        {
+            _orderText.text = $"😅 Sorry, we're out of {_drinkNames[drinkIndex]}!";
+            _orderText.color = new Color32(255, 180, 60, 255);
+            _apologyMode = true;
+            _apologyTipMultiplier = 0.5f;
+            _currentDrink = -1;
+            _isServing = false;
+            SoundManager.Play(SoundManager.SoundType.Error);
+            StartCoroutine(NextCustomerAfterDelay(0.5f));
+            return;
+        }
+
+        _stock[drinkIndex]--;
+        UpdateInventoryDisplay();
+
+        int revenue = 0;
+        bool correct = (drinkIndex == _currentDrink);
+
+        if (correct)
+        {
+            revenue = _drinkPrices[drinkIndex];
+            _earnings += revenue;
+
+            int tip = 0;
+            if (_currentGuestType == GuestType.Regular)
+                tip = Mathf.RoundToInt(revenue * 0.5f);
+            else if (_currentGuestType == GuestType.Drunk)
+                tip = Mathf.RoundToInt(revenue * 0.3f);
+            tip = Mathf.RoundToInt(tip * _apologyTipMultiplier);
+            _tips += tip;
+
+            _correctCount++;
+            _comboCount++;
+
+            if (_comboCount >= 3)
+            {
+                int comboBonus = 3;
+                _tips += comboBonus;
+                _comboText.text = $"🔥 {_comboCount}x Combo! +${comboBonus} Tip!";
+                _comboText.color = new Color32(255, 220, 60, 255);
+                StartCoroutine(ClearComboText());
+            }
+            else if (_comboCount == 2)
+            {
+                _comboText.text = $"✨ 2 in a row!";
+                _comboText.color = new Color32(200, 200, 100, 255);
+                StartCoroutine(ClearComboText());
+            }
+
+            _earningsText.text = $"Revenue: ${_earnings}  |  Tips: ${_tips}";
+            _orderText.text = "✅ Cheers!";
+            _orderText.color = GreenColor;
+            SoundManager.Play(SoundManager.SoundType.Success);
+            StartCoroutine(FlashFeedback(true));
+            StartCoroutine(FloatText($"+${revenue + tip}", GreenColor));
+        }
+        else
+        {
+            _comboCount = 0;
+            _comboText.text = "";
+            _earningsText.text = $"Revenue: ${_earnings}  |  Tips: ${_tips}";
+
+            if (_currentGuestType == GuestType.Drunk)
+            {
+                _orderText.text = "Hiccup... that's not what I wanted... but okay...";
+                _orderText.color = new Color32(180, 120, 200, 255);
+            }
+            else
+            {
+                _orderText.text = $"❌ Nope, I wanted {_drinkNames[_currentDrink]}!";
+                _orderText.color = RedColor;
+            }
+            SoundManager.Play(SoundManager.SoundType.Fail);
+            StartCoroutine(FlashFeedback(false));
+            StartCoroutine(FloatText("-", RedColor));
         }
 
         _currentDrink = -1;
+        _isServing = false;
+
+        if (_currentGuestType == GuestType.Group)
+        {
+            _groupIndex++;
+            if (_groupIndex < _groupCount)
+            {
+                StartCoroutine(NextGroupMemberAfterDelay(0.5f));
+                return;
+            }
+        }
+
+        if (_apologyMode)
+        {
+            _apologyMode = false;
+            _apologyTipMultiplier = 1.0f;
+        }
+
+        StartCoroutine(NextCustomerAfterDelay(0.5f));
     }
 
-    private System.Collections.IEnumerator NextCustomerAfterDelay(float delay)
+    private IEnumerator NextGroupMemberAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        int drinkIndex = Random.Range(0, 3);
+        _currentDrink = drinkIndex;
+        _orderText.text = $"Group order {_groupIndex + 1}/3:\n{_drinkNames[drinkIndex]} please!";
+        _orderText.color = _drinkColors[drinkIndex];
+        _isServing = true;
+        _customerLabel.text = $"Customer {_customersServed} ({_groupIndex + 1}/3)";
+        UpdateInventoryDisplay();
+    }
+
+    private IEnumerator NextCustomerAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
         NextCustomer();
     }
 
+    private IEnumerator ClearComboText()
+    {
+        yield return new WaitForSeconds(1.5f);
+        _comboText.text = "";
+    }
+
+    // ── Visual Feedback ────────────────────────────────────
+    private IEnumerator FlashFeedback(bool correct)
+    {
+        if (_flashOverlay == null) yield break;
+        _flashOverlay.SetActive(true);
+        Image flashImg = _flashOverlay.GetComponent<Image>();
+        flashImg.color = correct ? new Color32(60, 255, 100, 180) : new Color32(255, 60, 60, 180);
+        yield return new WaitForSeconds(0.15f);
+        flashImg.color = new Color32(0, 0, 0, 0);
+        yield return new WaitForSeconds(0.05f);
+        flashImg.color = correct ? new Color32(60, 255, 100, 100) : new Color32(255, 60, 60, 100);
+        yield return new WaitForSeconds(0.1f);
+        flashImg.color = new Color32(0, 0, 0, 0);
+        _flashOverlay.SetActive(false);
+    }
+
+    private IEnumerator FloatText(string message, Color32 color)
+    {
+        GameObject floatGO = new GameObject("FloatText", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+        floatGO.transform.SetParent(_canvas.transform, false);
+        RectTransform rt = floatGO.GetComponent<RectTransform>();
+        rt.anchorMin = new Vector2(0.35f, 0.45f);
+        rt.anchorMax = new Vector2(0.65f, 0.55f);
+        rt.offsetMin = Vector2.zero;
+        rt.offsetMax = Vector2.zero;
+
+        Text text = floatGO.GetComponent<Text>();
+        text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        text.fontSize = 36;
+        text.fontStyle = FontStyle.Bold;
+        text.alignment = TextAnchor.MiddleCenter;
+        text.color = color;
+        text.text = message;
+
+        float elapsed = 0f;
+        float duration = 0.8f;
+        Vector3 startPos = floatGO.transform.localPosition;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            floatGO.transform.localPosition = startPos + new Vector3(0, 60f * t, 0);
+            text.color = new Color32(color.r, color.g, color.b, (byte)Mathf.Lerp(255, 0, t));
+            yield return null;
+        }
+        Destroy(floatGO);
+    }
+
+    // ── End Shift & Settlement ─────────────────────────────
     private void EndShift()
     {
-        _orderText.text = $"Shift Complete!";
-        _orderText.color = new Color32(255, 220, 60, 255);
-        _orderText.fontSize = 28;
+        _isServing = false;
+        SetGameButtonsInteractable(false);
 
+        int grossRevenue = _earnings + _tips;
+        int netIncome = grossRevenue - _stockingCost;
+        int totalCustomers = _totalCustomers;
+        int servedCustomers = _correctCount;
+        float accuracy = totalCustomers > 0 ? (float)servedCustomers / totalCustomers : 0f;
+        int stars = Mathf.Clamp(Mathf.RoundToInt(accuracy * 5f), 0, 5);
+
+        GameController.Instance.AddMoney(grossRevenue);
+
+        // Wait a beat, then build settlement
+        StartCoroutine(ShowSettlementUI(netIncome, grossRevenue, stars, servedCustomers, totalCustomers));
+    }
+
+    private IEnumerator ShowSettlementUI(int netIncome, int grossRevenue, int stars, int served, int total)
+    {
+        // Fade out serve panel
+        if (_panel != null)
+        {
+            yield return FadePanel(_panel, 1f, 0f, 0.2f);
+            Destroy(_panel);
+        }
+
+        // Build settlement panel with gold border
+        GameObject settlePanel = CreatePanel("SettlePanel", DarkBrown, new Vector2(0.25f, 0.2f), new Vector2(0.75f, 0.8f));
+
+        // Gold border
+        GameObject borderPanel = CreateBar("GoldBorder", settlePanel.transform.parent,
+            new Vector2(0.25f, 0.2f), new Vector2(0.75f, 0.8f),
+            new Vector2(0, 0), new Vector2(0, 0), GoldColor);
+        borderPanel.transform.SetSiblingIndex(settlePanel.transform.GetSiblingIndex());
+        settlePanel.GetComponent<Image>().color = DarkBrown;
+
+        // Slide up animation
+        RectTransform sRT = settlePanel.GetComponent<RectTransform>();
+        float origY = sRT.anchoredPosition.y;
+        sRT.anchoredPosition = new Vector2(sRT.anchoredPosition.x, origY + 200f);
+        StartCoroutine(SlideUpPanel(sRT, origY, 0.3f));
+
+        // Title
+        _ = CreateTextOn("SettleTitle", settlePanel.transform, "📋 Shift Complete!",
+            new Vector2(0, 1), new Vector2(1, 1),
+            new Vector2(0, -50), new Vector2(0, -10),
+            24, TextAnchor.MiddleCenter, FontStyle.Bold, GoldColor);
+
+        // Star rating
+        string starString = "";
+        for (int i = 0; i < 5; i++)
+            starString += (i < stars) ? "⭐" : "☆";
+        _ = CreateTextOn("StarRating", settlePanel.transform, starString,
+            new Vector2(0, 1), new Vector2(1, 1),
+            new Vector2(0, -80), new Vector2(0, -56),
+            22, TextAnchor.MiddleCenter, FontStyle.Normal, GoldColor);
+
+        // Data rows
+        float rowY = 0.72f;
+        float rowH = 0.06f;
+
+        CreateDataRow(settlePanel.transform, "Customers Served", $"{served} / {total}", rowY, rowH, WarmText, GoldColor);
+        CreateDataRow(settlePanel.transform, "Revenue", $"${_earnings}", rowY - 0.08f, rowH, WarmText, new Color32(200, 200, 180, 255));
+        CreateDataRow(settlePanel.transform, "Tips", $"${_tips}", rowY - 0.16f, rowH, WarmText, new Color32(200, 200, 180, 255));
+        CreateDataRow(settlePanel.transform, "Stock Cost", $"${_stockingCost}", rowY - 0.24f, rowH, WarmText, new Color32(200, 200, 180, 255));
+
+        // Separator line
+        _ = CreateBar("Separator", settlePanel.transform,
+            new Vector2(0.2f, rowY - 0.28f), new Vector2(0.8f, rowY - 0.27f),
+            Vector2.zero, Vector2.zero, new Color32(80, 70, 55, 255));
+
+        // Net income
+        string netStr = netIncome >= 0 ? $"+${netIncome}" : $"-${Mathf.Abs(netIncome)}";
+        Color32 netColor = netIncome >= 0 ? GreenColor : RedColor;
+        CreateDataRow(settlePanel.transform, "Net Income", netStr, rowY - 0.35f, 0.08f, WarmText, netColor);
+
+        // Confirm button
+        _ = CreateButton("SettleConfirm", settlePanel.transform,
+            new Vector2(0.3f, 0.06f), new Vector2(0.7f, 0.18f),
+            GoldColor, new Color32(255, 220, 100, 255), "✅ Finish Shift", 20,
+            () => {
+                _onComplete?.Invoke(_earnings + _tips);
+                _onComplete = null;
+                _isActive = false;
+                Destroy(_canvas.gameObject);
+            });
+    }
+
+    private void CreateDataRow(Transform parent, string label, string value, float yCenter, float height, Color32 labelColor, Color32 valueColor)
+    {
+        _ = CreateTextOn($"RowLabel_{label}", parent, label,
+            new Vector2(0.1f, yCenter), new Vector2(0.5f, yCenter + height),
+            Vector2.zero, Vector2.zero, 16, TextAnchor.MiddleLeft, FontStyle.Normal, labelColor);
+        _ = CreateTextOn($"RowValue_{label}", parent, value,
+            new Vector2(0.5f, yCenter), new Vector2(0.9f, yCenter + height),
+            Vector2.zero, Vector2.zero, 18, TextAnchor.MiddleRight, FontStyle.Bold, valueColor);
+    }
+
+    private IEnumerator SlideUpPanel(RectTransform rt, float targetY, float duration)
+    {
+        float elapsed = 0f;
+        float startY = rt.anchoredPosition.y;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, Mathf.Lerp(startY, targetY, t));
+            yield return null;
+        }
+        rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, targetY);
+    }
+
+    // ── Helpers ────────────────────────────────────────────
+    private string GetInventoryString()
+    {
+        return $"🍺 Beer x{_stock[0]}  |  🥃 Whiskey x{_stock[1]}  |  🍷 Wine x{_stock[2]}";
+    }
+
+    private void UpdateInventoryDisplay()
+    {
+        if (_inventoryBeer != null) _inventoryBeer.text = $"{_stock[0]}";
+        if (_inventoryWhiskey != null) _inventoryWhiskey.text = $"{_stock[1]}";
+        if (_inventoryWine != null) _inventoryWine.text = $"{_stock[2]}";
+    }
+
+    private void SetGameButtonsInteractable(bool interactable)
+    {
+        if (_panel == null) return;
         foreach (Transform t in _panel.transform)
         {
             Button b = t.GetComponent<Button>();
-            if (b != null) b.interactable = false;
+            if (b != null) b.interactable = interactable;
         }
-
-        // Find GameController to add earnings
-        GameController gc = GameController.Instance;
-        if (gc != null)
-        {
-            // Access money via public method
-            gc.AddMoney(_earnings);
-        }
-
-        StartCoroutine(FinishAfterDelay(2f));
     }
 
-    private System.Collections.IEnumerator FinishAfterDelay(float delay)
+    // ── UI Helpers ─────────────────────────────────────────
+    private GameObject CreatePanel(string name, Color32 bgColor, Vector2 anchorMin, Vector2 anchorMax)
     {
-        yield return new WaitForSeconds(delay);
-        _isActive = false;
-        var cb = _onComplete;
-        _onComplete = null;
-        Destroy(_canvas.gameObject);
-        cb?.Invoke(_earnings);
+        GameObject panel = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        panel.transform.SetParent(_canvas.transform, false);
+        Image img = panel.GetComponent<Image>();
+        img.color = bgColor;
+        RectTransform rt = panel.GetComponent<RectTransform>();
+        rt.anchorMin = anchorMin;
+        rt.anchorMax = anchorMax;
+        rt.offsetMin = Vector2.zero;
+        rt.offsetMax = Vector2.zero;
+        return panel;
+    }
+
+    private GameObject CreateBar(string name, Transform parent, Vector2 anchorMin, Vector2 anchorMax,
+        Vector2 offsetMin, Vector2 offsetMax, Color32 color)
+    {
+        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        go.transform.SetParent(parent, false);
+        Image img = go.GetComponent<Image>();
+        img.color = color;
+        RectTransform rt = go.GetComponent<RectTransform>();
+        rt.anchorMin = anchorMin;
+        rt.anchorMax = anchorMax;
+        rt.offsetMin = offsetMin;
+        rt.offsetMax = offsetMax;
+        return go;
+    }
+
+    private GameObject CreateImage(string name, Transform parent, Vector2 anchorMin, Vector2 anchorMax,
+        Vector2 offsetMin, Vector2 offsetMax, Color32 color)
+    {
+        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        go.transform.SetParent(parent, false);
+        Image img = go.GetComponent<Image>();
+        img.color = color;
+        RectTransform rt = go.GetComponent<RectTransform>();
+        rt.anchorMin = anchorMin;
+        rt.anchorMax = anchorMax;
+        rt.offsetMin = offsetMin;
+        rt.offsetMax = offsetMax;
+        return go;
+    }
+
+    private Text CreateTextOn(string name, Transform parent, string content,
+        Vector2 anchorMin, Vector2 anchorMax, Vector2 offsetMin, Vector2 offsetMax,
+        int fontSize, TextAnchor alignment, FontStyle fontStyle, Color32 color)
+    {
+        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+        go.transform.SetParent(parent, false);
+        RectTransform rt = go.GetComponent<RectTransform>();
+        rt.anchorMin = anchorMin;
+        rt.anchorMax = anchorMax;
+        rt.offsetMin = offsetMin;
+        rt.offsetMax = offsetMax;
+
+        Text text = go.GetComponent<Text>();
+        text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        text.fontSize = fontSize;
+        text.alignment = alignment;
+        text.fontStyle = fontStyle;
+        text.color = color;
+        text.text = content;
+        text.horizontalOverflow = HorizontalWrapMode.Wrap;
+        text.verticalOverflow = VerticalWrapMode.Truncate;
+        return text;
+    }
+
+    private GameObject CreateButton(string name, Transform parent,
+        Vector2 anchorMin, Vector2 anchorMax,
+        Color32 normalColor, Color32 hoverColor,
+        string label, int fontSize, UnityEngine.Events.UnityAction onClick)
+    {
+        GameObject btnGO = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        btnGO.transform.SetParent(parent, false);
+        Image btnImg = btnGO.GetComponent<Image>();
+        btnImg.color = normalColor;
+        btnImg.raycastTarget = true;
+        RectTransform btnRT = btnGO.GetComponent<RectTransform>();
+        btnRT.anchorMin = anchorMin;
+        btnRT.anchorMax = anchorMax;
+        btnRT.offsetMin = Vector2.zero;
+        btnRT.offsetMax = Vector2.zero;
+
+        // Button text
+        Text btnText = new GameObject("Text", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text)).GetComponent<Text>();
+        btnText.transform.SetParent(btnGO.transform, false);
+        RectTransform textRT = btnText.GetComponent<RectTransform>();
+        textRT.anchorMin = Vector2.zero;
+        textRT.anchorMax = Vector2.one;
+        textRT.offsetMin = new Vector2(4, 2);
+        textRT.offsetMax = new Vector2(-4, -2);
+        btnText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        btnText.fontSize = fontSize;
+        btnText.alignment = TextAnchor.MiddleCenter;
+        btnText.fontStyle = FontStyle.Bold;
+        btnText.text = label;
+        btnText.color = new Color32(20, 22, 26, 255);
+
+        // Button component
+        Button btn = btnGO.AddComponent<Button>();
+        btn.targetGraphic = btnImg;
+        btn.onClick.AddListener(onClick);
+
+        // Click scale animation
+        btn.onClick.AddListener(() => StartCoroutine(ButtonClickScale(btnGO.transform)));
+
+        // Hover effect using EventTrigger
+        EventTrigger trigger = btnGO.AddComponent<EventTrigger>();
+
+        EventTrigger.Entry enterEntry = new EventTrigger.Entry();
+        enterEntry.eventID = EventTriggerType.PointerEnter;
+        enterEntry.callback.AddListener((data) => {
+            btnImg.color = hoverColor;
+        });
+        trigger.triggers.Add(enterEntry);
+
+        // Click sound effect
+        btn.onClick.AddListener(() => SoundManager.Play(SoundManager.SoundType.UIClick));
+
+        EventTrigger.Entry exitEntry = new EventTrigger.Entry();
+        exitEntry.eventID = EventTriggerType.PointerExit;
+        exitEntry.callback.AddListener((data) => {
+            btnImg.color = normalColor;
+        });
+        trigger.triggers.Add(exitEntry);
+
+        return btnGO;
+    }
+
+    private IEnumerator ButtonClickScale(Transform t)
+    {
+        Vector3 origScale = t.localScale;
+        t.localScale = origScale * 0.95f;
+        yield return new WaitForSeconds(0.1f);
+        t.localScale = origScale;
+    }
+
+    private IEnumerator FadePanel(GameObject panel, float fromAlpha, float toAlpha, float duration)
+    {
+        if (panel == null) yield break;
+        CanvasGroup cg = panel.GetComponent<CanvasGroup>();
+        if (cg == null) cg = panel.AddComponent<CanvasGroup>();
+        cg.alpha = fromAlpha;
+        panel.SetActive(true);
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            cg.alpha = Mathf.Lerp(fromAlpha, toAlpha, elapsed / duration);
+            yield return null;
+        }
+        cg.alpha = toAlpha;
+        if (toAlpha <= 0f) panel.SetActive(false);
+    }
+
+    private IEnumerator FadeAndDestroyPanel(GameObject panel, float duration)
+    {
+        if (panel == null) yield break;
+        yield return FadePanel(panel, 1f, 0f, duration);
+        Destroy(panel);
+    }
+
+    private IEnumerator SlideInElement(GameObject go, float distance, float duration)
+    {
+        if (go == null) yield break;
+        RectTransform rt = go.GetComponent<RectTransform>();
+        Vector2 origPos = rt.anchoredPosition;
+        rt.anchoredPosition = new Vector2(origPos.x, origPos.y + distance);
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            rt.anchoredPosition = new Vector2(origPos.x, Mathf.Lerp(origPos.y + distance, origPos.y, t));
+            yield return null;
+        }
+        rt.anchoredPosition = origPos;
     }
 
     private Text CreateText(string name, Transform parent, Vector2 anchorMin, Vector2 anchorMax,
@@ -282,7 +1125,7 @@ public class BarMinigame : MonoBehaviour
         text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         text.fontSize = fontSize;
         text.alignment = alignment;
-        text.color = new Color32(246, 240, 229, 255);
+        text.color = WarmText;
         text.horizontalOverflow = HorizontalWrapMode.Wrap;
         text.verticalOverflow = VerticalWrapMode.Truncate;
         return text;

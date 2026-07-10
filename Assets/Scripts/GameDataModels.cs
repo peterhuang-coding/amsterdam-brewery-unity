@@ -139,3 +139,62 @@ public static class UIFactory
         }
     }
 }
+
+// ── Bar system data models (F2) ──────────────────────
+
+[Serializable]
+public sealed class DrinkData
+{
+    public string id;       // "beer", "whiskey", "wine"
+    public string name;     // "🍺 Beer"
+    public int costPrice;   // 进货成本
+    public int sellPrice;   // 售价
+    public Color32 color;   // UI 颜色
+}
+
+public enum CustomerType { Normal, Regular, Picky, Drunk, Group }
+
+[Serializable]
+public sealed class CustomerData
+{
+    public CustomerType type;
+    public string displayName;        // "普通客人", "熟客", "挑剔客", "醉汉", "旅行团"
+    public string greeting;           // 出现时的招呼语
+    public float patienceSeconds;     // 耐心时间（秒）
+    public float tipMultiplier;       // 小费倍率
+    public int groupSize;             // 旅行团人数
+}
+
+[Serializable]
+public sealed class BarShiftResult
+{
+    public int customersServed;
+    public int totalCustomers;
+    public int revenue;               // 营业收入
+    public int cost;                  // 进货成本
+    public int tips;                  // 小费
+    public int netIncome;             // 净收入
+    public float accuracy;            // 正确率 0.0-1.0
+    public int starRating;            // 1-5 星评价
+}
+
+[Serializable]
+public sealed class DrinkDatabase { public DrinkData[] drinks; }
+
+[Serializable]
+public sealed class CustomerDatabase { public CustomerData[] customers; }
+
+public static class DataLoader
+{
+    public static DrinkDatabase LoadDrinks()
+    {
+        TextAsset asset = Resources.Load<TextAsset>("Data/bar_drinks");
+        return JsonUtility.FromJson<DrinkDatabase>(asset.text);
+    }
+
+    public static CustomerDatabase LoadCustomers()
+    {
+        TextAsset asset = Resources.Load<TextAsset>("Data/bar_customers");
+        return JsonUtility.FromJson<CustomerDatabase>(asset.text);
+    }
+}

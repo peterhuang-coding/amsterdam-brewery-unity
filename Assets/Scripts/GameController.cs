@@ -57,6 +57,7 @@ public sealed class GameController : MonoBehaviour
     private int _currentDay = 1;
     private int _timeIndex;
     private int _money = 250;
+    public int Money => _money;
     private string _currentLocation = "de_pijp";
 
     private bool _barOpen;

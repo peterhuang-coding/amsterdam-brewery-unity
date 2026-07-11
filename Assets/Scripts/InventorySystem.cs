@@ -148,6 +148,7 @@ public class InventorySystem : MonoBehaviour
     public bool HasLore(string loreId) => _lore.ContainsKey(loreId);
     public bool HasSystem(string systemId) => _unlockedSystems.Contains(systemId);
     public int GetAffection(string characterId) => _affection.GetValueOrDefault(characterId, 0);
+    public void SetAffection(string characterId, int value) { _affection[characterId] = value; }
     public int GetItemCount(string itemId) => _items.GetValueOrDefault(itemId, 0);
     public int FragmentCount => _fragments.Count;
 

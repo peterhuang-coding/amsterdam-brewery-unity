@@ -42,6 +42,13 @@ public class SceneTransitionManager : MonoBehaviour
         _player = FindAnyObjectByType<PlayerController>(FindObjectsInactive.Include);
         BuildScene(_currentLocation);
 
+        // [Audio] Play initial scene music and ambience
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayMusic(_currentLocation);
+            AudioManager.Instance.PlayAmbience(_currentLocation);
+        }
+
         // Initialize minimap
         GameObject mmGO = new GameObject("MinimapController");
         mmGO.transform.SetParent(transform);
@@ -94,6 +101,13 @@ public class SceneTransitionManager : MonoBehaviour
 
         // Switch scene
         BuildScene(locationId);
+
+        // [Audio] Play scene music and ambience
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayMusic(locationId);
+            AudioManager.Instance.PlayAmbience(locationId);
+        }
 
         // Fade in
         t = 0;

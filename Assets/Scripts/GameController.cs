@@ -83,6 +83,7 @@ public sealed class GameController : MonoBehaviour
     public int CurrentDay => _currentDay;
     public string CurrentTimeLabel => CurrentTime().Replace("_", " ");
     public string CurrentLocationName => _locations.ContainsKey(_currentLocation) ? _locations[_currentLocation].title : _currentLocation;
+    public string CurrentLocationId => _currentLocation;
     public int TriggeredEventCount => _triggeredDialogueIds.Count;
     public int BarServed => _barServed;
     public int BarRevenue => _barRevenue;
@@ -177,6 +178,9 @@ public sealed class GameController : MonoBehaviour
             var _c = CharacterPanel.Instance;
             var _a = AchievementSystem.Instance;
             var _t = TutorialSystem.Instance;
+            var _s = ShopSystem.Instance;
+            var _d = DialogueLog.Instance;
+            var _save = SaveSystem.Instance;
         }
     }
 
@@ -300,6 +304,35 @@ public sealed class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
             if (AchievementSystem.Instance != null) AchievementSystem.Instance.TogglePanel();
+            return;
+        }
+        // [SaveSystem] Save/Load
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            if (SaveSystem.Instance != null) SaveSystem.Instance.ToggleSavePanel();
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            if (SaveSystem.Instance != null) SaveSystem.Instance.QuickLoad();
+            return;
+        }
+        // [BarUpgrade] Upgrade panel
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            if (BarUpgradeSystem.Instance != null) BarUpgradeSystem.Instance.TogglePanel();
+            return;
+        }
+        // [ShopSystem] Shop panel
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            if (ShopSystem.Instance != null) ShopSystem.Instance.TogglePanel();
+            return;
+        }
+        // [DialogueLog] Dialogue history
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            if (DialogueLog.Instance != null) DialogueLog.Instance.TogglePanel();
             return;
         }
 
@@ -718,6 +751,9 @@ public sealed class GameController : MonoBehaviour
         // Notify tutorial
         if (Application.isPlaying && TutorialSystem.Instance != null)
             TutorialSystem.Instance.OnTimeAdvanced();
+        // [SaveSystem] Auto-save
+        if (Application.isPlaying && SaveSystem.Instance != null)
+            SaveSystem.Instance.AutoSave();
     }
 
     private void SwitchLocation(string locationId)
@@ -891,6 +927,10 @@ public sealed class GameController : MonoBehaviour
             {
                 StartCoroutine(AnimateDialogueIn());
             }
+            // [DialogueLog] Record dialogue
+            if (DialogueLog.Instance != null && _activeDialogue != null && _activeDialogue.lines != null && _activeDialogue.lines.Length > 0)
+                DialogueLog.Instance.RecordDialogue(_activeDialogue.id, _activeDialogue.lines[0].speaker,
+                    _activeDialogue.lines[0].text, _currentDay, CurrentTimeLabel());
             return;
         }
 
@@ -910,6 +950,10 @@ public sealed class GameController : MonoBehaviour
         {
             StartCoroutine(AnimateDialogueIn());
         }
+        // [DialogueLog] Record dialogue
+        if (DialogueLog.Instance != null && _activeDialogue != null && _activeDialogue.lines != null && _activeDialogue.lines.Length > 0)
+            DialogueLog.Instance.RecordDialogue(_activeDialogue.id, _activeDialogue.lines[0].speaker,
+                _activeDialogue.lines[0].text, _currentDay, CurrentTimeLabel());
     }
 
     // F4: Slide + fade dialogue panel in
@@ -1015,6 +1059,10 @@ public sealed class GameController : MonoBehaviour
                 (byte)(speakerColor.b * 0.7f),
                 200);
         }
+
+        // [DialogueLog] Record dialogue line
+        if (DialogueLog.Instance != null)
+            DialogueLog.Instance.RecordDialogueLine(line.speaker, line.text);
 
         // F3: Start typewriter effect
         if (_typewriterCoroutine != null)

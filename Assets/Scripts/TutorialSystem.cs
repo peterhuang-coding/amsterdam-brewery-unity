@@ -46,6 +46,11 @@ public class TutorialSystem : MonoBehaviour
     private Vector2 _arrowStartPos;
     private Vector2 _arrowEndPos;
 
+    // Welcome screen
+    private Canvas _welcomeCanvas;
+    private CanvasGroup _welcomeGroup;
+    private bool _welcomeDismissed;
+
     // Arrow positions per step (approximate on-screen positions)
     private readonly Dictionary<string, Vector2> _arrowPositions = new Dictionary<string, Vector2>
     {
@@ -73,6 +78,7 @@ public class TutorialSystem : MonoBehaviour
         _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         InitializeSteps();
         BuildUI();
+        BuildWelcomeScreen();
     }
 
     private void InitializeSteps()
@@ -249,6 +255,131 @@ public class TutorialSystem : MonoBehaviour
     }
 
     // ── Animations ──────────────────────────────────────
+
+    // ── Welcome Screen ──────────────────────────────────
+
+    private void BuildWelcomeScreen()
+    {
+        GameObject canvasGO = new GameObject("WelcomeCanvas");
+        canvasGO.transform.SetParent(transform);
+        _welcomeCanvas = canvasGO.AddComponent<Canvas>();
+        _welcomeCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        _welcomeCanvas.sortingOrder = 500;
+        CanvasScaler scaler = canvasGO.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1280, 720);
+        canvasGO.AddComponent<GraphicRaycaster>();
+        _welcomeGroup = canvasGO.AddComponent<CanvasGroup>();
+        _welcomeGroup.alpha = 0f;
+
+        Transform root = _welcomeCanvas.transform;
+
+        // Dark overlay
+        Image overlay = CreateImage("Overlay", root,
+            new RectSpec(Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero),
+            new Color32(8, 10, 14, 240));
+
+        // Title
+        Text titleText = CreateText("Title", root,
+            new RectSpec(new Vector2(0.15f, 0.55f), new Vector2(0.85f, 0.80f),
+                Vector2.zero, Vector2.zero),
+            48, TextAnchor.MiddleCenter);
+        titleText.text = "🍺 Amsterdam Brewery";
+        titleText.color = new Color32(236, 180, 87, 255);
+        titleText.fontStyle = FontStyle.Bold;
+
+        // Subtitle
+        Text subText = CreateText("Subtitle", root,
+            new RectSpec(new Vector2(0.15f, 0.45f), new Vector2(0.85f, 0.55f),
+                Vector2.zero, Vector2.zero),
+            20, TextAnchor.MiddleCenter);
+        subText.text = "A narrative RPG set in the heart of Amsterdam";
+        subText.color = new Color32(180, 175, 165, 255);
+
+        // Controls info
+        Text controlsText = CreateText("Controls", root,
+            new RectSpec(new Vector2(0.15f, 0.22f), new Vector2(0.85f, 0.42f),
+                Vector2.zero, Vector2.zero),
+            16, TextAnchor.UpperLeft);
+        controlsText.text =
+            "━━━ Controls ━━━\n\n" +
+            "  WASD / Arrows    Move around the city\n" +
+            "  1 - 4                Switch locations\n" +
+            "  B / S / F         Open bar / Serve / Close\n" +
+            "  Space                Advance time\n" +
+            "  I / C / P           Inventory / Character / Achievements\n" +
+            "  M / U / H          Shop / Upgrades / Dialogue Log\n" +
+            "  L / O                 Save / Quick Load";
+        controlsText.color = new Color32(200, 196, 186, 255);
+        controlsText.lineSpacing = 1.4f;
+
+        // Start button
+        GameObject btnGO = new GameObject("StartButton", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        btnGO.transform.SetParent(root, false);
+        RectTransform btnRT = btnGO.GetComponent<RectTransform>();
+        btnRT.anchorMin = new Vector2(0.35f, 0.06f);
+        btnRT.anchorMax = new Vector2(0.65f, 0.14f);
+        btnRT.offsetMin = Vector2.zero;
+        btnRT.offsetMax = Vector2.zero;
+        Image btnImg = btnGO.GetComponent<Image>();
+        btnImg.color = new Color32(194, 87, 52, 220);
+        Button btn = btnGO.AddComponent<Button>();
+        btn.targetGraphic = btnImg;
+        ColorBlock colors = btn.colors;
+        colors.highlightedColor = new Color32(220, 120, 70, 255);
+        colors.pressedColor = new Color32(160, 70, 40, 255);
+        btn.colors = colors;
+
+        Text btnText = CreateText("BtnText", btnGO.transform,
+            new RectSpec(Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero),
+            22, TextAnchor.MiddleCenter);
+        btnText.text = "▶  Begin Your Story";
+        btnText.color = new Color32(255, 255, 255, 255);
+        btnText.fontStyle = FontStyle.Bold;
+
+        btn.onClick.AddListener(() => DismissWelcome());
+
+        // Fade in
+        canvasGO.SetActive(true);
+        StartCoroutine(WelcomeFadeIn());
+    }
+
+    private IEnumerator WelcomeFadeIn()
+    {
+        _welcomeGroup.alpha = 0f;
+        for (float t = 0; t < 0.5f; t += Time.deltaTime)
+        {
+            float p = Mathf.Min(t / 0.5f, 1f);
+            _welcomeGroup.alpha = p * p * (3f - 2f * p);
+            yield return null;
+        }
+        _welcomeGroup.alpha = 1f;
+    }
+
+    private void DismissWelcome()
+    {
+        if (_welcomeDismissed) return;
+        _welcomeDismissed = true;
+
+        StopAllCoroutines();
+        StartCoroutine(WelcomeFadeOut());
+    }
+
+    private IEnumerator WelcomeFadeOut()
+    {
+        for (float t = 0; t < 0.3f; t += Time.deltaTime)
+        {
+            float p = Mathf.Min(t / 0.3f, 1f);
+            _welcomeGroup.alpha = 1f - p;
+            yield return null;
+        }
+        _welcomeGroup.alpha = 0f;
+        Destroy(_welcomeCanvas.gameObject);
+        _welcomeCanvas = null;
+
+        // Start step-by-step tutorial
+        TryStartTutorial();
+    }
 
     private IEnumerator AnimateIn()
     {

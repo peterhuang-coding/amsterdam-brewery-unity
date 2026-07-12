@@ -264,3 +264,4 @@ public class PlayerController : MonoBehaviour
             _nearbyInteractable = null;
         }
     }
+}

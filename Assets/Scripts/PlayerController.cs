@@ -32,6 +32,9 @@ public class PlayerController : MonoBehaviour
     // Interaction
     private Interactable _nearbyInteractable;
 
+    // 玩家头顶气泡
+    private NPCDialogueBubble _playerBubble;
+
     public Vector2 Position => transform.position;
     public Vector2 FacingDirection => _lastDirection;
 
@@ -118,6 +121,11 @@ public class PlayerController : MonoBehaviour
         }
 
         gameObject.name = "Player";
+
+        // 创建玩家头顶气泡
+        GameObject bubbleGO = new GameObject("PlayerDialogueBubble");
+        bubbleGO.transform.SetParent(transform);
+        _playerBubble = bubbleGO.AddComponent<NPCDialogueBubble>();
     }
 
     // Track last position for footstep sounds
@@ -262,6 +270,29 @@ public class PlayerController : MonoBehaviour
             // Reset scale
             interactable.transform.localScale = Vector3.one;
             _nearbyInteractable = null;
+        }
+    }
+
+    /// <summary>
+    /// 显示玩家头顶气泡（对话开始时调用）。
+    /// </summary>
+    public void ShowPlayerBubble(string text)
+    {
+        if (_playerBubble != null)
+        {
+            _playerBubble.ShowBubble(text, null, Vector3.zero);
+            _playerBubble.SetExpression("laugh");
+        }
+    }
+
+    /// <summary>
+    /// 隐藏玩家头顶气泡（对话结束时调用）。
+    /// </summary>
+    public void HidePlayerBubble()
+    {
+        if (_playerBubble != null)
+        {
+            _playerBubble.HideBubble();
         }
     }
 }

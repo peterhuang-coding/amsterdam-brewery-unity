@@ -115,6 +115,12 @@ public class Interactable : MonoBehaviour
             case InteractableType.NPC:
                 if (autoTriggerDialogue && !string.IsNullOrEmpty(dialogueId))
                 {
+                    // 显示玩家头顶气泡
+                    PlayerController player = FindAnyObjectByType<PlayerController>(FindObjectsInactive.Include);
+                    if (player != null)
+                    {
+                        player.ShowPlayerBubble("[Talking]");
+                    }
                     DialogueManager.Instance.ShowDialogueById(dialogueId, OnDialogueComplete);
                 }
                 break;
@@ -173,6 +179,12 @@ public class Interactable : MonoBehaviour
     private void OnDialogueComplete()
     {
         Debug.Log($"Dialogue ended for {objectName}");
+        // 隐藏玩家头顶气泡
+        PlayerController player = FindAnyObjectByType<PlayerController>(FindObjectsInactive.Include);
+        if (player != null)
+        {
+            player.HidePlayerBubble();
+        }
     }
 
     private void OnDestroy()

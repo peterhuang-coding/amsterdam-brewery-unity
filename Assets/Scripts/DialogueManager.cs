@@ -43,6 +43,9 @@ public class DialogueManager : MonoBehaviour
     private int _currentLineIndex;
     private System.Action _onComplete;
 
+    // 对话气泡
+    private NPCDialogueBubble _bubble;
+
     // Color mapping for speakers
     private static readonly Dictionary<string, Color32> SpeakerColors = new Dictionary<string, Color32>
     {
@@ -173,6 +176,11 @@ public class DialogueManager : MonoBehaviour
         // Set initial state
         _dialoguePanel.SetActive(false);
         _overlay.gameObject.SetActive(false);
+
+        // 创建对话气泡
+        GameObject bubbleGO = new GameObject("NPCDialogueBubble");
+        bubbleGO.transform.SetParent(transform);
+        _bubble = bubbleGO.AddComponent<NPCDialogueBubble>();
     }
 
     public void ShowDialogueById(string dialogueId, System.Action onComplete = null)
@@ -207,6 +215,14 @@ public class DialogueManager : MonoBehaviour
         _overlay.color = new Color32(0, 0, 0, 180);
         _overlay.raycastTarget = true;
 
+        // 显示对话气泡（第一行）
+        DialogueLine firstLine = data.lines[0];
+        if (_bubble != null)
+        {
+            _bubble.ShowBubble(firstLine.text, null, Vector3.zero);
+            _bubble.SetExpression(firstLine.expression);
+        }
+
         RenderLine();
     }
 
@@ -226,6 +242,13 @@ public class DialogueManager : MonoBehaviour
         }
 
         DialogueLine line = _currentDialogue.lines[_currentLineIndex];
+
+        // 更新对话气泡
+        if (_bubble != null)
+        {
+            _bubble.UpdateText(line.text);
+            _bubble.SetExpression(line.expression);
+        }
 
         // Set speaker name and color
         string speakerName = GetSpeakerName(line.speaker);
@@ -412,6 +435,12 @@ public class DialogueManager : MonoBehaviour
         _overlay.color = new Color32(0, 0, 0, 0);
         _overlay.raycastTarget = false;
         _choiceContainer.SetActive(false);
+
+        // 隐藏对话气泡
+        if (_bubble != null)
+        {
+            _bubble.HideBubble();
+        }
 
         System.Action callback = _onComplete;
         _currentDialogue = null;

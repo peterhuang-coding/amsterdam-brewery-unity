@@ -1513,8 +1513,6 @@ public sealed class GameController : MonoBehaviour
 
     private string CurrentTime() => _timesOfDay[_timeIndex];
 
-    private string CurrentTimeLabel() => CurrentTime().Replace("_", " ");
-
     // T7: Feedback fade — smoothly show and auto-hide feedback text
     private void SetFeedback(string message)
     {

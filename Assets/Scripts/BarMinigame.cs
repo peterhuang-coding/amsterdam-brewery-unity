@@ -127,6 +127,11 @@ public class BarMinigame : MonoBehaviour
     // ── Combo ──────────────────────────────────────────────
     private int _comboCount = 0;
 
+    // ── Upgrade State ───────────────────────────────────────
+    private int _upgradeBonus = 0;
+    private float _tipMultiplier = 1.0f;
+    private float _serviceSpeed = 1.0f;
+
     private void Awake()
     {
         if (_instance == null)
@@ -201,6 +206,20 @@ public class BarMinigame : MonoBehaviour
         _apologyTipMultiplier = 1.0f;
         _apologyMode = false;
         _totalCustomers = Random.Range(5, 9);
+
+        // [Gameplay] Apply upgrade bonuses
+        if (BarUpgradeSystem.Instance != null)
+        {
+            _upgradeBonus = (int)BarUpgradeSystem.Instance.GetDrinkPriceBonus();
+            _tipMultiplier = BarUpgradeSystem.Instance.GetTipMultiplier();
+            _serviceSpeed = BarUpgradeSystem.Instance.GetServiceSpeedMultiplier();
+        }
+        else
+        {
+            _upgradeBonus = 0;
+            _tipMultiplier = 1.0f;
+            _serviceSpeed = 1.0f;
+        }
 
         for (int i = 0; i < 3; i++) _stock[i] = 0;
         _stockingCost = 0;
@@ -641,14 +660,14 @@ public class BarMinigame : MonoBehaviour
 
         if (correct)
         {
-            revenue = _drinkPrices[drinkIndex];
+            revenue = _drinkPrices[drinkIndex] + _upgradeBonus;
             _earnings += revenue;
 
             int tip = 0;
             if (_currentGuestType == GuestType.Regular)
-                tip = Mathf.RoundToInt(revenue * 0.5f);
+                tip = Mathf.RoundToInt(revenue * 0.5f * _tipMultiplier);
             else if (_currentGuestType == GuestType.Drunk)
-                tip = Mathf.RoundToInt(revenue * 0.3f);
+                tip = Mathf.RoundToInt(revenue * 0.3f * _tipMultiplier);
             tip = Mathf.RoundToInt(tip * _apologyTipMultiplier);
             _tips += tip;
 
@@ -676,6 +695,21 @@ public class BarMinigame : MonoBehaviour
             SoundManager.Play(SoundManager.SoundType.Success);
             StartCoroutine(FlashFeedback(true));
             StartCoroutine(FloatText($"+${revenue + tip}", GreenColor));
+
+            // [Gameplay] Affection gain for Erik (bar owner)
+            if (InventorySystem.Instance != null)
+            {
+                int current = InventorySystem.Instance.GetAffection("erik");
+                InventorySystem.Instance.SetAffection("erik", current + 1);
+                AchievementSystem.Instance?.CheckAffectionAchievement("erik", current + 1);
+            }
+
+            // [Gameplay] Register drink sold for achievement
+            if (AchievementSystem.Instance != null)
+            {
+                AchievementSystem.Instance.RegisterDrinkSold(_drinkShortNames[drinkIndex]);
+            }
+
         }
         else
         {
@@ -864,6 +898,12 @@ public class BarMinigame : MonoBehaviour
         CreateDataRow(settlePanel.transform, "Tips", $"${_tips}", rowY - 0.16f, rowH, WarmText, new Color32(220, 200, 120, 255));
         CreateDataRow(settlePanel.transform, "Stock Cost", $"${_stockingCost}", rowY - 0.24f, rowH, WarmText, new Color32(220, 140, 120, 255));
         CreateDataRow(settlePanel.transform, "Accuracy", $"{(accuracy * 100):F0}%", rowY - 0.32f, rowH, WarmText, new Color32(180, 200, 220, 255));
+
+        // [Gameplay] Show upgrade bonus
+        if (_upgradeBonus > 0)
+        {
+            CreateDataRow(settlePanel.transform, "Upgrade Bonus", $"+${_upgradeBonus * served}", rowY - 0.40f, rowH, WarmText, new Color32(100, 200, 255, 255));
+        }
 
         // Separator line
         _ = CreateBar("Separator", settlePanel.transform,

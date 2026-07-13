@@ -206,6 +206,20 @@ public class AchievementSystem : MonoBehaviour
             TryUnlock("friends");
     }
 
+    /// <summary>
+    /// Returns list of IDs for all unlocked achievements (used by SaveSystem).
+    /// </summary>
+    public List<string> GetUnlockedAchievementIds()
+    {
+        List<string> ids = new List<string>();
+        foreach (Achievement a in _achievements)
+        {
+            if (a.unlocked)
+                ids.Add(a.id);
+        }
+        return ids;
+    }
+
     // ── Core ────────────────────────────────────────────
 
     private void TryUnlock(string achievementId)

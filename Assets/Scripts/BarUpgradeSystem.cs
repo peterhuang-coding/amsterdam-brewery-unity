@@ -77,7 +77,7 @@ public sealed class BarUpgradeSystem : MonoBehaviour
             Debug.LogWarning("[BarUpgrade] GameController.Instance is null, cannot deduct money.");
             return;
         }
-        if (GameController.Instance.GetMoney() < upgrade.cost)
+        if (GameController.Instance.Money < upgrade.cost)
         {
             Debug.Log($"[BarUpgrade] Not enough money for {upgrade.name} (need ${upgrade.cost}).");
             return;
@@ -381,7 +381,7 @@ public sealed class BarUpgradeSystem : MonoBehaviour
     private int GetCurrentMoney()
     {
         if (GameController.Instance != null)
-            return GameController.Instance.GetMoney();
+            return GameController.Instance.Money;
         return 0;
     }
 

@@ -87,6 +87,16 @@ public sealed class GameController : MonoBehaviour
     public int TriggeredEventCount => _triggeredDialogueIds.Count;
     public int BarServed => _barServed;
     public int BarRevenue => _barRevenue;
+    // ── SaveSystem setters ─────────────────────────────
+    public void SetDay(int d) { _currentDay = d; }
+    public void SetTimeIndex(int t) { _timeIndex = t; }
+    public void SetMoney(int m) { _money = m; }
+    public void SetBarServed(int s) { _barServed = s; }
+    public void SetBarRevenue(int r) { _barRevenue = r; }
+    public List<string> GetTriggeredEventIds() { return new List<string>(_triggeredDialogueIds); }
+    public void ClearTriggeredEvents() { _triggeredDialogueIds.Clear(); }
+    public void AddTriggeredEvent(string id) { _triggeredDialogueIds.Add(id); }
+    public void RefreshHudPublic() { RefreshHud(); }
     private string _currentLocation = "de_pijp";
 
     private bool _barOpen;
@@ -934,7 +944,7 @@ public sealed class GameController : MonoBehaviour
             // [DialogueLog] Record dialogue
             if (DialogueLog.Instance != null && _activeDialogue != null && _activeDialogue.lines != null && _activeDialogue.lines.Length > 0)
                 DialogueLog.Instance.RecordDialogue(_activeDialogue.id, _activeDialogue.lines[0].speaker,
-                    _activeDialogue.lines[0].text, _currentDay, CurrentTimeLabel());
+                    _activeDialogue.lines[0].text, _currentDay, CurrentTimeLabel);
             return;
         }
 
@@ -957,7 +967,7 @@ public sealed class GameController : MonoBehaviour
         // [DialogueLog] Record dialogue
         if (DialogueLog.Instance != null && _activeDialogue != null && _activeDialogue.lines != null && _activeDialogue.lines.Length > 0)
             DialogueLog.Instance.RecordDialogue(_activeDialogue.id, _activeDialogue.lines[0].speaker,
-                _activeDialogue.lines[0].text, _currentDay, CurrentTimeLabel());
+                _activeDialogue.lines[0].text, _currentDay, CurrentTimeLabel);
     }
 
     // F4: Slide + fade dialogue panel in
@@ -1359,7 +1369,7 @@ public sealed class GameController : MonoBehaviour
             tr.anchoredPosition = new Vector2(0, -yOffset);
             tr.pivot = new Vector2(0, 1);
             Image img = tagGo.GetComponent<Image>();
-            img.color = new Color32(loc.accent.r, loc.accent.g, loc.accent.b, 60);
+            img.color = new Color32((byte)loc.accent.r, (byte)loc.accent.g, (byte)loc.accent.b, 60);
 
             // Tag text
             GameObject textGo = new GameObject("Text", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
@@ -1464,7 +1474,7 @@ public sealed class GameController : MonoBehaviour
 
     private void RefreshHud()
     {
-        _timeText.text = $"Day {_currentDay} / {CurrentTimeLabel()}";
+        _timeText.text = $"Day {_currentDay} / {CurrentTimeLabel}";
         _locationText.text = _locations[_currentLocation].title;
         _barStatusText.text = $"{( _barOpen ? "Open" : "Closed" )}  |  Served {_barServed}  |  Rev ${_barRevenue}";
         _moneyText.text = $"${_money}";

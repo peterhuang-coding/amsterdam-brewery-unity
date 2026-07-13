@@ -278,7 +278,7 @@ public class CharacterPanel : MonoBehaviour
     private int GetAffection(string characterId)
     {
         // Simplified affection: use hardcoded sample or try InventorySystem if available
-        var inv = FindObjectOfType<InventorySystem>();
+        var inv = FindAnyObjectByType<InventorySystem>(FindObjectsInactive.Include);
         if (inv != null)
             return inv.GetAffection(characterId);
         return 0;

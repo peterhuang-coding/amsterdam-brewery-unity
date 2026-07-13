@@ -1,0 +1,11 @@
+{
+  "id": "story_end_bad",
+  "trigger": { "scene": "de_pijp", "day": 7, "time": "night" },
+  "lines": [
+    { "speaker": "player", "text": "好吧，事情没按计划走。", "expression": "sad" },
+    { "speaker": "erik", "text": "听着，这座城市不适合所有人。也许你还需要更多时间。", "expression": "sad" },
+    { "speaker": "sofie", "text": "别对自己太苛刻了。等你准备好了，阿姆斯特丹还在这里。", "expression": "sad" },
+    { "speaker": "player", "text": "我只是……原本期待更多。", "expression": "sad" }
+  ],
+  "choices": []
+}

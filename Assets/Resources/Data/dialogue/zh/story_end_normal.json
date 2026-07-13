@@ -1,0 +1,11 @@
+{
+  "id": "story_end_normal",
+  "trigger": { "scene": "de_pijp", "day": 7, "time": "night" },
+  "lines": [
+    { "speaker": "player", "text": "嗯，一周结束了。该收拾行李了。", "expression": "neutral" },
+    { "speaker": "erik", "text": "还行吧，对吧？你在酒吧干得还可以。", "expression": "neutral" },
+    { "speaker": "sofie", "text": "你总有一天会回来的，我觉得。阿姆斯特丹有股把人拽回来的魔力。", "expression": "neutral" },
+    { "speaker": "player", "text": "也许吧。谁知道接下来会发生什么呢。", "expression": "neutral" }
+  ],
+  "choices": []
+}

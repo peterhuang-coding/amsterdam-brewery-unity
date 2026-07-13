@@ -193,7 +193,7 @@
       "day": 7,
       "time": "night",
       "location": "de_pijp",
-      "dialogue_id": "",
+      "dialogue_id": "story_end_good",
       "unlocks": ["ending_good"],
       "summary": "The canals are quiet under the streetlights. You've built real connections this week. Sofie waves from across the bridge. Chen sent an encouraging email. Erik told you to come back Monday. Amsterdam is starting to feel like home."
     },
@@ -202,7 +202,7 @@
       "day": 7,
       "time": "night",
       "location": "de_pijp",
-      "dialogue_id": "",
+      "dialogue_id": "story_end_normal",
       "unlocks": ["ending_normal"],
       "summary": "Another week in Amsterdam passes. You did your work, kept your head down, and learned a few things about yourself. Nothing spectacular, but nothing lost either. Survival is a kind of success."
     },
@@ -211,7 +211,7 @@
       "day": 7,
       "time": "night",
       "location": "de_pijp",
-      "dialogue_id": "",
+      "dialogue_id": "story_end_bad",
       "unlocks": ["ending_bad"],
       "summary": "The week ends with a heavy silence. Too many things left unsaid. Money is tight, and the people you might have called friends feel distant. The room is cold. Tomorrow is another day, but the weight of this one lingers."
     }

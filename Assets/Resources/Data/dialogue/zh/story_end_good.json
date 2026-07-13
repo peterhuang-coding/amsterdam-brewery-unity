@@ -1,0 +1,12 @@
+{
+  "id": "story_end_good",
+  "trigger": { "scene": "de_pijp", "day": 7, "time": "night" },
+  "lines": [
+    { "speaker": "player", "text": "真不敢相信一周就这样结束了。感觉像是刚到这里。", "expression": "neutral" },
+    { "speaker": "sofie", "text": "阿姆斯特丹就是这样——一周像一天，一天像一辈子。", "expression": "happy" },
+    { "speaker": "erik", "text": "酒吧从来没有这么好过。如果你想回来，总有一杯酒等着你。", "expression": "happy" },
+    { "speaker": "player", "text": "说不定我真的会回来。", "expression": "happy" },
+    { "speaker": "pablo", "text": "你成长了，朋友。不光是作为一个酿酒师——作为一个完整的人。这就是这座城市能做到的事。", "expression": "happy" }
+  ],
+  "choices": []
+}

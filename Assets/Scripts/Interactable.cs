@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -42,6 +43,12 @@ public class Interactable : MonoBehaviour
         CreatePrompt();
         CreateColliderOverlay();
         gameObject.name = $"Interactable_{objectName}";
+
+        // [Visual] Start pulse animation for interactive marker
+        if (_colliderOverlay != null)
+        {
+            StartCoroutine(PulseOverlay());
+        }
     }
 
     private void CreateColliderOverlay()
@@ -184,6 +191,23 @@ public class Interactable : MonoBehaviour
         if (player != null)
         {
             player.HidePlayerBubble();
+        }
+    }
+
+    private IEnumerator PulseOverlay()
+    {
+        SpriteRenderer sr = _colliderOverlay?.GetComponent<SpriteRenderer>();
+        if (sr == null) yield break;
+
+        while (true)
+        {
+            for (float t = 0; t < 1f; t += Time.deltaTime)
+            {
+                float p = Mathf.Sin(t * Mathf.PI * 2f) * 0.5f + 0.5f;
+                sr.color = new Color32(255, 220, 80, (byte)(20 + p * 40));
+                yield return null;
+            }
+            yield return new WaitForSeconds(0.5f);
         }
     }
 

@@ -109,6 +109,15 @@ public class SceneTransitionManager : MonoBehaviour
             AudioManager.Instance.PlayAmbience(locationId);
         }
 
+        // [Visual] Camera subtle movement on transition
+        if (Camera.main != null)
+        {
+            Vector3 originalPos = Camera.main.transform.position;
+            Camera.main.transform.position = originalPos + new Vector3(0.1f, 0, 0);
+            // Smoothly return
+            // (handled by CameraFollow's smooth follow)
+        }
+
         // Fade in
         t = 0;
         while (t < fadeDuration)
@@ -188,6 +197,75 @@ public static class SceneVisuals
         PlaceTile(parent, $"{name}_1", x - w * 0.3f, y, w * 0.4f, h, cloudColor);
         PlaceTile(parent, $"{name}_2", x, y + h * 0.2f, w * 0.5f, h * 0.7f, cloudColor);
         PlaceTile(parent, $"{name}_3", x + w * 0.2f, y, w * 0.4f, h * 0.8f, cloudColor);
+    }
+
+    // ── Enhanced visual helpers ──
+
+    private static void PlaceFlag(GameObject parent, string name, float x, float y, Color32 color)
+    {
+        // Flag pole
+        PlaceTile(parent, $"{name}_Pole", x, y - 0.3f, 0.06f, 0.8f, new Color32(60, 60, 60, 255));
+        // Flag cloth
+        PlaceTile(parent, $"{name}_Cloth", x + 0.25f, y + 0.1f, 0.5f, 0.25f, color);
+        // Flag top
+        PlaceTile(parent, $"{name}_Top", x, y + 0.3f, 0.15f, 0.06f, new Color32(80, 80, 80, 255));
+    }
+
+    private static void PlaceSign(GameObject parent, string name, float x, float y, float w, float h, Color32 bgColor)
+    {
+        // Sign board
+        PlaceTile(parent, $"{name}_Board", x, y, w, h, bgColor);
+        // Sign border
+        PlaceTile(parent, $"{name}_Border", x, y, w + 0.06f, h + 0.06f, new Color32(40, 40, 40, 255));
+        // Sign glow
+        PlaceTile(parent, $"{name}_Glow", x, y, w + 0.3f, h + 0.3f, new Color32(bgColor.r, bgColor.g, bgColor.b, 30));
+    }
+
+    private static void PlaceBench(GameObject parent, string name, float x, float y)
+    {
+        PlaceTile(parent, $"{name}_Seat", x, y, 0.5f, 0.1f, new Color32(80, 60, 40, 255));
+        PlaceTile(parent, $"{name}_Leg1", x - 0.2f, y - 0.15f, 0.06f, 0.2f, new Color32(60, 40, 20, 255));
+        PlaceTile(parent, $"{name}_Leg2", x + 0.2f, y - 0.15f, 0.06f, 0.2f, new Color32(60, 40, 20, 255));
+    }
+
+    private static void PlaceFence(GameObject parent, string name, float x, float y, int segments)
+    {
+        for (int i = 0; i < segments; i++)
+        {
+            float fx = x + i * 0.4f;
+            PlaceTile(parent, $"{name}_Post{i}", fx, y, 0.06f, 0.5f, new Color32(60, 50, 40, 255));
+            if (i < segments - 1)
+            {
+                PlaceTile(parent, $"{name}_Rail{i}", fx + 0.1f, y + 0.1f, 0.3f, 0.04f, new Color32(80, 70, 60, 255));
+                PlaceTile(parent, $"{name}_RailB{i}", fx + 0.1f, y - 0.1f, 0.3f, 0.04f, new Color32(80, 70, 60, 255));
+            }
+        }
+    }
+
+    private static void PlaceFlowerBed(GameObject parent, string name, float x, float y)
+    {
+        PlaceTile(parent, $"{name}_Bed", x, y, 0.6f, 0.15f, new Color32(80, 60, 40, 255));
+        // Flowers
+        PlaceTile(parent, $"{name}_F1", x - 0.2f, y + 0.12f, 0.08f, 0.1f, new Color32(255, 100, 100, 255));
+        PlaceTile(parent, $"{name}_F2", x, y + 0.15f, 0.08f, 0.1f, new Color32(255, 200, 100, 255));
+        PlaceTile(parent, $"{name}_F3", x + 0.2f, y + 0.12f, 0.08f, 0.1f, new Color32(255, 100, 200, 255));
+        // Stems
+        PlaceTile(parent, $"{name}_S1", x - 0.2f, y, 0.02f, 0.12f, new Color32(60, 140, 60, 255));
+        PlaceTile(parent, $"{name}_S2", x, y, 0.02f, 0.15f, new Color32(60, 140, 60, 255));
+        PlaceTile(parent, $"{name}_S3", x + 0.2f, y, 0.02f, 0.12f, new Color32(60, 140, 60, 255));
+    }
+
+    private static void PlaceWindow(GameObject parent, string name, float x, float y)
+    {
+        // Window frame
+        PlaceTile(parent, $"{name}_Frame", x, y, 0.3f, 0.35f, new Color32(60, 60, 50, 255));
+        // Glass
+        PlaceTile(parent, $"{name}_Glass", x, y, 0.26f, 0.31f, new Color32(180, 200, 220, 60));
+        // Cross
+        PlaceTile(parent, $"{name}_CrossH", x, y, 0.26f, 0.03f, new Color32(50, 50, 40, 255));
+        PlaceTile(parent, $"{name}_CrossV", x, y, 0.03f, 0.31f, new Color32(50, 50, 40, 255));
+        // Warm light at night
+        PlaceTile(parent, $"{name}_Light", x, y, 0.2f, 0.25f, new Color32(255, 200, 100, 20));
     }
 
     // ── New helpers for enhanced visuals ──
@@ -479,6 +557,19 @@ public static class SceneVisuals
         PlaceTree(parent, "Tree5", -8.5f, 0.5f);
         PlaceTree(parent, "Tree6", 8.5f, 0.5f);
 
+        // [Visual] Flags and signs
+        PlaceFlag(parent, "NLFlag", -6f, -0.5f, new Color32(200, 50, 50, 255));
+        PlaceSign(parent, "MarketSign", 4f, 2.0f, 0.8f, 0.3f, new Color32(180, 120, 60, 255));
+        // Benches
+        PlaceBench(parent, "Bench1", 2f, -1.5f);
+        PlaceBench(parent, "Bench2", 5f, -1.5f);
+        // Windows on buildings
+        PlaceWindow(parent, "Win1", -3f, 0.5f);
+        PlaceWindow(parent, "Win2", -3f, -0.2f);
+        PlaceWindow(parent, "Win3", 3f, 0.5f);
+        // Flower beds
+        PlaceFlowerBed(parent, "FB1", 0f, -1.8f);
+
         // Interactive markers
         PlaceInteractiveMarker(parent, "InteractMarket", 0, -1f);
         PlaceInteractiveMarker(parent, "InteractBridge", 0, 2.8f);
@@ -611,6 +702,19 @@ public static class SceneVisuals
         PlaceTree(parent, "Tree5", -3.5f, 1.8f);
         PlaceTree(parent, "Tree6", 6.5f, 1.8f);
 
+        // [Visual] Flags and signs
+        PlaceFlag(parent, "UvAFlag", -5f, 0.5f, new Color32(50, 100, 200, 255));
+        PlaceSign(parent, "LabSign", 3f, 2.5f, 1.0f, 0.3f, new Color32(50, 150, 180, 255));
+        // Benches
+        PlaceBench(parent, "Bench1", 0f, -2.0f);
+        PlaceBench(parent, "Bench2", 4f, -2.0f);
+        // Fence
+        PlaceFence(parent, "Fence", -7f, 2.8f, 6);
+        // Windows
+        PlaceWindow(parent, "Win1", -4f, 1.2f);
+        PlaceWindow(parent, "Win2", -4f, 0.5f);
+        PlaceWindow(parent, "Win3", 4f, 1.2f);
+
         // Interactive markers
         PlaceInteractiveMarker(parent, "InteractEntrance", -1.5f, -0.8f);
         PlaceInteractiveMarker(parent, "InteractSculpture", 0, -1.5f);
@@ -738,6 +842,19 @@ public static class SceneVisuals
         // Warm light pool under neon
         PlaceTile(parent, "LightPool", 0, -1f, 6, 2, new Color32(255, 200, 100, 8));
 
+        // [Visual] Bar signs
+        PlaceSign(parent, "BarSign", 0f, 2.8f, 1.2f, 0.4f, new Color32(200, 80, 40, 255));
+        PlaceFlag(parent, "BeerFlag", -4f, 0.0f, new Color32(240, 180, 50, 255));
+        // Benches
+        PlaceBench(parent, "Bench1", -3f, -1.5f);
+        PlaceBench(parent, "Bench2", 3f, -1.5f);
+        // Windows
+        PlaceWindow(parent, "BarWin1", -1.5f, 1.0f);
+        PlaceWindow(parent, "BarWin2", 1.5f, 1.0f);
+        PlaceWindow(parent, "NeighborWin", -4f, 0.5f);
+        // Flower box
+        PlaceFlowerBed(parent, "FB1", -2f, -1.8f);
+
         // Interactive markers
         PlaceInteractiveMarker(parent, "InteractBar", 0, -1.5f);
         PlaceInteractiveMarker(parent, "InteractOutdoor", -3f, -1.5f);
@@ -839,6 +956,19 @@ public static class SceneVisuals
         // Windmill (distant landmark)
         PlaceWindmill(parent, "Windmill", -8, 3.5f, 1f);
 
+        // [Visual] Market signs
+        PlaceSign(parent, "MarketSign", -3f, 2.5f, 1.0f, 0.3f, new Color32(220, 100, 140, 255));
+        PlaceFlag(parent, "Flag1", 2f, 1.5f, new Color32(255, 150, 50, 255));
+        PlaceFlag(parent, "Flag2", 5f, 1.5f, new Color32(255, 50, 150, 255));
+        // Benches
+        PlaceBench(parent, "Bench1", -2f, -1.8f);
+        PlaceBench(parent, "Bench2", 4f, -1.8f);
+        // Fence along canal
+        PlaceFence(parent, "CanalFence", -7f, -2.5f, 8);
+        // Windows
+        PlaceWindow(parent, "Win1", -4f, 1.0f);
+        PlaceWindow(parent, "Win2", 6f, 1.0f);
+
         // Interactive markers
         PlaceInteractiveMarker(parent, "InteractBoat1", -4, -0.3f);
         PlaceInteractiveMarker(parent, "InteractBoat2", 0, -0.3f);
@@ -899,7 +1029,7 @@ public static class SceneVisuals
         tile.transform.localScale = new Vector3(width, height, 1);
 
         // Add collider for solid tiles
-        if (name != "Canal" && !name.StartsWith("Flower") && !name.StartsWith("Window")
+        if (!name.StartsWith("Canal") && !name.StartsWith("Flower") && !name.StartsWith("Window")
             && !name.StartsWith("Ripple") && !name.StartsWith("Bottle")
             && !name.StartsWith("Bird") && !name.StartsWith("Cloud")
             && !name.StartsWith("Glow") && !name.StartsWith("Blade")
@@ -915,7 +1045,10 @@ public static class SceneVisuals
             && !name.StartsWith("GrassPatch") && !name.StartsWith("Cobble")
             && !name.StartsWith("Stone_") && !name.StartsWith("Hull")
             && !name.StartsWith("Stall") && !name.StartsWith("Bush")
-            && !name.StartsWith("Cap") && !name.StartsWith("TowerTop"))
+            && !name.StartsWith("Cap") && !name.StartsWith("TowerTop")
+            && !name.StartsWith("NLFlag") && !name.StartsWith("MarketSign") && !name.StartsWith("UvAFlag")
+            && !name.StartsWith("LabSign") && !name.StartsWith("BarSign") && !name.StartsWith("BeerFlag")
+            && !name.StartsWith("Flag") && !name.StartsWith("FB") && !name.StartsWith("CanalFence"))
         {
             BoxCollider2D col = tile.AddComponent<BoxCollider2D>();
             col.isTrigger = name.StartsWith("Interact") || name == "Neon" || name.StartsWith("Stool");

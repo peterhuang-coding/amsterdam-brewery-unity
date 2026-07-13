@@ -821,6 +821,7 @@ public sealed class GameController : MonoBehaviour
                 AchievementSystem.Instance.CheckFirstSale();
                 AchievementSystem.Instance.RegisterCustomerServed();
                 AchievementSystem.Instance.RegisterDailyRevenue(_barRevenue);
+                AchievementSystem.Instance.RegisterDrinkSold("beer");
             }
             TutorialSystem.Instance?.OnCustomerServed();
         }
@@ -859,6 +860,9 @@ public sealed class GameController : MonoBehaviour
         // F5: Bar close sound
         SoundManager.Play(SoundManager.SoundType.Collect);
         SetFeedback($"Shift closed: {_barServed} served, ${_barRevenue} earned.");
+        // [Gameplay] Daily revenue achievement check
+        if (Application.isPlaying && AchievementSystem.Instance != null)
+            AchievementSystem.Instance.RegisterDailyRevenue(_barRevenue);
         RefreshHud();
     }
 

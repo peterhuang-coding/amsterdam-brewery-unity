@@ -155,8 +155,14 @@ public class SaveSystem : MonoBehaviour
             data.unlockedAchievements.AddRange(GetAchievementIds());
         }
 
-        // Upgrades & items
-        data.purchasedUpgrades.Clear();
+        // [Gameplay] Save bar upgrades
+        if (BarUpgradeSystem.Instance != null)
+        {
+            var upgradeData = BarUpgradeSystem.Instance.GetSaveData();
+            data.purchasedUpgrades = upgradeData;
+        }
+
+        // Items
         data.itemNames.Clear();
         data.itemDescriptions.Clear();
 
@@ -235,6 +241,12 @@ public class SaveSystem : MonoBehaviour
             {
                 InventorySystem.Instance.SetAffection(data.affectionKeys[i], data.affectionValues[i]);
             }
+        }
+
+        // [Gameplay] Load bar upgrades
+        if (BarUpgradeSystem.Instance != null && data.purchasedUpgrades != null)
+        {
+            BarUpgradeSystem.Instance.LoadFromSave(data.purchasedUpgrades);
         }
 
         // Refresh HUD
@@ -579,6 +591,11 @@ public class SaveSystem : MonoBehaviour
     private List<string> GetAchievementIds()
     {
         List<string> ids = new List<string>();
+        // Query unlocked achievements from AchievementSystem
+        if (AchievementSystem.Instance != null)
+        {
+            ids = AchievementSystem.Instance.GetUnlockedAchievementIds();
+        }
         return ids;
     }
 

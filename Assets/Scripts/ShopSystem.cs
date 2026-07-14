@@ -103,10 +103,11 @@ public class ShopSystem : MonoBehaviour
         if (item.isOwned) return false;
 
         // Check money
-        if (GameController.Instance == null || GameController.Instance.Money < item.cost) return false;
+// RESOLVED
+        if (GameController.Instance.State.Money < item.cost) return false;
 
         // Deduct money
-        GameController.Instance.AddMoney(-item.cost);
+        GameController.Instance.State.AddMoney(-item.cost);
 
         // Mark as owned
         item.isOwned = true;
@@ -166,8 +167,8 @@ public class ShopSystem : MonoBehaviour
 
         if (_shopOpen)
         {
-            if (GameController.Instance != null)
-                _currentLocation = GameController.Instance.CurrentLocationId;
+// RESOLVED
+            _currentLocation = GameController.Instance.State.CurrentLocationId;
             RefreshContent();
             StartCoroutine(AnimatePanelIn());
         }
@@ -326,7 +327,7 @@ public class ShopSystem : MonoBehaviour
         string locationName = "";
         if (GameController.Instance != null)
         {
-            locationName = GameController.Instance.CurrentLocationName;
+            locationName = GameController.Instance.State.CurrentLocationName;
         }
         if (string.IsNullOrEmpty(locationName))
             locationName = _currentLocation;
@@ -336,14 +337,14 @@ public class ShopSystem : MonoBehaviour
         // Update money
         if (GameController.Instance != null)
         {
-            _moneyText.text = $"Current Money: ${GameController.Instance.Money}";
+            _moneyText.text = $"Current Money: ${GameController.Instance.State.Money}";
         }
 
         // Get items for current location
         string locationId = _currentLocation;
-        if (GameController.Instance != null && !string.IsNullOrEmpty(GameController.Instance.CurrentLocationId))
+        if (GameController.Instance != null && !string.IsNullOrEmpty(GameController.Instance.State.CurrentLocationId))
         {
-            locationId = GameController.Instance.CurrentLocationId;
+            locationId = GameController.Instance.State.CurrentLocationId;
         }
 
         List<ShopItem> availableItems = GetItemsForLocation(locationId);
@@ -429,7 +430,7 @@ public class ShopSystem : MonoBehaviour
             btnRT.offsetMin = new Vector2(4, 8);
             btnRT.offsetMax = new Vector2(-8, -8);
 
-            bool canAfford = GameController.Instance != null && GameController.Instance.Money >= item.cost;
+            bool canAfford = GameController.Instance != null && GameController.Instance.State.Money >= item.cost;
             Image btnImg = btnGO.GetComponent<Image>();
             btnImg.color = canAfford ? new Color32(86, 125, 56, 255) : new Color32(80, 80, 80, 180);
 

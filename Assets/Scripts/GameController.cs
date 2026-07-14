@@ -10,10 +10,12 @@ public sealed class GameController : MonoBehaviour
     // ── Singleton (T5) ────────────────────────────────
     public static GameController Instance { get; private set; }
 
+    // ── GameState (extracted state object) ────────────
+    public GameState State { get; private set; } = new GameState();
+
     private const string RuntimeRootName = "AB Runtime View";
 
     private readonly string[] _timesOfDay = { "dawn", "morning", "afternoon", "evening", "night", "late_night" };
-    private readonly HashSet<string> _triggeredDialogueIds = new HashSet<string>();
 
     // ── Location POI tags (UI upgrade) ────────────────────
     private static readonly Dictionary<string, string[]> LocationPois = new Dictionary<string, string[]>
@@ -64,24 +66,21 @@ public sealed class GameController : MonoBehaviour
         },
     };
 
-    private int _currentDay = 1;
-    private int _timeIndex;
-    private int _money = 250;
-    public int Money => _money;
-    public int CurrentDay => _currentDay;
-    public string CurrentTimeLabel => CurrentTime().Replace("_", " ");
-    public string CurrentLocationName => _locations.ContainsKey(_currentLocation) ? _locations[_currentLocation].title : _currentLocation;
-    public string CurrentLocationId => _currentLocation;
-    public int TriggeredEventCount => _triggeredDialogueIds.Count;
-    // ── SaveSystem setters ─────────────────────────────
-    public void SetDay(int d) { _currentDay = d; }
-    public void SetTimeIndex(int t) { _timeIndex = t; }
-    public void SetMoney(int m) { _money = m; }
-    public List<string> GetTriggeredEventIds() { return new List<string>(_triggeredDialogueIds); }
-    public void ClearTriggeredEvents() { _triggeredDialogueIds.Clear(); }
-    public void AddTriggeredEvent(string id) { _triggeredDialogueIds.Add(id); }
+    // ── Public state accessors (delegate to GameState) ──
+    public int Money => State.Money;
+    public int CurrentDay => State.CurrentDay;
+    public string CurrentTimeLabel => State.CurrentTimeLabel;
+    public string CurrentLocationName => _locations.ContainsKey(State.CurrentLocationId) ? _locations[State.CurrentLocationId].title : State.CurrentLocationId;
+    public string CurrentLocationId => State.CurrentLocationId;
+    public int TriggeredEventCount => State.TriggeredEventCount;
+    // ── SaveSystem setters (delegate to GameState) ────
+    public void SetDay(int d) { State.CurrentDay = d; }
+    public void SetTimeIndex(int t) { State.TimeIndex = t; }
+    public void SetMoney(int m) { State.SetMoney(m); }
+    public List<string> GetTriggeredEventIds() { return State.GetTriggeredEventIds(); }
+    public void ClearTriggeredEvents() { State.ClearTriggeredEvents(); }
+    public void AddTriggeredEvent(string id) { State.AddTriggeredEvent(id); }
     public void RefreshHudPublic() { RefreshHud(); }
-    private string _currentLocation = "de_pijp";
 
     private EventDatabase _eventDatabase;
 
@@ -594,15 +593,15 @@ public sealed class GameController : MonoBehaviour
 
     private void AdvanceTime()
     {
-        _timeIndex++;
-        if (_timeIndex >= _timesOfDay.Length)
+        State.TimeIndex++;
+        if (State.TimeIndex >= _timesOfDay.Length)
         {
-            _timeIndex = 0;
-            _currentDay++;
+            State.TimeIndex = 0;
+            State.CurrentDay++;
             // F1: Regenerate daily goals at dawn
             GenerateDailyGoals();
             // F8: Update weather for new day
-            WeatherSystem.Instance.NewDay(_currentDay);
+            WeatherSystem.Instance.NewDay(State.CurrentDay);
         }
 
         // F5: Time advance sound
@@ -628,7 +627,7 @@ public sealed class GameController : MonoBehaviour
 
     private void SwitchLocation(string locationId)
     {
-        _currentLocation = locationId;
+        State.CurrentLocationId = locationId;
         // F1: Mark goals for this location as completed
         MarkLocationGoalsCompleted(locationId);
         RenderLocation();
@@ -651,7 +650,7 @@ public sealed class GameController : MonoBehaviour
     /// </summary>
     public void AddMoney(int amount)
     {
-        _money += amount;
+        State.AddMoney(amount);
         RefreshHud();
         if (amount > 0)
         {
@@ -677,19 +676,19 @@ public sealed class GameController : MonoBehaviour
 
         foreach (StoryEvent storyEvent in _eventDatabase.events)
         {
-            if (storyEvent.day != _currentDay)
+            if (storyEvent.day != State.CurrentDay)
             {
                 continue;
             }
-            if (storyEvent.time != CurrentTime() || storyEvent.location != _currentLocation)
+            if (storyEvent.time != CurrentTime() || storyEvent.location != State.CurrentLocationId)
             {
                 continue;
             }
-            if (string.IsNullOrEmpty(storyEvent.dialogue_id) || _triggeredDialogueIds.Contains(storyEvent.dialogue_id))
+            if (string.IsNullOrEmpty(storyEvent.dialogue_id) || State.HasTriggeredDialogue(storyEvent.dialogue_id))
             {
                 continue;
             }
-            _triggeredDialogueIds.Add(storyEvent.dialogue_id);
+            State.MarkDialogueTriggered(storyEvent.dialogue_id);
             // F5: Story event trigger sound
             SoundManager.Play(SoundManager.SoundType.EventTrigger);
             // Delegate to DialogueManager
@@ -708,7 +707,7 @@ public sealed class GameController : MonoBehaviour
         // Find events for current day
         foreach (StoryEvent ev in _eventDatabase.events)
         {
-            if (ev.day != _currentDay) continue;
+            if (ev.day != State.CurrentDay) continue;
             // Create a goal description from the event
             string desc = GenerateGoalDescription(ev);
             _dailyGoals.Add(new DailyGoal
@@ -717,7 +716,7 @@ public sealed class GameController : MonoBehaviour
                 description = desc,
                 location = ev.location,
                 completed = false,
-                day = _currentDay
+                day = State.CurrentDay
             });
         }
 
@@ -730,7 +729,7 @@ public sealed class GameController : MonoBehaviour
                 description = "Explore Amsterdam",
                 location = "",
                 completed = false,
-                day = _currentDay
+                day = State.CurrentDay
             });
         }
     }
@@ -802,7 +801,7 @@ public sealed class GameController : MonoBehaviour
     {
         if (_affectionBarText == null) return;
 
-        string currentLocation = _currentLocation;
+        string currentLocation = State.CurrentLocationId;
         // Map location to NPC character
         string npcId = null;
         string npcName = null;
@@ -850,8 +849,8 @@ public sealed class GameController : MonoBehaviour
         if (!_locations.ContainsKey(locationId))
             return;
 
-        _currentLocation = locationId;
-        LocationView loc = _locations[_currentLocation];
+        State.CurrentLocationId = locationId;
+        LocationView loc = _locations[State.CurrentLocationId];
         if (_locationTitle != null) _locationTitle.text = loc.title;
         if (_locationDesc != null) _locationDesc.text = loc.subtitle;
         if (_feedbackText != null) _feedbackText.text = "";
@@ -860,7 +859,7 @@ public sealed class GameController : MonoBehaviour
 
     private void RenderLocation()
     {
-        LocationView loc = _locations[_currentLocation];
+        LocationView loc = _locations[State.CurrentLocationId];
 
         // In play mode, skip RuntimeVisuals — SceneVisuals handles the 2D scene
         if (Application.isPlaying)
@@ -879,7 +878,7 @@ public sealed class GameController : MonoBehaviour
         }
 
         // Build new location scene via RuntimeVisuals (T6: pass LocationView)
-        RuntimeVisuals.BuildLocationScene(_currentLocation, _locationScene.transform, loc);
+        RuntimeVisuals.BuildLocationScene(State.CurrentLocationId, _locationScene.transform, loc);
 
         _locationTitle.text = loc.title;
         _locationDesc.text = loc.subtitle;
@@ -897,10 +896,10 @@ public sealed class GameController : MonoBehaviour
         DestroyChildren(_poiTagContainer.transform);
 
         string[] pois;
-        if (!LocationPois.TryGetValue(_currentLocation, out pois) || pois == null)
+        if (!LocationPois.TryGetValue(State.CurrentLocationId, out pois) || pois == null)
             return;
 
-        LocationView loc = _locations[_currentLocation];
+        LocationView loc = _locations[State.CurrentLocationId];
         float yOffset = 0f;
         foreach (string poi in pois)
         {
@@ -946,7 +945,7 @@ public sealed class GameController : MonoBehaviour
 
     private IEnumerator AnimateHudToThemeRoutine()
     {
-        LocationView loc = _locations[_currentLocation];
+        LocationView loc = _locations[State.CurrentLocationId];
         Color targetBg = new Color32(
             (byte)(loc.background.r * 0.6f),
             (byte)(loc.background.g * 0.6f),
@@ -1018,14 +1017,14 @@ public sealed class GameController : MonoBehaviour
 
     private void RefreshHud()
     {
-        _timeText.text = $"Day {_currentDay} / {CurrentTimeLabel}";
-        _locationText.text = _locations[_currentLocation].title;
+        _timeText.text = $"Day {State.CurrentDay} / {CurrentTimeLabel}";
+        _locationText.text = _locations[State.CurrentLocationId].title;
         // Bar status: read from BarMinigame if available
         bool barActive = BarMinigame.Instance != null && BarMinigame.Instance.IsShiftActive;
         int barServed = barActive ? BarMinigame.Instance.CustomersServed : 0;
         int barEarnings = barActive ? BarMinigame.Instance.ShiftEarnings : 0;
         _barStatusText.text = $"{(barActive ? "Open" : "Closed")}  |  Served {barServed}  |  Rev ${barEarnings}";
-        _moneyText.text = $"${_money}";
+        _moneyText.text = $"${State.Money}";
 
         // F1: Update daily goal display
         UpdateGoalDisplay();
@@ -1073,7 +1072,7 @@ public sealed class GameController : MonoBehaviour
         }
     }
 
-    private string CurrentTime() => _timesOfDay[_timeIndex];
+    private string CurrentTime() => _timesOfDay[State.TimeIndex];
 
     // T7: Feedback fade — smoothly show and auto-hide feedback text
     private void SetFeedback(string message)

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
@@ -197,6 +198,63 @@ public static class DataLoader
         TextAsset asset = Resources.Load<TextAsset>("Data/bar_customers");
         return JsonUtility.FromJson<CustomerDatabase>(asset.text);
     }
+}
+
+// ── GameState (extracted from GameController) ────────
+
+public sealed class GameState
+{
+    // ── Time ──────────────────────────────────────────────
+    private static readonly string[] TimesOfDay = { "dawn", "morning", "afternoon", "evening", "night", "late_night" };
+
+    public int CurrentDay { get; set; } = 1;
+    public int TimeIndex { get; set; } = 0;
+    public string CurrentTimeLabel => CurrentTime().Replace("_", " ");
+
+    // ── Location ──────────────────────────────────────────
+    private string _currentLocationId = "de_pijp";
+
+    public string CurrentLocationId
+    {
+        get => _currentLocationId;
+        set => _currentLocationId = value;
+    }
+
+    // Location name lookup is delegated to GameController (needs _locations dictionary)
+    public string CurrentLocationName { get; set; } = "De Pijp";
+
+    // ── Economy ───────────────────────────────────────────
+    private int _money = 250;
+    public int Money => _money;
+
+    public void AddMoney(int amount)
+    {
+        _money += amount;
+    }
+
+    public void SetMoney(int value)
+    {
+        _money = value;
+    }
+
+    // ── Dialogue Tracking ─────────────────────────────────
+    private readonly HashSet<string> _triggeredDialogueIds = new HashSet<string>();
+
+    public HashSet<string> TriggeredDialogueIds => _triggeredDialogueIds;
+    public int TriggeredEventCount => _triggeredDialogueIds.Count;
+
+    public bool HasTriggeredDialogue(string id) => _triggeredDialogueIds.Contains(id);
+
+    public void MarkDialogueTriggered(string id) => _triggeredDialogueIds.Add(id);
+
+    public List<string> GetTriggeredEventIds() => new List<string>(_triggeredDialogueIds);
+
+    public void ClearTriggeredEvents() => _triggeredDialogueIds.Clear();
+
+    public void AddTriggeredEvent(string id) => _triggeredDialogueIds.Add(id);
+
+    // ── Helpers ───────────────────────────────────────────
+    public string CurrentTime() => TimesOfDay[TimeIndex];
 }
 
 // ── Achievement and Tutorial models (new systems) ────

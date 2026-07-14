@@ -229,35 +229,35 @@ public class CharacterPanel : MonoBehaviour
     private int GetCurrentDay()
     {
         if (GameController.Instance != null)
-            return GameController.Instance.CurrentDay;
+            return GameController.Instance.State.CurrentDay;
         return 1;
     }
 
     private string GetCurrentTimeLabel()
     {
         if (GameController.Instance != null)
-            return GameController.Instance.CurrentTimeLabel;
+            return GameController.Instance.State.CurrentTimeLabel;
         return "dawn";
     }
 
     private int GetMoney()
     {
         if (GameController.Instance != null)
-            return GameController.Instance.Money;
+            return GameController.Instance.State.Money;
         return 0;
     }
 
     private string GetLocationName()
     {
         if (GameController.Instance != null)
-            return GameController.Instance.CurrentLocationName;
+            return GameController.Instance.State.CurrentLocationName;
         return "Unknown";
     }
 
     private int GetStoryEventCount()
     {
         if (GameController.Instance != null)
-            return GameController.Instance.TriggeredEventCount;
+            return GameController.Instance.State.TriggeredEventCount;
         return 0;
     }
 

@@ -267,7 +267,7 @@ public class BarMinigame : MonoBehaviour
         _isActive = false;
 
         int grossRevenue = _earnings + _tips;
-        GameController.Instance.AddMoney(grossRevenue);
+        GameController.Instance.State.AddMoney(grossRevenue);
 
         // [Gameplay] Daily revenue achievement check
         if (Application.isPlaying && AchievementSystem.Instance != null)
@@ -376,7 +376,8 @@ public class BarMinigame : MonoBehaviour
 
         // Player money
         _playerMoneyText = CreateTextOn("PlayerMoney", panel.transform,
-            $"Your Money: ${(GameController.Instance != null ? GameController.Instance.Money : 0)}",
+// RESOLVED
+            $"Your Money: ${GameController.Instance.State.Money}",
             new Vector2(0.1f, 0.78f), new Vector2(0.9f, 0.86f), Vector2.zero, Vector2.zero,
             14, TextAnchor.MiddleCenter, FontStyle.Normal, new Color32(200, 190, 170, 255));
 
@@ -455,7 +456,8 @@ public class BarMinigame : MonoBehaviour
         if (newQty < 0) return;
 
         int costDelta = delta * _drinkCosts[drinkIndex];
-        int currentMoney = GameController.Instance != null ? GameController.Instance.Money : 0;
+// RESOLVED
+        int currentMoney = GameController.Instance.State.Money;
         int newCost = _stockingCost + costDelta;
         if (delta > 0 && newCost > currentMoney)
         {
@@ -470,7 +472,8 @@ public class BarMinigame : MonoBehaviour
         _stockQtyTexts[drinkIndex].text = $"x{newQty}";
         _stockCostText.text = $"Total: ${_stockingCost}";
         _stockCostText.color = GoldColor;
-        _playerMoneyText.text = $"Your Money: ${(GameController.Instance != null ? GameController.Instance.Money : 0)}  |  Cost: ${_stockingCost}";
+// RESOLVED
+        _playerMoneyText.text = $"Your Money: ${GameController.Instance.State.Money}  |  Cost: ${_stockingCost}";
         SoundManager.Play(SoundManager.SoundType.UIClick);
     }
 
@@ -491,8 +494,8 @@ public class BarMinigame : MonoBehaviour
             return;
         }
 
-        if (GameController.Instance != null)
-            GameController.Instance.AddMoney(-_stockingCost);
+// RESOLVED
+        GameController.Instance.State.AddMoney(-_stockingCost);
 
         // Fade out stocking panel
         StartCoroutine(FadeAndDestroyPanel(_stockPanel, 0.2f));
@@ -941,8 +944,8 @@ public class BarMinigame : MonoBehaviour
         float accuracy = totalCustomers > 0 ? (float)servedCustomers / totalCustomers : 0f;
         int stars = Mathf.Clamp(Mathf.RoundToInt(accuracy * 5f), 0, 5);
 
-        if (GameController.Instance != null)
-            GameController.Instance.AddMoney(grossRevenue);
+// RESOLVED
+        GameController.Instance.State.AddMoney(grossRevenue);
 
         // Wait a beat, then build settlement
         StartCoroutine(ShowSettlementUI(netIncome, grossRevenue, stars, servedCustomers, totalCustomers, accuracy));

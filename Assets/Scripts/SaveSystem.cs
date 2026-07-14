@@ -115,9 +115,9 @@ public class SaveSystem : MonoBehaviour
         GameController gc = GameController.Instance;
         if (gc != null)
         {
-            data.day = gc.CurrentDay;
-            data.money = gc.Money;
-            data.timeIndex = GetTimeIndexFromLabel(gc.CurrentTimeLabel);
+            data.day = gc.State.CurrentDay;
+            data.money = gc.State.Money;
+            data.timeIndex = GetTimeIndexFromLabel(gc.State.CurrentTimeLabel);
             data.barServed = BarMinigame.Instance != null ? BarMinigame.Instance.CustomersServed : 0;
             data.barRevenue = BarMinigame.Instance != null ? BarMinigame.Instance.ShiftEarnings : 0;
         }
@@ -144,7 +144,7 @@ public class SaveSystem : MonoBehaviour
         if (gc != null)
         {
             // Use public method to get triggered event IDs
-            data.triggeredEvents.AddRange(gc.GetTriggeredEventIds());
+            data.triggeredEvents.AddRange(gc.State.GetTriggeredEventIds());
         }
 
         // Bar stock (defaults)
@@ -236,16 +236,16 @@ public class SaveSystem : MonoBehaviour
         GameController gc = GameController.Instance;
         if (gc != null)
         {
-            gc.SetDay(data.day);
-            gc.SetTimeIndex(data.timeIndex);
-            gc.SetMoney(data.money);
+            gc.State.CurrentDay = data.day;
+            gc.State.TimeIndex = data.timeIndex;
+            gc.State.SetMoney(data.money);
             // Bar stats are now managed by BarMinigame; reset on load
             if (BarMinigame.Instance != null)
                 BarMinigame.Instance.ResetShiftStats();
-            gc.ClearTriggeredEvents();
+            gc.State.ClearTriggeredEvents();
             foreach (string eventId in data.triggeredEvents)
             {
-                gc.AddTriggeredEvent(eventId);
+                gc.State.AddTriggeredEvent(eventId);
             }
         }
 

@@ -879,8 +879,9 @@ public sealed class GameController : MonoBehaviour
             {
                 AchievementSystem.Instance.CheckFirstSale();
                 AchievementSystem.Instance.RegisterCustomerServed();
-                AchievementSystem.Instance.RegisterDailyRevenue(_barRevenue);
-                AchievementSystem.Instance.RegisterDrinkSold("beer");
+                // Note: RegisterDailyRevenue and RegisterDrinkSold are handled
+                // by BarMinigame.EndShift/CloseBar and BarMinigame.ServeCorrect
+                // respectively, to avoid double-counting.
             }
             TutorialSystem.Instance?.OnCustomerServed();
         }
@@ -919,9 +920,8 @@ public sealed class GameController : MonoBehaviour
         // F5: Bar close sound
         SoundManager.Play(SoundManager.SoundType.Collect);
         SetFeedback($"Shift closed: {_barServed} served, ${_barRevenue} earned.");
-        // [Gameplay] Daily revenue achievement check
-        if (Application.isPlaying && AchievementSystem.Instance != null)
-            AchievementSystem.Instance.RegisterDailyRevenue(_barRevenue);
+        // Note: RegisterDailyRevenue is already called in BarMinigame.EndShift,
+        // no need to call it again here to avoid double-counting.
         RefreshHud();
     }
 
@@ -1337,7 +1337,7 @@ public sealed class GameController : MonoBehaviour
             return;
         }
 
-        int affection = InventorySystem.Instance.GetAffection(npcId);
+        int affection = InventorySystem.Instance != null ? InventorySystem.Instance.GetAffection(npcId) : 0;
         int filled = Mathf.Clamp(affection, 0, 10);
         int empty = 10 - filled;
         string bar = new string('█', filled) + new string('░', empty);

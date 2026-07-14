@@ -128,7 +128,8 @@ public class Interactable : MonoBehaviour
                     {
                         player.ShowPlayerBubble("[Talking]");
                     }
-                    DialogueManager.Instance.ShowDialogueById(dialogueId, OnDialogueComplete);
+                    if (DialogueManager.Instance != null)
+                        DialogueManager.Instance.ShowDialogueById(dialogueId, OnDialogueComplete);
                 }
                 break;
 

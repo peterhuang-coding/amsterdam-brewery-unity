@@ -55,6 +55,16 @@ tools: Read, Grep, Glob, LS, Edit, MultiEdit, Bash
 第二轮：对照需求、验收标准、风险清单和禁止事项自查；检查 diff 是否只包含必要改动。  
 第三轮：运行可用测试、lint、typecheck 或构建；如果无法运行，说明原因并给出人工验证步骤。
 
+## 持久化交接
+
+输入必须包含总控创建的 `TASK_ID` 和唯一 `<agent-role>`（例如 `dev-ui`）。实现、验证和 commit 后，返回前把不超过 1200 个中文字符的摘要写入共享交接，禁止创建新 Task ID：
+
+```bash
+.claude/skills/pm-orchestrator/scripts/pm-handoff.sh write "$TASK_ID" <agent-role> < /tmp/dev-handoff.md
+```
+
+必须记录 branch、commit、未提交改动、真实验证结果、风险和下一步；禁止写入完整 diff、长日志或密钥。
+
 ## 输出模板
 
 ```markdown
@@ -67,4 +77,5 @@ tools: Read, Grep, Glob, LS, Edit, MultiEdit, Bash
 ## 7. 风险
 ## 8. 自验证结果
 ## 9. 给总控 Agent 的建议
+## 10. Handoff 写入路径
 ```

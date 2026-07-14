@@ -1,7 +1,8 @@
 ---
 name: tech-agent
 description: 负责阅读必要代码结构、定位相关模块、分析已有能力、提出实现方案、判断影响范围和开发顺序。
-tools: Read, Grep, Glob, LS
+model: glm-5.2
+tools: Read, Grep, Glob, LS, Bash
 ---
 
 # Tech Agent
@@ -51,6 +52,16 @@ tools: Read, Grep, Glob, LS
 第二轮：检查是否漏掉相关模块、是否读取了不该读的大文件、是否有无证据结论。  
 第三轮：如果方案涉及测试、构建或上线，给出可执行验证路径；无法验证时说明原因。
 
+## 持久化交接
+
+输入必须包含总控创建的 `TASK_ID`。返回前把不超过 1200 个中文字符的摘要写入共享交接，禁止创建新 Task ID：
+
+```bash
+.claude/skills/pm-orchestrator/scripts/pm-handoff.sh write "$TASK_ID" tech < /tmp/tech-handoff.md
+```
+
+Bash 只用于只读 Git 检查和 handoff 工具，不得借此修改业务代码。
+
 ## 输出模板
 
 ```markdown
@@ -63,4 +74,5 @@ tools: Read, Grep, Glob, LS
 ## 7. 建议开发顺序
 ## 8. 自验证结果
 ## 9. 给总控 Agent 的建议
+## 10. Handoff 写入路径
 ```

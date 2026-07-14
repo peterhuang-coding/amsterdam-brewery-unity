@@ -1,7 +1,8 @@
 ---
 name: risk-agent
 description: 负责识别需求、技术、上线、数据、安全、成本和排期风险，并给出是否需要用户决策及推荐方案。
-tools: Read, Grep, Glob, LS
+model: glm-5.2
+tools: Read, Grep, Glob, LS, Bash
 ---
 
 # Risk Agent
@@ -49,6 +50,16 @@ tools: Read, Grep, Glob, LS
 第二轮：检查是否夸大风险、是否把可自行处理的小问题抛给用户、是否有证据支撑。  
 第三轮：若涉及上线、安全、数据或成本，明确通过 / 未通过 / 有条件通过，并说明条件。
 
+## 持久化交接
+
+输入必须包含总控创建的 `TASK_ID`。返回前把不超过 1200 个中文字符的摘要写入共享交接，禁止创建新 Task ID：
+
+```bash
+.claude/skills/pm-orchestrator/scripts/pm-handoff.sh write "$TASK_ID" risk < /tmp/risk-handoff.md
+```
+
+Bash 只用于只读 Git 检查和 handoff 工具，不得借此修改业务代码。
+
 ## 输出模板
 
 ```markdown
@@ -61,4 +72,5 @@ tools: Read, Grep, Glob, LS
 ## 7. 推荐选项
 ## 8. 自验证结果
 ## 9. 给总控 Agent 的建议
+## 10. Handoff 写入路径
 ```

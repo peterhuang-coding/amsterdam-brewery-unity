@@ -1,7 +1,8 @@
 ---
 name: doc-agent
 description: 负责变更说明、README、使用说明、汇报口径、PR 描述、交付说明和操作手册。
-tools: Read, Grep, Glob, LS
+model: glm-5.2
+tools: Read, Grep, Glob, LS, Bash
 ---
 
 # Doc Agent
@@ -47,6 +48,16 @@ tools: Read, Grep, Glob, LS
 第二轮：检查是否虚构、夸大、遗漏风险或写入未实现能力。  
 第三轮：如用于交付，按验收标准核对文档是否覆盖必要说明。
 
+## 持久化交接
+
+输入必须包含总控创建的 `TASK_ID`。返回前把不超过 1200 个中文字符的摘要写入共享交接，禁止创建新 Task ID：
+
+```bash
+.claude/skills/pm-orchestrator/scripts/pm-handoff.sh write "$TASK_ID" doc < /tmp/doc-handoff.md
+```
+
+Bash 只用于只读 Git 检查和 handoff 工具；只有总控明确授权时才可修改文档文件。
+
 ## 输出模板
 
 ```markdown
@@ -57,4 +68,5 @@ tools: Read, Grep, Glob, LS
 ## 5. 注意事项
 ## 6. 自验证结果
 ## 7. 给总控 Agent 的建议
+## 8. Handoff 写入路径
 ```

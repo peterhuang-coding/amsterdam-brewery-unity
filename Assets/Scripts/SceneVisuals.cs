@@ -430,10 +430,10 @@ public static class SceneVisuals
                 break;
         }
 
-        // Sky layer (top half)
-        PlaceTile(scene, "SkyTop", 0, 2.5f, 30, 5, skyTop);
-        // Sky layer (bottom half)
-        PlaceTile(scene, "SkyBottom", 0, -2.5f, 30, 5, skyBottom);
+        // Sky layer (top half) — depth 0 (far background)
+        PlaceTile(scene, "SkyTop", 0, 2.5f, 30, 5, skyTop, 0);
+        // Sky layer (bottom half) — depth 0
+        PlaceTile(scene, "SkyBottom", 0, -2.5f, 30, 5, skyBottom, 0);
 
         switch (locationId)
         {
@@ -449,6 +449,9 @@ public static class SceneVisuals
         ground.size = new Vector2(20, 0.5f);
         ground.offset = new Vector2(0, -4.5f);
         ground.isTrigger = false;
+
+        // Add a building outline helper method for depth
+        // Sorting layers: 0=sky, 1=water/canal, 2=distant buildings, 3=mid buildings, 4=ground/street, 5=foreground objects, 6=interactive, 7=player area
 
         return scene;
     }
@@ -1014,7 +1017,7 @@ public static class SceneVisuals
     }
 
     private static GameObject PlaceTile(GameObject parent, string name, float x, float y,
-        float width, float height, Color32 color)
+        float width, float height, Color32 color, int sortingOrder = -1)
     {
         GameObject tile = new GameObject(name, typeof(SpriteRenderer));
         tile.transform.SetParent(parent.transform);
@@ -1023,10 +1026,26 @@ public static class SceneVisuals
         SpriteRenderer sr = tile.GetComponent<SpriteRenderer>();
         sr.sprite = SharedWhiteSprite;
         sr.color = color;
-        sr.sortingOrder = 0;
+        // Auto-assign sorting order by name prefix if not explicitly set
+        if (sortingOrder < 0)
+            sortingOrder = InferSortingOrder(name);
+        sr.sortingOrder = sortingOrder;
 
         // Scale to match world size
         tile.transform.localScale = new Vector3(width, height, 1);
+
+        // Add dark outline for building tiles to improve readability
+        if (IsBuildingTile(name) && width > 0.5f && height > 0.5f)
+        {
+            GameObject outline = new GameObject(name + "_Outline", typeof(SpriteRenderer));
+            outline.transform.SetParent(parent.transform);
+            outline.transform.localPosition = new Vector3(x, y, 0);
+            SpriteRenderer outlineSr = outline.GetComponent<SpriteRenderer>();
+            outlineSr.sprite = SharedWhiteSprite;
+            outlineSr.color = new Color32(20, 18, 15, 200);
+            outlineSr.sortingOrder = sortingOrder - 1;
+            outline.transform.localScale = new Vector3(width + 0.06f, height + 0.06f, 1);
+        }
 
         // Add collider for solid tiles
         if (!name.StartsWith("Canal") && !name.StartsWith("Flower") && !name.StartsWith("Window")
@@ -1055,6 +1074,61 @@ public static class SceneVisuals
         }
 
         return tile;
+    }
+
+    /// <summary>
+    /// Check if a tile name represents a building element that should get a dark outline.
+    /// </summary>
+    private static bool IsBuildingTile(string name)
+    {
+        return name.StartsWith("Bldg") || name.StartsWith("Neighbor")
+            || name.StartsWith("MarketBldg") || name.StartsWith("MarketRoof")
+            || name.StartsWith("BarBldg") || name.StartsWith("LabBldg")
+            || name.StartsWith("LectureHall") || name.StartsWith("MainBldg");
+    }
+
+    /// <summary>
+    /// Auto-assign depth sorting based on tile name prefix.
+    /// 0=sky/clouds, 1=water/canal, 2=distant landmarks, 3=buildings,
+    /// 4=street/ground, 5=foreground props, 6=interactive, 7=player glow
+    /// </summary>
+    private static int InferSortingOrder(string name)
+    {
+        if (name.StartsWith("Sky")) return 0;
+        if (name.StartsWith("Cloud")) return 0;
+        if (name.StartsWith("Bird")) return 1;
+        if (name.StartsWith("Canal") || name.StartsWith("Ripple") || name.StartsWith("Reflect")) return 1;
+        if (name.StartsWith("Windmill")) return 2;
+        if (name.StartsWith("Boat") && (name.Contains("Hull") || name.Contains("Deck"))) return 2;
+        if (name.StartsWith("Bridge")) return 3;
+        if (name.StartsWith("Bldg") || name.StartsWith("Neighbor") || name.StartsWith("Roof")
+            || name.StartsWith("Market") || name.StartsWith("Lab") || name.StartsWith("Lecture")
+            || name.StartsWith("MainBldg") || name.StartsWith("BldgAccent") || name.StartsWith("BldgRoof")
+            || name.StartsWith("BarBldg") || name.StartsWith("BarRoof") || name.StartsWith("Neon")
+            || name.StartsWith("Alley") || name.StartsWith("Entrance")) return 3;
+        if (name.StartsWith("Win") || name.StartsWith("Door") || name.StartsWith("Window")
+            || name.StartsWith("Stall") || name.Contains("Canopy") || name.Contains("Stripe")
+            || name.Contains("Post") && name.Contains("Boat")) return 4;
+        if (name.StartsWith("Street") || name.StartsWith("Ground") || name.StartsWith("Sidewalk")
+            || name.StartsWith("Pavement") || name.StartsWith("Path") || name.StartsWith("Grass")
+            || name.StartsWith("BikeLane") || name.StartsWith("Walkway")) return 4;
+        if (name.StartsWith("Cobble") || name.StartsWith("Stone")) return 4;
+        if (name.StartsWith("Tree") || name.StartsWith("Lamp") || name.StartsWith("Bench")
+            || name.StartsWith("Fence") || name.StartsWith("Bush") || name.StartsWith("FB")
+            || name.StartsWith("Bike") || name.StartsWith("Flower") || name.StartsWith("Stem")
+            || name.StartsWith("OutdoorTable") || name.StartsWith("Chair")
+            || name.StartsWith("Counter") || name.StartsWith("Stool") || name.StartsWith("Shelf")
+            || name.StartsWith("Bottle") || name.StartsWith("Picture") || name.StartsWith("BarDoor")
+            || name.StartsWith("BarWin") || name.StartsWith("BarSign") || name.StartsWith("BeerFlag")
+            || name.StartsWith("Coffee") || name.StartsWith("Sculpture")
+            || name.StartsWith("CanalFence") || name.StartsWith("Sign")) return 5;
+        if (name.StartsWith("Flag") || name.StartsWith("NLFlag") || name.StartsWith("UvAFlag")
+            || name.StartsWith("MarketSign") || name.StartsWith("LabSign")
+            || name.StartsWith("Glow") || name.StartsWith("Light") || name.StartsWith("Warm")
+            || name.StartsWith("NeonPool") || name.StartsWith("NeonText")) return 5;
+        if (name.StartsWith("Interact")) return 6;
+        if (name.StartsWith("FootstepGlow")) return 7;
+        return 4; // default: ground level
     }
 
     private static void AddLabel(GameObject parent, string text, float x, float y)

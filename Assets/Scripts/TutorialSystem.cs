@@ -81,6 +81,18 @@ public class TutorialSystem : MonoBehaviour
         BuildWelcomeScreen();
     }
 
+    private void Update()
+    {
+        // Allow keyboard dismiss of welcome screen
+        if (!_welcomeDismissed && _welcomeCanvas != null)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
+            {
+                DismissWelcome();
+            }
+        }
+    }
+
     private void InitializeSteps()
     {
         _steps = new List<TutorialStep>
@@ -107,7 +119,7 @@ public class TutorialSystem : MonoBehaviour
         canvasGO.AddComponent<GraphicRaycaster>();
         _canvasGroup = canvasGO.AddComponent<CanvasGroup>();
         _canvasGroup.alpha = 0f;
-        _canvasGroup.blocksRaycasts = false;
+        _canvasGroup.blocksRaycasts = false; // Never block game input — tutorial is overlay only
         canvasGO.SetActive(false);
 
         Transform root = _canvas.transform;
@@ -219,16 +231,29 @@ public class TutorialSystem : MonoBehaviour
         if (index < 0 || index >= _steps.Count) return;
         _steps[index].completed = true;
 
-        // Hide current step
+        // Hide current step — don't StopAllCoroutines here,
+        // let AnimateOut finish cleanly before showing next step
         StopAllCoroutines();
-        StartCoroutine(AnimateOut());
 
-        // Show next step if available
         int nextIndex = index + 1;
         if (nextIndex < _steps.Count)
         {
-            ShowStep(nextIndex);
+            // Animate out current step, then show next step after a brief delay
+            StartCoroutine(AnimateOutThenShow(nextIndex));
         }
+        else
+        {
+            // Last step completed — just fade out
+            StartCoroutine(AnimateOut());
+        }
+    }
+
+    private IEnumerator AnimateOutThenShow(int nextIndex)
+    {
+        // Fade out current step
+        yield return AnimateOutRoutine();
+        // Now show next step
+        ShowStep(nextIndex);
     }
 
     private void UpdateArrowPosition(string inputKey)
@@ -393,11 +418,17 @@ public class TutorialSystem : MonoBehaviour
             yield return null;
         }
         _canvasGroup.alpha = 1f;
-        _canvasGroup.blocksRaycasts = true;
+        _canvasGroup.blocksRaycasts = false; // Tutorial overlay must never block game input
     }
 
     private IEnumerator AnimateOut()
     {
+        yield return AnimateOutRoutine();
+    }
+
+    private IEnumerator AnimateOutRoutine()
+    {
+        if (_canvasGroup == null) yield break;
         _canvasGroup.blocksRaycasts = false;
         for (float t = 0; t < 0.2f; t += Time.deltaTime)
         {
@@ -406,7 +437,7 @@ public class TutorialSystem : MonoBehaviour
             yield return null;
         }
         _canvasGroup.alpha = 0f;
-        _canvas.gameObject.SetActive(false);
+        if (_canvas != null) _canvas.gameObject.SetActive(false);
     }
 
     private IEnumerator AnimateArrow()

@@ -562,6 +562,55 @@ public sealed class GameController : MonoBehaviour
             11, TextAnchor.MiddleRight);
         _affectionBarText.color = new Color32(200, 185, 160, 220);
         _affectionBarText.text = "";
+
+        // ── Dialogue panel (needed for story events in play mode) ──
+        BuildMinimalDialoguePanel(root);
+    }
+
+    private void BuildMinimalDialoguePanel(Transform parent)
+    {
+        // Dialogue panel for play mode — covers bottom half of screen
+        _dialoguePanel = MakeImage("Dialogue Panel", parent,
+            new UIFactory.RectSpec(new Vector2(0.02f, 0.0f), new Vector2(0.98f, 0.35f),
+                new Vector2(0, 0), new Vector2(0, 0)),
+            new Color32(15, 17, 22, 240)).gameObject;
+
+        // CanvasGroup for fade animation
+        _dialogueGroup = _dialoguePanel.GetComponent<CanvasGroup>();
+        if (_dialogueGroup == null) _dialogueGroup = _dialoguePanel.AddComponent<CanvasGroup>();
+        _dialogueGroup.alpha = 0f;
+
+        // Speaker name bar
+        _speakerBar = MakeImage("Speaker BG", _dialoguePanel.transform,
+            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(1, 1),
+                new Vector2(24, -48), new Vector2(-24, 0)),
+            new Color32(194, 87, 52, 180));
+        _dialogueSpeakerText = MakeText("Dialogue Speaker", _dialoguePanel.transform,
+            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(1, 1),
+                new Vector2(32, -46), new Vector2(-32, -4)),
+            22, TextAnchor.MiddleLeft);
+        _dialogueSpeakerText.fontStyle = FontStyle.Bold;
+
+        // Body text
+        _dialogueBodyText = MakeText("Dialogue Body", _dialoguePanel.transform,
+            new UIFactory.RectSpec(new Vector2(0, 0), new Vector2(1, 1),
+                new Vector2(32, 60), new Vector2(-32, -70)),
+            20, TextAnchor.UpperLeft);
+        _dialogueBodyText.color = new Color32(235, 228, 215, 255);
+
+        // Next/Finish button
+        Image btnBg = MakeImage("Dialogue Button", _dialoguePanel.transform,
+            new UIFactory.RectSpec(new Vector2(1, 0), new Vector2(1, 0),
+                new Vector2(-160, 16), new Vector2(-16, 52)),
+            new Color32(236, 180, 87, 255));
+        Button button = btnBg.gameObject.AddComponent<Button>();
+        button.onClick.AddListener(AdvanceDialogue);
+        _dialogueButtonText = MakeText("Button Text", btnBg.transform,
+            StretchFull(6, 6, 6, 6), 16, TextAnchor.MiddleCenter);
+        _dialogueButtonText.color = new Color32(20, 22, 26, 255);
+        _dialogueButtonText.fontStyle = FontStyle.Bold;
+
+        _dialoguePanel.SetActive(false);
     }
 
     private void BuildTopHud(Transform parent)

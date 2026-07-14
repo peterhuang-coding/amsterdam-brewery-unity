@@ -186,6 +186,12 @@ public class PlayerController : MonoBehaviour
             _body.transform.localPosition = new Vector3(0, bob, 0);
         }
 
+        // Notify tutorial system when player moves
+        if (_moveInput != Vector2.zero && TutorialSystem.Instance != null)
+        {
+            TutorialSystem.Instance.OnPlayerMoved();
+        }
+
         // Interaction
         if (Input.GetKeyDown(interactKey) && _nearbyInteractable != null)
         {

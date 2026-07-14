@@ -586,55 +586,6 @@ public sealed class GameController : MonoBehaviour
         _hintText.text = "Space: advance time    1 De Pijp    2 Science Park    3 Tweede Kans    4 Bloemenmarkt    B open bar    S serve    F close    I inventory    C character    P achievements";
     }
 
-    private void BuildDialoguePanel(Transform parent)
-    {
-        // Full-width bottom panel, taller, doesn't overlap HUD
-        _dialoguePanel = MakeImage("Dialogue Panel", parent,
-            new UIFactory.RectSpec(new Vector2(0.02f, 0.12f), new Vector2(0.98f, 0.88f),
-                Vector2.zero, Vector2.zero),
-            new Color32(15, 17, 22, 248)).gameObject;
-
-        // F4: Add CanvasGroup for fade animation
-        _dialogueGroup = _dialoguePanel.GetComponent<CanvasGroup>();
-        if (_dialogueGroup == null) _dialogueGroup = _dialoguePanel.AddComponent<CanvasGroup>();
-        _dialogueGroup.alpha = 0f;
-
-        // Store initial anchored position for slide animation
-        RectTransform dlgRect = _dialoguePanel.GetComponent<RectTransform>();
-        Vector2 origPos = dlgRect.anchoredPosition;
-
-        // Speaker name bar (UI upgrade: store reference for color transitions)
-        _speakerBar = MakeImage("Speaker BG", _dialoguePanel.transform,
-            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(1, 1),
-                new Vector2(24, -52), new Vector2(-24, 0)),
-            new Color32(194, 87, 52, 180));
-        _dialogueSpeakerText = MakeText("Dialogue Speaker", _dialoguePanel.transform,
-            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(1, 1),
-                new Vector2(32, -50), new Vector2(-32, -6)),
-            24, TextAnchor.MiddleLeft);
-        _dialogueSpeakerText.fontStyle = FontStyle.Bold;
-
-        // Body text — lots of space for Chinese text
-        _dialogueBodyText = MakeText("Dialogue Body", _dialoguePanel.transform,
-            new UIFactory.RectSpec(new Vector2(0, 0), new Vector2(1, 1),
-                new Vector2(32, 72), new Vector2(-32, -80)),
-            22, TextAnchor.UpperLeft);
-        _dialogueBodyText.color = new Color32(235, 228, 215, 255);
-
-        // Next/Finish button
-        Image btnBg = MakeImage("Dialogue Button", _dialoguePanel.transform,
-            new UIFactory.RectSpec(new Vector2(1, 0), new Vector2(1, 0),
-                new Vector2(-180, 24), new Vector2(-24, 64)),
-            new Color32(236, 180, 87, 255));
-        Button button = btnBg.gameObject.AddComponent<Button>();
-        button.onClick.AddListener(AdvanceDialogue);
-        _dialogueButtonText = MakeText("Button Text", btnBg.transform, StretchFull(8, 8, 8, 8), 18, TextAnchor.MiddleCenter);
-        _dialogueButtonText.color = new Color32(20, 22, 26, 255);
-        _dialogueButtonText.fontStyle = FontStyle.Bold;
-
-        _dialoguePanel.SetActive(false);
-    }
-
     // ── Game Actions ──────────────────────────────────────
 
     private void AdvanceTime()
@@ -827,236 +778,10 @@ public sealed class GameController : MonoBehaviour
             _triggeredDialogueIds.Add(storyEvent.dialogue_id);
             // F5: Story event trigger sound
             SoundManager.Play(SoundManager.SoundType.EventTrigger);
-            ShowDialogue(storyEvent.dialogue_id);
+            // Delegate to DialogueManager
+            DialogueManager.Instance.ShowDialogueById(storyEvent.dialogue_id);
             return;
         }
-    }
-
-    // T2: Cached dialogue loading
-    private void ShowDialogue(string dialogueId)
-    {
-        DialogueData data;
-        if (_dialogueCache.TryGetValue(dialogueId, out data))
-        {
-            _activeDialogue = data;
-            _dialogueLineIndex = 0;
-            RenderDialogueLine();
-            // F4: Animate dialogue panel in
-            if (_dialoguePanel != null)
-            {
-                StartCoroutine(AnimateDialogueIn());
-            }
-            // [DialogueLog] Record dialogue
-            if (DialogueLog.Instance != null && _activeDialogue != null && _activeDialogue.lines != null && _activeDialogue.lines.Length > 0)
-                DialogueLog.Instance.RecordDialogue(_activeDialogue.id, _activeDialogue.lines[0].speaker,
-                    _activeDialogue.lines[0].text, _currentDay, CurrentTimeLabel);
-            return;
-        }
-
-        TextAsset dialogueAsset = Resources.Load<TextAsset>($"Data/dialogue/zh/{dialogueId}");
-        if (dialogueAsset == null)
-        {
-            SetFeedback($"Missing dialogue: {dialogueId}");
-            return;
-        }
-        data = JsonUtility.FromJson<DialogueData>(dialogueAsset.text);
-        _dialogueCache[dialogueId] = data; // Cache for future
-        _activeDialogue = data;
-        _dialogueLineIndex = 0;
-        RenderDialogueLine();
-        // F4: Animate dialogue panel in
-        if (_dialoguePanel != null)
-        {
-            StartCoroutine(AnimateDialogueIn());
-        }
-        // [DialogueLog] Record dialogue
-        if (DialogueLog.Instance != null && _activeDialogue != null && _activeDialogue.lines != null && _activeDialogue.lines.Length > 0)
-            DialogueLog.Instance.RecordDialogue(_activeDialogue.id, _activeDialogue.lines[0].speaker,
-                _activeDialogue.lines[0].text, _currentDay, CurrentTimeLabel);
-    }
-
-    // F4: Slide + fade dialogue panel in
-    private IEnumerator AnimateDialogueIn()
-    {
-        if (_dialoguePanel == null) yield break;
-        _dialoguePanel.SetActive(true);
-        RectTransform rt = _dialoguePanel.GetComponent<RectTransform>();
-        Vector2 targetPos = rt.anchoredPosition;
-        float duration = 0.3f;
-
-        // Start slightly below
-        rt.anchoredPosition = targetPos + new Vector2(0, -50f);
-        rt.localScale = new Vector3(0.9f, 0.9f, 1f);
-        _dialogueGroup.alpha = 0f;
-
-        for (float t = 0; t < duration; t += Time.deltaTime)
-        {
-            float p = Mathf.Min(t / duration, 1f);
-            float smooth = p * p * (3f - 2f * p); // Smoothstep
-            rt.anchoredPosition = Vector2.Lerp(targetPos + new Vector2(0, -50f), targetPos, smooth);
-            rt.localScale = Vector3.Lerp(new Vector3(0.9f, 0.9f, 1f), Vector3.one, smooth);
-            _dialogueGroup.alpha = Mathf.Lerp(0f, 1f, smooth);
-            yield return null;
-        }
-        rt.anchoredPosition = targetPos;
-        rt.localScale = Vector3.one;
-        _dialogueGroup.alpha = 1f;
-    }
-
-    // F4: Slide + fade dialogue panel out
-    private IEnumerator AnimateDialogueOut()
-    {
-        if (_dialoguePanel == null) yield break;
-        RectTransform rt = _dialoguePanel.GetComponent<RectTransform>();
-        Vector2 startPos = rt.anchoredPosition;
-        float duration = 0.2f;
-
-        for (float t = 0; t < duration; t += Time.deltaTime)
-        {
-            float p = Mathf.Min(t / duration, 1f);
-            float smooth = p * p * (3f - 2f * p);
-            rt.anchoredPosition = Vector2.Lerp(startPos, startPos + new Vector2(0, -50f), smooth);
-            rt.localScale = Vector3.Lerp(Vector3.one, new Vector3(0.9f, 0.9f, 1f), smooth);
-            _dialogueGroup.alpha = Mathf.Lerp(1f, 0f, smooth);
-            yield return null;
-        }
-        _dialogueGroup.alpha = 0f;
-        _dialoguePanel.SetActive(false);
-    }
-
-    private void AdvanceDialogue()
-    {
-        if (_activeDialogue == null)
-        {
-            return;
-        }
-        _dialogueLineIndex++;
-        // F4: If closing, animate out
-        if (_activeDialogue == null || _activeDialogue.lines == null || _dialogueLineIndex >= _activeDialogue.lines.Length)
-        {
-            // Dialogue ending — animate out
-            StartCoroutine(AnimateDialogueOut());
-            _activeDialogue = null;
-            SetFeedback("Dialogue finished.");
-            return;
-        }
-        RenderDialogueLine();
-    }
-
-    private void RenderDialogueLine()
-    {
-        if (_activeDialogue == null || _activeDialogue.lines == null || _dialogueLineIndex >= _activeDialogue.lines.Length)
-        {
-            _activeDialogue = null;
-            StartCoroutine(AnimateDialogueOut());
-            SetFeedback("Dialogue finished.");
-            return;
-        }
-
-        // Guard: if minimal HUD doesn't have dialogue UI elements, skip rendering
-        if (_dialogueSpeakerText == null || _dialogueBodyText == null || _dialogueButtonText == null)
-        {
-            // In minimal mode (no dialogue panel), just show feedback instead
-            SetFeedback("(Dialogue skipped — no UI panel)");
-            _activeDialogue = null;
-            return;
-        }
-
-        DialogueLine line = _activeDialogue.lines[_dialogueLineIndex];
-        _dialogueSpeakerText.text = SpeakerName(line.speaker);
-        _currentSpeaker = line.speaker;
-        _fullDialogueText = line.text;
-
-        // UI upgrade: color speaker name and bar by character
-        Color32 speakerColor;
-        if (SpeakerColors.TryGetValue(line.speaker, out speakerColor))
-        {
-            _dialogueSpeakerText.color = speakerColor;
-            if (_speakerBar != null) _speakerBar.color = new Color32(
-                (byte)(speakerColor.r * 0.7f),
-                (byte)(speakerColor.g * 0.7f),
-                (byte)(speakerColor.b * 0.7f),
-                200);
-        }
-
-        // [DialogueLog] Record dialogue line
-        if (DialogueLog.Instance != null)
-            DialogueLog.Instance.RecordDialogueLine(line.speaker, line.text);
-
-        // F3: Start typewriter effect
-        if (_typewriterCoroutine != null)
-        {
-            StopCoroutine(_typewriterCoroutine);
-        }
-        _dialogueBodyText.text = "";
-        _textFullyRevealed = false;
-        HideDialogueButton();
-        _typewriterCoroutine = StartCoroutine(TypewriterEffect(_fullDialogueText));
-
-        _dialogueButtonText.text = _dialogueLineIndex >= _activeDialogue.lines.Length - 1 ? "Finish" : "Next";
-        _dialoguePanel.SetActive(true);
-    }
-
-    // F3: Typewriter effect — reveal text one character at a time
-    private IEnumerator TypewriterEffect(string fullText)
-    {
-        if (_dialogueBodyText == null)
-        {
-            _textFullyRevealed = true;
-            _typewriterCoroutine = null;
-            yield break;
-        }
-        _dialogueBodyText.text = "";
-        if (string.IsNullOrEmpty(fullText))
-        {
-            _textFullyRevealed = true;
-            ShowDialogueButton();
-            yield break;
-        }
-
-        float charDelay = 0.05f;
-        for (int i = 0; i < fullText.Length; i++)
-        {
-            _dialogueBodyText.text += fullText[i];
-            // Speed up when space is held
-            if (Input.GetKey(KeyCode.Space))
-            {
-                charDelay = 0.01f;
-            }
-            else
-            {
-                charDelay = 0.05f;
-            }
-            yield return new WaitForSeconds(charDelay);
-        }
-
-        _textFullyRevealed = true;
-        ShowDialogueButton();
-        _typewriterCoroutine = null;
-    }
-
-    private void HideDialogueButton()
-    {
-        if (_dialogueButtonText != null && _dialogueButtonText.transform.parent != null)
-        {
-            _dialogueButtonText.transform.parent.gameObject.SetActive(false);
-        }
-    }
-
-    private void ShowDialogueButton()
-    {
-        if (_dialogueButtonText != null && _dialogueButtonText.transform.parent != null)
-        {
-            _dialogueButtonText.transform.parent.gameObject.SetActive(true);
-        }
-    }
-
-    private string SpeakerName(string speakerId)
-    {
-        if (speakerId == "player") return "Lu Jian";
-        if (speakerId == "pablo") return "Pablo";
-        if (speakerId == "erik") return "Erik";
-        return speakerId;
     }
 
     // ── F1: Daily Goals ──────────────────────────────────
@@ -1526,23 +1251,17 @@ public sealed class GameController : MonoBehaviour
         _hintBackplate = null;
         _locationTitle = null;
         _locationDesc = null;
-        _dialoguePanel = null;
-        _dialogueSpeakerText = null;
-        _dialogueBodyText = null;
-        _dialogueButtonText = null;
         _goalText1 = null;
         _goalText2 = null;
         _affectionBarText = null;
         _flashOverlay = null;
         _feedbackGroup = null;
-        _dialogueGroup = null;
         _hudBgImage = null;
         _timeIconPlate = null;
         _locIconPlate = null;
         _barIconPlate = null;
         _moneyIconPlate = null;
         _poiTagContainer = null;
-        _speakerBar = null;
     }
 
     private static void DestroyChildren(Transform parent)

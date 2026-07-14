@@ -41,10 +41,22 @@ REQUIRED_FILES = [
     "Assets/Resources/Data/dialogue/zh/story_de_wit_inspection.json",
     "Assets/Resources/Data/dialogue/zh/story_chen_seeing_change.json",
     "Assets/Resources/Data/dialogue/zh/story_evening_reflection.json",
+    "Assets/Resources/Data/dialogue/zh/story_day1_arrival.json",
+    "Assets/Resources/Data/dialogue/zh/story_day1_first_class.json",
+    "Assets/Resources/Data/dialogue/zh/story_day1_erik_intro.json",
+    "Assets/Resources/Data/dialogue/zh/story_day1_market_explore.json",
+    "Assets/Resources/Data/dialogue/zh/story_day4_pablo_class2.json",
+    "Assets/Resources/Data/dialogue/zh/story_day4_bar_flow.json",
+    "Assets/Resources/Data/dialogue/zh/story_day5_sofie_close.json",
+    "Assets/Resources/Data/dialogue/zh/story_day6_erik_trust.json",
+    "Assets/Resources/Data/dialogue/zh/story_day7_final_market.json",
+    "Assets/Resources/Data/dialogue/zh/story_day7_lab_checkin.json",
+    "Assets/Resources/Data/dialogue/zh/story_day7_farewell_shift.json",
+    "Assets/Resources/Data/dialogue/zh/story_fatima_recipe.json",
 ]
 
 TIMES_OF_DAY = {"dawn", "morning", "afternoon", "evening", "night", "late_night"}
-LOCATIONS = {"de_pijp", "science_park", "tweede_kans", "bloemenmarkt"}
+LOCATIONS = {"de_pijp", "science_park", "tweede_kans", "bloemenmarkt", "de_pijp_market"}
 
 
 def fail(message: str) -> None:

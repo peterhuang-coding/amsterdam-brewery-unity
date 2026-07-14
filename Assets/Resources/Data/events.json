@@ -5,7 +5,7 @@
       "day": 1,
       "time": "morning",
       "location": "de_pijp",
-      "dialogue_id": "",
+      "dialogue_id": "story_day1_arrival",
       "summary": "Arriving at Amsterdam. A flower shop owner greets you on the bridge.",
       "unlocks": []
     },
@@ -14,7 +14,7 @@
       "day": 1,
       "time": "morning",
       "location": "science_park",
-      "dialogue_id": "",
+      "dialogue_id": "story_day1_first_class",
       "summary": "Pablo's first lecture. He talks about toy robots and consciousness.",
       "unlocks": []
     },
@@ -23,7 +23,7 @@
       "day": 1,
       "time": "afternoon",
       "location": "tweede_kans",
-      "dialogue_id": "",
+      "dialogue_id": "story_day1_erik_intro",
       "summary": "Erik introduces you to the bar. Your first shift at Tweede Kans.",
       "unlocks": ["bar"]
     },
@@ -32,7 +32,7 @@
       "day": 1,
       "time": "afternoon",
       "location": "bloemenmarkt",
-      "dialogue_id": "",
+      "dialogue_id": "story_day1_market_explore",
       "summary": "Exploring the floating flower market. The colors and scents are overwhelming."
     },
     {
@@ -92,6 +92,14 @@
       "summary": "You visit the flower market. Sofie tells you stories about her customers."
     },
     {
+      "id": "day3_fatima_recipe",
+      "day": 3,
+      "time": "afternoon",
+      "location": "de_pijp_market",
+      "dialogue_id": "story_fatima_recipe",
+      "summary": "Fatima invites you to her stall at Albert Cuyp market to teach you her family tagine recipe."
+    },
+    {
       "id": "day4_morning_routine",
       "day": 4,
       "time": "morning",
@@ -104,7 +112,7 @@
       "day": 4,
       "time": "morning",
       "location": "science_park",
-      "dialogue_id": "",
+      "dialogue_id": "story_day4_pablo_class2",
       "summary": "Pablo's second lecture dives into reward misspecification. Ravi looks less lost this time."
     },
     {
@@ -112,7 +120,7 @@
       "day": 4,
       "time": "evening",
       "location": "tweede_kans",
-      "dialogue_id": "",
+      "dialogue_id": "story_day4_bar_flow",
       "summary": "The bar is busier tonight. You handle orders more naturally. Erik nods approvingly."
     },
     {
@@ -136,7 +144,7 @@
       "day": 5,
       "time": "afternoon",
       "location": "bloemenmarkt",
-      "dialogue_id": "",
+      "dialogue_id": "story_day5_sofie_close",
       "summary": "Sofie is closing up early. She offers you a cutting from her favorite rose bush."
     },
     {
@@ -152,7 +160,7 @@
       "day": 6,
       "time": "evening",
       "location": "tweede_kans",
-      "dialogue_id": "",
+      "dialogue_id": "story_day6_erik_trust",
       "summary": "Erik tells you he's thinking about expanding the menu. He values your opinion more than he admits.",
       "unlocks": ["bar_expansion"]
     },
@@ -169,7 +177,7 @@
       "day": 7,
       "time": "morning",
       "location": "bloemenmarkt",
-      "dialogue_id": "",
+      "dialogue_id": "story_day7_final_market",
       "summary": "A final morning at the flower market. Sofie gives you a tulip bulb to remember your first week."
     },
     {
@@ -177,7 +185,7 @@
       "day": 7,
       "time": "morning",
       "location": "science_park",
-      "dialogue_id": "",
+      "dialogue_id": "story_day7_lab_checkin",
       "summary": "Chen signs off on your first week. She says the real work starts Monday."
     },
     {
@@ -185,7 +193,7 @@
       "day": 7,
       "time": "evening",
       "location": "tweede_kans",
-      "dialogue_id": "",
+      "dialogue_id": "story_day7_farewell_shift",
       "summary": "Your last shift of the week. The regulars are in a good mood. Erik pours you a drink on the house."
     },
     {

@@ -1,0 +1,17 @@
+{
+  "id": "story_day1_market_explore",
+  "trigger": {"scene": "bloemenmarkt", "day": 1, "time": "afternoon"},
+  "lines": [
+    {"speaker": "player", "text": "（水上花市。船屋上摆满了鲜花和球茎，颜色浓烈得像油画。）", "expression": "amazed"},
+    {"speaker": "fatima", "text": "第一次来？你的表情出卖了你。", "expression": "warm"},
+    {"speaker": "player", "text": "你怎么看出来的？", "expression": "surprised"},
+    {"speaker": "fatima", "text": "本地人不会在鲱鱼摊前站那么久还不买。来，尝尝这个——摩洛哥薄荷茶配harissa酱面包。", "expression": "generous"},
+    {"speaker": "player", "text": "（咬了一口）这……太好吃了。辣味和薄荷居然这么搭？", "expression": "delighted"},
+    {"speaker": "fatima", "text": "当然搭。我叫Fatima，Albert Cuyp市场那边的小吃摊就是我的。食物是最好的语言，比英语和荷兰语都管用。", "expression": "proud"},
+    {"speaker": "fatima", "text": "你看起来像个会做饭的人——眼神专注，吃东西的时候先看再闻最后才咬。改天来我的摊子，我教你做tagine。", "expression": "inviting"}
+  ],
+  "choices": [
+    {"id": "accept_cooking_invite", "text": "好啊！我一直想学北非菜。", "outcome": {"fatima_affection": 2}},
+    {"id": "compliment_food", "text": "你做的面包是我到阿姆斯特丹以来吃过最好的东西。", "outcome": {"fatima_affection": 1, "money": -3}}
+  ]
+}

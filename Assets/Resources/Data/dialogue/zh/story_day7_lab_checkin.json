@@ -1,0 +1,17 @@
+{
+  "id": "story_day7_lab_checkin",
+  "trigger": {"scene": "science_park", "day": 7, "time": "morning"},
+  "lines": [
+    {"speaker": "chen", "text": "Lu Jian，坐。第一周结束了，我们聊聊。", "expression": "professional"},
+    {"speaker": "player", "text": "我完成了Pablo的两次课和所有入门实验。", "expression": "confident"},
+    {"speaker": "chen", "text": "我看到了。Pablo对你评价不错，说你问的问题比大多数博士生都到位。", "expression": "measured_praise"},
+    {"speaker": "player", "text": "真的？他看起来挺严格的。", "expression": "surprised"},
+    {"speaker": "chen", "text": "严格是因为他在乎。好了，签字。", "expression": "efficient"},
+    {"speaker": "chen", "text": "但别高兴太早。第一周只是热身。从下周开始，你要开始找自己的研究方向。真正的挑战才刚开始。", "expression": "serious"},
+    {"speaker": "player", "text": "我准备好了。", "expression": "determined"}
+  ],
+  "choices": [
+    {"id": "ask_research_direction", "text": "你有什么建议？哪个方向最有前景？", "outcome": {"chen_affection": 1, "pablo_affection": 1}},
+    {"id": "express_independence", "text": "我想自己先探索一段时间，再跟你讨论。", "outcome": {"chen_affection": 2}}
+  ]
+}

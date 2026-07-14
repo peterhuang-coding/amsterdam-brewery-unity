@@ -1,0 +1,17 @@
+{
+  "id": "story_day7_farewell_shift",
+  "trigger": {"scene": "tweede_kans", "day": 7, "time": "evening"},
+  "lines": [
+    {"speaker": "erik", "text": "最后一班了。感觉怎么样？", "expression": "casual"},
+    {"speaker": "player", "text": "比第一天轻松多了。至少不会再把Jenever当成啤酒倒了。", "expression": "self_deprecating"},
+    {"speaker": "erik", "text": "哈！那个客人到现在还在抱怨。不过你确实进步了。", "expression": "amused"},
+    {"speaker": "player", "text": "常客们今晚好像心情特别好？", "expression": "observant"},
+    {"speaker": "erik", "text": "他们知道你下周还来。Tweede Kans的人不喜欢告别，更喜欢说'下次见'。", "expression": "warm"},
+    {"speaker": "erik", "text": "来，这杯算我的。一周辛苦了。", "expression": "generous"},
+    {"speaker": "player", "text": "（举起酒杯）下次见。", "expression": "grateful"}
+  ],
+  "choices": [
+    {"id": "toast_to_future", "text": "为Tweede Kans的未来干杯。", "outcome": {"erik_affection": 2, "money": 0}},
+    {"id": "ask_next_week_schedule", "text": "下周排班什么时候出？", "outcome": {"erik_affection": 1, "money": 5}}
+  ]
+}

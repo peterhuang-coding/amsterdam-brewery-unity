@@ -1,0 +1,17 @@
+{
+  "id": "story_day4_bar_flow",
+  "trigger": {"scene": "tweede_kans", "day": 4, "time": "evening"},
+  "lines": [
+    {"speaker": "erik", "text": "今晚人多。你跟得上吗？", "expression": "testing"},
+    {"speaker": "player", "text": "没问题。第三杯了，已经找到节奏。", "expression": "confident"},
+    {"speaker": "erik", "text": "（看了你一眼，微微点头）那个角落的客人要的是Jenever，别给他啤酒。", "expression": "subtle_approval"},
+    {"speaker": "player", "text": "（熟练地倒了一杯老式荷兰杜松子酒）", "expression": "focused"},
+    {"speaker": "erik", "text": "不错。你学东西比我以前雇的那些人快多了。", "expression": "impressed"},
+    {"speaker": "player", "text": "可能是因为我真的很需要这份工作。", "expression": "honest"},
+    {"speaker": "erik", "text": "需要是好事。不需要的人做不好任何事。", "expression": "wise"}
+  ],
+  "choices": [
+    {"id": "ask_about_regulars", "text": "那些常客都是什么人？", "outcome": {"erik_affection": 1, "lore_unlock": "bar_regulars"}},
+    {"id": "focus_on_work", "text": "继续专心工作，不多说话。", "outcome": {"erik_affection": 2, "money": 5}}
+  ]
+}

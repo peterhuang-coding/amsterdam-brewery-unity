@@ -307,6 +307,7 @@ public class DialogueManager : MonoBehaviour
         }
 
         float yOffset = 0;
+        int choiceIndex = 0;
         foreach (DialogueChoice choice in _currentDialogue.choices)
         {
             GameObject choiceGO = new GameObject($"Choice_{choice.id}", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
@@ -323,12 +324,14 @@ public class DialogueManager : MonoBehaviour
             bg.color = new Color32(50, 55, 65, 200);
             bg.raycastTarget = true;
 
+            // Keyboard hint (e.g. "[1]") for first 3 choices
+            string keyHint = choiceIndex < 3 ? $"[{choiceIndex + 1}] " : "";
             Text choiceText = choiceGO.AddComponent<Text>();
             choiceText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             choiceText.fontSize = 16;
             choiceText.color = new Color32(235, 228, 215, 255);
             choiceText.alignment = TextAnchor.MiddleLeft;
-            choiceText.text = $"  {choice.text}";
+            choiceText.text = $"  {keyHint}{choice.text}";
             RectTransform trt = choiceText.GetComponent<RectTransform>();
             trt.anchorMin = Vector2.zero;
             trt.anchorMax = Vector2.one;
@@ -346,6 +349,7 @@ public class DialogueManager : MonoBehaviour
             btn.colors = cb;
 
             yOffset += 44;
+            choiceIndex++;
         }
 
         RectTransform ccRT = _choiceContainer.GetComponent<RectTransform>();
@@ -412,6 +416,10 @@ public class DialogueManager : MonoBehaviour
         if (!string.IsNullOrEmpty(outcome.lore_unlock))
             InventorySystem.Instance.UnlockLore(outcome.lore_unlock, $"Lore: {outcome.lore_unlock}");
 
+        // Academic progress
+        if (outcome.academic_progress != 0)
+            InventorySystem.Instance.AddAcademicProgress(outcome.academic_progress);
+
         // F2: Show feedback based on outcome
         ShowOutcomeFeedback(outcome);
     }
@@ -430,6 +438,7 @@ public class DialogueManager : MonoBehaviour
         if (outcome.money > 0) feedback += $"+${outcome.money} ";
         if (!string.IsNullOrEmpty(outcome.unlock_system)) feedback += $"Unlocked: {outcome.unlock_system} ";
         if (!string.IsNullOrEmpty(outcome.item)) feedback += $"+1 {outcome.item} ";
+        if (outcome.academic_progress > 0) feedback += $"+{outcome.academic_progress} Academic Progress ";
 
         if (!string.IsNullOrEmpty(feedback))
         {
@@ -473,6 +482,19 @@ public class DialogueManager : MonoBehaviour
             if (_nextButton.gameObject.activeSelf)
             {
                 AdvanceDialogue();
+            }
+        }
+
+        // Keyboard shortcuts for dialogue choices (1/2/3)
+        if (_choiceContainer != null && _choiceContainer.activeSelf && _currentDialogue?.choices != null)
+        {
+            for (int i = 0; i < _currentDialogue.choices.Length && i < 3; i++)
+            {
+                if (Input.GetKeyDown(KeyCode.Alpha1 + i))
+                {
+                    OnChoiceSelected(_currentDialogue.choices[i].id);
+                    return;
+                }
             }
         }
     }

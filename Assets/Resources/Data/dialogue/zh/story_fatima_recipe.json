@@ -1,0 +1,17 @@
+{
+  "id": "story_fatima_recipe",
+  "trigger": {"scene": "de_pijp_market", "day": 3, "time": "afternoon"},
+  "lines": [
+    {"speaker": "fatima", "text": "你来了！我昨天就猜到你会来。", "expression": "pleased"},
+    {"speaker": "player", "text": "你做的面包让我念念不忘。", "expression": "honest"},
+    {"speaker": "fatima", "text": "面包只是开始。今天教你做tagine——摩洛哥炖菜。我奶奶的配方，传了四代人。", "expression": "proud"},
+    {"speaker": "player", "text": "四代人？那一定很正宗。", "expression": "impressed"},
+    {"speaker": "fatima", "text": "正宗不重要，好吃才重要。正宗是给游客看的，好吃是给家人吃的。来，先切洋葱。", "expression": "practical"},
+    {"speaker": "player", "text": "（跟着Fatima的步骤，小心翼翼地切洋葱、拌香料）", "expression": "focused"},
+    {"speaker": "fatima", "text": "不错！你有天赋。做菜和做研究一样——耐心、精确、再加一点直觉。", "expression": "encouraging"}
+  ],
+  "choices": [
+    {"id": "share_recipe_idea", "text": "这个配方也许可以改良一下，加一点东南亚的香料？", "outcome": {"fatima_affection": 2, "erik_affection": 1}},
+    {"id": "learn_traditionally", "text": "我想先学会原版，再考虑变化。尊重传统。", "outcome": {"fatima_affection": 3}}
+  ]
+}

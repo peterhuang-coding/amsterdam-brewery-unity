@@ -28,6 +28,7 @@ public class InventorySystem : MonoBehaviour
     private Dictionary<string, int> _affection = new Dictionary<string, int>();
     private Dictionary<string, string> _lore = new Dictionary<string, string>();
     private HashSet<string> _unlockedSystems = new HashSet<string>();
+    private int _academicProgress;
 
     private bool _inventoryOpen = false;
     private Canvas _inventoryCanvas;
@@ -144,6 +145,11 @@ public class InventorySystem : MonoBehaviour
         _unlockedSystems.Add(systemId);
     }
 
+    public void AddAcademicProgress(int amount)
+    {
+        _academicProgress += amount;
+    }
+
     public bool HasItem(string itemId) => _items.ContainsKey(itemId);
     public bool HasLore(string loreId) => _lore.ContainsKey(loreId);
     public bool HasSystem(string systemId) => _unlockedSystems.Contains(systemId);
@@ -151,6 +157,7 @@ public class InventorySystem : MonoBehaviour
     public void SetAffection(string characterId, int value) { _affection[characterId] = value; }
     public int GetItemCount(string itemId) => _items.GetValueOrDefault(itemId, 0);
     public int FragmentCount => _fragments.Count;
+    public int AcademicProgress => _academicProgress;
     public Dictionary<string, int> GetItems() => new Dictionary<string, int>(_items);
     public List<string> GetFragments() => new List<string>(_fragments);
     public Dictionary<string, string> GetLore() => new Dictionary<string, string>(_lore);
@@ -208,6 +215,10 @@ public class InventorySystem : MonoBehaviour
             string bar = new string('█', Mathf.Clamp(kvp.Value, 0, 10)) + new string('░', Mathf.Clamp(10 - kvp.Value, 0, 10));
             AddContentLine(contentArea, $"  {kvp.Key}: {bar} ({kvp.Value})", ref yOffset);
         }
+
+        // Academic progress
+        AddSectionHeader(contentArea, "Academic Progress", ref yOffset);
+        AddContentLine(contentArea, $"  🎓 {_academicProgress}", ref yOffset);
 
         // Lore section
         AddSectionHeader(contentArea, "Lore Discovered", ref yOffset);

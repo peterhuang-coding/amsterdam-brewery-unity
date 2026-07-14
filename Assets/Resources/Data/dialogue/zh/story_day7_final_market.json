@@ -1,0 +1,17 @@
+{
+  "id": "story_day7_final_market",
+  "trigger": {"scene": "bloemenmarkt", "day": 7, "time": "morning"},
+  "lines": [
+    {"speaker": "sofie", "text": "最后一个花市早晨了。一周过得真快。", "expression": "nostalgic"},
+    {"speaker": "player", "text": "感觉像是昨天才第一次走过那座桥。", "expression": "reflective"},
+    {"speaker": "sofie", "text": "我给你留了东西。", "expression": "gentle"},
+    {"speaker": "player", "text": "这是什么？", "expression": "curious"},
+    {"speaker": "sofie", "text": "郁金香球茎。种下去，明年春天你就能看到它开花。那时候你就会想起这个早晨。", "expression": "warm"},
+    {"speaker": "sofie", "text": "Sofie van den Berg送的花从来不附带条件。但如果你愿意，下周还可以来。", "expression": "hopeful"},
+    {"speaker": "player", "text": "我一定来。", "expression": "grateful"}
+  ],
+  "choices": [
+    {"id": "promise_to_return", "text": "我会回来的。这里已经是我的第二个家了。", "outcome": {"sofie_affection": 2}},
+    {"id": "hug_sofie", "text": "（给Sofie一个拥抱）", "outcome": {"sofie_affection": 3}}
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "story_day5_sofie_close",
+  "trigger": {"scene": "bloemenmarkt", "day": 5, "time": "afternoon"},
+  "lines": [
+    {"speaker": "player", "text": "Sofie？今天怎么这么早就收摊了？", "expression": "concerned"},
+    {"speaker": "sofie", "text": "没什么。就是……有点累。", "expression": "distant"},
+    {"speaker": "player", "text": "你看起来不像只是累。", "expression": "attentive"},
+    {"speaker": "sofie", "text": "……花田那边出了点问题。供货商涨价了百分之三十，我不确定还能不能维持现在的价格。", "expression": "worried"},
+    {"speaker": "sofie", "text": "二十六年的花店，可能要开始卖塑料花了。", "expression": "bitter"},
+    {"speaker": "player", "text": "一定有别的办法。", "expression": "determined"},
+    {"speaker": "sofie", "text": "也许吧。来，这枝玫瑰送你——从我最喜欢的灌木上剪的。有些东西得趁它还在的时候珍惜。", "expression": "melancholic"}
+  ],
+  "choices": [
+    {"id": "offer_help", "text": "我帮你想想办法。也许可以找Erik商量？", "outcome": {"sofie_affection": 2, "erik_affection": 1}},
+    {"id": "comfort_words", "text": "不管怎样，你的花是这个城市最好的。", "outcome": {"sofie_affection": 1}}
+  ]
+}

@@ -231,14 +231,14 @@ public class TutorialSystem : MonoBehaviour
         if (index < 0 || index >= _steps.Count) return;
         _steps[index].completed = true;
 
-        // Hide current step — don't StopAllCoroutines here,
-        // let AnimateOut finish cleanly before showing next step
+        // Stop all running coroutines (animations, arrow movement, etc.)
+        // then start the appropriate transition.
         StopAllCoroutines();
 
         int nextIndex = index + 1;
         if (nextIndex < _steps.Count)
         {
-            // Animate out current step, then show next step after a brief delay
+            // Animate out current step, then show next step
             StartCoroutine(AnimateOutThenShow(nextIndex));
         }
         else

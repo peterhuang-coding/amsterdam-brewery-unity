@@ -103,7 +103,7 @@ public class ShopSystem : MonoBehaviour
         if (item.isOwned) return false;
 
         // Check money
-        if (GameController.Instance.Money < item.cost) return false;
+        if (GameController.Instance == null || GameController.Instance.Money < item.cost) return false;
 
         // Deduct money
         GameController.Instance.AddMoney(-item.cost);
@@ -115,7 +115,8 @@ public class ShopSystem : MonoBehaviour
         ApplyItemEffects(item);
 
         // Show feedback
-        GameController.Instance.ShowResultFeedback($"Purchased: {item.name}");
+        if (GameController.Instance != null)
+            GameController.Instance.ShowResultFeedback($"Purchased: {item.name}");
 
         // Refresh shop UI
         RefreshContent();
@@ -142,7 +143,8 @@ public class ShopSystem : MonoBehaviour
 
         if (_shopOpen)
         {
-            _currentLocation = GameController.Instance.CurrentLocationId;
+            if (GameController.Instance != null)
+                _currentLocation = GameController.Instance.CurrentLocationId;
             RefreshContent();
             StartCoroutine(AnimatePanelIn());
         }
@@ -168,33 +170,48 @@ public class ShopSystem : MonoBehaviour
             {
                 case "energy":
                     // Coffee: add to inventory
-                    InventorySystem.Instance.AddItem(item.id, item.name);
+                    if (InventorySystem.Instance != null)
+                        InventorySystem.Instance.AddItem(item.id, item.name);
                     break;
                 case "academic":
                     // Notebook: add to inventory
-                    InventorySystem.Instance.AddItem(item.id, item.name);
+                    if (InventorySystem.Instance != null)
+                        InventorySystem.Instance.AddItem(item.id, item.name);
                     break;
                 case "sofie_affection":
                     // Tulip: increase Sofie affection
-                    int currentSofie = InventorySystem.Instance.GetAffection("sofie");
-                    InventorySystem.Instance.SetAffection("sofie", currentSofie + 2);
-                    GameController.Instance.ShowResultFeedback("Sofie affection +2");
+                    if (InventorySystem.Instance != null)
+                    {
+                        int currentSofie = InventorySystem.Instance.GetAffection("sofie");
+                        InventorySystem.Instance.SetAffection("sofie", currentSofie + 2);
+                    }
+                    if (GameController.Instance != null)
+                        GameController.Instance.ShowResultFeedback("Sofie affection +2");
                     break;
                 case "erik_affection":
                     // Whiskey: increase Erik affection
-                    int currentErik = InventorySystem.Instance.GetAffection("erik");
-                    InventorySystem.Instance.SetAffection("erik", currentErik + 2);
-                    GameController.Instance.ShowResultFeedback("Erik affection +2");
+                    if (InventorySystem.Instance != null)
+                    {
+                        int currentErik = InventorySystem.Instance.GetAffection("erik");
+                        InventorySystem.Instance.SetAffection("erik", currentErik + 2);
+                    }
+                    if (GameController.Instance != null)
+                        GameController.Instance.ShowResultFeedback("Erik affection +2");
                     break;
                 case "chen_affection":
                     // Lab Pass: increase Chen affection
-                    int currentChen = InventorySystem.Instance.GetAffection("chen");
-                    InventorySystem.Instance.SetAffection("chen", currentChen + 2);
-                    GameController.Instance.ShowResultFeedback("Chen affection +2");
+                    if (InventorySystem.Instance != null)
+                    {
+                        int currentChen = InventorySystem.Instance.GetAffection("chen");
+                        InventorySystem.Instance.SetAffection("chen", currentChen + 2);
+                    }
+                    if (GameController.Instance != null)
+                        GameController.Instance.ShowResultFeedback("Chen affection +2");
                     break;
                 case "explore":
                     // Guide: add to inventory
-                    InventorySystem.Instance.AddItem(item.id, item.name);
+                    if (InventorySystem.Instance != null)
+                        InventorySystem.Instance.AddItem(item.id, item.name);
                     break;
             }
         }

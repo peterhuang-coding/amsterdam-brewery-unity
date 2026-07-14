@@ -216,7 +216,8 @@ public class PlayerController : MonoBehaviour
                     Debug.Log($"Surfing complete! Success: {success}, Fragments: {fragments}");
                     if (success)
                     {
-                        InventorySystem.Instance.AddFragment($"Hot wave fragment ({fragments} collected)");
+                        if (InventorySystem.Instance != null)
+                            InventorySystem.Instance.AddFragment($"Hot wave fragment ({fragments} collected)");
                         SoundManager.Play(SoundManager.SoundType.Success);
                     }
                     else

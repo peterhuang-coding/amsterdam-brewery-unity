@@ -73,23 +73,15 @@ public sealed class GameController : MonoBehaviour
     public string CurrentLocationName => _locations.ContainsKey(_currentLocation) ? _locations[_currentLocation].title : _currentLocation;
     public string CurrentLocationId => _currentLocation;
     public int TriggeredEventCount => _triggeredDialogueIds.Count;
-    public int BarServed => _barServed;
-    public int BarRevenue => _barRevenue;
     // ── SaveSystem setters ─────────────────────────────
     public void SetDay(int d) { _currentDay = d; }
     public void SetTimeIndex(int t) { _timeIndex = t; }
     public void SetMoney(int m) { _money = m; }
-    public void SetBarServed(int s) { _barServed = s; }
-    public void SetBarRevenue(int r) { _barRevenue = r; }
     public List<string> GetTriggeredEventIds() { return new List<string>(_triggeredDialogueIds); }
     public void ClearTriggeredEvents() { _triggeredDialogueIds.Clear(); }
     public void AddTriggeredEvent(string id) { _triggeredDialogueIds.Add(id); }
     public void RefreshHudPublic() { RefreshHud(); }
     private string _currentLocation = "de_pijp";
-
-    private bool _barOpen;
-    private int _barServed;
-    private int _barRevenue;
 
     private EventDatabase _eventDatabase;
 
@@ -296,15 +288,27 @@ public sealed class GameController : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.B))
         {
-            OpenBar();
+            if (BarMinigame.Instance != null)
+            {
+                if (!BarMinigame.Instance.IsShiftActive)
+                    BarMinigame.Instance.StartShift();
+                else
+                    SetFeedback("A bar shift is already in progress.");
+            }
         }
         else if (Input.GetKeyDown(KeyCode.S))
         {
-            ServeCustomer();
+            SetFeedback("Use the bar minigame UI to serve customers.");
         }
         else if (Input.GetKeyDown(KeyCode.F))
         {
-            CloseBar();
+            if (BarMinigame.Instance != null)
+            {
+                if (BarMinigame.Instance.IsShiftActive)
+                    BarMinigame.Instance.EndShift();
+                else
+                    SetFeedback("No shift to close yet.");
+            }
         }
     }
 
@@ -640,96 +644,6 @@ public sealed class GameController : MonoBehaviour
             AchievementSystem.Instance.RegisterLocationVisited(locationId);
             TutorialSystem.Instance?.OnLocationChanged();
         }
-    }
-
-    private void OpenBar()
-    {
-        if (_barOpen)
-        {
-            SetFeedback("Tweede Kans is already open.");
-            return;
-        }
-        _barOpen = true;
-        _barServed = 0;
-        _barRevenue = 0;
-        // F5: Bar open sound
-        SoundManager.Play(SoundManager.SoundType.Success);
-        SetFeedback("You open the bar. The first glasses wait behind the counter.");
-        RefreshHud();
-        // Notify tutorial
-        if (Application.isPlaying && TutorialSystem.Instance != null)
-            TutorialSystem.Instance.OnBarOpened();
-    }
-
-    private void ServeCustomer()
-    {
-        if (!_barOpen)
-        {
-            SetFeedback("The bar is closed. Press B to open it first.");
-            SoundManager.Play(SoundManager.SoundType.Error);
-            return;
-        }
-
-        // F8: Weather affects bar revenue
-        int revenuePerCustomer = GetBarRevenuePerCustomer();
-
-        _barServed++;
-        _barRevenue += revenuePerCustomer;
-        SetFeedback($"Served one. Revenue +${revenuePerCustomer}.");
-        // F5: Money earn sound
-        SoundManager.Play(SoundManager.SoundType.MoneyEarn);
-        RefreshHud();
-        // Notify achievement and tutorial
-        if (Application.isPlaying)
-        {
-            if (AchievementSystem.Instance != null)
-            {
-                AchievementSystem.Instance.CheckFirstSale();
-                AchievementSystem.Instance.RegisterCustomerServed();
-                // Note: RegisterDailyRevenue and RegisterDrinkSold are handled
-                // by BarMinigame.EndShift/CloseBar and BarMinigame.ServeCorrect
-                // respectively, to avoid double-counting.
-            }
-            TutorialSystem.Instance?.OnCustomerServed();
-        }
-    }
-
-    // F8: Weather-based revenue multiplier
-    private int GetBarRevenuePerCustomer()
-    {
-        WeatherSystem.WeatherType weather = WeatherSystem.Instance.CurrentWeather;
-        switch (weather)
-        {
-            case WeatherSystem.WeatherType.Sunny:
-            case WeatherSystem.WeatherType.Cloudy:
-                return 6; // Standard
-            case WeatherSystem.WeatherType.Rainy:
-            case WeatherSystem.WeatherType.Storm:
-                return 8; // Tip increase, but fewer customers
-            case WeatherSystem.WeatherType.Foggy:
-                return 5; // Slow business
-            case WeatherSystem.WeatherType.Snowy:
-                return 7; // Cozy atmosphere
-            default:
-                return 6;
-        }
-    }
-
-    private void CloseBar()
-    {
-        if (!_barOpen)
-        {
-            SetFeedback("No shift to close yet.");
-            return;
-        }
-        _barOpen = false;
-        _money += _barRevenue;
-        // F5: Bar close sound
-        SoundManager.Play(SoundManager.SoundType.Collect);
-        SetFeedback($"Shift closed: {_barServed} served, ${_barRevenue} earned.");
-        // Note: RegisterDailyRevenue is already called in BarMinigame.EndShift,
-        // no need to call it again here to avoid double-counting.
-        RefreshHud();
     }
 
     /// <summary>
@@ -1106,7 +1020,11 @@ public sealed class GameController : MonoBehaviour
     {
         _timeText.text = $"Day {_currentDay} / {CurrentTimeLabel}";
         _locationText.text = _locations[_currentLocation].title;
-        _barStatusText.text = $"{( _barOpen ? "Open" : "Closed" )}  |  Served {_barServed}  |  Rev ${_barRevenue}";
+        // Bar status: read from BarMinigame if available
+        bool barActive = BarMinigame.Instance != null && BarMinigame.Instance.IsShiftActive;
+        int barServed = barActive ? BarMinigame.Instance.CustomersServed : 0;
+        int barEarnings = barActive ? BarMinigame.Instance.ShiftEarnings : 0;
+        _barStatusText.text = $"{(barActive ? "Open" : "Closed")}  |  Served {barServed}  |  Rev ${barEarnings}";
         _moneyText.text = $"${_money}";
 
         // F1: Update daily goal display
@@ -1202,7 +1120,7 @@ public sealed class GameController : MonoBehaviour
 
     private void UpdateHintText()
     {
-        _hintText.text = "Space: advance time / dialogue next    1 De Pijp    2 Science Park    3 Tweede Kans    4 Bloemenmarkt    B open bar    S serve    C close";
+        _hintText.text = "Space: advance time / dialogue next    1 De Pijp    2 Science Park    3 Tweede Kans    4 Bloemenmarkt    B start shift    F end shift    I inventory    C character    P achievements";
     }
 
     // ── UI Factory Helpers ────────────────────────────────

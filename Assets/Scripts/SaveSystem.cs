@@ -26,6 +26,8 @@ public class SaveData
     // Items
     public List<string> itemNames = new List<string>();
     public List<string> itemDescriptions = new List<string>();
+    // Shop owned items
+    public List<string> ownedShopItems = new List<string>();
 }
 
 public class SaveSystem : MonoBehaviour
@@ -116,8 +118,8 @@ public class SaveSystem : MonoBehaviour
             data.day = gc.CurrentDay;
             data.money = gc.Money;
             data.timeIndex = GetTimeIndexFromLabel(gc.CurrentTimeLabel);
-            data.barServed = gc.BarServed;
-            data.barRevenue = gc.BarRevenue;
+            data.barServed = BarMinigame.Instance != null ? BarMinigame.Instance.CustomersServed : 0;
+            data.barRevenue = BarMinigame.Instance != null ? BarMinigame.Instance.ShiftEarnings : 0;
         }
 
         // Affection (from InventorySystem)
@@ -165,6 +167,18 @@ public class SaveSystem : MonoBehaviour
         // Items
         data.itemNames.Clear();
         data.itemDescriptions.Clear();
+
+        // [Gameplay] Save shop owned items
+        data.ownedShopItems.Clear();
+        if (ShopSystem.Instance != null)
+        {
+            string[] allShopIds = { "coffee", "notebook", "tulip", "whiskey", "labpass", "guide" };
+            foreach (string id in allShopIds)
+            {
+                if (ShopSystem.Instance.IsItemOwned(id))
+                    data.ownedShopItems.Add(id);
+            }
+        }
 
         // Serialize to JSON and write file
         string json = JsonUtility.ToJson(data, true);
@@ -225,12 +239,28 @@ public class SaveSystem : MonoBehaviour
             gc.SetDay(data.day);
             gc.SetTimeIndex(data.timeIndex);
             gc.SetMoney(data.money);
-            gc.SetBarServed(data.barServed);
-            gc.SetBarRevenue(data.barRevenue);
+            // Bar stats are now managed by BarMinigame; reset on load
+            if (BarMinigame.Instance != null)
+                BarMinigame.Instance.ResetShiftStats();
             gc.ClearTriggeredEvents();
             foreach (string eventId in data.triggeredEvents)
             {
                 gc.AddTriggeredEvent(eventId);
+            }
+        }
+
+        // Reset ShopSystem owned states before applying save data
+        if (ShopSystem.Instance != null)
+        {
+            ShopSystem.Instance.ResetOwned();
+            // Restore owned items from save data
+            if (data.ownedShopItems != null)
+            {
+                foreach (string ownedId in data.ownedShopItems)
+                {
+                    // Mark items as owned without re-purchasing (no money deduction)
+                    ShopSystem.Instance.MarkItemOwned(ownedId);
+                }
             }
         }
 

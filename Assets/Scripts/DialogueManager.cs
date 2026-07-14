@@ -215,6 +215,14 @@ public class DialogueManager : MonoBehaviour
         _overlay.color = new Color32(0, 0, 0, 180);
         _overlay.raycastTarget = true;
 
+        // Record dialogue start in DialogueLog
+        if (DialogueLog.Instance != null && data.lines != null && data.lines.Length > 0)
+        {
+            string firstSpeaker = data.lines[0].speaker;
+            string firstText = data.lines[0].text;
+            DialogueLog.Instance.RecordDialogue(dialogueId, firstSpeaker, firstText, 1, null);
+        }
+
         // 显示对话气泡（第一行）
         DialogueLine firstLine = data.lines[0];
         if (_bubble != null)
@@ -242,6 +250,12 @@ public class DialogueManager : MonoBehaviour
         }
 
         DialogueLine line = _currentDialogue.lines[_currentLineIndex];
+
+        // Record each dialogue line in DialogueLog
+        if (DialogueLog.Instance != null)
+        {
+            DialogueLog.Instance.RecordDialogueLine(line.speaker, line.text);
+        }
 
         // 更新对话气泡
         if (_bubble != null)

@@ -134,6 +134,29 @@ public class ShopSystem : MonoBehaviour
     }
 
     /// <summary>
+    /// Reset all owned states (used by SaveSystem on new game / load).
+    /// </summary>
+    public void ResetOwned()
+    {
+        foreach (ShopItem item in AllItems)
+        {
+            item.isOwned = false;
+        }
+    }
+
+    /// <summary>
+    /// Mark an item as owned without deducting money (used by SaveSystem on load).
+    /// </summary>
+    public void MarkItemOwned(string itemId)
+    {
+        ShopItem item = AllItems.Find(i => i.id == itemId);
+        if (item != null)
+        {
+            item.isOwned = true;
+        }
+    }
+
+    /// <summary>
     /// Toggle shop panel open/closed.
     /// </summary>
     public void TogglePanel()

@@ -263,15 +263,15 @@ public class CharacterPanel : MonoBehaviour
 
     private int GetBarServed()
     {
-        if (GameController.Instance != null)
-            return GameController.Instance.BarServed;
+        if (BarMinigame.Instance != null)
+            return BarMinigame.Instance.CustomersServed;
         return 0;
     }
 
     private int GetBarRevenue()
     {
-        if (GameController.Instance != null)
-            return GameController.Instance.BarRevenue;
+        if (BarMinigame.Instance != null)
+            return BarMinigame.Instance.ShiftEarnings;
         return 0;
     }
 

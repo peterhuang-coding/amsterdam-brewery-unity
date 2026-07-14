@@ -151,6 +151,9 @@ public class InventorySystem : MonoBehaviour
     public void SetAffection(string characterId, int value) { _affection[characterId] = value; }
     public int GetItemCount(string itemId) => _items.GetValueOrDefault(itemId, 0);
     public int FragmentCount => _fragments.Count;
+    public Dictionary<string, int> GetItems() => new Dictionary<string, int>(_items);
+    public List<string> GetFragments() => new List<string>(_fragments);
+    public Dictionary<string, string> GetLore() => new Dictionary<string, string>(_lore);
 
     private void Update()
     {

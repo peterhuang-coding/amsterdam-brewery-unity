@@ -185,12 +185,23 @@ def check_script_contracts() -> None:
         "KeyCode.P",
         "ShowDialogue",
         "CheckStoryEvents",
-        "ServeCustomer",
-        "CloseBar",
     ]
     for term in required_terms:
         if term not in game_controller:
             fail(f"GameController.cs missing required loop term: {term}")
+
+    # Bar minigame must provide the bar API previously in GameController
+    bar_minigame = (ROOT / "Assets/Scripts/BarMinigame.cs").read_text(encoding="utf-8")
+    bar_required_terms = [
+        "StartShift",
+        "EndShift",
+        "IsShiftActive",
+        "CustomersServed",
+        "ShiftEarnings",
+    ]
+    for term in bar_required_terms:
+        if term not in bar_minigame:
+            fail(f"BarMinigame.cs missing required API term: {term}")
 
 
 def main() -> None:

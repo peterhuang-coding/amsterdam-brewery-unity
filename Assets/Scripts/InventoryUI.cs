@@ -286,6 +286,63 @@ public class InventoryUI : MonoBehaviour
 
     private List<InventoryItem> GetCurrentTabItems()
     {
+        // Try to get items from InventorySystem if available
+        if (InventorySystem.Instance != null)
+        {
+            var sysItems = InventorySystem.Instance.GetItems();
+            if (sysItems != null && sysItems.Count > 0)
+            {
+                List<InventoryItem> result = new List<InventoryItem>();
+                foreach (var kvp in sysItems)
+                {
+                    result.Add(new InventoryItem
+                    {
+                        id = kvp.Key,
+                        name = kvp.Key,
+                        description = $"Quantity: {kvp.Value}"
+                    });
+                }
+                // Add fragments as collectibles
+                if (_currentTab == Tab.Collectible)
+                {
+                    var fragments = InventorySystem.Instance.GetFragments();
+                    if (fragments != null)
+                    {
+                        foreach (string f in fragments)
+                        {
+                            string display = f.Length > 40 ? f.Substring(0, 40) + "..." : f;
+                            result.Add(new InventoryItem
+                            {
+                                id = "fragment_" + display,
+                                name = "Inspiration Fragment",
+                                description = display
+                            });
+                        }
+                    }
+                }
+                // Add lore as quest items
+                if (_currentTab == Tab.Quest)
+                {
+                    var lore = InventorySystem.Instance.GetLore();
+                    if (lore != null)
+                    {
+                        foreach (var kvp in lore)
+                        {
+                            string display = kvp.Value.Length > 40 ? kvp.Value.Substring(0, 40) + "..." : kvp.Value;
+                            result.Add(new InventoryItem
+                            {
+                                id = "lore_" + kvp.Key,
+                                name = "Lore: " + kvp.Key,
+                                description = display
+                            });
+                        }
+                    }
+                }
+                if (result.Count > 0)
+                    return result;
+            }
+        }
+        // Fallback to hardcoded sample items
         switch (_currentTab)
         {
             case Tab.Useful: return _usefulItems;

@@ -131,6 +131,8 @@ public class BarMinigame : MonoBehaviour
     private int _upgradeBonus = 0;
     private float _tipMultiplier = 1.0f;
     private float _serviceSpeed = 1.0f;
+    private bool _hasPremiumMenu = false;
+    private float _loyaltyBonus = 0.0f;
 
     private void Awake()
     {
@@ -193,11 +195,97 @@ public class BarMinigame : MonoBehaviour
     }
 
     // ── Entry Point ────────────────────────────────────────
+
+    /// <summary>
+    /// Start a bar shift with a completion callback (used by other systems).
+    /// </summary>
     public void StartShift(System.Action<int> onComplete)
     {
         if (_isActive) return;
         _isActive = true;
         _onComplete = onComplete;
+        InitShiftState();
+
+        for (int i = 0; i < 3; i++) _stock[i] = 0;
+        _stockingCost = 0;
+
+        BuildCanvas();
+        ShowStockingUI();
+
+        // [Tutorial] Notify tutorial system that bar was opened
+        if (Application.isPlaying && TutorialSystem.Instance != null)
+            TutorialSystem.Instance.OnBarOpened();
+    }
+    /// </summary>
+    public void StartShift()
+    {
+        StartShift(null);
+    }
+
+    // ── Public API for GameController / HUD ────────────────
+
+    /// <summary>True when a bar shift is in progress.</summary>
+    public bool IsShiftActive => _isActive;
+
+    /// <summary>Number of customers served in the current/last shift.</summary>
+    public int CustomersServed => _customersServed;
+
+    /// <summary>Earnings (revenue + tips) from the current/last shift.</summary>
+    public int ShiftEarnings => _earnings + _tips;
+
+    /// <summary>
+    /// Reset shift statistics (used by SaveSystem on load).
+    /// </summary>
+    public void ResetShiftStats()
+    {
+        _isActive = false;
+        _customersServed = 0;
+        _earnings = 0;
+        _tips = 0;
+        _correctCount = 0;
+        _comboCount = 0;
+        _apologyTipMultiplier = 1.0f;
+        _apologyMode = false;
+    }
+
+    /// <summary>
+    /// End the current shift early (public, called by key input).
+    /// </summary>
+    public void EndShift()
+    {
+        if (!_isActive) return;
+
+        // If still stocking, cancel
+        if (_isStocking)
+        {
+            CancelStocking();
+            return;
+        }
+
+        // Force-end the shift
+        _isServing = false;
+        _isActive = false;
+
+        int grossRevenue = _earnings + _tips;
+        GameController.Instance.AddMoney(grossRevenue);
+
+        // [Gameplay] Daily revenue achievement check
+        if (Application.isPlaying && AchievementSystem.Instance != null)
+            AchievementSystem.Instance.RegisterDailyRevenue(grossRevenue);
+
+        _onComplete?.Invoke(grossRevenue);
+        _onComplete = null;
+
+        if (_canvas != null)
+        {
+            Destroy(_canvas.gameObject);
+        }
+    }
+
+    // ── Shift State Init ───────────────────────────────────
+
+    private void InitShiftState()
+    {
         _customersServed = 0;
         _earnings = 0;
         _tips = 0;
@@ -213,19 +301,17 @@ public class BarMinigame : MonoBehaviour
             _upgradeBonus = (int)BarUpgradeSystem.Instance.GetDrinkPriceBonus();
             _tipMultiplier = BarUpgradeSystem.Instance.GetTipMultiplier();
             _serviceSpeed = BarUpgradeSystem.Instance.GetServiceSpeedMultiplier();
+            _hasPremiumMenu = BarUpgradeSystem.Instance.HasPremiumMenu();
+            _loyaltyBonus = BarUpgradeSystem.Instance.GetLoyaltyBonus();
         }
         else
         {
             _upgradeBonus = 0;
             _tipMultiplier = 1.0f;
             _serviceSpeed = 1.0f;
+            _hasPremiumMenu = false;
+            _loyaltyBonus = 0.0f;
         }
-
-        for (int i = 0; i < 3; i++) _stock[i] = 0;
-        _stockingCost = 0;
-
-        BuildCanvas();
-        ShowStockingUI();
     }
 
     // ── Canvas Build ───────────────────────────────────────
@@ -558,6 +644,12 @@ public class BarMinigame : MonoBehaviour
 
         _currentGuestType = (GuestType)Random.Range(0, 5);
 
+        // [Gameplay] Loyalty bonus: increase chance of Regular guests
+        if (_loyaltyBonus > 0f && _currentGuestType != GuestType.Regular && Random.value < _loyaltyBonus)
+        {
+            _currentGuestType = GuestType.Regular;
+        }
+
         string prefix = "";
         if (_currentGuestType == GuestType.Group)
         {
@@ -662,6 +754,9 @@ public class BarMinigame : MonoBehaviour
         if (correct)
         {
             revenue = _drinkPrices[drinkIndex] + _upgradeBonus;
+            // [Gameplay] Premium menu bonus: extra revenue per drink
+            if (_hasPremiumMenu)
+                revenue += 2;
             _earnings += revenue;
 
             int tip = 0;
@@ -708,8 +803,14 @@ public class BarMinigame : MonoBehaviour
             // [Gameplay] Register drink sold for achievement
             if (AchievementSystem.Instance != null)
             {
+                AchievementSystem.Instance.CheckFirstSale();
+                AchievementSystem.Instance.RegisterCustomerServed();
                 AchievementSystem.Instance.RegisterDrinkSold(_drinkShortNames[drinkIndex]);
             }
+
+            // [Tutorial] Notify tutorial system
+            if (TutorialSystem.Instance != null)
+                TutorialSystem.Instance.OnCustomerServed();
 
         }
         else
@@ -905,6 +1006,13 @@ public class BarMinigame : MonoBehaviour
         if (_upgradeBonus > 0)
         {
             CreateDataRow(settlePanel.transform, "Upgrade Bonus", $"+${_upgradeBonus * served}", rowY - 0.40f, rowH, WarmText, new Color32(100, 200, 255, 255));
+        }
+
+        // [Gameplay] Show premium menu bonus
+        if (_hasPremiumMenu)
+        {
+            float premiumRowY = _upgradeBonus > 0 ? rowY - 0.48f : rowY - 0.40f;
+            CreateDataRow(settlePanel.transform, "Premium Menu", $"+${2 * served}", premiumRowY, rowH, WarmText, new Color32(220, 180, 255, 255));
         }
 
         // Separator line

@@ -2,7 +2,7 @@
 name: review-agent
 description: 负责对照需求、技术方案和测试标准 review 实现，检查越界、漏需求、风险和文档真实性。
 model: glm-5.2
-tools: Read, Grep, Glob, LS
+tools: Read, Grep, Glob, LS, Bash
 ---
 
 # Review Agent
@@ -50,6 +50,16 @@ tools: Read, Grep, Glob, LS
 第二轮：检查自己是否把偏好当问题、是否提出无关优化、是否基于证据。  
 第三轮：若涉及上线或交付，按验收标准逐条判断通过 / 未通过 / 有条件通过。
 
+## 持久化交接
+
+输入必须包含总控创建的 `TASK_ID`。返回前把不超过 1200 个中文字符的摘要写入共享交接，禁止创建新 Task ID：
+
+```bash
+.claude/skills/pm-orchestrator/scripts/pm-handoff.sh write "$TASK_ID" review < /tmp/review-handoff.md
+```
+
+Bash 只用于只读 Git 检查和 handoff 工具，不得借此修改业务代码。
+
 ## 输出模板
 
 ```markdown
@@ -61,4 +71,5 @@ tools: Read, Grep, Glob, LS
 ## 6. 是否通过
 ## 7. 自验证结果
 ## 8. 给总控 Agent 的建议
+## 9. Handoff 写入路径
 ```

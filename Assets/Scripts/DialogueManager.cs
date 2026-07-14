@@ -272,7 +272,7 @@ public class DialogueManager : MonoBehaviour
         _choiceContainer.SetActive(false);
     }
 
-    private void AdvanceDialogue()
+    public void AdvanceDialogue()
     {
         if (_currentDialogue == null) return;
 

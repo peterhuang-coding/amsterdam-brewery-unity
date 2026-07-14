@@ -1,6 +1,6 @@
 ---
 name: pm-orchestrator
-description: 将领导指示或产品需求转化为多 Agent 路由、worktree 并发计划、自循环验证和最终交付方案。适用于产品经理驱动的需求分析、技术方案、代码实现、测试验收、文档汇报。
+description: Use when product or engineering work needs PM-style decomposition, multiple Claude Code agents, git worktrees, implementation, review, testing, durable handoffs, or recovery after context overflow.
 ---
 
 # PM Orchestrator
@@ -128,7 +128,79 @@ Doc Agent 输出 checklist 和汇报口径
 - 第二轮：自我质检。重新对照领导指示和本 Agent 目标，检查遗漏、边界、异常、禁止事项、证据支撑和最小 diff。
 - 第三轮：回归验证。涉及代码修改、测试、上线风险或文档交付时，运行可用测试、lint、typecheck 或构建；无法运行时说明原因并给人工验证步骤。
 
-## 8. Worktree 策略
+## 8. 持久化交接协议（强制）
+
+聊天记录不是项目状态。每次 `/leader-task` 必须把状态写入仓库级共享交接目录；不得把 `/compact`、会话恢复或最终聊天总结当作唯一交接方式。
+
+### 8.1 初始化和隔离
+
+从项目根目录使用：
+
+```bash
+HANDOFF_TOOL=.claude/skills/pm-orchestrator/scripts/pm-handoff.sh
+TASK_ID=$($HANDOFF_TOOL new <short-name>)
+$HANDOFF_TOOL list
+```
+
+- Git 项目写入 `<git-common-dir>/pm-handoffs/<task-id>/`。不同项目天然隔离，同一项目的所有 worktree 共享状态。
+- `<task-id>` 自动包含时间、任务短名和进程号；同一项目可并行多个 LeaderTask。
+- 非 Git 项目回退到 `<cwd>/.claude/pm-handoffs/`。
+- 把 `TASK_ID` 传给每个子 Agent。子 Agent 不得自行创建另一个任务 ID。
+
+### 8.2 强制 checkpoint
+
+Leader 必须在以下时点立即重写 `leader.md`，不能等任务结束：
+
+1. 完成需求理解和 Agent 路由后。
+2. 派发子 Agent 或创建 worktree 前。
+3. 任一 Agent 返回、失败、阻塞或 commit 后。
+4. 每轮测试、Review、merge 前后。
+5. 准备读取大量输出、切换阶段、结束会话或怀疑上下文过长前。
+6. 最终回复用户前。
+
+写入格式使用 `.claude/templates/leader-handoff.md`，并执行：
+
+```bash
+$HANDOFF_TOOL write "$TASK_ID" leader < /tmp/leader-handoff.md
+test -s "$($HANDOFF_TOOL path "$TASK_ID" leader)"
+```
+
+可以用 Write 工具生成临时 Markdown；不要把密钥放进文件。完成任务时先写最终 handoff、验证非空，再执行：
+
+```bash
+$HANDOFF_TOOL complete "$TASK_ID"
+```
+
+没有非空 `leader.md` 时禁止声称任务完成。
+
+### 8.3 子 Agent 交接
+
+独立 Agent 在返回前必须写入自己的角色文件：
+
+```bash
+$HANDOFF_TOOL write "$TASK_ID" <agent-role> < /tmp/agent-handoff.md
+```
+
+角色名必须唯一，例如 `product`、`tech`、`dev-ui`、`dev-gameplay`、`test`。Agent 输出目标不超过 1200 个中文字符，只包含结论、证据路径、commit、验证和下一步。
+
+### 8.4 恢复流程
+
+收到“恢复上次任务 / 继续 / resume”时，优先使用 `/leader-resume [Task ID]`，并先运行 `$HANDOFF_TOOL list`：
+
+- 只有一个活动任务：直接 `$HANDOFF_TOOL read`。
+- 多个活动任务：列出 Task ID，让用户指定；禁止猜测。
+- 旧交接文档尚无 Task ID：使用 `/leader-resume <handoff-path>` 导入；保留原文件，新建 `legacy-resume` Task ID，先做受限摘要再用 Git 校准，禁止把超大旧文档全文装入上下文。
+- 读完 handoff 后用 `git status --short`、`git branch --all`、`git log --oneline --decorate -20` 和 `git worktree list` 校准磁盘事实。
+- 以 Git 和文件状态为准；handoff 只负责索引和决策，不替代验证。
+
+### 8.5 上下文预算
+
+- Leader handoff 目标不超过 1500 个中文字符，脚本硬上限 4000 字符。
+- 不返回完整文件、重复 Agent 输出、超过 20 行的代码或长日志。
+- 原始证据留在仓库、Git diff、测试日志或 Agent handoff；Leader 只读取摘要和必要片段。
+- 大任务按“分析、实现、验收”分会话，每个新会话从 handoff + Git 恢复，不恢复已经过大的旧聊天。
+
+## 9. Worktree 策略
 
 需要 worktree：
 
@@ -175,16 +247,16 @@ git worktree add ../<project>-test -b task/test-<short-name>
 git worktree add ../<project>-risk -b task/risk-<short-name>
 git worktree add ../<project>-dev -b task/dev-<short-name>
 
-cd ../<project>-product && ANTHROPIC_BASE_URL=https://api.sfkey.cn CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=15 claude --model glm-5.2
-cd ../<project>-tech && ANTHROPIC_BASE_URL=https://api.sfkey.cn CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=15 claude --model glm-5.2
-cd ../<project>-test && ANTHROPIC_BASE_URL=https://api.sfkey.cn CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=15 claude --model glm-5.2
-cd ../<project>-risk && ANTHROPIC_BASE_URL=https://api.sfkey.cn CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=15 claude --model glm-5.2
-cd ../<project>-dev && ANTHROPIC_BASE_URL=https://api.sfkey.cn CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=15 claude --model glm-5.2
+cd ../<project>-product && ./.claude/skills/pm-orchestrator/scripts/launch-claude-glm.sh
+cd ../<project>-tech && ./.claude/skills/pm-orchestrator/scripts/launch-claude-glm.sh
+cd ../<project>-test && ./.claude/skills/pm-orchestrator/scripts/launch-claude-glm.sh
+cd ../<project>-risk && ./.claude/skills/pm-orchestrator/scripts/launch-claude-glm.sh
+cd ../<project>-dev && ./.claude/skills/pm-orchestrator/scripts/launch-claude-glm.sh
 ```
 
-不要在中转站 GLM-5.2 场景下使用 `CLAUDE_CODE_EFFORT_LEVEL=max`。该变量可能触发中转站高推理模型路由，导致子会话被分配到无权限模型。需要更高并发时只保留 `CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=15`，模型用 `--model glm-5.2` 显式钉住。中转站 base URL 使用 `https://api.sfkey.cn`；如果某个应用要求 `/v1` 后缀，把命令里的 base URL 改成 `https://api.sfkey.cn/v1`。不要把 API key 写进 skill、command、template 或仓库文件。
+启动脚本会忽略外部遗留的 `ANTHROPIC_BASE_URL`，清除冲突 token/effort 变量，并把主模型、Haiku/Sonnet/Opus 默认模型和子 Agent 模型全部钉到 `glm-5.2`。它使用交互模式，不添加 `--no-session-persistence`；不要用 `-c`、`--continue`、`-r` 或 `--resume` 恢复过大的旧会话。中转站 base URL 默认使用 `https://api.sfkey.cn`；如果应用要求 `/v1`，启动时设置 `SFKEY_BASE_URL=https://api.sfkey.cn/v1`。不要把 API key 写进 skill、command、template 或仓库文件。
 
-## 9. 仓库安全规则
+## 10. 仓库安全规则
 
 - 先用 `git status` 确认仓库状态。
 - 修改前建议 checkpoint commit。
@@ -197,7 +269,7 @@ cd ../<project>-dev && ANTHROPIC_BASE_URL=https://api.sfkey.cn CLAUDE_CODE_MAX_T
 - 不要为了“看起来完整”而扩大需求范围。
 - 不要虚构没看到的代码、测试结果或业务背景。
 
-## 10. 子 Agent 提示词生成规范
+## 11. 子 Agent 提示词生成规范
 
 每个可复制提示词必须包含：
 
@@ -211,10 +283,11 @@ cd ../<project>-dev && ANTHROPIC_BASE_URL=https://api.sfkey.cn CLAUDE_CODE_MAX_T
 - 自验证要求
 - 是否允许改代码
 - 验收标准
+- 共享 `TASK_ID` 和 handoff 工具路径
 
 只输出本次任务需要的 Agent；不需要的不要输出。分析类 Agent 默认只读，不改业务代码。
 
-## 11. 子 Agent 输出规范
+## 12. 子 Agent 输出规范
 
 ```markdown
 ## 1. 任务目标复述
@@ -229,9 +302,10 @@ cd ../<project>-dev && ANTHROPIC_BASE_URL=https://api.sfkey.cn CLAUDE_CODE_MAX_T
 ## 7. 是否满足验收标准
 ## 8. 遗留风险
 ## 9. 给总控 Agent 的建议
+## 10. Handoff 写入路径
 ```
 
-## 12. 总控交叉复核
+## 13. 总控交叉复核
 
 所有子 Agent 完成后，总控不能直接照抄结果，必须检查：
 
@@ -245,7 +319,7 @@ cd ../<project>-dev && ANTHROPIC_BASE_URL=https://api.sfkey.cn CLAUDE_CODE_MAX_T
 
 如果发现冲突，先归并问题，给推荐处理方案，不要直接问用户一堆问题。
 
-## 13. 总控最终输出格式
+## 14. 总控最终输出格式
 
 ```markdown
 【1. 领导指示理解】
@@ -279,9 +353,12 @@ Agent 名称 | 是否并行 | 是否允许改代码 | 任务目标 | 交付物 |
 
 【8. 风险提醒】
 说明最容易出错的地方，以及如何避免。
+
+【9. 持久化交接】
+输出 Task ID、leader handoff 路径、活动 worktree 和精确下一步。
 ```
 
-## 14. 完成定义
+## 15. 完成定义
 
 一个任务不能只算“写完了”。必须同时满足：
 
@@ -293,3 +370,4 @@ Agent 名称 | 是否并行 | 是否允许改代码 | 任务目标 | 交付物 |
 - diff summary 清楚
 - 后续动作明确
 - 总控已完成交叉复核
+- 最终 leader handoff 已写入、验证非空并标记完成

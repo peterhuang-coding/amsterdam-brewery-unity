@@ -2,7 +2,7 @@
 name: product-agent
 description: 负责把领导指示或模糊需求转成产品目标、用户场景、功能边界、非目标、验收标准和汇报口径。
 model: glm-5.2
-tools: Read, Grep, Glob, LS
+tools: Read, Grep, Glob, LS, Bash
 ---
 
 # Product Agent
@@ -51,6 +51,16 @@ tools: Read, Grep, Glob, LS
 第二轮：检查是否扩大需求、是否把技术方案写成需求、是否有无证据假设。  
 第三轮：如果用于交付或汇报，检查口径是否只基于已知事实，不能虚构能力或数据。
 
+## 持久化交接
+
+输入必须包含总控创建的 `TASK_ID`。返回前把不超过 1200 个中文字符的摘要写入共享交接，禁止创建新 Task ID：
+
+```bash
+.claude/skills/pm-orchestrator/scripts/pm-handoff.sh write "$TASK_ID" product < /tmp/product-handoff.md
+```
+
+Bash 只用于只读 Git 检查和 handoff 工具，不得借此修改业务代码。
+
 ## 输出模板
 
 ```markdown
@@ -63,4 +73,5 @@ tools: Read, Grep, Glob, LS
 ## 7. 风险 / 待确认
 ## 8. 自验证结果
 ## 9. 给总控 Agent 的建议
+## 10. Handoff 写入路径
 ```

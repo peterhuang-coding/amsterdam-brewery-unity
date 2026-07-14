@@ -24,18 +24,6 @@ public sealed class GameController : MonoBehaviour
         { "bloemenmarkt", new[] { "Singel Canal", "Royal FloraHolland", "Tulip Museum", "Leidseplein" } },
     };
 
-    // ── Speaker colors for dialogue (UI upgrade) ──────────
-    private static readonly Dictionary<string, Color32> SpeakerColors = new Dictionary<string, Color32>
-    {
-        { "player", new Color32(100, 200, 120, 255) },
-        { "pablo", new Color32(245, 200, 80, 255) },
-        { "erik", new Color32(200, 160, 100, 255) },
-        { "sofie", new Color32(220, 140, 180, 255) },
-        { "chen", new Color32(120, 200, 220, 255) },
-        { "ravi", new Color32(220, 180, 100, 255) },
-        { "maaike", new Color32(180, 160, 200, 255) },
-        { "de_wit", new Color32(200, 80, 80, 255) },
-    };
     private readonly Dictionary<string, LocationView> _locations = new Dictionary<string, LocationView>
     {
         {
@@ -104,27 +92,16 @@ public sealed class GameController : MonoBehaviour
     private int _barRevenue;
 
     private EventDatabase _eventDatabase;
-    private DialogueData _activeDialogue;
-    private int _dialogueLineIndex;
 
     private Font _font;
-
-    // ── Dialogue cache (T2) ───────────────────────────
-    private readonly Dictionary<string, DialogueData> _dialogueCache = new Dictionary<string, DialogueData>();
 
     // ── Daily Goals (F1) ──────────────────────────────
     private readonly List<DailyGoal> _dailyGoals = new List<DailyGoal>();
 
     // ── UI Animation (F3/F4/F6/T7) ────────────────────
-    private CanvasGroup _dialogueGroup;       // For dialogue panel fade
     private CanvasGroup _flashOverlay;        // For time-advance flash
     private CanvasGroup _feedbackGroup;       // For feedback fade
-    private Coroutine _typewriterCoroutine;
     private Coroutine _feedbackCoroutine;
-    private bool _textFullyRevealed;
-    private string _fullDialogueText;
-    private string _currentSpeaker;
-    private bool _isDialogueAnimating;
 
     // HUD elements
     private Text _timeText;
@@ -162,25 +139,12 @@ public sealed class GameController : MonoBehaviour
     // UI upgrade: POI tags container
     private GameObject _poiTagContainer;
 
-    // UI upgrade: speaker name bar in dialogue
-    private Image _speakerBar;
-
-    // Dialogue
-    private GameObject _dialoguePanel;
-    private Text _dialogueSpeakerText;
-    private Text _dialogueBodyText;
-    private Text _dialogueButtonText;
     private GameObject _runtimeRoot;
 
     private void Awake()
     {
         Instance = this; // (T5)
         BootstrapView();
-        // Auto-bootstrap the 2.5D game systems if not already present
-        if (Application.isPlaying && FindAnyObjectByType<PlayerController>(FindObjectsInactive.Include) == null)
-        {
-            AutoBootstrap25D();
-        }
         // Initialize new system singletons (safe to call multiple times)
         if (Application.isPlaying)
         {
@@ -192,52 +156,6 @@ public sealed class GameController : MonoBehaviour
             var _d = DialogueLog.Instance;
             var _save = SaveSystem.Instance;
         }
-    }
-
-    private void AutoBootstrap25D()
-    {
-        // DontDestroyOnLoad singletons
-        if (SceneTransitionManager.Instance == null)
-        {
-            GameObject smGO = new GameObject("SceneTransitionManager");
-            smGO.AddComponent<SceneTransitionManager>();
-        }
-        if (DialogueManager.Instance == null) { var _ = DialogueManager.Instance; }
-        if (InventorySystem.Instance == null) { var _ = InventorySystem.Instance; }
-        if (WeatherSystem.Instance == null) { var _ = WeatherSystem.Instance; }
-        if (BarMinigame.Instance == null) { var _ = BarMinigame.Instance; }
-        SoundManager.Init();
-
-        // Create Player
-        GameObject playerGO = new GameObject("Player");
-        playerGO.AddComponent<PlayerController>();
-
-        // Setup camera
-        GameObject camGO = new GameObject("MainCamera");
-        Camera cam = camGO.AddComponent<Camera>();
-        cam.clearFlags = CameraClearFlags.SolidColor;
-        cam.backgroundColor = new Color32(8, 10, 14, 255);
-        cam.orthographic = true;
-        cam.orthographicSize = 5;
-        CameraFollow follow = camGO.AddComponent<CameraFollow>();
-        follow.target = playerGO.transform;
-        follow.smoothSpeed = 5f;
-        follow.offset = new Vector3(0, 0, -10);
-
-        // UICamera
-        Camera bgCam = new GameObject("UICamera").AddComponent<Camera>();
-        bgCam.transform.SetParent(transform);
-        bgCam.clearFlags = CameraClearFlags.Depth;
-        bgCam.depth = -1;
-        bgCam.orthographic = true;
-        bgCam.orthographicSize = 5;
-        bgCam.backgroundColor = new Color32(8, 10, 14, 255);
-
-        // Initial weather
-        WeatherSystem.Instance.NewDay(1);
-        OnSceneChanged("de_pijp");
-
-        Debug.Log("Amsterdam Brewery 2.5D auto-bootstrapped!");
     }
 
     private void OnEnable()
@@ -346,24 +264,12 @@ public sealed class GameController : MonoBehaviour
             return;
         }
 
-        if (_activeDialogue != null)
+        // Delegate dialogue input to DialogueManager
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
         {
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
             {
-                // F5: Dialogue advance sound
-                SoundManager.Play(SoundManager.SoundType.UIClick);
-
-                // F3: If typewriter is still animating, finish it instantly
-                if (!_textFullyRevealed && _typewriterCoroutine != null)
-                {
-                    StopCoroutine(_typewriterCoroutine);
-                    _typewriterCoroutine = null;
-                    if (_dialogueBodyText != null) _dialogueBodyText.text = _fullDialogueText;
-                    _textFullyRevealed = true;
-                    ShowDialogueButton();
-                    return;
-                }
-                AdvanceDialogue();
+                DialogueManager.Instance.AdvanceDialogue();
             }
             return;
         }
@@ -465,7 +371,6 @@ public sealed class GameController : MonoBehaviour
         BuildLocationArea(root);
         BuildFeedbackArea(root);
         BuildBottomHints(root);
-        BuildDialoguePanel(root);
     }
 
     private void BuildMinimalHud()
@@ -562,55 +467,6 @@ public sealed class GameController : MonoBehaviour
             11, TextAnchor.MiddleRight);
         _affectionBarText.color = new Color32(200, 185, 160, 220);
         _affectionBarText.text = "";
-
-        // ── Dialogue panel (needed for story events in play mode) ──
-        BuildMinimalDialoguePanel(root);
-    }
-
-    private void BuildMinimalDialoguePanel(Transform parent)
-    {
-        // Dialogue panel for play mode — covers bottom half of screen
-        _dialoguePanel = MakeImage("Dialogue Panel", parent,
-            new UIFactory.RectSpec(new Vector2(0.02f, 0.0f), new Vector2(0.98f, 0.35f),
-                new Vector2(0, 0), new Vector2(0, 0)),
-            new Color32(15, 17, 22, 240)).gameObject;
-
-        // CanvasGroup for fade animation
-        _dialogueGroup = _dialoguePanel.GetComponent<CanvasGroup>();
-        if (_dialogueGroup == null) _dialogueGroup = _dialoguePanel.AddComponent<CanvasGroup>();
-        _dialogueGroup.alpha = 0f;
-
-        // Speaker name bar
-        _speakerBar = MakeImage("Speaker BG", _dialoguePanel.transform,
-            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(1, 1),
-                new Vector2(24, -48), new Vector2(-24, 0)),
-            new Color32(194, 87, 52, 180));
-        _dialogueSpeakerText = MakeText("Dialogue Speaker", _dialoguePanel.transform,
-            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(1, 1),
-                new Vector2(32, -46), new Vector2(-32, -4)),
-            22, TextAnchor.MiddleLeft);
-        _dialogueSpeakerText.fontStyle = FontStyle.Bold;
-
-        // Body text
-        _dialogueBodyText = MakeText("Dialogue Body", _dialoguePanel.transform,
-            new UIFactory.RectSpec(new Vector2(0, 0), new Vector2(1, 1),
-                new Vector2(32, 60), new Vector2(-32, -70)),
-            20, TextAnchor.UpperLeft);
-        _dialogueBodyText.color = new Color32(235, 228, 215, 255);
-
-        // Next/Finish button
-        Image btnBg = MakeImage("Dialogue Button", _dialoguePanel.transform,
-            new UIFactory.RectSpec(new Vector2(1, 0), new Vector2(1, 0),
-                new Vector2(-160, 16), new Vector2(-16, 52)),
-            new Color32(236, 180, 87, 255));
-        Button button = btnBg.gameObject.AddComponent<Button>();
-        button.onClick.AddListener(AdvanceDialogue);
-        _dialogueButtonText = MakeText("Button Text", btnBg.transform,
-            StretchFull(6, 6, 6, 6), 16, TextAnchor.MiddleCenter);
-        _dialogueButtonText.color = new Color32(20, 22, 26, 255);
-        _dialogueButtonText.fontStyle = FontStyle.Bold;
-
-        _dialoguePanel.SetActive(false);
     }
 
     private void BuildTopHud(Transform parent)

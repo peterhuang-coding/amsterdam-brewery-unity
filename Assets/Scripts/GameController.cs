@@ -335,14 +335,7 @@ public sealed class GameController : MonoBehaviour
         _runtimeRoot.hideFlags = HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild;
         _runtimeRoot.transform.SetParent(transform, false);
 
-        // In Play mode, build a minimal HUD overlay instead of full-screen UI
-        if (Application.isPlaying)
-        {
-            BuildMinimalHud();
-            return;
-        }
-
-        // Editor mode: full build
+        // Single interface path for both editor and play mode
         BuildEditorInterface();
     }
 
@@ -374,108 +367,6 @@ public sealed class GameController : MonoBehaviour
         BuildLocationArea(root);
         BuildFeedbackArea(root);
         BuildBottomHints(root);
-    }
-
-    private void BuildMinimalHud()
-    {
-        // Small HUD overlay for play mode — just shows day/time/money at top
-        Camera camera = new GameObject("Main Camera").AddComponent<Camera>();
-        camera.transform.SetParent(_runtimeRoot.transform, false);
-        camera.clearFlags = CameraClearFlags.SolidColor;
-        camera.backgroundColor = new Color32(8, 10, 14, 255);
-        camera.orthographic = true;
-
-        Canvas canvas = new GameObject("Play HUD").AddComponent<Canvas>();
-        canvas.transform.SetParent(_runtimeRoot.transform, false);
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 90;
-        CanvasScaler scaler = canvas.gameObject.AddComponent<CanvasScaler>();
-        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(1280, 720);
-        canvas.gameObject.AddComponent<GraphicRaycaster>();
-        GameObject eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
-        eventSystem.transform.SetParent(_runtimeRoot.transform, false);
-
-        Transform root = canvas.transform;
-
-        // Create empty location scene container (needed by RenderLocation)
-        _locationScene = new GameObject("LocationScene", typeof(RectTransform));
-        _locationScene.transform.SetParent(_runtimeRoot.transform, false);
-        _locationScene.SetActive(false); // Hidden — 2D scene is handled by SceneVisuals
-
-        // Semi-transparent top bar
-        Image hudBg = MakeImage("HUD Bg", root,
-            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(1, 1),
-                new Vector2(0, -32), new Vector2(0, 0)),
-            new Color32(10, 14, 18, 180));
-
-        // F6: Flash overlay for time transitions
-        Image flashImg = MakeImage("Flash Overlay", root, StretchFull(), new Color32(255, 255, 255, 0));
-        _flashOverlay = flashImg.gameObject.AddComponent<CanvasGroup>();
-        _flashOverlay.alpha = 0f;
-        _flashOverlay.blocksRaycasts = false;
-
-        // Time/date
-        _timeText = MakeText("Time", root,
-            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(0, 1),
-                new Vector2(8, -28), new Vector2(160, -4)),
-            14, TextAnchor.MiddleLeft);
-        _timeText.text = "Day 1 / dawn";
-
-        // Location
-        _locationText = MakeText("Location", root,
-            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(0, 1),
-                new Vector2(170, -28), new Vector2(320, -4)),
-            14, TextAnchor.MiddleLeft);
-        _locationText.text = "De Pijp";
-
-        // Bar status
-        _barStatusText = MakeText("Bar", root,
-            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(0, 1),
-                new Vector2(330, -28), new Vector2(530, -4)),
-            13, TextAnchor.MiddleLeft);
-        _barStatusText.text = "Closed";
-
-        // Money
-        _moneyText = MakeText("Money", root,
-            new UIFactory.RectSpec(new Vector2(1, 1), new Vector2(1, 1),
-                new Vector2(-120, -28), new Vector2(-8, -4)),
-            14, TextAnchor.MiddleRight);
-        _moneyText.text = "$250";
-        _moneyText.color = new Color32(160, 220, 120, 255);
-        _moneyText.fontStyle = FontStyle.Bold;
-
-        // Feedback text (small, above bottom)
-        _feedbackText = MakeText("Feedback", root,
-            new UIFactory.RectSpec(new Vector2(0, 0), new Vector2(1, 0),
-                new Vector2(8, 32), new Vector2(-8, 54)),
-            12, TextAnchor.LowerLeft);
-        _feedbackText.color = new Color32(180, 175, 165, 200);
-        _feedbackText.fontStyle = FontStyle.Italic;
-        _feedbackText.text = "WASD: Move | E: Interact | F: Surf | I: Inventory";
-
-        // F1: Daily Goals text (center-left, below top bar)
-        _goalText1 = MakeText("Goal1", root,
-            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(0, 1),
-                new Vector2(8, -60), new Vector2(300, -36)),
-            11, TextAnchor.MiddleLeft);
-        _goalText1.color = new Color32(236, 180, 87, 255);
-        _goalText1.text = "";
-
-        _goalText2 = MakeText("Goal2", root,
-            new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(0, 1),
-                new Vector2(8, -84), new Vector2(300, -60)),
-            11, TextAnchor.MiddleLeft);
-        _goalText2.color = new Color32(236, 180, 87, 255);
-        _goalText2.text = "";
-
-        // F7: Affection bar (right side, top area)
-        _affectionBarText = MakeText("Affection", root,
-            new UIFactory.RectSpec(new Vector2(1, 1), new Vector2(1, 1),
-                new Vector2(-300, -28), new Vector2(-130, -4)),
-            11, TextAnchor.MiddleRight);
-        _affectionBarText.color = new Color32(200, 185, 160, 220);
-        _affectionBarText.text = "";
     }
 
     private void BuildTopHud(Transform parent)

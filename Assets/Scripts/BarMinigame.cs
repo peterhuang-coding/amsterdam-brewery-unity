@@ -382,7 +382,6 @@ public class BarMinigame : MonoBehaviour
 
         // Player money
         _playerMoneyText = CreateTextOn("PlayerMoney", panel.transform,
-// RESOLVED
             $"Your Money: ${GameController.Instance.State.Money}",
             new Vector2(0.1f, 0.78f), new Vector2(0.9f, 0.86f), Vector2.zero, Vector2.zero,
             14, TextAnchor.MiddleCenter, FontStyle.Normal, new Color32(200, 190, 170, 255));
@@ -462,7 +461,6 @@ public class BarMinigame : MonoBehaviour
         if (newQty < 0) return;
 
         int costDelta = delta * _drinkCosts[drinkIndex];
-// RESOLVED
         int currentMoney = GameController.Instance.State.Money;
         int newCost = _stockingCost + costDelta;
         if (delta > 0 && newCost > currentMoney)
@@ -478,7 +476,6 @@ public class BarMinigame : MonoBehaviour
         _stockQtyTexts[drinkIndex].text = $"x{newQty}";
         _stockCostText.text = $"Total: ${_stockingCost}";
         _stockCostText.color = GoldColor;
-// RESOLVED
         _playerMoneyText.text = $"Your Money: ${GameController.Instance.State.Money}  |  Cost: ${_stockingCost}";
         SoundManager.Play(SoundManager.SoundType.UIClick);
     }
@@ -500,7 +497,6 @@ public class BarMinigame : MonoBehaviour
             return;
         }
 
-// RESOLVED
         GameController.Instance.State.AddMoney(-_stockingCost);
 
         // Fade out stocking panel
@@ -647,7 +643,7 @@ public class BarMinigame : MonoBehaviour
         _customersServed++;
         if (_customersServed > _totalCustomers)
         {
-            EndShift();
+            EndShiftAndShowSettlement();
             return;
         }
 
@@ -944,7 +940,7 @@ public class BarMinigame : MonoBehaviour
     }
 
     // ── End Shift & Settlement ─────────────────────────────
-    private void EndShift()
+    private void EndShiftAndShowSettlement()
     {
         _isServing = false;
         SetGameButtonsInteractable(false);
@@ -956,7 +952,6 @@ public class BarMinigame : MonoBehaviour
         float accuracy = totalCustomers > 0 ? (float)servedCustomers / totalCustomers : 0f;
         int stars = Mathf.Clamp(Mathf.RoundToInt(accuracy * 5f), 0, 5);
 
-// RESOLVED
         GameController.Instance.State.AddMoney(grossRevenue);
 
         // Wait a beat, then build settlement

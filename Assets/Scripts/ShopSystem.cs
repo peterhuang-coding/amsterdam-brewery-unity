@@ -103,7 +103,6 @@ public class ShopSystem : MonoBehaviour
         if (item.isOwned) return false;
 
         // Check money
-// RESOLVED
         if (GameController.Instance.State.Money < item.cost) return false;
 
         // Deduct money
@@ -167,7 +166,6 @@ public class ShopSystem : MonoBehaviour
 
         if (_shopOpen)
         {
-// RESOLVED
             _currentLocation = GameController.Instance.State.CurrentLocationId;
             RefreshContent();
             StartCoroutine(AnimatePanelIn());

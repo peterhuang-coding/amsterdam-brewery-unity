@@ -379,6 +379,12 @@ public sealed class GameController : MonoBehaviour
     private void BuildMinimalHud()
     {
         // Small HUD overlay for play mode — just shows day/time/money at top
+        Camera camera = new GameObject("Main Camera").AddComponent<Camera>();
+        camera.transform.SetParent(_runtimeRoot.transform, false);
+        camera.clearFlags = CameraClearFlags.SolidColor;
+        camera.backgroundColor = new Color32(8, 10, 14, 255);
+        camera.orthographic = true;
+
         Canvas canvas = new GameObject("Play HUD").AddComponent<Canvas>();
         canvas.transform.SetParent(_runtimeRoot.transform, false);
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;

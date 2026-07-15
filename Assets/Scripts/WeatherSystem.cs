@@ -43,6 +43,7 @@ public class WeatherSystem : MonoBehaviour
     private Canvas _weatherCanvas;
     private Image _weatherOverlay;
     private List<GameObject> _particles = new List<GameObject>();
+    private const int MAX_PARTICLES = 80;
     private float _particleTimer = 0f;
     private int _currentDay = -1;
 
@@ -159,6 +160,14 @@ public class WeatherSystem : MonoBehaviour
 
     private void SpawnParticle()
     {
+        // Enforce particle limit: remove oldest particle if at cap
+        if (_particles.Count >= MAX_PARTICLES)
+        {
+            GameObject oldest = _particles[0];
+            if (oldest != null) Destroy(oldest);
+            _particles.RemoveAt(0);
+        }
+
         GameObject p = new GameObject("WeatherParticle", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
         p.transform.SetParent(_weatherCanvas.transform, false);
         RectTransform rt = p.GetComponent<RectTransform>();

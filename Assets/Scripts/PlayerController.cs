@@ -35,6 +35,10 @@ public class PlayerController : MonoBehaviour
     // 玩家头顶气泡
     private NPCDialogueBubble _playerBubble;
 
+    // Texture references for cleanup
+    private Texture2D _playerTex;
+    private Texture2D _arrowTex;
+
     public Vector2 Position => transform.position;
     public Vector2 FacingDirection => _lastDirection;
 
@@ -57,6 +61,7 @@ public class PlayerController : MonoBehaviour
         _sr = _body.AddComponent<SpriteRenderer>();
         // Create a simple colored texture
         Texture2D tex = new Texture2D(spriteSize.x, spriteSize.y);
+        _playerTex = tex;
         for (int x = 0; x < spriteSize.x; x++)
         {
             for (int y = 0; y < spriteSize.y; y++)
@@ -88,6 +93,7 @@ public class PlayerController : MonoBehaviour
 
         SpriteRenderer dirSr = _directionIndicator.AddComponent<SpriteRenderer>();
         Texture2D dirTex = new Texture2D(8, 8);
+        _arrowTex = dirTex;
         for (int x = 0; x < 8; x++)
         {
             for (int y = 0; y < 8; y++)
@@ -278,6 +284,15 @@ public class PlayerController : MonoBehaviour
             interactable.transform.localScale = Vector3.one;
             _nearbyInteractable = null;
         }
+    }
+
+    /// <summary>
+    /// Cleanup: destroy textures created at runtime to prevent memory leaks.
+    /// </summary>
+    private void OnDestroy()
+    {
+        if (_playerTex != null) Destroy(_playerTex);
+        if (_arrowTex != null) Destroy(_arrowTex);
     }
 
     /// <summary>

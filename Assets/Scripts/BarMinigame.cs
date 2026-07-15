@@ -233,6 +233,12 @@ public class BarMinigame : MonoBehaviour
     /// <summary>Earnings (revenue + tips) from the current/last shift.</summary>
     public int ShiftEarnings => _earnings + _tips;
 
+    /// <summary>Current bar stock levels [Beer, Whiskey, Wine].</summary>
+    public int[] GetStockLevels()
+    {
+        return new int[] { _stock[0], _stock[1], _stock[2] };
+    }
+
     /// <summary>
     /// Reset shift statistics (used by SaveSystem on load).
     /// </summary>
@@ -664,7 +670,13 @@ public class BarMinigame : MonoBehaviour
         int drinkIndex;
         if (_currentGuestType == GuestType.Drunk && Random.value < 0.4f)
         {
+            // 40% chance: random order (drunk guest might order anything)
             drinkIndex = Random.Range(0, 3);
+        }
+        else if (_currentGuestType == GuestType.Drunk)
+        {
+            // 60% chance: default to Beer (drunk guest usually wants beer)
+            drinkIndex = 0;
         }
         else
         {

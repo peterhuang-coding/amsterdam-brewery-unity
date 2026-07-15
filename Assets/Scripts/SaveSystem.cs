@@ -7,6 +7,7 @@ using UnityEngine.UI;
 [System.Serializable]
 public class SaveData
 {
+    public int saveVersion = 1;
     public int slot;
     public string timestamp;
     public int day;

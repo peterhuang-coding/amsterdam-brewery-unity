@@ -60,6 +60,18 @@ public class DialogueManager : MonoBehaviour
         { "fatima", new Color32(200, 160, 100, 255) },
     };
 
+    /// <summary>
+    /// Returns the color associated with the given speaker id.
+    /// Falls back to a neutral gray if the speaker is unknown or null.
+    /// </summary>
+    public static Color32 GetSpeakerColor(string speaker)
+    {
+        Color32 defaultColor = new Color32(200, 200, 200, 255);
+        if (string.IsNullOrEmpty(speaker))
+            return defaultColor;
+        return SpeakerColors.TryGetValue(speaker, out Color32 color) ? color : defaultColor;
+    }
+
     private void Awake()
     {
         if (_instance == null)

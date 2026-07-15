@@ -19,18 +19,6 @@ public sealed class DialogueLog : MonoBehaviour
     private const int PanelSortingOrder = 200;
     private const float SlideDuration = 0.3f;
 
-    private static readonly Dictionary<string, Color32> LogSpeakerColors = new Dictionary<string, Color32>
-    {
-        { "player", new Color32(100, 200, 120, 255) },
-        { "pablo", new Color32(245, 200, 80, 255) },
-        { "erik", new Color32(200, 160, 100, 255) },
-        { "sofie", new Color32(220, 140, 180, 255) },
-        { "chen", new Color32(120, 200, 220, 255) },
-        { "ravi", new Color32(220, 180, 100, 255) },
-        { "maaike", new Color32(180, 160, 200, 255) },
-        { "de_wit", new Color32(200, 80, 80, 255) },
-    };
-
     private static DialogueLog _instance;
     public static DialogueLog Instance
     {
@@ -451,11 +439,7 @@ public sealed class DialogueLog : MonoBehaviour
         string truncatedText = entry.text.Length > 30 ? entry.text.Substring(0, 30) + "..." : entry.text;
 
         // Color the speaker name by using rich text
-        Color32 speakerColor;
-        if (!LogSpeakerColors.TryGetValue(entry.speaker, out speakerColor))
-        {
-            speakerColor = new Color32(200, 200, 200, 255);
-        }
+        Color32 speakerColor = DialogueManager.GetSpeakerColor(entry.speaker);
         string colorHex = ColorToHex(speakerColor);
         string fullText = $"<color=#{colorHex}>[{entry.speakerDisplayName}]</color> {truncatedText}";
 
@@ -528,9 +512,21 @@ public sealed class DialogueLog : MonoBehaviour
 
             row.name = "Entry Row|1";
 
-            // Expand row height
+            // Expand row height based on text content
             RectTransform rowRt = row.GetComponent<RectTransform>();
-            rowRt.sizeDelta = new Vector2(0, 72);
+
+            // Estimate required height: each text line ~20px + 44px for summary bar and padding
+            const float LineHeight = 20f;
+            const int CharsPerLine = 55;
+            const float BaseHeight = 44f; // 36px summary + 8px bottom padding
+            string plainText = entry.text ?? "";
+            int lineCount = 1; // speaker name header
+            if (plainText.Length > 0)
+            {
+                lineCount += Mathf.CeilToInt((float)plainText.Length / CharsPerLine);
+            }
+            float calculatedHeight = lineCount * LineHeight + BaseHeight;
+            rowRt.sizeDelta = new Vector2(0, Mathf.Max(72f, calculatedHeight));
         }
 
         // Force rebuild the layout

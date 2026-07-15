@@ -95,7 +95,7 @@ public class DialogueManager : MonoBehaviour
         canvasGO.transform.SetParent(transform);
         _canvas = canvasGO.AddComponent<Canvas>();
         _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        _canvas.sortingOrder = 100;
+        _canvas.sortingOrder = 200;
         canvasGO.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         canvasGO.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1280, 720);
         canvasGO.GetComponent<CanvasScaler>().matchWidthOrHeight = 0.5f;

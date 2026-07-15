@@ -483,7 +483,7 @@ public sealed class GameController : MonoBehaviour
 
         _hintText = MakeText("Input Hint", parent, StretchBottom(58, 8, 8), 16, TextAnchor.MiddleCenter);
         _hintText.color = new Color32(180, 175, 165, 255);
-        _hintText.text = "Space: advance time    1 De Pijp    2 Science Park    3 Tweede Kans    4 Bloemenmarkt    B open bar    S serve    F close    I inventory    C character    P achievements";
+        _hintText.text = "Space: advance time / dialogue next    1 De Pijp    2 Science Park    3 Tweede Kans    4 Bloemenmarkt    B start shift    F end shift    I inventory    C character    P achievements";
     }
 
     // ── Game Actions ──────────────────────────────────────
@@ -763,8 +763,9 @@ public sealed class GameController : MonoBehaviour
         {
             if (_locationTitle != null) _locationTitle.text = loc.title;
             if (_locationDesc != null) _locationDesc.text = loc.subtitle;
-            _feedbackText.text = "";
+            if (_feedbackText != null) _feedbackText.text = "";
             BuildPoiTags();
+            UpdateHintText();
             return;
         }
 

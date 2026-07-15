@@ -130,6 +130,11 @@ public sealed class GameController : MonoBehaviour
     // UI upgrade: POI tags container
     private GameObject _poiTagContainer;
 
+    // ── Welcome Overlay ─────────────────────────────────
+    private CanvasGroup _welcomeOverlay;
+    private bool _introShown;
+    private Coroutine _fadeOutCoroutine;
+
     private GameObject _runtimeRoot;
 
     private void Awake()
@@ -180,7 +185,7 @@ public sealed class GameController : MonoBehaviour
         RefreshHud();
         if (Application.isPlaying)
         {
-            CheckStoryEvents();
+            // Story events checked after intro welcome overlay fades out
         }
     }
 
@@ -209,6 +214,17 @@ public sealed class GameController : MonoBehaviour
     // T4: Extracted input handling for readability
     private void HandleInput()
     {
+        // Intro welcome overlay: first keypress dismisses it
+        if (_introShown && _welcomeOverlay != null && _welcomeOverlay.alpha > 0.01f)
+        {
+            if (Input.anyKeyDown)
+            {
+                if (_fadeOutCoroutine != null) StopCoroutine(_fadeOutCoroutine);
+                _fadeOutCoroutine = StartCoroutine(FadeOutWelcome());
+            }
+            return;
+        }
+
         // System panel keys (I/C/P) — check before game action keys
         if (Input.GetKeyDown(KeyCode.I))
         {
@@ -367,6 +383,11 @@ public sealed class GameController : MonoBehaviour
         BuildLocationArea(root);
         BuildFeedbackArea(root);
         BuildBottomHints(root);
+
+        if (Application.isPlaying)
+        {
+            BuildWelcomeOverlay();
+        }
     }
 
     private void BuildTopHud(Transform parent)
@@ -484,6 +505,69 @@ public sealed class GameController : MonoBehaviour
         _hintText = MakeText("Input Hint", parent, StretchBottom(58, 8, 8), 16, TextAnchor.MiddleCenter);
         _hintText.color = new Color32(180, 175, 165, 255);
         _hintText.text = "Space: advance time / dialogue next    1 De Pijp    2 Science Park    3 Tweede Kans    4 Bloemenmarkt    B start shift    F end shift    I inventory    C character    P achievements";
+    }
+
+    // ── Welcome Overlay ────────────────────────────────────
+
+    private void BuildWelcomeOverlay()
+    {
+        Canvas canvas = new GameObject("WelcomeCanvas").AddComponent<Canvas>();
+        canvas.transform.SetParent(_runtimeRoot.transform, false);
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 300;
+        canvas.gameObject.AddComponent<CanvasScaler>();
+        canvas.gameObject.AddComponent<GraphicRaycaster>();
+
+        // Full-screen dark overlay
+        Image bg = MakeImage("WelcomeBg", canvas.transform, StretchFull(), new Color32(8, 10, 14, 235));
+
+        // Title
+        Text title = MakeText("WelcomeTitle", canvas.transform,
+            new UIFactory.RectSpec(new Vector2(0, 0.55f), new Vector2(1, 0.85f),
+                new Vector2(40, 0), new Vector2(-40, 0)),
+            48, TextAnchor.MiddleCenter);
+        title.text = "Amsterdam Brewery";
+        title.fontStyle = FontStyle.Bold;
+        title.color = new Color32(246, 240, 229, 255);
+
+        // Subtitle
+        Text sub = MakeText("WelcomeSub", canvas.transform,
+            new UIFactory.RectSpec(new Vector2(0, 0.35f), new Vector2(1, 0.55f),
+                new Vector2(40, 0), new Vector2(-40, 0)),
+            24, TextAnchor.MiddleCenter);
+        sub.text = "A story of beer, science, and second chances.";
+        sub.color = new Color32(200, 196, 186, 255);
+
+        // Prompt
+        Text prompt = MakeText("WelcomePrompt", canvas.transform,
+            new UIFactory.RectSpec(new Vector2(0, 0.20f), new Vector2(1, 0.35f),
+                new Vector2(40, 0), new Vector2(-40, 0)),
+            18, TextAnchor.MiddleCenter);
+        prompt.text = "Press any key to begin...";
+        prompt.color = new Color32(180, 175, 165, 180);
+
+        _welcomeOverlay = bg.gameObject.GetComponent<CanvasGroup>();
+        if (_welcomeOverlay == null) _welcomeOverlay = bg.gameObject.AddComponent<CanvasGroup>();
+        _welcomeOverlay.alpha = 1f;
+
+        _introShown = true;
+    }
+
+    private IEnumerator FadeOutWelcome()
+    {
+        if (_welcomeOverlay == null) yield break;
+        float duration = 1.2f;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            _welcomeOverlay.alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
+            yield return null;
+        }
+        _welcomeOverlay.alpha = 0f;
+
+        // After the intro fades, check story events
+        CheckStoryEvents();
     }
 
     // ── Game Actions ──────────────────────────────────────
@@ -758,24 +842,13 @@ public sealed class GameController : MonoBehaviour
     {
         LocationView loc = _locations[State.CurrentLocationId];
 
-        // In play mode, skip RuntimeVisuals — SceneVisuals handles the 2D scene
-        if (Application.isPlaying)
-        {
-            if (_locationTitle != null) _locationTitle.text = loc.title;
-            if (_locationDesc != null) _locationDesc.text = loc.subtitle;
-            if (_feedbackText != null) _feedbackText.text = "";
-            BuildPoiTags();
-            UpdateHintText();
-            return;
-        }
-
         // Destroy old scene
         if (_locationScene != null)
         {
             DestroyChildren(_locationScene.transform);
         }
 
-        // Build new location scene via RuntimeVisuals (T6: pass LocationView)
+        // Build new location scene via RuntimeVisuals
         RuntimeVisuals.BuildLocationScene(State.CurrentLocationId, _locationScene.transform, loc);
 
         _locationTitle.text = loc.title;

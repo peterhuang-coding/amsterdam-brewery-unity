@@ -520,6 +520,15 @@ public sealed class GameController : MonoBehaviour
 
     private void SwitchLocation(string locationId)
     {
+        if (State.CurrentLocationId == locationId)
+        {
+            if (_locations.TryGetValue(locationId, out LocationView loc))
+                SetFeedback($"Already at {loc.title}.");
+            else
+                SetFeedback($"Already at {locationId}.");
+            return;
+        }
+
         State.CurrentLocationId = locationId;
         // F1: Mark goals for this location as completed
         MarkLocationGoalsCompleted(locationId);

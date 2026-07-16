@@ -401,8 +401,7 @@ public class TutorialSystem : MonoBehaviour
         Destroy(_welcomeCanvas.gameObject);
         _welcomeCanvas = null;
 
-        // Start step-by-step tutorial
-        TryStartTutorial();
+        // No tutorial steps - the bottom hint bar shows all controls permanently
     }
 
     private IEnumerator AnimateIn()

@@ -36,6 +36,13 @@ public class AchievementSystem : MonoBehaviour
     private Text _notificationText;
     private CanvasGroup _notificationGroup;
 
+    // Popup notification (slide-in banner)
+    private Canvas _popupCanvas;
+    private GameObject _popupBanner;
+    private Text _popupTitleText;
+    private Text _popupDescText;
+    private Coroutine _popupRoutine;
+
     // Condition tracking
     private HashSet<string> _visitedLocations = new HashSet<string>();
     private HashSet<string> _drinksSold = new HashSet<string>();
@@ -164,6 +171,86 @@ public class AchievementSystem : MonoBehaviour
         _notificationGO.SetActive(false);
     }
 
+    private void BuildPopupUI()
+    {
+        if (_popupCanvas != null) return;
+
+        // Create canvas at sortingOrder 450 (above most UI, below tutorial welcome)
+        GameObject canvasGO = new GameObject("AchievementPopupCanvas");
+        canvasGO.transform.SetParent(transform);
+        _popupCanvas = canvasGO.AddComponent<Canvas>();
+        _popupCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        _popupCanvas.sortingOrder = 450;
+        CanvasScaler scaler = canvasGO.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1280, 720);
+        canvasGO.AddComponent<GraphicRaycaster>();
+        CanvasGroup cg = canvasGO.AddComponent<CanvasGroup>();
+        cg.blocksRaycasts = false;
+
+        // Banner panel — positioned off-screen right initially
+        _popupBanner = new GameObject("PopupBanner", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        _popupBanner.transform.SetParent(_popupCanvas.transform, false);
+        RectTransform bannerRT = _popupBanner.GetComponent<RectTransform>();
+        bannerRT.anchorMin = new Vector2(1, 1);
+        bannerRT.anchorMax = new Vector2(1, 1);
+        bannerRT.pivot = new Vector2(1, 0);
+        bannerRT.sizeDelta = new Vector2(300, 90);
+        bannerRT.anchoredPosition = new Vector2(0, -100);
+
+        Image bannerImg = _popupBanner.GetComponent<Image>();
+        bannerImg.color = new Color32(194, 160, 50, 235);
+
+        // Trophy icon
+        GameObject iconGO = new GameObject("Icon", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+        iconGO.transform.SetParent(_popupBanner.transform, false);
+        RectTransform iconRT = iconGO.GetComponent<RectTransform>();
+        iconRT.anchorMin = Vector2.zero;
+        iconRT.anchorMax = Vector2.zero;
+        iconRT.sizeDelta = new Vector2(50, 50);
+        iconRT.anchoredPosition = new Vector2(25, 45);
+        iconRT.pivot = new Vector2(0.5f, 0.5f);
+        Text iconText = iconGO.GetComponent<Text>();
+        iconText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        iconText.text = "\U0001f3c6";
+        iconText.fontSize = 32;
+        iconText.alignment = TextAnchor.MiddleCenter;
+
+        // Title text
+        _popupTitleText = CreatePopupText("Title", _popupBanner.transform, new Vector2(55, 50), new Vector2(280, 30), 18, TextAnchor.LowerLeft);
+        _popupTitleText.fontStyle = FontStyle.Bold;
+        _popupTitleText.color = new Color32(255, 255, 255, 255);
+        _popupTitleText.text = "Achievement Unlocked!";
+
+        // Description text
+        _popupDescText = CreatePopupText("Desc", _popupBanner.transform, new Vector2(55, 20), new Vector2(280, 30), 14, TextAnchor.UpperLeft);
+        _popupDescText.color = new Color32(246, 240, 229, 255);
+        _popupDescText.text = "";
+
+        // Start hidden
+        _popupBanner.SetActive(false);
+    }
+
+    private Text CreatePopupText(string name, Transform parent, Vector2 pos, Vector2 size, int fontSize, TextAnchor align)
+    {
+        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+        go.transform.SetParent(parent, false);
+        RectTransform rt = go.GetComponent<RectTransform>();
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = Vector2.zero;
+        rt.sizeDelta = size;
+        rt.anchoredPosition = pos;
+        rt.pivot = new Vector2(0, 0.5f);
+
+        Text t = go.GetComponent<Text>();
+        t.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        t.fontSize = fontSize;
+        t.alignment = align;
+        t.horizontalOverflow = HorizontalWrapMode.Wrap;
+        t.verticalOverflow = VerticalWrapMode.Truncate;
+        return t;
+    }
+
     // ── Public Check Methods ────────────────────────────
 
     public void CheckFirstSale()
@@ -230,6 +317,7 @@ public class AchievementSystem : MonoBehaviour
             {
                 a.unlocked = true;
                 ShowNotification(a.title);
+                ShowAchievementPopup($"\U0001f3c6 {a.title}", a.description);
                 Debug.Log(string.Format("Achievement unlocked: {0} - {1}", a.title, a.description));
                 return;
             }
@@ -275,6 +363,55 @@ public class AchievementSystem : MonoBehaviour
         }
         _notificationGroup.alpha = 0f;
         _notificationGO.SetActive(false);
+    }
+
+    public void ShowAchievementPopup(string title, string description)
+    {
+        if (_popupRoutine != null)
+            StopCoroutine(_popupRoutine);
+        _popupRoutine = StartCoroutine(AchievementPopupRoutine(title, description));
+    }
+
+    private IEnumerator AchievementPopupRoutine(string title, string description)
+    {
+        BuildPopupUI();
+        if (_popupBanner == null) yield break;
+
+        // Play success sound
+        SoundManager.Play(SoundManager.SoundType.Success);
+
+        // Set text
+        _popupTitleText.text = title;
+        _popupDescText.text = description;
+
+        // Position off-screen right
+        _popupBanner.SetActive(true);
+        RectTransform rt = _popupBanner.GetComponent<RectTransform>();
+        rt.anchoredPosition = new Vector2(320, -100);
+
+        // Slide in (0.4s)
+        for (float t = 0; t < 0.4f; t += Time.deltaTime)
+        {
+            float p = t / 0.4f;
+            float smooth = 1f - (1f - p) * (1f - p); // ease-out quad
+            rt.anchoredPosition = new Vector2(Mathf.Lerp(320, 0, smooth), -100);
+            yield return null;
+        }
+        rt.anchoredPosition = new Vector2(0, -100);
+
+        // Hold (3.0s)
+        yield return new WaitForSeconds(3.0f);
+
+        // Slide out (0.3s)
+        for (float t = 0; t < 0.3f; t += Time.deltaTime)
+        {
+            float p = t / 0.3f;
+            rt.anchoredPosition = new Vector2(Mathf.Lerp(0, 400, p * p), -100);
+            yield return null;
+        }
+
+        _popupBanner.SetActive(false);
+        _popupRoutine = null;
     }
 
     public void TogglePanel()

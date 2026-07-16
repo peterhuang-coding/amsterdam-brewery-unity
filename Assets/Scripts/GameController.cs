@@ -499,12 +499,15 @@ public sealed class GameController : MonoBehaviour
 
         // F5: Time advance sound
         SoundManager.Play(SoundManager.SoundType.TimeAdvance);
+        AudioManager.Instance.PlayDaytimeChime();
 
         // F6: Flash transition
         if (_flashOverlay != null)
         {
             StartCoroutine(FlashTransition());
         }
+        // Screen shake for time advance
+        StartCoroutine(GameJuice.ScreenShake(1.0f, 0.15f));
 
         SetFeedback("Time moves. The city keeps its own schedule.");
         RefreshHud();
@@ -539,12 +542,18 @@ public sealed class GameController : MonoBehaviour
         SoundManager.Play(SoundManager.SoundType.UIClick);
         // UI upgrade: animate HUD to location theme
         AnimateHudToTheme();
+        // Background music + juice effects
+        AudioManager.Instance.PlayMusic(locationId);
+        AudioManager.Instance.PlayDoorBell();
+        GameJuice.SpawnFloatingText("\U0001f4cd " + _locations[locationId].title, new Vector2(300, 400), Color.white);
         // Notify achievement system (for explorer achievement)
         if (Application.isPlaying && AchievementSystem.Instance != null)
         {
             AchievementSystem.Instance.RegisterLocationVisited(locationId);
             TutorialSystem.Instance?.OnLocationChanged();
         }
+        // Screen shake for location switch
+        StartCoroutine(GameJuice.ScreenShake(0.3f, 0.1f));
     }
 
     /// <summary>
@@ -559,6 +568,8 @@ public sealed class GameController : MonoBehaviour
             SetFeedback($"+${amount} earned.");
             SoundManager.Play(SoundManager.SoundType.MoneyEarn);
             StartCoroutine(MoneyFlashAnimation());
+            GameJuice.SpawnFloatingText($"+${amount}", new Vector2(950, 80), new Color32(80, 220, 80, 255));
+            GameJuice.SpawnParticles(new Vector2(950, 80), new Color32(80, 220, 80, 255), 8);
         }
         else
         {
@@ -771,6 +782,13 @@ public sealed class GameController : MonoBehaviour
 
         // Build new location scene via RuntimeVisuals
         RuntimeVisuals.BuildLocationScene(State.CurrentLocationId, _locationScene.transform, loc);
+
+        // Add SceneAnimator for animated scene elements
+        SceneAnimator existingAnim = _locationScene.GetComponent<SceneAnimator>();
+        if (existingAnim != null)
+            DestroyImmediate(existingAnim);
+        SceneAnimator anim = _locationScene.AddComponent<SceneAnimator>();
+        anim.FindElements(_locationScene.transform);
 
         _locationTitle.text = loc.title;
         _locationDesc.text = loc.subtitle;

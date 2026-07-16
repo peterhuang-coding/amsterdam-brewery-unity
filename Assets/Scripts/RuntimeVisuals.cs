@@ -63,6 +63,14 @@ public static class RuntimeVisuals
         Text label = CreateText("Label", parent, RectAnchor(20, 20, 440, 36), 22, TextAnchor.MiddleLeft);
         label.text = "De Pijp — Amsterdam Zuid";
         label.color = ColorFrom(highlight);
+
+        // Clouds
+        for (int i = 0; i < 3; i++)
+        {
+            float cloudX = 60 + i * 130;
+            float cloudY = 20 + (i % 2) * 15;
+            Image cloud = CreateCloud("Cloud_" + i, parent, cloudX, cloudY, 80 + i * 20, 20);
+        }
     }
 
     private static void BuildSciencePark(Transform parent, Color32 accent, Color32 highlight)
@@ -118,7 +126,7 @@ public static class RuntimeVisuals
         }
 
         // Neon sign glow
-        Rect(panel(parent, 120, 8, 240, 28), new Color32(255, 180, 60, 80));
+        Image neonGlow = CreateImage("NeonGlow", parent, RectAnchor(120, 8, 240, 28), new Color32(255, 180, 60, 80));
 
         // Label
         Text label = CreateText("Label", parent, RectAnchor(20, 20, 440, 36), 22, TextAnchor.MiddleLeft);
@@ -147,7 +155,7 @@ public static class RuntimeVisuals
             for (int col = 0; col < 6; col++)
             {
                 Color32 fc = flowerColors[(row + col) % flowerColors.Length];
-                Rect(panel(parent, 65 + col * 60, 90 + row * 30, 20, 20), WithAlpha(fc, 180));
+                Image flowerImg = CreateImage($"Flower_{row}_{col}", parent, RectAnchor(65 + col * 60, 90 + row * 30, 20, 20), WithAlpha(fc, 180));
             }
         }
 
@@ -172,6 +180,12 @@ public static class RuntimeVisuals
         ApplyRect(go.GetComponent<RectTransform>(), spec);
         Image img = go.GetComponent<Image>();
         img.color = color;
+        return img;
+    }
+
+    private static Image CreateCloud(string name, Transform parent, float x, float y, float w, float h)
+    {
+        Image img = CreateImage(name, parent, RectAnchor(x, y, w, h), new Color32(200, 210, 220, 80));
         return img;
     }
 

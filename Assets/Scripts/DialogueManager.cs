@@ -41,6 +41,9 @@ public class DialogueManager : MonoBehaviour
 
     private DialogueData _currentDialogue;
     private int _currentLineIndex;
+    private Coroutine _typewriterRoutine;
+    private bool _isTyping;
+    private string _fullText;
     private System.Action _onComplete;
 
     // 对话气泡
@@ -246,6 +249,26 @@ public class DialogueManager : MonoBehaviour
         RenderLine();
     }
 
+    private IEnumerator TypewriterEffect(string text, Text textElement, float speedPerChar = 0.03f)
+    {
+        _isTyping = true;
+        _fullText = text;
+        textElement.text = "";
+
+        for (int i = 0; i < text.Length; i++)
+        {
+            textElement.text += text[i];
+            // Subtle click sound for each character (every 3 chars to avoid noise overload)
+            if (i % 3 == 0)
+                SoundManager.Play(SoundManager.SoundType.UIClick);
+            yield return new WaitForSeconds(speedPerChar);
+        }
+
+        _isTyping = false;
+        textElement.text = text;
+        _typewriterRoutine = null;
+    }
+
     private void RenderLine()
     {
         if (_currentDialogue == null || _currentDialogue.lines == null ||
@@ -287,8 +310,10 @@ public class DialogueManager : MonoBehaviour
             if (bar != null) bar.color = color;
         }
 
-        // Set body text
-        _dialogueBodyText.text = line.text;
+        // Start typewriter effect
+        if (_typewriterRoutine != null)
+            StopCoroutine(_typewriterRoutine);
+        _typewriterRoutine = StartCoroutine(TypewriterEffect(line.text, _dialogueBodyText));
 
         // Update button
         bool isLastLine = _currentLineIndex >= _currentDialogue.lines.Length - 1;
@@ -301,6 +326,17 @@ public class DialogueManager : MonoBehaviour
     public void AdvanceDialogue()
     {
         if (_currentDialogue == null) return;
+
+        // If typewriter is still active, complete the text immediately
+        if (_isTyping && _typewriterRoutine != null)
+        {
+            StopCoroutine(_typewriterRoutine);
+            _typewriterRoutine = null;
+            _isTyping = false;
+            if (_dialogueBodyText != null)
+                _dialogueBodyText.text = _fullText;
+            return;
+        }
 
         _currentLineIndex++;
         RenderLine();

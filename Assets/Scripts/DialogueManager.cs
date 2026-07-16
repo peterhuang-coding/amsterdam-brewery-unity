@@ -44,6 +44,7 @@ public class DialogueManager : MonoBehaviour
     private Coroutine _typewriterRoutine;
     private bool _isTyping;
     private string _fullText;
+    private bool _justCompletedTyping; // Guard against double-advance in same frame
     private System.Action _onComplete;
 
     // 对话气泡
@@ -335,6 +336,16 @@ public class DialogueManager : MonoBehaviour
             _isTyping = false;
             if (_dialogueBodyText != null)
                 _dialogueBodyText.text = _fullText;
+            // Guard: prevent the same-frame space press (from both HandleInput and Update)
+            // from advancing to the next line
+            _justCompletedTyping = true;
+            return;
+        }
+
+        // Guard: if we just completed typing this frame, don't advance
+        if (_justCompletedTyping)
+        {
+            _justCompletedTyping = false;
             return;
         }
 

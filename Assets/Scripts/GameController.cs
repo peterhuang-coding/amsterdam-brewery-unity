@@ -252,13 +252,11 @@ public sealed class GameController : MonoBehaviour
             return;
         }
 
-        // Delegate dialogue input to DialogueManager
+        // Delegate dialogue input to DialogueManager (which handles in its own Update)
         if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
         {
-            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
-            {
-                DialogueManager.Instance.AdvanceDialogue();
-            }
+            // Only forward to DialogueManager if it's not already handling input
+            // DialogueManager.Update already processes Space/Return for dialogue
             return;
         }
 

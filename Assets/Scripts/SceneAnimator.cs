@@ -45,7 +45,8 @@ public class SceneAnimator : MonoBehaviour
     private List<PulseAnim> _pulses = new List<PulseAnim>();
     private List<BobAnim> _flowers = new List<BobAnim>();
     private float _time;
-    
+    private float _startDelay = 0.3f; // Small delay before animations begin
+
     public void FindElements(Transform sceneRoot)
     {
         // Find clouds
@@ -112,6 +113,12 @@ public class SceneAnimator : MonoBehaviour
     
     private void Update()
     {
+        if (_startDelay > 0f)
+        {
+            _startDelay -= Time.deltaTime;
+            return;
+        }
+
         _time += Time.deltaTime;
         
         // Animate clouds — sin wave horizontal drift + alpha variation

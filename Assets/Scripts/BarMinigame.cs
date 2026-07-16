@@ -216,7 +216,7 @@ public class BarMinigame : MonoBehaviour
         if (Application.isPlaying && TutorialSystem.Instance != null)
             TutorialSystem.Instance.OnBarOpened();
     }
-    /// </summary>
+
     public void StartShift()
     {
         StartShift(null);

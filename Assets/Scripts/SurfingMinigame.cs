@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -219,6 +220,21 @@ public class SurfingMinigame : MonoBehaviour
         {
             SpawnObstacle(Random.Range(0.3f, 0.9f));
         }
+
+        // Add animated foam/water decoration particles
+        for (int i = 0; i < 5; i++)
+        {
+            GameObject foam = new GameObject($"Foam_{i}", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            foam.transform.SetParent(_canvas.transform, false);
+            RectTransform foamt = foam.GetComponent<RectTransform>();
+            foamt.anchorMin = new Vector2(0, 0.1f + i * 0.15f);
+            foamt.anchorMax = new Vector2(0, 0.1f + i * 0.15f);
+            foamt.sizeDelta = new Vector2(6, 6);
+            foamt.anchoredPosition = new Vector2(Random.Range(0f, 200f), 0);
+            Image foamImg = foam.GetComponent<Image>();
+            foamImg.color = new Color32(200, 230, 255, 80);
+            _fragments.Add(foam);
+        }
     }
 
     private GameObject CreateSurfer(Color32 color, string name)
@@ -400,6 +416,7 @@ public class SurfingMinigame : MonoBehaviour
             if (newX < -0.1f)
             {
                 Destroy(_obstacles[i]);
+                ShowWhoosh();
                 _obstacles.RemoveAt(i);
                 continue;
             }
@@ -414,6 +431,7 @@ public class SurfingMinigame : MonoBehaviour
                 _shakeTimer = 0.3f;
                 _statusText.text = "💥 Hit!";
                 _statusText.color = new Color32(255, 100, 100, 255);
+                ShowCollisionText();
                 Destroy(_obstacles[i]);
                 _obstacles.RemoveAt(i);
             }
@@ -508,6 +526,9 @@ public class SurfingMinigame : MonoBehaviour
         _statusText.color = new Color32(255, 220, 60, 255);
         _statusText.fontSize = 36;
 
+        // Celebration
+        StartCoroutine(CelebrationEffect());
+
         // Bonus fragments for winning
         int bonus = 2;
         _fragmentsCollected += bonus;
@@ -551,6 +572,91 @@ public class SurfingMinigame : MonoBehaviour
         text.horizontalOverflow = HorizontalWrapMode.Wrap;
         text.verticalOverflow = VerticalWrapMode.Truncate;
         return text;
+    }
+
+    private void ShowWhoosh()
+    {
+        GameObject whoosh = new GameObject("Whoosh", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+        whoosh.transform.SetParent(_canvas.transform, false);
+
+        Text txt = whoosh.GetComponent<Text>();
+        txt.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        txt.text = "💨 Whoosh!";
+        txt.fontSize = 24;
+        txt.fontStyle = FontStyle.Bold;
+        txt.color = new Color32(100, 200, 255, 255);
+        txt.alignment = TextAnchor.MiddleCenter;
+
+        RectTransform rt = whoosh.GetComponent<RectTransform>();
+        rt.anchorMin = new Vector2(0.5f, 0.3f);
+        rt.anchorMax = new Vector2(0.5f, 0.3f);
+        rt.sizeDelta = new Vector2(200, 40);
+        rt.anchoredPosition = Vector2.zero;
+
+        StartCoroutine(WhooshRoutine(whoosh, txt));
+    }
+
+    private IEnumerator WhooshRoutine(GameObject go, Text txt)
+    {
+        // Quick burst
+        for (float t = 0; t < 0.8f; t += Time.deltaTime)
+        {
+            float p = t / 0.8f;
+            txt.color = new Color(txt.color.r, txt.color.g, txt.color.b, 1f - p);
+            RectTransform rt = go.GetComponent<RectTransform>();
+            rt.anchoredPosition += new Vector2(200f * Time.deltaTime, 0);
+            yield return null;
+        }
+        Destroy(go);
+    }
+
+    private IEnumerator CelebrationEffect()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            // Spawn celebration text particles
+            GameObject star = new GameObject("Star", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+            star.transform.SetParent(_canvas.transform, false);
+
+            string[] symbols = { "✨", "⭐", "🌟", "💫", "🎉" };
+
+            Text txt = star.GetComponent<Text>();
+            txt.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            txt.text = symbols[i % symbols.Length];
+            txt.fontSize = 30;
+            txt.alignment = TextAnchor.MiddleCenter;
+
+            RectTransform rt = star.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(0.5f, 0.5f);
+            rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.sizeDelta = new Vector2(40, 40);
+            rt.anchoredPosition = new Vector2(Random.Range(-200f, 200f), Random.Range(-100f, 100f));
+
+            Destroy(star, 1.5f);
+            yield return new WaitForSeconds(0.2f);
+        }
+    }
+
+    private void ShowCollisionText()
+    {
+        GameObject oof = new GameObject("Oof", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+        oof.transform.SetParent(_canvas.transform, false);
+
+        Text txt = oof.GetComponent<Text>();
+        txt.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        txt.text = "💥 Oof!";
+        txt.fontSize = 28;
+        txt.fontStyle = FontStyle.Bold;
+        txt.color = new Color32(255, 100, 100, 255);
+        txt.alignment = TextAnchor.MiddleCenter;
+
+        RectTransform rt = oof.GetComponent<RectTransform>();
+        rt.anchorMin = new Vector2(0.5f, 0.5f);
+        rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.sizeDelta = new Vector2(200, 40);
+        rt.anchoredPosition = Vector2.zero;
+
+        Destroy(oof, 1f);
     }
 }
 

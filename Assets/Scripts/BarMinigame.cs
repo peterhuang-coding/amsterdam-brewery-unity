@@ -781,6 +781,12 @@ public class BarMinigame : MonoBehaviour
             _correctCount++;
             _comboCount++;
 
+            // Combo streak effect
+            if (_comboCount == 3 || _comboCount == 5 || _comboCount == 10)
+            {
+                StartCoroutine(ShowComboPopup(_comboCount));
+            }
+
             if (_comboCount >= 3)
             {
                 int comboBonus = 3;
@@ -800,8 +806,12 @@ public class BarMinigame : MonoBehaviour
             _orderText.text = "✅ Cheers!";
             _orderText.color = GreenColor;
             SoundManager.Play(SoundManager.SoundType.Success);
+            // Show floating score
+            SpawnFloatingScore($"+${revenue}", _panel.transform.position);
             StartCoroutine(FlashFeedback(true));
             StartCoroutine(FloatText($"+${revenue + tip}", GreenColor));
+            // Green flash for correct serve
+            StartCoroutine(FlashScreen(new Color32(80, 220, 80, 60), 0.15f));
 
             // [Gameplay] Affection gain for Erik (bar owner)
             if (InventorySystem.Instance != null)
@@ -843,6 +853,8 @@ public class BarMinigame : MonoBehaviour
             SoundManager.Play(SoundManager.SoundType.Fail);
             StartCoroutine(FlashFeedback(false));
             StartCoroutine(FloatText("-", RedColor));
+            // Red flash for wrong serve
+            StartCoroutine(FlashScreen(new Color32(220, 80, 80, 60), 0.15f));
         }
 
         _currentDrink = -1;
@@ -1294,5 +1306,134 @@ public class BarMinigame : MonoBehaviour
         text.horizontalOverflow = HorizontalWrapMode.Wrap;
         text.verticalOverflow = VerticalWrapMode.Truncate;
         return text;
+    }
+
+    private void SpawnFloatingScore(string text, Vector3 worldPos)
+    {
+        if (_canvas == null) return;
+
+        GameObject ftGO = new GameObject("FloatingScore", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+        ftGO.transform.SetParent(_canvas.transform, false);
+
+        Text ft = ftGO.GetComponent<Text>();
+        ft.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        ft.text = text;
+        ft.fontSize = 28;
+        ft.fontStyle = FontStyle.Bold;
+        ft.color = new Color32(80, 220, 80, 255);
+        ft.alignment = TextAnchor.MiddleCenter;
+
+        RectTransform ftrt = ftGO.GetComponent<RectTransform>();
+        ftrt.anchorMin = new Vector2(0.5f, 0.5f);
+        ftrt.anchorMax = new Vector2(0.5f, 0.5f);
+        ftrt.sizeDelta = new Vector2(200, 50);
+        ftrt.anchoredPosition = Vector2.zero;
+
+        StartCoroutine(FloatingScoreRoutine(ftGO, ftrt, ft));
+    }
+
+    private IEnumerator FloatingScoreRoutine(GameObject go, RectTransform rt, Text txt)
+    {
+        float duration = 1.2f;
+        Vector2 startPos = rt.anchoredPosition;
+        Color startColor = txt.color;
+
+        for (float t = 0; t < duration; t += Time.deltaTime)
+        {
+            float p = t / duration;
+            rt.anchoredPosition = startPos + new Vector2(Random.Range(-10f, 10f), p * 70f);
+            txt.color = new Color(startColor.r, startColor.g, startColor.b, 1f - p);
+            yield return null;
+        }
+
+        Destroy(go);
+    }
+
+    private IEnumerator ShowComboPopup(int count)
+    {
+        if (_canvas == null) yield break;
+
+        GameObject comboGO = new GameObject("ComboPopup", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+        comboGO.transform.SetParent(_canvas.transform, false);
+
+        Text comboText = comboGO.GetComponent<Text>();
+        comboText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+
+        string comboLabel = count == 3 ? "Nice!" : count == 5 ? "Amazing!" : "LEGENDARY!";
+        comboText.text = $"🔥 {comboLabel} x{count}";
+        comboText.fontSize = count == 10 ? 40 : 32;
+        comboText.fontStyle = FontStyle.Bold;
+
+        // Color based on streak level
+        comboText.color = count == 3 ? new Color32(255, 200, 50, 255) :
+                          count == 5 ? new Color32(255, 100, 50, 255) :
+                                       new Color32(255, 50, 200, 255);
+        comboText.alignment = TextAnchor.MiddleCenter;
+
+        RectTransform crt = comboGO.GetComponent<RectTransform>();
+        crt.anchorMin = new Vector2(0.5f, 0.6f);
+        crt.anchorMax = new Vector2(0.5f, 0.6f);
+        crt.sizeDelta = new Vector2(300, 60);
+        crt.anchoredPosition = Vector2.zero;
+
+        // Play success sound at higher pitch for higher combos
+        SoundManager.Play(SoundManager.SoundType.Success);
+
+        // Animate: scale up, pause, fade out
+        float scaleIn = 0.3f;
+        for (float t = 0; t < scaleIn; t += Time.deltaTime)
+        {
+            float p = t / scaleIn;
+            float s = Mathf.Lerp(0.3f, 1.2f, p * p * (3f - 2f * p)); // smoothstep scale
+            crt.localScale = new Vector3(s, s, 1);
+            comboText.color = new Color(comboText.color.r, comboText.color.g, comboText.color.b, p);
+            yield return null;
+        }
+        crt.localScale = new Vector3(1.2f, 1.2f, 1);
+
+        // Hold
+        yield return new WaitForSeconds(0.8f);
+
+        // Fade out
+        for (float t = 0; t < 0.4f; t += Time.deltaTime)
+        {
+            float p = t / 0.4f;
+            comboText.color = new Color(comboText.color.r, comboText.color.g, comboText.color.b, 1f - p);
+            yield return null;
+        }
+
+        Destroy(comboGO);
+    }
+
+    private IEnumerator FlashScreen(Color32 flashColor, float duration)
+    {
+        if (_flashOverlay == null) yield break;
+
+        _flashOverlay.SetActive(true);
+        Image flashImg = _flashOverlay.GetComponent<Image>();
+
+        Color baseColor = flashColor;
+        Color clearColor = baseColor;
+        clearColor.a = 0f;
+
+        // Flash in
+        float half = duration * 0.5f;
+        for (float t = 0; t < half; t += Time.deltaTime)
+        {
+            float p = t / half;
+            flashImg.color = Color.Lerp(clearColor, baseColor, p);
+            yield return null;
+        }
+
+        // Flash out
+        for (float t = 0; t < half; t += Time.deltaTime)
+        {
+            float p = t / half;
+            flashImg.color = Color.Lerp(baseColor, clearColor, p);
+            yield return null;
+        }
+
+        flashImg.color = clearColor;
+        _flashOverlay.SetActive(false);
     }
 }

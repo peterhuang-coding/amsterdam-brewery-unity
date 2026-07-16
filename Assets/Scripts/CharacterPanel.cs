@@ -168,7 +168,7 @@ public class CharacterPanel : MonoBehaviour
         for (int i = 0; i < _characterIds.Length; i++)
         {
             int affection = GetAffection(_characterIds[i]);
-            AddAffectionBar(_characterNames[i], affection, ref y);
+            AddAffectionBar(_characterNames[i], _characterIds[i], affection, ref y);
         }
     }
 
@@ -195,7 +195,7 @@ public class CharacterPanel : MonoBehaviour
         y += 24;
     }
 
-    private void AddAffectionBar(string name, int value, ref float y)
+    private void AddAffectionBar(string name, string npcId, int value, ref float y)
     {
         int filled = Mathf.Clamp(value, 0, 10);
         int empty = 10 - filled;
@@ -214,9 +214,38 @@ public class CharacterPanel : MonoBehaviour
         else
             barColor = new Color32(60, 200, 80, 255);     // Green
 
+        // Portrait circle
+        GameObject portraitGO = new GameObject($"Portrait_{npcId}", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        portraitGO.transform.SetParent(_contentArea, false);
+        RectTransform pRT = portraitGO.GetComponent<RectTransform>();
+        pRT.anchorMin = new Vector2(0, 1);
+        pRT.anchorMax = new Vector2(0, 1);
+        pRT.sizeDelta = new Vector2(32, 32);
+        pRT.anchoredPosition = new Vector2(16, -y - 12);
+        pRT.pivot = new Vector2(0.5f, 0.5f);
+        Image portrait = portraitGO.GetComponent<Image>();
+        portrait.color = DialogueManager.GetSpeakerColor(npcId);
+
+        // Initial letter on portrait
+        GameObject initialGO = new GameObject($"Initial_{npcId}", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+        initialGO.transform.SetParent(portraitGO.transform, false);
+        RectTransform iRT = initialGO.GetComponent<RectTransform>();
+        iRT.anchorMin = Vector2.zero;
+        iRT.anchorMax = Vector2.one;
+        iRT.offsetMin = Vector2.zero;
+        iRT.offsetMax = Vector2.zero;
+        Text initialText = initialGO.GetComponent<Text>();
+        initialText.font = _font;
+        initialText.text = name.Length > 0 ? name[0].ToString() : "?";
+        initialText.fontSize = 18;
+        initialText.fontStyle = FontStyle.Bold;
+        initialText.color = new Color32(255, 255, 255, 255);
+        initialText.alignment = TextAnchor.MiddleCenter;
+
+        // Name + affection bar text
         Text t = CreateText(string.Format("Aff_{0}", name), _contentArea,
             new RectSpec(new Vector2(0, 1), new Vector2(1, 1),
-                new Vector2(8, -y - 24), new Vector2(0, -y)),
+                new Vector2(48, -y - 24), new Vector2(0, -y)),
             16, TextAnchor.LowerLeft);
         t.text = string.Format("{0}: {1} ({2}/10)", name, barStr, value);
         t.color = barColor;

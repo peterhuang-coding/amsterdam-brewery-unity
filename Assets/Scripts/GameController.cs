@@ -101,6 +101,7 @@ public sealed class GameController : MonoBehaviour
     private Text _moneyText;
     private Text _feedbackText;
     private Text _hintText;
+    private Text _weatherText;
     private Image _hintBackplate;
 
     // UI upgrade: HUD icon plate references for color transitions
@@ -395,8 +396,12 @@ public sealed class GameController : MonoBehaviour
         Text barIcon = MakeText("Bar Icon", parent, Anchored(530, 10, 44, 44), 28, TextAnchor.MiddleCenter);
         barIcon.text = "☕"; // coffee/beer
         barIcon.color = new Color32(233, 194, 119, 255);
-        _barStatusText = MakeText("Bar Text", parent, Anchored(582, 6, 330, 24), 18, TextAnchor.MiddleLeft);
+        _barStatusText = MakeText("Bar Text", parent, Anchored(582, 6, 260, 24), 18, TextAnchor.MiddleLeft);
         _barStatusText.text = "Closed  |  Served 0  |  Rev $0";
+
+        // Weather
+        _weatherText = MakeText("Weather Text", parent, Anchored(835, 10, 80, 28), 16, TextAnchor.MiddleLeft);
+        _weatherText.text = "";
 
         // Money
         _moneyIconPlate = MakeImage("Money Icon Plate", parent, Anchored(930, 10, 44, 44), new Color32(86, 125, 56, 160));
@@ -936,6 +941,12 @@ public sealed class GameController : MonoBehaviour
         _barStatusText.text = $"{(barActive ? "Open" : "Closed")}  |  Served {barServed}  |  Rev ${barEarnings}";
         _moneyText.text = $"${State.Money}";
 
+        // Weather
+        if (_weatherText != null)
+        {
+            _weatherText.text = WeatherSystem.Instance.WeatherName;
+        }
+
         // F1: Update daily goal display
         UpdateGoalDisplay();
 
@@ -1089,6 +1100,7 @@ public sealed class GameController : MonoBehaviour
         _barIconPlate = null;
         _moneyIconPlate = null;
         _poiTagContainer = null;
+        _weatherText = null;
     }
 
     private static void DestroyChildren(Transform parent)

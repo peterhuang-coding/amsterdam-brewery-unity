@@ -258,12 +258,13 @@ public class InventoryUI : MonoBehaviour
             iImg.color = new Color32(35, 40, 48, 255);
             iImg.raycastTarget = true;
 
-            // Color block icon
-            Color32 iconColor = GetItemColor(item.id);
-            Image iconBlock = CreateImage("Icon", itemGO.transform,
+            // Emoji icon
+            Text iconText = CreateText("Icon", itemGO.transform,
                 new RectSpec(new Vector2(0, 0), new Vector2(0, 1),
                     new Vector2(6, 6), new Vector2(36, -6)),
-                iconColor);
+                20, TextAnchor.MiddleCenter);
+            iconText.text = GetItemIcon(item.id);
+            iconText.fontStyle = FontStyle.Bold;
 
             // Item name
             Text nameText = CreateText("Name", itemGO.transform,
@@ -279,6 +280,10 @@ public class InventoryUI : MonoBehaviour
             Button btn = itemGO.AddComponent<Button>();
             btn.targetGraphic = iImg;
             btn.onClick.AddListener(() => ShowDetail(capturedName, capturedDesc));
+            // Hover effect
+            ColorBlock cb = btn.colors;
+            cb.highlightedColor = new Color32(50, 58, 70, 255);
+            btn.colors = cb;
 
             y += 44;
         }
@@ -350,6 +355,19 @@ public class InventoryUI : MonoBehaviour
             case Tab.Quest: return _questItems;
             default: return _usefulItems;
         }
+    }
+
+    private string GetItemIcon(string itemId)
+    {
+        return itemId switch
+        {
+            "beer_mug" => "🍺",
+            "notebook" => "📓",
+            "tulip_pin" => "🌷",
+            "postcard" => "📮",
+            "rent_notice" => "📄",
+            _ => "📦"
+        };
     }
 
     private Color32 GetItemColor(string itemId)

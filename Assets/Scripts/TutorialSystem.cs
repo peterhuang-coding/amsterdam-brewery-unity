@@ -391,9 +391,17 @@ public class TutorialSystem : MonoBehaviour
         _welcomeDismissed = true;
         JustDismissedWelcomeThisFrame = true;
 
-        StopAllCoroutines();
-        StartCoroutine(WelcomeFadeOut());
+        // Instant destroy — no fade animation that could leave the canvas
+        // blocking input for 0.3s
+        if (_welcomeCanvas != null)
+        {
+            Destroy(_welcomeCanvas.gameObject);
+            _welcomeCanvas = null;
+        }
     }
+
+    // Unused fade coroutine kept for reference (not called):
+    // private IEnumerator WelcomeFadeOut() ...
 
     private IEnumerator WelcomeFadeOut()
     {

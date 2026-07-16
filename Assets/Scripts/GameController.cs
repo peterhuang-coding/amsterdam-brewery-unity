@@ -206,6 +206,16 @@ public sealed class GameController : MonoBehaviour
     // T4: Extracted input handling for readability
     private void HandleInput()
     {
+        // If the tutorial welcome was just dismissed this frame, don't process
+        // Space/Return — the same keypress would otherwise trigger AdvanceTime
+        // or dialogue, causing confusing cascading state changes.
+        bool welcomeJustClosed = TutorialSystem.Instance != null &&
+                                 TutorialSystem.Instance.JustDismissedWelcomeThisFrame;
+        if (welcomeJustClosed)
+        {
+            TutorialSystem.Instance.JustDismissedWelcomeThisFrame = false;
+        }
+
         // System panel keys (I/C/P) — check before game action keys
         if (Input.GetKeyDown(KeyCode.I))
         {
@@ -260,48 +270,52 @@ public sealed class GameController : MonoBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        // Skip Space/Return this frame if tutorial welcome was just dismissed
+        if (!welcomeJustClosed)
         {
-            AdvanceTime();
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            SwitchLocation("de_pijp");
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            SwitchLocation("science_park");
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            SwitchLocation("tweede_kans");
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            SwitchLocation("bloemenmarkt");
-        }
-        else if (Input.GetKeyDown(KeyCode.B))
-        {
-            if (BarMinigame.Instance != null)
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                if (!BarMinigame.Instance.IsShiftActive)
-                    BarMinigame.Instance.StartShift();
-                else
-                    SetFeedback("A bar shift is already in progress.");
+                AdvanceTime();
             }
-        }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            SetFeedback("Use the bar minigame UI to serve customers.");
-        }
-        else if (Input.GetKeyDown(KeyCode.F))
-        {
-            if (BarMinigame.Instance != null)
+            else if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                if (BarMinigame.Instance.IsShiftActive)
-                    BarMinigame.Instance.EndShift();
-                else
-                    SetFeedback("No shift to close yet.");
+                SwitchLocation("de_pijp");
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                SwitchLocation("science_park");
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                SwitchLocation("tweede_kans");
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                SwitchLocation("bloemenmarkt");
+            }
+            else if (Input.GetKeyDown(KeyCode.B))
+            {
+                if (BarMinigame.Instance != null)
+                {
+                    if (!BarMinigame.Instance.IsShiftActive)
+                        BarMinigame.Instance.StartShift();
+                    else
+                        SetFeedback("A bar shift is already in progress.");
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.S))
+            {
+                SetFeedback("Use the bar minigame UI to serve customers.");
+            }
+            else if (Input.GetKeyDown(KeyCode.F))
+            {
+                if (BarMinigame.Instance != null)
+                {
+                    if (BarMinigame.Instance.IsShiftActive)
+                        BarMinigame.Instance.EndShift();
+                    else
+                        SetFeedback("No shift to close yet.");
+                }
             }
         }
     }

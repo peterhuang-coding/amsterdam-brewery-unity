@@ -31,6 +31,7 @@ public class TutorialSystem : MonoBehaviour
     private bool _barOpened;
     private bool _barServed;
     private bool _timeAdvanced;
+    public bool JustDismissedWelcomeThisFrame { get; set; }
 
     private List<TutorialStep> _steps;
     private int _currentStepIndex = -1;
@@ -89,6 +90,10 @@ public class TutorialSystem : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
             {
                 DismissWelcome();
+                // Don't process this input further — prevent GameController
+                // from also handling Space/Return in the same frame (which would
+                // advance time and potentially trigger a story dialogue, locking input).
+                return;
             }
         }
     }
@@ -384,6 +389,7 @@ public class TutorialSystem : MonoBehaviour
     {
         if (_welcomeDismissed) return;
         _welcomeDismissed = true;
+        JustDismissedWelcomeThisFrame = true;
 
         StopAllCoroutines();
         StartCoroutine(WelcomeFadeOut());

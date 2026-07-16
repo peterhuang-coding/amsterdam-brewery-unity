@@ -33,6 +33,12 @@ public class TutorialSystem : MonoBehaviour
     private bool _timeAdvanced;
     public bool JustDismissedWelcomeThisFrame { get; set; }
 
+    /// <summary>
+    /// True when the welcome screen canvas exists and is blocking game input.
+    /// GameController.HandleInput checks this to skip gameplay keys.
+    /// </summary>
+    public bool WelcomeIsActive_BlockingInput => _welcomeCanvas != null && _welcomeCanvas.gameObject.activeInHierarchy;
+
     private List<TutorialStep> _steps;
     private int _currentStepIndex = -1;
 

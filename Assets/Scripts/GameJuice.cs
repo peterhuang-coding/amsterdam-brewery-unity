@@ -37,7 +37,7 @@ public static class GameJuice
             _camera = Camera.main;
             if (_camera == null)
             {
-                Camera[] cams = Object.FindObjectsByType<Camera>(FindObjectsSortMode.None);
+                Camera[] cams = Object.FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 if (cams.Length > 0) _camera = cams[0];
             }
         }

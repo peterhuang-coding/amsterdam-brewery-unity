@@ -178,10 +178,6 @@ public sealed class GameController : MonoBehaviour
             GenerateDailyGoals();
         }
         RefreshHud();
-        if (Application.isPlaying)
-        {
-            CheckStoryEvents();
-        }
     }
 
     private void Update()

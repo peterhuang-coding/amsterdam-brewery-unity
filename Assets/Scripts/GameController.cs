@@ -166,6 +166,11 @@ public sealed class GameController : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
+
     private void BootstrapView()
     {
         _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");

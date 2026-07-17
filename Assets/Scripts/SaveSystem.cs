@@ -60,6 +60,8 @@ public class SaveData
     public int barShiftCorrectCount;
     public float barShiftApologyTipMultiplier = 1.0f;
     public bool barShiftApologyMode;
+    // Achievement partial progress (prevents data loss on save/load cycle)
+    public AchievementTrackingData achievementTracking;
 }
 
 public class SaveSystem : MonoBehaviour
@@ -215,6 +217,8 @@ public class SaveSystem : MonoBehaviour
         if (AchievementSystem.Instance != null)
         {
             data.unlockedAchievements.AddRange(GetAchievementIds());
+            // Save partial achievement progress so progress survives save/load
+            data.achievementTracking = AchievementSystem.Instance.GetTrackingData();
         }
 
         // [Gameplay] Save bar upgrades
@@ -463,6 +467,11 @@ public class SaveSystem : MonoBehaviour
             foreach (string achId in data.unlockedAchievements)
             {
                 AchievementSystem.Instance.RestoreAchievement(achId);
+            }
+            // Restore partial achievement progress from save data
+            if (data.achievementTracking != null)
+            {
+                AchievementSystem.Instance.RestoreTrackingData(data.achievementTracking);
             }
         }
 

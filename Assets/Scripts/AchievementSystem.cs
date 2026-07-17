@@ -340,6 +340,34 @@ public class AchievementSystem : MonoBehaviour
     /// <summary>Total number of achievements in the system.</summary>
     public int TotalAchievementCount => _achievements.Count;
 
+    // ── Save/load tracking data ─────────────────────────
+
+    /// <summary>Get partial achievement progress for save persistence.</summary>
+    public AchievementTrackingData GetTrackingData()
+    {
+        return new AchievementTrackingData
+        {
+            visitedLocations = new List<string>(_visitedLocations),
+            drinksSold = new List<string>(_drinksSold),
+            totalCustomersServed = _totalCustomersServed,
+            maxDailyRevenue = _maxDailyRevenue,
+        };
+    }
+
+    /// <summary>Restore partial achievement progress from save data.</summary>
+    public void RestoreTrackingData(AchievementTrackingData data)
+    {
+        if (data == null) return;
+        _visitedLocations.Clear();
+        if (data.visitedLocations != null)
+            foreach (string loc in data.visitedLocations) _visitedLocations.Add(loc);
+        _drinksSold.Clear();
+        if (data.drinksSold != null)
+            foreach (string drink in data.drinksSold) _drinksSold.Add(drink);
+        _totalCustomersServed = data.totalCustomersServed;
+        _maxDailyRevenue = data.maxDailyRevenue;
+    }
+
     // ── Core ────────────────────────────────────────────
 
     private void TryUnlock(string achievementId)

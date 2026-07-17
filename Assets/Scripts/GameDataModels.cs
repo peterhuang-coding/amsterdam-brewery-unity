@@ -157,6 +157,15 @@ public sealed class DrinkData
 public enum CustomerType { Normal, Regular, Picky, Drunk, Group }
 
 [Serializable]
+public sealed class AchievementTrackingData
+{
+    public List<string> visitedLocations = new List<string>();
+    public List<string> drinksSold = new List<string>();
+    public int totalCustomersServed;
+    public int maxDailyRevenue;
+}
+
+[Serializable]
 public sealed class CustomerData
 {
     public CustomerType type;

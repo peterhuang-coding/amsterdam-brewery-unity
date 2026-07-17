@@ -343,6 +343,21 @@ public class TutorialSystem : MonoBehaviour
         for (int i = 0; i < stepStates.Count && _steps != null && i < _steps.Count; i++)
             _steps[i].completed = stepStates[i];
 
+        // Reset event flags for uncompleted steps so the tutorial overlay
+        // can detect player actions after a load. Without this, flags set
+        // before the save stay true and block step progression after load.
+        if (_steps != null && _steps.Count > 0)
+        {
+            if (!_steps[0].completed) { _playerHasMoved = false; _locationChanged = false; }
+            if (_steps.Count > 1 && !_steps[1].completed) _brewStarted = false;
+            if (_steps.Count > 2 && !_steps[2].completed) _barOpened = false;
+            if (_steps.Count > 3 && !_steps[3].completed) _barServed = false;
+            if (_steps.Count > 4 && !_steps[4].completed) _timeAdvanced = false;
+            if (_steps.Count > 5 && !_steps[5].completed) _shopOpened = false;
+            if (_steps.Count > 6 && !_steps[6].completed) _upgradeOpened = false;
+            if (_steps.Count > 7 && !_steps[7].completed) _saveOrLoadUsed = false;
+        }
+
         // If welcome was already dismissed, dismiss it now
         if (welcomeDismissed && !_welcomeDismissed)
         {

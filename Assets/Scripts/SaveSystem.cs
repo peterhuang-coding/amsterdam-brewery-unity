@@ -181,11 +181,8 @@ public class SaveSystem : MonoBehaviour
             foreach (string npcId in npcIds)
             {
                 int val = InventorySystem.Instance.GetAffection(npcId);
-                if (val > 0 || data.affectionKeys.Count > 0)
-                {
-                    data.affectionKeys.Add(npcId);
-                    data.affectionValues.Add(val);
-                }
+                data.affectionKeys.Add(npcId);
+                data.affectionValues.Add(val);
             }
         }
 

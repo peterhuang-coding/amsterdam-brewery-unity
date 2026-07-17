@@ -50,6 +50,7 @@ public class BrewingSystem : MonoBehaviour
     // ── Brew complete notification popup ─────────────────
     private GameObject _notificationGO;
     private Text _notificationText;
+    private Coroutine _notificationCoroutine;
 
     private void Awake()
     {
@@ -383,8 +384,9 @@ public class BrewingSystem : MonoBehaviour
         if (_notificationGO == null) return;
         _notificationGO.SetActive(true);
         _notificationText.text = message;
-        StopAllCoroutines();
-        StartCoroutine(HideNotificationAfterDelay());
+        if (_notificationCoroutine != null)
+            StopCoroutine(_notificationCoroutine);
+        _notificationCoroutine = StartCoroutine(HideNotificationAfterDelay());
     }
 
     private IEnumerator HideNotificationAfterDelay()
@@ -392,6 +394,7 @@ public class BrewingSystem : MonoBehaviour
         yield return new WaitForSeconds(3f);
         if (_notificationGO != null)
             _notificationGO.SetActive(false);
+        _notificationCoroutine = null;
     }
 
     // ── UI Helpers ───────────────────────────────────────

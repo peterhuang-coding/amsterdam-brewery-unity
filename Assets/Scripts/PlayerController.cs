@@ -212,37 +212,6 @@ public class PlayerController : MonoBehaviour
             _directionIndicator.transform.localRotation = Quaternion.Euler(0, 0, angle);
         }
 
-        // Debug: press F to start surfing
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            if (!SurfingManager.IsSurfing)
-            {
-                SurfingManager.StartSurfing("hot", (success, fragments) =>
-                {
-                    Debug.Log($"Surfing complete! Success: {success}, Fragments: {fragments}");
-                    if (success)
-                    {
-                        if (InventorySystem.Instance != null)
-                            InventorySystem.Instance.AddFragment($"Hot wave fragment ({fragments} collected)");
-                        SoundManager.Play(SoundManager.SoundType.Success);
-                    }
-                    else
-                    {
-                        SoundManager.Play(SoundManager.SoundType.Fail);
-                    }
-                });
-            }
-        }
-
-        // Press B to start bar shift (at Tweede Kans only)
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            BarMinigame.Instance.StartShift((earnings) =>
-            {
-                Debug.Log($"Bar shift complete! Earned ${earnings}");
-            });
-        }
-
         // Escape to pause
         if (Input.GetKeyDown(KeyCode.Escape))
         {

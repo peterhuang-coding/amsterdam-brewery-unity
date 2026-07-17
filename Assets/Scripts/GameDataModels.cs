@@ -214,6 +214,7 @@ public sealed class GameState
     public const int VictoryMoneyTarget = 300;
     public bool GameEnded { get; set; } = false;
     public bool GameWon { get; set; } = false;
+    public bool GameWentBankrupt { get; set; } = false;
 
     // ── Location ──────────────────────────────────────────
     private string _currentLocationId = "de_pijp";

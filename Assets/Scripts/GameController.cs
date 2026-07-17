@@ -412,6 +412,9 @@ public sealed class GameController : MonoBehaviour
         _barStatusText = MakeText("Bar Text", parent, Anchored(582, 6, 260, 24), 18, TextAnchor.MiddleLeft);
         _barStatusText.text = "Closed  |  Served 0  |  Rev $0";
 
+        // F7: NPC affection bar — shows relationship level with current-location character
+        _affectionBarText = MakeText("Affection Bar", parent, Anchored(582, 32, 260, 18), 14, TextAnchor.MiddleLeft);
+
         // Weather
         _weatherText = MakeText("Weather Text", parent, Anchored(835, 10, 80, 28), 16, TextAnchor.MiddleLeft);
         _weatherText.text = "";

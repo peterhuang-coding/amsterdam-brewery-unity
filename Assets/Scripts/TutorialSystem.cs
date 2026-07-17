@@ -28,6 +28,7 @@ public class TutorialSystem : MonoBehaviour
     private bool _initialized;
     private bool _playerHasMoved;
     private bool _locationChanged;
+    private bool _brewStarted;
     private bool _barOpened;
     private bool _barServed;
     private bool _timeAdvanced;
@@ -63,6 +64,7 @@ public class TutorialSystem : MonoBehaviour
     {
         { "WASD", new Vector2(0, -100) },  // bottom center
         { "1-4", new Vector2(-200, -100) }, // bottom left
+        { "R", new Vector2(-120, -100) },   // bottom center-left
         { "B", new Vector2(150, -100) },    // bottom center-right
         { "S", new Vector2(200, -100) },    // bottom right
         { "Space", new Vector2(0, -120) },  // bottom center
@@ -109,6 +111,7 @@ public class TutorialSystem : MonoBehaviour
         _steps = new List<TutorialStep>
         {
             new TutorialStep { id = "locations", message = "Press keys 1-4 to switch between locations.", inputKey = "1-4", completed = false },
+            new TutorialStep { id = "brew", message = "Press R to brew beer. Brewed beer supplies your bar shifts.", inputKey = "R", completed = false },
             new TutorialStep { id = "open_bar", message = "Press B to open the bar at Tweede Kans.", inputKey = "B", completed = false },
             new TutorialStep { id = "serve", message = "Press S to serve a customer at the bar.", inputKey = "S", completed = false },
             new TutorialStep { id = "advance_time", message = "Press Space to advance time and progress the story.", inputKey = "Space", completed = false },
@@ -176,15 +179,6 @@ public class TutorialSystem : MonoBehaviour
         ShowStep(0);
     }
 
-    public void OnPlayerMoved()
-    {
-        if (_playerHasMoved) return;
-        _playerHasMoved = true;
-
-        // Step 0 (WASD) is removed — no PlayerController in the prototype scene
-        // Location-based step starts at index 0
-    }
-
     public void OnLocationChanged()
     {
         if (_locationChanged) return;
@@ -194,13 +188,22 @@ public class TutorialSystem : MonoBehaviour
             CompleteStep(0);
     }
 
+    public void OnBrewStarted()
+    {
+        if (_brewStarted) return;
+        _brewStarted = true;
+
+        if (_currentStepIndex == 1)
+            CompleteStep(1);
+    }
+
     public void OnBarOpened()
     {
         if (_barOpened) return;
         _barOpened = true;
 
-        if (_currentStepIndex == 1)
-            CompleteStep(1);
+        if (_currentStepIndex == 2)
+            CompleteStep(2);
     }
 
     public void OnCustomerServed()
@@ -208,8 +211,8 @@ public class TutorialSystem : MonoBehaviour
         if (_barServed) return;
         _barServed = true;
 
-        if (_currentStepIndex == 2)
-            CompleteStep(2);
+        if (_currentStepIndex == 3)
+            CompleteStep(3);
     }
 
     public void OnTimeAdvanced()
@@ -217,8 +220,8 @@ public class TutorialSystem : MonoBehaviour
         if (_timeAdvanced) return;
         _timeAdvanced = true;
 
-        if (_currentStepIndex == 3)
-            CompleteStep(3);
+        if (_currentStepIndex == 4)
+            CompleteStep(4);
     }
 
     /// <summary>
@@ -228,6 +231,7 @@ public class TutorialSystem : MonoBehaviour
     {
         _playerHasMoved = false;
         _locationChanged = false;
+        _brewStarted = false;
         _barOpened = false;
         _barServed = false;
         _timeAdvanced = false;
@@ -430,6 +434,9 @@ public class TutorialSystem : MonoBehaviour
             Destroy(_welcomeCanvas.gameObject);
             _welcomeCanvas = null;
         }
+
+        // Kick off the step-by-step tutorial overlay
+        TryStartTutorial();
     }
 
     // Unused fade coroutine kept for reference (not called):

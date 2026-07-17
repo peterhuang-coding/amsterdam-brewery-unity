@@ -370,6 +370,10 @@ public class BrewingSystem : MonoBehaviour
         SoundManager.Play(SoundManager.SoundType.UIClick);
         GameController.Instance.RefreshHudPublic();
         RefreshPanel();
+
+        // Notify tutorial system of first brew
+        if (TutorialSystem.Instance != null)
+            TutorialSystem.Instance.OnBrewStarted();
     }
 
     private void ShowNotification(string message)

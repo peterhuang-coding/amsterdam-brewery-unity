@@ -775,7 +775,7 @@ public class BarMinigame : MonoBehaviour
     {
         if (!_isServing || _currentDrink < 0 || _isStocking) return;
 
-        if (_stock[drinkIndex] <= 0)
+        if (_stock[drinkIndex] <= 0 && GameController.Instance.State.GetBrewStock(drinkIndex) <= 0)
         {
             _orderText.text = $"😅 Sorry, we're out of {_drinkNames[drinkIndex]}!";
             _orderText.color = new Color32(255, 180, 60, 255);

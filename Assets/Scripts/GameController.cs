@@ -205,6 +205,15 @@ public sealed class GameController : MonoBehaviour
     // T4: Extracted input handling for readability
     private void HandleInput()
     {
+        // Block input in the same frame the welcome screen was just dismissed.
+        // Without this, pressing Space to dismiss the welcome can also advance
+        // time in the same frame if GameController.Update runs after TutorialSystem.Update.
+        if (TutorialSystem.Instance != null && TutorialSystem.Instance.JustDismissedWelcomeThisFrame)
+        {
+            TutorialSystem.Instance.JustDismissedWelcomeThisFrame = false;
+            return;
+        }
+
         // Don't process gameplay keys while tutorial welcome is up
         if (TutorialSystem.Instance != null && TutorialSystem.Instance.WelcomeIsActive_BlockingInput)
             return;

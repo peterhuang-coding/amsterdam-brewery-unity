@@ -456,10 +456,7 @@ public class DialogueManager : MonoBehaviour
             GameController gc = GameController.Instance;
             if (gc != null)
             {
-                if (outcome.money > 0)
-                    gc.AddMoney(outcome.money);
-                else
-                    gc.AddMoney(outcome.money);
+                gc.AddMoney(outcome.money);
             }
         }
 

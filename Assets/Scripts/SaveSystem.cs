@@ -514,6 +514,7 @@ public class SaveSystem : MonoBehaviour
             gc.RefreshHudPublic();
         }
 
+        GameController.Instance?.ShowResultFeedback("Game loaded.");
         Debug.Log($"[SaveSystem] Loaded slot {slot}: Day {data.day}, Money ${data.money}");
         return true;
     }
@@ -840,6 +841,7 @@ public class SaveSystem : MonoBehaviour
         {
             SaveToSlot(slotIndex);
             RefreshPanelDisplays();
+            GameController.Instance?.ShowResultFeedback("Game saved.");
         });
         _saveButtons[slotIndex] = saveBtn;
 

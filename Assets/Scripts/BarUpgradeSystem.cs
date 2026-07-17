@@ -124,11 +124,17 @@ public sealed class BarUpgradeSystem : MonoBehaviour
         return (upgrade != null && upgrade.purchased) ? 0.2f : 0.0f;
     }
 
-    public int GetTotalUpgradeBonus()
+    // ── Panel open/close ───────────────────────────────────
+
+    public bool IsPanelOpen => _panelOpen;
+
+    public void ClosePanel()
     {
-        int bonus = 0;
-        if (GetDrinkPriceBonus() > 0) bonus += 1;
-        return bonus;
+        if (_panelRoot != null && _panelOpen)
+        {
+            _panelOpen = false;
+            _panelRoot.SetActive(false);
+        }
     }
 
     public void TogglePanel()
@@ -175,6 +181,7 @@ public sealed class BarUpgradeSystem : MonoBehaviour
     {
         foreach (BarUpgrade upgrade in _upgrades)
             upgrade.purchased = false;
+        RefreshPanel(); // rebuild UI if panel was already built
     }
 
     // ── UI Panel ───────────────────────────────────────────

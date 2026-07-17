@@ -648,6 +648,8 @@ public sealed class GameController : MonoBehaviour
             BrewingSystem.Instance.ClosePanel();
         if (SaveSystem.Instance != null && SaveSystem.Instance.IsPanelOpen)
             SaveSystem.Instance.ClosePanelPublic();
+        if (BarUpgradeSystem.Instance != null && BarUpgradeSystem.Instance.IsPanelOpen)
+            BarUpgradeSystem.Instance.ClosePanel();
 
         // Rebuild the HUD and location
         LoadData();

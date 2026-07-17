@@ -337,6 +337,9 @@ public class AchievementSystem : MonoBehaviour
         return ids;
     }
 
+    /// <summary>Total number of achievements in the system.</summary>
+    public int TotalAchievementCount => _achievements.Count;
+
     // ── Core ────────────────────────────────────────────
 
     private void TryUnlock(string achievementId)

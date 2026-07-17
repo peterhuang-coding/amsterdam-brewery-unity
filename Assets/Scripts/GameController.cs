@@ -795,10 +795,14 @@ public sealed class GameController : MonoBehaviour
         subText.color = new Color32(200, 196, 186, 255);
 
         // Stats block
+        int upgradeCount = 0;
+        if (BarUpgradeSystem.Instance != null)
+            upgradeCount = BarUpgradeSystem.Instance.PurchasedUpgradeCount;
         string statsStr = $"Days Passed: {State.CurrentDay}\n" +
                          $"Final Money: ${State.Money}\n" +
                          $"Total Revenue: ${State.TotalRevenue}\n" +
                          $"Customers Served: {State.TotalCustomersServed}\n" +
+                         $"Upgrades Purchased: {upgradeCount}\n" +
                          $"Events Experienced: {State.TriggeredEventCount}\n" +
                          $"Locations Visited: {State.VisitedLocationCount}";
 
@@ -812,13 +816,17 @@ public sealed class GameController : MonoBehaviour
 
         // Achievement summary
         int unlockedCount = 0;
+        int totalAch = 6;
         if (AchievementSystem.Instance != null)
+        {
             unlockedCount = AchievementSystem.Instance.GetUnlockedAchievementIds().Count;
+            totalAch = AchievementSystem.Instance.TotalAchievementCount;
+        }
         Text achText = MakeText("EndAch", root,
             new UIFactory.RectSpec(new Vector2(0.2f, 0.12f), new Vector2(0.8f, 0.20f),
                 new Vector2(0, 0), new Vector2(0, 0)),
             16, TextAnchor.MiddleCenter);
-        achText.text = $"Achievements Unlocked: {unlockedCount} / 6";
+        achText.text = $"Achievements Unlocked: {unlockedCount} / {totalAch}";
         achText.color = new Color32(236, 180, 87, 180);
 
         // "New Game" button

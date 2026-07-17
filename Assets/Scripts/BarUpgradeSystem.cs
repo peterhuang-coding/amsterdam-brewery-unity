@@ -124,6 +124,9 @@ public sealed class BarUpgradeSystem : MonoBehaviour
         return (upgrade != null && upgrade.purchased) ? 0.2f : 0.0f;
     }
 
+    /// <summary>Number of upgrades the player has purchased.</summary>
+    public int PurchasedUpgradeCount => _upgrades.Count(u => u.purchased);
+
     // ── Panel open/close ───────────────────────────────────
 
     public bool IsPanelOpen => _panelOpen;

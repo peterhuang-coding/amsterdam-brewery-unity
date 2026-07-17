@@ -30,9 +30,19 @@ public class SaveData
     public List<string> unlockedAchievements = new List<string>();
     // Bar upgrades
     public List<string> purchasedUpgrades = new List<string>();
-    // Items
+    // Items (id → count pairs)
+    public List<string> itemIds = new List<string>();
+    public List<int> itemCounts = new List<int>();
+    // Deprecated item fields (kept for backward compat with old saves)
     public List<string> itemNames = new List<string>();
     public List<string> itemDescriptions = new List<string>();
+    // Fragments (inspiration fragments from surfing)
+    public List<string> fragments = new List<string>();
+    // Lore (unlocked lore entries)
+    public List<string> loreIds = new List<string>();
+    public List<string> loreTexts = new List<string>();
+    // Academic progress
+    public int academicProgress = 0;
     // Shop owned items
     public List<string> ownedShopItems = new List<string>();
     // Visited locations (for end-screen stats + achievement tracking)
@@ -135,7 +145,7 @@ public class SaveSystem : MonoBehaviour
         // Affection (from InventorySystem)
         if (InventorySystem.Instance != null)
         {
-            string[] npcIds = { "pablo", "erik", "sofie", "chen", "ravi", "de_wit", "maaike" };
+            string[] npcIds = { "pablo", "erik", "sofie", "chen", "ravi", "de_wit", "maaike", "fatima" };
             data.affectionKeys.Clear();
             data.affectionValues.Clear();
             foreach (string npcId in npcIds)
@@ -186,9 +196,41 @@ public class SaveSystem : MonoBehaviour
             data.purchasedUpgrades = upgradeData;
         }
 
-        // Items
-        data.itemNames.Clear();
-        data.itemDescriptions.Clear();
+        // Items (id → count from InventorySystem)
+        data.itemIds.Clear();
+        data.itemCounts.Clear();
+        if (InventorySystem.Instance != null)
+        {
+            Dictionary<string, int> items = InventorySystem.Instance.GetItems();
+            foreach (var kvp in items)
+            {
+                data.itemIds.Add(kvp.Key);
+                data.itemCounts.Add(kvp.Value);
+            }
+        }
+
+        // Fragments (inspiration fragments from surfing)
+        data.fragments.Clear();
+        if (InventorySystem.Instance != null)
+        {
+            data.fragments.AddRange(InventorySystem.Instance.GetFragments());
+        }
+
+        // Lore (unlocked lore entries)
+        data.loreIds.Clear();
+        data.loreTexts.Clear();
+        if (InventorySystem.Instance != null)
+        {
+            Dictionary<string, string> lore = InventorySystem.Instance.GetLore();
+            foreach (var kvp in lore)
+            {
+                data.loreIds.Add(kvp.Key);
+                data.loreTexts.Add(kvp.Value);
+            }
+        }
+
+        // Academic progress
+        data.academicProgress = InventorySystem.Instance != null ? InventorySystem.Instance.AcademicProgress : 0;
 
         // [Gameplay] Save shop owned items
         data.ownedShopItems.Clear();
@@ -316,9 +358,36 @@ public class SaveSystem : MonoBehaviour
             }
         }
 
-        // Restore affection
+        // Restore inventory: reset first, then repopulate everything
         if (InventorySystem.Instance != null)
         {
+            InventorySystem.Instance.ResetInventory();
+
+            // Restore items
+            if (data.itemIds != null && data.itemCounts != null)
+            {
+                for (int i = 0; i < data.itemIds.Count && i < data.itemCounts.Count; i++)
+                {
+                    for (int c = 0; c < data.itemCounts[i]; c++)
+                        InventorySystem.Instance.AddItem(data.itemIds[i], data.itemIds[i]);
+                }
+            }
+            // Restore fragments
+            if (data.fragments != null)
+            {
+                foreach (string f in data.fragments)
+                    InventorySystem.Instance.AddFragment(f);
+            }
+            // Restore lore
+            if (data.loreIds != null && data.loreTexts != null)
+            {
+                for (int i = 0; i < data.loreIds.Count && i < data.loreTexts.Count; i++)
+                    InventorySystem.Instance.UnlockLore(data.loreIds[i], data.loreTexts[i]);
+            }
+            // Restore academic progress
+            InventorySystem.Instance.AddAcademicProgress(data.academicProgress);
+
+            // Restore affection (after ResetInventory clears it)
             for (int i = 0; i < data.affectionKeys.Count && i < data.affectionValues.Count; i++)
             {
                 InventorySystem.Instance.SetAffection(data.affectionKeys[i], data.affectionValues[i]);

@@ -68,7 +68,9 @@ public class WeatherSystem : MonoBehaviour
         _weatherCanvas = canvasGO.AddComponent<Canvas>();
         _weatherCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
         _weatherCanvas.sortingOrder = 50;
-        canvasGO.AddComponent<CanvasScaler>();
+        CanvasScaler scaler = canvasGO.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1280, 720);
         canvasGO.AddComponent<GraphicRaycaster>();
 
         GameObject overlayGO = new GameObject("WeatherOverlay", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));

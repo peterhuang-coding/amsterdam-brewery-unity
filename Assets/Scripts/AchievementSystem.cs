@@ -388,7 +388,7 @@ public class AchievementSystem : MonoBehaviour
     private void ShowNotification(string title)
     {
         if (_notificationGO == null) return;
-        _notificationText.text = string.Format("+50 Achievement\n{0}", title);
+        _notificationText.text = string.Format("★ Achievement Unlocked!\n{0}", title);
         StopAllCoroutines();
         StartCoroutine(NotificationAnimation());
     }

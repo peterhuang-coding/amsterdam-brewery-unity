@@ -275,6 +275,37 @@ public sealed class GameState
 
     public void AddTriggeredEvent(string id) => _triggeredDialogueIds.Add(id);
 
+    // ── Player tracking (for end screen stats) ─────────
+    private readonly HashSet<string> _visitedLocations = new HashSet<string>();
+    public int VisitedLocationCount => _visitedLocations.Count;
+
+    public void RegisterLocationVisited(string locationId)
+    {
+        _visitedLocations.Add(locationId);
+    }
+
+    // ── Reset (New Game) ─────────────────────────────────
+    public void ResetState()
+    {
+        CurrentDay = 1;
+        TimeIndex = 0;
+        _money = 250;
+        GameEnded = false;
+        GameWon = false;
+        _currentLocationId = "de_pijp";
+        CurrentLocationName = "De Pijp";
+        ClearBrewStock();
+        SetBrewStock(0, 5);
+        SetBrewStock(1, 3);
+        SetBrewStock(2, 2);
+        ActiveBrewIndex = -1;
+        ActiveBrewTurnsRemaining = 0;
+        TotalCustomersServed = 0;
+        TotalRevenue = 0;
+        ClearTriggeredEvents();
+        _visitedLocations.Clear();
+    }
+
     // ── Helpers ───────────────────────────────────────────
     public string CurrentTime() => TimesOfDay[TimeIndex];
 }

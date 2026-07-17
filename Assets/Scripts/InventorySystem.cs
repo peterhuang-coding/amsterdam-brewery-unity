@@ -162,6 +162,19 @@ public class InventorySystem : MonoBehaviour
     public List<string> GetFragments() => new List<string>(_fragments);
     public Dictionary<string, string> GetLore() => new Dictionary<string, string>(_lore);
 
+    /// <summary>
+    /// Reset all inventory state for a new game.
+    /// </summary>
+    public void ResetInventory()
+    {
+        _items.Clear();
+        _fragments.Clear();
+        _affection.Clear();
+        _lore.Clear();
+        _unlockedSystems.Clear();
+        _academicProgress = 0;
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.I))

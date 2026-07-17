@@ -168,6 +168,15 @@ public sealed class BarUpgradeSystem : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Reset all upgrades for a new game.
+    /// </summary>
+    public void ResetAllUpgrades()
+    {
+        foreach (BarUpgrade upgrade in _upgrades)
+            upgrade.purchased = false;
+    }
+
     // ── UI Panel ───────────────────────────────────────────
 
     private void BuildPanel()

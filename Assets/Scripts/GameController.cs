@@ -238,6 +238,12 @@ public sealed class GameController : MonoBehaviour
             if (SaveSystem.Instance != null) SaveSystem.Instance.QuickLoad();
             return;
         }
+        // [New Game] Only available after game ended
+        if (Input.GetKeyDown(KeyCode.N) && State.GameEnded)
+        {
+            StartNewGame();
+            return;
+        }
         // [BarUpgrade] Upgrade panel
         if (Input.GetKeyDown(KeyCode.U))
         {
@@ -419,6 +425,12 @@ public sealed class GameController : MonoBehaviour
         _moneyText = MakeText("Money Text", parent, Anchored(982, 10, 280, 28), 22, TextAnchor.MiddleLeft);
         _moneyText.text = "$250";
         _moneyText.color = new Color32(160, 220, 120, 255);
+
+        // F1: Daily goal texts (below money on the right)
+        _goalText1 = MakeText("Goal1", parent, Anchored(930, 42, 330, 16), 13, TextAnchor.MiddleLeft);
+        _goalText1.color = new Color32(236, 180, 87, 200);
+        _goalText2 = MakeText("Goal2", parent, Anchored(930, 54, 330, 16), 13, TextAnchor.MiddleLeft);
+        _goalText2.color = new Color32(236, 180, 87, 200);
     }
 
     private void BuildLocationArea(Transform parent)
@@ -559,6 +571,7 @@ public sealed class GameController : MonoBehaviour
         }
 
         State.CurrentLocationId = locationId;
+        State.RegisterLocationVisited(locationId);
         // F1: Mark goals for this location as completed
         MarkLocationGoalsCompleted(locationId);
         RenderLocation();
@@ -598,6 +611,61 @@ public sealed class GameController : MonoBehaviour
 
         // Build and show the end screen
         BuildEndGameScreen(won);
+    }
+
+    /// <summary>
+    /// Start a completely new game. Resets all state, destroys end screen,
+    /// rebuilds the HUD, and resets all subsystems.
+    /// </summary>
+    public void StartNewGame()
+    {
+        // Destroy end game canvas if present
+        DestroyEndGameCanvas();
+
+        // Reset core state
+        State.ResetState();
+
+        // Reset subsystems
+        if (AchievementSystem.Instance != null)
+            AchievementSystem.Instance.ResetAllAchievements();
+        if (BarUpgradeSystem.Instance != null)
+            BarUpgradeSystem.Instance.ResetAllUpgrades();
+        if (ShopSystem.Instance != null)
+            ShopSystem.Instance.ResetOwned();
+        if (InventorySystem.Instance != null)
+            InventorySystem.Instance.ResetInventory();
+        if (TutorialSystem.Instance != null)
+            TutorialSystem.Instance.ResetTutorial();
+        if (WeatherSystem.Instance != null)
+            WeatherSystem.Instance.NewDay(1);
+
+        // Close any open shift
+        if (BarMinigame.Instance != null && BarMinigame.Instance.IsShiftActive)
+            BarMinigame.Instance.EndShift();
+
+        // Rebuild the HUD and location
+        LoadData();
+        CleanupGeneratedView();
+        BuildInterface();
+        RenderLocation();
+        RefreshHud();
+
+        SetFeedback("New game started. Your story begins in De Pijp.");
+
+        // Auto-save the fresh state
+        if (SaveSystem.Instance != null)
+            SaveSystem.Instance.AutoSave();
+    }
+
+    /// <summary>
+    /// Destroy the end game canvas if it exists (for new game / load).
+    /// </summary>
+    public void DestroyEndGameCanvas()
+    {
+        if (_runtimeRoot == null) return;
+        Transform endCanvas = _runtimeRoot.transform.Find("EndGameCanvas");
+        if (endCanvas != null)
+            DestroyGeneratedObject(endCanvas.gameObject);
     }
 
     private void BuildEndGameScreen(bool won)
@@ -650,9 +718,10 @@ public sealed class GameController : MonoBehaviour
         // Stats block
         string statsStr = $"Days Passed: {State.CurrentDay}\n" +
                          $"Final Money: ${State.Money}\n" +
+                         $"Total Revenue: ${State.TotalRevenue}\n" +
                          $"Customers Served: {State.TotalCustomersServed}\n" +
                          $"Events Experienced: {State.TriggeredEventCount}\n" +
-                         $"Locations Visited: 4";
+                         $"Locations Visited: {State.VisitedLocationCount}";
 
         Text statsText = MakeText("EndStats", root,
             new UIFactory.RectSpec(new Vector2(0.2f, 0.22f), new Vector2(0.8f, 0.46f),
@@ -673,12 +742,32 @@ public sealed class GameController : MonoBehaviour
         achText.text = $"Achievements Unlocked: {unlockedCount} / 6";
         achText.color = new Color32(236, 180, 87, 180);
 
-        // "Thanks for playing" notice
+        // "New Game" button
+        GameObject newGameBtnGO = new GameObject("NewGameBtn", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        newGameBtnGO.transform.SetParent(root, false);
+        RectTransform btnRT = newGameBtnGO.GetComponent<RectTransform>();
+        btnRT.anchorMin = new Vector2(0.35f, 0.06f);
+        btnRT.anchorMax = new Vector2(0.65f, 0.14f);
+        btnRT.offsetMin = Vector2.zero;
+        btnRT.offsetMax = Vector2.zero;
+        Image btnImg = newGameBtnGO.GetComponent<Image>();
+        btnImg.color = new Color32(236, 180, 87, 255);
+        Button newGameBtn = newGameBtnGO.AddComponent<Button>();
+        newGameBtn.onClick.AddListener(StartNewGame);
+
+        Text btnText = MakeText("NewGameBtnText", newGameBtnGO.transform,
+            new UIFactory.RectSpec(Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero),
+            18, TextAnchor.MiddleCenter);
+        btnText.text = "🔄 New Game";
+        btnText.color = new Color32(20, 22, 26, 255);
+        btnText.fontStyle = FontStyle.Bold;
+
+        // Instructions
         Text thanksText = MakeText("EndThanks", root,
-            new UIFactory.RectSpec(new Vector2(0.2f, 0.04f), new Vector2(0.8f, 0.12f),
+            new UIFactory.RectSpec(new Vector2(0.2f, 0.005f), new Vector2(0.8f, 0.055f),
                 new Vector2(0, 0), new Vector2(0, 0)),
-            14, TextAnchor.MiddleCenter);
-        thanksText.text = "Thanks for playing! Press L to load a save and try again.";
+            13, TextAnchor.MiddleCenter);
+        thanksText.text = "Press N for new game  |  Press L to load a save";
         thanksText.color = new Color32(140, 135, 125, 200);
 
         // Play ending sound
@@ -1170,7 +1259,7 @@ public sealed class GameController : MonoBehaviour
 
     private void UpdateHintText()
     {
-        _hintText.text = "Space: advance / dialogue    1-4 locations    R brew    B shift    F end    I inventory    C character    P achievements    M shop    U upgrades    L save";
+        _hintText.text = "Space: advance / dialogue    1-4 locations    R brew    B shift    F end    I inventory    C character    P achievements    M shop    U upgrades    L save    O quickload";
     }
 
     // ── UI Factory Helpers ────────────────────────────────

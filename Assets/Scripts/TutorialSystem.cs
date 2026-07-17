@@ -221,6 +221,27 @@ public class TutorialSystem : MonoBehaviour
             CompleteStep(3);
     }
 
+    /// <summary>
+    /// Reset all tutorial progress for a new game.
+    /// </summary>
+    public void ResetTutorial()
+    {
+        _playerHasMoved = false;
+        _locationChanged = false;
+        _barOpened = false;
+        _barServed = false;
+        _timeAdvanced = false;
+        _currentStepIndex = -1;
+        if (_steps != null)
+        {
+            foreach (TutorialStep step in _steps)
+                step.completed = false;
+        }
+        // Reset welcome screen
+        _welcomeDismissed = false;
+        BuildWelcomeScreen();
+    }
+
     private void ShowStep(int index)
     {
         if (index < 0 || index >= _steps.Count) return;
@@ -295,6 +316,10 @@ public class TutorialSystem : MonoBehaviour
 
     private void BuildWelcomeScreen()
     {
+        // Clean up any existing welcome canvas (e.g. from a previous game)
+        if (_welcomeCanvas != null)
+            Destroy(_welcomeCanvas.gameObject);
+
         GameObject canvasGO = new GameObject("WelcomeCanvas");
         canvasGO.transform.SetParent(transform);
         _welcomeCanvas = canvasGO.AddComponent<Canvas>();

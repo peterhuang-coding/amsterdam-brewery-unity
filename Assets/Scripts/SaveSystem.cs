@@ -250,10 +250,16 @@ public class SaveSystem : MonoBehaviour
             return;
         }
 
-        // Restore core game state
+        // Destroy end game canvas before restoring (so it doesn't persist)
         GameController gc = GameController.Instance;
         if (gc != null)
+            gc.DestroyEndGameCanvas();
+
+        // Restore core game state
+        if (gc != null)
         {
+            gc.State.GameEnded = false;
+            gc.State.GameWon = false;
             gc.State.CurrentDay = data.day;
             gc.State.TimeIndex = data.timeIndex;
             gc.State.SetMoney(data.money);
@@ -307,6 +313,34 @@ public class SaveSystem : MonoBehaviour
         if (BarUpgradeSystem.Instance != null && data.purchasedUpgrades != null)
         {
             BarUpgradeSystem.Instance.LoadFromSave(data.purchasedUpgrades);
+        }
+
+        // Restore achievements from save data
+        if (AchievementSystem.Instance != null && data.unlockedAchievements != null)
+        {
+            AchievementSystem.Instance.ResetAllAchievements();
+            foreach (string achId in data.unlockedAchievements)
+            {
+                AchievementSystem.Instance.RestoreAchievement(achId);
+            }
+        }
+
+        // Restore visited locations
+        if (gc != null && data.triggeredEvents != null)
+        {
+            // Re-register visited locations from triggered events
+            foreach (string eventId in data.triggeredEvents)
+            {
+                // Map known events to their locations
+                if (eventId.Contains("pablo") || eventId.Contains("fatima") || eventId.Contains("ending"))
+                    gc.State.RegisterLocationVisited("de_pijp");
+                else if (eventId.Contains("chen") || eventId.Contains("ravi") || eventId.Contains("ravi_lab"))
+                    gc.State.RegisterLocationVisited("science_park");
+                else if (eventId.Contains("erik") || eventId.Contains("de_wit") || eventId.Contains("maaike"))
+                    gc.State.RegisterLocationVisited("tweede_kans");
+                else if (eventId.Contains("sofie") || eventId.Contains("flower"))
+                    gc.State.RegisterLocationVisited("bloemenmarkt");
+            }
         }
 
         // Refresh HUD

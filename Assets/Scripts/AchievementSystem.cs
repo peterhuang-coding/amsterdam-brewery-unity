@@ -294,6 +294,36 @@ public class AchievementSystem : MonoBehaviour
     }
 
     /// <summary>
+    /// Restore an achievement from save data (no popup, no sound).
+    /// Called by SaveSystem on load.
+    /// </summary>
+    public void RestoreAchievement(string achievementId)
+    {
+        foreach (Achievement a in _achievements)
+        {
+            if (a.id == achievementId && !a.unlocked)
+            {
+                a.unlocked = true;
+                Debug.Log(string.Format("[AchievementSystem] Restored: {0}", a.title));
+                return;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Reset all achievements and progress tracking for a new game.
+    /// </summary>
+    public void ResetAllAchievements()
+    {
+        foreach (Achievement a in _achievements)
+            a.unlocked = false;
+        _visitedLocations.Clear();
+        _drinksSold.Clear();
+        _totalCustomersServed = 0;
+        _maxDailyRevenue = 0;
+    }
+
+    /// <summary>
     /// Returns list of IDs for all unlocked achievements (used by SaveSystem).
     /// </summary>
     public List<string> GetUnlockedAchievementIds()

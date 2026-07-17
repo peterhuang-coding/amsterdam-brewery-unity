@@ -86,9 +86,6 @@ public sealed class GameController : MonoBehaviour
 
     private Font _font;
 
-    // ── Daily Goals (F1) ──────────────────────────────
-    private readonly List<DailyGoal> _dailyGoals = new List<DailyGoal>();
-
     // ── UI Animation (F3/F4/F6/T7) ────────────────────
     private CanvasGroup _flashOverlay;        // For time-advance flash
     private CanvasGroup _feedbackGroup;       // For feedback fade
@@ -176,7 +173,7 @@ public sealed class GameController : MonoBehaviour
         BuildInterface();
         RenderLocation();
         // F1: Generate initial daily goals
-        if (Application.isPlaying && _dailyGoals.Count == 0)
+        if (Application.isPlaying && State.DailyGoals.Count == 0)
         {
             GenerateDailyGoals();
         }
@@ -639,7 +636,7 @@ public sealed class GameController : MonoBehaviour
         State.ResetState();
 
         // Reset UI-only state (not in GameState)
-        _dailyGoals.Clear();
+        State.DailyGoals.Clear();
 
         // Reset subsystems
         if (AchievementSystem.Instance != null)
@@ -902,7 +899,7 @@ public sealed class GameController : MonoBehaviour
 
     private void GenerateDailyGoals()
     {
-        _dailyGoals.Clear();
+        State.DailyGoals.Clear();
         if (_eventDatabase == null || _eventDatabase.events == null) return;
 
         // Find events for current day
@@ -911,7 +908,7 @@ public sealed class GameController : MonoBehaviour
             if (ev.day != State.CurrentDay) continue;
             // Create a goal description from the event
             string desc = GenerateGoalDescription(ev);
-            _dailyGoals.Add(new DailyGoal
+            State.DailyGoals.Add(new DailyGoal
             {
                 eventId = ev.id,
                 description = desc,
@@ -922,9 +919,9 @@ public sealed class GameController : MonoBehaviour
         }
 
         // If no events today, add a default goal: visit a location
-        if (_dailyGoals.Count == 0)
+        if (State.DailyGoals.Count == 0)
         {
-            _dailyGoals.Add(new DailyGoal
+            State.DailyGoals.Add(new DailyGoal
             {
                 eventId = "default_explore",
                 description = "Explore Amsterdam",
@@ -960,7 +957,7 @@ public sealed class GameController : MonoBehaviour
     private void MarkLocationGoalsCompleted(string locationId)
     {
         bool allCompleted = true;
-        foreach (DailyGoal goal in _dailyGoals)
+        foreach (DailyGoal goal in State.DailyGoals)
         {
             if (goal.completed) continue;
             if (goal.location == locationId || string.IsNullOrEmpty(goal.location))
@@ -971,7 +968,7 @@ public sealed class GameController : MonoBehaviour
         }
 
         // F1: All goals completed notification
-        if (allCompleted && _dailyGoals.Count > 0)
+        if (allCompleted && State.DailyGoals.Count > 0)
         {
             ShowResultFeedback("All goals complete! Well done.");
         }
@@ -1259,14 +1256,14 @@ public sealed class GameController : MonoBehaviour
         if (_goalText1 == null || _goalText2 == null) return;
 
         // Regenerate goals if on a new day and none exist
-        if (_dailyGoals.Count == 0)
+        if (State.DailyGoals.Count == 0)
         {
             GenerateDailyGoals();
         }
 
-        if (_dailyGoals.Count >= 1)
+        if (State.DailyGoals.Count >= 1)
         {
-            DailyGoal g1 = _dailyGoals[0];
+            DailyGoal g1 = State.DailyGoals[0];
             string prefix1 = g1.completed ? "✓ " : "○ ";
             _goalText1.text = prefix1 + g1.description;
             _goalText1.color = g1.completed
@@ -1278,9 +1275,9 @@ public sealed class GameController : MonoBehaviour
             _goalText1.text = "";
         }
 
-        if (_dailyGoals.Count >= 2)
+        if (State.DailyGoals.Count >= 2)
         {
-            DailyGoal g2 = _dailyGoals[1];
+            DailyGoal g2 = State.DailyGoals[1];
             string prefix2 = g2.completed ? "✓ " : "○ ";
             _goalText2.text = prefix2 + g2.description;
             _goalText2.color = g2.completed

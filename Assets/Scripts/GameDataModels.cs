@@ -275,6 +275,9 @@ public sealed class GameState
 
     public void AddTriggeredEvent(string id) => _triggeredDialogueIds.Add(id);
 
+    // ── Daily Goals (moved from GameController for save persistence) ──
+    public List<DailyGoal> DailyGoals { get; set; } = new List<DailyGoal>();
+
     // ── Player tracking (for end screen stats) ─────────
     private readonly HashSet<string> _visitedLocations = new HashSet<string>();
     public int VisitedLocationCount => _visitedLocations.Count;
@@ -306,6 +309,7 @@ public sealed class GameState
         TotalRevenue = 0;
         ClearTriggeredEvents();
         _visitedLocations.Clear();
+        DailyGoals.Clear();
     }
 
     // ── Helpers ───────────────────────────────────────────

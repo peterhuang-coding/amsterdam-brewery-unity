@@ -47,6 +47,8 @@ public class SaveData
     public List<string> ownedShopItems = new List<string>();
     // Visited locations (for end-screen stats + achievement tracking)
     public List<string> visitedLocations = new List<string>();
+    // Daily goals (persist per-day goal completion state)
+    public List<DailyGoal> dailyGoals = new List<DailyGoal>();
 }
 
 public class SaveSystem : MonoBehaviour
@@ -251,6 +253,13 @@ public class SaveSystem : MonoBehaviour
             data.visitedLocations.AddRange(gc.State.GetVisitedLocations());
         }
 
+        // Save daily goals (per-day goal completion state)
+        data.dailyGoals.Clear();
+        if (gc != null && gc.State.DailyGoals != null)
+        {
+            data.dailyGoals.AddRange(gc.State.DailyGoals);
+        }
+
         // Serialize to JSON and write file
         string json = JsonUtility.ToJson(data, true);
         string path = Application.persistentDataPath + SavePrefix + slot + SaveExtension;
@@ -417,6 +426,13 @@ public class SaveSystem : MonoBehaviour
             {
                 gc.State.RegisterLocationVisited(locId);
             }
+        }
+
+        // Restore daily goals from save data
+        if (gc != null && data.dailyGoals != null && data.dailyGoals.Count > 0)
+        {
+            gc.State.DailyGoals.Clear();
+            gc.State.DailyGoals.AddRange(data.dailyGoals);
         }
 
         // Refresh HUD

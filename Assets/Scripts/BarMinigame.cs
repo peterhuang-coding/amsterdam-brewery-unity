@@ -513,6 +513,18 @@ public class BarMinigame : MonoBehaviour
             Destroy(_stockPanel);
             _stockPanel = null;
             _isStocking = false;
+
+            // If every drink is at 0, auto-end shift: a dead serve UI is confusing UX.
+            if (_stock[0] == 0 && _stock[1] == 0 && _stock[2] == 0)
+            {
+                _isActive = false;
+                var cb = _onComplete;
+                _onComplete = null;
+                if (_canvas != null) Destroy(_canvas.gameObject);
+                cb?.Invoke(0);
+                return;
+            }
+
             BuildServeUI();
             return;
         }

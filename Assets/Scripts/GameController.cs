@@ -540,6 +540,15 @@ public sealed class GameController : MonoBehaviour
             State.TimeIndex = 0;
             State.CurrentDay++;
 
+            // Check victory condition at dawn of each new day:
+            // player wins immediately if they've reached the money target,
+            // even if max days haven't elapsed yet.
+            if (State.Money >= GameState.VictoryMoneyTarget)
+            {
+                EndGame();
+                return;
+            }
+
             // Check game end conditions at dawn of each new day
             if (State.CurrentDay > GameState.MaxDays)
             {

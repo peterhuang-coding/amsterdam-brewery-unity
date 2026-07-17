@@ -38,6 +38,12 @@ public class TutorialSystem : MonoBehaviour
     public bool JustDismissedWelcomeThisFrame { get; set; }
 
     /// <summary>
+    /// Whether the welcome screen has been dismissed.
+    /// Used by SaveSystem to persist tutorial progress.
+    /// </summary>
+    public bool WelcomeDismissed => _welcomeDismissed;
+
+    /// <summary>
     /// True when the welcome screen canvas exists and is blocking game input.
     /// GameController.HandleInput checks this to skip gameplay keys.
     /// </summary>
@@ -119,7 +125,7 @@ public class TutorialSystem : MonoBehaviour
             new TutorialStep { id = "locations", message = "Press keys 1-4 to switch between locations.", inputKey = "1-4", completed = false },
             new TutorialStep { id = "brew", message = "Press R to brew beer. Brewed beer supplies your bar shifts.", inputKey = "R", completed = false },
             new TutorialStep { id = "open_bar", message = "Press B to open the bar at Tweede Kans.", inputKey = "B", completed = false },
-            new TutorialStep { id = "serve", message = "Press S to serve a customer at the bar.", inputKey = "S", completed = false },
+            new TutorialStep { id = "serve", message = "Click a drink button to serve customers their order.", inputKey = "S", completed = false },
             new TutorialStep { id = "advance_time", message = "Press Space to advance time and progress the story.", inputKey = "Space", completed = false },
             new TutorialStep { id = "shop", message = "Press M to open the shop. Buy ingredients, drinks, or gifts for NPCs.", inputKey = "M", completed = false },
             new TutorialStep { id = "upgrade", message = "Press U to upgrade your bar: faster service, better tips, and more.", inputKey = "U", completed = false },
@@ -178,14 +184,33 @@ public class TutorialSystem : MonoBehaviour
 
     /// <summary>
     /// Called externally to start or advance tutorial.
+    /// Skips previously completed steps when restoring from save.
     /// </summary>
     public void TryStartTutorial()
     {
         if (_initialized) return;
         _initialized = true;
 
-        // Show first step
-        ShowStep(0);
+        // Find first uncompleted step (for save restoration)
+        int startIndex = 0;
+        if (_steps != null)
+        {
+            for (int i = 0; i < _steps.Count; i++)
+            {
+                if (!_steps[i].completed)
+                {
+                    startIndex = i;
+                    break;
+                }
+                startIndex = i + 1; // All completed up to this point
+            }
+
+            // If all steps completed, don't show the tutorial overlay
+            if (startIndex >= _steps.Count)
+                return;
+        }
+
+        ShowStep(startIndex);
     }
 
     public void OnLocationChanged()
@@ -283,6 +308,62 @@ public class TutorialSystem : MonoBehaviour
         // Reset welcome screen
         _welcomeDismissed = false;
         BuildWelcomeScreen();
+    }
+
+    /// <summary>
+    /// Get completion state for each tutorial step (for save persistence).
+    /// </summary>
+    public List<bool> GetStepCompletionStates()
+    {
+        List<bool> states = new List<bool>();
+        if (_steps != null)
+        {
+            foreach (TutorialStep step in _steps)
+                states.Add(step.completed);
+        }
+        return states;
+    }
+
+    /// <summary>
+    /// Restore tutorial state from a saved game. If the welcome was already
+    /// dismissed, destroy it without re-triggering the step-by-step tutorial.
+    /// </summary>
+    public void RestoreStepStates(List<bool> stepStates, bool welcomeDismissed)
+    {
+        if (stepStates == null || stepStates.Count == 0) return;
+
+        // Restore step completion states
+        for (int i = 0; i < stepStates.Count && _steps != null && i < _steps.Count; i++)
+            _steps[i].completed = stepStates[i];
+
+        // If welcome was already dismissed, dismiss it now
+        if (welcomeDismissed && !_welcomeDismissed)
+        {
+            _welcomeDismissed = true;
+            if (_welcomeCanvas != null)
+            {
+                Destroy(_welcomeCanvas.gameObject);
+                _welcomeCanvas = null;
+            }
+
+            // Only resume tutorial if there are uncompleted steps
+            bool allDone = true;
+            if (_steps != null)
+            {
+                foreach (TutorialStep step in _steps)
+                    if (!step.completed) allDone = false;
+            }
+
+            if (allDone)
+            {
+                _initialized = true; // Tutorial fully complete, don't restart
+            }
+            else
+            {
+                // Resume from first uncompleted step
+                TryStartTutorial();
+            }
+        }
     }
 
     private void ShowStep(int index)

@@ -49,6 +49,9 @@ public class SaveData
     public List<string> visitedLocations = new List<string>();
     // Daily goals (persist per-day goal completion state)
     public List<DailyGoal> dailyGoals = new List<DailyGoal>();
+    // Tutorial progress
+    public bool tutorialWelcomeDismissed;
+    public List<bool> tutorialStepCompleted = new List<bool>();
 }
 
 public class SaveSystem : MonoBehaviour
@@ -169,8 +172,12 @@ public class SaveSystem : MonoBehaviour
             data.triggeredEvents.AddRange(gc.State.GetTriggeredEventIds());
         }
 
-        // Bar stock (defaults)
-        data.barStock = new int[] { 10, 5, 8 };
+        // Bar stock (mirrors brew stock from GameState for backward compat)
+        data.barStock = new int[] {
+            gc?.State.GetBrewStock(0) ?? 5,
+            gc?.State.GetBrewStock(1) ?? 3,
+            gc?.State.GetBrewStock(2) ?? 2
+        };
 
         // [Brewing] Save brew stock from GameState
         if (gc != null)
@@ -258,6 +265,13 @@ public class SaveSystem : MonoBehaviour
         if (gc != null && gc.State.DailyGoals != null)
         {
             data.dailyGoals.AddRange(gc.State.DailyGoals);
+        }
+
+        // Save tutorial progress
+        if (TutorialSystem.Instance != null)
+        {
+            data.tutorialWelcomeDismissed = TutorialSystem.Instance.WelcomeDismissed;
+            data.tutorialStepCompleted = TutorialSystem.Instance.GetStepCompletionStates();
         }
 
         // Serialize to JSON and write file
@@ -433,6 +447,14 @@ public class SaveSystem : MonoBehaviour
         {
             gc.State.DailyGoals.Clear();
             gc.State.DailyGoals.AddRange(data.dailyGoals);
+        }
+
+        // Restore tutorial progress from save data
+        if (TutorialSystem.Instance != null)
+        {
+            TutorialSystem.Instance.RestoreStepStates(
+                data.tutorialStepCompleted,
+                data.tutorialWelcomeDismissed);
         }
 
         // Refresh HUD

@@ -275,6 +275,9 @@ public sealed class GameController : MonoBehaviour
             return;
         }
 
+        // Block gameplay keys while end screen is visible
+        if (State.GameEnded) return;
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             AdvanceTime();

@@ -988,6 +988,7 @@ public class BarMinigame : MonoBehaviour
     private void EndShiftAndShowSettlement()
     {
         _isServing = false;
+        _isActive = false;  // Prevent EndShift() double-revenue via F key during settlement
         SetGameButtonsInteractable(false);
 
         int grossRevenue = _earnings + _tips;
@@ -1005,6 +1006,10 @@ public class BarMinigame : MonoBehaviour
         int stars = Mathf.Clamp(Mathf.RoundToInt(accuracy * 5f), 0, 5);
 
         GameController.Instance.State.AddMoney(grossRevenue);
+
+        // Daily revenue achievement check (mirrors EndShift's check)
+        if (Application.isPlaying && AchievementSystem.Instance != null)
+            AchievementSystem.Instance.RegisterDailyRevenue(grossRevenue);
 
         // Wait a beat, then build settlement
         StartCoroutine(ShowSettlementUI(netIncome, grossRevenue, stars, servedCustomers, totalCustomers, accuracy));

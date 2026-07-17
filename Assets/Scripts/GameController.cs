@@ -102,6 +102,7 @@ public sealed class GameController : MonoBehaviour
     private Text _feedbackText;
     private Text _hintText;
     private Text _weatherText;
+    private Text _goalTargetText;
     private Image _hintBackplate;
 
     // UI upgrade: HUD icon plate references for color transitions
@@ -429,8 +430,13 @@ public sealed class GameController : MonoBehaviour
         moneyIcon.color = new Color32(160, 220, 120, 255);
         moneyIcon.fontStyle = FontStyle.Bold;
         _moneyText = MakeText("Money Text", parent, Anchored(982, 10, 280, 28), 22, TextAnchor.MiddleLeft);
-        _moneyText.text = "$250";
+        _moneyText.text = "$250 / $300";
         _moneyText.color = new Color32(160, 220, 120, 255);
+
+        // Victory target indicator
+        _goalTargetText = MakeText("Goal Target", parent, Anchored(982, 32, 280, 16), 12, TextAnchor.MiddleLeft);
+        _goalTargetText.color = new Color32(160, 220, 120, 140);
+        _goalTargetText.text = $"Goal: ${GameState.VictoryMoneyTarget} to win";
 
         // F1: Daily goal texts (below money on the right)
         _goalText1 = MakeText("Goal1", parent, Anchored(930, 42, 330, 16), 13, TextAnchor.MiddleLeft);
@@ -823,27 +829,73 @@ public sealed class GameController : MonoBehaviour
             return;
         }
 
+        // Collect all matching events for current day/time/location
+        var matches = new System.Collections.Generic.List<StoryEvent>();
         foreach (StoryEvent storyEvent in _eventDatabase.events)
         {
-            if (storyEvent.day != State.CurrentDay)
-            {
-                continue;
-            }
-            if (storyEvent.time != CurrentTime() || storyEvent.location != State.CurrentLocationId)
-            {
-                continue;
-            }
-            if (string.IsNullOrEmpty(storyEvent.dialogue_id) || State.HasTriggeredDialogue(storyEvent.dialogue_id))
-            {
-                continue;
-            }
-            State.MarkDialogueTriggered(storyEvent.dialogue_id);
-            // F5: Story event trigger sound
-            SoundManager.Play(SoundManager.SoundType.EventTrigger);
-            // Delegate to DialogueManager
-            DialogueManager.Instance.ShowDialogueById(storyEvent.dialogue_id);
-            return;
+            if (storyEvent.day != State.CurrentDay) continue;
+            if (storyEvent.time != CurrentTime() || storyEvent.location != State.CurrentLocationId) continue;
+            if (string.IsNullOrEmpty(storyEvent.dialogue_id) || State.HasTriggeredDialogue(storyEvent.dialogue_id)) continue;
+            matches.Add(storyEvent);
         }
+
+        if (matches.Count == 0) return;
+
+        StoryEvent selected;
+
+        // If multiple endings match the same day/time/location, pick based on game state
+        if (matches.Count > 1 && matches[0].id.StartsWith("ending_"))
+        {
+            selected = PickEnding(matches);
+        }
+        else
+        {
+            selected = matches[0];
+        }
+
+        State.MarkDialogueTriggered(selected.dialogue_id);
+        // F5: Story event trigger sound
+        SoundManager.Play(SoundManager.SoundType.EventTrigger);
+        // Delegate to DialogueManager
+        DialogueManager.Instance.ShowDialogueById(selected.dialogue_id);
+    }
+
+    /// <summary>
+    /// Pick the appropriate ending event based on game state.
+    /// Good: money >= victory target AND average affection >= 60
+    /// Bad: money < $100 OR average affection < 20
+    /// Normal: everything else
+    /// </summary>
+    private StoryEvent PickEnding(System.Collections.Generic.List<StoryEvent> endings)
+    {
+        int money = State.Money;
+
+        // Calculate average NPC affection
+        float totalAffection = 0f;
+        int npcCount = 0;
+        string[] npcIds = { "erik", "sofie", "pablo", "chen", "ravi", "maaike", "de_wit" };
+        foreach (string id in npcIds)
+        {
+            if (InventorySystem.Instance != null)
+            {
+                totalAffection += InventorySystem.Instance.GetAffection(id);
+                npcCount++;
+            }
+        }
+        float avgAffection = npcCount > 0 ? totalAffection / npcCount : 0f;
+
+        // Good ending: both money and social success
+        if (money >= GameState.VictoryMoneyTarget && avgAffection >= 60f)
+        {
+            return endings.Find(e => e.id == "ending_good") ?? endings[0];
+        }
+        // Bad ending: broke or socially isolated
+        if (money < 100 || avgAffection < 20f)
+        {
+            return endings.Find(e => e.id == "ending_bad") ?? endings[0];
+        }
+        // Normal ending
+        return endings.Find(e => e.id == "ending_normal") ?? endings[0];
     }
 
     // ── F1: Daily Goals ──────────────────────────────────
@@ -1177,7 +1229,17 @@ public sealed class GameController : MonoBehaviour
             brewStatus = $"  |  ⏳ Brewing ({State.ActiveBrewTurnsRemaining}t)";
 
         _barStatusText.text = $"{(barActive ? "Open" : "Closed")}  |  Served {barServed}  |  Rev ${barEarnings}{brewStatus}";
-        _moneyText.text = $"${State.Money}";
+        _moneyText.text = $"${State.Money} / ${GameState.VictoryMoneyTarget}";
+
+        // Victory target hint — green and bold when achieved
+        if (_goalTargetText != null)
+        {
+            bool achieved = State.Money >= GameState.VictoryMoneyTarget;
+            _goalTargetText.text = achieved ? "✓ Goal reached!" : $"Goal: ${GameState.VictoryMoneyTarget} to win";
+            _goalTargetText.color = achieved
+                ? new Color32(160, 220, 120, 220)
+                : new Color32(160, 220, 120, 140);
+        }
 
         // Weather
         if (_weatherText != null)

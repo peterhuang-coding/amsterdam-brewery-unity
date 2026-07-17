@@ -643,6 +643,12 @@ public sealed class GameController : MonoBehaviour
         if (BarMinigame.Instance != null && BarMinigame.Instance.IsShiftActive)
             BarMinigame.Instance.EndShift();
 
+        // Close any open subsystem panels
+        if (BrewingSystem.Instance != null)
+            BrewingSystem.Instance.ClosePanel();
+        if (SaveSystem.Instance != null && SaveSystem.Instance.IsPanelOpen)
+            SaveSystem.Instance.ClosePanelPublic();
+
         // Rebuild the HUD and location
         LoadData();
         CleanupGeneratedView();
@@ -1011,6 +1017,7 @@ public sealed class GameController : MonoBehaviour
         _locationTitle.text = loc.title;
         _locationDesc.text = loc.subtitle;
         _feedbackText.text = "";
+        BuildPoiTags();
         UpdateHintText();
     }
 
@@ -1259,7 +1266,7 @@ public sealed class GameController : MonoBehaviour
 
     private void UpdateHintText()
     {
-        _hintText.text = "Space: advance / dialogue    1-4 locations    R brew    B shift    F end    I inventory    C character    P achievements    M shop    U upgrades    L save    O quickload";
+        _hintText.text = "Space: advance / dialogue    1-4 locations    R brew    B shift    F end    I inventory    C character    P achievements    M shop    U upgrades    H log    L save    O quickload";
     }
 
     // ── UI Factory Helpers ────────────────────────────────

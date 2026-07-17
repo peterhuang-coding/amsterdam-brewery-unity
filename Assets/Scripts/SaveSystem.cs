@@ -19,6 +19,7 @@ public class SaveData
     public List<string> triggeredEvents = new List<string>();
     public int[] barStock = new int[3];
     public int[] brewStock = new int[3]; // from BrewingSystem
+    public string currentLocationId = "de_pijp";
     public int activeBrewIndex = -1;
     public int activeBrewTurnsRemaining = 0;
     public int barServed;
@@ -34,6 +35,8 @@ public class SaveData
     public List<string> itemDescriptions = new List<string>();
     // Shop owned items
     public List<string> ownedShopItems = new List<string>();
+    // Visited locations (for end-screen stats + achievement tracking)
+    public List<string> visitedLocations = new List<string>();
 }
 
 public class SaveSystem : MonoBehaviour
@@ -124,6 +127,7 @@ public class SaveSystem : MonoBehaviour
             data.day = gc.State.CurrentDay;
             data.money = gc.State.Money;
             data.timeIndex = GetTimeIndexFromLabel(gc.State.CurrentTimeLabel);
+            data.currentLocationId = gc.State.CurrentLocationId;
             data.barServed = BarMinigame.Instance != null ? BarMinigame.Instance.CustomersServed : 0;
             data.barRevenue = BarMinigame.Instance != null ? BarMinigame.Instance.ShiftEarnings : 0;
         }
@@ -198,6 +202,13 @@ public class SaveSystem : MonoBehaviour
             }
         }
 
+        // Save visited locations (for end-screen stats)
+        data.visitedLocations.Clear();
+        if (gc != null)
+        {
+            data.visitedLocations.AddRange(gc.State.GetVisitedLocations());
+        }
+
         // Serialize to JSON and write file
         string json = JsonUtility.ToJson(data, true);
         string path = Application.persistentDataPath + SavePrefix + slot + SaveExtension;
@@ -255,6 +266,10 @@ public class SaveSystem : MonoBehaviour
         if (gc != null)
             gc.DestroyEndGameCanvas();
 
+        // Close subsystem panels so stale UIs don't persist after load
+        if (BrewingSystem.Instance != null)
+            BrewingSystem.Instance.ClosePanel();
+
         // Restore core game state
         if (gc != null)
         {
@@ -262,6 +277,7 @@ public class SaveSystem : MonoBehaviour
             gc.State.GameWon = false;
             gc.State.CurrentDay = data.day;
             gc.State.TimeIndex = data.timeIndex;
+            gc.State.CurrentLocationId = data.currentLocationId ?? "de_pijp";
             gc.State.SetMoney(data.money);
             // Bar stats are now managed by BarMinigame; reset on load
             if (BarMinigame.Instance != null)
@@ -325,21 +341,12 @@ public class SaveSystem : MonoBehaviour
             }
         }
 
-        // Restore visited locations
-        if (gc != null && data.triggeredEvents != null)
+        // Restore visited locations directly from save data
+        if (gc != null && data.visitedLocations != null)
         {
-            // Re-register visited locations from triggered events
-            foreach (string eventId in data.triggeredEvents)
+            foreach (string locId in data.visitedLocations)
             {
-                // Map known events to their locations
-                if (eventId.Contains("pablo") || eventId.Contains("fatima") || eventId.Contains("ending"))
-                    gc.State.RegisterLocationVisited("de_pijp");
-                else if (eventId.Contains("chen") || eventId.Contains("ravi") || eventId.Contains("ravi_lab"))
-                    gc.State.RegisterLocationVisited("science_park");
-                else if (eventId.Contains("erik") || eventId.Contains("de_wit") || eventId.Contains("maaike"))
-                    gc.State.RegisterLocationVisited("tweede_kans");
-                else if (eventId.Contains("sofie") || eventId.Contains("flower"))
-                    gc.State.RegisterLocationVisited("bloemenmarkt");
+                gc.State.RegisterLocationVisited(locId);
             }
         }
 
@@ -419,6 +426,20 @@ public class SaveSystem : MonoBehaviour
         {
             OpenPanel();
         }
+    }
+
+    /// <summary>
+    /// Whether the save panel is currently open.
+    /// </summary>
+    public bool IsPanelOpen => _isPanelOpen;
+
+    /// <summary>
+    /// Force-close the save panel (for New Game / Load use).
+    /// </summary>
+    public void ClosePanelPublic()
+    {
+        if (!_isPanelOpen) return;
+        ClosePanel();
     }
 
     private void OpenPanel()

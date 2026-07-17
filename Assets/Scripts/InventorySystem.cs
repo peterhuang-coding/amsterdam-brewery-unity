@@ -177,10 +177,8 @@ public class InventorySystem : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            ToggleInventory();
-        }
+        // I-key inventory toggle handled by GameController.HandleInput()
+        // (avoids double-toggle from two systems processing the same key)
     }
 
     private void ToggleInventory()

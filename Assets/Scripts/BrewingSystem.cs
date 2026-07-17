@@ -77,6 +77,16 @@ public class BrewingSystem : MonoBehaviour
     }
 
     /// <summary>
+    /// Force-close the brew panel (used on New Game / Load).
+    /// </summary>
+    public void ClosePanel()
+    {
+        _panelOpen = false;
+        if (_canvas != null)
+            _canvas.gameObject.SetActive(false);
+    }
+
+    /// <summary>
     /// Called by GameController on each time advance to tick brew progress.
     /// </summary>
     public void OnTimeAdvanced()

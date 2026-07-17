@@ -284,6 +284,8 @@ public sealed class GameState
         _visitedLocations.Add(locationId);
     }
 
+    public List<string> GetVisitedLocations() => new List<string>(_visitedLocations);
+
     // ── Reset (New Game) ─────────────────────────────────
     public void ResetState()
     {

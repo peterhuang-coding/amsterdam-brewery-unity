@@ -18,8 +18,13 @@ public class SaveData
     public List<int> affectionValues = new List<int>();
     public List<string> triggeredEvents = new List<string>();
     public int[] barStock = new int[3];
+    public int[] brewStock = new int[3]; // from BrewingSystem
+    public int activeBrewIndex = -1;
+    public int activeBrewTurnsRemaining = 0;
     public int barServed;
     public int barRevenue;
+    public int totalCustomersServed;
+    public int totalRevenue;
     // Achievements
     public List<string> unlockedAchievements = new List<string>();
     // Bar upgrades
@@ -151,6 +156,18 @@ public class SaveSystem : MonoBehaviour
         // Bar stock (defaults)
         data.barStock = new int[] { 10, 5, 8 };
 
+        // [Brewing] Save brew stock from GameState
+        if (gc != null)
+        {
+            data.brewStock[0] = gc.State.GetBrewStock(0);
+            data.brewStock[1] = gc.State.GetBrewStock(1);
+            data.brewStock[2] = gc.State.GetBrewStock(2);
+            data.activeBrewIndex = gc.State.ActiveBrewIndex;
+            data.activeBrewTurnsRemaining = gc.State.ActiveBrewTurnsRemaining;
+            data.totalCustomersServed = gc.State.TotalCustomersServed;
+            data.totalRevenue = gc.State.TotalRevenue;
+        }
+
         // Achievements
         data.unlockedAchievements.Clear();
         if (AchievementSystem.Instance != null)
@@ -248,6 +265,18 @@ public class SaveSystem : MonoBehaviour
             {
                 gc.State.AddTriggeredEvent(eventId);
             }
+
+            // [Brewing] Restore brew stock
+            gc.State.ClearBrewStock();
+            if (data.brewStock != null)
+            {
+                for (int i = 0; i < 3 && i < data.brewStock.Length; i++)
+                    gc.State.SetBrewStock(i, data.brewStock[i]);
+            }
+            gc.State.ActiveBrewIndex = data.activeBrewIndex;
+            gc.State.ActiveBrewTurnsRemaining = data.activeBrewTurnsRemaining;
+            gc.State.TotalCustomersServed = data.totalCustomersServed;
+            gc.State.TotalRevenue = data.totalRevenue;
         }
 
         // Reset ShopSystem owned states before applying save data

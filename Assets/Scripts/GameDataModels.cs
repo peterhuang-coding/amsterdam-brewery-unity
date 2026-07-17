@@ -210,6 +210,10 @@ public sealed class GameState
     public int CurrentDay { get; set; } = 1;
     public int TimeIndex { get; set; } = 0;
     public string CurrentTimeLabel => CurrentTime().Replace("_", " ");
+    public const int MaxDays = 7;
+    public const int VictoryMoneyTarget = 300;
+    public bool GameEnded { get; set; } = false;
+    public bool GameWon { get; set; } = false;
 
     // ── Location ──────────────────────────────────────────
     private string _currentLocationId = "de_pijp";
@@ -236,6 +240,24 @@ public sealed class GameState
     {
         _money = value;
     }
+
+    // ── Brewing ────────────────────────────────────────────
+    // Brew stock shared between BrewingSystem and BarMinigame
+    private readonly int[] _brewStock = new int[] { 5, 3, 2 }; // starting stock
+    public int ActiveBrewIndex { get; set; } = -1; // -1 = not brewing
+    public int ActiveBrewTurnsRemaining { get; set; } = 0;
+    public bool IsBrewing => ActiveBrewIndex >= 0 && ActiveBrewTurnsRemaining > 0;
+
+    public int GetBrewStock(int index) => (index >= 0 && index < 3) ? _brewStock[index] : 0;
+    public void AddBrewStock(int index, int amount) { if (index >= 0 && index < 3) _brewStock[index] += amount; }
+    public void ConsumeBrewStock(int index) { if (index >= 0 && index < 3 && _brewStock[index] > 0) _brewStock[index]--; }
+    public int[] GetAllBrewStock() => new int[] { _brewStock[0], _brewStock[1], _brewStock[2] };
+    public void SetBrewStock(int index, int value) { if (index >= 0 && index < 3) _brewStock[index] = value; }
+    public void ClearBrewStock() { for (int i = 0; i < 3; i++) _brewStock[i] = 0; }
+
+    // Total customers served (tracked across shifts)
+    public int TotalCustomersServed { get; set; } = 0;
+    public int TotalRevenue { get; set; } = 0;
 
     // ── Dialogue Tracking ─────────────────────────────────
     private readonly HashSet<string> _triggeredDialogueIds = new HashSet<string>();
@@ -275,4 +297,18 @@ public sealed class TutorialStep
     public string message;
     public string inputKey;
     public bool completed;
+}
+
+// ── Brewing recipe model ──────────────────────────────
+
+[Serializable]
+public sealed class BrewRecipe
+{
+    public string id;          // "lager", "pilsner", etc.
+    public string name;        // "🍺 Lager"
+    public string emoji;       // "🍺"
+    public int ingredientCost; // cost to start brewing
+    public int brewTurns;      // number of time advances needed
+    public int yieldCount;     // how many units produced
+    public int stockIndex;     // which drink index (0=Beer, 1=Whiskey, 2=Wine)
 }

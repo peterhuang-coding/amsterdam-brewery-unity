@@ -340,6 +340,7 @@ public class TutorialSystem : MonoBehaviour
             "━━━ Controls ━━━\n\n" +
             "  WASD / Arrows    Move around the city\n" +
             "  1 - 4                Switch locations\n" +
+            "  R                        Brew beer\n" +
             "  B / S / F         Open bar / Serve / Close\n" +
             "  Space                Advance time\n" +
             "  I / C / P           Inventory / Character / Achievements\n" +

@@ -186,6 +186,8 @@ public class BarMinigame : MonoBehaviour
                 if (_drinkBtnComponents[i] != null)
                 {
                     bool hasStock = _stock[i] > 0;
+                    if (GameController.Instance != null)
+                        hasStock = GameController.Instance.State.GetBrewStock(i) > 0 || _stock[i] > 0;
                     _drinkBtnComponents[i].interactable = hasStock;
                     Image img = _drinkBtns[i].GetComponent<Image>();
                     if (img != null) img.color = hasStock ? _drinkColors[i] : GreyColor;
@@ -206,7 +208,11 @@ public class BarMinigame : MonoBehaviour
         _onComplete = onComplete;
         InitShiftState();
 
-        for (int i = 0; i < 3; i++) _stock[i] = 0;
+        // Stock is now managed by GameState (from BrewingSystem)
+        // Keep local copy for shift tracking
+        _stock[0] = GameController.Instance.State.GetBrewStock(0);
+        _stock[1] = GameController.Instance.State.GetBrewStock(1);
+        _stock[2] = GameController.Instance.State.GetBrewStock(2);
         _stockingCost = 0;
 
         BuildCanvas();
@@ -492,6 +498,14 @@ public class BarMinigame : MonoBehaviour
 
     private void ConfirmStocking()
     {
+        // Sync local stock back to GameState
+        if (GameController.Instance != null)
+        {
+            GameController.Instance.State.SetBrewStock(0, _stock[0]);
+            GameController.Instance.State.SetBrewStock(1, _stock[1]);
+            GameController.Instance.State.SetBrewStock(2, _stock[2]);
+        }
+
         if (_stockingCost <= 0)
         {
             return;
@@ -757,6 +771,7 @@ public class BarMinigame : MonoBehaviour
         }
 
         _stock[drinkIndex]--;
+        GameController.Instance.State.ConsumeBrewStock(drinkIndex);
         UpdateInventoryDisplay();
 
         int revenue = 0;
@@ -962,6 +977,13 @@ public class BarMinigame : MonoBehaviour
         int totalCustomers = _totalCustomers;
         int servedCustomers = _correctCount;
         float accuracy = totalCustomers > 0 ? (float)servedCustomers / totalCustomers : 0f;
+
+        // Track totals in GameState for end-game stats
+        if (GameController.Instance != null)
+        {
+            GameController.Instance.State.TotalCustomersServed += servedCustomers;
+            GameController.Instance.State.TotalRevenue += grossRevenue;
+        }
         int stars = Mathf.Clamp(Mathf.RoundToInt(accuracy * 5f), 0, 5);
 
         GameController.Instance.State.AddMoney(grossRevenue);
@@ -1091,9 +1113,12 @@ public class BarMinigame : MonoBehaviour
 
     private void UpdateInventoryDisplay()
     {
-        if (_inventoryBeer != null) _inventoryBeer.text = $"{_stock[0]}";
-        if (_inventoryWhiskey != null) _inventoryWhiskey.text = $"{_stock[1]}";
-        if (_inventoryWine != null) _inventoryWine.text = $"{_stock[2]}";
+        int beer = GameController.Instance != null ? GameController.Instance.State.GetBrewStock(0) : _stock[0];
+        int whiskey = GameController.Instance != null ? GameController.Instance.State.GetBrewStock(1) : _stock[1];
+        int wine = GameController.Instance != null ? GameController.Instance.State.GetBrewStock(2) : _stock[2];
+        if (_inventoryBeer != null) _inventoryBeer.text = $"{beer}";
+        if (_inventoryWhiskey != null) _inventoryWhiskey.text = $"{whiskey}";
+        if (_inventoryWine != null) _inventoryWine.text = $"{wine}";
     }
 
     private void SetGameButtonsInteractable(bool interactable)

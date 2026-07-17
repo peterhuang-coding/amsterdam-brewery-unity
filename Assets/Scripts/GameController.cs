@@ -147,6 +147,7 @@ public sealed class GameController : MonoBehaviour
             var _s = ShopSystem.Instance;
             var _d = DialogueLog.Instance;
             var _save = SaveSystem.Instance;
+            var _brew = BrewingSystem.Instance;
         }
     }
 
@@ -241,6 +242,12 @@ public sealed class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.U))
         {
             if (BarUpgradeSystem.Instance != null) BarUpgradeSystem.Instance.TogglePanel();
+            return;
+        }
+        // [BrewingSystem] Brew panel
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            if (BrewingSystem.Instance != null) BrewingSystem.Instance.TogglePanel();
             return;
         }
         // [ShopSystem] Shop panel
@@ -491,16 +498,30 @@ public sealed class GameController : MonoBehaviour
 
     private void AdvanceTime()
     {
+        if (State.GameEnded) return;
+
         State.TimeIndex++;
         if (State.TimeIndex >= _timesOfDay.Length)
         {
             State.TimeIndex = 0;
             State.CurrentDay++;
+
+            // Check game end conditions at dawn of each new day
+            if (State.CurrentDay > GameState.MaxDays)
+            {
+                EndGame();
+                return;
+            }
+
             // F1: Regenerate daily goals at dawn
             GenerateDailyGoals();
             // F8: Update weather for new day
             WeatherSystem.Instance.NewDay(State.CurrentDay);
         }
+
+        // [Brewing] Tick brew progress
+        if (BrewingSystem.Instance != null)
+            BrewingSystem.Instance.OnTimeAdvanced();
 
         // F5: Time advance sound
         SoundManager.Play(SoundManager.SoundType.TimeAdvance);
@@ -559,6 +580,109 @@ public sealed class GameController : MonoBehaviour
         }
         // Screen shake for location switch
         StartCoroutine(GameJuice.ScreenShake(0.3f, 0.1f));
+    }
+
+    /// <summary>
+    /// End the game and show the final settlement screen.
+    /// Victory if money >= target; otherwise a valiant effort message.
+    /// </summary>
+    private void EndGame()
+    {
+        State.GameEnded = true;
+        bool won = State.Money >= GameState.VictoryMoneyTarget;
+        State.GameWon = won;
+
+        // Auto-save on game end
+        if (SaveSystem.Instance != null)
+            SaveSystem.Instance.AutoSave();
+
+        // Build and show the end screen
+        BuildEndGameScreen(won);
+    }
+
+    private void BuildEndGameScreen(bool won)
+    {
+        // Create a top-level canvas for the end screen
+        GameObject endCanvasGO = new GameObject("EndGameCanvas");
+        endCanvasGO.transform.SetParent(_runtimeRoot.transform, false);
+        Canvas endCanvas = endCanvasGO.AddComponent<Canvas>();
+        endCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        endCanvas.sortingOrder = 500;
+        CanvasScaler scaler = endCanvasGO.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1280, 720);
+        endCanvasGO.AddComponent<GraphicRaycaster>();
+
+        Transform root = endCanvas.transform;
+
+        // Full overlay
+        Image overlay = MakeImage("EndOverlay", root,
+            StretchFull(), new Color32(8, 10, 14, 235));
+
+        // Title
+        Text titleText = MakeText("EndTitle", root,
+            new UIFactory.RectSpec(new Vector2(0.1f, 0.6f), new Vector2(0.9f, 0.9f),
+                new Vector2(0, 0), new Vector2(0, 0)),
+            48, TextAnchor.MiddleCenter);
+        titleText.text = won ? "🍺 Brewery Established!" : "📋 Time's Up!";
+        titleText.color = won ? new Color32(236, 180, 87, 255) : new Color32(200, 180, 160, 255);
+        titleText.fontStyle = FontStyle.Bold;
+
+        // Subtitle
+        Text subText = MakeText("EndSub", root,
+            new UIFactory.RectSpec(new Vector2(0.1f, 0.48f), new Vector2(0.9f, 0.60f),
+                new Vector2(0, 0), new Vector2(0, 0)),
+            22, TextAnchor.MiddleCenter);
+        if (won)
+        {
+            subText.text = $"You saved ${State.Money} in {State.CurrentDay} days —\n" +
+                          "enough to keep the brewery alive and thriving.\n" +
+                          "The doors of Tweede Kans stay open. For now.";
+        }
+        else
+        {
+            subText.text = $"${State.Money} saved after {State.CurrentDay} days.\n" +
+                          $"The rent comes due and the brewery closes its doors.\n" +
+                          "But every brewer has to start somewhere.";
+        }
+        subText.color = new Color32(200, 196, 186, 255);
+
+        // Stats block
+        string statsStr = $"Days Passed: {State.CurrentDay}\n" +
+                         $"Final Money: ${State.Money}\n" +
+                         $"Customers Served: {State.TotalCustomersServed}\n" +
+                         $"Events Experienced: {State.TriggeredEventCount}\n" +
+                         $"Locations Visited: 4";
+
+        Text statsText = MakeText("EndStats", root,
+            new UIFactory.RectSpec(new Vector2(0.2f, 0.22f), new Vector2(0.8f, 0.46f),
+                new Vector2(0, 0), new Vector2(0, 0)),
+            18, TextAnchor.MiddleCenter);
+        statsText.text = statsStr;
+        statsText.color = new Color32(180, 175, 165, 255);
+        statsText.lineSpacing = 1.5f;
+
+        // Achievement summary
+        int unlockedCount = 0;
+        if (AchievementSystem.Instance != null)
+            unlockedCount = AchievementSystem.Instance.GetUnlockedAchievementIds().Count;
+        Text achText = MakeText("EndAch", root,
+            new UIFactory.RectSpec(new Vector2(0.2f, 0.12f), new Vector2(0.8f, 0.20f),
+                new Vector2(0, 0), new Vector2(0, 0)),
+            16, TextAnchor.MiddleCenter);
+        achText.text = $"Achievements Unlocked: {unlockedCount} / 6";
+        achText.color = new Color32(236, 180, 87, 180);
+
+        // "Thanks for playing" notice
+        Text thanksText = MakeText("EndThanks", root,
+            new UIFactory.RectSpec(new Vector2(0.2f, 0.04f), new Vector2(0.8f, 0.12f),
+                new Vector2(0, 0), new Vector2(0, 0)),
+            14, TextAnchor.MiddleCenter);
+        thanksText.text = "Thanks for playing! Press L to load a save and try again.";
+        thanksText.color = new Color32(140, 135, 125, 200);
+
+        // Play ending sound
+        SoundManager.Play(won ? SoundManager.SoundType.Success : SoundManager.SoundType.Error);
     }
 
     /// <summary>
@@ -938,7 +1062,13 @@ public sealed class GameController : MonoBehaviour
         bool barActive = BarMinigame.Instance != null && BarMinigame.Instance.IsShiftActive;
         int barServed = barActive ? BarMinigame.Instance.CustomersServed : 0;
         int barEarnings = barActive ? BarMinigame.Instance.ShiftEarnings : 0;
-        _barStatusText.text = $"{(barActive ? "Open" : "Closed")}  |  Served {barServed}  |  Rev ${barEarnings}";
+
+        // Brew status
+        string brewStatus = "";
+        if (State.IsBrewing)
+            brewStatus = $"  |  ⏳ Brewing ({State.ActiveBrewTurnsRemaining}t)";
+
+        _barStatusText.text = $"{(barActive ? "Open" : "Closed")}  |  Served {barServed}  |  Rev ${barEarnings}{brewStatus}";
         _moneyText.text = $"${State.Money}";
 
         // Weather
@@ -1040,7 +1170,7 @@ public sealed class GameController : MonoBehaviour
 
     private void UpdateHintText()
     {
-        _hintText.text = "Space: advance time / dialogue next    1 De Pijp    2 Science Park    3 Tweede Kans    4 Bloemenmarkt    B start shift    F end shift    I inventory    C character    P achievements";
+        _hintText.text = "Space: advance / dialogue    1-4 locations    R brew    B shift    F end    I inventory    C character    P achievements    M shop    U upgrades    L save";
     }
 
     // ── UI Factory Helpers ────────────────────────────────

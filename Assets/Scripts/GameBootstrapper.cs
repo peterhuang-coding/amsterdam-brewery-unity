@@ -78,8 +78,14 @@ public class GameBootstrapper : MonoBehaviour
             gc.OnSceneChanged("de_pijp");
         }
 
+        // Initialize BrewingSystem (persistent singleton)
+        if (BrewingSystem.Instance == null)
+        {
+            var brew = BrewingSystem.Instance;
+        }
+
         Debug.Log("Amsterdam Brewery 2.5D bootstrapped successfully!");
-        Debug.Log("Controls: WASD=Move  Shift=Run  E=Interact  F=Surf  I=Inventory  Space=AdvanceTime");
+        Debug.Log("Controls: WASD=Move  Shift=Run  E=Interact  F=Surf  I=Inventory  R=Brew  Space=AdvanceTime");
     }
 
     private void SetupCamera(Transform target)

@@ -682,9 +682,9 @@ public sealed class GameController : MonoBehaviour
         if (WeatherSystem.Instance != null)
             WeatherSystem.Instance.NewDay(1);
 
-        // Close any open shift
+        // Close any open shift (silent — no settlement screen on new game)
         if (BarMinigame.Instance != null && BarMinigame.Instance.IsShiftActive)
-            BarMinigame.Instance.EndShift();
+            BarMinigame.Instance.EndShift(showSettlement: false);
 
         // Close any open subsystem panels
         if (BrewingSystem.Instance != null)

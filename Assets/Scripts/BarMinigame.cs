@@ -262,8 +262,10 @@ public class BarMinigame : MonoBehaviour
 
     /// <summary>
     /// End the current shift early (public, called by key input).
+    /// When showSettlement is true (default), displays the shift settlement summary
+    /// with star rating and stats. Pass false for silent cleanup (e.g. StartNewGame).
     /// </summary>
-    public void EndShift()
+    public void EndShift(bool showSettlement = true)
     {
         if (!_isActive) return;
 
@@ -274,18 +276,49 @@ public class BarMinigame : MonoBehaviour
             return;
         }
 
-        // Force-end the shift
-        _isServing = false;
+        // During serving: either show settlement or clean up silently
+        if (_isServing)
+        {
+            if (showSettlement)
+            {
+                EndShiftAndShowSettlement();
+            }
+            else
+            {
+                // Silent cleanup: track stats but skip settlement UI
+                _isServing = false;
+                _isActive = false;
+
+                int grossRevenue = _earnings + _tips;
+
+                // Track totals in GameState for end-game stats (mirrors EndShiftAndShowSettlement)
+                if (GameController.Instance != null)
+                {
+                    GameController.Instance.State.TotalCustomersServed += _correctCount;
+                    GameController.Instance.State.TotalRevenue += grossRevenue;
+                }
+
+                GameController.Instance.State.AddMoney(grossRevenue);
+
+                // [Gameplay] Daily revenue achievement check
+                if (Application.isPlaying && AchievementSystem.Instance != null)
+                    AchievementSystem.Instance.RegisterDailyRevenue(grossRevenue);
+
+                _onComplete?.Invoke(grossRevenue);
+                _onComplete = null;
+
+                if (_canvas != null)
+                {
+                    Destroy(_canvas.gameObject);
+                }
+            }
+            return;
+        }
+
+        // Non-serving active state: just clean up
         _isActive = false;
 
-        int grossRevenue = _earnings + _tips;
-        GameController.Instance.State.AddMoney(grossRevenue);
-
-        // [Gameplay] Daily revenue achievement check
-        if (Application.isPlaying && AchievementSystem.Instance != null)
-            AchievementSystem.Instance.RegisterDailyRevenue(grossRevenue);
-
-        _onComplete?.Invoke(grossRevenue);
+        _onComplete?.Invoke(0);
         _onComplete = null;
 
         if (_canvas != null)

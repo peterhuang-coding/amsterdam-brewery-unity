@@ -52,6 +52,8 @@ public class SaveData
     // Tutorial progress
     public bool tutorialWelcomeDismissed;
     public List<bool> tutorialStepCompleted = new List<bool>();
+    // Bankruptcy flag (for accurate end-state restoration)
+    public bool gameWentBankrupt;
     // Mid-shift save support: bar shift transient state
     public bool barShiftActive;
     public int barShiftEarnings;
@@ -86,6 +88,7 @@ public class SaveSystem : MonoBehaviour
     private const string SaveExtension = ".json";
     private const int SlotCount = 3;
     private const int SavePanelSortOrder = 300;
+    private const int CurrentSaveVersion = 2;
 
     private bool _isPanelOpen;
     private Canvas _saveCanvas;
@@ -142,6 +145,7 @@ public class SaveSystem : MonoBehaviour
         }
 
         SaveData data = new SaveData();
+        data.saveVersion = CurrentSaveVersion;
         data.slot = slot;
         data.timestamp = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
@@ -210,6 +214,7 @@ public class SaveSystem : MonoBehaviour
             data.activeBrewTurnsRemaining = gc.State.ActiveBrewTurnsRemaining;
             data.totalCustomersServed = gc.State.TotalCustomersServed;
             data.totalRevenue = gc.State.TotalRevenue;
+            data.gameWentBankrupt = gc.State.GameWentBankrupt;
         }
 
         // Achievements
@@ -352,6 +357,9 @@ public class SaveSystem : MonoBehaviour
             return false;
         }
 
+        // Save version migration: ensure newly-added fields have sensible defaults
+        MigrateSaveData(data);
+
         // Destroy end game canvas before restoring (so it doesn't persist)
         GameController gc = GameController.Instance;
         if (gc != null)
@@ -400,6 +408,7 @@ public class SaveSystem : MonoBehaviour
                 for (int i = 0; i < 3 && i < data.brewStock.Length; i++)
                     gc.State.SetBrewStock(i, data.brewStock[i]);
             }
+            gc.State.GameWentBankrupt = data.gameWentBankrupt;
             gc.State.ActiveBrewIndex = data.activeBrewIndex;
             gc.State.ActiveBrewTurnsRemaining = data.activeBrewTurnsRemaining;
             gc.State.TotalCustomersServed = data.totalCustomersServed;
@@ -531,6 +540,54 @@ public class SaveSystem : MonoBehaviour
         {
             ToggleSavePanel();
         }
+    }
+
+    /// <summary>
+    /// Migrate save data from older versions to the current format.
+    /// Ensures fields added after v1 have sensible defaults when loading old saves.
+    /// </summary>
+    private void MigrateSaveData(SaveData data)
+    {
+        int loadedVersion = data.saveVersion;
+        if (loadedVersion >= CurrentSaveVersion) return;
+
+        Debug.Log($"[SaveSystem] Migrating save from v{loadedVersion} to v{CurrentSaveVersion}");
+
+        // v1 → v2: ensure fields added after initial save format have defaults
+        if (loadedVersion < 2)
+        {
+            if (data.brewStock == null || data.brewStock.Length < 3)
+                data.brewStock = new int[] { 0, 0, 0 };
+            if (data.visitedLocations == null)
+                data.visitedLocations = new List<string>();
+            if (data.dailyGoals == null)
+                data.dailyGoals = new List<DailyGoal>();
+            if (data.tutorialStepCompleted == null)
+                data.tutorialStepCompleted = new List<bool>();
+            if (data.ownedShopItems == null)
+                data.ownedShopItems = new List<string>();
+            if (data.itemIds == null)
+                data.itemIds = new List<string>();
+            if (data.itemCounts == null)
+                data.itemCounts = new List<int>();
+            if (data.fragments == null)
+                data.fragments = new List<string>();
+            if (data.loreIds == null)
+                data.loreIds = new List<string>();
+            if (data.loreTexts == null)
+                data.loreTexts = new List<string>();
+            if (data.purchasedUpgrades == null)
+                data.purchasedUpgrades = new List<string>();
+            if (data.unlockedAchievements == null)
+                data.unlockedAchievements = new List<string>();
+            if (data.affectionKeys == null)
+                data.affectionKeys = new List<string>();
+            if (data.affectionValues == null)
+                data.affectionValues = new List<int>();
+        }
+
+        // Bump the in-memory version so downstream code sees current version
+        data.saveVersion = CurrentSaveVersion;
     }
 
     /// <summary>

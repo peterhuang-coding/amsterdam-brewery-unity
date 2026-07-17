@@ -1154,7 +1154,12 @@ public sealed class GameController : MonoBehaviour
         // Add SceneAnimator for animated scene elements
         SceneAnimator existingAnim = _locationScene.GetComponent<SceneAnimator>();
         if (existingAnim != null)
-            DestroyImmediate(existingAnim);
+        {
+            if (Application.isPlaying)
+                Destroy(existingAnim);
+            else
+                DestroyImmediate(existingAnim);
+        }
         SceneAnimator anim = _locationScene.AddComponent<SceneAnimator>();
         anim.FindElements(_locationScene.transform);
 
@@ -1296,8 +1301,10 @@ public sealed class GameController : MonoBehaviour
 
     private void RefreshHud()
     {
-        _timeText.text = $"Day {State.CurrentDay} / {CurrentTimeLabel}";
-        _locationText.text = _locations.TryGetValue(State.CurrentLocationId, out LocationView loc) ? loc.title : State.CurrentLocationId;
+        if (_timeText != null)
+            _timeText.text = $"Day {State.CurrentDay} / {CurrentTimeLabel}";
+        if (_locationText != null)
+            _locationText.text = _locations.TryGetValue(State.CurrentLocationId, out LocationView loc) ? loc.title : State.CurrentLocationId;
         // Bar status: read from BarMinigame if available
         bool barActive = BarMinigame.Instance != null && BarMinigame.Instance.IsShiftActive;
         int barServed = barActive ? BarMinigame.Instance.CustomersServed : 0;
@@ -1308,8 +1315,10 @@ public sealed class GameController : MonoBehaviour
         if (State.IsBrewing)
             brewStatus = $"  |  ⏳ Brewing ({State.ActiveBrewTurnsRemaining}t)";
 
-        _barStatusText.text = $"{(barActive ? "Open" : "Closed")}  |  Served {barServed}  |  Rev ${barEarnings}{brewStatus}";
-        _moneyText.text = $"${State.Money} / ${GameState.VictoryMoneyTarget}";
+        if (_barStatusText != null)
+            _barStatusText.text = $"{(barActive ? "Open" : "Closed")}  |  Served {barServed}  |  Rev ${barEarnings}{brewStatus}";
+        if (_moneyText != null)
+            _moneyText.text = $"${State.Money} / ${GameState.VictoryMoneyTarget}";
 
         // Low-money warning: change money color when funds are critically low
         const int LOW_MONEY_CRITICAL = 20;

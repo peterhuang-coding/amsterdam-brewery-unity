@@ -14,7 +14,7 @@ public static class GameJuice
     
     private static void EnsureCanvas()
     {
-        if (_canvas == null)
+        if (_canvas == null && GameController.Instance != null)
         {
             GameObject go = new GameObject("JuiceCanvas");
             go.transform.SetParent(GameController.Instance.transform);
@@ -49,6 +49,7 @@ public static class GameJuice
     public static void SpawnFloatingText(string text, Vector2 startPos, Color32 color)
     {
         EnsureCanvas();
+        if (_canvas == null || GameController.Instance == null) return;
         
         GameObject textGO = new GameObject("FloatingText", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
         textGO.transform.SetParent(_canvas.transform, false);
@@ -116,6 +117,7 @@ public static class GameJuice
     public static void SpawnParticles(Vector2 origin, Color32 color, int count = 8)
     {
         EnsureCanvas();
+        if (_canvas == null || GameController.Instance == null) return;
         
         for (int i = 0; i < count; i++)
         {

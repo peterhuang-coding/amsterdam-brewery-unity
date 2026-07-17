@@ -581,24 +581,6 @@ public class TutorialSystem : MonoBehaviour
         TryStartTutorial();
     }
 
-    // Unused fade coroutine kept for reference (not called):
-    // private IEnumerator WelcomeFadeOut() ...
-
-    private IEnumerator WelcomeFadeOut()
-    {
-        for (float t = 0; t < 0.3f; t += Time.deltaTime)
-        {
-            float p = Mathf.Min(t / 0.3f, 1f);
-            _welcomeGroup.alpha = 1f - p;
-            yield return null;
-        }
-        _welcomeGroup.alpha = 0f;
-        Destroy(_welcomeCanvas.gameObject);
-        _welcomeCanvas = null;
-
-        // No tutorial steps - the bottom hint bar shows all controls permanently
-    }
-
     private IEnumerator AnimateIn()
     {
         _canvasGroup.alpha = 0f;

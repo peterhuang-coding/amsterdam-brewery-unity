@@ -334,6 +334,7 @@ public class BarMinigame : MonoBehaviour
                 }
 
                 GameController.Instance.State.AddMoney(grossRevenue);
+                GameController.Instance.RefreshHudPublic();
 
                 // [Gameplay] Daily revenue achievement check
                 if (Application.isPlaying && AchievementSystem.Instance != null)
@@ -1377,13 +1378,6 @@ public class BarMinigame : MonoBehaviour
         }
         cg.alpha = toAlpha;
         if (toAlpha <= 0f) panel.SetActive(false);
-    }
-
-    private IEnumerator FadeAndDestroyPanel(GameObject panel, float duration)
-    {
-        if (panel == null) yield break;
-        yield return FadePanel(panel, 1f, 0f, duration);
-        Destroy(panel);
     }
 
     private IEnumerator FadeThenServe(GameObject panel)

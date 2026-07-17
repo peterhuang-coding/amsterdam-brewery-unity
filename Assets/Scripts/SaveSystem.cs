@@ -297,12 +297,15 @@ public class SaveSystem : MonoBehaviour
             data.tutorialStepCompleted = TutorialSystem.Instance.GetStepCompletionStates();
         }
 
-        // Serialize to JSON and write file
+        // Serialize to JSON and write file atomically (temp file + rename)
         string json = JsonUtility.ToJson(data, true);
         string path = Application.persistentDataPath + SavePrefix + slot + SaveExtension;
+        string tmpPath = path + ".tmp";
         try
         {
-            File.WriteAllText(path, json);
+            File.WriteAllText(tmpPath, json);
+            File.Delete(path);  // File.Move throws if target exists on some platforms
+            File.Move(tmpPath, path);
             Debug.Log($"[SaveSystem] Saved to slot {slot}: {path}");
         }
         catch (System.Exception ex)

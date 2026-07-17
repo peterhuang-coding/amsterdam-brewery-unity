@@ -213,6 +213,13 @@ public class TutorialSystem : MonoBehaviour
         ShowStep(startIndex);
     }
 
+    public void OnPlayerMoved()
+    {
+        if (_playerHasMoved) return;
+        _playerHasMoved = true;
+        // Reserved for future tutorial step
+    }
+
     public void OnLocationChanged()
     {
         if (_locationChanged) return;

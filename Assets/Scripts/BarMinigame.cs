@@ -210,9 +210,12 @@ public class BarMinigame : MonoBehaviour
 
         // Stock is now managed by GameState (from BrewingSystem)
         // Keep local copy for shift tracking
-        _stock[0] = GameController.Instance.State.GetBrewStock(0);
-        _stock[1] = GameController.Instance.State.GetBrewStock(1);
-        _stock[2] = GameController.Instance.State.GetBrewStock(2);
+        if (GameController.Instance != null)
+        {
+            _stock[0] = GameController.Instance.State.GetBrewStock(0);
+            _stock[1] = GameController.Instance.State.GetBrewStock(1);
+            _stock[2] = GameController.Instance.State.GetBrewStock(2);
+        }
         _stockingCost = 0;
 
         BuildCanvas();
@@ -838,7 +841,8 @@ public class BarMinigame : MonoBehaviour
     {
         if (!_isServing || _currentDrink < 0 || _isStocking) return;
 
-        if (_stock[drinkIndex] <= 0 && GameController.Instance.State.GetBrewStock(drinkIndex) <= 0)
+        bool brewStockDepleted = GameController.Instance != null && GameController.Instance.State.GetBrewStock(drinkIndex) <= 0;
+        if (_stock[drinkIndex] <= 0 && brewStockDepleted)
         {
             _orderText.text = $"😅 Sorry, we're out of {_drinkNames[drinkIndex]}!";
             _orderText.color = new Color32(255, 180, 60, 255);
@@ -852,7 +856,8 @@ public class BarMinigame : MonoBehaviour
         }
 
         _stock[drinkIndex]--;
-        GameController.Instance.State.ConsumeBrewStock(drinkIndex);
+        if (GameController.Instance != null)
+            GameController.Instance.State.ConsumeBrewStock(drinkIndex);
         UpdateInventoryDisplay();
 
         int revenue = 0;

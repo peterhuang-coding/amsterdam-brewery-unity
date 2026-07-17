@@ -906,10 +906,14 @@ public sealed class GameController : MonoBehaviour
 
         StoryEvent selected;
 
-        // If multiple endings match the same day/time/location, pick based on game state
-        if (matches.Count > 1 && matches[0].id.StartsWith("ending_"))
+        // If any matches are endings, filter to only endings and pick based on game state
+        if (matches.Count > 1 && matches.Exists(e => e.id.StartsWith("ending_")))
         {
-            selected = PickEnding(matches);
+            var endings = matches.FindAll(e => e.id.StartsWith("ending_"));
+            if (endings.Count > 0)
+                selected = PickEnding(endings);
+            else
+                selected = matches[0];
         }
         else
         {
@@ -950,15 +954,23 @@ public sealed class GameController : MonoBehaviour
         // Good ending: both money and social success
         if (money >= GameState.VictoryMoneyTarget && avgAffection >= 60f)
         {
-            return endings.Find(e => e.id == "ending_good") ?? endings[0];
+            var good = endings.Find(e => e.id == "ending_good");
+            if (good == null) Debug.LogWarning("[PickEnding] ending_good not found, falling back to endings[0]");
+            return good ?? endings[0];
         }
         // Bad ending: broke or socially isolated
         if (money < 100 || avgAffection < 20f)
         {
-            return endings.Find(e => e.id == "ending_bad") ?? endings[0];
+            var bad = endings.Find(e => e.id == "ending_bad");
+            if (bad == null) Debug.LogWarning("[PickEnding] ending_bad not found, falling back to endings[0]");
+            return bad ?? endings[0];
         }
         // Normal ending
-        return endings.Find(e => e.id == "ending_normal") ?? endings[0];
+        {
+            var normal = endings.Find(e => e.id == "ending_normal");
+            if (normal == null) Debug.LogWarning("[PickEnding] ending_normal not found, falling back to endings[0]");
+            return normal ?? endings[0];
+        }
     }
 
     // ── F1: Daily Goals ──────────────────────────────────
@@ -1280,7 +1292,7 @@ public sealed class GameController : MonoBehaviour
     private void RefreshHud()
     {
         _timeText.text = $"Day {State.CurrentDay} / {CurrentTimeLabel}";
-        _locationText.text = _locations[State.CurrentLocationId].title;
+        _locationText.text = _locations.TryGetValue(State.CurrentLocationId, out LocationView loc) ? loc.title : State.CurrentLocationId;
         // Bar status: read from BarMinigame if available
         bool barActive = BarMinigame.Instance != null && BarMinigame.Instance.IsShiftActive;
         int barServed = barActive ? BarMinigame.Instance.CustomersServed : 0;

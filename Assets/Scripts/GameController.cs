@@ -238,11 +238,13 @@ public sealed class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.L))
         {
             if (SaveSystem.Instance != null) SaveSystem.Instance.ToggleSavePanel();
+            TutorialSystem.Instance?.OnSaveOrLoadUsed();
             return;
         }
         if (Input.GetKeyDown(KeyCode.O))
         {
             if (SaveSystem.Instance != null) SaveSystem.Instance.QuickLoad();
+            TutorialSystem.Instance?.OnSaveOrLoadUsed();
             return;
         }
         // [New Game] Only available after game ended
@@ -255,6 +257,7 @@ public sealed class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.U))
         {
             if (BarUpgradeSystem.Instance != null) BarUpgradeSystem.Instance.TogglePanel();
+            TutorialSystem.Instance?.OnUpgradeOpened();
             return;
         }
         // [BrewingSystem] Brew panel
@@ -267,6 +270,7 @@ public sealed class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.M))
         {
             if (ShopSystem.Instance != null) ShopSystem.Instance.TogglePanel();
+            TutorialSystem.Instance?.OnShopOpened();
             return;
         }
         // [DialogueLog] Dialogue history

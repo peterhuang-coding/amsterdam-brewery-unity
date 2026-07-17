@@ -32,6 +32,9 @@ public class TutorialSystem : MonoBehaviour
     private bool _barOpened;
     private bool _barServed;
     private bool _timeAdvanced;
+    private bool _shopOpened;
+    private bool _upgradeOpened;
+    private bool _saveOrLoadUsed;
     public bool JustDismissedWelcomeThisFrame { get; set; }
 
     /// <summary>
@@ -68,6 +71,9 @@ public class TutorialSystem : MonoBehaviour
         { "B", new Vector2(150, -100) },    // bottom center-right
         { "S", new Vector2(200, -100) },    // bottom right
         { "Space", new Vector2(0, -120) },  // bottom center
+        { "M", new Vector2(-80, -100) },   // bottom center-left
+        { "U", new Vector2(80, -100) },    // bottom center-right
+        { "L/O", new Vector2(0, -120) },   // bottom center
     };
 
     private Font _font;
@@ -115,6 +121,9 @@ public class TutorialSystem : MonoBehaviour
             new TutorialStep { id = "open_bar", message = "Press B to open the bar at Tweede Kans.", inputKey = "B", completed = false },
             new TutorialStep { id = "serve", message = "Press S to serve a customer at the bar.", inputKey = "S", completed = false },
             new TutorialStep { id = "advance_time", message = "Press Space to advance time and progress the story.", inputKey = "Space", completed = false },
+            new TutorialStep { id = "shop", message = "Press M to open the shop. Buy ingredients, drinks, or gifts for NPCs.", inputKey = "M", completed = false },
+            new TutorialStep { id = "upgrade", message = "Press U to upgrade your bar: faster service, better tips, and more.", inputKey = "U", completed = false },
+            new TutorialStep { id = "save_load", message = "Press L to save your game, or O to quick load.", inputKey = "L/O", completed = false },
         };
     }
 
@@ -224,6 +233,33 @@ public class TutorialSystem : MonoBehaviour
             CompleteStep(4);
     }
 
+    public void OnShopOpened()
+    {
+        if (_shopOpened) return;
+        _shopOpened = true;
+
+        if (_currentStepIndex == 5)
+            CompleteStep(5);
+    }
+
+    public void OnUpgradeOpened()
+    {
+        if (_upgradeOpened) return;
+        _upgradeOpened = true;
+
+        if (_currentStepIndex == 6)
+            CompleteStep(6);
+    }
+
+    public void OnSaveOrLoadUsed()
+    {
+        if (_saveOrLoadUsed) return;
+        _saveOrLoadUsed = true;
+
+        if (_currentStepIndex == 7)
+            CompleteStep(7);
+    }
+
     /// <summary>
     /// Reset all tutorial progress for a new game.
     /// </summary>
@@ -235,6 +271,9 @@ public class TutorialSystem : MonoBehaviour
         _barOpened = false;
         _barServed = false;
         _timeAdvanced = false;
+        _shopOpened = false;
+        _upgradeOpened = false;
+        _saveOrLoadUsed = false;
         _currentStepIndex = -1;
         if (_steps != null)
         {

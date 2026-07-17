@@ -100,6 +100,7 @@ public sealed class GameController : MonoBehaviour
     private Text _hintText;
     private Text _weatherText;
     private Text _goalTargetText;
+    private Text _lowMoneyWarning;
     private Image _hintBackplate;
 
     // UI upgrade: HUD icon plate references for color transitions
@@ -453,6 +454,11 @@ public sealed class GameController : MonoBehaviour
         _goalText1.color = new Color32(236, 180, 87, 200);
         _goalText2 = MakeText("Goal2", parent, Anchored(930, 54, 330, 16), 13, TextAnchor.MiddleLeft);
         _goalText2.color = new Color32(236, 180, 87, 200);
+
+        // Low-money warning (hidden by default, shown when funds are critically low)
+        _lowMoneyWarning = MakeText("Low Money Warning", parent, Anchored(982, 70, 280, 14), 11, TextAnchor.MiddleLeft);
+        _lowMoneyWarning.text = "";
+        _lowMoneyWarning.color = new Color32(255, 100, 80, 0);
     }
 
     private void BuildLocationArea(Transform parent)
@@ -1280,6 +1286,43 @@ public sealed class GameController : MonoBehaviour
         _barStatusText.text = $"{(barActive ? "Open" : "Closed")}  |  Served {barServed}  |  Rev ${barEarnings}{brewStatus}";
         _moneyText.text = $"${State.Money} / ${GameState.VictoryMoneyTarget}";
 
+        // Low-money warning: change money color when funds are critically low
+        const int LOW_MONEY_CRITICAL = 20;
+        const int LOW_MONEY_WARNING = 50;
+        if (State.Money < LOW_MONEY_CRITICAL)
+        {
+            _moneyText.color = new Color32(255, 100, 80, 255);
+            if (_moneyIconPlate != null)
+                _moneyIconPlate.color = new Color32(180, 60, 40, 200);
+            if (_lowMoneyWarning != null)
+            {
+                _lowMoneyWarning.text = "⚠ Low Funds! Brew more to stay afloat.";
+                _lowMoneyWarning.color = new Color32(255, 100, 80, 200);
+            }
+        }
+        else if (State.Money < LOW_MONEY_WARNING)
+        {
+            _moneyText.color = new Color32(255, 200, 80, 255);
+            if (_moneyIconPlate != null)
+                _moneyIconPlate.color = new Color32(180, 140, 40, 180);
+            if (_lowMoneyWarning != null)
+            {
+                _lowMoneyWarning.text = "⚠ Watch your spending.";
+                _lowMoneyWarning.color = new Color32(255, 200, 80, 200);
+            }
+        }
+        else
+        {
+            _moneyText.color = new Color32(160, 220, 120, 255);
+            if (_moneyIconPlate != null)
+                _moneyIconPlate.color = new Color32(86, 125, 56, 160);
+            if (_lowMoneyWarning != null)
+            {
+                _lowMoneyWarning.text = "";
+                _lowMoneyWarning.color = new Color32(255, 100, 80, 0);
+            }
+        }
+
         // Victory target hint — green and bold when achieved
         if (_goalTargetText != null)
         {
@@ -1441,6 +1484,7 @@ public sealed class GameController : MonoBehaviour
         _goalText1 = null;
         _goalText2 = null;
         _affectionBarText = null;
+        _lowMoneyWarning = null;
         _flashOverlay = null;
         _feedbackGroup = null;
         _hudBgImage = null;

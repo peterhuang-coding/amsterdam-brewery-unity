@@ -32,8 +32,8 @@ public class BrewingSystem : MonoBehaviour
         new BrewRecipe { id = "lager", name = "🍺 Lager", emoji = "🍺", ingredientCost = 10, brewTurns = 3, yieldCount = 5, stockIndex = 0 },
         new BrewRecipe { id = "pilsner", name = "🍻 Pilsner", emoji = "🍻", ingredientCost = 12, brewTurns = 4, yieldCount = 6, stockIndex = 0 },
         new BrewRecipe { id = "wheat", name = "🌾 Wheat Beer", emoji = "🌾", ingredientCost = 15, brewTurns = 5, yieldCount = 7, stockIndex = 0 },
-        new BrewRecipe { id = "ipa", name = "🌿 IPA", emoji = "🌿", ingredientCost = 18, brewTurns = 6, yieldCount = 5, stockIndex = 1 },
-        new BrewRecipe { id = "stout", name = "🖤 Stout", emoji = "🖤", ingredientCost = 20, brewTurns = 7, yieldCount = 6, stockIndex = 2 },
+        new BrewRecipe { id = "ipa", name = "🌿 IPA", emoji = "🌿", ingredientCost = 18, brewTurns = 6, yieldCount = 5, stockIndex = 0 },
+        new BrewRecipe { id = "stout", name = "🖤 Stout", emoji = "🖤", ingredientCost = 20, brewTurns = 7, yieldCount = 6, stockIndex = 0 },
     };
 
     // ── UI ───────────────────────────────────────────────

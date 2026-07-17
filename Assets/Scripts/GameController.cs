@@ -1318,42 +1318,44 @@ public sealed class GameController : MonoBehaviour
         if (_barStatusText != null)
             _barStatusText.text = $"{(barActive ? "Open" : "Closed")}  |  Served {barServed}  |  Rev ${barEarnings}{brewStatus}";
         if (_moneyText != null)
+        {
             _moneyText.text = $"${State.Money} / ${GameState.VictoryMoneyTarget}";
 
-        // Low-money warning: change money color when funds are critically low
-        const int LOW_MONEY_CRITICAL = 20;
-        const int LOW_MONEY_WARNING = 50;
-        if (State.Money < LOW_MONEY_CRITICAL)
-        {
-            _moneyText.color = new Color32(255, 100, 80, 255);
-            if (_moneyIconPlate != null)
-                _moneyIconPlate.color = new Color32(180, 60, 40, 200);
-            if (_lowMoneyWarning != null)
+            // Low-money warning: change money color when funds are critically low
+            const int LOW_MONEY_CRITICAL = 20;
+            const int LOW_MONEY_WARNING = 50;
+            if (State.Money < LOW_MONEY_CRITICAL)
             {
-                _lowMoneyWarning.text = "⚠ Low Funds! Brew more to stay afloat.";
-                _lowMoneyWarning.color = new Color32(255, 100, 80, 200);
+                _moneyText.color = new Color32(255, 100, 80, 255);
+                if (_moneyIconPlate != null)
+                    _moneyIconPlate.color = new Color32(180, 60, 40, 200);
+                if (_lowMoneyWarning != null)
+                {
+                    _lowMoneyWarning.text = "⚠ Low Funds! Brew more to stay afloat.";
+                    _lowMoneyWarning.color = new Color32(255, 100, 80, 200);
+                }
             }
-        }
-        else if (State.Money < LOW_MONEY_WARNING)
-        {
-            _moneyText.color = new Color32(255, 200, 80, 255);
-            if (_moneyIconPlate != null)
-                _moneyIconPlate.color = new Color32(180, 140, 40, 180);
-            if (_lowMoneyWarning != null)
+            else if (State.Money < LOW_MONEY_WARNING)
             {
-                _lowMoneyWarning.text = "⚠ Watch your spending.";
-                _lowMoneyWarning.color = new Color32(255, 200, 80, 200);
+                _moneyText.color = new Color32(255, 200, 80, 255);
+                if (_moneyIconPlate != null)
+                    _moneyIconPlate.color = new Color32(180, 140, 40, 180);
+                if (_lowMoneyWarning != null)
+                {
+                    _lowMoneyWarning.text = "⚠ Watch your spending.";
+                    _lowMoneyWarning.color = new Color32(255, 200, 80, 200);
+                }
             }
-        }
-        else
-        {
-            _moneyText.color = new Color32(160, 220, 120, 255);
-            if (_moneyIconPlate != null)
-                _moneyIconPlate.color = new Color32(86, 125, 56, 160);
-            if (_lowMoneyWarning != null)
+            else
             {
-                _lowMoneyWarning.text = "";
-                _lowMoneyWarning.color = new Color32(255, 100, 80, 0);
+                _moneyText.color = new Color32(160, 220, 120, 255);
+                if (_moneyIconPlate != null)
+                    _moneyIconPlate.color = new Color32(86, 125, 56, 160);
+                if (_lowMoneyWarning != null)
+                {
+                    _lowMoneyWarning.text = "";
+                    _lowMoneyWarning.color = new Color32(255, 100, 80, 0);
+                }
             }
         }
 

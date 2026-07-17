@@ -246,7 +246,7 @@ public class BarMinigame : MonoBehaviour
     }
 
     /// <summary>
-    /// Reset shift statistics (used by SaveSystem on load).
+    /// Reset shift statistics (used by SaveSystem on load for saves without active shift).
     /// </summary>
     public void ResetShiftStats()
     {
@@ -258,6 +258,38 @@ public class BarMinigame : MonoBehaviour
         _comboCount = 0;
         _apologyTipMultiplier = 1.0f;
         _apologyMode = false;
+    }
+
+    // ── Shift state accessors for save/load ────────────────
+
+    public int ShiftEarningsRaw => _earnings;
+    public int ShiftTips => _tips;
+    public int ShiftComboCount => _comboCount;
+    public int ShiftCorrectCount => _correctCount;
+    public float ShiftApologyTipMultiplier => _apologyTipMultiplier;
+    public bool ShiftApologyMode => _apologyMode;
+
+    /// <summary>
+    /// Restore shift state from a mid-shift save and complete the shift silently,
+    /// recording earnings and customers-served into GameState totals.
+    /// Called by SaveSystem.LoadFromSlot when the save was made during an active shift.
+    /// </summary>
+    public void RestoreAndCompleteShift(int served, int earnings, int tips, int correctCount,
+        int comboCount, float apologyTipMultiplier, bool apologyMode)
+    {
+        if (served <= 0) return;
+
+        // Temporarily restore the shift state so EndShift(false) can record the progress
+        _isActive = true;
+        _isServing = true;
+        _customersServed = served;
+        _earnings = earnings;
+        _tips = tips;
+        _correctCount = correctCount;
+        _comboCount = comboCount;
+        _apologyTipMultiplier = apologyTipMultiplier;
+        _apologyMode = apologyMode;
+        EndShift(showSettlement: false);
     }
 
     /// <summary>

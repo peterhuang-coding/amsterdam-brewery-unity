@@ -52,6 +52,14 @@ public class SaveData
     // Tutorial progress
     public bool tutorialWelcomeDismissed;
     public List<bool> tutorialStepCompleted = new List<bool>();
+    // Mid-shift save support: bar shift transient state
+    public bool barShiftActive;
+    public int barShiftEarnings;
+    public int barShiftTips;
+    public int barShiftComboCount;
+    public int barShiftCorrectCount;
+    public float barShiftApologyTipMultiplier = 1.0f;
+    public bool barShiftApologyMode;
 }
 
 public class SaveSystem : MonoBehaviour
@@ -145,6 +153,17 @@ public class SaveSystem : MonoBehaviour
             data.currentLocationId = gc.State.CurrentLocationId;
             data.barServed = BarMinigame.Instance != null ? BarMinigame.Instance.CustomersServed : 0;
             data.barRevenue = BarMinigame.Instance != null ? BarMinigame.Instance.ShiftEarnings : 0;
+            // Mid-shift save support: capture transient shift state
+            if (BarMinigame.Instance != null)
+            {
+                data.barShiftActive = BarMinigame.Instance.IsShiftActive;
+                data.barShiftEarnings = BarMinigame.Instance.ShiftEarningsRaw;
+                data.barShiftTips = BarMinigame.Instance.ShiftTips;
+                data.barShiftComboCount = BarMinigame.Instance.ShiftComboCount;
+                data.barShiftCorrectCount = BarMinigame.Instance.ShiftCorrectCount;
+                data.barShiftApologyTipMultiplier = BarMinigame.Instance.ShiftApologyTipMultiplier;
+                data.barShiftApologyMode = BarMinigame.Instance.ShiftApologyMode;
+            }
         }
 
         // Affection (from InventorySystem)
@@ -344,9 +363,23 @@ public class SaveSystem : MonoBehaviour
             gc.State.TimeIndex = data.timeIndex;
             gc.State.CurrentLocationId = data.currentLocationId ?? "de_pijp";
             gc.State.SetMoney(data.money);
-            // Bar stats are now managed by BarMinigame; reset on load
-            if (BarMinigame.Instance != null)
+            // Restore bar shift state from mid-shift saves; otherwise clean reset
+            if (data.barShiftActive && data.barServed > 0 && BarMinigame.Instance != null)
+            {
+                BarMinigame.Instance.RestoreAndCompleteShift(
+                    data.barServed,
+                    data.barShiftEarnings,
+                    data.barShiftTips,
+                    data.barShiftCorrectCount,
+                    data.barShiftComboCount,
+                    data.barShiftApologyTipMultiplier,
+                    data.barShiftApologyMode
+                );
+            }
+            else if (BarMinigame.Instance != null)
+            {
                 BarMinigame.Instance.ResetShiftStats();
+            }
             gc.State.ClearTriggeredEvents();
             foreach (string eventId in data.triggeredEvents)
             {

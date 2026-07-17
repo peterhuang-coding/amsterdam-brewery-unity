@@ -449,6 +449,8 @@ public class DialogueManager : MonoBehaviour
             InventorySystem.Instance.AddAffection("maaike", outcome.maaike_affection);
         if (outcome.chen_affection != 0)
             InventorySystem.Instance.AddAffection("chen", outcome.chen_affection);
+        if (outcome.fatima_affection != 0)
+            InventorySystem.Instance.AddAffection("fatima", outcome.fatima_affection);
 
         // Update money
         if (outcome.money != 0)
@@ -491,6 +493,7 @@ public class DialogueManager : MonoBehaviour
         if (outcome.de_wit_affection > 0) feedback += $"+{outcome.de_wit_affection} De Wit affection ";
         if (outcome.maaike_affection > 0) feedback += $"+{outcome.maaike_affection} Maaike affection ";
         if (outcome.chen_affection > 0) feedback += $"+{outcome.chen_affection} Chen affection ";
+        if (outcome.fatima_affection > 0) feedback += $"+{outcome.fatima_affection} Fatima affection ";
         if (outcome.money > 0) feedback += $"+${outcome.money} ";
         if (!string.IsNullOrEmpty(outcome.unlock_system)) feedback += $"Unlocked: {outcome.unlock_system} ";
         if (!string.IsNullOrEmpty(outcome.item)) feedback += $"+1 {outcome.item} ";

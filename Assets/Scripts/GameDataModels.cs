@@ -78,6 +78,7 @@ public sealed class DialogueOutcome
     public int de_wit_affection;
     public int maaike_affection;
     public int chen_affection;
+    public int fatima_affection;
     public int academic_progress;
     public int money;
     public string unlock_system;

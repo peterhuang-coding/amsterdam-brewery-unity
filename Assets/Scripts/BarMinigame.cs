@@ -154,7 +154,7 @@ public class BarMinigame : MonoBehaviour
         // Patience countdown for Picky guests
         if (_isServing && _hasPatience && _currentGuestType == GuestType.Picky)
         {
-            _patienceTimer -= Time.deltaTime;
+            _patienceTimer -= Time.deltaTime / _serviceSpeed;
             if (_patienceBar != null)
             {
                 float fill = Mathf.Clamp01(_patienceTimer / _patienceMax);
@@ -305,7 +305,7 @@ public class BarMinigame : MonoBehaviour
         _correctCount = 0;
         _apologyTipMultiplier = 1.0f;
         _apologyMode = false;
-        _totalCustomers = Random.Range(5, 9);
+        _totalCustomers = Mathf.RoundToInt(Random.Range(5f, 9f) * _serviceSpeed);
 
         // [Gameplay] Apply upgrade bonuses
         if (BarUpgradeSystem.Instance != null)
@@ -896,7 +896,7 @@ public class BarMinigame : MonoBehaviour
 
     private IEnumerator NextGroupMemberAfterDelay(float delay)
     {
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSeconds(delay / _serviceSpeed);
         int drinkIndex = Random.Range(0, 3);
         _currentDrink = drinkIndex;
         _orderText.text = $"Group order {_groupIndex + 1}/3:\n{_drinkNames[drinkIndex]} please!";
@@ -908,7 +908,7 @@ public class BarMinigame : MonoBehaviour
 
     private IEnumerator NextCustomerAfterDelay(float delay)
     {
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSeconds(delay / _serviceSpeed);
         NextCustomer();
     }
 

@@ -298,6 +298,7 @@ public sealed class GameState
         _money = 250;
         GameEnded = false;
         GameWon = false;
+        GameWentBankrupt = false;
         _currentLocationId = "de_pijp";
         CurrentLocationName = "De Pijp";
         ClearBrewStock();

@@ -549,6 +549,14 @@ public sealed class GameController : MonoBehaviour
                 return;
             }
 
+            // Check bankruptcy at dawn: running out of money means game over
+            if (State.Money < 0)
+            {
+                State.GameWentBankrupt = true;
+                EndGame();
+                return;
+            }
+
             // Check game end conditions at dawn of each new day
             if (State.CurrentDay > GameState.MaxDays)
             {
@@ -730,13 +738,29 @@ public sealed class GameController : MonoBehaviour
         Image overlay = MakeImage("EndOverlay", root,
             StretchFull(), new Color32(8, 10, 14, 235));
 
+        // Determine end state
+        bool bankrupt = State.GameWentBankrupt;
+
         // Title
         Text titleText = MakeText("EndTitle", root,
             new UIFactory.RectSpec(new Vector2(0.1f, 0.6f), new Vector2(0.9f, 0.9f),
                 new Vector2(0, 0), new Vector2(0, 0)),
             48, TextAnchor.MiddleCenter);
-        titleText.text = won ? "🍺 Brewery Established!" : "📋 Time's Up!";
-        titleText.color = won ? new Color32(236, 180, 87, 255) : new Color32(200, 180, 160, 255);
+        if (won)
+        {
+            titleText.text = "🍺 Brewery Established!";
+            titleText.color = new Color32(236, 180, 87, 255);
+        }
+        else if (bankrupt)
+        {
+            titleText.text = "💸 Bankrupt!";
+            titleText.color = new Color32(220, 80, 60, 255);
+        }
+        else
+        {
+            titleText.text = "📋 Time's Up!";
+            titleText.color = new Color32(200, 180, 160, 255);
+        }
         titleText.fontStyle = FontStyle.Bold;
 
         // Subtitle
@@ -749,6 +773,12 @@ public sealed class GameController : MonoBehaviour
             subText.text = $"You saved ${State.Money} in {State.CurrentDay} days —\n" +
                           "enough to keep the brewery alive and thriving.\n" +
                           "The doors of Tweede Kans stay open. For now.";
+        }
+        else if (bankrupt)
+        {
+            subText.text = $"The brewery ran out of money on day {State.CurrentDay}.\n" +
+                          "Debts piled up and the doors closed for good.\n" +
+                          "Every brewer faces hard times — learn and try again.";
         }
         else
         {

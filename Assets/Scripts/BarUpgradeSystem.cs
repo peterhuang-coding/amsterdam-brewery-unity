@@ -36,7 +36,7 @@ public sealed class BarUpgradeSystem : MonoBehaviour
         new BarUpgrade { id = "glassware", name = "Better Glassware", description = "Premium glassware increases drink prices by $1", cost = 50 },
         new BarUpgrade { id = "decor", name = "Cozy Decor", description = "Warm atmosphere increases tips by 20%", cost = 80 },
         new BarUpgrade { id = "training", name = "Staff Training", description = "Faster service speeds up customer patience by 30%", cost = 60 },
-        new BarUpgrade { id = "premium", name = "Premium Menu", description = "Unlock premium drinks for $10 each", cost = 100 },
+        new BarUpgrade { id = "premium", name = "Premium Menu", description = "High-end spirits add $2 bonus per drink served", cost = 100 },
         new BarUpgrade { id = "loyalty", name = "Loyalty Program", description = "Regular customers appear 20% more often", cost = 40 },
     };
 

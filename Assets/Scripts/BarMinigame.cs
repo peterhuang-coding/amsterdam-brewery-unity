@@ -531,12 +531,10 @@ public class BarMinigame : MonoBehaviour
 
         GameController.Instance.State.AddMoney(-_stockingCost);
 
-        // Fade out stocking panel
-        StartCoroutine(FadeAndDestroyPanel(_stockPanel, 0.2f));
+        // Fade out stocking panel, then build serve UI when fade completes
+        StartCoroutine(FadeThenServe(_stockPanel));
         _stockPanel = null;
         _isStocking = false;
-
-        BuildServeUI();
     }
 
     private void CancelStocking()
@@ -1316,6 +1314,16 @@ public class BarMinigame : MonoBehaviour
         if (panel == null) yield break;
         yield return FadePanel(panel, 1f, 0f, duration);
         Destroy(panel);
+    }
+
+    private IEnumerator FadeThenServe(GameObject panel)
+    {
+        if (panel != null)
+        {
+            yield return FadePanel(panel, 1f, 0f, 0.2f);
+            Destroy(panel);
+        }
+        BuildServeUI();
     }
 
     private IEnumerator SlideInElement(GameObject go, float distance, float duration)

@@ -43,6 +43,7 @@ public class WeatherSystem : MonoBehaviour
     private Canvas _weatherCanvas;
     private Image _weatherOverlay;
     private List<GameObject> _particles = new List<GameObject>();
+    private List<float> _particleVelocities = new List<float>();
     private const int MAX_PARTICLES = 80;
     private float _particleTimer = 0f;
     private int _currentDay = -1;
@@ -139,13 +140,14 @@ public class WeatherSystem : MonoBehaviour
             if (_particles[i] == null)
             {
                 _particles.RemoveAt(i);
+                if (i < _particleVelocities.Count) _particleVelocities.RemoveAt(i);
                 continue;
             }
 
             RectTransform rt = _particles[i].GetComponent<RectTransform>();
-            rt.anchoredPosition += new Vector2(
-                CurrentWeather == WeatherType.Snowy ? Random.Range(-20f, 20f) : -100f,
-                CurrentWeather == WeatherType.Snowy ? -40f : -200f) * Time.deltaTime;
+            float hVel = i < _particleVelocities.Count ? _particleVelocities[i] : 0f;
+            float vVel = CurrentWeather == WeatherType.Snowy ? -40f : -200f;
+            rt.anchoredPosition += new Vector2(hVel, vVel) * Time.deltaTime;
 
             Image img = _particles[i].GetComponent<Image>();
             Color c = img.color;
@@ -156,6 +158,7 @@ public class WeatherSystem : MonoBehaviour
             {
                 Destroy(_particles[i]);
                 _particles.RemoveAt(i);
+                if (i < _particleVelocities.Count) _particleVelocities.RemoveAt(i);
             }
         }
     }
@@ -168,6 +171,7 @@ public class WeatherSystem : MonoBehaviour
             GameObject oldest = _particles[0];
             if (oldest != null) Destroy(oldest);
             _particles.RemoveAt(0);
+            if (_particleVelocities.Count > 0) _particleVelocities.RemoveAt(0);
         }
 
         GameObject p = new GameObject("WeatherParticle", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
@@ -187,5 +191,8 @@ public class WeatherSystem : MonoBehaviour
             img.color = new Color32(100, 150, 220, 120);
 
         _particles.Add(p);
+        // Store seeded horizontal velocity per particle to avoid jitter
+        float hVel = CurrentWeather == WeatherType.Snowy ? Random.Range(-20f, 20f) : -100f;
+        _particleVelocities.Add(hVel);
     }
 }

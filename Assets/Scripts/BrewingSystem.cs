@@ -306,6 +306,7 @@ public class BrewingSystem : MonoBehaviour
             btnImg.color = canAfford ? new Color32(86, 125, 56, 255) : new Color32(60, 60, 65, 200);
 
             Button btn = btnGO.AddComponent<Button>();
+            btn.interactable = canAfford;
             int capturedIndex = index;
             btn.onClick.AddListener(() => StartBrew(capturedIndex));
 

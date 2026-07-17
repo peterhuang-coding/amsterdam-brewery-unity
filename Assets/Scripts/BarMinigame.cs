@@ -506,8 +506,14 @@ public class BarMinigame : MonoBehaviour
             GameController.Instance.State.SetBrewStock(2, _stock[2]);
         }
 
+        // If stocking cost is 0 (e.g. brew stock is empty), transition to serve
+        // without deducting money. Must still clean up panel or player is softlocked.
         if (_stockingCost <= 0)
         {
+            Destroy(_stockPanel);
+            _stockPanel = null;
+            _isStocking = false;
+            BuildServeUI();
             return;
         }
 

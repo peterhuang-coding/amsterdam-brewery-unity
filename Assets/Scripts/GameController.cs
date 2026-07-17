@@ -528,7 +528,8 @@ public sealed class GameController : MonoBehaviour
             // F1: Regenerate daily goals at dawn
             GenerateDailyGoals();
             // F8: Update weather for new day
-            WeatherSystem.Instance.NewDay(State.CurrentDay);
+            if (WeatherSystem.Instance != null)
+                WeatherSystem.Instance.NewDay(State.CurrentDay);
         }
 
         // [Brewing] Tick brew progress
@@ -624,6 +625,9 @@ public sealed class GameController : MonoBehaviour
 
         // Reset core state
         State.ResetState();
+
+        // Reset UI-only state (not in GameState)
+        _dailyGoals.Clear();
 
         // Reset subsystems
         if (AchievementSystem.Instance != null)
@@ -1172,7 +1176,7 @@ public sealed class GameController : MonoBehaviour
         // Weather
         if (_weatherText != null)
         {
-            _weatherText.text = WeatherSystem.Instance.WeatherName;
+            _weatherText.text = WeatherSystem.Instance != null ? WeatherSystem.Instance.WeatherName : "Clear";
         }
 
         // F1: Update daily goal display

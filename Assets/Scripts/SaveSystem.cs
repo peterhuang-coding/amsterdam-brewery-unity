@@ -228,19 +228,19 @@ public class SaveSystem : MonoBehaviour
     /// <summary>
     /// Load game state from the specified slot (0-2).
     /// </summary>
-    public void LoadFromSlot(int slot)
+    public bool LoadFromSlot(int slot)
     {
         if (slot < 0 || slot >= SlotCount)
         {
             Debug.LogWarning($"[SaveSystem] Invalid slot: {slot}");
-            return;
+            return false;
         }
 
         string path = Application.persistentDataPath + SavePrefix + slot + SaveExtension;
         if (!File.Exists(path))
         {
             Debug.LogWarning($"[SaveSystem] No save file found for slot {slot}");
-            return;
+            return false;
         }
 
         SaveData data;
@@ -252,13 +252,13 @@ public class SaveSystem : MonoBehaviour
         catch (System.Exception ex)
         {
             Debug.LogError($"[SaveSystem] Failed to read save file: {ex.Message}");
-            return;
+            return false;
         }
 
         if (data == null)
         {
             Debug.LogError("[SaveSystem] Save data is null after deserialization");
-            return;
+            return false;
         }
 
         // Destroy end game canvas before restoring (so it doesn't persist)
@@ -357,6 +357,7 @@ public class SaveSystem : MonoBehaviour
         }
 
         Debug.Log($"[SaveSystem] Loaded slot {slot}: Day {data.day}, Money ${data.money}");
+        return true;
     }
 
     /// <summary>
@@ -643,8 +644,8 @@ public class SaveSystem : MonoBehaviour
             "Load");
         loadBtn.onClick.AddListener(() =>
         {
-            LoadFromSlot(slotIndex);
-            ClosePanel();
+            if (LoadFromSlot(slotIndex))
+                ClosePanel();
         });
         _loadButtons[slotIndex] = loadBtn;
     }

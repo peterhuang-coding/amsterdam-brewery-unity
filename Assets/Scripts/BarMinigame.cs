@@ -19,7 +19,8 @@ public class BarMinigame : MonoBehaviour
             {
                 GameObject go = new GameObject("BarMinigame");
                 _instance = go.AddComponent<BarMinigame>();
-                DontDestroyOnLoad(go);
+                if (Application.isPlaying)
+                    DontDestroyOnLoad(go);
             }
             return _instance;
         }

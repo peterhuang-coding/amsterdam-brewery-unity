@@ -19,7 +19,7 @@ public class TutorialSystem : MonoBehaviour
             {
                 GameObject go = new GameObject("TutorialSystem");
                 _instance = go.AddComponent<TutorialSystem>();
-                DontDestroyOnLoad(go);
+                if (Application.isPlaying) DontDestroyOnLoad(go);
             }
             return _instance;
         }
@@ -89,7 +89,7 @@ public class TutorialSystem : MonoBehaviour
         if (_instance == null)
         {
             _instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (Application.isPlaying) DontDestroyOnLoad(gameObject);
         }
         else if (_instance != this)
         {
@@ -114,6 +114,46 @@ public class TutorialSystem : MonoBehaviour
                 // from also handling Space/Return in the same frame (which would
                 // advance time and potentially trigger a story dialogue, locking input).
                 return;
+            }
+        }
+
+        // ── Direct key detection for active tutorial step ──
+        // Because GameController.HandleInput may be blocked by welcome, dialogue,
+        // or other states, the tutorial overlay itself listens for key presses.
+        if (!_welcomeDismissed || _currentStepIndex < 0 || _initialized == false)
+            return;
+
+        if (_currentStepIndex < _steps.Count)
+        {
+            string activeKey = _steps[_currentStepIndex].inputKey;
+            switch (activeKey)
+            {
+                case "1-4":
+                    if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Alpha2) ||
+                        Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Alpha4))
+                        OnLocationChanged();
+                    break;
+                case "R":
+                    if (Input.GetKeyDown(KeyCode.R)) OnBrewStarted();
+                    break;
+                case "B":
+                    if (Input.GetKeyDown(KeyCode.B)) OnBarOpened();
+                    break;
+                case "S":
+                    if (Input.GetKeyDown(KeyCode.S)) OnCustomerServed();
+                    break;
+                case "Space":
+                    if (Input.GetKeyDown(KeyCode.Space)) OnTimeAdvanced();
+                    break;
+                case "M":
+                    if (Input.GetKeyDown(KeyCode.M)) OnShopOpened();
+                    break;
+                case "U":
+                    if (Input.GetKeyDown(KeyCode.U)) OnUpgradeOpened();
+                    break;
+                case "L/O":
+                    if (Input.GetKeyDown(KeyCode.L) || Input.GetKeyDown(KeyCode.O)) OnSaveOrLoadUsed();
+                    break;
             }
         }
     }

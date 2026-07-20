@@ -78,7 +78,7 @@ public class SaveSystem : MonoBehaviour
             {
                 GameObject go = new GameObject("SaveSystem");
                 _instance = go.AddComponent<SaveSystem>();
-                DontDestroyOnLoad(go);
+                if (Application.isPlaying) DontDestroyOnLoad(go);
             }
             return _instance;
         }
@@ -111,7 +111,7 @@ public class SaveSystem : MonoBehaviour
         if (_instance == null)
         {
             _instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (Application.isPlaying) DontDestroyOnLoad(gameObject);
         }
         else if (_instance != this)
         {

@@ -21,7 +21,7 @@ public static class SoundManager
         GameObject go = new GameObject("SoundManager");
         _sharedSource = go.AddComponent<AudioSource>();
         _sharedSource.volume = 0.3f;
-        Object.DontDestroyOnLoad(go);
+        if (Application.isPlaying) Object.DontDestroyOnLoad(go);
 
         // T1: Pre-generate all sound clips
         _clipCache[SoundType.Walk] = GenerateClick(0.05f, 800f);

@@ -17,7 +17,7 @@ public class WeatherSystem : MonoBehaviour
             {
                 GameObject go = new GameObject("WeatherSystem");
                 _instance = go.AddComponent<WeatherSystem>();
-                DontDestroyOnLoad(go);
+                if (Application.isPlaying) DontDestroyOnLoad(go);
             }
             return _instance;
         }
@@ -53,7 +53,7 @@ public class WeatherSystem : MonoBehaviour
         if (_instance == null)
         {
             _instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (Application.isPlaying) DontDestroyOnLoad(gameObject);
             CreateWeatherUI();
         }
         else if (_instance != this)

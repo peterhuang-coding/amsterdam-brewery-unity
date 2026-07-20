@@ -20,7 +20,7 @@ public class BrewingSystem : MonoBehaviour
             {
                 GameObject go = new GameObject("BrewingSystem");
                 _instance = go.AddComponent<BrewingSystem>();
-                DontDestroyOnLoad(go);
+                if (Application.isPlaying) DontDestroyOnLoad(go);
             }
             return _instance;
         }
@@ -57,7 +57,7 @@ public class BrewingSystem : MonoBehaviour
         if (_instance == null)
         {
             _instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (Application.isPlaying) DontDestroyOnLoad(gameObject);
         }
         else if (_instance != this)
         {

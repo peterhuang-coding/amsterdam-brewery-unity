@@ -25,7 +25,7 @@ public sealed class BarUpgradeSystem : MonoBehaviour
             {
                 GameObject go = new GameObject("BarUpgradeSystem");
                 _instance = go.AddComponent<BarUpgradeSystem>();
-                DontDestroyOnLoad(go);
+                if (Application.isPlaying) DontDestroyOnLoad(go);
             }
             return _instance;
         }
@@ -54,7 +54,7 @@ public sealed class BarUpgradeSystem : MonoBehaviour
             return;
         }
         _instance = this;
-        DontDestroyOnLoad(gameObject);
+        if (Application.isPlaying) DontDestroyOnLoad(gameObject);
         _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
     }
 

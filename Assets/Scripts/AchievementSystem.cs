@@ -18,7 +18,7 @@ public class AchievementSystem : MonoBehaviour
             {
                 GameObject go = new GameObject("AchievementSystem");
                 _instance = go.AddComponent<AchievementSystem>();
-                DontDestroyOnLoad(go);
+                if (Application.isPlaying) DontDestroyOnLoad(go);
             }
             return _instance;
         }
@@ -56,7 +56,7 @@ public class AchievementSystem : MonoBehaviour
         if (_instance == null)
         {
             _instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (Application.isPlaying) DontDestroyOnLoad(gameObject);
         }
         else if (_instance != this)
         {

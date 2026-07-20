@@ -27,7 +27,7 @@ public sealed class DialogueLog : MonoBehaviour
             if (_instance == null)
             {
                 GameObject go = new GameObject("DialogueLog");
-                DontDestroyOnLoad(go);
+                if (Application.isPlaying) DontDestroyOnLoad(go);
                 _instance = go.AddComponent<DialogueLog>();
                 _instance.Initialize();
             }
@@ -60,7 +60,7 @@ public sealed class DialogueLog : MonoBehaviour
             return;
         }
         _instance = this;
-        DontDestroyOnLoad(gameObject);
+        if (Application.isPlaying) DontDestroyOnLoad(gameObject);
     }
 
     private void Initialize()

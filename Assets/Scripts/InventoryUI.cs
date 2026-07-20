@@ -19,7 +19,7 @@ public class InventoryUI : MonoBehaviour
             {
                 GameObject go = new GameObject("InventoryUI");
                 _instance = go.AddComponent<InventoryUI>();
-                DontDestroyOnLoad(go);
+                if (Application.isPlaying) DontDestroyOnLoad(go);
             }
             return _instance;
         }
@@ -63,7 +63,7 @@ public class InventoryUI : MonoBehaviour
         if (_instance == null)
         {
             _instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (Application.isPlaying) DontDestroyOnLoad(gameObject);
         }
         else if (_instance != this)
         {

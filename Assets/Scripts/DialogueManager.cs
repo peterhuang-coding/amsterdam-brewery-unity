@@ -30,7 +30,7 @@ public class DialogueManager : MonoBehaviour
             {
                 GameObject go = new GameObject("DialogueManager");
                 _instance = go.AddComponent<DialogueManager>();
-                DontDestroyOnLoad(go);
+                if (Application.isPlaying) DontDestroyOnLoad(go);
                 _instance.Initialize();
             }
             return _instance;
@@ -81,7 +81,7 @@ public class DialogueManager : MonoBehaviour
         if (_instance == null)
         {
             _instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (Application.isPlaying) DontDestroyOnLoad(gameObject);
             Initialize();
         }
         else if (_instance != this)

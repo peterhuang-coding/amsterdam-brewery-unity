@@ -30,7 +30,7 @@ public class ShopSystem : MonoBehaviour
             {
                 GameObject go = new GameObject("ShopSystem");
                 _instance = go.AddComponent<ShopSystem>();
-                DontDestroyOnLoad(go);
+                if (Application.isPlaying) DontDestroyOnLoad(go);
             }
             return _instance;
         }
@@ -60,7 +60,7 @@ public class ShopSystem : MonoBehaviour
         if (_instance == null)
         {
             _instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (Application.isPlaying) DontDestroyOnLoad(gameObject);
         }
         else if (_instance != this)
         {

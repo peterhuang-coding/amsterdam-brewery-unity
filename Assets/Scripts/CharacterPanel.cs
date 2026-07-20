@@ -19,7 +19,7 @@ public class CharacterPanel : MonoBehaviour
             {
                 GameObject go = new GameObject("CharacterPanel");
                 _instance = go.AddComponent<CharacterPanel>();
-                DontDestroyOnLoad(go);
+                if (Application.isPlaying) DontDestroyOnLoad(go);
             }
             return _instance;
         }
@@ -48,7 +48,7 @@ public class CharacterPanel : MonoBehaviour
         if (_instance == null)
         {
             _instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (Application.isPlaying) DontDestroyOnLoad(gameObject);
         }
         else if (_instance != this)
         {

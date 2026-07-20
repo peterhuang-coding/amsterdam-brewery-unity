@@ -110,16 +110,21 @@ public class TutorialSystem : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
             {
                 DismissWelcome();
-                // Don't process this input further — prevent GameController
-                // from also handling Space/Return in the same frame (which would
-                // advance time and potentially trigger a story dialogue, locking input).
+                return;
+            }
+        }
+
+        // ── Skip entire tutorial with Escape ──
+        if (_welcomeDismissed && _currentStepIndex >= 0 && _currentStepIndex < _steps.Count)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                SkipAllSteps();
                 return;
             }
         }
 
         // ── Direct key detection for active tutorial step ──
-        // Because GameController.HandleInput may be blocked by welcome, dialogue,
-        // or other states, the tutorial overlay itself listens for key presses.
         if (!_welcomeDismissed || _currentStepIndex < 0 || _initialized == false)
             return;
 
@@ -426,6 +431,19 @@ public class TutorialSystem : MonoBehaviour
                 TryStartTutorial();
             }
         }
+    }
+
+    private void SkipAllSteps()
+    {
+        if (_steps != null)
+        {
+            foreach (TutorialStep step in _steps)
+                step.completed = true;
+        }
+        _currentStepIndex = _steps.Count;
+        StopAllCoroutines();
+        if (_canvas != null) _canvas.gameObject.SetActive(false);
+        if (_canvasGroup != null) _canvasGroup.alpha = 0f;
     }
 
     private void ShowStep(int index)

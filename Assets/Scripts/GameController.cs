@@ -302,18 +302,22 @@ public sealed class GameController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             SwitchLocation("de_pijp");
+            TutorialSystem.Instance?.OnLocationChanged();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             SwitchLocation("science_park");
+            TutorialSystem.Instance?.OnLocationChanged();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             SwitchLocation("tweede_kans");
+            TutorialSystem.Instance?.OnLocationChanged();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             SwitchLocation("bloemenmarkt");
+            TutorialSystem.Instance?.OnLocationChanged();
         }
         else if (Input.GetKeyDown(KeyCode.B))
         {
@@ -640,8 +644,8 @@ public sealed class GameController : MonoBehaviour
         if (Application.isPlaying && AchievementSystem.Instance != null)
         {
             AchievementSystem.Instance.RegisterLocationVisited(locationId);
-            TutorialSystem.Instance?.OnLocationChanged();
         }
+        TutorialSystem.Instance?.OnLocationChanged();
         // Screen shake for location switch
         StartCoroutine(GameJuice.ScreenShake(0.3f, 0.1f));
     }

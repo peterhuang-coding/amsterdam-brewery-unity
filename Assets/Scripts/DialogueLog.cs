@@ -555,6 +555,4 @@ public sealed class DialogueLog : MonoBehaviour
     {
         return $"{color.r:X2}{color.g:X2}{color.b:X2}";
     }
-
-    }
 }

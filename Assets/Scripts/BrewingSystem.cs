@@ -397,6 +397,4 @@ public class BrewingSystem : MonoBehaviour
             _notificationGO.SetActive(false);
         _notificationCoroutine = null;
     }
-
-    }
 }

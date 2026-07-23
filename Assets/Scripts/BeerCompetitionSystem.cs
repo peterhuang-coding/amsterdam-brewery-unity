@@ -74,14 +74,14 @@ public class BeerCompetitionSystem : MonoBehaviour
             _instance = this;
             if (Application.isPlaying) DontDestroyOnLoad(gameObject);
         }
-        else if (_instance != this) { Object.Destroy(gameObject); return; }
+        else if (_instance != this) { UnityEngine.Object.Destroy(gameObject); return; }
         for (int i = 0; i < MaxEntries; i++) { _slotSelections[i] = -1; _slotRecipes[i] = -1; }
     }
 
     void OnDestroy()
     {
         StopAllCoroutines();
-        if (Instance == this) Instance = null;
+        if (_instance == this) _instance = null;
     }
 
     // ── Public API ────────────────────────────────────────────
@@ -167,7 +167,7 @@ public class BeerCompetitionSystem : MonoBehaviour
             UIFactory.Anchored(200, 400, 160, 32), new Color32(140, 100, 60, 230),
             "❌ Close", () =>
             {
-                Object.Destroy(_panel);
+                UnityEngine.Object.Destroy(_panel);
                 _panel = null;
             });
         _closeButton.gameObject.SetActive(false);
@@ -176,7 +176,7 @@ public class BeerCompetitionSystem : MonoBehaviour
     private Canvas FindOrCreateCompetitionCanvas()
     {
         // Reuse existing UI canvas or create one
-        var existing = FindObjectOfType<Canvas>();
+        var existing = Object.FindAnyObjectByType<Canvas>();
         if (existing != null) return existing;
 
         var go = new GameObject("CompetitionCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
@@ -314,7 +314,7 @@ public class BeerCompetitionSystem : MonoBehaviour
         if (PlayerRank == 1 && stateValid())
         {
             var ach = GameController.Instance.GetComponent<AchievementSystem>();
-            if (ach != null) ach.UnlockAchievement("competition_winner");
+            if (ach != null) ach.RestoreAchievement("competition_winner");
         }
 
         HasJudged = true;
@@ -375,11 +375,11 @@ public class BeerCompetitionSystem : MonoBehaviour
 
     private void SetFeedback(string msg)
     {
-        GameController.Instance?.SetFeedback(msg);
+        GameController.Instance?.ShowResultFeedback(msg);
     }
 
     private void RefreshHudIfAvailable()
     {
-        GameController.Instance?.RefreshHud();
+        GameController.Instance?.RefreshHudPublic();
     }
 }

@@ -405,6 +405,4 @@ public sealed class BarUpgradeSystem : MonoBehaviour
             return GameController.Instance.State.Money;
         return 0;
     }
-
-    }
 }

@@ -593,6 +593,4 @@ public class AchievementSystem : MonoBehaviour
         _canvasGroup.alpha = 0f;
         _canvas.gameObject.SetActive(false);
     }
-
-    }
 }

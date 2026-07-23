@@ -447,5 +447,4 @@ public class InventoryUI : MonoBehaviour
         public string name;
         public string description;
     }
-    }
 }

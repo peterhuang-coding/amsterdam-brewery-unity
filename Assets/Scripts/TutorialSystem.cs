@@ -690,6 +690,4 @@ public class TutorialSystem : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
         }
     }
-
-    }
 }

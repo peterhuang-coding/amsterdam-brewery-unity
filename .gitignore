@@ -20,3 +20,6 @@ Recordings/
 .DS_Store
 .claude/worktrees/
 Assets/Scripts/.claude/
+__pycache__/
+*.pyc
+*.pyo

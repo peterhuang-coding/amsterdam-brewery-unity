@@ -34,7 +34,7 @@ public class BeerCompetitionSystem : MonoBehaviour
     public int PlayerRank; // 1-4
     public int RewardMoney;
     public List<int> NpcScores = new List<int>();
-    public List<int> SubmittedStockIndices = new List<int>(); // which stock types were submitted
+    public List<int> SubmittedStockIndices = new List<int>();
     private int[] _slotRecipes = new int[MaxEntries]; // stores recipe index (0-4), -1 = empty
 
     // ── Config ────────────────────────────────────────────────
@@ -93,19 +93,6 @@ public class BeerCompetitionSystem : MonoBehaviour
             BuildPanel();
         }
     }
-
-    public bool CanSubmit()
-    {
-        var state = GameController.Instance?.State;
-        if (state == null) return false;
-        for (int i = 0; i < _slotSelections.Length; i++)
-            if (_slotSelections[i] >= 0 && state.GetBrewStock(_slotSelections[i]) > _slotCounts[i])
-                return true;
-        return false;
-    }
-
-    // Track per-slot how many of that stock type we've "allocated"
-    private int[] _slotCounts = new int[MaxEntries];
 
     // ── UI Construction ───────────────────────────────────────
     private void BuildPanel()

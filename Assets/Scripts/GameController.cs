@@ -168,6 +168,7 @@ public sealed class GameController : MonoBehaviour
 
     private void OnDestroy()
     {
+        StopAllCoroutines();
         if (Instance == this) Instance = null;
     }
 

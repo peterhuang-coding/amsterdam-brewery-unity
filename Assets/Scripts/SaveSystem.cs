@@ -125,6 +125,7 @@ public class SaveSystem : MonoBehaviour
 
     private void OnDestroy()
     {
+        StopAllCoroutines();
         if (_instance == this)
         {
             _instance = null;

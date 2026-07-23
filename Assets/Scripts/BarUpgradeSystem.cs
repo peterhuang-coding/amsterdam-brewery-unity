@@ -50,7 +50,7 @@ public sealed class BarUpgradeSystem : MonoBehaviour
     {
         if (_instance != null && _instance != this)
         {
-            Destroy(gameObject);
+            Object.Destroy(gameObject);
             return;
         }
         _instance = this;
@@ -383,7 +383,7 @@ public sealed class BarUpgradeSystem : MonoBehaviour
             foreach (GameObject row in rowsToDestroy)
             {
                 if (Application.isPlaying)
-                    Destroy(row);
+                    Object.Destroy(row);
                 else
                     DestroyImmediate(row);
             }

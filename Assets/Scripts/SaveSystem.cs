@@ -115,7 +115,7 @@ public class SaveSystem : MonoBehaviour
         }
         else if (_instance != this)
         {
-            Destroy(gameObject);
+            Object.Destroy(gameObject);
             return;
         }
 

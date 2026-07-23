@@ -86,7 +86,7 @@ public class DialogueManager : MonoBehaviour
         }
         else if (_instance != this)
         {
-            Destroy(gameObject);
+            Object.Destroy(gameObject);
         }
     }
 
@@ -362,7 +362,7 @@ public class DialogueManager : MonoBehaviour
         // Clear old choices
         foreach (Transform child in _choiceContainer.transform)
         {
-            Destroy(child.gameObject);
+            Object.Destroy(child.gameObject);
         }
 
         float yOffset = 0;

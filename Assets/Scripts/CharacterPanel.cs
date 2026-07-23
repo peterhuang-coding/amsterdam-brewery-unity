@@ -52,7 +52,7 @@ public class CharacterPanel : MonoBehaviour
         }
         else if (_instance != this)
         {
-            Destroy(gameObject);
+            Object.Destroy(gameObject);
             return;
         }
         _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
@@ -141,7 +141,7 @@ public class CharacterPanel : MonoBehaviour
     {
         // Clear old content
         foreach (Transform child in _contentArea)
-            Destroy(child.gameObject);
+            Object.Destroy(child.gameObject);
 
         float y = 4;
 

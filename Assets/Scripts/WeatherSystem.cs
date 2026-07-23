@@ -58,7 +58,7 @@ public class WeatherSystem : MonoBehaviour
         }
         else if (_instance != this)
         {
-            Destroy(gameObject);
+            Object.Destroy(gameObject);
         }
     }
 
@@ -156,7 +156,7 @@ public class WeatherSystem : MonoBehaviour
 
             if (c.a <= 0 || rt.anchoredPosition.y < -400)
             {
-                Destroy(_particles[i]);
+                Object.Destroy(_particles[i]);
                 _particles.RemoveAt(i);
                 if (i < _particleVelocities.Count) _particleVelocities.RemoveAt(i);
             }
@@ -169,7 +169,7 @@ public class WeatherSystem : MonoBehaviour
         if (_particles.Count >= MAX_PARTICLES)
         {
             GameObject oldest = _particles[0];
-            if (oldest != null) Destroy(oldest);
+            if (oldest != null) Object.Destroy(oldest);
             _particles.RemoveAt(0);
             if (_particleVelocities.Count > 0) _particleVelocities.RemoveAt(0);
         }

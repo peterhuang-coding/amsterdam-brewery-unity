@@ -1156,7 +1156,7 @@ public sealed class GameController : MonoBehaviour
         if (existingAnim != null)
         {
             if (Application.isPlaying)
-                Destroy(existingAnim);
+                Object.Destroy(existingAnim);
             else
                 DestroyImmediate(existingAnim);
         }
@@ -1549,7 +1549,7 @@ public sealed class GameController : MonoBehaviour
 
         if (Application.isPlaying)
         {
-            Destroy(target);
+            Object.Destroy(target);
         }
         else
         {

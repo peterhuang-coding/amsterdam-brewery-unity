@@ -144,7 +144,7 @@ public class BarMinigame : MonoBehaviour
         }
         else if (_instance != this)
         {
-            Destroy(gameObject);
+            Object.Destroy(gameObject);
         }
     }
 
@@ -346,7 +346,7 @@ public class BarMinigame : MonoBehaviour
 
                 if (_canvas != null)
                 {
-                    Destroy(_canvas.gameObject);
+                    Object.Destroy(_canvas.gameObject);
                 }
             }
             return;
@@ -360,7 +360,7 @@ public class BarMinigame : MonoBehaviour
 
         if (_canvas != null)
         {
-            Destroy(_canvas.gameObject);
+            Object.Destroy(_canvas.gameObject);
         }
     }
 
@@ -580,7 +580,7 @@ public class BarMinigame : MonoBehaviour
         // without deducting money. Must still clean up panel or player is softlocked.
         if (_stockingCost <= 0)
         {
-            Destroy(_stockPanel);
+            Object.Destroy(_stockPanel);
             _stockPanel = null;
             _isStocking = false;
 
@@ -590,7 +590,7 @@ public class BarMinigame : MonoBehaviour
                 _isActive = false;
                 var cb = _onComplete;
                 _onComplete = null;
-                if (_canvas != null) Destroy(_canvas.gameObject);
+                if (_canvas != null) Object.Destroy(_canvas.gameObject);
                 cb?.Invoke(0);
                 return;
             }
@@ -613,7 +613,7 @@ public class BarMinigame : MonoBehaviour
         _isActive = false;
         var cb = _onComplete;
         _onComplete = null;
-        Destroy(_canvas.gameObject);
+        Object.Destroy(_canvas.gameObject);
         cb?.Invoke(0);
     }
 
@@ -1051,7 +1051,7 @@ public class BarMinigame : MonoBehaviour
             text.color = new Color32(color.r, color.g, color.b, (byte)Mathf.Lerp(255, 0, t));
             yield return null;
         }
-        Destroy(floatGO);
+        Object.Destroy(floatGO);
     }
 
     // ── End Shift & Settlement ─────────────────────────────
@@ -1091,7 +1091,7 @@ public class BarMinigame : MonoBehaviour
         if (_panel != null)
         {
             yield return FadePanel(_panel, 1f, 0f, 0.2f);
-            Destroy(_panel);
+            Object.Destroy(_panel);
         }
 
         // Build settlement panel with gold border
@@ -1170,7 +1170,7 @@ public class BarMinigame : MonoBehaviour
                 _onComplete?.Invoke(_earnings + _tips);
                 _onComplete = null;
                 _isActive = false;
-                Destroy(_canvas.gameObject);
+                Object.Destroy(_canvas.gameObject);
             });
     }
 
@@ -1386,7 +1386,7 @@ public class BarMinigame : MonoBehaviour
         if (panel != null)
         {
             yield return FadePanel(panel, 1f, 0f, 0.2f);
-            Destroy(panel);
+            Object.Destroy(panel);
         }
         BuildServeUI();
     }
@@ -1467,7 +1467,7 @@ public class BarMinigame : MonoBehaviour
             yield return null;
         }
 
-        Destroy(go);
+        Object.Destroy(go);
     }
 
     private IEnumerator ShowComboPopup(int count)
@@ -1523,7 +1523,7 @@ public class BarMinigame : MonoBehaviour
             yield return null;
         }
 
-        Destroy(comboGO);
+        Object.Destroy(comboGO);
     }
 
     private IEnumerator FlashScreen(Color32 flashColor, float duration)

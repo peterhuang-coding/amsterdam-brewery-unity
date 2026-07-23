@@ -61,7 +61,7 @@ public class BrewingSystem : MonoBehaviour
         }
         else if (_instance != this)
         {
-            Destroy(gameObject);
+            Object.Destroy(gameObject);
             return;
         }
         _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
@@ -216,7 +216,7 @@ public class BrewingSystem : MonoBehaviour
     {
         if (_contentArea == null) return;
         foreach (Transform child in _contentArea.transform)
-            Destroy(child.gameObject);
+            Object.Destroy(child.gameObject);
 
         GameState state = GameController.Instance.State;
 
@@ -331,7 +331,7 @@ public class BrewingSystem : MonoBehaviour
 
         // Find existing stock summary or create
         Transform existing = _contentArea.transform.Find("StockSummary");
-        if (existing != null) Destroy(existing.gameObject);
+        if (existing != null) Object.Destroy(existing.gameObject);
 
         int beer = state.GetBrewStock(0);
         int whiskey = state.GetBrewStock(1);

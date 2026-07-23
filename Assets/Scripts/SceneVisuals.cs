@@ -34,7 +34,7 @@ public class SceneTransitionManager : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);
+            Object.Destroy(gameObject);
         }
     }
 
@@ -136,7 +136,7 @@ public class SceneTransitionManager : MonoBehaviour
     {
         // Destroy old scene
         if (_currentScene != null)
-            Destroy(_currentScene);
+            Object.Destroy(_currentScene);
 
         _currentLocation = locationId;
         _currentScene = SceneVisuals.BuildScene(locationId, transform);
@@ -1272,11 +1272,11 @@ public class MinimapController : MonoBehaviour
         if (_renderTex != null)
         {
             _renderTex.Release();
-            Destroy(_renderTex);
+            Object.Destroy(_renderTex);
         }
         if (_minimapCam != null)
-            Destroy(_minimapCam.gameObject);
+            Object.Destroy(_minimapCam.gameObject);
         if (_minimapCanvas != null)
-            Destroy(_minimapCanvas.gameObject);
+            Object.Destroy(_minimapCanvas.gameObject);
     }
 }

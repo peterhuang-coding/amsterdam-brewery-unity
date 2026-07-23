@@ -64,7 +64,7 @@ public class ShopSystem : MonoBehaviour
         }
         else if (_instance != this)
         {
-            Destroy(gameObject);
+            Object.Destroy(gameObject);
         }
     }
 
@@ -319,7 +319,7 @@ public class ShopSystem : MonoBehaviour
 
         // Clear old content
         foreach (Transform child in _contentArea.transform)
-            Destroy(child.gameObject);
+            Object.Destroy(child.gameObject);
 
         // Update title with location
         string locationName = "";

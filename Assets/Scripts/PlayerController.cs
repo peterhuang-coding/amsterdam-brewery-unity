@@ -260,8 +260,8 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void OnDestroy()
     {
-        if (_playerTex != null) Destroy(_playerTex);
-        if (_arrowTex != null) Destroy(_arrowTex);
+        if (_playerTex != null) Object.Destroy(_playerTex);
+        if (_arrowTex != null) Object.Destroy(_arrowTex);
     }
 
     /// <summary>

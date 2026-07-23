@@ -93,7 +93,7 @@ public class TutorialSystem : MonoBehaviour
         }
         else if (_instance != this)
         {
-            Destroy(gameObject);
+            Object.Destroy(gameObject);
             return;
         }
         _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
@@ -409,7 +409,7 @@ public class TutorialSystem : MonoBehaviour
             _welcomeDismissed = true;
             if (_welcomeCanvas != null)
             {
-                Destroy(_welcomeCanvas.gameObject);
+                Object.Destroy(_welcomeCanvas.gameObject);
                 _welcomeCanvas = null;
             }
 
@@ -522,7 +522,7 @@ public class TutorialSystem : MonoBehaviour
     {
         // Clean up any existing welcome canvas (e.g. from a previous game)
         if (_welcomeCanvas != null)
-            Destroy(_welcomeCanvas.gameObject);
+            Object.Destroy(_welcomeCanvas.gameObject);
 
         GameObject canvasGO = new GameObject("WelcomeCanvas");
         canvasGO.transform.SetParent(transform);
@@ -631,7 +631,7 @@ public class TutorialSystem : MonoBehaviour
         // blocking input for 0.3s
         if (_welcomeCanvas != null)
         {
-            Destroy(_welcomeCanvas.gameObject);
+            Object.Destroy(_welcomeCanvas.gameObject);
             _welcomeCanvas = null;
         }
 

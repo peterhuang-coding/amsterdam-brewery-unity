@@ -415,7 +415,7 @@ public class SurfingMinigame : MonoBehaviour
             float newX = oRT.anchorMin.x - Time.deltaTime * 0.3f;
             if (newX < -0.1f)
             {
-                Destroy(_obstacles[i]);
+                Object.Destroy(_obstacles[i]);
                 ShowWhoosh();
                 _obstacles.RemoveAt(i);
                 continue;
@@ -432,7 +432,7 @@ public class SurfingMinigame : MonoBehaviour
                 _statusText.text = "💥 Hit!";
                 _statusText.color = new Color32(255, 100, 100, 255);
                 ShowCollisionText();
-                Destroy(_obstacles[i]);
+                Object.Destroy(_obstacles[i]);
                 _obstacles.RemoveAt(i);
             }
         }
@@ -444,7 +444,7 @@ public class SurfingMinigame : MonoBehaviour
             float newX = fRT.anchorMin.x - Time.deltaTime * 0.3f;
             if (newX < -0.1f)
             {
-                Destroy(_fragments[i]);
+                Object.Destroy(_fragments[i]);
                 _fragments.RemoveAt(i);
                 continue;
             }
@@ -460,7 +460,7 @@ public class SurfingMinigame : MonoBehaviour
                 _statusText.text = "✨ Fragment collected!";
                 _statusText.color = new Color32(60, 255, 180, 255);
                 SpawnCollectEffect(fRT.anchorMin.x, fRT.anchorMin.y);
-                Destroy(_fragments[i]);
+                Object.Destroy(_fragments[i]);
                 _fragments.RemoveAt(i);
             }
         }
@@ -550,7 +550,7 @@ public class SurfingMinigame : MonoBehaviour
         Time.timeScale = 1f;
         bool success = _progress >= 50;
         _onComplete?.Invoke(success, _fragmentsCollected);
-        Destroy(gameObject);
+        Object.Destroy(gameObject);
     }
 
     private Text CreateUIText(string name, Transform parent, Vector2 anchorMin, Vector2 anchorMax,
@@ -607,7 +607,7 @@ public class SurfingMinigame : MonoBehaviour
             rt.anchoredPosition += new Vector2(200f * Time.deltaTime, 0);
             yield return null;
         }
-        Destroy(go);
+        Object.Destroy(go);
     }
 
     private IEnumerator CelebrationEffect()
@@ -632,7 +632,7 @@ public class SurfingMinigame : MonoBehaviour
             rt.sizeDelta = new Vector2(40, 40);
             rt.anchoredPosition = new Vector2(Random.Range(-200f, 200f), Random.Range(-100f, 100f));
 
-            Destroy(star, 1.5f);
+            Object.Destroy(star, 1.5f);
             yield return new WaitForSeconds(0.2f);
         }
     }
@@ -656,7 +656,7 @@ public class SurfingMinigame : MonoBehaviour
         rt.sizeDelta = new Vector2(200, 40);
         rt.anchoredPosition = Vector2.zero;
 
-        Destroy(oof, 1f);
+        Object.Destroy(oof, 1f);
     }
 }
 
@@ -685,7 +685,7 @@ public class CollectParticle : MonoBehaviour
         _age += Time.deltaTime;
         if (_age >= _lifetime)
         {
-            Destroy(gameObject);
+            Object.Destroy(gameObject);
             return;
         }
 

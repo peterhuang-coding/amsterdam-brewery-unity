@@ -56,7 +56,7 @@ public sealed class DialogueLog : MonoBehaviour
     {
         if (_instance != null && _instance != this)
         {
-            Destroy(gameObject);
+            Object.Destroy(gameObject);
             return;
         }
         _instance = this;
@@ -368,7 +368,7 @@ public sealed class DialogueLog : MonoBehaviour
         // Destroy existing content children
         for (int i = _contentRect.childCount - 1; i >= 0; i--)
         {
-            Destroy(_contentRect.GetChild(i).gameObject);
+            Object.Destroy(_contentRect.GetChild(i).gameObject);
         }
 
         if (_entries.Count == 0)
@@ -472,7 +472,7 @@ public sealed class DialogueLog : MonoBehaviour
                 Transform child = row.transform.GetChild(i);
                 if (child.name == "Expanded Text")
                 {
-                    Destroy(child.gameObject);
+                    Object.Destroy(child.gameObject);
                 }
             }
             row.name = "Entry Row|0";

@@ -60,7 +60,7 @@ public class AchievementSystem : MonoBehaviour
         }
         else if (_instance != this)
         {
-            Destroy(gameObject);
+            Object.Destroy(gameObject);
             return;
         }
         _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
@@ -494,7 +494,7 @@ public class AchievementSystem : MonoBehaviour
     private void RefreshPanel()
     {
         foreach (Transform child in _contentArea)
-            Destroy(child.gameObject);
+            Object.Destroy(child.gameObject);
 
         float y = 4;
         int unlockedCount = 0;

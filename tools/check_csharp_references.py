@@ -48,8 +48,8 @@ RE_TYPE_DECL = re.compile(
 # empty lines before scanning for properties.
 RE_PUBLIC_PROPERTY = re.compile(
     r"^\s*public\s+"
-    r"(?:static\s+)?"
-    r"(?!class\b|struct\b|enum\b|const\b|delegate\b)"
+    r"(?:static\s+|sealed\s+|abstract\s+|partial\s+|readonly\s+|new\s+|virtual\s+|override\s+|unsafe\s+|volatile\s+)*"
+    r"(?!class\b|struct\b|enum\b|const\b|delegate\b|interface\b|event\b|static\b|sealed\b|abstract\b|partial\b|readonly\b|new\b|virtual\b|override\b|unsafe\b|volatile\b)"
     r"([\w.<>,?\s\[\]]+?)\s+"
     r"(\w+)\s*"
     r"(\{.*?\})",
@@ -80,8 +80,8 @@ RE_PUBLIC_FIELD = re.compile(
 # Public method
 RE_PUBLIC_METHOD = re.compile(
     r"^\s*public\s+"
-    r"(?:static\s+)?"
-    r"(?!class\b|struct\b|enum\b|const\b|delegate\b)"
+    r"(?:static\s+|sealed\s+|abstract\s+|partial\s+|readonly\s+|new\s+|virtual\s+|override\s+|unsafe\s+|volatile\s+)*"
+    r"(?!class\b|struct\b|enum\b|const\b|delegate\b|interface\b|event\b)"
     r"([\w.<>,?\s\[\]]+?)\s+"
     r"(\w+)"
     r"\s*\(([^)]*)\)",
@@ -289,7 +289,14 @@ def extract_members(text: str):
     for m in RE_PUBLIC_PROPERTY.finditer(clean):
         full_match = m.group(0)
         prop_name = m.group(2)
-        # Skip if this is actually a type declaration
+        # Skip if this is actually a type declaration. DOTALL + non-greedy can
+        # cause the regex to match 'public static class Foo {' as if it were a
+        # property (where the type part captures 'static class' and the name
+        # captures 'Foo'). Also handle 'public struct Bar {', etc.
+        type_str_raw = m.group(1).strip()
+        type_tokens = set(type_str_raw.split())
+        if type_tokens & {"class", "struct", "enum", "delegate", "interface"}:
+            continue
         name_idx = full_match.index(prop_name)
         if RE_IS_TYPE_DECL.search(full_match[:name_idx]):
             continue

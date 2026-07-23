@@ -215,8 +215,8 @@ public class Interactable : MonoBehaviour
     private void OnDestroy()
     {
         if (_promptGO != null)
-            Destroy(_promptGO);
+            Object.Destroy(_promptGO);
         if (_colliderOverlay != null)
-            Destroy(_colliderOverlay);
+            Object.Destroy(_colliderOverlay);
     }
 }

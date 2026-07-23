@@ -43,7 +43,7 @@ public class InventorySystem : MonoBehaviour
         }
         else if (_instance != this)
         {
-            Destroy(gameObject);
+            Object.Destroy(gameObject);
         }
     }
 
@@ -200,7 +200,7 @@ public class InventorySystem : MonoBehaviour
 
         // Clear old content
         foreach (Transform child in contentArea)
-            Destroy(child.gameObject);
+            Object.Destroy(child.gameObject);
 
         float yOffset = 0;
 

@@ -331,3 +331,17 @@ public sealed class BrewRecipe
     public int yieldCount;     // how many units produced
     public int stockIndex;     // which drink index (0=Beer, 1=Whiskey, 2=Wine)
 }
+
+// ── Beer Competition models ────────────────────────────
+
+[Serializable]
+public sealed class CompetitionSaveData
+{
+    public bool hasTriggered;
+    public bool hasSubmitted;
+    public bool hasJudged;
+    public int playerScore;
+    public int playerRank;
+    public int rewardMoney;
+    public List<int> npcScores = new List<int>();
+}

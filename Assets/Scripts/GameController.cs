@@ -581,6 +581,9 @@ public sealed class GameController : MonoBehaviour
             // F8: Update weather for new day
             if (WeatherSystem.Instance != null)
                 WeatherSystem.Instance.NewDay(State.CurrentDay);
+            // Beer Competition: check if today is competition day
+            if (BeerCompetitionSystem.Instance != null)
+                BeerCompetitionSystem.Instance.CheckCompetitionDay(State.CurrentDay);
         }
 
         // [Brewing] Tick brew progress

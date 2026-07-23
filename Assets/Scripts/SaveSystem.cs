@@ -64,6 +64,8 @@ public class SaveData
     public bool barShiftApologyMode;
     // Achievement partial progress (prevents data loss on save/load cycle)
     public AchievementTrackingData achievementTracking;
+    // Beer Competition state
+    public CompetitionSaveData competitionData;
 }
 
 public class SaveSystem : MonoBehaviour
@@ -300,6 +302,22 @@ public class SaveSystem : MonoBehaviour
             data.tutorialStepCompleted = TutorialSystem.Instance.GetStepCompletionStates();
         }
 
+        // Save Beer Competition state
+        if (BeerCompetitionSystem.Instance != null)
+        {
+            var comp = BeerCompetitionSystem.Instance;
+            data.competitionData = new CompetitionSaveData
+            {
+                hasTriggered = comp.HasTriggered,
+                hasSubmitted = comp.HasSubmitted,
+                hasJudged = comp.HasJudged,
+                playerScore = comp.PlayerScore,
+                playerRank = comp.PlayerRank,
+                rewardMoney = comp.RewardMoney,
+                npcScores = new List<int>(comp.NpcScores)
+            };
+        }
+
         // Serialize to JSON and write file atomically (temp file + rename)
         string json = JsonUtility.ToJson(data, true);
         string path = Application.persistentDataPath + SavePrefix + slot + SaveExtension;
@@ -507,6 +525,21 @@ public class SaveSystem : MonoBehaviour
             TutorialSystem.Instance.RestoreStepStates(
                 data.tutorialStepCompleted,
                 data.tutorialWelcomeDismissed);
+        }
+
+        // Restore Beer Competition state from save data
+        if (BeerCompetitionSystem.Instance != null && data.competitionData != null)
+        {
+            var comp = BeerCompetitionSystem.Instance;
+            comp.HasTriggered = data.competitionData.hasTriggered;
+            comp.HasSubmitted = data.competitionData.hasSubmitted;
+            comp.HasJudged = data.competitionData.hasJudged;
+            comp.PlayerScore = data.competitionData.playerScore;
+            comp.PlayerRank = data.competitionData.playerRank;
+            comp.RewardMoney = data.competitionData.rewardMoney;
+            comp.NpcScores.Clear();
+            if (data.competitionData.npcScores != null)
+                comp.NpcScores.AddRange(data.competitionData.npcScores);
         }
 
         // Refresh HUD

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using RectSpec = UIFactory.RectSpec;
 
 /// <summary>
 /// Singleton achievement system. Tracks achievements, checks conditions,
@@ -101,7 +102,7 @@ public class AchievementSystem : MonoBehaviour
         Transform root = _canvas.transform;
 
         // Overlay
-        Image overlay = CreateImage("Overlay", root,
+        Image overlay = UIFactory.MakeImage("Overlay", root,
             new RectSpec(Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero),
             new Color32(0, 0, 0, 180));
 
@@ -117,14 +118,14 @@ public class AchievementSystem : MonoBehaviour
         pRT.offsetMax = Vector2.zero;
 
         // Title
-        Text titleText = CreateText("Title", _panel.transform,
+        Text titleText = UIFactory.MakeText("Title", _panel.transform,
             new RectSpec(new Vector2(0, 1), new Vector2(1, 1),
                 new Vector2(20, -40), new Vector2(-120, -4)),
             28, TextAnchor.MiddleLeft);
         titleText.text = "Achievements";
         titleText.fontStyle = FontStyle.Bold;
 
-        Text closeText = CreateText("CloseHint", _panel.transform,
+        Text closeText = UIFactory.MakeText("CloseHint", _panel.transform,
             new RectSpec(new Vector2(1, 1), new Vector2(1, 1),
                 new Vector2(-120, -40), new Vector2(-20, -8)),
             14, TextAnchor.MiddleRight);
@@ -157,7 +158,7 @@ public class AchievementSystem : MonoBehaviour
         _notificationGroup = _notificationGO.AddComponent<CanvasGroup>();
         _notificationGroup.alpha = 0f;
 
-        _notificationText = CreateText("NotifText", _notificationGO.transform,
+        _notificationText = UIFactory.MakeText("NotifText", _notificationGO.transform,
             new RectSpec(Vector2.zero, Vector2.one, new Vector2(12, 6), new Vector2(-12, -6)),
             18, TextAnchor.MiddleCenter);
         _notificationText.fontStyle = FontStyle.Bold;
@@ -514,14 +515,14 @@ public class AchievementSystem : MonoBehaviour
             iImg.color = a.unlocked ? new Color32(40, 50, 30, 255) : new Color32(30, 30, 35, 255);
 
             string icon = a.unlocked ? "&#9733;" : "&#9734;"; // star / empty star
-            Text iconText = CreateText("Icon", itemGO.transform,
+            Text iconText = UIFactory.MakeText("Icon", itemGO.transform,
                 new RectSpec(new Vector2(0, 0), new Vector2(0, 1),
                     new Vector2(8, 6), new Vector2(40, -6)),
                 20, TextAnchor.MiddleCenter);
             iconText.text = a.unlocked ? "*" : "o";
             iconText.color = a.unlocked ? new Color32(255, 220, 60, 255) : new Color32(100, 100, 100, 255);
 
-            Text nameText = CreateText("Name", itemGO.transform,
+            Text nameText = UIFactory.MakeText("Name", itemGO.transform,
                 new RectSpec(new Vector2(0, 0), new Vector2(1, 1),
                     new Vector2(48, 6), new Vector2(-6, -6)),
                 16, TextAnchor.MiddleLeft);
@@ -529,7 +530,7 @@ public class AchievementSystem : MonoBehaviour
             nameText.fontStyle = FontStyle.Bold;
             nameText.color = a.unlocked ? new Color32(200, 200, 200, 255) : new Color32(120, 120, 120, 255);
 
-            Text descText = CreateText("Desc", itemGO.transform,
+            Text descText = UIFactory.MakeText("Desc", itemGO.transform,
                 new RectSpec(new Vector2(0, 0), new Vector2(1, 1),
                     new Vector2(48, 24), new Vector2(-6, 6)),
                 12, TextAnchor.LowerLeft);
@@ -540,7 +541,7 @@ public class AchievementSystem : MonoBehaviour
         }
 
         // Summary header
-        Text summaryText = CreateText("Summary", _contentArea,
+        Text summaryText = UIFactory.MakeText("Summary", _contentArea,
             new RectSpec(new Vector2(0, 1), new Vector2(1, 1),
                 new Vector2(0, -y - 30), new Vector2(0, -y)),
             16, TextAnchor.LowerLeft);
@@ -593,47 +594,5 @@ public class AchievementSystem : MonoBehaviour
         _canvas.gameObject.SetActive(false);
     }
 
-    // ── UI Helpers ──────────────────────────────────────
-
-    private Image CreateImage(string name, Transform parent, RectSpec rect, Color32 color)
-    {
-        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-        go.transform.SetParent(parent, false);
-        ApplyRect(go.GetComponent<RectTransform>(), rect);
-        Image img = go.GetComponent<Image>();
-        img.color = color;
-        return img;
-    }
-
-    private Text CreateText(string name, Transform parent, RectSpec rect, int fontSize, TextAnchor alignment)
-    {
-        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
-        go.transform.SetParent(parent, false);
-        ApplyRect(go.GetComponent<RectTransform>(), rect);
-        Text text = go.GetComponent<Text>();
-        text.font = _font;
-        text.fontSize = fontSize;
-        text.alignment = alignment;
-        text.color = new Color32(246, 240, 229, 255);
-        text.horizontalOverflow = HorizontalWrapMode.Wrap;
-        text.verticalOverflow = VerticalWrapMode.Truncate;
-        return text;
-    }
-
-    private static void ApplyRect(RectTransform rt, RectSpec spec)
-    {
-        rt.anchorMin = spec.anchorMin;
-        rt.anchorMax = spec.anchorMax;
-        rt.offsetMin = spec.offsetMin;
-        rt.offsetMax = spec.offsetMax;
-    }
-
-    private struct RectSpec
-    {
-        public Vector2 anchorMin, anchorMax, offsetMin, offsetMax;
-        public RectSpec(Vector2 amin, Vector2 amax, Vector2 omin, Vector2 omax)
-        {
-            anchorMin = amin; anchorMax = amax; offsetMin = omin; offsetMax = omax;
-        }
     }
 }

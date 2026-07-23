@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using RectSpec = UIFactory.RectSpec;
 
 [Serializable]
 public sealed class CharacterDatabase
@@ -109,37 +110,6 @@ public sealed class DailyGoal
     public string location;
     public bool completed;
     public int day;
-}
-
-// ── Shared UI helpers ─────────────────────────────────
-
-public static class UIFactory
-{
-    private static Font _cachedFont;
-
-    public static Font GetFont()
-    {
-        if (_cachedFont == null)
-            _cachedFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-        return _cachedFont;
-    }
-
-    public static void ApplyRect(RectTransform rt, RectSpec spec)
-    {
-        rt.anchorMin = spec.anchorMin;
-        rt.anchorMax = spec.anchorMax;
-        rt.offsetMin = spec.offsetMin;
-        rt.offsetMax = spec.offsetMax;
-    }
-
-    public readonly struct RectSpec
-    {
-        public readonly Vector2 anchorMin, anchorMax, offsetMin, offsetMax;
-        public RectSpec(Vector2 amin, Vector2 amax, Vector2 omin, Vector2 omax)
-        {
-            anchorMin = amin; anchorMax = amax; offsetMin = omin; offsetMax = omax;
-        }
-    }
 }
 
 // ── Bar system data models (F2) ──────────────────────

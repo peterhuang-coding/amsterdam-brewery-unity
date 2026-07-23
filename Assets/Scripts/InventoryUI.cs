@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using RectSpec = UIFactory.RectSpec;
 
 /// <summary>
 /// Inventory UI panel with tabs (Useful / Collectible / Quest Items),
@@ -94,7 +95,7 @@ public class InventoryUI : MonoBehaviour
         Transform root = _canvas.transform;
 
         // Semi-transparent background overlay
-        Image overlay = CreateImage("Overlay", root,
+        Image overlay = UIFactory.MakeImage("Overlay", root,
             new RectSpec(Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero),
             new Color32(0, 0, 0, 180));
         overlay.raycastTarget = true;
@@ -111,7 +112,7 @@ public class InventoryUI : MonoBehaviour
         pRT.offsetMax = Vector2.zero;
 
         // Title
-        Text titleText = CreateText("Title", _panel.transform,
+        Text titleText = UIFactory.MakeText("Title", _panel.transform,
             new RectSpec(new Vector2(0, 1), new Vector2(1, 1),
                 new Vector2(20, -40), new Vector2(-20, -4)),
             28, TextAnchor.MiddleLeft);
@@ -119,7 +120,7 @@ public class InventoryUI : MonoBehaviour
         titleText.fontStyle = FontStyle.Bold;
 
         // Close hint
-        Text closeText = CreateText("CloseHint", _panel.transform,
+        Text closeText = UIFactory.MakeText("CloseHint", _panel.transform,
             new RectSpec(new Vector2(1, 1), new Vector2(1, 1),
                 new Vector2(-120, -40), new Vector2(-20, -8)),
             14, TextAnchor.MiddleRight);
@@ -162,7 +163,7 @@ public class InventoryUI : MonoBehaviour
             tabImg.color = new Color32(40, 45, 55, 255);
             tabImg.raycastTarget = true;
 
-            Text tabText = CreateText("TabText", tabGO.transform,
+            Text tabText = UIFactory.MakeText("TabText", tabGO.transform,
                 new RectSpec(Vector2.zero, Vector2.one, new Vector2(4, 2), new Vector2(-4, -2)),
                 14, TextAnchor.MiddleCenter);
             tabText.text = _tabNames[i];
@@ -186,14 +187,14 @@ public class InventoryUI : MonoBehaviour
         Image dImg = _detailPanel.GetComponent<Image>();
         dImg.color = new Color32(30, 35, 42, 255);
 
-        _detailTitleText = CreateText("DetailTitle", _detailPanel.transform,
+        _detailTitleText = UIFactory.MakeText("DetailTitle", _detailPanel.transform,
             new RectSpec(new Vector2(0, 1), new Vector2(0.5f, 1),
                 new Vector2(12, -24), new Vector2(0, -4)),
             18, TextAnchor.LowerLeft);
         _detailTitleText.fontStyle = FontStyle.Bold;
         _detailTitleText.text = "Select an item";
 
-        _detailDescText = CreateText("DetailDesc", _detailPanel.transform,
+        _detailDescText = UIFactory.MakeText("DetailDesc", _detailPanel.transform,
             new RectSpec(new Vector2(0, 0), new Vector2(1, 0.7f),
                 new Vector2(12, 4), new Vector2(-12, 0)),
             14, TextAnchor.UpperLeft);
@@ -234,7 +235,7 @@ public class InventoryUI : MonoBehaviour
         List<InventoryItem> items = GetCurrentTabItems();
         if (items.Count == 0)
         {
-            Text emptyText = CreateText("Empty", _contentArea,
+            Text emptyText = UIFactory.MakeText("Empty", _contentArea,
                 new RectSpec(new Vector2(0, 1), new Vector2(1, 1),
                     new Vector2(0, -30), new Vector2(0, -4)),
                 16, TextAnchor.MiddleCenter);
@@ -259,7 +260,7 @@ public class InventoryUI : MonoBehaviour
             iImg.raycastTarget = true;
 
             // Emoji icon
-            Text iconText = CreateText("Icon", itemGO.transform,
+            Text iconText = UIFactory.MakeText("Icon", itemGO.transform,
                 new RectSpec(new Vector2(0, 0), new Vector2(0, 1),
                     new Vector2(6, 6), new Vector2(36, -6)),
                 20, TextAnchor.MiddleCenter);
@@ -267,7 +268,7 @@ public class InventoryUI : MonoBehaviour
             iconText.fontStyle = FontStyle.Bold;
 
             // Item name
-            Text nameText = CreateText("Name", itemGO.transform,
+            Text nameText = UIFactory.MakeText("Name", itemGO.transform,
                 new RectSpec(new Vector2(0, 0), new Vector2(1, 1),
                     new Vector2(44, 6), new Vector2(-6, -6)),
                 16, TextAnchor.MiddleLeft);
@@ -438,41 +439,6 @@ public class InventoryUI : MonoBehaviour
         _canvas.gameObject.SetActive(false);
     }
 
-    // ── UI Helpers ──────────────────────────────────────
-
-    private Image CreateImage(string name, Transform parent, RectSpec rect, Color32 color)
-    {
-        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-        go.transform.SetParent(parent, false);
-        ApplyRect(go.GetComponent<RectTransform>(), rect);
-        Image img = go.GetComponent<Image>();
-        img.color = color;
-        return img;
-    }
-
-    private Text CreateText(string name, Transform parent, RectSpec rect, int fontSize, TextAnchor alignment)
-    {
-        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
-        go.transform.SetParent(parent, false);
-        ApplyRect(go.GetComponent<RectTransform>(), rect);
-        Text text = go.GetComponent<Text>();
-        text.font = _font;
-        text.fontSize = fontSize;
-        text.alignment = alignment;
-        text.color = new Color32(246, 240, 229, 255);
-        text.horizontalOverflow = HorizontalWrapMode.Wrap;
-        text.verticalOverflow = VerticalWrapMode.Truncate;
-        return text;
-    }
-
-    private static void ApplyRect(RectTransform rt, RectSpec spec)
-    {
-        rt.anchorMin = spec.anchorMin;
-        rt.anchorMax = spec.anchorMax;
-        rt.offsetMin = spec.offsetMin;
-        rt.offsetMax = spec.offsetMax;
-    }
-
     // ── Types ───────────────────────────────────────────
 
     private struct InventoryItem
@@ -481,13 +447,5 @@ public class InventoryUI : MonoBehaviour
         public string name;
         public string description;
     }
-
-    private struct RectSpec
-    {
-        public Vector2 anchorMin, anchorMax, offsetMin, offsetMax;
-        public RectSpec(Vector2 amin, Vector2 amax, Vector2 omin, Vector2 omax)
-        {
-            anchorMin = amin; anchorMax = amax; offsetMin = omin; offsetMax = omax;
-        }
     }
 }

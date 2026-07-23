@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using RectSpec = UIFactory.RectSpec;
 
 /// <summary>
 /// Brewing system for Amsterdam Brewery.
@@ -129,7 +130,7 @@ public class BrewingSystem : MonoBehaviour
         Transform root = _canvas.transform;
 
         // Overlay
-        Image overlay = CreateImage("Overlay", root,
+        Image overlay = UIFactory.MakeImage("Overlay", root,
             new RectSpec(Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero),
             new Color32(0, 0, 0, 180));
         Button overlayBtn = overlay.gameObject.AddComponent<Button>();
@@ -147,7 +148,7 @@ public class BrewingSystem : MonoBehaviour
         pRT.offsetMax = Vector2.zero;
 
         // Title
-        Text title = CreateText("Title", _panel.transform,
+        Text title = UIFactory.MakeText("Title", _panel.transform,
             new RectSpec(new Vector2(0, 1), new Vector2(1, 1),
                 new Vector2(20, -44), new Vector2(-20, -4)),
             28, TextAnchor.MiddleLeft);
@@ -156,7 +157,7 @@ public class BrewingSystem : MonoBehaviour
         title.color = new Color32(236, 180, 87, 255);
 
         // Close hint
-        Text closeHint = CreateText("CloseHint", _panel.transform,
+        Text closeHint = UIFactory.MakeText("CloseHint", _panel.transform,
             new RectSpec(new Vector2(1, 1), new Vector2(1, 1),
                 new Vector2(-140, -44), new Vector2(-20, -8)),
             14, TextAnchor.MiddleRight);
@@ -164,14 +165,14 @@ public class BrewingSystem : MonoBehaviour
         closeHint.color = new Color32(150, 150, 150, 200);
 
         // Money display
-        _moneyText = CreateText("Money", _panel.transform,
+        _moneyText = UIFactory.MakeText("Money", _panel.transform,
             new RectSpec(new Vector2(0, 1), new Vector2(1, 1),
                 new Vector2(20, -72), new Vector2(-20, -44)),
             16, TextAnchor.MiddleLeft);
         _moneyText.color = new Color32(160, 220, 120, 255);
 
         // Brew status
-        _statusText = CreateText("Status", _panel.transform,
+        _statusText = UIFactory.MakeText("Status", _panel.transform,
             new RectSpec(new Vector2(0, 1), new Vector2(1, 1),
                 new Vector2(20, -96), new Vector2(-20, -72)),
             16, TextAnchor.MiddleLeft);
@@ -199,7 +200,7 @@ public class BrewingSystem : MonoBehaviour
         Image nImg = _notificationGO.GetComponent<Image>();
         nImg.color = new Color32(40, 50, 30, 230);
 
-        _notificationText = CreateTextInline("NotifText", _notificationGO.transform,
+        _notificationText = UIFactory.MakeText("NotifText", _notificationGO.transform,
             new RectSpec(Vector2.zero, Vector2.one, new Vector2(12, 6), new Vector2(-12, -6)),
             18, TextAnchor.MiddleCenter);
         _notificationText.fontStyle = FontStyle.Bold;
@@ -269,7 +270,7 @@ public class BrewingSystem : MonoBehaviour
         rRT.offsetMax = new Vector2(0, -y);
 
         // Emoji + name
-        Text nameText = CreateTextInline($"Name_{recipe.id}", row.transform,
+        Text nameText = UIFactory.MakeText($"Name_{recipe.id}", row.transform,
             new RectSpec(new Vector2(0, 0), new Vector2(0.4f, 1),
                 new Vector2(12, 6), new Vector2(0, -6)),
             20, TextAnchor.MiddleLeft);
@@ -277,7 +278,7 @@ public class BrewingSystem : MonoBehaviour
         nameText.fontStyle = FontStyle.Bold;
 
         // Details
-        Text detailsText = CreateTextInline($"Details_{recipe.id}", row.transform,
+        Text detailsText = UIFactory.MakeText($"Details_{recipe.id}", row.transform,
             new RectSpec(new Vector2(0, 0), new Vector2(0.4f, 1),
                 new Vector2(12, 4), new Vector2(0, -28)),
             12, TextAnchor.MiddleLeft);
@@ -286,7 +287,7 @@ public class BrewingSystem : MonoBehaviour
 
         if (isActive)
         {
-            Text activeText = CreateTextInline($"Active_{recipe.id}", row.transform,
+            Text activeText = UIFactory.MakeText($"Active_{recipe.id}", row.transform,
                 new RectSpec(new Vector2(0.5f, 0), new Vector2(1, 1),
                     new Vector2(0, 0), new Vector2(-12, 0)),
                 16, TextAnchor.MiddleRight);
@@ -313,7 +314,7 @@ public class BrewingSystem : MonoBehaviour
             int capturedIndex = index;
             btn.onClick.AddListener(() => StartBrew(capturedIndex));
 
-            Text btnText = CreateTextInline($"BtnText_{index}", btnGO.transform,
+            Text btnText = UIFactory.MakeText($"BtnText_{index}", btnGO.transform,
                 new RectSpec(Vector2.zero, Vector2.one, new Vector2(4, 2), new Vector2(-4, -2)),
                 16, TextAnchor.MiddleCenter);
             btnText.text = canAfford ? "Start Brew" : "Can't Afford";
@@ -347,7 +348,7 @@ public class BrewingSystem : MonoBehaviour
         sRT.offsetMin = new Vector2(0, -topY - 44);
         sRT.offsetMax = new Vector2(0, -topY);
 
-        Text stockText = CreateTextInline("StockText", summary.transform,
+        Text stockText = UIFactory.MakeText("StockText", summary.transform,
             new RectSpec(Vector2.zero, Vector2.one, new Vector2(12, 6), new Vector2(-12, -6)),
             16, TextAnchor.MiddleLeft);
         stockText.text = $"📦 Brew Stock: 🍺 Beer x{beer}  |  🥃 Whiskey x{whiskey}  |  🍷 Wine x{wine}";
@@ -397,52 +398,5 @@ public class BrewingSystem : MonoBehaviour
         _notificationCoroutine = null;
     }
 
-    // ── UI Helpers ───────────────────────────────────────
-
-    private Image CreateImage(string name, Transform parent, RectSpec rect, Color32 color)
-    {
-        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-        go.transform.SetParent(parent, false);
-        ApplyRect(go.GetComponent<RectTransform>(), rect);
-        Image img = go.GetComponent<Image>();
-        img.color = color;
-        return img;
-    }
-
-    private Text CreateText(string name, Transform parent, RectSpec rect, int fontSize, TextAnchor alignment)
-    {
-        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
-        go.transform.SetParent(parent, false);
-        ApplyRect(go.GetComponent<RectTransform>(), rect);
-        Text text = go.GetComponent<Text>();
-        text.font = _font;
-        text.fontSize = fontSize;
-        text.alignment = alignment;
-        text.color = new Color32(246, 240, 229, 255);
-        text.horizontalOverflow = HorizontalWrapMode.Wrap;
-        text.verticalOverflow = VerticalWrapMode.Truncate;
-        return text;
-    }
-
-    private Text CreateTextInline(string name, Transform parent, RectSpec rect, int fontSize, TextAnchor alignment)
-    {
-        return CreateText(name, parent, rect, fontSize, alignment);
-    }
-
-    private static void ApplyRect(RectTransform rt, RectSpec spec)
-    {
-        rt.anchorMin = spec.anchorMin;
-        rt.anchorMax = spec.anchorMax;
-        rt.offsetMin = spec.offsetMin;
-        rt.offsetMax = spec.offsetMax;
-    }
-
-    private struct RectSpec
-    {
-        public Vector2 anchorMin, anchorMax, offsetMin, offsetMax;
-        public RectSpec(Vector2 amin, Vector2 amax, Vector2 omin, Vector2 omax)
-        {
-            anchorMin = amin; anchorMax = amax; offsetMin = omin; offsetMax = omax;
-        }
     }
 }

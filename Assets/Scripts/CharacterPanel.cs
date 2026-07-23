@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using RectSpec = UIFactory.RectSpec;
 
 /// <summary>
 /// Character relationship panel showing affection bars for all NPCs,
@@ -79,7 +80,7 @@ public class CharacterPanel : MonoBehaviour
         Transform root = _canvas.transform;
 
         // Semi-transparent background overlay
-        Image overlay = CreateImage("Overlay", root,
+        Image overlay = UIFactory.MakeImage("Overlay", root,
             new RectSpec(Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero),
             new Color32(0, 0, 0, 180));
         overlay.raycastTarget = true;
@@ -96,14 +97,14 @@ public class CharacterPanel : MonoBehaviour
         pRT.offsetMax = Vector2.zero;
 
         // Title
-        Text titleText = CreateText("Title", _panel.transform,
+        Text titleText = UIFactory.MakeText("Title", _panel.transform,
             new RectSpec(new Vector2(0, 1), new Vector2(1, 1),
                 new Vector2(20, -40), new Vector2(-120, -4)),
             28, TextAnchor.MiddleLeft);
         titleText.text = "Character Panel";
         titleText.fontStyle = FontStyle.Bold;
 
-        Text closeText = CreateText("CloseHint", _panel.transform,
+        Text closeText = UIFactory.MakeText("CloseHint", _panel.transform,
             new RectSpec(new Vector2(1, 1), new Vector2(1, 1),
                 new Vector2(-120, -40), new Vector2(-20, -8)),
             14, TextAnchor.MiddleRight);
@@ -174,7 +175,7 @@ public class CharacterPanel : MonoBehaviour
 
     private void AddSectionLabel(string text, ref float y)
     {
-        Text t = CreateText(string.Format("Section_{0}", y), _contentArea,
+        Text t = UIFactory.MakeText(string.Format("Section_{0}", y), _contentArea,
             new RectSpec(new Vector2(0, 1), new Vector2(1, 1),
                 new Vector2(0, -y - 28), new Vector2(0, -y)),
             18, TextAnchor.LowerLeft);
@@ -186,7 +187,7 @@ public class CharacterPanel : MonoBehaviour
 
     private void AddInfoLine(string text, ref float y)
     {
-        Text t = CreateText(string.Format("Info_{0}", y), _contentArea,
+        Text t = UIFactory.MakeText(string.Format("Info_{0}", y), _contentArea,
             new RectSpec(new Vector2(0, 1), new Vector2(1, 1),
                 new Vector2(8, -y - 22), new Vector2(0, -y)),
             15, TextAnchor.LowerLeft);
@@ -243,7 +244,7 @@ public class CharacterPanel : MonoBehaviour
         initialText.alignment = TextAnchor.MiddleCenter;
 
         // Name + affection bar text
-        Text t = CreateText(string.Format("Aff_{0}", name), _contentArea,
+        Text t = UIFactory.MakeText(string.Format("Aff_{0}", name), _contentArea,
             new RectSpec(new Vector2(0, 1), new Vector2(1, 1),
                 new Vector2(48, -y - 24), new Vector2(0, -y)),
             16, TextAnchor.LowerLeft);
@@ -360,47 +361,5 @@ public class CharacterPanel : MonoBehaviour
         _canvas.gameObject.SetActive(false);
     }
 
-    // ── UI Helpers ──────────────────────────────────────
-
-    private Image CreateImage(string name, Transform parent, RectSpec rect, Color32 color)
-    {
-        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-        go.transform.SetParent(parent, false);
-        ApplyRect(go.GetComponent<RectTransform>(), rect);
-        Image img = go.GetComponent<Image>();
-        img.color = color;
-        return img;
-    }
-
-    private Text CreateText(string name, Transform parent, RectSpec rect, int fontSize, TextAnchor alignment)
-    {
-        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
-        go.transform.SetParent(parent, false);
-        ApplyRect(go.GetComponent<RectTransform>(), rect);
-        Text text = go.GetComponent<Text>();
-        text.font = _font;
-        text.fontSize = fontSize;
-        text.alignment = alignment;
-        text.color = new Color32(246, 240, 229, 255);
-        text.horizontalOverflow = HorizontalWrapMode.Wrap;
-        text.verticalOverflow = VerticalWrapMode.Truncate;
-        return text;
-    }
-
-    private static void ApplyRect(RectTransform rt, RectSpec spec)
-    {
-        rt.anchorMin = spec.anchorMin;
-        rt.anchorMax = spec.anchorMax;
-        rt.offsetMin = spec.offsetMin;
-        rt.offsetMax = spec.offsetMax;
-    }
-
-    private struct RectSpec
-    {
-        public Vector2 anchorMin, anchorMax, offsetMin, offsetMax;
-        public RectSpec(Vector2 amin, Vector2 amax, Vector2 omin, Vector2 omax)
-        {
-            anchorMin = amin; anchorMax = amax; offsetMin = omin; offsetMax = omax;
-        }
     }
 }

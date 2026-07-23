@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using RectSpec = UIFactory.RectSpec;
 
 /// <summary>
 /// Tutorial system that guides new players through the game's basic controls.
@@ -209,7 +210,7 @@ public class TutorialSystem : MonoBehaviour
         oRT.offsetMax = Vector2.zero;
 
         // Message text (center of screen)
-        _messageText = CreateText("Message", root,
+        _messageText = UIFactory.MakeText("Message", root,
             new RectSpec(new Vector2(0.2f, 0.35f), new Vector2(0.8f, 0.65f),
                 Vector2.zero, Vector2.zero),
             24, TextAnchor.MiddleCenter);
@@ -217,7 +218,7 @@ public class TutorialSystem : MonoBehaviour
         _messageText.fontStyle = FontStyle.Bold;
 
         // Arrow image (animated, points to key location)
-        _arrowImage = CreateImage("Arrow", root,
+        _arrowImage = UIFactory.MakeImage("Arrow", root,
             new RectSpec(new Vector2(0, 0), new Vector2(0, 0),
                 new Vector2(-16, -16), new Vector2(16, 16)),
             new Color32(255, 220, 60, 255));
@@ -539,12 +540,12 @@ public class TutorialSystem : MonoBehaviour
         Transform root = _welcomeCanvas.transform;
 
         // Dark overlay
-        Image overlay = CreateImage("Overlay", root,
+        Image overlay = UIFactory.MakeImage("Overlay", root,
             new RectSpec(Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero),
             new Color32(8, 10, 14, 240));
 
         // Title
-        Text titleText = CreateText("Title", root,
+        Text titleText = UIFactory.MakeText("Title", root,
             new RectSpec(new Vector2(0.15f, 0.55f), new Vector2(0.85f, 0.80f),
                 Vector2.zero, Vector2.zero),
             48, TextAnchor.MiddleCenter);
@@ -553,7 +554,7 @@ public class TutorialSystem : MonoBehaviour
         titleText.fontStyle = FontStyle.Bold;
 
         // Subtitle
-        Text subText = CreateText("Subtitle", root,
+        Text subText = UIFactory.MakeText("Subtitle", root,
             new RectSpec(new Vector2(0.15f, 0.45f), new Vector2(0.85f, 0.55f),
                 Vector2.zero, Vector2.zero),
             20, TextAnchor.MiddleCenter);
@@ -561,7 +562,7 @@ public class TutorialSystem : MonoBehaviour
         subText.color = new Color32(180, 175, 165, 255);
 
         // Controls info
-        Text controlsText = CreateText("Controls", root,
+        Text controlsText = UIFactory.MakeText("Controls", root,
             new RectSpec(new Vector2(0.15f, 0.22f), new Vector2(0.85f, 0.42f),
                 Vector2.zero, Vector2.zero),
             16, TextAnchor.UpperLeft);
@@ -595,7 +596,7 @@ public class TutorialSystem : MonoBehaviour
         colors.pressedColor = new Color32(160, 70, 40, 255);
         btn.colors = colors;
 
-        Text btnText = CreateText("BtnText", btnGO.transform,
+        Text btnText = UIFactory.MakeText("BtnText", btnGO.transform,
             new RectSpec(Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero),
             22, TextAnchor.MiddleCenter);
         btnText.text = "▶  Begin Your Story";
@@ -690,47 +691,5 @@ public class TutorialSystem : MonoBehaviour
         }
     }
 
-    // ── UI Helpers ──────────────────────────────────────
-
-    private Image CreateImage(string name, Transform parent, RectSpec rect, Color32 color)
-    {
-        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-        go.transform.SetParent(parent, false);
-        ApplyRect(go.GetComponent<RectTransform>(), rect);
-        Image img = go.GetComponent<Image>();
-        img.color = color;
-        return img;
-    }
-
-    private Text CreateText(string name, Transform parent, RectSpec rect, int fontSize, TextAnchor alignment)
-    {
-        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
-        go.transform.SetParent(parent, false);
-        ApplyRect(go.GetComponent<RectTransform>(), rect);
-        Text text = go.GetComponent<Text>();
-        text.font = _font;
-        text.fontSize = fontSize;
-        text.alignment = alignment;
-        text.color = new Color32(246, 240, 229, 255);
-        text.horizontalOverflow = HorizontalWrapMode.Wrap;
-        text.verticalOverflow = VerticalWrapMode.Truncate;
-        return text;
-    }
-
-    private static void ApplyRect(RectTransform rt, RectSpec spec)
-    {
-        rt.anchorMin = spec.anchorMin;
-        rt.anchorMax = spec.anchorMax;
-        rt.offsetMin = spec.offsetMin;
-        rt.offsetMax = spec.offsetMax;
-    }
-
-    private struct RectSpec
-    {
-        public Vector2 anchorMin, anchorMax, offsetMin, offsetMax;
-        public RectSpec(Vector2 amin, Vector2 amax, Vector2 omin, Vector2 omax)
-        {
-            anchorMin = amin; anchorMax = amax; offsetMin = omin; offsetMax = omax;
-        }
     }
 }

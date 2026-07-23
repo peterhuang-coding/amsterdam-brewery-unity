@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using RectSpec = UIFactory.RectSpec;
 
 [System.Serializable]
 public class DialogueEntry
@@ -101,7 +102,7 @@ public sealed class DialogueLog : MonoBehaviour
         Transform root = _canvas.transform;
 
         // Semi-transparent black background (full screen, click to close)
-        Image bgOverlay = MakeImage("Log Overlay", root,
+        Image bgOverlay = UIFactory.MakeImage("Log Overlay", root,
             new RectSpec(Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero),
             new Color32(0, 0, 0, 180));
 
@@ -128,12 +129,12 @@ public sealed class DialogueLog : MonoBehaviour
         panelBg.color = new Color32(20, 24, 30, 245);
 
         // Title bar
-        Image titleBar = MakeImage("Title Bar", _panelRoot.transform,
+        Image titleBar = UIFactory.MakeImage("Title Bar", _panelRoot.transform,
             new RectSpec(new Vector2(0, 1), new Vector2(1, 1),
                 Vector2.zero, new Vector2(0, -48)),
             new Color32(30, 36, 46, 255));
 
-        Text titleText = MakeText("Title Text", titleBar.transform,
+        Text titleText = UIFactory.MakeText("Title Text", titleBar.transform,
             new RectSpec(Vector2.zero, Vector2.one, new Vector2(16, 0), new Vector2(-16, 0)),
             26, TextAnchor.MiddleLeft);
         titleText.text = "\U0001f4dc Dialogue Log";
@@ -141,11 +142,11 @@ public sealed class DialogueLog : MonoBehaviour
         titleText.color = new Color32(246, 240, 229, 255);
 
         // Close button
-        Image closeBtn = MakeImage("Close Button", _panelRoot.transform,
+        Image closeBtn = UIFactory.MakeImage("Close Button", _panelRoot.transform,
             new RectSpec(new Vector2(1, 1), new Vector2(1, 1),
                 new Vector2(-48, -44), new Vector2(-12, -4)),
             new Color32(200, 80, 80, 200));
-        Text closeText = MakeText("Close Text", closeBtn.transform,
+        Text closeText = UIFactory.MakeText("Close Text", closeBtn.transform,
             new RectSpec(Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero),
             20, TextAnchor.MiddleCenter);
         closeText.text = "X";
@@ -373,7 +374,7 @@ public sealed class DialogueLog : MonoBehaviour
 
         if (_entries.Count == 0)
         {
-            Text emptyText = MakeText("Empty Text", _contentRect,
+            Text emptyText = UIFactory.MakeText("Empty Text", _contentRect,
                 new RectSpec(Vector2.zero, Vector2.one,
                     new Vector2(0, 0), new Vector2(0, 0)),
                 22, TextAnchor.MiddleCenter);
@@ -443,7 +444,7 @@ public sealed class DialogueLog : MonoBehaviour
         string colorHex = ColorToHex(speakerColor);
         string fullText = $"<color=#{colorHex}>[{entry.speakerDisplayName}]</color> {truncatedText}";
 
-        Text entryText = MakeText("Entry Text", row.transform,
+        Text entryText = UIFactory.MakeText("Entry Text", row.transform,
             new RectSpec(Vector2.zero, Vector2.one,
                 new Vector2(12, 0), new Vector2(-12, 0)),
             16, TextAnchor.MiddleLeft);
@@ -555,45 +556,5 @@ public sealed class DialogueLog : MonoBehaviour
         return $"{color.r:X2}{color.g:X2}{color.b:X2}";
     }
 
-    private Image MakeImage(string name, Transform parent, RectSpec rect, Color32 color)
-    {
-        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-        go.transform.SetParent(parent, false);
-        ApplyRect(go.GetComponent<RectTransform>(), rect);
-        Image img = go.GetComponent<Image>();
-        img.color = color;
-        return img;
-    }
-
-    private Text MakeText(string name, Transform parent, RectSpec rect, int fontSize, TextAnchor alignment)
-    {
-        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
-        go.transform.SetParent(parent, false);
-        ApplyRect(go.GetComponent<RectTransform>(), rect);
-        Text text = go.GetComponent<Text>();
-        text.font = _font;
-        text.fontSize = fontSize;
-        text.alignment = alignment;
-        text.color = new Color32(246, 240, 229, 255);
-        text.horizontalOverflow = HorizontalWrapMode.Wrap;
-        text.verticalOverflow = VerticalWrapMode.Truncate;
-        return text;
-    }
-
-    private static void ApplyRect(RectTransform rt, RectSpec spec)
-    {
-        rt.anchorMin = spec.anchorMin;
-        rt.anchorMax = spec.anchorMax;
-        rt.offsetMin = spec.offsetMin;
-        rt.offsetMax = spec.offsetMax;
-    }
-
-    private readonly struct RectSpec
-    {
-        public readonly Vector2 anchorMin, anchorMax, offsetMin, offsetMax;
-        public RectSpec(Vector2 amin, Vector2 amax, Vector2 omin, Vector2 omax)
-        {
-            anchorMin = amin; anchorMax = amax; offsetMin = omin; offsetMax = omax;
-        }
     }
 }

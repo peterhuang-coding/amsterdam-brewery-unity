@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using RectSpec = UIFactory.RectSpec;
 
 [System.Serializable]
 public class BarUpgrade
@@ -207,7 +208,7 @@ public sealed class BarUpgradeSystem : MonoBehaviour
         scaler.matchWidthOrHeight = 0.5f;
 
         // Semi-transparent black background (click to close)
-        Image bgImage = MakeImage("Panel Background", canvasGo.transform,
+        Image bgImage = UIFactory.MakeImage("Panel Background", canvasGo.transform,
             new RectSpec(Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero),
             new Color32(0, 0, 0, 160));
         Button bgButton = bgImage.gameObject.AddComponent<Button>();
@@ -221,19 +222,19 @@ public sealed class BarUpgradeSystem : MonoBehaviour
         bgButton.colors = bgColors;
 
         // Centered panel
-        Image panelBg = MakeImage("Upgrade Panel", canvasGo.transform,
+        Image panelBg = UIFactory.MakeImage("Upgrade Panel", canvasGo.transform,
             new RectSpec(
                 new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
                 new Vector2(-280, -280), new Vector2(280, 280)),
             new Color32(20, 24, 30, 245));
 
         // Panel border
-        Image border = MakeImage("Panel Border", panelBg.transform,
-            StretchFull(0, 0, 0, 0),
+        Image border = UIFactory.MakeImage("Panel Border", panelBg.transform,
+            UIFactory.StretchFull(0, 0, 0, 0),
             new Color32(80, 85, 95, 100));
 
         // Title
-        Text titleText = MakeText("Panel Title", panelBg.transform,
+        Text titleText = UIFactory.MakeText("Panel Title", panelBg.transform,
             new RectSpec(Vector2.zero, Vector2.one,
                 new Vector2(20, -20), new Vector2(-20, -520)),
             28, TextAnchor.LowerLeft);
@@ -242,7 +243,7 @@ public sealed class BarUpgradeSystem : MonoBehaviour
         titleText.color = new Color32(246, 240, 229, 255);
 
         // Money display
-        Text moneyDisplay = MakeText("Money Display", panelBg.transform,
+        Text moneyDisplay = UIFactory.MakeText("Money Display", panelBg.transform,
             new RectSpec(Vector2.zero, Vector2.one,
                 new Vector2(20, -50), new Vector2(-20, -520)),
             18, TextAnchor.LowerLeft);
@@ -251,13 +252,13 @@ public sealed class BarUpgradeSystem : MonoBehaviour
         moneyDisplay.name = "MoneyDisplay";
 
         // Close button (X)
-        Image closeBtn = MakeImage("Close Button", panelBg.transform,
+        Image closeBtn = UIFactory.MakeImage("Close Button", panelBg.transform,
             new RectSpec(Vector2.one, Vector2.one,
                 new Vector2(-50, -50), new Vector2(-10, -10)),
             new Color32(180, 60, 60, 200));
         Button closeButton = closeBtn.gameObject.AddComponent<Button>();
         closeButton.onClick.AddListener(TogglePanel);
-        Text closeText = MakeText("Close X", closeBtn.transform, StretchFull(4, 2, 4, 2), 20, TextAnchor.MiddleCenter);
+        Text closeText = UIFactory.MakeText("Close X", closeBtn.transform, UIFactory.StretchFull(4, 2, 4, 2), 20, TextAnchor.MiddleCenter);
         closeText.text = "X";
         closeText.color = new Color32(255, 255, 255, 255);
         closeText.fontStyle = FontStyle.Bold;
@@ -277,13 +278,13 @@ public sealed class BarUpgradeSystem : MonoBehaviour
     private void BuildUpgradeItem(Transform parent, BarUpgrade upgrade, float yOffset)
     {
         // Item background row
-        Image rowBg = MakeImage($"Row_{upgrade.id}", parent,
+        Image rowBg = UIFactory.MakeImage($"Row_{upgrade.id}", parent,
             new RectSpec(Vector2.zero, Vector2.one,
                 new Vector2(20, yOffset - 70), new Vector2(-20, yOffset)),
             new Color32(40, 44, 52, 180));
 
         // Upgrade name
-        Text nameText = MakeText($"Name_{upgrade.id}", rowBg.transform,
+        Text nameText = UIFactory.MakeText($"Name_{upgrade.id}", rowBg.transform,
             new RectSpec(Vector2.zero, Vector2.one,
                 new Vector2(14, 40), new Vector2(-220, 14)),
             20, TextAnchor.LowerLeft);
@@ -292,7 +293,7 @@ public sealed class BarUpgradeSystem : MonoBehaviour
         nameText.color = new Color32(246, 240, 229, 255);
 
         // Upgrade description
-        Text descText = MakeText($"Desc_{upgrade.id}", rowBg.transform,
+        Text descText = UIFactory.MakeText($"Desc_{upgrade.id}", rowBg.transform,
             new RectSpec(Vector2.zero, Vector2.one,
                 new Vector2(14, 14), new Vector2(-220, 0)),
             14, TextAnchor.LowerLeft);
@@ -302,7 +303,7 @@ public sealed class BarUpgradeSystem : MonoBehaviour
         if (upgrade.purchased)
         {
             // Already purchased — show checkmark
-            Text purchasedText = MakeText($"Status_{upgrade.id}", rowBg.transform,
+            Text purchasedText = UIFactory.MakeText($"Status_{upgrade.id}", rowBg.transform,
                 new RectSpec(Vector2.one, Vector2.one,
                     new Vector2(-120, 10), new Vector2(-14, -10)),
                 18, TextAnchor.MiddleCenter);
@@ -313,7 +314,7 @@ public sealed class BarUpgradeSystem : MonoBehaviour
         else
         {
             // Cost label
-            Text costText = MakeText($"Cost_{upgrade.id}", rowBg.transform,
+            Text costText = UIFactory.MakeText($"Cost_{upgrade.id}", rowBg.transform,
                 new RectSpec(Vector2.one, Vector2.one,
                     new Vector2(-200, 10), new Vector2(-120, -10)),
                 16, TextAnchor.MiddleCenter);
@@ -329,7 +330,7 @@ public sealed class BarUpgradeSystem : MonoBehaviour
                 ? new Color32(86, 125, 56, 255)
                 : new Color32(60, 60, 65, 200);
 
-            Image buyBtn = MakeImage($"BuyBtn_{upgrade.id}", rowBg.transform,
+            Image buyBtn = UIFactory.MakeImage($"BuyBtn_{upgrade.id}", rowBg.transform,
                 new RectSpec(Vector2.one, Vector2.one,
                     new Vector2(-110, 10), new Vector2(-14, -10)),
                 btnColor);
@@ -344,7 +345,7 @@ public sealed class BarUpgradeSystem : MonoBehaviour
             colors.disabledColor = new Color32(60, 60, 65, 200);
             button.colors = colors;
 
-            Text btnText = MakeText($"BuyText_{upgrade.id}", buyBtn.transform, StretchFull(6, 4, 6, 4), 16, TextAnchor.MiddleCenter);
+            Text btnText = UIFactory.MakeText($"BuyText_{upgrade.id}", buyBtn.transform, UIFactory.StretchFull(6, 4, 6, 4), 16, TextAnchor.MiddleCenter);
             btnText.text = "Buy";
             btnText.color = canAfford
                 ? new Color32(255, 255, 255, 255)
@@ -405,52 +406,5 @@ public sealed class BarUpgradeSystem : MonoBehaviour
         return 0;
     }
 
-    // ── UI Factory Helpers ────────────────────────────────
-
-    private Image MakeImage(string name, Transform parent, RectSpec rect, Color32 color)
-    {
-        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-        go.transform.SetParent(parent, false);
-        ApplyRect(go.GetComponent<RectTransform>(), rect);
-        Image img = go.GetComponent<Image>();
-        img.color = color;
-        return img;
-    }
-
-    private Text MakeText(string name, Transform parent, RectSpec rect, int fontSize, TextAnchor alignment)
-    {
-        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
-        go.transform.SetParent(parent, false);
-        ApplyRect(go.GetComponent<RectTransform>(), rect);
-        Text text = go.GetComponent<Text>();
-        text.font = _font;
-        text.fontSize = fontSize;
-        text.alignment = alignment;
-        text.color = new Color32(246, 240, 229, 255);
-        text.horizontalOverflow = HorizontalWrapMode.Wrap;
-        text.verticalOverflow = VerticalWrapMode.Truncate;
-        return text;
-    }
-
-    private static void ApplyRect(RectTransform rt, RectSpec spec)
-    {
-        rt.anchorMin = spec.anchorMin;
-        rt.anchorMax = spec.anchorMax;
-        rt.offsetMin = spec.offsetMin;
-        rt.offsetMax = spec.offsetMax;
-    }
-
-    private static RectSpec StretchFull(float l = 0, float b = 0, float r = 0, float t = 0) =>
-        new RectSpec(Vector2.zero, Vector2.one, new Vector2(l, b), new Vector2(-r, -t));
-
-    // ── Types ─────────────────────────────────────────────
-
-    private readonly struct RectSpec
-    {
-        public readonly Vector2 anchorMin, anchorMax, offsetMin, offsetMax;
-        public RectSpec(Vector2 amin, Vector2 amax, Vector2 omin, Vector2 omax)
-        {
-            anchorMin = amin; anchorMax = amax; offsetMin = omin; offsetMax = omax;
-        }
     }
 }

@@ -3,10 +3,22 @@ using UnityEngine.UI;
 
 /// <summary>
 /// Shared UI factory helpers for runtime-generated Unity UI.
-/// RectSpec, image/text creation, and common layout presets.
+/// RectSpec, image/text creation, common layout presets, and named color palette.
 /// </summary>
 public static class UIFactory
 {
+    // ── Named color palette ───────────────────────────────────
+    public static readonly Color32 TextDefault  = new Color32(246, 240, 229, 255);
+    public static readonly Color32 PanelBg      = new Color32(20, 24, 30, 240);
+    public static readonly Color32 Overlay      = new Color32(0, 0, 0, 180);
+    public static readonly Color32 Gold         = new Color32(236, 180, 87, 255);
+    public static readonly Color32 CloseHint    = new Color32(150, 150, 150, 200);
+    public static readonly Color32 DescText     = new Color32(180, 175, 165, 255);
+    public static readonly Color32 GreenButton  = new Color32(86, 125, 56, 255);
+    public static readonly Color32 GreenMoney   = new Color32(160, 220, 120, 255);
+    public static readonly Color32 RowBg        = new Color32(40, 44, 52, 200);
+    public static readonly Color32 WarningRed   = new Color32(220, 80, 60, 255);
+    public static readonly Color32 WarningYellow = new Color32(255, 200, 40, 255);
     public static Font GetFont() => Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
 
     public static Image MakeImage(string name, Transform parent, RectSpec rect, Color32 color)

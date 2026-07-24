@@ -493,7 +493,7 @@ public class ShopSystem : MonoBehaviour
         rt.offsetMax = offsetMax;
 
         Text text = go.GetComponent<Text>();
-        text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        text.font = UIFactory.GetFont();
         text.fontSize = fontSize;
         text.alignment = alignment;
         text.color = new Color32(246, 240, 229, 255);

@@ -386,7 +386,7 @@ public class DialogueManager : MonoBehaviour
             // Keyboard hint (e.g. "[1]") for first 3 choices
             string keyHint = choiceIndex < 3 ? $"[{choiceIndex + 1}] " : "";
             Text choiceText = choiceGO.AddComponent<Text>();
-            choiceText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            choiceText.font = UIFactory.GetFont();
             choiceText.fontSize = 16;
             choiceText.color = new Color32(235, 228, 215, 255);
             choiceText.alignment = TextAnchor.MiddleLeft;
@@ -584,7 +584,7 @@ public class DialogueManager : MonoBehaviour
         rt.offsetMax = offsetMax;
 
         Text text = go.GetComponent<Text>();
-        text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        text.font = UIFactory.GetFont();
         text.fontSize = fontSize;
         text.alignment = alignment;
         text.color = new Color32(246, 240, 229, 255);

@@ -1033,7 +1033,7 @@ public class BarMinigame : MonoBehaviour
         rt.offsetMax = Vector2.zero;
 
         Text text = floatGO.GetComponent<Text>();
-        text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        text.font = UIFactory.GetFont();
         text.fontSize = 36;
         text.fontStyle = FontStyle.Bold;
         text.alignment = TextAnchor.MiddleCenter;
@@ -1282,7 +1282,7 @@ public class BarMinigame : MonoBehaviour
         rt.offsetMax = offsetMax;
 
         Text text = go.GetComponent<Text>();
-        text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        text.font = UIFactory.GetFont();
         text.fontSize = fontSize;
         text.alignment = alignment;
         text.fontStyle = fontStyle;
@@ -1317,7 +1317,7 @@ public class BarMinigame : MonoBehaviour
         textRT.anchorMax = Vector2.one;
         textRT.offsetMin = new Vector2(4, 2);
         textRT.offsetMax = new Vector2(-4, -2);
-        btnText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        btnText.font = UIFactory.GetFont();
         btnText.fontSize = fontSize;
         btnText.alignment = TextAnchor.MiddleCenter;
         btnText.fontStyle = FontStyle.Bold;
@@ -1420,7 +1420,7 @@ public class BarMinigame : MonoBehaviour
         rt.offsetMax = offsetMax;
 
         Text text = go.GetComponent<Text>();
-        text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        text.font = UIFactory.GetFont();
         text.fontSize = fontSize;
         text.alignment = alignment;
         text.color = WarmText;
@@ -1437,7 +1437,7 @@ public class BarMinigame : MonoBehaviour
         ftGO.transform.SetParent(_canvas.transform, false);
 
         Text ft = ftGO.GetComponent<Text>();
-        ft.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        ft.font = UIFactory.GetFont();
         ft.text = text;
         ft.fontSize = 28;
         ft.fontStyle = FontStyle.Bold;
@@ -1478,7 +1478,7 @@ public class BarMinigame : MonoBehaviour
         comboGO.transform.SetParent(_canvas.transform, false);
 
         Text comboText = comboGO.GetComponent<Text>();
-        comboText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        comboText.font = UIFactory.GetFont();
 
         string comboLabel = count == 3 ? "Nice!" : count == 5 ? "Amazing!" : "LEGENDARY!";
         comboText.text = $"🔥 {comboLabel} x{count}";

@@ -436,66 +436,66 @@ public sealed class GameController : MonoBehaviour
     private void BuildTopHud(Transform parent)
     {
         // HUD bar background
-        _hudBgImage = MakeImage("HUD Background", parent, StretchTop(68, 0, 0), new Color32(10, 14, 18, 235));
+        _hudBgImage = MakeImage("HUD Background", parent, UIFactory.StretchTop(68, 0, 0), new Color32(10, 14, 18, 235));
 
         // Divider line
-        Image divider = MakeImage("HUD Divider", parent, StretchTop(2, 0, 0, 0, 68), new Color32(255, 255, 255, 30));
+        Image divider = MakeImage("HUD Divider", parent, UIFactory.StretchTop(2, 0, 0, 68), new Color32(255, 255, 255, 30));
 
         // Day / Time
-        _timeIconPlate = MakeImage("Time Icon Plate", parent, Anchored(16, 10, 44, 44), new Color32(194, 87, 52, 180));
-        Text timeIcon = MakeText("Time Icon", parent, Anchored(16, 10, 44, 44), 28, TextAnchor.MiddleCenter);
+        _timeIconPlate = MakeImage("Time Icon Plate", parent, UIFactory.Anchored(16, 10, 44, 44), new Color32(194, 87, 52, 180));
+        Text timeIcon = MakeText("Time Icon", parent, UIFactory.Anchored(16, 10, 44, 44), 28, TextAnchor.MiddleCenter);
         timeIcon.text = "☀"; // sun
         timeIcon.alignment = TextAnchor.MiddleCenter;
         timeIcon.color = new Color32(245, 177, 90, 255);
-        _timeText = MakeText("Time Text", parent, Anchored(68, 10, 220, 28), 20, TextAnchor.MiddleLeft);
+        _timeText = MakeText("Time Text", parent, UIFactory.Anchored(68, 10, 220, 28), 20, TextAnchor.MiddleLeft);
         _timeText.text = "Day 1 / dawn";
 
         // Location
-        _locIconPlate = MakeImage("Loc Icon Plate", parent, Anchored(290, 10, 44, 44), new Color32(55, 151, 164, 160));
-        Text locIcon = MakeText("Loc Icon", parent, Anchored(290, 10, 44, 44), 28, TextAnchor.MiddleCenter);
+        _locIconPlate = MakeImage("Loc Icon Plate", parent, UIFactory.Anchored(290, 10, 44, 44), new Color32(55, 151, 164, 160));
+        Text locIcon = MakeText("Loc Icon", parent, UIFactory.Anchored(290, 10, 44, 44), 28, TextAnchor.MiddleCenter);
         locIcon.text = "⌂"; // house
         locIcon.color = new Color32(142, 223, 210, 255);
-        _locationText = MakeText("Location Text", parent, Anchored(342, 10, 180, 28), 20, TextAnchor.MiddleLeft);
+        _locationText = MakeText("Location Text", parent, UIFactory.Anchored(342, 10, 180, 28), 20, TextAnchor.MiddleLeft);
         _locationText.text = "De Pijp";
 
         // Bar status
-        _barIconPlate = MakeImage("Bar Icon Plate", parent, Anchored(530, 10, 44, 44), new Color32(154, 111, 45, 160));
-        Text barIcon = MakeText("Bar Icon", parent, Anchored(530, 10, 44, 44), 28, TextAnchor.MiddleCenter);
+        _barIconPlate = MakeImage("Bar Icon Plate", parent, UIFactory.Anchored(530, 10, 44, 44), new Color32(154, 111, 45, 160));
+        Text barIcon = MakeText("Bar Icon", parent, UIFactory.Anchored(530, 10, 44, 44), 28, TextAnchor.MiddleCenter);
         barIcon.text = "☕"; // coffee/beer
         barIcon.color = new Color32(233, 194, 119, 255);
-        _barStatusText = MakeText("Bar Text", parent, Anchored(582, 6, 260, 24), 18, TextAnchor.MiddleLeft);
+        _barStatusText = MakeText("Bar Text", parent, UIFactory.Anchored(582, 6, 260, 24), 18, TextAnchor.MiddleLeft);
         _barStatusText.text = "Closed  |  Served 0  |  Rev $0";
 
         // F7: NPC affection bar — shows relationship level with current-location character
-        _affectionBarText = MakeText("Affection Bar", parent, Anchored(582, 32, 260, 18), 14, TextAnchor.MiddleLeft);
+        _affectionBarText = MakeText("Affection Bar", parent, UIFactory.Anchored(582, 32, 260, 18), 14, TextAnchor.MiddleLeft);
 
         // Weather
-        _weatherText = MakeText("Weather Text", parent, Anchored(835, 10, 80, 28), 16, TextAnchor.MiddleLeft);
+        _weatherText = MakeText("Weather Text", parent, UIFactory.Anchored(835, 10, 80, 28), 16, TextAnchor.MiddleLeft);
         _weatherText.text = "";
 
         // Money
-        _moneyIconPlate = MakeImage("Money Icon Plate", parent, Anchored(930, 10, 44, 44), new Color32(86, 125, 56, 160));
-        Text moneyIcon = MakeText("Money Icon", parent, Anchored(930, 10, 44, 44), 28, TextAnchor.MiddleCenter);
+        _moneyIconPlate = MakeImage("Money Icon Plate", parent, UIFactory.Anchored(930, 10, 44, 44), new Color32(86, 125, 56, 160));
+        Text moneyIcon = MakeText("Money Icon", parent, UIFactory.Anchored(930, 10, 44, 44), 28, TextAnchor.MiddleCenter);
         moneyIcon.text = "$";
         moneyIcon.color = new Color32(160, 220, 120, 255);
         moneyIcon.fontStyle = FontStyle.Bold;
-        _moneyText = MakeText("Money Text", parent, Anchored(982, 10, 280, 28), 22, TextAnchor.MiddleLeft);
+        _moneyText = MakeText("Money Text", parent, UIFactory.Anchored(982, 10, 280, 28), 22, TextAnchor.MiddleLeft);
         _moneyText.text = "$250 / $300";
         _moneyText.color = new Color32(160, 220, 120, 255);
 
         // Victory target indicator
-        _goalTargetText = MakeText("Goal Target", parent, Anchored(982, 32, 280, 16), 12, TextAnchor.MiddleLeft);
+        _goalTargetText = MakeText("Goal Target", parent, UIFactory.Anchored(982, 32, 280, 16), 12, TextAnchor.MiddleLeft);
         _goalTargetText.color = new Color32(160, 220, 120, 140);
         _goalTargetText.text = $"Goal: ${GameState.VictoryMoneyTarget} to win";
 
         // F1: Daily goal texts (below money on the right)
-        _goalText1 = MakeText("Goal1", parent, Anchored(930, 42, 330, 16), 13, TextAnchor.MiddleLeft);
+        _goalText1 = MakeText("Goal1", parent, UIFactory.Anchored(930, 42, 330, 16), 13, TextAnchor.MiddleLeft);
         _goalText1.color = new Color32(236, 180, 87, 200);
-        _goalText2 = MakeText("Goal2", parent, Anchored(930, 54, 330, 16), 13, TextAnchor.MiddleLeft);
+        _goalText2 = MakeText("Goal2", parent, UIFactory.Anchored(930, 54, 330, 16), 13, TextAnchor.MiddleLeft);
         _goalText2.color = new Color32(236, 180, 87, 200);
 
         // Low-money warning (hidden by default, shown when funds are critically low)
-        _lowMoneyWarning = MakeText("Low Money Warning", parent, Anchored(982, 70, 280, 14), 11, TextAnchor.MiddleLeft);
+        _lowMoneyWarning = MakeText("Low Money Warning", parent, UIFactory.Anchored(982, 70, 280, 14), 11, TextAnchor.MiddleLeft);
         _lowMoneyWarning.text = "";
         _lowMoneyWarning.color = new Color32(255, 100, 80, 0);
     }
@@ -543,14 +543,14 @@ public sealed class GameController : MonoBehaviour
     private void BuildFeedbackArea(Transform parent)
     {
         // Feedback line between scene and hints
-        Image fbBg = MakeImage("Feedback BG", parent, StretchBottom(46, 0, 0, 0, 58), new Color32(255, 255, 255, 12));
-        _feedbackText = MakeText("Feedback Text", parent, StretchBottom(46, 16, 16, 0, 58), 18, TextAnchor.MiddleLeft);
+        Image fbBg = MakeImage("Feedback BG", parent, UIFactory.StretchBottom(46, 0, 0, 58), new Color32(255, 255, 255, 12));
+        _feedbackText = MakeText("Feedback Text", parent, UIFactory.StretchBottom(46, 16, 16, 58), 18, TextAnchor.MiddleLeft);
         _feedbackText.color = new Color32(220, 210, 190, 255);
         _feedbackText.fontStyle = FontStyle.Italic;
         _feedbackText.text = "Your story begins in De Pijp. Explore, work, and find your place.";
 
         // F6: Flash overlay for time transitions (editor mode)
-        Image flashImg = MakeImage("Flash Overlay", parent, StretchFull(), new Color32(255, 255, 255, 0));
+        Image flashImg = MakeImage("Flash Overlay", parent, UIFactory.StretchFull(), new Color32(255, 255, 255, 0));
         _flashOverlay = flashImg.gameObject.AddComponent<CanvasGroup>();
         _flashOverlay.alpha = 0f;
         _flashOverlay.blocksRaycasts = false;
@@ -563,12 +563,12 @@ public sealed class GameController : MonoBehaviour
 
     private void BuildBottomHints(Transform parent)
     {
-        _hintBackplate = MakeImage("Hint Backplate", parent, StretchBottom(58, 0, 0), new Color32(10, 14, 18, 230));
+        _hintBackplate = MakeImage("Hint Backplate", parent, UIFactory.StretchBottom(58, 0, 0), new Color32(10, 14, 18, 230));
 
         // Divider
-        MakeImage("Hint Divider", parent, StretchBottom(2, 0, 0, 0, 58), new Color32(255, 255, 255, 24));
+        MakeImage("Hint Divider", parent, UIFactory.StretchBottom(2, 0, 0, 58), new Color32(255, 255, 255, 24));
 
-        _hintText = MakeText("Input Hint", parent, StretchBottom(58, 8, 8), 16, TextAnchor.MiddleCenter);
+        _hintText = MakeText("Input Hint", parent, UIFactory.StretchBottom(58, 8, 8), 16, TextAnchor.MiddleCenter);
         _hintText.color = new Color32(180, 175, 165, 255);
         _hintText.text = "Space: advance time / dialogue next    1 De Pijp    2 Science Park    3 Tweede Kans    4 Bloemenmarkt    B start shift    F end shift    I inventory    C character    P achievements";
     }
@@ -764,7 +764,7 @@ public sealed class GameController : MonoBehaviour
         if (_runtimeRoot == null) return;
         Transform endCanvas = _runtimeRoot.transform.Find("EndGameCanvas");
         if (endCanvas != null)
-            DestroyGeneratedObject(endCanvas.gameObject);
+            UIFactory.DestroyGenerated(endCanvas.gameObject);
     }
 
     private void BuildEndGameScreen(bool won)
@@ -784,7 +784,7 @@ public sealed class GameController : MonoBehaviour
 
         // Full overlay
         Image overlay = MakeImage("EndOverlay", root,
-            StretchFull(), new Color32(8, 10, 14, 235));
+            UIFactory.StretchFull(), new Color32(8, 10, 14, 235));
 
         // Determine end state
         bool bankrupt = State.GameWentBankrupt;
@@ -1540,7 +1540,7 @@ public sealed class GameController : MonoBehaviour
         Transform existingRoot = transform.Find(RuntimeRootName);
         if (existingRoot != null)
         {
-            DestroyGeneratedObject(existingRoot.gameObject);
+            UIFactory.DestroyGenerated(existingRoot.gameObject);
         }
 
         _runtimeRoot = null;
@@ -1573,41 +1573,10 @@ public sealed class GameController : MonoBehaviour
     {
         for (int index = parent.childCount - 1; index >= 0; index--)
         {
-            DestroyGeneratedObject(parent.GetChild(index).gameObject);
+            UIFactory.DestroyGenerated(parent.GetChild(index).gameObject);
         }
     }
 
-    private static void DestroyGeneratedObject(GameObject target)
-    {
-        if (target == null)
-        {
-            return;
-        }
-
-        if (Application.isPlaying)
-        {
-            Object.Destroy(target);
-        }
-        else
-        {
-            DestroyImmediate(target);
-        }
-    }
-
-    // ── RectSpec Builders ─────────────────────────────────
-
-    private static UIFactory.RectSpec StretchFull(float l = 0, float b = 0, float r = 0, float t = 0) =>
-        new UIFactory.RectSpec(Vector2.zero, Vector2.one, new Vector2(l, b), new Vector2(-r, -t));
-
-    private static UIFactory.RectSpec StretchTop(float height, float l = 0, float r = 0, float b = 0, float offset = 0) =>
-        new UIFactory.RectSpec(new Vector2(0, 1), Vector2.one, new Vector2(l, -height - offset), new Vector2(-r, -offset));
-
-    private static UIFactory.RectSpec StretchBottom(float height, float l = 0, float r = 0, float t = 0, float offset = 0) =>
-        new UIFactory.RectSpec(Vector2.zero, new Vector2(1, 0), new Vector2(l, offset), new Vector2(-r, height + offset));
-
-    private static UIFactory.RectSpec Anchored(float left, float top, float w, float h) =>
-        new UIFactory.RectSpec(new Vector2(0, 1), new Vector2(0, 1),
-            new Vector2(left, -top - h), new Vector2(left + w, -top));
 
     // ── Types ─────────────────────────────────────────────
 

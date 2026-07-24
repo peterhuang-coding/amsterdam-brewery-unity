@@ -575,6 +575,8 @@ public sealed class GameController : MonoBehaviour
 
     // ── Game Actions ──────────────────────────────────────
 
+    public void AdvanceTimePublic() { AdvanceTime(); }
+
     private void AdvanceTime()
     {
         if (State.GameEnded) return;

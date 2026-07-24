@@ -47,6 +47,7 @@ public class ShopSystem : MonoBehaviour
     };
 
     private bool _shopOpen = false;
+    public bool IsPanelOpen => _shopOpen;
     private Canvas _shopCanvas;
     private GameObject _shopPanel;
     private GameObject _contentArea;
@@ -293,13 +294,13 @@ public class ShopSystem : MonoBehaviour
         _moneyText.color = new Color32(160, 220, 120, 255);
         _moneyText.fontStyle = FontStyle.Bold;
 
-        // Close hint
-        _closeHintText = MakeText("CloseHint", _shopPanel.transform,
-            new Vector2(1, 1), new Vector2(1, 1),
-            new Vector2(-140, -40), new Vector2(-20, -8),
-            14, TextAnchor.MiddleRight);
-        _closeHintText.text = "Press M to close";
-        _closeHintText.color = new Color32(150, 150, 150, 200);
+        // Close button (X)
+        var closeBtnImg = UIFactory.MakeImage("Close Button", _shopPanel.transform,
+            UIFactory.Anchored(480, 8, 32, 32), new Color32(60, 40, 30, 220));
+        Button closeButton = closeBtnImg.gameObject.AddComponent<Button>();
+        closeButton.onClick.AddListener(TogglePanel);
+        UIFactory.MakeText("Close X", closeBtnImg.transform, UIFactory.StretchFull(2, 1, 2, 1),
+            18, TextAnchor.MiddleCenter).text = "✕";
 
         // Content area
         _contentArea = new GameObject("ContentArea", typeof(RectTransform));

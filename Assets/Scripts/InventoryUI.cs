@@ -27,6 +27,7 @@ public class InventoryUI : MonoBehaviour
     }
 
     private bool _isOpen;
+    public bool IsPanelOpen => _isOpen;
     private Canvas _canvas;
     private CanvasGroup _canvasGroup;
     private GameObject _panel;

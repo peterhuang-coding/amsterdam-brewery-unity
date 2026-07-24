@@ -47,6 +47,7 @@ public class BrewingSystem : MonoBehaviour
     private Text _moneyText;
     private Font _font;
     private bool _panelOpen;
+    public bool IsPanelOpen => _panelOpen;
 
     // ── Brew complete notification popup ─────────────────
     private GameObject _notificationGO;

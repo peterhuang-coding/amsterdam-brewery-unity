@@ -812,12 +812,19 @@ public class SaveSystem : MonoBehaviour
         titleText.text = "Save / Load";
         titleText.fontStyle = FontStyle.Bold;
 
+        // Close button (X)
+        var closeBtnImg = UIFactory.MakeImage("Close Button", _panelRoot.transform,
+            UIFactory.Anchored(480, 8, 32, 32), new Color32(60, 40, 30, 220));
+        Button closeButton = closeBtnImg.gameObject.AddComponent<Button>();
+        closeButton.onClick.AddListener(ToggleSavePanel);
+        UIFactory.MakeText("Close X", closeBtnImg.transform, UIFactory.StretchFull(2, 1, 2, 1),
+            18, TextAnchor.MiddleCenter).text = "✕";
         // Close hint
         Text closeHint = CreateText("CloseHint", _panelRoot.transform,
             new Vector2(1, 1), new Vector2(1, 1),
             new Vector2(-140, -44), new Vector2(-20, -8),
             14, TextAnchor.MiddleRight);
-        closeHint.text = "Press L to close";
+        closeHint.text = "Esc or click ✕";
         closeHint.color = new Color32(150, 150, 150, 200);
 
         // Slot content area

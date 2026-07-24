@@ -27,6 +27,7 @@ public class AchievementSystem : MonoBehaviour
 
     private List<Achievement> _achievements;
     private bool _isPanelOpen;
+    public bool IsPanelOpen => _isPanelOpen;
     private Canvas _canvas;
     private CanvasGroup _canvasGroup;
     private GameObject _panel;

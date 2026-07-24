@@ -225,6 +225,12 @@ public sealed class GameController : MonoBehaviour
         if (TutorialSystem.Instance != null && TutorialSystem.Instance.WelcomeIsActive_BlockingInput)
             return;
 
+        // Escape — close the topmost open panel (LIFO order)
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (TryCloseTopPanel()) return;
+        }
+
         // System panel keys (I/C/P) — check before game action keys
         if (Input.GetKeyDown(KeyCode.I))
         {
@@ -340,6 +346,33 @@ public sealed class GameController : MonoBehaviour
                     SetFeedback("No shift to close yet.");
             }
         }
+    }
+
+    /// <summary>
+    /// Close the topmost open panel on Escape. Priority: right-side → left-side panels.
+    /// </summary>
+    private bool TryCloseTopPanel()
+    {
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
+            return false;
+        if (State.GameEnded) return false;
+        if (DialogueLog.Instance != null && DialogueLog.Instance.IsPanelOpen)
+        { DialogueLog.Instance.TogglePanel(); return true; }
+        if (ShopSystem.Instance != null && ShopSystem.Instance.IsPanelOpen)
+        { ShopSystem.Instance.TogglePanel(); return true; }
+        if (BrewingSystem.Instance != null && BrewingSystem.Instance.IsPanelOpen)
+        { BrewingSystem.Instance.TogglePanel(); return true; }
+        if (BarUpgradeSystem.Instance != null && BarUpgradeSystem.Instance.IsPanelOpen)
+        { BarUpgradeSystem.Instance.TogglePanel(); return true; }
+        if (SaveSystem.Instance != null && SaveSystem.Instance.IsPanelOpen)
+        { SaveSystem.Instance.ToggleSavePanel(); return true; }
+        if (AchievementSystem.Instance != null && AchievementSystem.Instance.IsPanelOpen)
+        { AchievementSystem.Instance.TogglePanel(); return true; }
+        if (CharacterPanel.Instance != null && CharacterPanel.Instance.IsPanelOpen)
+        { CharacterPanel.Instance.Toggle(); return true; }
+        if (InventoryUI.Instance != null && InventoryUI.Instance.IsPanelOpen)
+        { InventoryUI.Instance.Toggle(); return true; }
+        return false;
     }
 
     // ── Data ──────────────────────────────────────────────

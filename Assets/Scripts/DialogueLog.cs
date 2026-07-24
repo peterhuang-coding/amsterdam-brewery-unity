@@ -44,6 +44,7 @@ public sealed class DialogueLog : MonoBehaviour
     private RectTransform _contentRect;
     private Font _font;
     private bool _isVisible;
+    public bool IsPanelOpen => _isVisible;
     private bool _initialized;
     private int _currentDay = 1;
 

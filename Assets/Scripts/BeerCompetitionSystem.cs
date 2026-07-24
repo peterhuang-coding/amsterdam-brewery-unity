@@ -176,7 +176,7 @@ public class BeerCompetitionSystem : MonoBehaviour
     private Canvas FindOrCreateCompetitionCanvas()
     {
         // Reuse existing UI canvas or create one
-        var existing = Object.FindAnyObjectByType<Canvas>();
+        var existing = UnityEngine.Object.FindAnyObjectByType<Canvas>();
         if (existing != null) return existing;
 
         var go = new GameObject("CompetitionCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));

@@ -121,7 +121,7 @@ public class SaveSystem : MonoBehaviour
             return;
         }
 
-        _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        _font = UIFactory.GetFont();
         CreateSavePanelUI();
     }
 
@@ -794,7 +794,7 @@ public class SaveSystem : MonoBehaviour
         _panelRoot = new GameObject("SavePanel", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
         _panelRoot.transform.SetParent(_saveCanvas.transform, false);
         Image panelImg = _panelRoot.GetComponent<Image>();
-        panelImg.color = new Color32(20, 24, 30, 245);
+        panelImg.color = UIFactory.PanelBg;
         _panelRect = _panelRoot.GetComponent<RectTransform>();
         _panelRect.anchorMin = new Vector2(0.1f, 0.15f);
         _panelRect.anchorMax = new Vector2(0.9f, 0.85f);
@@ -814,7 +814,7 @@ public class SaveSystem : MonoBehaviour
 
         // Close button (X)
         var closeBtnImg = UIFactory.MakeImage("Close Button", _panelRoot.transform,
-            UIFactory.Anchored(480, 8, 32, 32), new Color32(60, 40, 30, 220));
+            UIFactory.Anchored(480, 8, 32, 32), UIFactory.Gold);
         Button closeButton = closeBtnImg.gameObject.AddComponent<Button>();
         closeButton.onClick.AddListener(ToggleSavePanel);
         UIFactory.MakeText("Close X", closeBtnImg.transform, UIFactory.StretchFull(2, 1, 2, 1),
@@ -825,7 +825,7 @@ public class SaveSystem : MonoBehaviour
             new Vector2(-140, -44), new Vector2(-20, -8),
             14, TextAnchor.MiddleRight);
         closeHint.text = "Esc or click ✕";
-        closeHint.color = new Color32(150, 150, 150, 200);
+        closeHint.color = UIFactory.CloseHint;
 
         // Slot content area
         float slotStartY = -68f;
@@ -844,7 +844,7 @@ public class SaveSystem : MonoBehaviour
         GameObject slotGO = new GameObject($"Slot_{slotIndex}", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
         slotGO.transform.SetParent(_panelRoot.transform, false);
         Image slotBg = slotGO.GetComponent<Image>();
-        slotBg.color = new Color32(35, 40, 50, 200);
+        slotBg.color = UIFactory.RowBg;
         RectTransform slotRT = slotGO.GetComponent<RectTransform>();
         slotRT.anchorMin = new Vector2(0, 1);
         slotRT.anchorMax = new Vector2(1, 1);
@@ -861,7 +861,7 @@ public class SaveSystem : MonoBehaviour
             16, TextAnchor.MiddleLeft);
         slotLabelText.text = slotLabel;
         slotLabelText.fontStyle = FontStyle.Bold;
-        slotLabelText.color = new Color32(236, 180, 87, 255);
+        slotLabelText.color = UIFactory.Gold;
 
         // Summary text (multi-line)
         Text summaryText = CreateText("Summary", slotGO.transform,
@@ -869,7 +869,7 @@ public class SaveSystem : MonoBehaviour
             new Vector2(12, -height + 32), new Vector2(-120, -32),
             13, TextAnchor.UpperLeft);
         summaryText.text = "Empty";
-        summaryText.color = new Color32(180, 175, 165, 220);
+        summaryText.color = UIFactory.DescText;
         summaryText.horizontalOverflow = HorizontalWrapMode.Wrap;
         _slotSummaryTexts[slotIndex] = summaryText;
 
@@ -916,7 +916,7 @@ public class SaveSystem : MonoBehaviour
         text.font = _font;
         text.fontSize = fontSize;
         text.alignment = alignment;
-        text.color = new Color32(246, 240, 229, 255);
+        text.color = UIFactory.TextDefault;
         text.horizontalOverflow = HorizontalWrapMode.Overflow;
         text.verticalOverflow = VerticalWrapMode.Truncate;
         return text;
@@ -934,7 +934,7 @@ public class SaveSystem : MonoBehaviour
         rt.offsetMax = offsetMax;
 
         Image img = go.GetComponent<Image>();
-        img.color = new Color32(236, 180, 87, 255);
+        img.color = UIFactory.Gold;
 
         Button button = go.AddComponent<Button>();
         button.targetGraphic = img;

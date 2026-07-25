@@ -256,7 +256,7 @@ public class ShopSystem : MonoBehaviour
         GameObject overlay = new GameObject("Overlay", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
         overlay.transform.SetParent(_shopCanvas.transform, false);
         Image overlayImg = overlay.GetComponent<Image>();
-        overlayImg.color = new Color32(0, 0, 0, 180);
+        overlayImg.color = UIFactory.Overlay;
         RectTransform oRT = overlay.GetComponent<RectTransform>();
         oRT.anchorMin = Vector2.zero;
         oRT.anchorMax = Vector2.one;
@@ -267,7 +267,7 @@ public class ShopSystem : MonoBehaviour
         _shopPanel = new GameObject("ShopPanel", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
         _shopPanel.transform.SetParent(_shopCanvas.transform, false);
         Image panelImg = _shopPanel.GetComponent<Image>();
-        panelImg.color = new Color32(20, 24, 30, 240);
+        panelImg.color = UIFactory.PanelBg;
         RectTransform pRT = _shopPanel.GetComponent<RectTransform>();
         pRT.anchorMin = new Vector2(0.15f, 0.1f);
         pRT.anchorMax = new Vector2(0.85f, 0.9f);
@@ -291,12 +291,12 @@ public class ShopSystem : MonoBehaviour
             new Vector2(0, 1), new Vector2(1, 1),
             new Vector2(20, -70), new Vector2(-20, -40),
             16, TextAnchor.MiddleLeft);
-        _moneyText.color = new Color32(160, 220, 120, 255);
+        _moneyText.color = UIFactory.GreenMoney;
         _moneyText.fontStyle = FontStyle.Bold;
 
         // Close button (X)
         var closeBtnImg = UIFactory.MakeImage("Close Button", _shopPanel.transform,
-            UIFactory.Anchored(480, 8, 32, 32), new Color32(60, 40, 30, 220));
+            UIFactory.Anchored(480, 8, 32, 32), UIFactory.Gold);
         Button closeButton = closeBtnImg.gameObject.AddComponent<Button>();
         closeButton.onClick.AddListener(TogglePanel);
         UIFactory.MakeText("Close X", closeBtnImg.transform, UIFactory.StretchFull(2, 1, 2, 1),
@@ -357,7 +357,7 @@ public class ShopSystem : MonoBehaviour
                 new Vector2(0, -yOffset - 28), new Vector2(0, -yOffset),
                 18, TextAnchor.UpperLeft);
             emptyText.text = "Nothing for sale here.";
-            emptyText.color = new Color32(150, 150, 150, 200);
+            emptyText.color = UIFactory.CloseHint;
             return;
         }
 
@@ -375,7 +375,7 @@ public class ShopSystem : MonoBehaviour
         GameObject rowBg = new GameObject("Row_" + item.id, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
         rowBg.transform.SetParent(parent, false);
         Image bgImg = rowBg.GetComponent<Image>();
-        bgImg.color = new Color32(40, 44, 52, 200);
+        bgImg.color = UIFactory.RowBg;
         RectTransform bgRT = rowBg.GetComponent<RectTransform>();
         bgRT.anchorMin = new Vector2(0, 1);
         bgRT.anchorMax = new Vector2(1, 1);
@@ -396,7 +396,7 @@ public class ShopSystem : MonoBehaviour
             new Vector2(12, 4), new Vector2(0, -24),
             13, TextAnchor.MiddleLeft);
         descText.text = item.description;
-        descText.color = new Color32(180, 175, 165, 220);
+        descText.color = UIFactory.DescText;
 
         if (item.isOwned)
         {
@@ -417,7 +417,7 @@ public class ShopSystem : MonoBehaviour
                 new Vector2(0, 0), new Vector2(-4, 0),
             16, TextAnchor.MiddleRight);
             priceText.text = $"${item.cost}";
-            priceText.color = new Color32(236, 180, 87, 255);
+            priceText.color = UIFactory.Gold;
             priceText.fontStyle = FontStyle.Bold;
 
             // Buy button
@@ -431,7 +431,7 @@ public class ShopSystem : MonoBehaviour
 
             bool canAfford = GameController.Instance != null && GameController.Instance.State.Money >= item.cost;
             Image btnImg = btnGO.GetComponent<Image>();
-            btnImg.color = canAfford ? new Color32(86, 125, 56, 255) : new Color32(80, 80, 80, 180);
+            btnImg.color = canAfford ? UIFactory.GreenButton : new Color32(80, 80, 80, 180);
 
             Button btn = btnGO.AddComponent<Button>();
             btn.interactable = canAfford;
@@ -496,7 +496,7 @@ public class ShopSystem : MonoBehaviour
         text.font = UIFactory.GetFont();
         text.fontSize = fontSize;
         text.alignment = alignment;
-        text.color = new Color32(246, 240, 229, 255);
+        text.color = UIFactory.TextDefault;
         text.horizontalOverflow = HorizontalWrapMode.Wrap;
         text.verticalOverflow = VerticalWrapMode.Truncate;
         return text;

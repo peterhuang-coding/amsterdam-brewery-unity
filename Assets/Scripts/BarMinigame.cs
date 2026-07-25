@@ -59,15 +59,15 @@ public class BarMinigame : MonoBehaviour
     };
 
     // ── Theme Colors ───────────────────────────────────────
-    private static readonly Color32 DarkBrown = new Color32(35, 28, 22, 255);
-    private static readonly Color32 MediumBrown = new Color32(55, 45, 35, 255);
-    private static readonly Color32 LightBrown = new Color32(75, 60, 45, 255);
-    private static readonly Color32 GoldColor = new Color32(255, 200, 50, 255);
-    private static readonly Color32 WarmText = new Color32(246, 240, 229, 255);
-    private static readonly Color32 GreenColor = new Color32(60, 200, 80, 255);
-    private static readonly Color32 RedColor = new Color32(220, 60, 60, 255);
-    private static readonly Color32 GreyColor = new Color32(120, 120, 120, 255);
-    private static readonly Color32 DarkOverlay = new Color32(0, 0, 0, 200);
+    private static Color32 DarkBrown => UIFactory.PanelBg;
+    private static Color32 MediumBrown => UIFactory.RowBg;
+    private static Color32 LightBrown => UIFactory.Gold;
+    private static Color32 GoldColor => UIFactory.Gold;
+    private static Color32 WarmText => UIFactory.TextDefault;
+    private static Color32 GreenColor => UIFactory.GreenMoney;
+    private static Color32 RedColor => UIFactory.WarningRed;
+    private static Color32 GreyColor => UIFactory.CloseHint;
+    private static Color32 DarkOverlay => UIFactory.Overlay;
 
     // ── UI Fields ──────────────────────────────────────────
     private Canvas _canvas;
@@ -664,7 +664,7 @@ public class BarMinigame : MonoBehaviour
         // ── Customer area ──
         _customerBlock = CreateBar("CustomerBlock", _panel.transform,
             new Vector2(0.15f, 0.38f), new Vector2(0.85f, 0.78f),
-            Vector2.zero, Vector2.zero, new Color32(45, 38, 30, 255));
+            Vector2.zero, Vector2.zero, UIFactory.RowBg);
 
         // Customer image
         _customerImage = CreateImage("CustomerImage", _customerBlock.transform,
@@ -679,7 +679,7 @@ public class BarMinigame : MonoBehaviour
         // Patience bar background
         GameObject patienceBg = CreateBar("PatienceBG", _customerBlock.transform,
             new Vector2(0.2f, 0.15f), new Vector2(0.8f, 0.22f),
-            Vector2.zero, Vector2.zero, new Color32(30, 25, 20, 255));
+            Vector2.zero, Vector2.zero, UIFactory.PanelBg);
 
         // Patience fill
         _patienceBar = new GameObject("PatienceFill", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image)).GetComponent<Image>();
@@ -847,7 +847,7 @@ public class BarMinigame : MonoBehaviour
         if (_stock[drinkIndex] <= 0 && brewStockDepleted)
         {
             _orderText.text = $"😅 Sorry, we're out of {_drinkNames[drinkIndex]}!";
-            _orderText.color = new Color32(255, 180, 60, 255);
+            _orderText.color = UIFactory.WarningYellow;
             _apologyMode = true;
             _apologyTipMultiplier = 0.5f;
             _currentDrink = -1;
@@ -901,7 +901,7 @@ public class BarMinigame : MonoBehaviour
             else if (_comboCount == 2)
             {
                 _comboText.text = $"✨ 2 in a row!";
-                _comboText.color = new Color32(200, 200, 100, 255);
+                _comboText.color = UIFactory.WarningYellow;
                 StartCoroutine(ClearComboText());
             }
 
@@ -1134,9 +1134,9 @@ public class BarMinigame : MonoBehaviour
         float rowH = 0.06f;
 
         CreateDataRow(settlePanel.transform, "Customers Served", $"{served} / {total}", rowY, rowH, WarmText, GoldColor);
-        CreateDataRow(settlePanel.transform, "Revenue", $"${_earnings}", rowY - 0.08f, rowH, WarmText, new Color32(160, 220, 120, 255));
-        CreateDataRow(settlePanel.transform, "Tips", $"${_tips}", rowY - 0.16f, rowH, WarmText, new Color32(220, 200, 120, 255));
-        CreateDataRow(settlePanel.transform, "Stock Cost", $"${_stockingCost}", rowY - 0.24f, rowH, WarmText, new Color32(220, 140, 120, 255));
+        CreateDataRow(settlePanel.transform, "Revenue", $"${_earnings}", rowY - 0.08f, rowH, WarmText, UIFactory.GreenMoney);
+        CreateDataRow(settlePanel.transform, "Tips", $"${_tips}", rowY - 0.16f, rowH, WarmText, UIFactory.Gold);
+        CreateDataRow(settlePanel.transform, "Stock Cost", $"${_stockingCost}", rowY - 0.24f, rowH, WarmText, UIFactory.WarningRed);
         CreateDataRow(settlePanel.transform, "Accuracy", $"{(accuracy * 100):F0}%", rowY - 0.32f, rowH, WarmText, new Color32(180, 200, 220, 255));
 
         // [Gameplay] Show upgrade bonus
@@ -1155,7 +1155,7 @@ public class BarMinigame : MonoBehaviour
         // Separator line
         _ = CreateBar("Separator", settlePanel.transform,
             new Vector2(0.2f, rowY - 0.28f), new Vector2(0.8f, rowY - 0.27f),
-            Vector2.zero, Vector2.zero, new Color32(80, 70, 55, 255));
+            Vector2.zero, Vector2.zero, UIFactory.RowBg);
 
         // Net income
         string netStr = netIncome >= 0 ? $"+${netIncome}" : $"-${Mathf.Abs(netIncome)}";
@@ -1165,7 +1165,7 @@ public class BarMinigame : MonoBehaviour
         // Confirm button
         _ = CreateButton("SettleConfirm", settlePanel.transform,
             new Vector2(0.3f, 0.06f), new Vector2(0.7f, 0.18f),
-            GoldColor, new Color32(255, 220, 100, 255), "✅ Finish Shift", 20,
+            GoldColor, UIFactory.WarningYellow, "✅ Finish Shift", 20,
             () => {
                 _onComplete?.Invoke(_earnings + _tips);
                 _onComplete = null;

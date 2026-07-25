@@ -127,7 +127,7 @@ public class DialogueManager : MonoBehaviour
         pRT.offsetMin = Vector2.zero;
         pRT.offsetMax = Vector2.zero;
         Image panelImg = panelGO.GetComponent<Image>();
-        panelImg.color = new Color32(15, 17, 22, 240);
+        panelImg.color = UIFactory.PanelBg;
         panelImg.raycastTarget = false;
 
         // Speaker name bar
@@ -146,14 +146,14 @@ public class DialogueManager : MonoBehaviour
             new Vector2(24, -46), new Vector2(-24, -4),
             22, TextAnchor.MiddleLeft);
         _speakerNameText.fontStyle = FontStyle.Bold;
-        _speakerNameText.color = new Color32(246, 240, 229, 255);
+        _speakerNameText.color = UIFactory.TextDefault;
 
         // Body text
         _dialogueBodyText = CreateText("DialogueBody", panelGO.transform,
             new Vector2(0, 0), new Vector2(1, 1),
             new Vector2(24, 64), new Vector2(-24, -56),
             20, TextAnchor.UpperLeft);
-        _dialogueBodyText.color = new Color32(235, 228, 215, 255);
+        _dialogueBodyText.color = UIFactory.TextDefault;
 
         // Choice container
         _choiceContainer = new GameObject("ChoiceContainer", typeof(RectTransform));
@@ -175,7 +175,7 @@ public class DialogueManager : MonoBehaviour
         nbRT.offsetMin = new Vector2(-180, 12);
         nbRT.offsetMax = new Vector2(-24, 52);
         Image nbImg = nextBtnGO.GetComponent<Image>();
-        nbImg.color = new Color32(236, 180, 87, 255);
+        nbImg.color = UIFactory.Gold;
         nbImg.raycastTarget = true;
 
         _nextButtonText = CreateText("NextBtnText", nextBtnGO.transform,
@@ -188,6 +188,14 @@ public class DialogueManager : MonoBehaviour
 
         _nextButton.onClick.AddListener(AdvanceDialogue);
         _nextButton.gameObject.SetActive(false);
+
+        // Close hint
+        Text closeHint = CreateText("CloseHint", panelGO.transform,
+            new Vector2(0, 0), new Vector2(1, 0),
+            new Vector2(24, 4), new Vector2(-24, 44),
+            12, TextAnchor.LowerLeft);
+        closeHint.text = "Space / Enter: continue  |  1-3: choose  |  Esc: skip";
+        closeHint.color = UIFactory.CloseHint;
 
         // Set initial state
         _dialoguePanel.SetActive(false);
@@ -228,7 +236,7 @@ public class DialogueManager : MonoBehaviour
         IsDialogueActive = true;
         _dialoguePanel.SetActive(true);
         _overlay.gameObject.SetActive(true);
-        _overlay.color = new Color32(0, 0, 0, 180);
+        _overlay.color = UIFactory.Overlay;
         _overlay.raycastTarget = true;
 
         // Record dialogue start in DialogueLog
@@ -380,7 +388,7 @@ public class DialogueManager : MonoBehaviour
             crt.pivot = new Vector2(0.5f, 1);
 
             Image bg = choiceGO.GetComponent<Image>();
-            bg.color = new Color32(50, 55, 65, 200);
+            bg.color = UIFactory.RowBg;
             bg.raycastTarget = true;
 
             // Keyboard hint (e.g. "[1]") for first 3 choices
@@ -388,7 +396,7 @@ public class DialogueManager : MonoBehaviour
             Text choiceText = choiceGO.AddComponent<Text>();
             choiceText.font = UIFactory.GetFont();
             choiceText.fontSize = 16;
-            choiceText.color = new Color32(235, 228, 215, 255);
+            choiceText.color = UIFactory.TextDefault;
             choiceText.alignment = TextAnchor.MiddleLeft;
             choiceText.text = $"  {keyHint}{choice.text}";
             RectTransform trt = choiceText.GetComponent<RectTransform>();
@@ -587,7 +595,7 @@ public class DialogueManager : MonoBehaviour
         text.font = UIFactory.GetFont();
         text.fontSize = fontSize;
         text.alignment = alignment;
-        text.color = new Color32(246, 240, 229, 255);
+        text.color = UIFactory.TextDefault;
         text.horizontalOverflow = HorizontalWrapMode.Wrap;
         text.verticalOverflow = VerticalWrapMode.Truncate;
         return text;

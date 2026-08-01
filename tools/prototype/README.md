@@ -1,6 +1,6 @@
 # Amsterdam Brewery Web Demo
 
-这是 Amsterdam Brewery 当前的**玩法验证版本**。它先独立验证 7 天城市经营与 roguelike 循环；本阶段不承担 Unity 实现或迁移。
+这是 Amsterdam Brewery 当前的**玩法验收版本**。它先独立验证 7 天城市经营与 roguelike 循环；本阶段不承担 Unity 实现或迁移。
 
 ## 玩法闭环
 
@@ -17,21 +17,21 @@
 可直接双击 `index.html`。推荐通过本地静态服务器打开：
 
 ```bash
-python3 -m http.server 8080 -d tools/prototype
+python3 -m http.server 18765 -d tools/prototype
 ```
 
 然后访问：
 
 ```text
-http://localhost:8080/?seed=42
+http://127.0.0.1:18765/?seed=42
 ```
 
 `seed` 可替换为任意整数；相同 Seed 和相同操作应得到相同的玩法结果。
 
 ## 操作
 
-- `W/A/S/D` 或方向键：移动
-- 鼠标点击地图：移动到目标位置
+- `W/A/S/D` 或方向键：移动（按下持续移动）
+- 鼠标点击地图：移动到目标位置（点击运河会被改道到最近桥）
 - `E`：进入或离开建筑
 - `Space`：推进时间、确认小游戏操作
 - `Q/W`：小游戏内调价或调节参数
@@ -42,7 +42,7 @@ http://localhost:8080/?seed=42
 
 ## 规则说明
 
-- **每日目标**：赚钱、服务、酿酒、探索和对话；进度单位与文案一致。
+- **每日目标**：赚钱、服务、酿酒、探索和对话；进度单位与文案一致；每天至少含 1 项 Explore 或 Talk，确保当天可完成。
 - **每日事件**：会修改对应产业收益、客流、封锁或声望，不是纯文字提示。
 - **Meta**：目标奖励在 Run 结束时统一到账，不重复结算。
 - **永久升级**：保存在浏览器 `localStorage` 的 `ab_meta_v2` 中；包括起始资金/库存、tip、XP、事件、meta、IPA 和额外事件能力。
@@ -52,13 +52,20 @@ http://localhost:8080/?seed=42
 
 ```js
 localStorage.removeItem('ab_meta_v2')
+localStorage.removeItem('ab_skip_tutorial')
 ```
 
 ## 验证
 
-打开 `test.html`。全部项目显示 `PASS` 才表示静态数据、启动入口、Seed 和基础生命周期契约通过。
+打开 `test.html`。**当前 19/19 PASS**，覆盖：
 
-人工验收建议：
+- 数据契约（5 产业、事件 ID 唯一、升级 ID 唯一、modifier 都有 effect、冲浪入口、Seed 稳定）
+- 运行时契约（目标生成数量、必须含 Explore/Talk、升级包含三张死亡升级）
+- 首开 UX（fresh localStorage 看到模态、模态打开时 WASD 不生效、seed 输入框回车可启动）
+- 运河改道（点击运河坐标会被改道到最近桥端）
+- 完整闭环（自动运行 100s 内必达 ended；购买升级后 run +1 且 upgrades 增加且 ended 已复位）
+
+### 手动验收
 
 1. 用 `?seed=42` 开始。
 2. 手动进入每个小游戏并完成一次。

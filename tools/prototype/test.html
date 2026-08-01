@@ -1,25 +1,68 @@
 <!doctype html>
 <html lang="zh-CN">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Amsterdam Brewery Web Demo Tests</title>
-<style>body{font:16px system-ui;background:#0a0c14;color:#e0d8c8;padding:24px}.pass{color:#78c878}.fail{color:#f05050}iframe{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}</style></head>
+<style>body{font:16px system-ui;background:#0a0c14;color:#e0d8c8;padding:24px}h2.pass{color:#78c878}h2.fail{color:#f05050}.row{margin:6px 0;font-family:monospace}.pass{color:#78c878}.fail{color:#f05050}iframe{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}</style></head>
 <body><h1>Web Demo contract tests</h1><div id="results">正在加载…</div><iframe id="demo" src="index.html?seed=42"></iframe>
 <script>
 const results=document.getElementById('results'),frame=document.getElementById('demo');
-function row(ok,name,detail=''){const el=document.createElement('p');el.className=ok?'pass':'fail';el.textContent=`${ok?'PASS':'FAIL'} — ${name}${detail?' · '+detail:''}`;results.appendChild(el);return ok}
-frame.addEventListener('load',()=>{results.textContent='';let passed=0,total=0;const t=frame.contentWindow.AB_TEST;
-  const check=(name,fn)=>{total++;try{if(row(Boolean(fn()),name))passed++}catch(e){row(false,name,e.message)}};
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function row(ok,name,detail=''){const el=document.createElement('div');el.className='row '+(ok?'pass':'fail');el.textContent=(ok?'PASS':'FAIL')+' — '+name+(detail?' · '+detail:'');results.appendChild(el);return ok}
+
+frame.addEventListener('load',async()=>{
+  results.textContent='';let passed=0,total=0;
+  const check=(name,fn)=>{total++;try{const r=fn();if(row(Boolean(r),name,typeof r==='object'&&r&&r.detail?r.detail:''))passed++}catch(e){row(false,name,e.message)}};
+
+  // Wait for AB_TEST ready
+  for(let i=0;i<80;i++){if(frame.contentWindow&&frame.contentWindow.AB_TEST)break;await wait(100)}
+  const win=frame.contentWindow,doc=frame.contentDocument;
+  const t=win.AB_TEST;
+
+  // Phase 1: contract tests against the loaded instance
   check('测试接口可用',()=>t&&t.validate);
   const v=t.validate();
   check('定义 5 个产业',()=>v.industries);
   check('事件 ID 唯一',()=>v.eventIds);
   check('升级 ID 唯一',()=>v.upgradeIds);
-  check('所有事件有实际效果说明',()=>v.modifierEffects);
+  check('所有事件有效果说明',()=>v.modifierEffects);
   check('冲浪入口存在',()=>v.surfEntry);
   check('Seed 缩写稳定',()=>t.seedAbbrev(42)===t.seedAbbrev(42));
   check('相同 Seed 的每日事件稳定',()=>{const a=t.rollDayModifier().id,b=t.rollDayModifier().id;return a===b});
   check('Run 状态范围合法',()=>t.state.day>=1&&t.state.day<=7&&t.state.run>=0);
   check('目标生成固定为 3 条',()=>{t.rollDayObjectives();return t.state.objs.length===3});
+  check('目标至少含 1 项 Explore 或 Talk',()=>t.state.objs.some(o=>o.cat==='Explore'||o.cat==='Talk'));
+  check('升级 ID 含 ipa_recipe/extra_event/event_freq',()=>t.data.upgrades.some(u=>u.id==='ipa_recipe')&&t.data.upgrades.some(u=>u.id==='extra_event')&&t.data.upgrades.some(u=>u.id==='event_freq'));
+  const snapped=t.clampTargetToWalkable(400,158);
+  check('运河改道函数可用',()=>snapped&&(snapped.y===144||snapped.y===158||snapped.y===286));
+  check('fresh 下 start-modal 可见',()=>!doc.getElementById('start-modal').classList.contains('hidden'));
+  // Modal guard: W should not move player while modal visible
+  const ty0=t.state.p.ty;
+  win.dispatchEvent(new KeyboardEvent('keydown',{key:'w',bubbles:true}));
+  await wait(120);
+  check('模态打开时 WASD 不修改目标',()=>t.state.p.ty===ty0);
+  // Enter in seed input
+  doc.getElementById('start-seed').value='7';
+  doc.getElementById('start-seed').focus();
+  doc.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+  await wait(500);
+  check('教程输入框回车可启动',()=>t.state.seed===7&&doc.getElementById('start-modal').classList.contains('hidden'));
+  // Auto-run completes within 100s
+  t.newRun(42);t.state.ended=false;
+  doc.getElementById('ba').click();
+  let reached=false;
+  for(let i=0;i<200;i++){if(t.state.ended){reached=true;break}await wait(500)}
+  check('自动运行跑满 7 天必达 ended',()=>reached);
+  // Pick upgrade → next run counter +1
+  const beforeRun=t.state.run,beforeUpgrades=t.state.upgrades.length;
+  const next=t.data.upgrades.find(u=>!t.state.upgrades.includes(u.id));
+  if(!next){row(false,'有可购买升级','')}
+  else{
+    t.state.meta=Math.max(t.state.meta,next.cost);
+    win.eval(`pickUpgrade(${JSON.stringify(next)})`);
+    await wait(200);
+    check('购买升级后 run 计数 +1 且 upgrades 增加',()=>t.state.run===beforeRun+1&&t.state.upgrades.length===beforeUpgrades+1);
+    check('升级后 G.ended 已复位',()=>t.state.ended===false);
+  }
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
-setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<p class="fail">FAIL — Demo 加载超时</p>'},5000);
+setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);
 </script></body></html>

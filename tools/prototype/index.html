@@ -695,25 +695,41 @@ function autoStep(){
     if(G.mg==='bar'){const bs=s;if(bs.sd>=bs.mx){finBar();G._at=setTimeout(autoStep,300);renderAll();return}else if(!bs.cs.length){sBarC();G._at=setTimeout(autoStep,200);renderAll();return}else{const cur=bs.cs[bs.cs.length-1];const mid=Math.max(cur.floor+1,Math.min(cur.ceiling-1,Math.floor((cur.floor+cur.ceiling)/2)));cur.offer=mid;s.sd++;const final=Math.round(mid*tipFactor());s.earn+=final;addEvt('good','🍻 自动成交 '+cur.arch.n+' +$'+final);s.cs.pop();setStatus('🍻 自动酒吧','$'+s.earn+' '+s.sd+'/'+s.mx,'');G._at=setTimeout(autoStep,200);renderAll();return}}
     G.mg=null;G.inside=null;G._at=setTimeout(autoStep,400);renderAll();return;
   }
-  // Auto-run advances time on every tick so a full 7 days completes in ~30s.
-  if(G.auto){advanceTimeAuto();return}
-  // Outside: teleport to building
+  // Outside: advance time first, then pick a target for the new phase. Each
+  // auto cycle = play one minigame + tick the clock, so time actually moves.
+  if(G.ended)return;
+  advanceTimeAuto();
+  if(G.ended)return;
   let target;
   if(G.ti>=3&&G.ti<=5)target=BLDGS.find(b=>b.id==='bar');
   else if(G.ti<=2){
-    // 12% chance to visit an NPC for escape-tech learning (one of the four teachers)
     const npcVisit=G.escapeLevel<4&&seeded(195+G.day)<.12;
     if(npcVisit)target=BLDGS.find(b=>b.tp==='npc'&&b.npc===ESCAPE_TECHS[G.escapeLevel].teacher);
     if(!target){const ch=BLDGS.filter(b=>['brew','coffee','shroom','surf','academic'].includes(b.tp));target=ch[Math.floor(seeded(190+G.ti)*ch.length)]}
   }
-  else{advanceTimeAuto();return}
-  if(target){G.p.x=target.x+target.w/2;G.p.y=target.y+target.h/2+12;G.p.tx=G.p.x;G.p.ty=G.p.y;G.loc=target.d;G.inside=target;
+  if(target){
+    G.p.x=target.x+target.w/2;G.p.y=target.y+target.h/2+12;G.p.tx=G.p.x;G.p.ty=G.p.y;G.loc=target.d;G.inside=target;
     if(target.tp==='bar'){if(G.ti>=3)startBar();else{G.inside=null;G._at=setTimeout(autoStep,200);renderAll();return}}
     else if(target.tp==='brew')startBrew();else if(target.tp==='coffee')startCoffee();
     else if(target.tp==='shroom')startShroom();else if(target.tp==='surf')startSurf();
     else if(target.tp==='academic')startAcad();
+    else if(target.tp==='npc'){
+      if(!G.greetedToday)G.greetedToday=[];
+      if(!G.greetedToday.includes(target.npc)){
+        G.greetedToday.push(target.npc);
+        const r=10+Math.floor(seeded(180+G.day)*15);G.money+=r;
+        addEvt('good',`💬 ${target.npc} +$${r}`);addSch('💬',`${target.npc} +$${r}`);
+        tickObj('Talk',1);tickObj('Earn',r);
+        learnEscape(target.npc);
+      }
+      if(!G.visitedToday.includes(target.id)){G.visitedToday.push(target.id);tickObj('Explore',1)}
+      G.inside=null;
+      G._at=setTimeout(autoStep,200);renderAll();return;
+    }
     G._at=setTimeout(autoStep,250);renderAll();
-  }else{G._at=setTimeout(autoStep,200);renderAll()}
+  } else {
+    G._at=setTimeout(autoStep,200);renderAll();
+  }
 }
 function advanceTimeAuto(){
   if(G.ended)return;G.ti++;if(G.ti>=6){G.ti=0;G.day++;G.sch=[];G.visitedToday=[];G.greetedToday=[];

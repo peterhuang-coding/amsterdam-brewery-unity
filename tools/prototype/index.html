@@ -480,7 +480,7 @@ function hideWaveSelect(){if(G.mg==='waveSelect'){G.mg=null;G.inside=null;setSta
 function pickWavePoint(n){const w=WAVE_POINTS[n-1];if(!w)return;G.todayWave=w;G.mg='surf';MG.surf={wave:w,wx:400,sc:0,at:0,stamina:100,combo:0,perfect:0,started:Date.now(),lastCatch:0,drowned:false,ended:false};if(!G.surfDiscovered.includes(w.id)){G.surfDiscovered.push(w.id);G.meta+=5;addEvt('good',`🗺️ 首次发现 ${w.n} +5★ meta`)}setStatus('🏄 '+w.n,`难度${w.diff} · 特殊:${w.special}`,'SPACE不停抓浪 · 绿区=perfect');renderAll()}
 function rollSurfItem(wave){let item=wave.item;if(seeded(140+G.inventory.length)<.3){const upgrades={'海龟':'古地图','钓鱼人':'鱼钩','隐藏洞穴':'宝石','雷暴':'闪电石','灯塔回声':'回声瓶','海鸥群':'羽毛'};item=upgrades[wave.special]||'稀有遗物'}return item}
 function surfIn(k){const s=MG.surf;if(!s||s.ended||k!==' ')return;const pos=(s.wx-200)/500,green=pos>0.6&&pos<0.8,barrel=seeded(80+s.at)<.08;let sc=green?Math.round((1-Math.abs(pos-0.7)/0.1)*30+10):pos>0.3&&pos<0.95?Math.round((1-Math.abs(pos-0.7)/0.3)*10+3):1;if(green){s.combo++;s.perfect++}else s.combo=0;if(barrel)sc+=50;s.sc+=sc;s.at++;s.stamina=Math.max(0,s.stamina-5);s.lastCatch=Date.now();s.wx=400+seeded(150+s.at)*200;if(barrel)setMsg('🏄 Perfect barrel +50!');else setMsg(`🏄 抓浪 +${sc} · 体力${s.stamina}%`);if(s.stamina<=0){s.drowned=true;finSurf(true)}else renderAll()}
-function finSurf(drowned){const s=MG.surf;if(!s||s.ended)return;s.ended=true;const bonus=s.combo>=3?1.2:1,raw=Math.round(s.sc*bonus*tipFactor()),inc=drowned?Math.floor(raw*.5):raw;G.money+=inc;G.ind.surfing.xp+=inc*3;const item=rollSurfItem(s.wave);G.inventory.push(item);addEvt(drowned?'bad':'good',`🏄 ${s.wave.n} 带回${item} · +$${inc}`);addSch('🏄',`冲浪 +$${inc} · ${item}`);G.mg=null;G.inside=null;chkLv('surfing');setStatus(drowned?'🌊 溺水':'✅ 冲浪结束',`${s.sc}分 · ${item} · +$${inc}`,'');tickObj('Earn',Math.max(1,Math.floor(inc/10)));tickObj('Explore',1);renderAll()}
+function finSurf(drowned){const s=MG.surf;if(!s||s.ended)return;s.ended=true;const perfectBonus=s.perfect*50;const bonus=s.combo>=3?1.2:1,raw=Math.round((s.sc+perfectBonus)*bonus*tipFactor()),inc=drowned?Math.floor(raw*.5):raw;G.money+=inc;G.ind.surfing.xp+=inc*3;const item=rollSurfItem(s.wave);G.inventory.push(item);addEvt(drowned?'bad':'good',`🏄 ${s.wave.n} 带回${item} · +$${inc}${perfectBonus>0?' (含 perfect ×'+s.perfect+')':''}`);addSch('🏄',`冲浪 +$${inc} · ${item}`);G.mg=null;G.inside=null;chkLv('surfing');setStatus(drowned?'🌊 溺水':'✅ 冲浪结束',`${s.sc}分 · ${item} · +$${inc}`,'');tickObj('Earn',Math.max(1,Math.floor(inc/10)));tickObj('Explore',1);renderAll()}
 function updateSurf(){const s=MG.surf;if(!s||G.mg!=='surf'||s.ended)return;s.wx-=G.auto?8:3;if(s.wx<100)s.wx=500+Math.random()*200;if(Date.now()-s.started>=30000)finSurf(false)}
 function startAcad(){const topics=['偏好建模','价值对齐','红队测试','对抗鲁棒','因果推断','机制解释','安全审查','公平约束'],ids=[];for(let i=0;i<5;i++)ids.push({t:topics[Math.floor(seeded(160+i)*topics.length)],q:1+Math.floor(seeded(170+i)*3)});MG.academic={ids,ph:'gather',sel:[],sc:0};G.mg='academic';setStatus('📚 学术','收集研究灵感','按1-5选2个')}
 function acadIn(k){const s=MG.academic;if(!s)return;if(s.ph==='gather'&&k>='1'&&k<='5'){const i=parseInt(k)-1;if(s.sel.includes(i))s.sel=s.sel.filter(x=>x!==i);else if(s.sel.length<2)s.sel.push(i);if(s.sel.length===2){s.ph='write';s.ws=Date.now();s.sc=30+s.ids[s.sel[0]].q*15+s.ids[s.sel[1]].q*15+Math.floor(seeded(180+G.day)*15);setStatus('📚 写论文',`${s.ids[s.sel[0]].t}+${s.ids[s.sel[1]].t}`,`预计${s.sc}分 SPACE提交`)}}
@@ -700,7 +700,12 @@ function autoStep(){
   // Outside: teleport to building
   let target;
   if(G.ti>=3&&G.ti<=5)target=BLDGS.find(b=>b.id==='bar');
-  else if(G.ti<=2){const ch=BLDGS.filter(b=>['brew','coffee','shroom','surf','academic'].includes(b.tp));target=ch[Math.floor(seeded(190+G.ti)*ch.length)]}
+  else if(G.ti<=2){
+    // 12% chance to visit an NPC for escape-tech learning (one of the four teachers)
+    const npcVisit=G.escapeLevel<4&&seeded(195+G.day)<.12;
+    if(npcVisit)target=BLDGS.find(b=>b.tp==='npc'&&b.npc===ESCAPE_TECHS[G.escapeLevel].teacher);
+    if(!target){const ch=BLDGS.filter(b=>['brew','coffee','shroom','surf','academic'].includes(b.tp));target=ch[Math.floor(seeded(190+G.ti)*ch.length)]}
+  }
   else{advanceTimeAuto();return}
   if(target){G.p.x=target.x+target.w/2;G.p.y=target.y+target.h/2+12;G.p.tx=G.p.x;G.p.ty=G.p.y;G.loc=target.d;G.inside=target;
     if(target.tp==='bar'){if(G.ti>=3)startBar();else{G.inside=null;G._at=setTimeout(autoStep,200);renderAll();return}}
@@ -739,9 +744,9 @@ const DREAM_POOL=[
 function triggerDream(){
   const dream=DREAM_POOL[Math.floor(seeded(90+G.day)*DREAM_POOL.length)];
   G.shop.dream=dream;G.shop.dreamDay=G.day;
-  if(dream.kind==='good'){G.mood=Math.min(2,G.mood+1);addEvt('good','💤 '+dream.t)}
+  if(dream.kind==='good'){G.mood=Math.min(2,G.mood+1);if(dream.delta&&dream.delta.rep)G.rep+=dream.delta.rep;addEvt('good','💤 '+dream.t)}
   else if(dream.kind==='bad'){G.mood=Math.max(-2,G.mood-1);G.rep+=(dream.delta&&dream.delta.rep)||0;addEvt('bad','💤 '+dream.t)}
-  else if(dream.kind==='omen'){G.shop.vipTomorrow=1;addEvt('info','💤 '+dream.t+' · +tip')}
+  else if(dream.kind==='omen'){G.shop.vipTomorrow=1;G.mood=Math.min(2,G.mood+1);addEvt('info','💤 '+dream.t+' · 明日 VIP 日 +tip')}
   setMsg('💤 梦境: '+dream.t+' · 心情'+moodEmoji());
 }
 
@@ -764,7 +769,7 @@ function tickObj(cat,n=1){
     if(o.cur>=o.need){o.done=true;let reward=o.sc;if(cat==='Earn'&&hasMod('tulip_auction'))reward+=5;if(hasUpgrade('meta_cap'))reward=Math.ceil(reward*1.5);G.metaPending+=reward;addEvt('good','🎯 目标完成:'+o.t+' +'+reward+'★（结算时到账）')}
   });
 }
-function workInd(){const map={tweede_kans:'brewing',noord:'surfing',bloemenmarkt:'smart_shop',science_park:'academic',de_pijp:'brewing'};const id=map[G.loc];if(!id||G.mg)return;const def=IND_DEF[id],ind=G.ind[id];const inc=Math.round((def.inc[ind.lv]+Math.floor(seeded(200+G.events.length)*5))*industryFactor(id==='surfing'?'surf':id));G.money+=inc;ind.xp+=Math.round(inc*2*(hasUpgrade('legacy_xp')?1.25:1));chkLv(id);setMsg(`${def.n} +$${inc}`);addEvt('good',`${def.n} +$${inc}`);addSch(def.n.substring(0,2),`经营 +$${inc}`);tickObj('Earn',inc);renderAll()}
+function workInd(){if(G.inside||G.mg)return;const map={tweede_kans:'brewing',noord:'surfing',bloemenmarkt:'smart_shop',science_park:'academic',de_pijp:'brewing'};const id=map[G.loc];if(!id)return;const def=IND_DEF[id],ind=G.ind[id];const inc=Math.round((def.inc[ind.lv]+Math.floor(seeded(200+G.events.length)*5))*industryFactor(id==='surfing'?'surf':id));G.money+=inc;ind.xp+=Math.round(inc*2*(hasUpgrade('legacy_xp')?1.25:1));chkLv(id);setMsg(`${def.n} +$${inc}`);addEvt('good',`${def.n} +$${inc}`);addSch(def.n.substring(0,2),`经营 +$${inc}`);tickObj('Earn',inc);renderAll()}
 G.advanceTime=advanceTimeAuto;
 function endGame(won){if(G.ended)return;G.ended=true;G.auto=false;clearTimeout(G._at);G.legacy+=Math.floor(G.money/300)+Object.values(G.ind).filter(i=>i.lv>0).length;
   const objDone=G.objs.filter(o=>o.done).length,objReward=G.metaPending;G.meta+=objReward;G.metaPending=0;saveMeta();
@@ -796,8 +801,8 @@ function renderAll(){
   for(let i=0;i<6;i++){const el=document.getElementById('p'+i);el.classList.remove('active','done');if(i===G.ti)el.classList.add('active');else if(i<G.ti)el.classList.add('done')}
   // Left industries
   const lp=document.getElementById('left');let lh='<h3>🏭 产业 (点击跳转)</h3>';
-  for(const[id,def]of Object.entries(IND_DEF)){const ind=G.ind[id],next=(ind.lv+1)*50,pct=Math.min(100,ind.xp/next*100);
-    lh+=`<div class="ind-card ${G.loc===def.loc?'active':''}" onclick="G.loc='${def.loc}';G.p.tx=G.p.x;G.p.ty=G.p.y;renderAll()" style="border-left-color:${def.cl}">
+  for(const[id,def]of Object.entries(IND_DEF)){const ind=G.ind[id],next=(ind.lv+1)*50,pct=Math.min(100,ind.xp/next*100);const _b=BLDGS.find(b=>b.d===def.loc&&['brew','coffee','shroom','surf','academic','home'].includes(b.tp));const _tx=_b?_b.x+_b.w/2:0,_ty=_b?_b.y+_b.h/2:0;
+    lh+=`<div class="ind-card ${G.loc===def.loc?'active':''}" onclick="G.loc='${def.loc}';G.p.tx=${_tx};G.p.ty=${_ty};G._wp=null;renderAll()" style="border-left-color:${def.cl}">
       <div class="ih"><span class="ii">${def.n.substring(0,2)}</span><span class="in">${def.n}</span><span class="il">Lv${ind.lv+1}</span></div>
       <div class="im">风险${def.risk} · $${def.inc[ind.lv]}/次 · ${ind.lv<2?'→'+def.lvs[ind.lv+1]:'满级'}</div>
       <div class="ib"><div class="if" style="width:${pct}%;background:${def.cl}"></div></div>

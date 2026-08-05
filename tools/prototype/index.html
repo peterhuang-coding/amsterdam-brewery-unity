@@ -214,26 +214,61 @@ cv.width=W;cv.height=H;
 // Tweede Kans bar is on Warmoesstraat (just south of Centraal Station in real life).
 const BLDGS=[
   // === NOORD (north of IJ) ===
-  {id:'beach',x:30,y:30,w:52,h:22,n:'Noord海滩',cl:'#40a0d0',d:'noord',tp:'surf',ic:'🏄'},
-  {id:'coffee',x:120,y:40,w:44,h:30,n:'Noord咖啡',cl:'#60b860',d:'noord',tp:'coffee',ic:'🌿'},
-  {id:'whouse',x:200,y:35,w:40,h:28,n:'NDSM仓库',cl:'#607080',d:'noord',tp:'market',ic:'📦'},
+  {id:'beach',x:30,y:30,w:48,h:30,n:'Noord海滩',cl:'#40a0d0',d:'noord',tp:'surf',ic:'🏄'},
+  {id:'coffee',x:130,y:30,w:30,h:55,n:'Noord咖啡',cl:'#60b860',d:'noord',tp:'coffee',ic:'🌿'},
+  {id:'whouse',x:210,y:30,w:34,h:48,n:'NDSM仓库',cl:'#607080',d:'noord',tp:'market',ic:'📦'},
   // === CENTRUM (just south of IJ) ===
-  {id:'station',x:340,y:130,w:80,h:34,n:'中央车站',cl:'#4a6a8a',d:'tweede_kans',tp:'station',ic:'🚇'},
-  {id:'bar',x:450,y:160,w:72,h:40,n:'Tweede Kans酒吧',cl:'#9a6f2d',d:'tweede_kans',tp:'bar',ic:'🍻',npc:'bar',real:'Warmoesstr. 19'},
-  {id:'brew',x:340,y:180,w:52,h:32,n:'Brouwerij De Pijl',cl:'#c09040',d:'tweede_kans',tp:'brew',ic:'🍺'},
+  {id:'station',x:330,y:115,w:60,h:50,n:'中央车站',cl:'#4a6a8a',d:'tweede_kans',tp:'station',ic:'🚇'},
+  {id:'bar',x:430,y:140,w:36,h:60,n:'Tweede Kans酒吧',cl:'#9a6f2d',d:'tweede_kans',tp:'bar',ic:'🍻',npc:'bar',real:'Warmoesstr. 19'},
+  {id:'brew',x:330,y:170,w:36,h:50,n:'Brouwerij De Pijl',cl:'#c09040',d:'tweede_kans',tp:'brew',ic:'🍺'},
   // === CANAL BELT (Singel/Herengracht/Keizersgracht merged into one visual canal at y~225) ===
-  {id:'flower',x:230,y:200,w:60,h:30,n:'水上花市',cl:'#e080a0',d:'bloemenmarkt',tp:'market',ic:'🌷'},
-  {id:'shroom',x:300,y:205,w:46,h:28,n:'SmartShop',cl:'#b050d0',d:'bloemenmarkt',tp:'shroom',ic:'🍄'},
-  // === OLD CENTER (between canal belt and Amstel) ===
+  {id:'flower',x:230,y:200,w:34,h:50,n:'水上花市',cl:'#e080a0',d:'bloemenmarkt',tp:'market',ic:'🌷'},
+  {id:'shroom',x:295,y:200,w:32,h:48,n:'SmartShop',cl:'#b050d0',d:'bloemenmarkt',tp:'shroom',ic:'🍄'},
   // === SCIENCE PARK (far east) ===
-  {id:'lab',x:680,y:200,w:60,h:36,n:'Chen实验室',cl:'#5080a0',d:'science_park',tp:'npc',ic:'🔬',npc:'chen'},
-  {id:'pablo',x:640,y:250,w:50,h:32,n:'Pablo教室',cl:'#c25734',d:'science_park',tp:'npc',ic:'📚',npc:'pablo'},
-  {id:'lib',x:700,y:300,w:50,h:30,n:'图书馆',cl:'#708090',d:'science_park',tp:'academic',ic:'📖'},
-  {id:'ravi',x:650,y:350,w:46,h:30,n:'Ravi宿舍',cl:'#f0c850',d:'science_park',tp:'npc',ic:'💻',npc:'ravi'},
+  {id:'lab',x:680,y:195,w:36,h:55,n:'Chen实验室',cl:'#5080a0',d:'science_park',tp:'npc',ic:'🔬',npc:'chen'},
+  {id:'pablo',x:630,y:255,w:30,h:50,n:'Pablo教室',cl:'#c25734',d:'science_park',tp:'npc',ic:'📚',npc:'pablo'},
+  {id:'lib',x:695,y:295,w:30,h:46,n:'图书馆',cl:'#708090',d:'science_park',tp:'academic',ic:'📖'},
+  {id:'ravi',x:640,y:355,w:34,h:50,n:'Ravi宿舍',cl:'#f0c850',d:'science_park',tp:'npc',ic:'💻',npc:'ravi'},
   // === DE PIJP (south of Amstel) ===
-  {id:'market',x:200,y:420,w:64,h:32,n:'Albert Cuyp市集',cl:'#c0a060',d:'de_pijp',tp:'market',ic:'🛒'},
-  {id:'sofie',x:300,y:430,w:40,h:30,n:'Sofie花店',cl:'#dc6e8c',d:'de_pijp',tp:'npc',ic:'🌷',npc:'sofie'},
-  {id:'apt',x:380,y:430,w:50,h:36,n:'Sarphati公寓',cl:'#8b6b4a',d:'de_pijp',tp:'home',ic:'🏠'},
+  {id:'market',x:200,y:415,w:34,h:50,n:'Albert Cuyp市集',cl:'#c0a060',d:'de_pijp',tp:'market',ic:'🛒'},
+  {id:'sofie',x:295,y:425,w:28,h:48,n:'Sofie花店',cl:'#dc6e8c',d:'de_pijp',tp:'npc',ic:'🌷',npc:'sofie'},
+  {id:'apt',x:380,y:420,w:34,h:55,n:'Sarphati公寓',cl:'#8b6b4a',d:'de_pijp',tp:'home',ic:'🏠'},
+];
+// === Decorative canal houses (no gameplay, just visual density) ===
+const CIVIC=[
+  // NOORD row (above IJ)
+  {x:275,y:25,w:22,h:42,cl:'#9a5a3a'},{x:305,y:25,w:20,h:46,cl:'#7a4030'},{x:335,y:25,w:24,h:40,cl:'#8a5a3a'},{x:370,y:25,w:22,h:48,cl:'#6a3828'},
+  {x:400,y:25,w:20,h:42,cl:'#9a5a3a'},{x:430,y:25,w:24,h:46,cl:'#7a4030'},{x:465,y:25,w:22,h:40,cl:'#8a5a3a'},{x:495,y:25,w:20,h:48,cl:'#a06848'},
+  {x:525,y:25,w:24,h:42,cl:'#7a4838'},{x:560,y:25,w:22,h:46,cl:'#8a5a3a'},{x:590,y:25,w:20,h:40,cl:'#6a3828'},{x:620,y:25,w:24,h:48,cl:'#9a5a3a'},
+  {x:655,y:25,w:22,h:42,cl:'#7a4030'},{x:685,y:25,w:20,h:46,cl:'#a06848'},{x:715,y:25,w:24,h:40,cl:'#8a5a3a'},{x:750,y:25,w:22,h:48,cl:'#6a3828'},
+  // CENTRUM row
+  {x:140,y:115,w:22,h:48,cl:'#7a3a28'},{x:170,y:115,w:20,h:52,cl:'#9a5a3a'},{x:198,y:115,w:22,h:46,cl:'#a06848'},
+  {x:398,y:115,w:22,h:50,cl:'#6a3828'},
+  {x:475,y:115,w:22,h:46,cl:'#7a4838'},{x:505,y:115,w:20,h:52,cl:'#9a5a3a'},{x:533,y:115,w:22,h:48,cl:'#8a5a3a'},{x:563,y:115,w:24,h:46,cl:'#6a3828'},
+  {x:595,y:115,w:22,h:52,cl:'#7a3a28'},{x:625,y:115,w:20,h:48,cl:'#a06848'},{x:653,y:115,w:24,h:46,cl:'#9a5a3a'},{x:685,y:115,w:22,h:50,cl:'#8a5a3a'},
+  {x:715,y:115,w:20,h:48,cl:'#7a4838'},{x:745,y:115,w:22,h:52,cl:'#6a3828'},{x:775,y:115,w:24,h:46,cl:'#9a5a3a'},
+  // CANAL BELT south bank
+  {x:115,y:265,w:22,h:48,cl:'#7a3a28'},{x:145,y:265,w:20,h:52,cl:'#9a5a3a'},{x:173,y:265,w:22,h:46,cl:'#a06848'},{x:203,y:265,w:22,h:50,cl:'#6a3828'},
+  {x:233,y:265,w:20,h:48,cl:'#7a4838'},{x:261,y:265,w:22,h:52,cl:'#9a5a3a'},{x:291,y:265,w:22,h:46,cl:'#8a5a3a'},
+  {x:335,y:265,w:22,h:48,cl:'#6a3828'},{x:365,y:265,w:20,h:52,cl:'#a06848'},{x:393,y:265,w:22,h:46,cl:'#9a5a3a'},{x:423,y:265,w:22,h:50,cl:'#7a3a28'},
+  {x:453,y:265,w:20,h:48,cl:'#7a4838'},{x:481,y:265,w:22,h:52,cl:'#9a5a3a'},{x:511,y:265,w:22,h:46,cl:'#8a5a3a'},{x:541,y:265,w:20,h:50,cl:'#6a3828'},
+  {x:569,y:265,w:22,h:48,cl:'#a06848'},
+  {x:730,y:265,w:22,h:46,cl:'#9a5a3a'},{x:760,y:265,w:20,h:52,cl:'#7a4030'},{x:785,y:265,w:24,h:48,cl:'#8a5a3a'},
+  // AMSTEL south bank (between Amstel and De Pijp)
+  {x:115,y:395,w:22,h:48,cl:'#7a3a28'},{x:145,y:395,w:20,h:52,cl:'#9a5a3a'},{x:173,y:395,w:22,h:46,cl:'#a06848'},
+  {x:243,y:395,w:22,h:48,cl:'#7a4030'},
+  {x:340,y:395,w:22,h:50,cl:'#6a3828'},
+  {x:425,y:395,w:22,h:48,cl:'#9a5a3a'},{x:455,y:395,w:20,h:52,cl:'#7a4838'},{x:483,y:395,w:22,h:46,cl:'#8a5a3a'},{x:513,y:395,w:20,h:50,cl:'#6a3828'},
+  {x:541,y:395,w:22,h:48,cl:'#a06848'},{x:571,y:395,w:22,h:52,cl:'#9a5a3a'},{x:601,y:395,w:20,h:46,cl:'#7a3a28'},{x:629,y:395,w:22,h:48,cl:'#8a5a3a'},
+  {x:659,y:395,w:20,h:50,cl:'#6a3828'},{x:687,y:395,w:22,h:48,cl:'#7a4030'},{x:717,y:395,w:20,h:52,cl:'#9a5a3a'},{x:745,y:395,w:22,h:46,cl:'#a06848'},
+  {x:775,y:395,w:20,h:48,cl:'#7a4838'},
+];
+// === Houseboats along canals (Amsterdam signature — ~2500 official houseboats) ===
+const HOUSEBOATS=[
+  {x:80,y:78,w:18,h:7,cl:'#8b3a3a'},{x:170,y:75,w:20,h:8,cl:'#406080'},{x:250,y:78,w:16,h:7,cl:'#8b6a3a'},{x:330,y:76,w:22,h:8,cl:'#5a5a5a'},{x:430,y:78,w:18,h:7,cl:'#3a7060'},{x:520,y:76,w:20,h:8,cl:'#8b3a3a'},
+  {x:620,y:78,w:18,h:7,cl:'#406080'},{x:710,y:76,w:16,h:8,cl:'#8b6a3a'},
+  {x:160,y:228,w:14,h:5,cl:'#3a5a3a'},{x:300,y:225,w:16,h:6,cl:'#8b3a3a'},{x:430,y:228,w:14,h:5,cl:'#406080'},{x:550,y:226,w:18,h:6,cl:'#5a5a5a'},{x:670,y:228,w:14,h:5,cl:'#8b6a3a'},
+  {x:600,y:285,w:16,h:6,cl:'#3a7060'},{x:680,y:285,w:18,h:6,cl:'#8b3a3a'},{x:740,y:285,w:14,h:5,cl:'#406080'},
 ];
 // === Amsterdam canal system: IJ + canal belt + Amstel + cross canals ===
 const CANALS=[
@@ -816,6 +851,46 @@ function drawMap(){
       cx.fillStyle='#3a2820';cx.fillRect(b.x+b.w-9,b.y-18,5,14);cx.fillStyle='#504030';cx.fillRect(b.x+b.w-10,b.y-20,7,3);
     }
     cx.fillStyle='#fffc';cx.font='bold 7px sans-serif';cx.textAlign='center';cx.fillText(b.ic+b.n,b.x+b.w/2+5,b.y-22);
+  });
+
+  // === CIVIC decorative canal houses (dense narrow Amsterdam row houses) ===
+  // No labels, no icons — pure visual texture to show the urban fabric.
+  var civicSorted=CIVIC.slice().sort(function(a,b){return (a.y+a.h)-(b.y+b.h)});
+  civicSorted.forEach(function(b){
+    cx.fillStyle='#0005';cx.beginPath();cx.ellipse(b.x+b.w/2,b.y+b.h+2,b.w/2+2,3,0,0,Math.PI*2);cx.fill();
+    // 2.5D right wall
+    cx.fillStyle=shadeColor(b.cl,-45);cx.beginPath();cx.moveTo(b.x+b.w,b.y);cx.lineTo(b.x+b.w+6,b.y-4);cx.lineTo(b.x+b.w+6,b.y+b.h-4);cx.lineTo(b.x+b.w,b.y+b.h);cx.closePath();cx.fill();
+    // roof
+    cx.fillStyle=shadeColor(b.cl,25);cx.beginPath();cx.moveTo(b.x,b.y);cx.lineTo(b.x+6,b.y-4);cx.lineTo(b.x+b.w+6,b.y-4);cx.lineTo(b.x+b.w,b.y);cx.closePath();cx.fill();
+    // front face
+    cx.fillStyle=b.cl;cx.fillRect(b.x,b.y,b.w,b.h);
+    // tall narrow windows (warm interior glow)
+    var winX=b.x+Math.floor(b.w/2)-2;
+    for(var wy=b.y+5;wy<b.y+b.h-8;wy+=8){cx.fillStyle='#f0e0a0';cx.fillRect(winX,wy,3,5);cx.fillStyle='#0a0604';cx.fillRect(winX,wy,3,1)}
+    // tiny gable peak (bell or step)
+    if((b.x/30|0)%3===0){  // mix gable styles
+      cx.fillStyle=shadeColor(b.cl,-25);
+      cx.beginPath();cx.moveTo(b.x+1,b.y);cx.lineTo(b.x+b.w/2-3,b.y-2);cx.quadraticCurveTo(b.x+b.w/2,b.y-6,b.x+b.w/2+3,b.y-2);cx.lineTo(b.x+b.w-1,b.y);cx.closePath();cx.fill();
+    } else {
+      cx.fillStyle=shadeColor(b.cl,-20);
+      cx.beginPath();cx.moveTo(b.x+b.w/2-3,b.y);cx.lineTo(b.x+b.w/2,b.y-5);cx.lineTo(b.x+b.w/2+3,b.y);cx.closePath();cx.fill();
+    }
+    // roof tiles (red tiles on most canal houses)
+    cx.fillStyle='#7a2818';for(var rt=0;rt<3;rt++)cx.fillRect(b.x+rt*Math.floor(b.w/3),b.y-3,Math.floor(b.w/3)-1,2);
+  });
+
+  // === Houseboats (Amsterdam has ~2500 official houseboats) ===
+  HOUSEBOATS.forEach(function(b){
+    // hull (rounded bottom)
+    cx.fillStyle='#0006';cx.beginPath();cx.ellipse(b.x+b.w/2,b.y+b.h+1,b.w/2,2,0,0,Math.PI*2);cx.fill();
+    cx.fillStyle=b.cl;cx.fillRect(b.x,b.y,b.w,b.h);
+    cx.fillStyle=shadeColor(b.cl,-30);cx.beginPath();cx.ellipse(b.x+b.w/2,b.y+b.h,b.w/2,b.h/2,0,0,Math.PI*2);cx.fill();
+    // house on top (cabin)
+    cx.fillStyle=shadeColor(b.cl,30);cx.fillRect(b.x+2,b.y-4,b.w-4,4);
+    // little window on cabin
+    cx.fillStyle='#f0d880';cx.fillRect(b.x+b.w/2-2,b.y-3,4,2);
+    // water reflection
+    cx.fillStyle=b.cl+'40';cx.fillRect(b.x,b.y+b.h-1,b.w,2);
   });
 
   // === Neighborhood labels ===

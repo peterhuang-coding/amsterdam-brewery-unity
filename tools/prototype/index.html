@@ -209,26 +209,74 @@ const W=800,H=500;
 const cv=document.getElementById('cv'),cx=cv.getContext('2d');
 cv.width=W;cv.height=H;
 
+// Real Amsterdam geography: north=up, south=down. IJ river separates Noord from the rest.
+// Canal belt runs east-west across center. Amstel river flows from east curving south.
+// Tweede Kans bar is on Warmoesstraat (just south of Centraal Station in real life).
 const BLDGS=[
-  {id:'apt',x:80,y:370,w:44,h:34,n:'公寓',cl:'#8b6b4a',d:'de_pijp',tp:'home',ic:'🏠'},
-  {id:'market',x:40,y:310,w:60,h:30,n:'市集',cl:'#c0a060',d:'de_pijp',tp:'market',ic:'🛒'},
-  {id:'sofie',x:150,y:320,w:36,h:28,n:'Sofie花店',cl:'#dc6e8c',d:'de_pijp',tp:'npc',ic:'🌷',npc:'sofie'},
-  {id:'bar',x:350,y:390,w:72,h:42,n:'Tweede Kans酒吧',cl:'#9a6f2d',d:'tweede_kans',tp:'bar',ic:'🍻'},
-  {id:'brew',x:440,y:400,w:38,h:28,n:'酿酒坊',cl:'#c09040',d:'tweede_kans',tp:'brew',ic:'🍺'},
-  {id:'lab',x:650,y:250,w:52,h:34,n:'Chen实验室',cl:'#5080a0',d:'science_park',tp:'npc',ic:'🔬',npc:'chen'},
-  {id:'pablo',x:710,y:310,w:46,h:30,n:'Pablo教室',cl:'#c25734',d:'science_park',tp:'npc',ic:'📚',npc:'pablo'},
-  {id:'lib',x:610,y:350,w:44,h:28,n:'图书馆',cl:'#708090',d:'science_park',tp:'academic',ic:'📖'},
-  {id:'flower',x:290,y:75,w:64,h:34,n:'水上花市',cl:'#e080a0',d:'bloemenmarkt',tp:'market',ic:'🌷'},
-  {id:'shroom',x:380,y:72,w:38,h:26,n:'SmartShop',cl:'#b050d0',d:'bloemenmarkt',tp:'shroom',ic:'🍄'},
-  {id:'coffee',x:90,y:55,w:44,h:28,n:'咖啡店',cl:'#60b860',d:'noord',tp:'coffee',ic:'🌿'},
-  {id:'beach',x:25,y:38,w:52,h:22,n:'海滩',cl:'#40a0d0',d:'noord',tp:'surf',ic:'🏄'},
-  {id:'whouse',x:170,y:42,w:40,h:24,n:'仓库',cl:'#607080',d:'noord',tp:'market',ic:'📦'},
-  {id:'ravi',x:550,y:440,w:38,h:28,n:'Ravi宿舍',cl:'#f0c850',d:'science_park',tp:'npc',ic:'💻',npc:'ravi'},
-  {id:'station',x:400,y:280,w:60,h:30,n:'中央车站',cl:'#4a6a8a',d:'tweede_kans',tp:'station',ic:'🚇'},
+  // === NOORD (north of IJ) ===
+  {id:'beach',x:30,y:30,w:52,h:22,n:'Noord海滩',cl:'#40a0d0',d:'noord',tp:'surf',ic:'🏄'},
+  {id:'coffee',x:120,y:40,w:44,h:30,n:'Noord咖啡',cl:'#60b860',d:'noord',tp:'coffee',ic:'🌿'},
+  {id:'whouse',x:200,y:35,w:40,h:28,n:'NDSM仓库',cl:'#607080',d:'noord',tp:'market',ic:'📦'},
+  // === CENTRUM (just south of IJ) ===
+  {id:'station',x:340,y:130,w:80,h:34,n:'中央车站',cl:'#4a6a8a',d:'tweede_kans',tp:'station',ic:'🚇'},
+  {id:'bar',x:450,y:160,w:72,h:40,n:'Tweede Kans酒吧',cl:'#9a6f2d',d:'tweede_kans',tp:'bar',ic:'🍻',npc:'bar',real:'Warmoesstr. 19'},
+  {id:'brew',x:340,y:180,w:52,h:32,n:'Brouwerij De Pijl',cl:'#c09040',d:'tweede_kans',tp:'brew',ic:'🍺'},
+  // === CANAL BELT (Singel/Herengracht/Keizersgracht merged into one visual canal at y~225) ===
+  {id:'flower',x:230,y:200,w:60,h:30,n:'水上花市',cl:'#e080a0',d:'bloemenmarkt',tp:'market',ic:'🌷'},
+  {id:'shroom',x:300,y:205,w:46,h:28,n:'SmartShop',cl:'#b050d0',d:'bloemenmarkt',tp:'shroom',ic:'🍄'},
+  // === OLD CENTER (between canal belt and Amstel) ===
+  // === SCIENCE PARK (far east) ===
+  {id:'lab',x:680,y:200,w:60,h:36,n:'Chen实验室',cl:'#5080a0',d:'science_park',tp:'npc',ic:'🔬',npc:'chen'},
+  {id:'pablo',x:640,y:250,w:50,h:32,n:'Pablo教室',cl:'#c25734',d:'science_park',tp:'npc',ic:'📚',npc:'pablo'},
+  {id:'lib',x:700,y:300,w:50,h:30,n:'图书馆',cl:'#708090',d:'science_park',tp:'academic',ic:'📖'},
+  {id:'ravi',x:650,y:350,w:46,h:30,n:'Ravi宿舍',cl:'#f0c850',d:'science_park',tp:'npc',ic:'💻',npc:'ravi'},
+  // === DE PIJP (south of Amstel) ===
+  {id:'market',x:200,y:420,w:64,h:32,n:'Albert Cuyp市集',cl:'#c0a060',d:'de_pijp',tp:'market',ic:'🛒'},
+  {id:'sofie',x:300,y:430,w:40,h:30,n:'Sofie花店',cl:'#dc6e8c',d:'de_pijp',tp:'npc',ic:'🌷',npc:'sofie'},
+  {id:'apt',x:380,y:430,w:50,h:36,n:'Sarphati公寓',cl:'#8b6b4a',d:'de_pijp',tp:'home',ic:'🏠'},
 ];
-const CANALS=[{x:0,y:140,w:W,h:18},{x:0,y:265,w:W,h:14},{x:260,y:0,w:16,h:140},{x:260,y:158,w:16,h:107},{x:260,y:279,w:16,h:H-279},{x:540,y:0,w:14,h:140},{x:540,y:158,w:14,h:107},{x:540,y:279,w:14,h:H-279}];
-const BRIDGES=[{x:110,y:140,w:34,h:18},{x:430,y:140,w:34,h:18},{x:690,y:140,w:34,h:18},{x:260,y:105,w:16,h:26},{x:260,y:350,w:16,h:26},{x:540,y:105,w:14,h:26},{x:540,y:350,w:14,h:26}];
-const TREES=Array.from({length:35},()=>({x:Math.random()*W,y:Math.random()*H,r:5+Math.random()*7}));
+// === Amsterdam canal system: IJ + canal belt + Amstel + cross canals ===
+const CANALS=[
+  // IJ river (separates Noord from rest of city)
+  {x:0,y:85,w:W,h:22,n:'IJ'},
+  // Canal belt (Singel/Herengracht/Keizersgracht/Prinsengracht visible as a thicker band)
+  {x:0,y:225,w:W,h:30,n:'Grachtengordel'},
+  // Amstel river (curves from east to south)
+  {x:560,y:280,w:240,h:24,n:'Amstel'},
+  // Singel vertical stretch near station
+  {x:280,y:107,w:18,h:118,n:'Singel'},
+  // Vijzelstraat (vertical canal through center)
+  {x:430,y:255,w:14,h:125,n:'Vijzelstr.'},
+];
+const BRIDGES=[
+  // IJ ferries/bridges (3 crossings)
+  {x:130,y:85,w:36,h:22,n:'Noord ferry'},
+  {x:380,y:85,w:36,h:22,n:'Buiksloter'},
+  {x:600,y:85,w:36,h:22,n:'Oosterdok'},
+  // Canal belt bridges (4 crossings)
+  {x:80,y:225,w:30,h:30,n:'Singel'},
+  {x:280,y:225,w:30,h:30,n:'Raad­huis'},
+  {x:550,y:225,w:30,h:30,n:'Leidse'},
+  {x:700,y:225,w:30,h:30,n:'Museum'},
+  // Amstel bridges
+  {x:570,y:280,w:30,h:24,n:'Magere Brug'},
+  {x:680,y:280,w:30,h:24,n:'Blauwbrug'},
+];
+// Trees placed around parks (Vondelpark SW, Sarphatipark, Oosterpark) + canal sides
+const TREES=[
+  // Vondelpark (SW corner of map) - dense cluster
+  {x:30,y:380,r:7},{x:55,y:395,r:6},{x:75,y:375,r:7},{x:95,y:405,r:6},{x:50,y:425,r:7},{x:90,y:440,r:6},{x:115,y:395,r:7},{x:130,y:415,r:6},{x:40,y:455,r:7},{x:80,y:460,r:6},
+  // Sarphatipark (De Pijp, around apt)
+  {x:340,y:475,r:7},{x:360,y:480,r:6},{x:400,y:475,r:7},{x:420,y:480,r:6},{x:450,y:475,r:7},
+  // Oosterpark (east, around Science Park)
+  {x:600,y:395,r:7},{x:620,y:400,r:6},{x:650,y:395,r:7},{x:670,y:400,r:6},{x:710,y:410,r:7},{x:730,y:400,r:6},
+  // Canal-side trees (IJ north bank)
+  {x:130,y:115,r:5},{x:200,y:115,r:5},{x:300,y:115,r:5},{x:400,y:115,r:5},{x:500,y:115,r:5},{x:600,y:115,r:5},{x:700,y:115,r:5},
+  // Canal belt (Singel south bank)
+  {x:80,y:265,r:5},{x:180,y:265,r:5},{x:280,y:265,r:5},{x:380,y:265,r:5},{x:480,y:265,r:5},{x:580,y:265,r:5},{x:680,y:265,r:5},{x:750,y:265,r:5},
+  // Stand-alone trees
+  {x:170,y:200,r:5},{x:160,y:280,r:5},{x:200,y:300,r:5},{x:160,y:370,r:5},{x:550,y:170,r:5},{x:540,y:240,r:5},{x:560,y:320,r:5},{x:480,y:300,r:5},
+];
 
 // ═══════════════════════════════════════════
 // STATE
@@ -681,29 +729,55 @@ function finBar(){
 // 2.5D isometric helpers
 function shadeColor(hex, light){const c=parseInt(hex.slice(1),16);return 'rgb('+Math.max(0,Math.min(255,((c>>16)&255)+light))+','+Math.max(0,Math.min(255,((c>>8)&255)+light))+','+Math.max(0,Math.min(255,(c&255)+light))+')'}
 function drawMap(){
-  // Sky gradient
+  // === Sky gradient ===
   var g=cx.createLinearGradient(0,0,0,H);
   g.addColorStop(0,TSKY[G.ti]);g.addColorStop(1,shadeColor(TSKY[G.ti],-40));
   cx.fillStyle=g;cx.fillRect(0,0,W,H);
-  // Distant city silhouette (Amsterdam)
-  cx.fillStyle=shadeColor(TSKY[G.ti],-15);cx.globalAlpha=0.4;
-  for(var i=0;i<12;i++){var sx=i*70-20,sw=30+Math.sin(i)*15,sh=40+Math.cos(i*1.3)*30;cx.fillRect(sx,H-180-sh,sw,sh)}
-  cx.beginPath();cx.moveTo(180,H-260);cx.lineTo(195,H-310);cx.lineTo(210,H-260);cx.fill();
+
+  // === Distant Amsterdam skyline + windmill (signature of the city) ===
+  cx.fillStyle=shadeColor(TSKY[G.ti],-15);cx.globalAlpha=0.45;
+  for(var i=0;i<14;i++){var sx=i*60-10,sw=22+Math.sin(i*1.7)*10,sh=30+Math.cos(i*1.3)*22;cx.fillRect(sx,H-160-sh,sw,sh);
+    cx.beginPath();cx.moveTo(sx+sw/2-4,H-160-sh);cx.lineTo(sx+sw/2,H-160-sh-8);cx.lineTo(sx+sw/2+4,H-160-sh);cx.fill()}
+  cx.beginPath();cx.moveTo(160,H-260);cx.lineTo(170,H-320);cx.lineTo(180,H-260);cx.fill(); // Oude Kerk steeple
+  // Windmill (Amsterdam icon)
+  cx.fillStyle=shadeColor(TSKY[G.ti],-20);cx.fillRect(50,H-200,3,90);
+  cx.beginPath();cx.arc(51.5,H-205,18,0,Math.PI*2);cx.fill();
+  for(var bl=0;bl<4;bl++){var ba=bl*Math.PI/2;cx.strokeStyle=shadeColor(TSKY[G.ti],-20);cx.lineWidth=2;cx.beginPath();cx.moveTo(51.5,H-205);cx.lineTo(51.5+Math.cos(ba)*16,H-205+Math.sin(ba)*16);cx.stroke()}
   cx.globalAlpha=1;
-  // Cobblestone street texture
-  cx.fillStyle='#3a3a38';cx.fillRect(0,0,W,H);
-  for(var sx=0;sx<W;sx+=12)for(var sy=0;sy<H;sy+=12){cx.fillStyle=(sx+sy)%24===0?'#42423e':'#363632';cx.fillRect(sx,sy,5,5)}
-  // Canal surface
-  CANALS.forEach(function(c){cx.fillStyle='#284868';cx.fillRect(c.x,c.y,c.w,c.h);cx.fillStyle='#30688830';for(var i=0;i<c.w;i+=22)cx.fillRect(c.x+i+Math.sin(Date.now()/2000+i)*3,c.y+3,9,3);cx.fillStyle='#5090b830';for(var i=8;i<c.w;i+=44)cx.fillRect(c.x+i+Math.cos(Date.now()/1500+i)*2,c.y+1,14,1);cx.fillStyle='#10182080';cx.fillRect(c.x,c.y+c.h-3,c.w,3)});
-  // Bridges with railings
-  BRIDGES.forEach(function(b){
-    cx.fillStyle='#0005';cx.fillRect(b.x+2,b.y+b.h,b.w,3);
-    cx.fillStyle='#5a4a38';cx.fillRect(b.x,b.y+b.h-2,b.w,3);
-    cx.fillStyle='#7a6a48';cx.fillRect(b.x,b.y,b.w,b.h-2);
-    cx.fillStyle='#6a5a42';cx.fillRect(b.x+1,b.y+1,b.w-2,1);
-    cx.fillStyle='#3a2a18';cx.fillRect(b.x,b.y-3,b.w,2);cx.fillRect(b.x,b.y+b.h-5,2,b.h-2);cx.fillRect(b.x+b.w-2,b.y+b.h-5,2,b.h-2);
+
+  // === Amsterdam-style red brick paving (rows of bricks with mortar lines) ===
+  cx.fillStyle='#2a2018';cx.fillRect(0,0,W,H);
+  for(var by=0;by<H;by+=6){cx.fillStyle=by%12===0?'#3a2820':'#322218';cx.fillRect(0,by,W,1)}
+  for(var bx=0;bx<W;bx+=18){cx.fillStyle='#3a282080';cx.fillRect(bx+(by%12===0?0:9),0,1,H)}
+  // Bicycle path (red asphalt strip)
+  cx.fillStyle='#5a2a2a';cx.fillRect(0,260,W,3);cx.fillStyle='#3a1818';cx.fillRect(0,263,W,1);
+  // Tram rails (yellow stripe)
+  cx.fillStyle='#c0a020';cx.fillRect(0,395,W,2);cx.fillStyle='#202020';cx.fillRect(0,394,W,1);cx.fillRect(0,397,W,1);
+
+  // === Canals (Amsterdam water with ripples + name labels) ===
+  CANALS.forEach(function(c){
+    if(!c.n)return;
+    cx.fillStyle='#1e3a58';cx.fillRect(c.x,c.y,c.w,c.h);
+    cx.fillStyle='#3a6890';for(var i=0;i<c.w;i+=16)cx.fillRect(c.x+i+Math.sin(Date.now()/1800+i)*2,c.y+2,6,1);
+    cx.fillStyle='#1a2a4060';for(var j=0;j<c.w;j+=28)cx.fillRect(c.x+j,c.y+1,2,c.h-2);
+    if(c.w>60&&c.h<30){cx.fillStyle='#a0c8e0aa';cx.font='italic 9px sans-serif';cx.textAlign='center';cx.fillText(c.n,c.x+c.w/2,c.y+c.h/2+3)}
+    cx.fillStyle='#0a1828';cx.fillRect(c.x,c.y+c.h-2,c.w,2);
   });
-  // Trees (canopy with trunk + 3-layer shading)
+
+  // === Bridges (Amsterdam white-painted arched + lampposts) ===
+  BRIDGES.forEach(function(b){
+    cx.fillStyle='#0005';cx.fillRect(b.x+3,b.y+b.h+1,b.w,3);
+    cx.fillStyle='#6a5a48';cx.fillRect(b.x,b.y+b.h-3,b.w,4);cx.fillStyle='#8a7a68';cx.fillRect(b.x,b.y+b.h-5,b.w,2);
+    cx.fillStyle='#a08560';cx.fillRect(b.x,b.y,b.w,b.h-5);
+    cx.fillStyle='#604020';for(var pl=1;pl<b.w;pl+=8)cx.fillRect(b.x+pl,b.y,1,b.h-5);
+    cx.fillStyle='#f0f0e8';cx.fillRect(b.x-1,b.y-5,b.w+2,2);cx.fillRect(b.x-1,b.y-2,b.w+2,1);
+    cx.fillStyle='#d0d0c0';for(var pp=2;pp<b.w;pp+=8)cx.fillRect(b.x+pp,b.y-5,1,4);
+    cx.fillStyle='#1a1a1a';cx.fillRect(b.x-1,b.y-12,2,7);cx.fillRect(b.x+b.w-1,b.y-12,2,7);
+    cx.fillStyle='#f0d860';cx.beginPath();cx.arc(b.x,b.y-13,2,0,Math.PI*2);cx.fill();
+    cx.beginPath();cx.arc(b.x+b.w,b.y-13,2,0,Math.PI*2);cx.fill();
+  });
+
+  // === Trees (canopy + trunk + 3-layer shading) ===
   TREES.forEach(function(t){
     cx.fillStyle='#0004';cx.beginPath();cx.ellipse(t.x+2,t.y+3,t.r,t.r*0.5,0,0,Math.PI*2);cx.fill();
     cx.fillStyle='#5a3a20';cx.fillRect(t.x-2,t.y-t.r/2,4,t.r/2);
@@ -711,20 +785,55 @@ function drawMap(){
     cx.fillStyle='#2a4a20';cx.beginPath();cx.arc(t.x-2,t.y-2,t.r-2,0,Math.PI*2);cx.fill();
     cx.fillStyle='#3a6a30';cx.beginPath();cx.arc(t.x-4,t.y-4,t.r/2.5,0,Math.PI*2);cx.fill();
   });
-  // Buildings (sorted by y for cheap painter's algo)
+
+  // === Buildings with Dutch gabled facades ===
+  function dutchGable(b){var cxm=b.x+b.w/2;
+    if(b.tp==='station'){  // Centraal Station has twin towers
+      cx.fillStyle=shadeColor(b.cl,40);cx.fillRect(b.x-3,b.y-16,8,16);cx.fillRect(b.x+b.w-5,b.y-16,8,16);
+      cx.fillStyle='#a02020';cx.fillRect(b.x-2,b.y-18,6,3);cx.fillRect(b.x+b.w-4,b.y-18,6,3);
+    } else if(b.tp==='bar'||b.tp==='brew'){  // step gable (neck gable) for industrial buildings
+      cx.fillStyle=shadeColor(b.cl,-15);var st=4;
+      for(var i=0;i<3;i++){var w=b.w-i*st*2;cx.fillRect(b.x+i*st,b.y-st*i-st,w,st*1.5)}
+    } else {  // bell gable for residential
+      cx.fillStyle=shadeColor(b.cl,-20);
+      cx.beginPath();cx.moveTo(b.x+2,b.y);cx.lineTo(b.x+b.w/2-5,b.y-3);cx.quadraticCurveTo(b.x+b.w/2,b.y-10,b.x+b.w/2+5,b.y-3);cx.lineTo(b.x+b.w-2,b.y);cx.closePath();cx.fill();
+      cx.fillStyle='#ffffff50';cx.fillRect(cxm-1,b.y-7,2,4);
+    }
+  }
   var sorted=BLDGS.slice().sort(function(a,b){return (a.y+a.h)-(b.y+b.h)});
   sorted.forEach(function(b){
     cx.fillStyle='#0006';cx.beginPath();cx.ellipse(b.x+b.w/2+4,b.y+b.h+3,b.w/2+4,4,0,0,Math.PI*2);cx.fill();
-    // 2.5D box: front face + right wall + roof
+    // 2.5D right wall (darker)
     cx.fillStyle=shadeColor(b.cl,-50);cx.beginPath();cx.moveTo(b.x+b.w,b.y);cx.lineTo(b.x+b.w+10,b.y-6);cx.lineTo(b.x+b.w+10,b.y+b.h-6);cx.lineTo(b.x+b.w,b.y+b.h);cx.closePath();cx.fill();
+    // 2.5D roof (lighter)
     cx.fillStyle=shadeColor(b.cl,30);cx.beginPath();cx.moveTo(b.x,b.y);cx.lineTo(b.x+10,b.y-6);cx.lineTo(b.x+b.w+10,b.y-6);cx.lineTo(b.x+b.w,b.y);cx.closePath();cx.fill();
     cx.fillStyle=b.cl;cx.fillRect(b.x,b.y,b.w,b.h);
-    cx.fillStyle=shadeColor(b.cl,-40);cx.fillRect(b.x+b.w/2-3,b.y+b.h-9,6,9);
-    if(['apt','bar','brew','sofie','chen'].indexOf(b.id)>=0){cx.fillStyle='#404040';cx.fillRect(b.x+b.w-7,b.y-12,4,12);cx.fillStyle='#666';cx.fillRect(b.x+b.w-8,b.y-14,6,3)}
-    cx.fillStyle='#fffc';cx.font='7px sans-serif';cx.textAlign='center';
-    cx.fillText(b.ic+b.n,b.x+b.w/2+5,b.y-3);
+    // tall narrow Dutch windows (warm interior glow)
+    cx.fillStyle='#f0e8a8';cx.fillRect(b.x+4,b.y+4,3,b.h-12);cx.fillRect(b.x+b.w-7,b.y+4,3,b.h-12);
+    cx.fillStyle=shadeColor(b.cl,-40);cx.fillRect(b.x+b.w/2-3,b.y+b.h-9,6,9); // door
+    dutchGable(b);
+    if(['apt','bar','brew','sofie','chen','lib','pablo','lab','ravi','station'].indexOf(b.id)>=0){
+      cx.fillStyle='#3a2820';cx.fillRect(b.x+b.w-9,b.y-18,5,14);cx.fillStyle='#504030';cx.fillRect(b.x+b.w-10,b.y-20,7,3);
+    }
+    cx.fillStyle='#fffc';cx.font='bold 7px sans-serif';cx.textAlign='center';cx.fillText(b.ic+b.n,b.x+b.w/2+5,b.y-22);
   });
-  // Player (3D character)
+
+  // === Neighborhood labels ===
+  cx.font='bold 10px sans-serif';cx.textAlign='left';
+  cx.fillStyle='#5a8aa0';cx.fillText('NOORD',110,18);
+  cx.fillStyle='#c0a060';cx.fillText('CENTRUM',280,118);
+  cx.fillStyle='#6090b0';cx.font='italic 9px sans-serif';cx.fillText('Grachtengordel',420,260);
+  cx.fillStyle='#d08060';cx.fillText('DE PIJP',220,398);
+  cx.fillStyle='#80b080';cx.fillText('OOST / Science Park',580,180);
+
+  // === N/S/E/W compass ===
+  var cmpX=755,cmpY=20;
+  cx.fillStyle='#1a1a1ac0';cx.beginPath();cx.arc(cmpX,cmpY,16,0,Math.PI*2);cx.fill();
+  cx.fillStyle='#888';cx.font='bold 9px sans-serif';cx.textAlign='center';
+  cx.fillText('N',cmpX,cmpY-5);cx.fillText('S',cmpX,cmpY+11);cx.fillText('W',cmpX-9,cmpY+4);cx.fillText('E',cmpX+9,cmpY+4);
+  cx.strokeStyle='#e8a020';cx.lineWidth=1;cx.beginPath();cx.moveTo(cmpX,cmpY+3);cx.lineTo(cmpX,cmpY-3);cx.stroke();
+
+  // === Player (3D character) ===
   var bob=Math.sin(Date.now()/150)*1.5,p=G.p;
   var mdd=Math.sqrt((p.tx-p.x)*(p.tx-p.x)+(p.ty-p.y)*(p.ty-p.y));
   var facing=mdd>1?Math.atan2(p.ty-p.y,p.tx-p.x):0;
@@ -737,7 +846,7 @@ function drawMap(){
   cx.fillStyle='#604020';cx.beginPath();cx.arc(0,-5,4,Math.PI,Math.PI*2);cx.fill();
   cx.fillStyle='#000';cx.fillRect(-2,-3,1,1);cx.fillRect(1,-3,1,1);
   cx.restore();
-  // Direction arrow (smaller, lower)
+
   if(mdd>1){
     var nx=(p.tx-p.x)/mdd,ny=(p.ty-p.y)/mdd;
     cx.save();cx.strokeStyle='#ecb457';cx.lineWidth=2;cx.setLineDash([5,4]);
@@ -762,108 +871,530 @@ function drawMG(){
   cx.fillStyle='#fff';cx.font='18px sans-serif';cx.textAlign='center';
 
   if(mg==='brew'){
+    // === Brewery interior: warm brick back wall + 3 copper fermentation tanks + ingredient bar ===
+    // back wall (warm brick with mortar lines)
+    cx.fillStyle='#3a2010';cx.fillRect(80,30,640,260);
+    cx.fillStyle='#4a2a15';
+    for(var br=0;br<14;br++)for(var bc=0;bc<5;bc++){cx.fillRect(82+bc*130,32+br*18,128,1);cx.fillRect(82+bc*130+65,32+br*18+9,128,1)}
+    // window high on wall (Amsterdam sky behind)
+    cx.fillStyle='#1a1a1a';cx.fillRect(340,50,120,40);  // frame
+    cx.fillStyle='#6090b0';cx.fillRect(343,53,114,34);  // sky
+    cx.fillStyle='#3a2820';cx.fillRect(343,75,114,2);  // window sill
+    // "Brouwerij De Pijl" sign hanging from wall
+    cx.fillStyle='#5a3010';cx.fillRect(540,55,150,30);  // sign back
+    cx.fillStyle='#e8a020';cx.fillRect(540,55,150,2);  // sign top trim
+    cx.fillStyle='#f0e0a0';cx.font='bold 11px sans-serif';cx.textAlign='center';
+    cx.fillText('🍺 Brouwerij De Pijl',615,72);
+    cx.fillStyle='#7a4a25';cx.fillRect(540,85,150,2);
+    // 3 copper fermentation tanks (background row)
+    for(var ft=0;ft<3;ft++){var fx=120+ft*170;
+      // shadow
+      cx.fillStyle='#0006';cx.beginPath();cx.ellipse(fx+20,288,28,5,0,0,Math.PI*2);cx.fill();
+      // tank body (steel cylinder)
+      cx.fillStyle='#888';cx.fillRect(fx,150,40,135);
+      cx.fillStyle='#aaa';cx.fillRect(fx+2,150,5,135);  // left highlight
+      cx.fillStyle='#555';cx.fillRect(fx+35,150,5,135);  // right shadow
+      cx.fillStyle='#444';cx.fillRect(fx,148,40,4);  // top dome
+      cx.fillStyle='#777';cx.fillRect(fx+3,148,34,2);
+      cx.fillStyle='#333';cx.fillRect(fx+5,275,30,4);  // base
+      // pressure gauge
+      cx.fillStyle='#f0f0e8';cx.beginPath();cx.arc(fx+8,170,5,0,Math.PI*2);cx.fill();
+      cx.fillStyle='#c03030';cx.fillRect(fx+7,165,2,5);
+      // valve at bottom
+      cx.fillStyle='#a0a0a0';cx.fillRect(fx+33,225,10,4);cx.fillRect(fx+38,229,6,8);
+      // beer color in tank (visible through inspection window)
+      var liquidCol=s.order&&s.order.type==='Stout'?'#3a1a0a':s.order&&s.order.type==='IPA'?'#e0a020':'#c08030';
+      cx.fillStyle=liquidCol;cx.fillRect(fx+12,190,16,85);
+      cx.fillStyle='#ffffff20';cx.fillRect(fx+12,190,4,85);  // glass highlight
+      // foam on top
+      cx.fillStyle='#f0f0e8';cx.beginPath();cx.ellipse(fx+20,190,8,2,0,0,Math.PI*2);cx.fill();
+    }
+    // wooden floor
+    cx.fillStyle='#3a2010';cx.fillRect(80,288,640,200);
+    cx.fillStyle='#2a1505';for(var fp=288;fp<490;fp+=14)cx.fillRect(80,fp,640,1);
+    cx.fillStyle='#5a3a1a';cx.fillRect(80,288,640,2);  // front edge
+
     if(s.ph==='sel'){
-      cx.fillText('🍺 选择原料 (1/2/3切换 SPACE开始)',400,60);
-      var maltItems=[{n:'淡色麦芽',q:1},{n:'琥珀麦芽',q:2},{n:'深色麦芽',q:3}];
-      var hopItems=[{n:'柑橘酒花',q:1},{n:'松木酒花',q:2},{n:'花香酒花',q:3}];
-      var yeastItems=[{n:'艾尔酵母',q:1},{n:'拉格酵母',q:2},{n:'比利时酵母',q:3}];
-      [{items:maltItems,sel:s.m,lb:'🌾麦芽',x:130},{items:hopItems,sel:s.h,lb:'🌿酒花',x:400},{items:yeastItems,sel:s.y,lb:'🔬酵母',x:650}].forEach(function(g){
-        cx.fillStyle='#ccca';cx.font='11px sans-serif';cx.fillText(g.lb,g.x+40,95);
+      // === Wooden bar counter with 3 glass jars of ingredients ===
+      cx.fillStyle='#5a3a1a';cx.fillRect(140,330,520,80);  // counter top
+      cx.fillStyle='#3a2010';cx.fillRect(140,408,520,4);  // counter front shadow
+      cx.fillStyle='#7a4a25';cx.fillRect(140,330,520,3);  // counter front edge
+      cx.fillStyle='#4a2a15';for(var gl=0;gl<6;gl++)cx.fillRect(140+gl*90,335,2,70);  // wood grain
+
+      var maltItems=[{n:'淡色麦芽',q:1,col:'#e0d090'},{n:'琥珀麦芽',q:2,col:'#c08840'},{n:'深色麦芽',q:3,col:'#5a3018'}];
+      var hopItems=[{n:'柑橘酒花',q:1,col:'#90c050'},{n:'松木酒花',q:2,col:'#509040'},{n:'花香酒花',q:3,col:'#d090c0'}];
+      var yeastItems=[{n:'艾尔酵母',q:1,col:'#f0e8a0'},{n:'拉格酵母',q:2,col:'#e8c870'},{n:'比利时酵母',q:3,col:'#d0a050'}];
+      [{items:maltItems,sel:s.m,lb:'🌾 麦芽 Malt',x:170},{items:hopItems,sel:s.h,lb:'🌿 酒花 Hop',x:380},{items:yeastItems,sel:s.y,lb:'🔬 酵母 Yeast',x:580}].forEach(function(g){
+        cx.fillStyle='#2a1505';cx.font='bold 11px sans-serif';cx.textAlign='center';
+        cx.fillText(g.lb,g.x+50,328);
         g.items.forEach(function(it,i){
-          var y=108+i*44;
-          cx.fillStyle=i===g.sel?'#ecb45730':'#fff1';cx.fillRect(g.x,y-12,110,34);
-          cx.fillStyle='#fff';cx.font='12px sans-serif';cx.fillText(it.n,g.x+55,y+8);
+          var y=160+i*42;
+          // shelf highlight
+          cx.fillStyle=i===g.sel?'#ecb45750':'#1a0a05';
+          cx.fillRect(g.x-3,y-12,116,32);
+          // glass jar (rounded top with metal lid)
+          cx.fillStyle='#0a0604';cx.fillRect(g.x+12,y-13,40,30);  // dark inside
+          cx.fillStyle=it.col;cx.fillRect(g.x+13,y-7,38,24);
+          cx.fillStyle='#ffffff30';cx.fillRect(g.x+13,y-7,4,24);  // glass shine
+          cx.fillStyle='#888';cx.fillRect(g.x+11,y-14,42,4);  // metal lid
+          cx.fillStyle='#a0a0a0';cx.fillRect(g.x+11,y-14,42,1);  // lid top
+          // label tag on jar
+          cx.fillStyle='#f0e8a0';cx.fillRect(g.x+16,y+5,32,9);
+          cx.fillStyle='#222';cx.font='8px sans-serif';cx.textAlign='center';cx.fillText(it.n,g.x+32,y+12);
+          // quality stars on label
+          cx.fillStyle='#e8a020';cx.fillText('★'.repeat(it.q),g.x+32,y+22);
         });
       });
       var tq=maltItems[s.m].q+hopItems[s.h].q+yeastItems[s.y].q;
-      cx.fillStyle='#ecb457';cx.font='14px sans-serif';cx.fillText('配方品质: '+'★'.repeat(tq)+'  (酵母活性 '+Math.round(s.yeast*100)+'%)',400,270);
-    }else{
-      cx.fillText('🫗 控温 '+Math.round(s.t)+'°C (目标 ?°C)',400,60);
-      cx.fillStyle='#fff1';cx.fillRect(180,310,440,22);
-      cx.fillStyle='#ecb457';cx.fillRect(180,310,440*(s.t/80),22);
-      cx.fillStyle='#78c878';cx.fillRect(180+0.55*440-5,308,10,26);
-      cx.font='60px sans-serif';cx.fillText('🫗',400,200);
-      var tm=(Date.now()-s.tm)/1000;
-      for(var i=0;i<6;i++){cx.fillStyle='#fff4';cx.beginPath();cx.arc(350+i*18,230+Math.sin(tm*3+i)*10,3,0,Math.PI*2);cx.fill()}
+      // Order ticket (white card on counter)
+      cx.fillStyle='#f0e8d0';cx.fillRect(160,425,200,28);
+      cx.fillStyle='#222';cx.font='bold 11px sans-serif';cx.textAlign='left';cx.fillText('📝 订单:'+s.order.type,168,442);
+      cx.fillStyle='#888';cx.font='9px sans-serif';cx.fillText('目标温 ?°C · 酵母 '+Math.round(s.yeast*100)+'%',168,452);
+      // Recipe quality bar
+      cx.fillStyle='#1a0a05';cx.fillRect(380,425,260,18);
+      var tqW=tq/9*260;cx.fillStyle='#e8a020';cx.fillRect(380,425,tqW,18);
+      cx.fillStyle='#78c878';cx.fillRect(380+tqW-2,423,4,22);
+      cx.fillStyle='#fff';cx.font='bold 10px sans-serif';cx.textAlign='left';cx.fillText('配方品质: '+'★'.repeat(tq),386,438);
+    } else {
+      // === Brewing phase: copper kettle + thermometer + ingredient drops ===
+      cx.fillStyle='#fff';cx.font='bold 13px sans-serif';cx.textAlign='center';
+      cx.fillText('🫗 控温 '+Math.round(s.t)+'°C  · 酵母 '+Math.round(s.yeast*100)+'%  (凭经验调温)',400,55);
+      // Wooden bar counter at bottom
+      cx.fillStyle='#5a3a1a';cx.fillRect(80,420,640,40);
+      cx.fillStyle='#7a4a25';cx.fillRect(80,418,640,3);
+      cx.fillStyle='#3a2010';for(var wg=0;wg<8;wg++)cx.fillRect(80+wg*80,425,2,33);
+      // BIG COPPER KETTLE in center
+      cx.fillStyle='#0006';cx.beginPath();cx.ellipse(400,420,90,8,0,0,Math.PI*2);cx.fill();
+      // kettle body (with rivets)
+      cx.fillStyle='#7a3a18';cx.fillRect(310,320,180,100);
+      cx.fillStyle='#b86030';cx.fillRect(315,320,15,100);  // copper shine
+      cx.fillStyle='#5a2810';cx.fillRect(485,320,8,100);  // right shadow
+      cx.fillStyle='#c87040';cx.fillRect(308,313,184,10);  // rim
+      cx.fillStyle='#a05020';cx.fillRect(308,316,184,2);  // rim shadow
+      // rivets on body
+      cx.fillStyle='#9a4818';for(var rv=0;rv<5;rv++){cx.beginPath();cx.arc(335+rv*35,340,2,0,Math.PI*2);cx.fill()}
+      // boiling liquid
+      var tm=Date.now()/1000;
+      var liquidCol=s.order&&s.order.type==='Stout'?'#3a1a0a':s.order&&s.order.type==='IPA'?'#e0a020':'#c08030';
+      cx.fillStyle=liquidCol;cx.beginPath();cx.ellipse(400,325,82,8,0,0,Math.PI*2);cx.fill();
+      cx.fillStyle='#ffffff60';cx.beginPath();cx.ellipse(400,323,72,3,0,0,Math.PI*2);cx.fill();
+      // bubbles
+      cx.fillStyle='#ffffff80';
+      for(var b=0;b<6;b++){cx.beginPath();cx.arc(360+b*15+Math.sin(tm*3+b)*5,322-Math.abs(Math.sin(tm*2+b))*8,3,0,Math.PI*2);cx.fill()}
+      // ingredient emojis floating in
+      if(s.m>=0)cx.font='20px sans-serif';cx.fillText('🌾',345+Math.sin(tm)*5,308);
+      if(s.h>=0)cx.fillText('🌿',395+Math.cos(tm)*5,306);
+      if(s.y>=0)cx.fillText('🔬',445+Math.sin(tm+1)*5,310);
+      cx.font='13px sans-serif';
+      // steam wisps
+      cx.fillStyle='#ffffff30';
+      for(var sw=0;sw<4;sw++){cx.beginPath();cx.arc(385+sw*15+Math.sin(tm/2+sw)*8,285-Math.abs(Math.sin(tm*0.5+sw))*50,6,0,Math.PI*2);cx.fill()}
+      // BIG THERMOMETER on left
+      cx.fillStyle='#0a0a0a';cx.fillRect(140,340,40,140);  // body
+      cx.fillStyle='#1a1a1a';cx.fillRect(142,342,36,136);
+      // bulb
+      cx.fillStyle='#0a0a0a';cx.beginPath();cx.arc(160,485,18,0,Math.PI*2);cx.fill();
+      // mercury fill (red, rises with temp)
+      var mercH=Math.max(0,Math.min(100,(s.t-20)/70*100));
+      cx.fillStyle='#e02020';cx.fillRect(145,480-mercH*1.2,30,mercH*1.2);
+      cx.beginPath();cx.arc(160,485,14,0,Math.PI*2);cx.fill();
+      // scale ticks
+      cx.fillStyle='#aaa';cx.font='8px sans-serif';cx.textAlign='right';
+      for(var sc=20;sc<=90;sc+=10){var sy=480-(sc-20)/70*120;cx.fillRect(175,sy,8,1);cx.fillText(sc,170,sy+3)}
+      // arrow indicator
+      cx.fillStyle='#e8a020';cx.fillRect(180,480-mercH*1.2-1,18,2);
+      // target hint markers (without revealing temp)
+      cx.fillStyle='#78c878';cx.font='bold 7px sans-serif';cx.textAlign='left';
+      var ipaY=480-(55-20)/70*120;var stoutY=480-(68-20)/70*120;var lagerY=480-(48-20)/70*120;
+      cx.fillStyle='#78c87840';cx.fillRect(195,ipaY-1,30,2);
+      cx.fillStyle='#a0502040';cx.fillRect(195,stoutY-1,30,2);
+      cx.fillStyle='#e0a02040';cx.fillRect(195,lagerY-1,30,2);
+      // Order ticket
+      cx.fillStyle='#f0e8d0';cx.fillRect(560,335,150,30);
+      cx.fillStyle='#222';cx.font='bold 10px sans-serif';cx.textAlign='left';cx.fillText('📝 '+s.order.type,568,353);
+      // bottom temperature control bar
+      cx.fillStyle='#0a0a0a';cx.fillRect(180,460,440,22);
+      cx.fillStyle='#1a1a1a';cx.fillRect(182,462,436,18);
+      cx.fillStyle='#e84830';cx.fillRect(180,460,440*(s.t/80),22);
+      cx.fillStyle='#fff';cx.font='bold 10px sans-serif';cx.textAlign='center';cx.fillText('↑↓ 调温 · 当前 '+Math.round(s.t)+'°C',400,475);
     }
   }else if(mg==='coffee'){
-    if(s.raid){cx.fillText('🚨 警察突击！',400,250)}
-    else{
-      cx.fillText('🌿 咖啡店 — $'+s.pr+'/g',400,60);
-      var cst=['白寡妇','紫雾','Amsterdam Haze'];
-      cx.fillText('货: '+cst[s.st]+' | 热度'+Math.round(s.ht)+'% (自然下降中)',400,90);
-      if(s.c){const left=Math.max(0,Math.ceil((s.c.patience*1000-(Date.now()-s.c.born))/1000));cx.fillText(s.c.face+' 顾客出价$'+s.c.max+' · 耐心 '+left+'s',400,120);cx.fillStyle=s.pr<=s.c.max?'#78c878':'#f05050';cx.fillText(s.pr<=s.c.max?'SPACE成交':'降价或SPACE拒客',400,145);
-        // patience bar
-        cx.fillStyle='#fff1';cx.fillRect(250,155,300,6);cx.fillStyle=left<3?'#f05050':left<6?'#f0a030':'#78c878';cx.fillRect(250,155,300*(left/s.c.patience),6)}
-      cx.fillText(s.sd+'/5人 $'+s.earn,400,180);
-      cx.fillStyle='#fff1';cx.fillRect(250,200,300,12);
-      cx.fillStyle=s.ht>70?'#f05050':s.ht>40?'#f0a030':'#78c878';cx.fillRect(250,200,300*Math.min(1,s.ht/100),12);
+    // === Coffeeshop interior: brick wall + chalkboard menu + grinder + espresso machine + counter ===
+    cx.fillStyle='#3a2818';cx.fillRect(80,30,640,210);
+    cx.fillStyle='#2a1a08';for(var wn=0;wn<8;wn++)for(var wm=0;wm<4;wm++)cx.fillRect(85+wm*160,35+wn*24,150,1);
+    // chalkboard menu (with strain prices + status indicator)
+    cx.fillStyle='#5a3a1a';cx.fillRect(135,40,200,110);  // wood frame
+    cx.fillStyle='#1a2a1a';cx.fillRect(140,45,190,100);
+    cx.fillStyle='#3a4a3a';cx.fillRect(140,45,190,3);
+    cx.fillStyle='#f0e8a0';cx.font='bold 12px sans-serif';cx.textAlign='left';cx.fillText('☕ MENU',150,62);
+    cx.font='11px sans-serif';
+    cx.fillText('1 白寡妇    €8',150,82);
+    cx.fillText('2 紫雾      €14',150,98);
+    cx.fillText('3 Amsterdam  €22',150,114);
+    // chalk dust
+    cx.fillStyle='#f0e8a030';for(var cd=0;cd<8;cd++){cx.beginPath();cx.arc(165+cd*22,125+Math.random()*12,1.5,0,Math.PI*2);cx.fill()}
+    // Amsterdam green-cross neon sign (right wall)
+    cx.fillStyle='#10a02030';cx.beginPath();cx.arc(610,90,45,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#10a020';cx.fillRect(540,65,140,50);
+    cx.fillStyle='#ffffff';cx.font='bold 13px sans-serif';cx.textAlign='center';
+    cx.fillText('🌿 COFFEE',610,90);
+    cx.fillStyle='#fff';cx.font='8px sans-serif';cx.fillText('shop',610,105);
+    // coffee grinder (left foreground)
+    cx.fillStyle='#222';cx.fillRect(110,180,50,60);
+    cx.fillStyle='#3a3a3a';cx.beginPath();cx.arc(135,170,25,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#1a2a1a';cx.fillRect(125,150,20,22);
+    cx.fillStyle='#1a0a05';for(var bb=0;bb<10;bb++){cx.beginPath();cx.arc(135+Math.cos(bb)*5,158+Math.sin(bb)*5,1.5,0,Math.PI*2);cx.fill()}
+    cx.fillStyle='#444';cx.fillRect(115,215,40,8);
+    cx.fillStyle='#aaa';cx.fillRect(132,217,4,4);
+    cx.fillStyle='#666';cx.fillRect(110,238,50,3);
+    // espresso machine (right foreground)
+    cx.fillStyle='#c0c0c0';cx.fillRect(560,180,100,60);
+    cx.fillStyle='#e0e0e0';cx.fillRect(560,180,100,4);
+    cx.fillStyle='#a0a0a0';cx.fillRect(560,238,100,2);
+    cx.fillStyle='#888';cx.fillRect(575,200,10,10);
+    cx.fillStyle='#0a0';cx.fillRect(595,200,10,10);
+    cx.fillStyle='#888';cx.fillRect(615,200,10,10);
+    cx.fillStyle='#222';cx.fillRect(580,225,75,18);
+    cx.fillStyle='#444';cx.fillRect(595,210,45,8);
+    cx.fillStyle='#a0a0a0';cx.fillRect(580,242,75,4);  // drip tray
+    // steam from machine
+    cx.fillStyle='#ffffff40';for(var sm=0;sm<3;sm++){cx.beginPath();cx.arc(610+sm*5+Math.sin(Date.now()/1000+sm)*3,170-Math.abs(Math.sin(Date.now()/800+sm))*30,3,0,Math.PI*2);cx.fill()}
+    // WOODEN COUNTER across bottom
+    cx.fillStyle='#5a3a1a';cx.fillRect(80,295,640,40);
+    cx.fillStyle='#7a4a25';cx.fillRect(80,293,640,3);
+    cx.fillStyle='#3a2010';cx.fillRect(80,333,640,4);
+    cx.fillStyle='#4a2a15';for(var cg=0;cg<8;cg++)cx.fillRect(80+cg*80,300,2,33);
+    // cup on counter
+    var cupY=310+Math.sin(Date.now()/800)*2;
+    cx.fillStyle='#fff';cx.fillRect(360,cupY,18,22);
+    cx.fillStyle='#a07040';cx.fillRect(362,cupY+3,14,3);
+    cx.fillStyle='#888';cx.beginPath();cx.arc(360,cupY+8,3,Math.PI,0);cx.fill();
+    // customer (back view) at counter
+    if(s.c){
+      var ccx=240+Math.sin(Date.now()/2000)*3;
+      var ch=Math.sin(Date.now()/400)*1;
+      cx.fillStyle='#0006';cx.beginPath();cx.ellipse(ccx,318,16,4,0,0,Math.PI*2);cx.fill();
+      cx.fillStyle=s.c.undercover?'#2a2a2a':'#5a4030';cx.fillRect(ccx-12,275+ch,24,45);
+      cx.fillStyle='#f0d8a8';cx.beginPath();cx.arc(ccx,265+ch,12,0,Math.PI*2);cx.fill();
+      cx.fillStyle=s.c.undercover?'#1a1a1a':'#603820';
+      cx.beginPath();cx.arc(ccx,262+ch,12,Math.PI*1.1,Math.PI*2);cx.fill();
+      if(s.c.undercover){cx.fillStyle='#1a1a1a';cx.fillRect(ccx-13,253,26,5);cx.fillRect(ccx-10,248,20,6)}
+      cx.fillStyle='#f0d8a8';cx.fillRect(ccx-15,290+ch,4,15);cx.fillRect(ccx+11,290+ch,4,15);
     }
+    // === HUD overlay ===
+    cx.fillStyle='#fff';cx.font='bold 13px sans-serif';cx.textAlign='center';
+    var cst=['白寡妇','紫雾','Amsterdam Haze'];
+    var htCol=s.ht>70?'#f05050':s.ht>40?'#f0a030':'#78c878';
+    cx.fillText('🌿 咖啡店 — $'+s.pr+'/g · '+cst[s.st]+' · 热度 '+Math.round(s.ht)+'%',400,358);
+    if(s.c&&!s.raid){
+      const left=Math.max(0,Math.ceil((s.c.patience*1000-(Date.now()-s.c.born))/1000));
+      const warn=s.c.undercover?' 🚨卧底!':'';
+      cx.fillStyle='#fff';cx.font='11px sans-serif';cx.fillText(s.c.face+' 顾客出价$'+s.c.max+' · 耐心 '+left+'s'+warn,400,376);
+      cx.fillStyle=s.pr<=s.c.max?'#78c878':'#f05050';
+      cx.fillText(s.pr<=s.c.max?'SPACE成交':'降价或SPACE拒客',400,394);
+      cx.fillStyle='#fff1';cx.fillRect(250,403,300,6);
+      cx.fillStyle=left<3?'#f05050':left<6?'#f0a030':'#78c878';
+      cx.fillRect(250,403,300*(left/s.c.patience),6);
+    }
+    if(s.raid){cx.fillStyle='#f05050';cx.font='bold 24px sans-serif';cx.fillText('🚨 警察突击！',400,250)}
+    // sales counter + heat bar
+    cx.fillStyle='#fff';cx.font='12px sans-serif';cx.fillText('今日 '+s.sd+'/5 人 · $'+s.earn,400,425);
+    cx.fillStyle='#fff1';cx.fillRect(250,435,300,12);
+    cx.fillStyle=htCol;cx.fillRect(250,435,300*Math.min(1,s.ht/100),12);
+    cx.fillStyle='#aaa';cx.font='9px sans-serif';cx.fillText('热度自然下降 -1.5%/s',400,460);
   }else if(mg==='shroom'){
-    cx.fillText('🍄 '+s.st.n+' 生长'+Math.round(s.gr)+'%'+(s.contam?' · 污染!':''),400,60);
-    cx.fillStyle='#1a2818';cx.fillRect(180,80,440,140);
-    var gh=Math.min(110,s.gr/100*110);
-    for(var i=0;i<8;i++){var mx=200+i*48,my=220-gh*(0.5+Math.sin(i*1.2)*0.4);cx.fillStyle=s.contam?'#7a5a2a':'#d0b0d0';cx.beginPath();cx.ellipse(mx,my,6,3+gh*0.1,0,0,Math.PI*2);cx.fill()}
-    cx.fillStyle='#3a3020';cx.fillRect(190,220,420,16);
-    // First grow = hidden targets. After that, notes show exact values.
-    var tgts=s.known?[{l:'💧湿度',v:s.hu,t:s.st.h,u:'%'},{l:'🌡温度',v:s.tp,t:s.st.t,u:'°C'},{l:'💡光照',v:s.li,t:s.st.l,u:'h'}]:[{l:'💧湿度',v:s.hu,t:null,u:'%'},{l:'🌡温度',v:s.tp,t:null,u:'°C'},{l:'💡光照',v:s.li,t:null,u:'h'}];
+    // === SmartShop grow room: warm dark walls + grow lamp + shelves with monotub jars ===
+    cx.fillStyle='#1a1810';cx.fillRect(80,30,640,260);
+    cx.fillStyle='#0a0805';cx.fillRect(80,30,640,2);
+    cx.fillStyle='#ffffff08';for(var mi=0;mi<6;mi++){cx.beginPath();cx.arc(150+mi*100+Math.sin(Date.now()/2000+mi)*20,80+Math.cos(Date.now()/1500+mi)*10,40,0,Math.PI*2);cx.fill()}
+    // grow light (hanging pendant lamp)
+    cx.fillStyle='#666';cx.fillRect(390,30,20,8);
+    cx.fillStyle='#ffffaa';cx.beginPath();cx.arc(400,55,16,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#ffffff40';cx.beginPath();cx.arc(400,55,28,0,Math.PI*2);cx.fill();
+    var lightAlpha=s.li/14*0.18;
+    cx.fillStyle='rgba(255,255,170,'+lightAlpha+')';
+    cx.beginPath();cx.moveTo(380,65);cx.lineTo(420,65);cx.lineTo(460,200);cx.lineTo(340,200);cx.closePath();cx.fill();
+    // Shelves + 3 backup monotub jars (top shelf)
+    cx.fillStyle='#3a2a18';cx.fillRect(120,290,560,8);
+    cx.fillStyle='#2a1a08';cx.fillRect(80,480,640,10);
+    var strainLabels=['金色导师','亚马逊','哲学家'];
+    for(var mt=0;mt<3;mt++){var mx=170+mt*180;
+      cx.fillStyle='#0006';cx.beginPath();cx.ellipse(mx+30,290,32,4,0,0,Math.PI*2);cx.fill();
+      cx.fillStyle='#cfd8d840';cx.fillRect(mx,220,60,70);
+      cx.fillStyle='#3a2a18';cx.fillRect(mx,265,60,25);
+      cx.fillStyle='#1a0a05';cx.fillRect(mx,265,60,2);
+      cx.fillStyle='#f0f0e8';cx.fillRect(mx-2,212,64,10);
+      cx.fillStyle='#d0d0c8';cx.fillRect(mx-2,220,64,2);
+      cx.fillStyle='#f0e8a0';cx.fillRect(mx+5,250,50,12);
+      cx.fillStyle='#222';cx.font='7px sans-serif';cx.textAlign='center';
+      cx.fillText(strainLabels[mt]||'菌株',mx+30,259);
+    }
+    // === MAIN GROW TUB (center stage) ===
+    var mainMx=320;
+    cx.fillStyle='#0006';cx.beginPath();cx.ellipse(mainMx+60,400,70,5,0,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#cfd8d840';cx.fillRect(mainMx,330,120,70);
+    cx.fillStyle='#3a2a18';cx.fillRect(mainMx,375,120,25);
+    cx.fillStyle='#1a0a05';cx.fillRect(mainMx,375,120,2);
+    cx.fillStyle='#e8d8a0';for(var pe=0;pe<8;pe++){cx.beginPath();cx.arc(mainMx+15+pe*14,383+Math.sin(pe*3)*3,1,0,Math.PI*2);cx.fill()}
+    cx.fillStyle='#f0f0e8';cx.fillRect(mainMx-2,320,124,12);
+    cx.fillStyle='#d0d0c8';cx.fillRect(mainMx-2,330,124,2);
+    // Mushrooms emerging
+    var gh=Math.min(1,s.gr/100);
+    for(var i=0;i<6;i++){var sx=mainMx+15+i*18,sy=375;
+      var capH=22+gh*42+Math.sin(Date.now()/500+i)*2;
+      var capW=8+gh*8;
+      var capColor=s.contam?'#7a5a2a':i%2?'#d8b8d8':'#e8d0b0';
+      cx.fillStyle=s.contam?'#5a4020':'#f5e8d0';cx.fillRect(sx-2,sy-capH,4,capH);
+      cx.fillStyle=capColor;cx.beginPath();cx.ellipse(sx,sy-capH,capW,capW*0.6,0,Math.PI,0);cx.fill();
+      cx.fillStyle=s.contam?'#3a2010':'#8a5a40';cx.beginPath();cx.ellipse(sx,sy-capH,capW-1,capW*0.4,0,0,Math.PI);cx.fill();
+      if(!s.contam&&i%3===0){cx.fillStyle='#fff';cx.beginPath();cx.arc(sx-2,sy-capH+1,1.2,0,Math.PI*2);cx.fill()}
+      if(!s.contam&&gh>0.5){cx.fillStyle='#f5e8d060';cx.beginPath();cx.arc(sx,sy-capH+3,3,0,Math.PI);cx.fill()}
+    }
+    // HUD overlay
+    cx.fillStyle='#fff';cx.font='bold 13px sans-serif';cx.textAlign='center';
+    cx.fillText('🍄 '+s.st.n+' 生长 '+Math.round(s.gr)+'%'+(s.contam?' · ⚠️ 污染!':''),400,52);
+    if(s.contam){cx.fillStyle='#f05050';cx.font='bold 11px sans-serif';cx.fillText('🦠 菌丝感染 · 整批报废',400,72)}
+    // 3 parameter dial widgets
+    var tgts=s.known?[{l:'💧湿度',v:s.hu,t:s.st.h,u:'%',col:'#4090e0'},{l:'🌡温度',v:s.tp,t:s.st.t,u:'°C',col:'#e85040'},{l:'💡光照',v:s.li,t:s.st.l,u:'h',col:'#f0c040'}]:[{l:'💧湿度',v:s.hu,t:null,u:'%',col:'#4090e0'},{l:'🌡温度',v:s.tp,t:null,u:'°C',col:'#e85040'},{l:'💡光照',v:s.li,t:null,u:'h',col:'#f0c040'}];
     tgts.forEach(function(g,i){
-      var x=180+i*160;
-      cx.fillStyle='#fff';cx.font='10px sans-serif';
-      cx.fillText(g.l+' '+g.v+g.u+(g.t===null?' → ?':' → '+g.t+g.u),x+60,255);
-      cx.fillStyle='#fff1';cx.fillRect(x+20,265,120,8);
-      var ok=g.t===null?Math.abs(g.v-50)<25:Math.abs(g.v-g.t)<(g.u==='%'?10:g.u==='°C'?4:2);
-      cx.fillStyle=ok?'#78c878':'#f05050';cx.fillRect(x+20,265,120*(g.v/(g.u==='°C'?35:g.u==='h'?14:100)),8);
+      var x=180+i*160,cy=455;
+      cx.fillStyle='#1a1810';cx.beginPath();cx.arc(x+60,cy,40,0,Math.PI*2);cx.fill();
+      cx.fillStyle='#3a3020';cx.beginPath();cx.arc(x+60,cy,38,0,Math.PI*2);cx.fill();
+      for(var tk=0;tk<12;tk++){var ta=tk/12*Math.PI*2-Math.PI/2;cx.fillStyle='#666';cx.beginPath();cx.moveTo(x+60+Math.cos(ta)*35,cy+Math.sin(ta)*35);cx.lineTo(x+60+Math.cos(ta)*40,cy+Math.sin(ta)*40);cx.stroke();cx.stroke()}
+      var valNorm=g.u==='%'?g.v/100:g.u==='°C'?g.v/35:g.v/14;
+      var na=valNorm*Math.PI*2-Math.PI/2;
+      cx.strokeStyle=g.col;cx.lineWidth=3;cx.beginPath();cx.moveTo(x+60,cy);cx.lineTo(x+60+Math.cos(na)*32,cy+Math.sin(na)*32);cx.stroke();
+      cx.fillStyle=g.col;cx.beginPath();cx.arc(x+60,cy,4,0,Math.PI*2);cx.fill();
+      cx.fillStyle='#fff';cx.font='bold 10px sans-serif';cx.fillText(g.l,x+60,cy+58);
+      cx.fillStyle=g.t===null?'#888':'#fff';cx.fillText(g.v+g.u+(g.t===null?' → ?':' → '+g.t+g.u),x+60,cy+72);
     });
-    cx.fillText('回合'+(s.tn+1)+'/'+s.mx+(s.known?' (笔记已知)':' (首次 — 笔记待记)')+' SPACE推进',400,300);
+    // bottom: round counter + contamination risk
+    cx.fillStyle='#fff';cx.font='11px sans-serif';
+    var err=Math.abs(s.hu-s.st.h)/100+Math.abs(s.tp-s.st.t)/35+Math.abs(s.li-s.st.l)/14;
+    var contamRisk=err>0.4?25:err>0.2?12:4;
+    cx.fillText('回合 '+(s.tn+1)+'/'+s.mx+(s.known?' · 笔记已知':' · 首次种植')+' · 污染风险 '+contamRisk+'%',400,498);
   }else if(mg==='waveSelect'){cx.fillText('🏄 选择浪点（1-7）',400,60);WAVE_POINTS.forEach((w,i)=>{const known=G.surfDiscovered.includes(w.id);cx.fillStyle='#fff';cx.fillText((i+1)+'. '+(known?w.n:'🆕 ???'),400,95+i*38)})
   }else if(mg==='station'){cx.fillText('🚇 中央车站 — 通勤时间',400,160);cx.fillText('1 买票 -$5   2 逃票 Lv'+G.escapeLevel+'   3 不去',400,205);
   }else if(mg==='surf'){
-    cx.fillText('🏄 '+s.wave.n+' 得分'+s.sc+' '+s.at+'次',400,60);
-    cx.fillStyle='#2060a0';cx.fillRect(80,100,640,160);
-    var wx=s.wx*(600/700)+100;
-    cx.fillStyle='#80c8f0';cx.beginPath();cx.ellipse(wx,180,60,20,0,0,Math.PI*2);cx.fill();
-    cx.fillStyle='#fff1';cx.fillRect(160,310,480,10);
+    // === Surf POV: inside the wave tube looking out toward horizon ===
+    // Sky gradient
+    var sg=cx.createLinearGradient(0,30,0,260);
+    sg.addColorStop(0,'#6090b0');sg.addColorStop(0.5,'#a8c8d8');sg.addColorStop(1,'#d8e8e8');
+    cx.fillStyle=sg;cx.fillRect(80,30,640,230);
+    // Distant horizon (pier + lighthouse)
+    cx.fillStyle='#40688060';cx.fillRect(80,220,640,8);
+    cx.fillStyle='#406080';for(var pi=0;pi<6;pi++)cx.fillRect(150+pi*30,225,4,15);
+    cx.fillStyle='#3a5060';cx.fillRect(150,210,180,10);
+    cx.fillStyle='#ffffff';cx.fillRect(640,180,10,40);
+    cx.fillStyle='#a02020';cx.fillRect(640,175,10,5);cx.fillRect(640,193,10,5);
+    cx.fillStyle='#ffff80';cx.beginPath();cx.arc(645,177,4,0,Math.PI*2);cx.fill();
+    // Wave tube walls (left + right arching forward)
+    var tubeT=Date.now()/1000;
+    cx.fillStyle='#4090c0';
+    cx.beginPath();
+    cx.moveTo(80,260);cx.lineTo(80,30);
+    cx.bezierCurveTo(80+Math.sin(tubeT)*8,30,200,80,300,180);
+    cx.bezierCurveTo(340,210,360,240,400,255);
+    cx.bezierCurveTo(440,240,460,210,500,180);
+    cx.bezierCurveTo(600,80,720+Math.sin(tubeT)*8,30,720,30);
+    cx.lineTo(720,260);cx.closePath();cx.fill();
+    // Wave foam (lighter inside)
+    cx.fillStyle='#80c0e0';
+    cx.beginPath();
+    cx.moveTo(95,260);cx.bezierCurveTo(95,40,210,90,305,185);cx.bezierCurveTo(345,215,360,240,400,250);cx.bezierCurveTo(440,240,455,215,495,185);cx.bezierCurveTo(590,90,705,40,705,260);cx.closePath();cx.fill();
+    // Foam streaks
+    cx.strokeStyle='#ffffff80';cx.lineWidth=2;
+    for(var fs=0;fs<8;fs++){var fx=120+fs*70,fy=120+Math.sin(tubeT*2+fs)*30;cx.beginPath();cx.arc(fx,fy,4+fs%3,0,Math.PI*2);cx.stroke()}
+    // Open mouth of tube (wave breaking)
     var pos=(s.wx-200)/500;
-    cx.fillStyle='#78c87880';cx.fillRect(160+0.6*480,310,0.2*480,10);
-    cx.fillStyle='#ecb457';cx.fillRect(160+pos*480-2,308,4,14);
-    cx.fillText('SPACE抓浪 绿区=完美',400,350);
+    var mouthX=160+pos*480,mouthY=140;
+    cx.fillStyle='#ffffff';cx.beginPath();cx.ellipse(mouthX,mouthY,55,40,0,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#d8e8f0';cx.beginPath();cx.ellipse(mouthX,mouthY,50,35,0,0,Math.PI*2);cx.fill();
+    if(pos>0.6&&pos<0.8){cx.fillStyle='#78c87860';cx.beginPath();cx.ellipse(mouthX,mouthY,65,50,0,0,Math.PI*2);cx.fill()}
+    // Surfboard tip at bottom (POV)
+    cx.fillStyle='#3a78c0';cx.beginPath();cx.moveTo(380,460);cx.lineTo(420,460);cx.lineTo(440,440);cx.lineTo(360,440);cx.closePath();cx.fill();
+    cx.fillStyle='#5a98e0';cx.fillRect(380,455,40,3);
+    cx.fillStyle='#1a3050';cx.fillRect(378,440,44,3);
+    // Surfer hands
+    cx.fillStyle='#f0d8a8';cx.beginPath();cx.arc(395,445,3,0,Math.PI*2);cx.fill();cx.beginPath();cx.arc(415,445,3,0,Math.PI*2);cx.fill();
+    // Spray particles
+    cx.fillStyle='#ffffff90';
+    for(var sp=0;sp<12;sp++){var spx=100+Math.sin(tubeT*3+sp)*40+sp*55,spy=350+Math.cos(tubeT*4+sp)*20;cx.beginPath();cx.arc(spx,spy,2+sp%3,0,Math.PI*2);cx.fill()}
+    // bottom HUD
+    cx.fillStyle='#1a305080';cx.fillRect(120,440,560,40);
+    cx.fillStyle='#fff';cx.font='bold 12px sans-serif';cx.textAlign='left';cx.fillText('🏄 '+s.wave.n,135,455);
+    cx.fillStyle='#fff';cx.textAlign='right';cx.fillText(s.sc+'分 · '+s.at+'次抓'+(s.perfect>0?' · perfect×'+s.perfect:''),665,455);
+    cx.fillStyle='#1a1a1a';cx.fillRect(135,463,250,10);
+    cx.fillStyle=s.stamina>60?'#78c878':s.stamina>30?'#f0a030':'#f05050';cx.fillRect(135,463,250*(s.stamina/100),10);
+    cx.fillStyle='#aaa';cx.font='9px sans-serif';cx.textAlign='left';cx.fillText('体力 '+s.stamina+'%',390,471);
+    var greenState=pos>0.6&&pos<0.8?'完美区!':pos>0.3&&pos<0.95?'白区':'错过!';
+    cx.fillStyle='#ecb457';cx.font='bold 11px sans-serif';cx.textAlign='center';cx.fillText(greenState,400,455);
   }else if(mg==='academic'){
+    // === Professor's office: warm wood wall + bookshelf + desk + laptop + coffee mug ===
+    cx.fillStyle='#3a2818';cx.fillRect(80,30,640,210);
+    cx.fillStyle='#2a1a08';for(var wp=0;wp<10;wp++)cx.fillRect(85,40+wp*18,650,1);
+    // Bookshelf
+    cx.fillStyle='#4a3018';cx.fillRect(110,45,200,90);
+    cx.fillStyle='#3a2818';cx.fillRect(110,75,200,3);cx.fillRect(110,108,200,3);
+    var bookCols=['#8a3030','#305a8a','#508030','#a08020','#603070','#306a6a'];
+    for(var bk=0;bk<8;bk++){cx.fillStyle=bookCols[bk%6];cx.fillRect(118+bk*22,52,20,22);cx.fillStyle='#fff3';cx.fillRect(119+bk*22,53,2,20)}
+    for(var bk2=0;bk2<7;bk2++){cx.fillStyle=bookCols[(bk2+2)%6];cx.fillRect(122+bk2*26,80,24,26);cx.fillStyle='#fff3';cx.fillRect(123+bk2*26,81,2,24)}
+    // Conference poster (right wall)
+    cx.fillStyle='#fff';cx.fillRect(490,45,160,100);
+    cx.fillStyle='#1a3a8a';cx.fillRect(490,45,160,16);
+    cx.fillStyle='#fff';cx.font='bold 10px sans-serif';cx.textAlign='center';cx.fillText(s.venue||'ICML 2026',570,57);
+    cx.fillStyle='#222';cx.font='8px sans-serif';
+    cx.fillText('Paper ID: 2026.AMST-'+(1000+G.day*7),570,77);
+    cx.fillText('Deadline: D-3',570,88);
+    cx.fillText('Accept rate: 24%',570,99);
+    cx.fillText('Reviewers: 3',570,110);
+    cx.fillStyle='#0a0';cx.font='bold 10px sans-serif';cx.fillText('★ STRONG',570,128);
+    // DESK
+    cx.fillStyle='#5a3a1a';cx.fillRect(80,310,640,180);
+    cx.fillStyle='#7a4a25';cx.fillRect(80,308,640,3);
+    cx.fillStyle='#3a2010';for(var dk=0;dk<8;dk++)cx.fillRect(80+dk*80,320,2,170);
+    // Paper draft (center)
+    cx.fillStyle='#fff';cx.fillRect(280,340,240,170);
+    cx.fillStyle='#e8e8e0';cx.fillRect(280,340,240,2);
+    cx.fillStyle='#222';cx.font='bold 12px sans-serif';cx.textAlign='center';
+    cx.fillText('📄 Paper Draft',400,360);
+    cx.fillStyle='#666';cx.font='9px sans-serif';
+    cx.fillText('AI Alignment in Amsterdam Coffeehouses',400,375);
+    cx.fillStyle='#222';cx.fillRect(310,381,180,1);
+    cx.fillStyle='#888';for(var lt=0;lt<10;lt++)cx.fillRect(300,395+lt*12,Math.random()*120+60,2);
+    // Laptop (left)
+    cx.fillStyle='#c0c0c0';cx.fillRect(120,340,100,60);
+    cx.fillStyle='#a0a0a0';cx.fillRect(120,398,100,4);
+    cx.fillStyle='#1a3050';cx.fillRect(125,345,90,48);
+    cx.fillStyle='#80c0e0';cx.fillRect(130,350,80,2);cx.fillRect(130,355,60,2);cx.fillRect(130,360,70,2);cx.fillRect(130,365,50,2);
+    cx.fillStyle='#4060a0';cx.beginPath();cx.arc(170,385,8,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#fff';cx.font='bold 7px sans-serif';cx.textAlign='center';cx.fillText('arXiv',170,388);
+    cx.fillStyle='#aaa';cx.fillRect(125,343,90,2);
+    // Coffee mug (right)
+    cx.fillStyle='#a02020';cx.fillRect(580,360,30,35);
+    cx.fillStyle='#7a1010';cx.fillRect(580,360,30,4);
+    cx.fillStyle='#5a300a';cx.fillRect(584,365,22,8);
+    cx.fillStyle='#a02020';cx.beginPath();cx.arc(612,375,6,Math.PI*0.2,Math.PI*1.2);cx.lineTo(610,380);cx.lineTo(614,380);cx.closePath();cx.fill();
+    cx.fillStyle='#ffffff40';for(var stm=0;stm<3;stm++){cx.beginPath();cx.arc(595+stm*5+Math.sin(Date.now()/1000+stm)*2,355-Math.abs(Math.sin(Date.now()/800+stm))*15,2,0,Math.PI*2);cx.fill()}
+    // Pen on desk
+    cx.fillStyle='#ffd700';cx.fillRect(500,415,60,3);
+    cx.fillStyle='#222';cx.fillRect(500,415,5,3);
+    cx.fillStyle='#888';cx.fillRect(556,415,4,3);
+    // === HUD overlay ===
     if(s.ph==='gather'){
-      cx.fillText('📚 选2个灵感 (1-5)',400,60);
+      cx.fillStyle='#fff';cx.font='bold 14px sans-serif';cx.textAlign='center';cx.fillText('📚 选 2 个研究主题',400,335);
+      cx.fillStyle='#aaa';cx.font='10px sans-serif';cx.fillText('协同组合加分 (e.g. 红队+因果 +20)',400,351);
       s.ids.forEach(function(id,i){
-        var y=85+i*42;
-        cx.fillStyle=s.sel.includes(i)?'#ecb45730':'#fff1';cx.fillRect(160,y-10,480,32);
-        cx.fillStyle='#fff';cx.font='13px sans-serif';cx.fillText((i+1)+'. '+id.t+' ('+'★'.repeat(id.q)+')',400,y+8);
+        var y=355+i*22,cardW=240,cardX=400-cardW/2;
+        cx.fillStyle=s.sel.includes(i)?'#ecb45740':'#fff8';
+        cx.fillRect(cardX,y,cardW,18);
+        cx.strokeStyle=s.sel.includes(i)?'#ecb457':'#aaa';cx.lineWidth=1;cx.strokeRect(cardX,y,cardW,18);
+        cx.fillStyle='#222';cx.font='10px sans-serif';cx.textAlign='left';
+        cx.fillText((i+1)+'. '+id.t,cardX+8,y+12);
+        cx.fillStyle='#e8a020';cx.fillText('★'.repeat(id.q),cardX+cardW-30,y+12);
       });
     }else{
-      cx.fillText('📝 写论文中...',400,100);
-      cx.fillText(s.ids[s.sel[0]].t+' + '+s.ids[s.sel[1]].t,400,150);
+      cx.fillStyle='#222';cx.font='bold 12px sans-serif';cx.textAlign='center';
+      cx.fillText('📝 写论文中...',400,355);
+      cx.fillStyle='#444';cx.font='10px sans-serif';
+      cx.fillText(s.ids[s.sel[0]].t+' + '+s.ids[s.sel[1]].t+(s.synergy>0?'  ✨协同+'+s.synergy:''),400,372);
       var pct=Math.min(100,(Date.now()-s.ws)/3);
-      cx.fillStyle='#fff1';cx.fillRect(220,190,360,10);
-      cx.fillStyle='#c0c0c0';cx.fillRect(220,190,360*pct/100,10);
-      cx.fillText('预计'+s.sc+'分 SPACE提交',400,225);
+      cx.fillStyle='#fff8';cx.strokeStyle='#666';cx.strokeRect(280,400,240,8);
+      cx.fillStyle='#3a78c0';cx.fillRect(280,400,240*pct/100,8);
+      cx.fillStyle='#222';cx.font='10px sans-serif';cx.fillText('预计 '+s.sc+' 分 ('+s.venue+') · SPACE提交',400,425);
+      // pen moving across paper
+      cx.save();cx.translate(280+pct*2.4,395);cx.rotate(0.3);
+      cx.fillStyle='#ffd700';cx.fillRect(0,0,40,2);
+      cx.fillStyle='#222';cx.fillRect(0,0,5,2);
+      cx.restore();
     }
   }else if(mg==='bar'){
-    cx.fillText('🍻 酒吧 $'+s.earn+' combo×'+s.combo+' '+s.sd+'/'+s.mx+' · 今日推荐 '+s.recoDrink,400,60);
-    cx.fillStyle='#5a3a20';cx.fillRect(100,130,600,36);
-    cx.fillStyle='#f0d060';cx.beginPath();cx.arc(170,148,9,0,Math.PI*2);cx.fill();
-    s.cs.forEach(function(c,i){
-      var x=290+i*85;
-      cx.fillStyle=c.isRegular?'#e8a020':['#c8c8c8','#c8b464','#ff6464','#a078c8'][Math.floor(Math.random()*4)];
-      cx.beginPath();cx.arc(x,148,8,0,Math.PI*2);cx.fill();
-      cx.fillStyle='#fff';cx.font='9px sans-serif';
-      cx.fillText(c.face,x-11,146);
-      var drinkTag=c.drink+' '+(c.wantReco?'(想要推荐)':'');
-      cx.fillText(drinkTag,x-22,166);
-      if(c.done)cx.fillText('✅',x-7,138);
-      // patience bar above head
+    // === Bar interior: dim wood + Heineken neon + bottle shelves + counter + bartender ===
+    cx.fillStyle='#2a1a08';cx.fillRect(80,30,640,210);
+    cx.fillStyle='#1a0a05';for(var bw=0;bw<10;bw++)cx.fillRect(85,40+bw*18,650,1);
+    // Heineken neon sign
+    var nT=Date.now()/1000;
+    cx.fillStyle='#10a02030';cx.beginPath();cx.arc(400,80,55,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#10a020';cx.fillRect(310,55,180,50);
+    cx.fillStyle='#ffffff';cx.font='bold 22px sans-serif';cx.textAlign='center';cx.fillText('🍺 HEINEKEN',400,85);
+    cx.fillStyle='#fff';cx.font='10px sans-serif';cx.fillText('★ since 1864 ★',400,100);
+    // Bottle shelf (3 rows of bottles in varied colors)
+    var bottleCols=['#308030','#805020','#503080','#806040','#2070a0','#a06020','#404040','#905050'];
+    cx.fillStyle='#4a3018';cx.fillRect(100,140,260,5);cx.fillRect(100,170,260,5);cx.fillRect(100,200,260,5);
+    for(var sh=0;sh<3;sh++){for(var bt=0;bt<7;bt++){var bx=110+bt*36,bh=148+sh*30;
+      cx.fillStyle='#0006';cx.fillRect(bx,bh+22,16,2);
+      cx.fillStyle=bottleCols[(bt+sh)%8];cx.fillRect(bx,bh,14,22);
+      cx.fillStyle='#1a0a05';cx.fillRect(bx+3,bh-5,8,6);
+      cx.fillStyle='#ffffff20';cx.fillRect(bx+1,bh,2,22);
+    }}
+    // Tap handles (right wall)
+    cx.fillStyle='#666';cx.fillRect(660,160,8,100);
+    cx.fillStyle='#a0a0a0';cx.beginPath();cx.arc(664,158,6,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#d0d0d0';cx.beginPath();cx.arc(664,160,5,0,Math.PI*2);cx.fill();
+    // Pool table (right corner, dim)
+    cx.fillStyle='#2a6020';cx.fillRect(560,250,150,80);
+    cx.fillStyle='#1a4010';cx.fillRect(560,250,150,4);cx.fillRect(560,326,150,4);
+    cx.fillStyle='#8a3a1a';cx.fillRect(560,250,4,80);cx.fillRect(706,250,4,80);
+    var poolBalls=[{x:600,c:'#fff'},{x:618,c:'#f05050'},{x:636,c:'#f0a020'},{x:654,c:'#2050a0'},{x:672,c:'#a020a0'},{x:690,c:'#202020'}];
+    poolBalls.forEach(function(b){cx.fillStyle=b.c;cx.beginPath();cx.arc(b.x,290,5,0,Math.PI*2);cx.fill()});
+    // BAR COUNTER (foreground wooden bar)
+    cx.fillStyle='#5a3a1a';cx.fillRect(80,335,640,40);
+    cx.fillStyle='#7a4a25';cx.fillRect(80,333,640,3);
+    cx.fillStyle='#3a2010';cx.fillRect(80,373,640,4);
+    cx.fillStyle='#4a2a15';for(var cg=0;cg<8;cg++)cx.fillRect(80+cg*80,340,2,33);
+    // Brass foot rail along bottom of counter
+    cx.fillStyle='#d0a040';cx.fillRect(80,470,640,4);
+    cx.fillStyle='#a07020';cx.fillRect(80,470,640,1);
+    // BARTENDER (silhouette behind counter)
+    var bBob=Math.sin(Date.now()/300)*1;
+    cx.fillStyle='#0006';cx.beginPath();cx.ellipse(120,335,18,4,0,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#1a1a1a';cx.fillRect(108,290+bBob,24,45);
+    cx.fillStyle='#f0d8a8';cx.beginPath();cx.arc(120,283+bBob,10,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#222';cx.beginPath();cx.arc(120,280+bBob,10,Math.PI*1.1,Math.PI*2);cx.fill();
+    cx.fillStyle='#7a4030';cx.fillRect(110,310+bBob,20,25);  // apron
+    // Pouring arm
+    var pourAng=Math.sin(Date.now()/500)*0.3;
+    cx.save();cx.translate(132,302+bBob);cx.rotate(pourAng-0.5);
+    cx.fillStyle='#f0d8a8';cx.fillRect(0,0,16,4);
+    cx.fillStyle='#fff';cx.beginPath();cx.arc(16,2,3,0,Math.PI*2);cx.fill();
+    cx.restore();
+    // Customer at counter (back view)
+    if(s.cs.length>0){var c=s.cs[s.cs.length-1];
+      var ccx=380,cy=345;
+      var cBob=Math.sin(Date.now()/400+c.arch.n.length)*1;
+      cx.fillStyle='#0006';cx.beginPath();cx.ellipse(ccx,cy+30,16,4,0,0,Math.PI*2);cx.fill();
+      cx.fillStyle=c.arch.n==='VIP'?'#8a2030':'#3a3a3a';cx.fillRect(ccx-12,cy-15+cBob,24,45);
+      cx.fillStyle='#f0d8a8';cx.beginPath();cx.arc(ccx,cy-22+cBob,11,0,Math.PI*2);cx.fill();
+      cx.fillStyle='#603820';cx.beginPath();cx.arc(ccx,cy-25+cBob,11,Math.PI*1.1,Math.PI*2);cx.fill();
+      cx.fillStyle='#f0d8a8';cx.fillRect(ccx-16,cy+5+cBob,4,12);cx.fillRect(ccx+12,cy+5+cBob,4,12);
+      // Drink glass
+      var glCol=c.drink==='🥃'?'#d08030':c.drink==='🍺'?'#e0a020':'#803060';
+      cx.fillStyle='#ffffff20';cx.beginPath();cx.arc(ccx,cy+28,5,0,Math.PI*2);cx.fill();
+      cx.fillStyle=glCol;cx.beginPath();cx.arc(ccx,cy+28,4,0,Math.PI*2);cx.fill();
+      cx.fillStyle='#ffffff60';cx.fillRect(ccx-4,cy+26,8,1);
+      // patience bar
       var left=Math.max(0,c.patience*1000-(Date.now()-c.born));
       var pct=left/(c.patience*1000);
-      cx.fillStyle='#fff1';cx.fillRect(x-10,128,20,4);
-      cx.fillStyle=pct<0.3?'#f05050':pct<0.6?'#f0a030':'#78c878';cx.fillRect(x-10,128,20*pct,4);
-    });
-    cx.fillText('📦🍺'+G.bs[0]+'🥃'+G.bs[1]+'🍷'+G.bs[2]+' · 命中推荐 = +20% tip · 常客 +20% tip',400,200);
+      cx.fillStyle='#fff1';cx.fillRect(ccx-15,cy-38,30,5);
+      cx.fillStyle=pct<0.3?'#f05050':pct<0.6?'#f0a030':'#78c878';cx.fillRect(ccx-15,cy-38,30*pct,5);
+      // patron label
+      cx.fillStyle='#fff';cx.font='bold 11px sans-serif';cx.textAlign='center';
+      cx.fillText(c.face+' '+c.arch.n+(c.isRegular?' 👤':'')+(c.wantReco?' ✨想要'+s.recoDrink:''),ccx,cy-44);
+    }
+    // HUD overlay
+    cx.fillStyle='#fff';cx.font='bold 13px sans-serif';cx.textAlign='center';
+    cx.fillText('🍻 酒吧 · '+s.earn+' · combo×'+s.combo+' · '+s.sd+'/'+s.mx+' · 今日推荐 '+s.recoDrink,400,395);
+    cx.fillStyle='#aaa';cx.font='10px sans-serif';
+    cx.fillText('命中推荐 +20% · 常客 +20% · 错过推荐 -10%',400,410);
+    if(s.cs.length>0){var cur=s.cs[s.cs.length-1];
+      cx.fillStyle='#1a1a1a';cx.fillRect(180,420,440,16);
+      var pos=(cur.offer-cur.floor)/(cur.ceiling-cur.floor);
+      cx.fillStyle='#3a78c0';cx.fillRect(180,420,440*pos,16);
+      cx.fillStyle='#78c878';cx.fillRect(180,420,440*0.15,4);cx.fillRect(180+440*0.85,432,440*0.15,4);
+      cx.fillStyle='#fff';cx.font='bold 11px sans-serif';cx.fillText('Q/W调整报价: $'+cur.offer+' (区间 '+cur.floor+'-'+cur.ceiling+')',400,431);
+      cx.fillStyle='#f0d060';cx.font='10px sans-serif';cx.fillText(cur.drink+(cur.wantReco?' · 想要推荐酒':' · 不在意'),400,448);
+    }
+    cx.fillStyle='#fff';cx.font='11px sans-serif';cx.fillText('库存 🍺'+G.bs[0]+' 🥃'+G.bs[1]+' 🍷'+G.bs[2],400,465);
   }
   cx.textAlign='start';
 }

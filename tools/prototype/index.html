@@ -443,30 +443,86 @@ function enterBldg(){
 function startBrew(){
   const types=['IPA','Stout','Lager'],recipes=[[1,0,2],[2,1,0],[0,2,1]];
   const i=Math.floor(seeded(41)*3);
+  // Real brewery: target temp is hidden — brewer has to know IPA=55, Stout=68, Lager=48
+  // from memory or recipe notes. Each batch's yeast health drifts ±15%.
   const order={type:types[i],recipe:recipes[i],temp:[55,68,48][i],limit:180,bonus:hasUpgrade('ipa_recipe')&&types[i]==='IPA'?1.5:1};
-  G.shop.order=order;MG.brew={ph:'sel',m:0,h:0,y:0,t:50,started:0,deadline:0,order:order};G.mg='brew';
-  setStatus('🍺 酿酒订单',`订单:${order.type} · 目标温 ${order.temp}°C${order.bonus>1?' · IPA配方 x'+order.bonus:''}`,'1/2/3选原料 · SPACE开始/完成');renderAll()
+  const yeast=0.85+seeded(42+G.day*7)*0.3; // 0.85..1.15 batch variability
+  G.shop.order=order;MG.brew={ph:'sel',m:0,h:0,y:0,t:50,started:0,deadline:0,order:order,yeast};G.mg='brew';
+  setStatus('🍺 酿酒订单',`订单:${order.type} · 目标温 ?°C(凭经验)${order.bonus>1?' · IPA配方 x'+order.bonus:''}`,'1/2/3选原料 · SPACE开始/完成');renderAll()
 }
 function brewIn(k){const s=MG.brew;if(!s)return;
-  if(s.ph==='sel'){if(k==='1')s.m=(s.m+1)%3;if(k==='2')s.h=(s.h+1)%3;if(k==='3')s.y=(s.y+1)%3;if(k===' '){s.ph='brew';s.started=Date.now();s.deadline=s.started+s.order.limit*1000;setStatus('🍺 酿酒订单',`订单:${s.order.type} · 目标温 ${s.order.temp}°C`,'⬆⬇调温 · SPACE提交')}
+  if(s.ph==='sel'){if(k==='1')s.m=(s.m+1)%3;if(k==='2')s.h=(s.h+1)%3;if(k==='3')s.y=(s.y+1)%3;if(k===' '){s.ph='brew';s.started=Date.now();s.deadline=s.started+s.order.limit*1000;setStatus('🍺 酿酒订单',`订单:${s.order.type} · 控温中`,'⬆⬇调温 · SPACE提交')}
   }else if(s.ph==='brew'){if(k==='arrowup')s.t=Math.min(90,s.t+3);if(k==='arrowdown')s.t=Math.max(20,s.t-3);if(k===' ')finBrew()}}
-function finBrew(timeout){const s=MG.brew;if(!s||s.ph==='done')return;s.ph='done';const o=s.order,recipeOk=s.m===o.recipe[0]&&s.h===o.recipe[1]&&s.y===o.recipe[2],tempOk=Math.abs(s.t-o.temp)<=5;
-  if(timeout||!recipeOk||!tempOk){if(timeout&&G.bs[0]>0)G.bs[0]--;G.shop.order=null;addEvt('bad',timeout?'⏱ 酿酒订单超时，顾客流失':'🍺 订单配方或温度错误');setStatus(timeout?'❌ 订单超时':'❌ 订单失败',timeout?'库存-1':'tip -20%','按 Esc 离开');setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},900);return}
-  const base=35+Math.round((10+o.temp/10)*tipFactor()),inc=Math.round(base*1.3*industryFactor('brewing')*(o.bonus||1));G.money+=inc;G.ind.brewing.xp+=Math.round(inc*(hasUpgrade('legacy_xp')?1.25:1));G.shop.order=null;addEvt('good',`🍺 ${o.type} 订单完成 +$${inc}`);setMsg(`🍺 订单完成 +$${inc}`);addSch('🍺',`${o.type} 订单 +$${inc}`);G.mg=null;G.inside=null;chkLv('brewing');setStatus('✅ 订单完成',`+$${inc}`,'');tickObj('Brew',1);tickObj('Earn',inc);renderAll()}
+function finBrew(timeout){const s=MG.brew;if(!s||s.ph==='done')return;s.ph='done';const o=s.order,recipeOk=s.m===o.recipe[0]&&s.h===o.recipe[1]&&s.y===o.recipe[2],tempErr=Math.abs(s.t-o.temp);
+  if(timeout||!recipeOk||tempErr>12){if(timeout&&G.bs[0]>0)G.bs[0]--;G.shop.order=null;addEvt('bad',timeout?'⏱ 酿酒订单超时，顾客流失':`🍺 订单${!recipeOk?'配方错误':'温差过大(>'+tempErr.toFixed(0)+'°C)'}`);setStatus(timeout?'❌ 订单超时':'❌ 订单失败',timeout?'库存-1':'tip 受损','按 Esc 离开');setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},900);return}
+  // Quality scales with temp accuracy + yeast health. ±5°C is the "excellent" band.
+  const tempAcc=Math.max(0.4, 1-tempErr*0.05); // 1.0 perfect, 0.6 at ±8°C, 0.4 at ±12°C
+  const base=Math.round((35+(10+o.temp/10)*tipFactor())*tempAcc*s.yeast),inc=Math.round(base*1.3*industryFactor('brewing')*(o.bonus||1));
+  const quality=tempAcc>=0.95?'★完美':tempAcc>=0.8?'好':'一般';
+  G.money+=inc;G.ind.brewing.xp+=Math.round(inc*(hasUpgrade('legacy_xp')?1.25:1));G.shop.order=null;addEvt('good',`🍺 ${o.type} 订单完成 +$${inc} · ${quality}`);setMsg(`🍺 ${quality} · +$${inc}`);addSch('🍺',`${o.type} +$${inc}`);G.mg=null;G.inside=null;chkLv('brewing');setStatus('✅ 订单完成',`+$${inc} · ${quality}`,'');tickObj('Brew',1);tickObj('Earn',inc);renderAll()}
 function updateBrew(){const s=MG.brew;if(!s||s.ph!=='brew')return;if(Date.now()>s.deadline)finBrew(true)}
 function startCoffee(){
   if(hasMod('police_raid')||G.shop.coffeeBlockedDay===G.day){G.mg=null;G.inside=null;setStatus('🚓 咖啡店关闭','今日检查，暂不可经营','明日再来');setMsg('🌿 今日咖啡店停业');return}
-  const target=3+Math.floor(seeded(51)*5);MG.coffee={st:0,pr:15,ht:0,sd:0,earn:0,raid:false,c:null,target,warn:0};G.mg='coffee';sCoffeeC();setStatus('🌿 咖啡店',`目标 ${target} 人 · 热度0%`,'Q/W调价 · SPACE成交 · X拒客')
+  // Real Amsterdam coffeeshop: heat decays ~6%/s when idle (police patrol cools the street).
+  // Each customer has a 7-12s patience window — if you dawdle they walk out and your tip + rep drops.
+  const target=3+Math.floor(seeded(51)*5);
+  MG.coffee={st:0,pr:15,ht:0,sd:0,earn:0,raid:false,c:null,target,warn:0,lastT:Date.now()};
+  G.mg='coffee';sCoffeeC();setStatus('🌿 咖啡店',`目标 ${target} 人 · 热度0% · 热度会自然下降`,'Q/W调价 · SPACE成交 · X拒客')
 }
-function sCoffeeC(){const s=MG.coffee;if(!s)return;const undercover=seeded(60+s.sd*13)<.1;s.c={face:['🧑','🙂','🧐','🥴'][Math.floor(seeded(61+s.sd)*4)],max:undercover?28+Math.floor(seeded(62+s.sd)*18):12+Math.floor(seeded(63+s.sd)*20),undercover};s.warn=undercover?1:0}
-function coffeeIn(k){const s=MG.coffee;if(!s||s.raid)return;if(k==='1')s.st=0;if(k==='2')s.st=1;if(k==='3')s.st=2;if(k==='q')s.pr=Math.max(5,s.pr-1);if(k==='w')s.pr=Math.min(50,s.pr+1);
+function sCoffeeC(){const s=MG.coffee;if(!s)return;
+  const undercover=seeded(60+s.sd*13)<.1;
+  // Customer patience: 7-12s. Tourists patient, locals impatient.
+  const patience=7+Math.floor(seeded(64+s.sd)*6);
+  s.c={face:['🧑','🙂','🧐','🥴'][Math.floor(seeded(61+s.sd)*4)],
+       max:undercover?28+Math.floor(seeded(62+s.sd)*18):12+Math.floor(seeded(63+s.sd)*20),
+       undercover,patience,born:Date.now()};
+  s.warn=undercover?1:0;
+  s.lastT=Date.now();
+}
+// Heat decays between customers (police patrol cools things down)
+function updateCoffee(){
+  const s=MG.coffee;if(!s||G.mg!=='coffee'||s.raid)return;
+  const now=Date.now();
+  if(s.c&&!s.raid){
+    const left=Math.max(0, s.c.patience*1000 - (now-s.c.born));
+    if(left<=0){s.sd++;s.ht=Math.max(0,s.ht-5);addEvt('bad',`⏱ ${s.c.face} 顾客等太久走了`);if(s.sd>=s.target)finCoffee();else sCoffeeC();renderAll();return}
+  }
+  // Heat decay: -1.5% per second since last action, floors at 0
+  const dt=(now-s.lastT)/1000;s.lastT=now;
+  s.ht=Math.max(0,s.ht-dt*1.5);
+}
+function coffeeIn(k){const s=MG.coffee;if(!s||s.raid)return;s.lastT=Date.now();if(k==='1')s.st=0;if(k==='2')s.st=1;if(k==='3')s.st=2;if(k==='q')s.pr=Math.max(5,s.pr-1);if(k==='w')s.pr=Math.min(50,s.pr+1);
   if(k==='x'&&s.c){setMsg(s.c.undercover?'🛡️ 拒绝卧底，安全 (-8°)' :'❌ 顾客离店 (-2°)');if(s.c.undercover){G.rep+=2;addEvt('good','🛡️ 识破卧底 +2 rep')}s.sd++;s.ht=Math.max(0,s.ht-(s.c.undercover?8:2));if(s.sd>=s.target)finCoffee();else sCoffeeC();renderAll();return}
   if(k===' '){if(!s.c||s.sd>=s.target){finCoffee();return}const cst=[8,14,22];if(s.pr<=s.c.max){if(s.c.undercover){s.raid=true;G.shop.coffeeBlockedDay=G.day;G.bs[1]=Math.max(0,G.bs[1]-1);addEvt('bad','🚨 卧底成交，突击没收货物');setStatus('🚨 被突击！','卧底成交，咖啡店今日停业','明日才能继续');setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},1200);return}s.earn+=s.pr;s.ht+=Math.round(s.pr/cst[s.st]*8);setMsg('✅ 成交')}else{setMsg('❌ 出价过高，顾客走了 (-3°)');s.ht=Math.max(0,s.ht-3)}s.sd++;s.ht=Math.min(100,s.ht+3);if(s.ht>=100){s.raid=true;G.shop.coffeeBlockedDay=G.day;G.bs[1]=Math.max(0,G.bs[1]-1);setStatus('🚨 被突击！','热度过高，咖啡店今日停业','');setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},1200);return}if(s.sd>=s.target)finCoffee();else sCoffeeC();renderAll()}}
 function finCoffee(){const s=MG.coffee;if(!s)return;G.money+=Math.round(s.earn*tipFactor());G.ind.coffee_shop.xp+=Math.round(s.earn*1.5);addEvt('good',`🌿 咖啡店 +$${Math.round(s.earn*tipFactor())}`);addSch('🌿',`咖啡店 +$${Math.round(s.earn*tipFactor())}`);G.mg=null;G.inside=null;chkLv('coffee_shop');setStatus('✅ 咖啡店打烊',`目标${s.sd}/${s.target} · +$${Math.round(s.earn*tipFactor())}`,'');tickObj('Earn',Math.max(1,Math.floor(s.earn/10)));tickObj('Explore',1);renderAll()}
 
-function startShroom(){if(hasMod('police_raid')){G.inside=null;setStatus('🚓 SmartShop 关闭','今日检查，暂不可经营','明日再来');return}const sts=[{n:'金色导师',h:70,t:24,l:6},{n:'亚马逊',h:85,t:28,l:4},{n:'哲学家',h:55,t:20,l:10}];MG.shroom={hu:60,tp:22,li:8,gr:0,tn:0,mx:4,st:sts[Math.floor(seeded(120)*3)]};G.mg='shroom';setStatus('🍄 蘑菇种植',`菌株: ${MG.shroom.st.n}`,'⬆⬇←→QW调参 SPACE推进')}
+function startShroom(){if(hasMod('police_raid')){G.inside=null;setStatus('🚓 SmartShop 关闭','今日检查，暂不可经营','明日再来');return}
+  // Strain knowledge carries across runs (G.strainNotes remembers your first grow).
+  // First time growing a strain the targets are hidden — you learn by trial.
+  if(!G.strainNotes)G.strainNotes={};
+  const sts=[{n:'金色导师',h:70,t:24,l:6},{n:'亚马逊',h:85,t:28,l:4},{n:'哲学家',h:55,t:20,l:10}];
+  const st=sts[Math.floor(seeded(120)*3)];const known=!!G.strainNotes[st.n];
+  MG.shroom={hu:60,tp:22,li:8,gr:0,tn:0,mx:4,st,known,contam:false,started:Date.now()};G.mg='shroom';
+  setStatus('🍄 蘑菇种植',`菌株: ${st.n}${known?' (笔记已有)':' (首次种植 — 目标未知)'}`,'⬆⬇←→QW调参 SPACE推进')}
 function shroomIn(k){const s=MG.shroom;if(!s)return;if(k==='arrowup')s.hu=Math.min(100,s.hu+5);if(k==='arrowdown')s.hu=Math.max(0,s.hu-5);if(k==='arrowright')s.tp=Math.min(35,s.tp+1);if(k==='arrowleft')s.tp=Math.max(10,s.tp-1);if(k==='q')s.li=Math.max(0,s.li-1);if(k==='w')s.li=Math.min(14,s.li+1);
-  if(k===' '){const st=s.st;const acc=1-(Math.abs(s.hu-st.h)/100+Math.abs(s.tp-st.t)/35+Math.abs(s.li-st.l)/14)/3;s.gr+=20+acc*15;s.tn++;if(s.tn>=s.mx||s.gr>=100){const q=Math.round(Math.min(100,s.gr)/20);const inc=q*12+5;G.money+=inc;G.ind.smart_shop.xp+=inc*2;addEvt('good',`🍄 收获 +$${inc}`);addSch('🍄',`蘑菇 +$${inc}`);G.mg=null;G.inside=null;chkLv('smart_shop');setStatus('✅ 蘑菇收获',`${'★'.repeat(q)}品质 +$${inc}`,'');tickObj('Earn',Math.max(1,Math.floor(inc/10)));tickObj('Explore',1)}else{setStatus('🍄 生长中',`${Math.round(s.gr)}% 回合${s.tn+1}/${s.mx}`,'继续调参')}renderAll()}}
+  if(k===' '){
+    const st=s.st;
+    // Contamination: ~12% chance per push if any parameter is in the danger zone (>20% off)
+    const err=Math.abs(s.hu-st.h)/100+Math.abs(s.tp-st.t)/35+Math.abs(s.li-st.l)/14;
+    const contamRisk=err>0.4?0.25:err>0.2?0.12:0.04;
+    if(seeded(135+s.tn)<contamRisk){s.contam=true;addEvt('bad','🦠 培养皿污染，本批报废');setStatus('❌ 污染报废',`参数过偏导致菌株感染 · 收入 $0`,'按 Esc 离开');setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},900);return}
+    const acc=1-err/3;
+    s.gr+=20+acc*15;s.tn++;
+    // Learn the strain on first successful grow (>=2 stars)
+    if(!G.strainNotes[st.n]&&s.tn>=s.mx){G.strainNotes[st.n]={h:st.h,t:st.t,l:st.l};addEvt('info',`📓 笔记记录菌株 ${st.n}: 湿${st.h}% · 温${st.t}°C · 光${st.l}h`)}
+    if(s.tn>=s.mx||s.gr>=100){
+      const q=Math.round(Math.min(100,s.gr)/20);
+      const bonus=q*12+5;G.money+=bonus;G.ind.smart_shop.xp+=bonus*2;
+      addEvt('good',`🍄 收获 +$${bonus} · ${'★'.repeat(q)}品质`);addSch('🍄',`蘑菇 +$${bonus}`);
+      G.mg=null;G.inside=null;chkLv('smart_shop');setStatus('✅ 蘑菇收获',`${'★'.repeat(q)}品质 +$${bonus}`,'');
+      tickObj('Earn',Math.max(1,Math.floor(bonus/10)));tickObj('Explore',1)
+    }else{setStatus('🍄 生长中',`${Math.round(s.gr)}% 回合${s.tn+1}/${s.mx} · 污染风险 ${Math.round(contamRisk*100)}%`,'继续调参')}
+    renderAll()}}
 
 function startStation(){if(G.ti!==1&&G.ti!==3){setStatus('🚇 中央车站','非通勤时间','Morning/Evening 才能通勤');return}G.mg='station';setStatus('🚇 中央车站 — 通勤时间','💰 买票 -$5 · 🎫 逃票 · ❌ 不去','按 1/2/3 选择')}
 function commuteChoice(n){if(n==='1'){G.money-=5;G.mood=Math.min(2,G.mood+1);G.mg=null;G.inside=null;addEvt('info','🚇 买票通勤 -$5');setStatus('🚇 通勤','安全到达','')}else if(n==='2'&&G.escapeLevel>0)tryEscape();else if(n==='3'||n==='escape'){G.mg=null;G.inside=null;setStatus('🟢 就绪','','')}renderAll()}
@@ -477,14 +533,80 @@ function getDiscoveredCount(){return G.surfDiscovered.length}
 function startSurf(){showWaveSelect()}
 function showWaveSelect(){G.mg='waveSelect';MG.waveSelect={};setStatus('🏄 选择浪点',`已发现 ${getDiscoveredCount()}/7`,'按 1-7 选择 · ESC 取消');renderAll()}
 function hideWaveSelect(){if(G.mg==='waveSelect'){G.mg=null;G.inside=null;setStatus('🟢 就绪','','');renderAll()}}
-function pickWavePoint(n){const w=WAVE_POINTS[n-1];if(!w)return;G.todayWave=w;G.mg='surf';MG.surf={wave:w,wx:400,sc:0,at:0,stamina:100,combo:0,perfect:0,started:Date.now(),lastCatch:0,drowned:false,ended:false};if(!G.surfDiscovered.includes(w.id)){G.surfDiscovered.push(w.id);G.meta+=5;addEvt('good',`🗺️ 首次发现 ${w.n} +5★ meta`)}setStatus('🏄 '+w.n,`难度${w.diff} · 特殊:${w.special}`,'SPACE不停抓浪 · 绿区=perfect');renderAll()}
+function pickWavePoint(n){const w=WAVE_POINTS[n-1];if(!w)return;G.todayWave=w;
+  // Real surf: waves come in SETS — between sets there's a lull with no waves.
+  // wx position auto-advances only during "set" phase. Aim for the green zone on the wave.
+  G.mg='surf';MG.surf={wave:w,wx:400,sc:0,at:0,stamina:100,combo:0,perfect:0,started:Date.now(),
+    lastCatch:0,drowned:false,ended:false,setPhase:true,nextLull:Date.now()+3500,wipeouts:0};
+  if(!G.surfDiscovered.includes(w.id)){G.surfDiscovered.push(w.id);G.meta+=5;addEvt('good',`🗺️ 首次发现 ${w.n} +5★ meta`)}
+  setStatus('🏄 '+w.n,`难度${w.diff} · 特殊:${w.special} · 浪组周期`,'SPACE抓浪 · 绿区=perfect · 错过=翻船');renderAll()}
 function rollSurfItem(wave){let item=wave.item;if(seeded(140+G.inventory.length)<.3){const upgrades={'海龟':'古地图','钓鱼人':'鱼钩','隐藏洞穴':'宝石','雷暴':'闪电石','灯塔回声':'回声瓶','海鸥群':'羽毛'};item=upgrades[wave.special]||'稀有遗物'}return item}
-function surfIn(k){const s=MG.surf;if(!s||s.ended||k!==' ')return;const pos=(s.wx-200)/500,green=pos>0.6&&pos<0.8,barrel=seeded(80+s.at)<.08;let sc=green?Math.round((1-Math.abs(pos-0.7)/0.1)*30+10):pos>0.3&&pos<0.95?Math.round((1-Math.abs(pos-0.7)/0.3)*10+3):1;if(green){s.combo++;s.perfect++}else s.combo=0;if(barrel)sc+=50;s.sc+=sc;s.at++;s.stamina=Math.max(0,s.stamina-5);s.lastCatch=Date.now();s.wx=400+seeded(150+s.at)*200;if(barrel)setMsg('🏄 Perfect barrel +50!');else setMsg(`🏄 抓浪 +${sc} · 体力${s.stamina}%`);if(s.stamina<=0){s.drowned=true;finSurf(true)}else renderAll()}
+function surfIn(k){const s=MG.surf;if(!s||s.ended||k!==' ')return;
+  const pos=(s.wx-200)/500;
+  const inGreen=pos>0.6&&pos<0.8;
+  const inWhite=pos>0.3&&pos<0.95;
+  const barrel=seeded(80+s.at)<0.08;
+  // Wipeout: caught outside the white zone (totally mistimed) = lose stamina + combo + counter
+  if(!inWhite){
+    s.wipeouts++;s.combo=0;s.stamina=Math.max(0,s.stamina-15);
+    s.sc=Math.max(0,s.sc-20);
+    setMsg(`🌊 翻船!(-15体力 -20分 · 累计翻船${s.wipeouts})`);
+    if(s.stamina<=0){s.drowned=true;finSurf(true)}
+    else renderAll();
+    return;
+  }
+  let sc=inGreen?Math.round((1-Math.abs(pos-0.7)/0.1)*30+10):Math.round((1-Math.abs(pos-0.7)/0.3)*10+3);
+  if(inGreen){s.combo++;s.perfect++}else s.combo=0;
+  if(barrel)sc+=50;
+  s.sc+=sc;s.at++;s.stamina=Math.max(0,s.stamina-(5+Math.floor(s.at/15))); // board fatigue after many catches
+  s.lastCatch=Date.now();
+  s.wx=400+seeded(150+s.at)*200;
+  if(barrel)setMsg('🏄 Perfect barrel +50!');
+  else setMsg(`🏄 抓浪 +${sc} · 体力${s.stamina}% · combo×${s.combo}`);
+  if(s.stamina<=0){s.drowned=true;finSurf(true)}else renderAll()}
 function finSurf(drowned){const s=MG.surf;if(!s||s.ended)return;s.ended=true;const perfectBonus=s.perfect*50;const bonus=s.combo>=3?1.2:1,raw=Math.round((s.sc+perfectBonus)*bonus*tipFactor()),inc=drowned?Math.floor(raw*.5):raw;G.money+=inc;G.ind.surfing.xp+=inc*3;const item=rollSurfItem(s.wave);G.inventory.push(item);addEvt(drowned?'bad':'good',`🏄 ${s.wave.n} 带回${item} · +$${inc}${perfectBonus>0?' (含 perfect ×'+s.perfect+')':''}`);addSch('🏄',`冲浪 +$${inc} · ${item}`);G.mg=null;G.inside=null;chkLv('surfing');setStatus(drowned?'🌊 溺水':'✅ 冲浪结束',`${s.sc}分 · ${item} · +$${inc}`,'');tickObj('Earn',Math.max(1,Math.floor(inc/10)));tickObj('Explore',1);renderAll()}
-function updateSurf(){const s=MG.surf;if(!s||G.mg!=='surf'||s.ended)return;s.wx-=G.auto?8:3;if(s.wx<100)s.wx=500+Math.random()*200;if(Date.now()-s.started>=30000)finSurf(false)}
-function startAcad(){const topics=['偏好建模','价值对齐','红队测试','对抗鲁棒','因果推断','机制解释','安全审查','公平约束'],ids=[];for(let i=0;i<5;i++)ids.push({t:topics[Math.floor(seeded(160+i)*topics.length)],q:1+Math.floor(seeded(170+i)*3)});MG.academic={ids,ph:'gather',sel:[],sc:0};G.mg='academic';setStatus('📚 学术','收集研究灵感','按1-5选2个')}
-function acadIn(k){const s=MG.academic;if(!s)return;if(s.ph==='gather'&&k>='1'&&k<='5'){const i=parseInt(k)-1;if(s.sel.includes(i))s.sel=s.sel.filter(x=>x!==i);else if(s.sel.length<2)s.sel.push(i);if(s.sel.length===2){s.ph='write';s.ws=Date.now();s.sc=30+s.ids[s.sel[0]].q*15+s.ids[s.sel[1]].q*15+Math.floor(seeded(180+G.day)*15);setStatus('📚 写论文',`${s.ids[s.sel[0]].t}+${s.ids[s.sel[1]].t}`,`预计${s.sc}分 SPACE提交`)}}
-  if(s.ph==='write'&&k===' '&&Date.now()-s.ws>300){const ok=s.sc>60;const g=ok?60:30;G.money+=g;G.rep+=Math.round(s.sc/10);G.ind.academic.xp+=Math.round(s.sc*1.5);addEvt(ok?'good':'info',`📚 论文${ok?'接收':'被拒'} ${s.sc}分 +$${g}`);addSch('📚',`论文 +$${g}`);G.mg=null;G.inside=null;chkLv('academic');setStatus(ok?'🎉 论文接收':`📋 论文被拒`, `${s.sc}分 +$${g}`,'');tickObj('Earn',Math.max(1,Math.floor(g/10)));tickObj('Explore',1);tickObj('Talk',1);renderAll()}}
+function updateSurf(){const s=MG.surf;if(!s||G.mg!=='surf'||s.ended)return;
+  // Real waves come in sets: wx position only moves during "set" phase; lulls pause it.
+  // Each set lasts ~3s, then ~1.5s lull, then a new set. Auto-play exploits this naturally.
+  const now=Date.now();
+  if(s.setPhase){
+    s.wx-=G.auto?8:3;
+    if(s.wx<100){s.wx=500+Math.random()*200}
+    if(now>=s.nextLull){s.setPhase=false;s.nextLull=now+1200+Math.random()*600}
+  }else{
+    if(now>=s.nextLull){s.setPhase=true;s.nextLull=now+2500+Math.random()*1200}
+  }
+  if(now-s.started>=30000)finSurf(false)}
+// Synergy map: certain AI research topic pairs combine well. Real conferences reward
+// methodological coherence (e.g. red-teaming causal claims). Picks the right pair = bonus.
+const TOPIC_SYNERGY={'红队测试+因果推断':20,'红队测试+机制解释':15,'因果推断+机制解释':15,'偏好建模+价值对齐':12,'对抗鲁棒+红队测试':12,'公平约束+价值对齐':10};
+function startAcad(){
+  const topics=['偏好建模','价值对齐','红队测试','对抗鲁棒','因果推断','机制解释','安全审查','公平约束'];
+  const ids=[];for(let i=0;i<5;i++)ids.push({t:topics[Math.floor(seeded(160+i)*topics.length)],q:1+Math.floor(seeded(170+i)*3)});
+  // Conference prestige varies: certain days have major venues (NeurIPS/ACL) = more $$$ if accepted
+  const venuePool=['本地研讨','ICML投稿','NeurIPS投稿','ACL投稿'];
+  const venue=G.day===5||G.day===7?venuePool[3]:G.day===3?venuePool[2]:venuePool[0];
+  MG.academic={ids,ph:'gather',sel:[],sc:0,venue};
+  G.mg='academic';setStatus('📚 学术',`投稿目标:${venue} · 选2个主题(协同组合加分)`,'按1-5选2个')}
+function acadIn(k){const s=MG.academic;if(!s)return;if(s.ph==='gather'&&k>='1'&&k<='5'){const i=parseInt(k)-1;if(s.sel.includes(i))s.sel=s.sel.filter(x=>x!==i);else if(s.sel.length<2)s.sel.push(i);if(s.sel.length===2){
+    s.ph='write';s.ws=Date.now();
+    const t1=s.ids[s.sel[0]].t,t2=s.ids[s.sel[1]].t;
+    const baseQ=s.ids[s.sel[0]].q*15+s.ids[s.sel[1]].q*15;
+    const bonus=(TOPIC_SYNERGY[t1+'+'+t2]||TOPIC_SYNERGY[t2+'+'+t1]||0);
+    s.synergy=bonus;
+    s.sc=30+baseQ+bonus+Math.floor(seeded(180+G.day)*15);
+    setStatus('📚 写论文',`${t1} + ${t2}${bonus>0?' ✨协同+'+bonus:''}`,`预计${s.sc}分 · ${s.venue} SPACE提交`)}}
+  if(s.ph==='write'&&k===' '&&Date.now()-s.ws>300){
+    const ok=s.sc>60;
+    // Venue multiplier: NeurIPS/ACL pays 2x if accepted, but rejection rate is higher too.
+    const venueMult=s.venue==='NeurIPS投稿'?2:s.venue==='ACL投稿'?1.8:s.venue==='ICML投稿'?1.4:1;
+    const basePay=ok?60:15;const g=Math.round(basePay*venueMult);
+    G.money+=g;G.rep+=Math.round(s.sc/10);G.ind.academic.xp+=Math.round(s.sc*1.5);
+    addEvt(ok?'good':'info',`📚 ${s.venue}${ok?'接收':'被拒'} ${s.sc}分 +$${g}${s.synergy>0?' (含协同+'+s.synergy+')':''}`);
+    addSch('📚',`${s.venue} +$${g}`);
+    G.mg=null;G.inside=null;chkLv('academic');
+    setStatus(ok?'🎉 论文接收':`📋 论文被拒`, `${s.sc}分 · ${s.venue} +$${g}`,'');
+    tickObj('Earn',Math.max(1,Math.floor(g/10)));tickObj('Explore',1);tickObj('Talk',1);renderAll()}}
 
 // === V-D 酒吧 · 黑市讨价 === 8 archetype + Q/W 调整 + SPACE 成交 + X 拒客
 const BAR_ARCH=[{n:'Normal',face:'🧑',floor:6,max:14},{n:'Regular',face:'🧔',floor:8,max:18},{n:'Picky',face:'🧐',floor:4,max:10},{n:'Drunk',face:'🥴',floor:5,max:22},{n:'Group',face:'👨‍👩‍👧',floor:12,max:30},{n:'Tourist',face:'🧳',floor:10,max:24},{n:'Local',face:'🧓',floor:7,max:15},{n:'VIP',face:'🎩',floor:25,max:60}];
@@ -495,8 +617,10 @@ function startBar(){
   const isVipDay=G.day===5||G.day===7;
   const pool=todays;if(isVipDay)pool.unshift(BAR_ARCH[7]);
   const recoIdx=Math.floor(seeded(71)*BAR_DRINK.length);
-  MG.bar={cs:[],sd:0,earn:0,combo:0,mx:6,offer:null,reco:recoIdx,pool,vipDay:isVipDay};G.mg='bar';sBarC();
-  setStatus('🍻 黑市讨价','顾客开价 · Q/W 调整 · SPACE 成交 · X 拒客','🍻 顾客 0/6 · combo 0 · 今日推荐 '+BAR_DRINK[recoIdx])
+  // Track regulars across this Run. Returning customers tip +20%.
+  if(!G.barRegulars)G.barRegulars=[];
+  MG.bar={cs:[],sd:0,earn:0,combo:0,mx:6,offer:null,reco:recoIdx,recoDrink:BAR_DRINK[recoIdx],pool,vipDay:isVipDay};G.mg='bar';sBarC();
+  setStatus('🍻 黑市讨价',`今日推荐 ${BAR_DRINK[recoIdx]} (命中 +tip) · 耐心倒计时`,'顾客开价 · Q/W 调整 · SPACE 成交 · X 拒客')
 }
 function sBarC(){
   const s=MG.bar;if(!s)return;
@@ -504,7 +628,12 @@ function sBarC(){
   const arch=s.pool[Math.floor(seeded(72+s.sd)*s.pool.length)]||BAR_ARCH[Math.floor(seeded(72+s.sd)*BAR_ARCH.length)];
   const floor=arch.floor,ceiling=arch.max;
   const offer=Math.max(floor+1,Math.min(ceiling-1,floor+Math.floor(seeded(73+s.sd)*(ceiling-floor)*0.6)));
-  s.cs.push({arch,face:arch.face,faceMark:arch.n==='VIP'?'🎩':'',patience:5+Math.floor(seeded(74+s.sd)*3),offer,floor,ceiling,drink:BAR_DRINK[Math.floor(seeded(75+s.sd)*BAR_DRINK.length)]});
+  // 35% of customers ask for today's recommended drink (preference match)
+  const wantReco=seeded(76+s.sd)<0.35;
+  const drink=wantReco?s.recoDrink:BAR_DRINK[Math.floor(seeded(75+s.sd)*BAR_DRINK.length)];
+  const isRegular=G.barRegulars.includes(arch.n);
+  s.cs.push({arch,face:arch.face,faceMark:arch.n==='VIP'?'🎩':'',patience:6+Math.floor(seeded(74+s.sd)*4),
+    born:Date.now(),wantReco,isRegular,offer,floor,ceiling,drink});
   s.offer=s.cs[s.cs.length-1];
   renderAll();
 }
@@ -512,15 +641,30 @@ function barIn(k){const s=MG.bar;if(!s)return;const cur=s.cs[s.cs.length-1];if(!
   if(k==='q')cur.offer=Math.max(cur.floor,cur.offer-1);
   if(k==='w')cur.offer=Math.min(cur.ceiling,cur.offer+1);
   if(k===' '){if(cur.offer>=cur.ceiling){setMsg('😅 报太高，顾客走');cur.patience-=2;s.cs.pop();s.sd++;if(s.sd>=s.mx)finBar();else sBarC();renderAll();return}
-    const final=Math.round(cur.offer*tipFactor());
+    // Drink match bonus: if you served what they wanted, +20% tip. Mismatch: -10%.
+    const drinkMatch=cur.drink===s.recoDrink;
+    const drinkMult=drinkMatch?1.2:0.9;
+    const regularBonus=cur.isRegular?0.2:0;
+    const final=Math.round(cur.offer*tipFactor()*drinkMult*(1+regularBonus));
     s.earn+=final;s.combo++;s.sd++;
     const vipBonus=cur.arch.n==='VIP'&&s.vipDay?30:0;
     if(vipBonus){G.meta+=30;addEvt('good','🎩 VIP 顾客服务成功 +30★ meta')}
-    addEvt('good',`🍻 ${cur.face}${cur.arch.n} 成交 +$${final}`+(vipBonus?' · +30★':''));setMsg(`✅ ${cur.arch.n} 成交 +$${final}`);
+    if(!G.barRegulars.includes(cur.arch.n))G.barRegulars.push(cur.arch.n);
+    const tag=drinkMatch?' ✨命中推荐':cur.wantReco?' (拒绝想要的酒)':'';
+    const reg=regularBonus?' 👤常客+20%':'';
+    addEvt('good',`🍻 ${cur.face}${cur.arch.n} 成交 +$${final}${tag}${reg}`);setMsg(`✅ ${cur.arch.n} +$${final}${tag}`);
     s.cs.pop();
     if(s.sd>=s.mx)finBar();else sBarC();renderAll();return}
   if(k==='x'){setMsg('🚶 顾客离店');s.cs.pop();s.sd++;if(s.sd>=s.mx)finBar();else sBarC();renderAll();return}
   renderAll();
+}
+function updateBar(){
+  const s=MG.bar;if(!s||G.mg!=='bar'||!s.cs.length)return;
+  const cur=s.cs[s.cs.length-1];
+  if(cur&&Date.now()-cur.born>cur.patience*1000){
+    s.combo=0;addEvt('bad',`⏱ ${cur.arch.n} 顾客等太久走了`);
+    s.cs.pop();s.sd++;if(s.sd>=s.mx)finBar();else sBarC();renderAll();
+  }
 }
 function finBar(){
   const s=MG.bar;const inc=Math.round(s.earn*tipFactor());
@@ -582,9 +726,9 @@ function drawMG(){
         });
       });
       var tq=maltItems[s.m].q+hopItems[s.h].q+yeastItems[s.y].q;
-      cx.fillStyle='#ecb457';cx.font='14px sans-serif';cx.fillText('配方: '+'★'.repeat(tq)+' 品质',400,270);
+      cx.fillStyle='#ecb457';cx.font='14px sans-serif';cx.fillText('配方品质: '+'★'.repeat(tq)+'  (酵母活性 '+Math.round(s.yeast*100)+'%)',400,270);
     }else{
-      cx.fillText('🫗 控温 '+Math.round(s.t)+'°C (目标55°C)',400,60);
+      cx.fillText('🫗 控温 '+Math.round(s.t)+'°C (目标 ?°C)',400,60);
       cx.fillStyle='#fff1';cx.fillRect(180,310,440,22);
       cx.fillStyle='#ecb457';cx.fillRect(180,310,440*(s.t/80),22);
       cx.fillStyle='#78c878';cx.fillRect(180+0.55*440-5,308,10,26);
@@ -597,26 +741,31 @@ function drawMG(){
     else{
       cx.fillText('🌿 咖啡店 — $'+s.pr+'/g',400,60);
       var cst=['白寡妇','紫雾','Amsterdam Haze'];
-      cx.fillText('货: '+cst[s.st]+' | 热度'+Math.round(s.ht)+'%',400,90);
-      if(s.c){cx.fillText(s.c.face+' 顾客出价$'+s.c.max,400,120);cx.fillStyle=s.pr<=s.c.max?'#78c878':'#f05050';cx.fillText(s.pr<=s.c.max?'SPACE成交':'降价或SPACE拒客',400,145)}
+      cx.fillText('货: '+cst[s.st]+' | 热度'+Math.round(s.ht)+'% (自然下降中)',400,90);
+      if(s.c){const left=Math.max(0,Math.ceil((s.c.patience*1000-(Date.now()-s.c.born))/1000));cx.fillText(s.c.face+' 顾客出价$'+s.c.max+' · 耐心 '+left+'s',400,120);cx.fillStyle=s.pr<=s.c.max?'#78c878':'#f05050';cx.fillText(s.pr<=s.c.max?'SPACE成交':'降价或SPACE拒客',400,145);
+        // patience bar
+        cx.fillStyle='#fff1';cx.fillRect(250,155,300,6);cx.fillStyle=left<3?'#f05050':left<6?'#f0a030':'#78c878';cx.fillRect(250,155,300*(left/s.c.patience),6)}
       cx.fillText(s.sd+'/5人 $'+s.earn,400,180);
       cx.fillStyle='#fff1';cx.fillRect(250,200,300,12);
       cx.fillStyle=s.ht>70?'#f05050':s.ht>40?'#f0a030':'#78c878';cx.fillRect(250,200,300*Math.min(1,s.ht/100),12);
     }
   }else if(mg==='shroom'){
-    cx.fillText('🍄 '+s.st.n+' 生长'+Math.round(s.gr)+'%',400,60);
+    cx.fillText('🍄 '+s.st.n+' 生长'+Math.round(s.gr)+'%'+(s.contam?' · 污染!':''),400,60);
     cx.fillStyle='#1a2818';cx.fillRect(180,80,440,140);
     var gh=Math.min(110,s.gr/100*110);
-    for(var i=0;i<8;i++){var mx=200+i*48,my=220-gh*(0.5+Math.sin(i*1.2)*0.4);cx.fillStyle='#d0b0d0';cx.beginPath();cx.ellipse(mx,my,6,3+gh*0.1,0,0,Math.PI*2);cx.fill()}
+    for(var i=0;i<8;i++){var mx=200+i*48,my=220-gh*(0.5+Math.sin(i*1.2)*0.4);cx.fillStyle=s.contam?'#7a5a2a':'#d0b0d0';cx.beginPath();cx.ellipse(mx,my,6,3+gh*0.1,0,0,Math.PI*2);cx.fill()}
     cx.fillStyle='#3a3020';cx.fillRect(190,220,420,16);
-    [{l:'💧湿度',v:s.hu,t:s.st.h,u:'%'},{l:'🌡温度',v:s.tp,t:s.st.t,u:'°C'},{l:'💡光照',v:s.li,t:s.st.l,u:'h'}].forEach(function(g,i){
+    // First grow = hidden targets. After that, notes show exact values.
+    var tgts=s.known?[{l:'💧湿度',v:s.hu,t:s.st.h,u:'%'},{l:'🌡温度',v:s.tp,t:s.st.t,u:'°C'},{l:'💡光照',v:s.li,t:s.st.l,u:'h'}]:[{l:'💧湿度',v:s.hu,t:null,u:'%'},{l:'🌡温度',v:s.tp,t:null,u:'°C'},{l:'💡光照',v:s.li,t:null,u:'h'}];
+    tgts.forEach(function(g,i){
       var x=180+i*160;
-      cx.fillStyle='#fff';cx.font='10px sans-serif';cx.fillText(g.l+' '+g.v+g.u+'→'+g.t+g.u,x+60,255);
+      cx.fillStyle='#fff';cx.font='10px sans-serif';
+      cx.fillText(g.l+' '+g.v+g.u+(g.t===null?' → ?':' → '+g.t+g.u),x+60,255);
       cx.fillStyle='#fff1';cx.fillRect(x+20,265,120,8);
-      var ok=Math.abs(g.v-g.t)<(g.u==='%'?10:g.u==='°C'?4:2);
+      var ok=g.t===null?Math.abs(g.v-50)<25:Math.abs(g.v-g.t)<(g.u==='%'?10:g.u==='°C'?4:2);
       cx.fillStyle=ok?'#78c878':'#f05050';cx.fillRect(x+20,265,120*(g.v/(g.u==='°C'?35:g.u==='h'?14:100)),8);
     });
-    cx.fillText('回合'+(s.tn+1)+'/'+s.mx+' SPACE推进',400,300);
+    cx.fillText('回合'+(s.tn+1)+'/'+s.mx+(s.known?' (笔记已知)':' (首次 — 笔记待记)')+' SPACE推进',400,300);
   }else if(mg==='waveSelect'){cx.fillText('🏄 选择浪点（1-7）',400,60);WAVE_POINTS.forEach((w,i)=>{const known=G.surfDiscovered.includes(w.id);cx.fillStyle='#fff';cx.fillText((i+1)+'. '+(known?w.n:'🆕 ???'),400,95+i*38)})
   }else if(mg==='station'){cx.fillText('🚇 中央车站 — 通勤时间',400,160);cx.fillText('1 买票 -$5   2 逃票 Lv'+G.escapeLevel+'   3 不去',400,205);
   }else if(mg==='surf'){
@@ -646,17 +795,25 @@ function drawMG(){
       cx.fillText('预计'+s.sc+'分 SPACE提交',400,225);
     }
   }else if(mg==='bar'){
-    cx.fillText('🍻 酒吧 $'+s.earn+' combo'+s.combo+' '+s.sd+'/'+s.mx,400,60);
+    cx.fillText('🍻 酒吧 $'+s.earn+' combo×'+s.combo+' '+s.sd+'/'+s.mx+' · 今日推荐 '+s.recoDrink,400,60);
     cx.fillStyle='#5a3a20';cx.fillRect(100,130,600,36);
     cx.fillStyle='#f0d060';cx.beginPath();cx.arc(170,148,9,0,Math.PI*2);cx.fill();
     s.cs.forEach(function(c,i){
       var x=290+i*85;
-      cx.fillStyle=['#c8c8c8','#c8b464','#ff6464','#a078c8'][Math.floor(Math.random()*4)];
+      cx.fillStyle=c.isRegular?'#e8a020':['#c8c8c8','#c8b464','#ff6464','#a078c8'][Math.floor(Math.random()*4)];
       cx.beginPath();cx.arc(x,148,8,0,Math.PI*2);cx.fill();
-      cx.fillStyle='#fff';cx.font='9px sans-serif';cx.fillText(c.face,x-11,146);cx.fillText(c.dr,x-11,166);
+      cx.fillStyle='#fff';cx.font='9px sans-serif';
+      cx.fillText(c.face,x-11,146);
+      var drinkTag=c.drink+' '+(c.wantReco?'(想要推荐)':'');
+      cx.fillText(drinkTag,x-22,166);
       if(c.done)cx.fillText('✅',x-7,138);
+      // patience bar above head
+      var left=Math.max(0,c.patience*1000-(Date.now()-c.born));
+      var pct=left/(c.patience*1000);
+      cx.fillStyle='#fff1';cx.fillRect(x-10,128,20,4);
+      cx.fillStyle=pct<0.3?'#f05050':pct<0.6?'#f0a030':'#78c878';cx.fillRect(x-10,128,20*pct,4);
     });
-    cx.fillText('📦🍺'+G.bs[0]+'🥃'+G.bs[1]+'🍷'+G.bs[2],400,200);
+    cx.fillText('📦🍺'+G.bs[0]+'🥃'+G.bs[1]+'🍷'+G.bs[2]+' · 命中推荐 = +20% tip · 常客 +20% tip',400,200);
   }
   cx.textAlign='start';
 }
@@ -843,7 +1000,7 @@ function renderAll(){
   // Center overlay
   const title=document.getElementById('cov-title'),det=document.getElementById('cov-sub'),hint=document.getElementById('cov-hint');
   if(G.mg){
-    if(G.mg==='brew'){const s=MG.brew;title.textContent=s.ph==='sel'?'🍺 选择原料 (订单:'+s.order.type+')':'🍺 控温酿造 订单:'+s.order.type+' 目标温'+s.order.temp+'°C';det.textContent=s.ph==='sel'?'1/2/3切换 SPACE开始':'SPACE提交';hint.textContent='🍺 订单:'+s.order.type+' · 剩余'+Math.max(0,Math.round((s.deadline-Date.now())/1000))+'s'}
+    if(G.mg==='brew'){const s=MG.brew;title.textContent=s.ph==='sel'?'🍺 选择原料 (订单:'+s.order.type+')':'🍺 控温酿造 订单:'+s.order.type;det.textContent=s.ph==='sel'?'1/2/3切换 SPACE开始':'当前 '+Math.round(s.t)+'°C · SPACE提交';hint.textContent='🍺 订单:'+s.order.type+' · 剩余'+Math.max(0,Math.round((s.deadline-Date.now())/1000))+'s · 目标温 ?°C'}
     else if(G.mg==='coffee'){const s=MG.coffee;const warn=s.c&&s.c.undercover?' 🚨卧底!':'';title.textContent='🌿 咖啡店';det.textContent='$'+s.pr+'/g · 目标 '+s.sd+'/'+s.target+warn;hint.textContent='Q/W调价 SPACE成交 X拒客 · 热度'+Math.round(s.ht)+'%'}
     else if(G.mg==='shroom'){title.textContent='🍄 蘑菇种植';det.textContent='调参 SPACE推进';hint.textContent=''}
     else if(G.mg==='surf'){const s=MG.surf;title.textContent='🏄 巨浪生存';det.textContent='体力'+s.stamina+'% · combo'+s.combo+' · 已抓'+s.at+(s.perfect>0?' · perfect +'+(s.perfect*50):'');hint.textContent='SPACE抓 · 30s持续 · 8% perfect barrel +50'}
@@ -898,7 +1055,7 @@ function newRun(seed){
   setMsg('Run #'+G.run+' · seed='+G.seed);renderAll();
 }
 
-function frame(){update();updateSurf();updateBrew();if(G.mg)drawMG();else drawMap();requestAnimationFrame(frame)}
+function frame(){update();updateSurf();updateBrew();updateCoffee();updateBar();if(G.mg)drawMG();else drawMap();requestAnimationFrame(frame)}
 renderAll();frame();
 // Modal skip button
 document.getElementById('upg-skip').addEventListener('click',()=>{

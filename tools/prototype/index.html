@@ -901,6 +901,64 @@ function drawMap(){
   cx.fillStyle='#d08060';cx.fillText('DE PIJP',220,398);
   cx.fillStyle='#80b080';cx.fillText('OOST / Science Park',580,180);
 
+  // === Church spires (Amsterdam's three iconic towers) ===
+  // Oude Kerk (De Wallen, east of Dam) - old brick gothic spire
+  cx.fillStyle='#7a4830';cx.beginPath();cx.moveTo(580,260);cx.lineTo(584,260);cx.lineTo(584,225);cx.lineTo(582,225);cx.closePath();cx.fill();
+  cx.fillStyle='#a06040';cx.fillRect(580,225,6,8);
+  cx.fillStyle='#c87040';cx.beginPath();cx.moveTo(583,225);cx.lineTo(583,205);cx.lineTo(580,212);cx.lineTo(586,212);cx.lineTo(583,205);cx.fill();
+  cx.fillStyle='#e8a020';cx.beginPath();cx.arc(583,203,2,0,Math.PI*2);cx.fill();
+  cx.fillStyle='#fff';cx.font='7px sans-serif';cx.textAlign='center';cx.fillText('⛪ Oude Kerk',583,218);
+  // Nieuwe Kerk (Dam Square) - tall tower with crown
+  cx.fillStyle='#7a4830';cx.beginPath();cx.moveTo(348,225);cx.lineTo(360,225);cx.lineTo(360,180);cx.lineTo(348,180);cx.closePath();cx.fill();
+  cx.fillStyle='#a06040';cx.fillRect(347,180,14,8);
+  cx.fillStyle='#c87040';cx.beginPath();cx.moveTo(354,180);cx.lineTo(354,158);cx.lineTo(350,168);cx.lineTo(358,168);cx.lineTo(354,158);cx.fill();
+  cx.fillStyle='#e8a020';cx.fillRect(351,156,6,4);
+  cx.fillStyle='#fff';cx.font='7px sans-serif';cx.textAlign='center';cx.fillText('⛪ Nieuwe Kerk',354,196);
+  // Westerkerk (Jordaan, west) - blue spire
+  cx.fillStyle='#3a5070';cx.beginPath();cx.moveTo(110,260);cx.lineTo(118,260);cx.lineTo(118,222);cx.lineTo(110,222);cx.closePath();cx.fill();
+  cx.fillStyle='#5070a0';cx.fillRect(109,222,10,8);
+  cx.fillStyle='#3070a0';cx.beginPath();cx.moveTo(114,222);cx.lineTo(114,200);cx.lineTo(110,210);cx.lineTo(118,210);cx.lineTo(114,200);cx.fill();
+  cx.fillStyle='#e8a020';cx.beginPath();cx.arc(114,198,2,0,Math.PI*2);cx.fill();
+  cx.fillStyle='#fff';cx.font='7px sans-serif';cx.textAlign='center';cx.fillText('⛪ Westerkerk',114,238);
+
+  // === Specific canal + street name labels ===
+  cx.font='bold 8px sans-serif';cx.fillStyle='#d0e8f8cc';
+  cx.fillText('Singel',118,221);cx.fillText('Herengracht',228,221);cx.fillText('Keizersgracht',348,221);cx.fillText('Prinsengracht',488,221);
+  cx.font='bold 9px sans-serif';cx.fillStyle='#a0c8e0dd';
+  cx.fillText('IJ',30,98);cx.fillText('Amstel',715,295);
+  // vertical canals labels
+  cx.font='7px sans-serif';cx.fillStyle='#a0c8e0aa';
+  cx.save();cx.translate(285,180);cx.rotate(-Math.PI/2);cx.textAlign='center';cx.fillText('Singel',0,0);cx.restore();
+  cx.save();cx.translate(437,340);cx.rotate(-Math.PI/2);cx.textAlign='center';cx.fillText('Vijzelstr.',0,0);cx.restore();
+  // street names (Amsterdam-style italic)
+  cx.font='italic 8px sans-serif';cx.fillStyle='#fff3';cx.textAlign='left';
+  cx.fillText('Damrak',395,115);  // north-south street between station and Dam
+  cx.fillText('Kalverstraat',340,205);  // south of Dam
+  cx.fillText('Rokin',340,300);  // south of Dam (south end)
+  cx.fillText('Haarlemmerdijk',255,80);  // NW of station
+  cx.fillText('Spui',495,205);  // south end of Kalverstraat
+  cx.fillText('Albert Cuyp',260,406);  // De Pijp market street
+  cx.fillText('Ceintuurbaan',475,406);  // De Pijp east street
+  cx.fillText('Sarphatipark',395,465);  // park in De Pijp
+  cx.fillText('Plantage Middenlaan',585,255);  // east of canal belt
+  // Dam Square landmark
+  cx.fillStyle='#e8d090';cx.font='bold 9px sans-serif';cx.textAlign='center';
+  cx.fillText('◆ DAM ◆',354,255);
+
+  // === Tiny legend (top right under compass) ===
+  cx.fillStyle='#0a0a0a80';cx.fillRect(720,45,75,80);
+  cx.fillStyle='#fff';cx.font='8px sans-serif';cx.textAlign='left';
+  cx.fillText('— Canal',722,57);
+  cx.fillStyle='#a0c8e0';cx.fillRect(720,60,8,2);
+  cx.fillStyle='#5a2a2a';cx.fillRect(720,68,8,2);
+  cx.fillText('— Bike path',722,73);
+  cx.fillStyle='#c0a020';cx.fillRect(720,80,8,2);
+  cx.fillText('— Tram',722,87);
+  cx.fillStyle='#7a4830';cx.fillRect(720,94,8,4);
+  cx.fillText('— House',722,102);
+  cx.fillStyle='#3a7060';cx.fillRect(720,110,8,2);
+  cx.fillText('— Houseboat',722,119);
+
   // === N/S/E/W compass ===
   var cmpX=755,cmpY=20;
   cx.fillStyle='#1a1a1ac0';cx.beginPath();cx.arc(cmpX,cmpY,16,0,Math.PI*2);cx.fill();

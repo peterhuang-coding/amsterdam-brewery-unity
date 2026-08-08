@@ -537,7 +537,14 @@ const EV_POOL=[
   {id:'canal_block',ic:'🚢',t:'运河堵塞',mod:['market'],effect:'市集关闭 1 天'},
   {id:'coffee_wave',ic:'☕',t:'第三波咖啡浪潮',mod:['coffee'],effect:'咖啡售价 +30%'},
   {id:'museum_night',ic:'🎵',t:'博物馆夜未眠',mod:['academic'],effect:'学术声望 +50%'},
-  {id:'cold_snap',ic:'🥶',t:'寒潮来袭',mod:['surf'],effect:'冲浪收益 ×0.5'}
+  {id:'cold_snap',ic:'🥶',t:'寒潮来袭',mod:['surf'],effect:'冲浪收益 ×0.5'},
+  // ── Round 5 additions: real Amsterdam happenings ──
+  {id:'ij_boat_fair',ic:'⛵',t:'IJ 船展',mod:['surf','brewing'],effect:'冲浪 +30% · 酿酒 +15%'},
+  {id:'vvv_stamp',ic:'🗺️',t:'VVV 城市打卡热',mod:['tourism'],effect:'声望 +25%, 探索奖励 +$5'},
+  {id:'rembrandt_400',ic:'🎨',t:'伦勃朗 400 年纪念展',mod:['academic'],effect:'学术声望 +40%'},
+  {id:'trambaan_renovatie',ic:'🚋',t:'有轨电车轨道翻修',mod:['movement'],effect:'走路变慢,跑动保留'},
+  {id:'a10_file',ic:'🚗',t:'A10 高速大堵车',mod:['movement'],effect:'通勤耗时 ×1.5'},
+  {id:'pride_week',ic:'🏳️‍🌈',t:'Pride 周全城游行',mod:['bar','coffee'],effect:'小费 +75%, 售价 +20%'},
 ];
 
 // Upgrade pool (3-pick-1 at end of each run)
@@ -562,13 +569,18 @@ function hasUpgrade(id){return G.upgrades.includes(id)}
 function hasMod(id){return G.mods.some(m=>m.id===id)}
 function industryFactor(id){
   if(id==='brewing'&&hasMod('beer_festival'))return 1.2;
+  if(id==='brewing'&&hasMod('ij_boat_fair'))return 1.15;
   if(id==='coffee'&&hasMod('coffee_wave'))return 1.3;
+  if(id==='coffee'&&hasMod('pride_week'))return 1.2;
   if(id==='shroom'&&hasMod('shroom_boom'))return 2;
   if(id==='surf'&&hasMod('north_sea_storm'))return 2;
   if(id==='surf'&&hasMod('cold_snap'))return .5;
+  if(id==='surf'&&hasMod('ij_boat_fair'))return 1.3;
   if(id==='academic'&&hasMod('ai_conference'))return 2;
-  if(id==='bar'&&hasMod('kings_day'))return 1.5;
   if(id==='academic'&&hasMod('museum_night'))return 1.5;
+  if(id==='academic'&&hasMod('rembrandt_400'))return 1.4;
+  if(id==='bar'&&hasMod('kings_day'))return 1.5;
+  if(id==='bar'&&hasMod('pride_week'))return 1.75;
   return 1;
 }
 function saveMeta(){try{localStorage.setItem('ab_meta_v2',JSON.stringify({version:2,meta:G.meta,upgrades:G.upgrades,legacy:G.legacy,run:G.run}))}catch(e){console.warn('ab_meta_v2 save failed',e)}}
@@ -612,7 +624,7 @@ function rollDayObjectives(){
 
 // Roll today's modifier (1 of EV_POOL, never repeats 2 days in a row).
 // Mark each event as positive / negative so event_freq upgrade can bias roll.
-const EV_KIND={police_raid:'bad',canal_block:'bad',cold_snap:'bad',tourism:'good',kings_day:'good',north_sea_storm:'good',ai_conference:'good',shroom_boom:'good',beer_festival:'good',tulip_auction:'good',coffee_wave:'good',museum_night:'good'};
+const EV_KIND={police_raid:'bad',canal_block:'bad',cold_snap:'bad',trambaan_renovatie:'bad',a10_file:'bad',tourism:'good',kings_day:'good',north_sea_storm:'good',ai_conference:'good',shroom_boom:'good',beer_festival:'good',tulip_auction:'good',coffee_wave:'good',museum_night:'good',ij_boat_fair:'good',vvv_stamp:'good',rembrandt_400:'good',pride_week:'good'};
 function rollDayModifier(){
   const sd=G.seed+G.day*31+7;
   const r=Math.abs((sd*1103515245+12345)%2147483647);

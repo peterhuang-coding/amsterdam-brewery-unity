@@ -212,105 +212,196 @@ cv.width=W;cv.height=H;
 // Real Amsterdam geography: north=up, south=down. IJ river separates Noord from the rest.
 // Canal belt runs east-west across center. Amstel river flows from east curving south.
 // Tweede Kans bar is on Warmoesstraat (just south of Centraal Station in real life).
+// ═══════════════════════════════════════════
+// INTERACTIVE BUILDINGS (player can enter these)
+// Positions follow real Amsterdam geography. Coords (x,y) is TOP-LEFT.
+// Each "bldg" has w/h box, but Mini Metro style draws it as a circle+icon.
+// ═══════════════════════════════════════════
+// Each BLDGS uses (x,y) as circle CENTER and r as radius (collision uses box w=h=r*2).
+// This keeps Mini Metro style clean while preserving rect-based collision code.
 const BLDGS=[
   // === NOORD (north of IJ) ===
-  {id:'beach',x:30,y:30,w:48,h:30,n:'Noord海滩',cl:'#40a0d0',d:'noord',tp:'surf',ic:'🏄'},
-  {id:'coffee',x:130,y:30,w:30,h:55,n:'Noord咖啡',cl:'#60b860',d:'noord',tp:'coffee',ic:'🌿'},
-  {id:'whouse',x:210,y:30,w:34,h:48,n:'NDSM仓库',cl:'#607080',d:'noord',tp:'market',ic:'📦'},
+  {x:60,y:55,r:12,id:'beach',n:'Noord海滩',cl:'#40a0d0',d:'noord',tp:'surf',ic:'🏄',real:'Buiksloterham'},
+  {x:175,y:55,r:12,id:'coffee',n:'Noord咖啡',cl:'#5a8a40',d:'noord',tp:'coffee',ic:'🌿',real:'Van der Pekstraat'},
+  {x:305,y:55,r:12,id:'whouse',n:'NDSM仓库',cl:'#8a7050',d:'noord',tp:'market',ic:'📦',real:'NDSM-Plein'},
   // === CENTRUM (just south of IJ) ===
-  {id:'station',x:330,y:115,w:60,h:50,n:'中央车站',cl:'#4a6a8a',d:'tweede_kans',tp:'station',ic:'🚇'},
-  {id:'bar',x:430,y:140,w:36,h:60,n:'Tweede Kans酒吧',cl:'#9a6f2d',d:'tweede_kans',tp:'bar',ic:'🍻',npc:'bar',real:'Warmoesstr. 19'},
-  {id:'brew',x:330,y:170,w:36,h:50,n:'Brouwerij De Pijl',cl:'#c09040',d:'tweede_kans',tp:'brew',ic:'🍺'},
-  // === CANAL BELT (Singel/Herengracht/Keizersgracht merged into one visual canal at y~225) ===
-  {id:'flower',x:230,y:200,w:34,h:50,n:'水上花市',cl:'#e080a0',d:'bloemenmarkt',tp:'market',ic:'🌷'},
-  {id:'shroom',x:295,y:200,w:32,h:48,n:'SmartShop',cl:'#b050d0',d:'bloemenmarkt',tp:'shroom',ic:'🍄'},
+  {x:380,y:135,r:14,id:'station',n:'中央车站',cl:'#c83030',d:'tweede_kans',tp:'station',ic:'🚇',real:'Centraal Station'},
+  {x:470,y:135,r:12,id:'bar',n:'Tweede Kans',cl:'#d08020',d:'tweede_kans',tp:'bar',ic:'🍻',npc:'bar',real:'Warmoesstr. 19'},
+  {x:310,y:145,r:12,id:'brew',n:'De Pijl',cl:'#e8a020',d:'tweede_kans',tp:'brew',ic:'🍺',real:'Brouwerij De Pijl'},
+  // === CANAL BELT (Singel/Herengracht/Keizersgracht) ===
+  {x:160,y:295,r:12,id:'flower',n:'水上花市',cl:'#e08090',d:'bloemenmarkt',tp:'market',ic:'🌷',real:'Bloemenmarkt'},
+  {x:240,y:295,r:12,id:'shroom',n:'SmartShop',cl:'#a050c0',d:'bloemenmarkt',tp:'shroom',ic:'🍄',real:'Damstraat'},
   // === SCIENCE PARK (far east) ===
-  {id:'lab',x:680,y:195,w:36,h:55,n:'Chen实验室',cl:'#5080a0',d:'science_park',tp:'npc',ic:'🔬',npc:'chen'},
-  {id:'pablo',x:630,y:255,w:30,h:50,n:'Pablo教室',cl:'#c25734',d:'science_park',tp:'npc',ic:'📚',npc:'pablo'},
-  {id:'lib',x:695,y:295,w:30,h:46,n:'图书馆',cl:'#708090',d:'science_park',tp:'academic',ic:'📖'},
-  {id:'ravi',x:640,y:355,w:34,h:50,n:'Ravi宿舍',cl:'#f0c850',d:'science_park',tp:'npc',ic:'💻',npc:'ravi'},
+  {x:680,y:315,r:12,id:'lab',n:'Chen实验室',cl:'#5080a0',d:'science_park',tp:'npc',ic:'🔬',npc:'chen',real:'Science Park'},
+  {x:680,y:355,r:12,id:'pablo',n:'Pablo教室',cl:'#c05030',d:'science_park',tp:'npc',ic:'📚',npc:'pablo',real:'UvA'},
+  {x:720,y:395,r:12,id:'lib',n:'图书馆',cl:'#708090',d:'science_park',tp:'academic',ic:'📖',real:'Allard Pierson'},
+  {x:680,y:395,r:12,id:'ravi',n:'Ravi宿舍',cl:'#f0c850',d:'science_park',tp:'npc',ic:'💻',npc:'ravi',real:'Science Park'},
   // === DE PIJP (south of Amstel) ===
-  {id:'market',x:200,y:415,w:34,h:50,n:'Albert Cuyp市集',cl:'#c0a060',d:'de_pijp',tp:'market',ic:'🛒'},
-  {id:'sofie',x:295,y:425,w:28,h:48,n:'Sofie花店',cl:'#dc6e8c',d:'de_pijp',tp:'npc',ic:'🌷',npc:'sofie'},
-  {id:'apt',x:380,y:420,w:34,h:55,n:'Sarphati公寓',cl:'#8b6b4a',d:'de_pijp',tp:'home',ic:'🏠'},
+  {x:220,y:470,r:12,id:'market',n:'Albert Cuyp',cl:'#c0a060',d:'de_pijp',tp:'market',ic:'🛒',real:'Albert Cuypstraat'},
+  {x:330,y:470,r:12,id:'sofie',n:'Sofie花店',cl:'#dc6e8c',d:'de_pijp',tp:'npc',ic:'🌷',npc:'sofie',real:'Ceintuurbaan'},
+  {x:430,y:470,r:12,id:'apt',n:'Sarphati公寓',cl:'#8b6b4a',d:'de_pijp',tp:'home',ic:'🏠',real:'Sarphatipark'},
 ];
-// === Decorative canal houses (no gameplay, just visual density) ===
+// Derive w/h from r for legacy collision math (curBldg, onBridge still use .w/.h)
+// Done after BRIDGES is declared below.
+
+// ═══════════════════════════════════════════
+// DECORATIVE CANAL HOUSES (red-brick rows along canals)
+// Drawn as Mini Metro style small rectangles — not full isometric.
+// Color palette = real Amsterdam canal-house brick tones.
+// ═══════════════════════════════════════════
 const CIVIC=[
-  // NOORD row (above IJ)
-  {x:275,y:25,w:22,h:42,cl:'#9a5a3a'},{x:305,y:25,w:20,h:46,cl:'#7a4030'},{x:335,y:25,w:24,h:40,cl:'#8a5a3a'},{x:370,y:25,w:22,h:48,cl:'#6a3828'},
-  {x:400,y:25,w:20,h:42,cl:'#9a5a3a'},{x:430,y:25,w:24,h:46,cl:'#7a4030'},{x:465,y:25,w:22,h:40,cl:'#8a5a3a'},{x:495,y:25,w:20,h:48,cl:'#a06848'},
-  {x:525,y:25,w:24,h:42,cl:'#7a4838'},{x:560,y:25,w:22,h:46,cl:'#8a5a3a'},{x:590,y:25,w:20,h:40,cl:'#6a3828'},{x:620,y:25,w:24,h:48,cl:'#9a5a3a'},
-  {x:655,y:25,w:22,h:42,cl:'#7a4030'},{x:685,y:25,w:20,h:46,cl:'#a06848'},{x:715,y:25,w:24,h:40,cl:'#8a5a3a'},{x:750,y:25,w:22,h:48,cl:'#6a3828'},
-  // CENTRUM row
-  {x:140,y:115,w:22,h:48,cl:'#7a3a28'},{x:170,y:115,w:20,h:52,cl:'#9a5a3a'},{x:198,y:115,w:22,h:46,cl:'#a06848'},
-  {x:398,y:115,w:22,h:50,cl:'#6a3828'},
-  {x:475,y:115,w:22,h:46,cl:'#7a4838'},{x:505,y:115,w:20,h:52,cl:'#9a5a3a'},{x:533,y:115,w:22,h:48,cl:'#8a5a3a'},{x:563,y:115,w:24,h:46,cl:'#6a3828'},
-  {x:595,y:115,w:22,h:52,cl:'#7a3a28'},{x:625,y:115,w:20,h:48,cl:'#a06848'},{x:653,y:115,w:24,h:46,cl:'#9a5a3a'},{x:685,y:115,w:22,h:50,cl:'#8a5a3a'},
-  {x:715,y:115,w:20,h:48,cl:'#7a4838'},{x:745,y:115,w:22,h:52,cl:'#6a3828'},{x:775,y:115,w:24,h:46,cl:'#9a5a3a'},
-  // CANAL BELT south bank
-  {x:115,y:265,w:22,h:48,cl:'#7a3a28'},{x:145,y:265,w:20,h:52,cl:'#9a5a3a'},{x:173,y:265,w:22,h:46,cl:'#a06848'},{x:203,y:265,w:22,h:50,cl:'#6a3828'},
-  {x:233,y:265,w:20,h:48,cl:'#7a4838'},{x:261,y:265,w:22,h:52,cl:'#9a5a3a'},{x:291,y:265,w:22,h:46,cl:'#8a5a3a'},
-  {x:335,y:265,w:22,h:48,cl:'#6a3828'},{x:365,y:265,w:20,h:52,cl:'#a06848'},{x:393,y:265,w:22,h:46,cl:'#9a5a3a'},{x:423,y:265,w:22,h:50,cl:'#7a3a28'},
-  {x:453,y:265,w:20,h:48,cl:'#7a4838'},{x:481,y:265,w:22,h:52,cl:'#9a5a3a'},{x:511,y:265,w:22,h:46,cl:'#8a5a3a'},{x:541,y:265,w:20,h:50,cl:'#6a3828'},
-  {x:569,y:265,w:22,h:48,cl:'#a06848'},
-  {x:730,y:265,w:22,h:46,cl:'#9a5a3a'},{x:760,y:265,w:20,h:52,cl:'#7a4030'},{x:785,y:265,w:24,h:48,cl:'#8a5a3a'},
-  // AMSTEL south bank (between Amstel and De Pijp)
-  {x:115,y:395,w:22,h:48,cl:'#7a3a28'},{x:145,y:395,w:20,h:52,cl:'#9a5a3a'},{x:173,y:395,w:22,h:46,cl:'#a06848'},
-  {x:243,y:395,w:22,h:48,cl:'#7a4030'},
-  {x:340,y:395,w:22,h:50,cl:'#6a3828'},
-  {x:425,y:395,w:22,h:48,cl:'#9a5a3a'},{x:455,y:395,w:20,h:52,cl:'#7a4838'},{x:483,y:395,w:22,h:46,cl:'#8a5a3a'},{x:513,y:395,w:20,h:50,cl:'#6a3828'},
-  {x:541,y:395,w:22,h:48,cl:'#a06848'},{x:571,y:395,w:22,h:52,cl:'#9a5a3a'},{x:601,y:395,w:20,h:46,cl:'#7a3a28'},{x:629,y:395,w:22,h:48,cl:'#8a5a3a'},
-  {x:659,y:395,w:20,h:50,cl:'#6a3828'},{x:687,y:395,w:22,h:48,cl:'#7a4030'},{x:717,y:395,w:20,h:52,cl:'#9a5a3a'},{x:745,y:395,w:22,h:46,cl:'#a06848'},
-  {x:775,y:395,w:20,h:48,cl:'#7a4838'},
+  // ── Noord waterfront (south bank of IJ, y=110 strip) ──
+  {x:40,y:120,w:8,h:14,cl:'#8b3a1a'},{x:50,y:120,w:8,h:12,cl:'#a04825'},{x:60,y:120,w:8,h:14,cl:'#9a4220'},
+  {x:80,y:120,w:8,h:12,cl:'#8b3a1a'},{x:90,y:120,w:8,h:14,cl:'#a85040'},{x:100,y:120,w:8,h:12,cl:'#7a3020'},
+  {x:240,y:120,w:8,h:14,cl:'#8b3a1a'},{x:250,y:120,w:8,h:12,cl:'#a04825'},{x:260,y:120,w:8,h:14,cl:'#9a4220'},
+  {x:280,y:120,w:8,h:12,cl:'#8b3a1a'},{x:290,y:120,w:8,h:14,cl:'#a85040'},{x:300,y:120,w:8,h:12,cl:'#7a3020'},
+  {x:580,y:120,w:8,h:14,cl:'#8b3a1a'},{x:590,y:120,w:8,h:12,cl:'#a04825'},{x:600,y:120,w:8,h:14,cl:'#9a4220'},
+  {x:620,y:120,w:8,h:12,cl:'#8b3a1a'},{x:630,y:120,w:8,h:14,cl:'#a85040'},{x:640,y:120,w:8,h:12,cl:'#7a3020'},
+  // ── Centrum east-west rows (y=160 strip between station and Dam) ──
+  {x:40,y:170,w:8,h:18,cl:'#8b3a1a'},{x:50,y:170,w:8,h:16,cl:'#a04825'},{x:60,y:170,w:8,h:18,cl:'#9a4220'},
+  {x:80,y:170,w:8,h:16,cl:'#8b3a1a'},{x:90,y:170,w:8,h:18,cl:'#a85040'},{x:100,y:170,w:8,h:16,cl:'#7a3020'},
+  {x:140,y:170,w:8,h:18,cl:'#a04825'},{x:150,y:170,w:8,h:16,cl:'#8b3a1a'},{x:160,y:170,w:8,h:18,cl:'#9a4220'},
+  {x:200,y:170,w:8,h:16,cl:'#8b3a1a'},{x:210,y:170,w:8,h:18,cl:'#a85040'},{x:220,y:170,w:8,h:16,cl:'#7a3020'},
+  {x:240,y:170,w:8,h:18,cl:'#8b3a1a'},{x:250,y:170,w:8,h:16,cl:'#a04825'},{x:260,y:170,w:8,h:18,cl:'#9a4220'},
+  {x:520,y:170,w:8,h:16,cl:'#8b3a1a'},{x:530,y:170,w:8,h:18,cl:'#a04825'},{x:540,y:170,w:8,h:16,cl:'#9a4220'},
+  {x:560,y:170,w:8,h:18,cl:'#7a3020'},{x:570,y:170,w:8,h:16,cl:'#8b3a1a'},{x:580,y:170,w:8,h:18,cl:'#a85040'},
+  {x:600,y:170,w:8,h:16,cl:'#9a4220'},{x:610,y:170,w:8,h:18,cl:'#8b3a1a'},{x:620,y:170,w:8,h:16,cl:'#a04825'},
+  {x:660,y:170,w:8,h:18,cl:'#7a3020'},{x:670,y:170,w:8,h:16,cl:'#8b3a1a'},{x:680,y:170,w:8,h:18,cl:'#a85040'},
+  // ── Canal belt south bank (y=255 strip between canal belt and Singel south) ──
+  {x:40,y:260,w:8,h:14,cl:'#a04825'},{x:50,y:260,w:8,h:12,cl:'#8b3a1a'},{x:60,y:260,w:8,h:14,cl:'#9a4220'},
+  {x:80,y:260,w:8,h:12,cl:'#8b3a1a'},{x:90,y:260,w:8,h:14,cl:'#a85040'},{x:100,y:260,w:8,h:12,cl:'#7a3020'},
+  {x:300,y:260,w:8,h:14,cl:'#a04825'},{x:310,y:260,w:8,h:12,cl:'#8b3a1a'},{x:320,y:260,w:8,h:14,cl:'#9a4220'},
+  {x:340,y:260,w:8,h:12,cl:'#8b3a1a'},{x:350,y:260,w:8,h:14,cl:'#a85040'},{x:360,y:260,w:8,h:12,cl:'#7a3020'},
+  {x:400,y:260,w:8,h:14,cl:'#9a4220'},{x:410,y:260,w:8,h:12,cl:'#8b3a1a'},{x:420,y:260,w:8,h:14,cl:'#a04825'},
+  {x:480,y:260,w:8,h:12,cl:'#7a3020'},{x:490,y:260,w:8,h:14,cl:'#a85040'},{x:500,y:260,w:8,h:12,cl:'#8b3a1a'},
+  {x:520,y:260,w:8,h:14,cl:'#9a4220'},{x:530,y:260,w:8,h:12,cl:'#8b3a1a'},{x:540,y:260,w:8,h:14,cl:'#a04825'},
+  {x:560,y:260,w:8,h:12,cl:'#8b3a1a'},{x:570,y:260,w:8,h:14,cl:'#7a3020'},{x:580,y:260,w:8,h:12,cl:'#a85040'},
+  {x:620,y:260,w:8,h:14,cl:'#9a4220'},{x:630,y:260,w:8,h:12,cl:'#8b3a1a'},{x:640,y:260,w:8,h:14,cl:'#a04825'},
+  {x:680,y:260,w:8,h:12,cl:'#8b3a1a'},{x:690,y:260,w:8,h:14,cl:'#7a3020'},{x:700,y:260,w:8,h:12,cl:'#a85040'},
+  // ── Grachtengordel (y=300-380) ── dense canal houses along east-west streets ──
+  {x:40,y:300,w:8,h:14,cl:'#8b3a1a'},{x:50,y:300,w:8,h:12,cl:'#a04825'},{x:60,y:300,w:8,h:14,cl:'#9a4220'},
+  {x:80,y:300,w:8,h:12,cl:'#8b3a1a'},{x:90,y:300,w:8,h:14,cl:'#a85040'},{x:100,y:300,w:8,h:12,cl:'#7a3020'},
+  {x:120,y:300,w:8,h:14,cl:'#a04825'},{x:130,y:300,w:8,h:12,cl:'#8b3a1a'},
+  {x:160,y:320,w:8,h:12,cl:'#8b3a1a'},{x:170,y:320,w:8,h:14,cl:'#a85040'},{x:180,y:320,w:8,h:12,cl:'#7a3020'},
+  {x:200,y:320,w:8,h:14,cl:'#9a4220'},{x:210,y:320,w:8,h:12,cl:'#8b3a1a'},{x:220,y:320,w:8,h:14,cl:'#a04825'},
+  {x:280,y:320,w:8,h:12,cl:'#8b3a1a'},{x:290,y:320,w:8,h:14,cl:'#a85040'},{x:300,y:320,w:8,h:12,cl:'#7a3020'},
+  {x:360,y:320,w:8,h:14,cl:'#9a4220'},{x:370,y:320,w:8,h:12,cl:'#8b3a1a'},
+  {x:520,y:320,w:8,h:14,cl:'#a04825'},{x:530,y:320,w:8,h:12,cl:'#8b3a1a'},{x:540,y:320,w:8,h:14,cl:'#9a4220'},
+  {x:580,y:320,w:8,h:12,cl:'#8b3a1a'},{x:590,y:320,w:8,h:14,cl:'#7a3020'},{x:600,y:320,w:8,h:12,cl:'#a85040'},
+  {x:620,y:320,w:8,h:14,cl:'#9a4220'},{x:630,y:320,w:8,h:12,cl:'#8b3a1a'},{x:640,y:320,w:8,h:14,cl:'#a04825'},
+  // ── Between Amstel and De Pijp (y=420 strip) ──
+  {x:40,y:420,w:8,h:14,cl:'#8b3a1a'},{x:50,y:420,w:8,h:12,cl:'#a04825'},{x:60,y:420,w:8,h:14,cl:'#9a4220'},
+  {x:80,y:420,w:8,h:12,cl:'#8b3a1a'},{x:90,y:420,w:8,h:14,cl:'#a85040'},{x:100,y:420,w:8,h:12,cl:'#7a3020'},
+  {x:160,y:420,w:8,h:14,cl:'#a04825'},{x:170,y:420,w:8,h:12,cl:'#8b3a1a'},{x:180,y:420,w:8,h:14,cl:'#9a4220'},
+  {x:380,y:420,w:8,h:12,cl:'#8b3a1a'},{x:390,y:420,w:8,h:14,cl:'#a85040'},{x:400,y:420,w:8,h:12,cl:'#7a3020'},
+  {x:540,y:420,w:8,h:14,cl:'#9a4220'},{x:550,y:420,w:8,h:12,cl:'#8b3a1a'},{x:560,y:420,w:8,h:14,cl:'#a04825'},
+  {x:580,y:420,w:8,h:12,cl:'#8b3a1a'},{x:590,y:420,w:8,h:14,cl:'#7a3020'},{x:600,y:420,w:8,h:12,cl:'#a85040'},
+  {x:620,y:420,w:8,h:14,cl:'#9a4220'},{x:630,y:420,w:8,h:12,cl:'#8b3a1a'},
 ];
-// === Houseboats along canals (Amsterdam signature — ~2500 official houseboats) ===
+
+// ═══════════════════════════════════════════
+// HOUSEBOATS — Amsterdam has ~2500 official houseboats along all canals
+// Drawn as small rects along canal edges (Mini Metro style)
+// ═══════════════════════════════════════════
 const HOUSEBOATS=[
-  {x:80,y:78,w:18,h:7,cl:'#8b3a3a'},{x:170,y:75,w:20,h:8,cl:'#406080'},{x:250,y:78,w:16,h:7,cl:'#8b6a3a'},{x:330,y:76,w:22,h:8,cl:'#5a5a5a'},{x:430,y:78,w:18,h:7,cl:'#3a7060'},{x:520,y:76,w:20,h:8,cl:'#8b3a3a'},
-  {x:620,y:78,w:18,h:7,cl:'#406080'},{x:710,y:76,w:16,h:8,cl:'#8b6a3a'},
-  {x:160,y:228,w:14,h:5,cl:'#3a5a3a'},{x:300,y:225,w:16,h:6,cl:'#8b3a3a'},{x:430,y:228,w:14,h:5,cl:'#406080'},{x:550,y:226,w:18,h:6,cl:'#5a5a5a'},{x:670,y:228,w:14,h:5,cl:'#8b6a3a'},
-  {x:600,y:285,w:16,h:6,cl:'#3a7060'},{x:680,y:285,w:18,h:6,cl:'#8b3a3a'},{x:740,y:285,w:14,h:5,cl:'#406080'},
+  // IJ north bank (Noord side, y=92)
+  {x:70,y:92,w:14,h:4,cl:'#8b3a1a'},{x:160,y:92,w:12,h:4,cl:'#406080'},{x:230,y:92,w:14,h:4,cl:'#8b6a3a'},
+  {x:330,y:92,w:16,h:4,cl:'#5a5a5a'},{x:430,y:92,w:12,h:4,cl:'#3a7060'},{x:520,y:92,w:14,h:4,cl:'#8b3a1a'},
+  {x:610,y:92,w:12,h:4,cl:'#406080'},{x:700,y:92,w:14,h:4,cl:'#8b6a3a'},
+  // Canal belt edges
+  {x:50,y:240,w:10,h:4,cl:'#3a5a3a'},{x:150,y:240,w:12,h:4,cl:'#8b3a1a'},{x:250,y:240,w:10,h:4,cl:'#406080'},
+  {x:380,y:240,w:14,h:4,cl:'#5a5a5a'},{x:500,y:240,w:10,h:4,cl:'#8b6a3a'},{x:600,y:240,w:12,h:4,cl:'#3a7060'},
+  {x:720,y:240,w:10,h:4,cl:'#8b3a1a'},
+  // Amstel edges
+  {x:560,y:368,w:12,h:4,cl:'#406080'},{x:650,y:368,w:14,h:4,cl:'#8b3a1a'},{x:730,y:368,w:10,h:4,cl:'#8b6a3a'},
 ];
-// === Amsterdam canal system: IJ + canal belt + Amstel + cross canals ===
+
+// ═══════════════════════════════════════════
+// CANALS — drawn as thick curving lines (Mini Metro style)
+// Paths are arrays of {x,y,w,h} segments approximating real Amsterdam curves.
+// ═══════════════════════════════════════════
 const CANALS=[
-  // IJ river (separates Noord from rest of city)
-  {x:0,y:85,w:W,h:22,n:'IJ'},
-  // Canal belt (Singel/Herengracht/Keizersgracht/Prinsengracht visible as a thicker band)
-  {x:0,y:225,w:W,h:30,n:'Grachtengordel'},
-  // Amstel river (curves from east to south)
-  {x:560,y:280,w:240,h:24,n:'Amstel'},
-  // Singel vertical stretch near station
-  {x:280,y:107,w:18,h:118,n:'Singel'},
+  // IJ — wide river across the north
+  {n:'IJ',x:0,y:88,w:800,h:18,tp:'river'},
+  // Singel (innermost, hugs old center)
+  {n:'Singel',x:100,y:255,w:600,h:4,tp:'canal',style:'curved'},
+  // Herengracht
+  {n:'Herengracht',x:60,y:263,w:680,h:4,tp:'canal',style:'curved'},
+  // Keizersgracht
+  {n:'Keizersgracht',x:30,y:271,w:740,h:4,tp:'canal',style:'curved'},
+  // Prinsengracht
+  {n:'Prinsengracht',x:0,y:279,w:800,h:4,tp:'canal',style:'curved'},
+  // Amstel — curves from east into south
+  {n:'Amstel',x:0,y:395,w:800,h:14,tp:'river',style:'curved'},
+  // Singel vertical (north extension through Centrum)
+  {n:'Singel N',x:275,y:115,w:6,h:140,tp:'canal'},
   // Vijzelstraat (vertical canal through center)
-  {x:430,y:255,w:14,h:125,n:'Vijzelstr.'},
+  {n:'Vijzelstr.',x:430,y:300,w:4,h:95,tp:'canal'},
+  // Leidsegracht (cuts across south)
+  {n:'Leidsegr.',x:0,y:350,w:800,h:3,tp:'canal'},
 ];
+
+// ═══════════════════════════════════════════
+// BRIDGES — crossing points where streets meet canals
+// ═══════════════════════════════════════════
 const BRIDGES=[
-  // IJ ferries/bridges (3 crossings)
-  {x:130,y:85,w:36,h:22,n:'Noord ferry'},
-  {x:380,y:85,w:36,h:22,n:'Buiksloter'},
-  {x:600,y:85,w:36,h:22,n:'Oosterdok'},
-  // Canal belt bridges (4 crossings)
-  {x:80,y:225,w:30,h:30,n:'Singel'},
-  {x:280,y:225,w:30,h:30,n:'Raad­huis'},
-  {x:550,y:225,w:30,h:30,n:'Leidse'},
-  {x:700,y:225,w:30,h:30,n:'Museum'},
+  // IJ crossings (ferries)
+  {x:130,y:88,n:'Noord',real:'Noord ferry'},
+  {x:380,y:88,n:'Buiksloter',real:'Buiksloterhamveer'},
+  {x:600,y:88,n:'Oosterdok',real:'Oosterdok'},
+  // Canal belt bridges (where streets cross Singel/Herengracht/Keizersgracht/Prinsengracht)
+  {x:100,y:255,n:'Singel',real:'Singel brug'},
+  {x:200,y:255,n:'Spui',real:'Spui brug'},
+  {x:320,y:255,n:'Raadhuis',real:'Raadhuisstraat'},
+  {x:420,y:255,n:'Leidse',real:'Leidsegracht'},
+  {x:550,y:255,n:'Lijnbaans',real:'Lijnbaansgracht'},
+  {x:700,y:255,n:'Museum',real:'Museumplein'},
   // Amstel bridges
-  {x:570,y:280,w:30,h:24,n:'Magere Brug'},
-  {x:680,y:280,w:30,h:24,n:'Blauwbrug'},
+  {x:570,y:395,n:'Magere',real:'Magere Brug'},
+  {x:680,y:395,n:'Blauw',real:'Blauwbrug'},
 ];
-// Trees placed around parks (Vondelpark SW, Sarphatipark, Oosterpark) + canal sides
-const TREES=[
-  // Vondelpark (SW corner of map) - dense cluster
-  {x:30,y:380,r:7},{x:55,y:395,r:6},{x:75,y:375,r:7},{x:95,y:405,r:6},{x:50,y:425,r:7},{x:90,y:440,r:6},{x:115,y:395,r:7},{x:130,y:415,r:6},{x:40,y:455,r:7},{x:80,y:460,r:6},
-  // Sarphatipark (De Pijp, around apt)
-  {x:340,y:475,r:7},{x:360,y:480,r:6},{x:400,y:475,r:7},{x:420,y:480,r:6},{x:450,y:475,r:7},
-  // Oosterpark (east, around Science Park)
-  {x:600,y:395,r:7},{x:620,y:400,r:6},{x:650,y:395,r:7},{x:670,y:400,r:6},{x:710,y:410,r:7},{x:730,y:400,r:6},
-  // Canal-side trees (IJ north bank)
-  {x:130,y:115,r:5},{x:200,y:115,r:5},{x:300,y:115,r:5},{x:400,y:115,r:5},{x:500,y:115,r:5},{x:600,y:115,r:5},{x:700,y:115,r:5},
-  // Canal belt (Singel south bank)
-  {x:80,y:265,r:5},{x:180,y:265,r:5},{x:280,y:265,r:5},{x:380,y:265,r:5},{x:480,y:265,r:5},{x:580,y:265,r:5},{x:680,y:265,r:5},{x:750,y:265,r:5},
-  // Stand-alone trees
-  {x:170,y:200,r:5},{x:160,y:280,r:5},{x:200,y:300,r:5},{x:160,y:370,r:5},{x:550,y:170,r:5},{x:540,y:240,r:5},{x:560,y:320,r:5},{x:480,y:300,r:5},
+
+// Derive w/h from r for legacy collision math (curBldg, onBridge still use .w/.h)
+BLDGS.forEach(function(b){b.w=b.r*2;b.h=b.r*2;b.x-=b.w/2;b.y-=b.h/2});
+BRIDGES.forEach(function(b){if(!b.w)b.w=12;if(!b.h)b.h=4});
+
+// ═══════════════════════════════════════════
+// PARKS (filled areas, not buildings)
+// ═══════════════════════════════════════════
+const PARKS=[
+  {x:20,y:430,w:100,h:55,n:'Vondelpark',cl:'#7aa848'},
+  {x:355,y:435,w:90,h:55,n:'Sarphatipark',cl:'#7aa848'},
+  {x:600,y:430,w:120,h:60,n:'Oosterpark',cl:'#7aa848'},
+  {x:680,y:235,w:110,h:55,n:'Artis',cl:'#7aa848'},
+];
+
+// ═══════════════════════════════════════════
+// STREET LABELS (positions to draw italic street names)
+// ═══════════════════════════════════════════
+const STREETS=[
+  {x:340,y:108,t:'Damrak',ang:0},
+  {x:340,y:200,t:'Kalverstraat',ang:0},
+  {x:340,y:230,t:'Rokin',ang:0},
+  {x:200,y:60,t:'Haarlemmerdijk',ang:0},
+  {x:480,y:200,t:'Spui',ang:0},
+  {x:170,y:425,t:'Albert Cuyp',ang:0},
+  {x:510,y:425,t:'Ceintuurbaan',ang:0},
+  {x:300,y:415,t:'Sarphatistraat',ang:0},
+  {x:580,y:270,t:'Plantage Middenlaan',ang:0},
+  {x:680,y:140,t:'Oosterdok',ang:0},
+  {x:200,y:320,t:'Prinsengracht',ang:0},
+  {x:200,y:340,t:'Leidsegracht',ang:0},
+];
+
+// ═══════════════════════════════════════════
+// DISTRICT LABELS (small faded gray text behind everything)
+// ═══════════════════════════════════════════
+const DISTRICTS=[
+  {x:240,y:18,t:'NOORD',cl:'#5a8aa0'},
+  {x:255,y:155,t:'CENTRUM',cl:'#c0a060'},
+  {x:160,y:235,t:'GRACHTENGORDEL',cl:'#6090b0'},
+  {x:680,y:340,t:'OOST',cl:'#80b080'},
+  {x:130,y:460,t:'DE PIJP',cl:'#d08060'},
 ];
 
 // ═══════════════════════════════════════════
@@ -764,213 +855,159 @@ function finBar(){
 // 2.5D isometric helpers
 function shadeColor(hex, light){const c=parseInt(hex.slice(1),16);return 'rgb('+Math.max(0,Math.min(255,((c>>16)&255)+light))+','+Math.max(0,Math.min(255,((c>>8)&255)+light))+','+Math.max(0,Math.min(255,(c&255)+light))+')'}
 function drawMap(){
-  // === Sky gradient ===
-  var g=cx.createLinearGradient(0,0,0,H);
-  g.addColorStop(0,TSKY[G.ti]);g.addColorStop(1,shadeColor(TSKY[G.ti],-40));
-  cx.fillStyle=g;cx.fillRect(0,0,W,H);
+  // ═══════════════════════════════════════════
+  // Mini Metro-style Amsterdam map
+  // Layer order: ground → streets → parks → canals → bridges →
+  //              districts (faded) → CIVIC houses → houseboats →
+  //              BLDGS (circles+icon) → street labels → canals labels →
+  //              churches → legend → player
+  // ═══════════════════════════════════════════
 
-  // === Distant Amsterdam skyline + windmill (signature of the city) ===
-  cx.fillStyle=shadeColor(TSKY[G.ti],-15);cx.globalAlpha=0.45;
-  for(var i=0;i<14;i++){var sx=i*60-10,sw=22+Math.sin(i*1.7)*10,sh=30+Math.cos(i*1.3)*22;cx.fillRect(sx,H-160-sh,sw,sh);
-    cx.beginPath();cx.moveTo(sx+sw/2-4,H-160-sh);cx.lineTo(sx+sw/2,H-160-sh-8);cx.lineTo(sx+sw/2+4,H-160-sh);cx.fill()}
-  cx.beginPath();cx.moveTo(160,H-260);cx.lineTo(170,H-320);cx.lineTo(180,H-260);cx.fill(); // Oude Kerk steeple
-  // Windmill (Amsterdam icon)
-  cx.fillStyle=shadeColor(TSKY[G.ti],-20);cx.fillRect(50,H-200,3,90);
-  cx.beginPath();cx.arc(51.5,H-205,18,0,Math.PI*2);cx.fill();
-  for(var bl=0;bl<4;bl++){var ba=bl*Math.PI/2;cx.strokeStyle=shadeColor(TSKY[G.ti],-20);cx.lineWidth=2;cx.beginPath();cx.moveTo(51.5,H-205);cx.lineTo(51.5+Math.cos(ba)*16,H-205+Math.sin(ba)*16);cx.stroke()}
-  cx.globalAlpha=1;
+  // ── 1. Cream paper-like ground (Amsterdam cobblestone base) ──
+  cx.fillStyle='#f0e8d4';cx.fillRect(0,0,W,H);
 
-  // === Amsterdam-style red brick paving (rows of bricks with mortar lines) ===
-  cx.fillStyle='#2a2018';cx.fillRect(0,0,W,H);
-  for(var by=0;by<H;by+=6){cx.fillStyle=by%12===0?'#3a2820':'#322218';cx.fillRect(0,by,W,1)}
-  for(var bx=0;bx<W;bx+=18){cx.fillStyle='#3a282080';cx.fillRect(bx+(by%12===0?0:9),0,1,H)}
-  // Bicycle path (red asphalt strip)
-  cx.fillStyle='#5a2a2a';cx.fillRect(0,260,W,3);cx.fillStyle='#3a1818';cx.fillRect(0,263,W,1);
-  // Tram rails (yellow stripe)
-  cx.fillStyle='#c0a020';cx.fillRect(0,395,W,2);cx.fillStyle='#202020';cx.fillRect(0,394,W,1);cx.fillRect(0,397,W,1);
+  // ── 2. Subtle paper texture (dots) ──
+  cx.fillStyle='#e0d4ba';for(var i=0;i<W;i+=8){for(var j=0;j<H;j+=8){if(((i*7+j*13)%23)===0)cx.fillRect(i,j,1,1)}}
 
-  // === Canals (Amsterdam water with ripples + name labels) ===
+  // ── 3. District labels (small, faded — backdrop) ──
+  cx.save();cx.globalAlpha=0.18;cx.font='bold 11px sans-serif';cx.textAlign='center';
+  DISTRICTS.forEach(function(d){cx.fillStyle=d.cl;cx.fillText(d.t,d.x,d.y)});
+  cx.restore();
+
+  // ── 4. Streets (thin lines, real Amsterdam street grid pattern) ──
+  cx.strokeStyle='#d8c8a8';cx.lineWidth=2;
+  cx.beginPath();cx.moveTo(0,200);cx.lineTo(800,200);cx.stroke();
+  cx.beginPath();cx.moveTo(0,380);cx.lineTo(800,380);cx.stroke();
+  cx.beginPath();cx.moveTo(200,90);cx.lineTo(200,500);cx.stroke();
+  cx.beginPath();cx.moveTo(340,90);cx.lineTo(340,500);cx.stroke();
+  cx.beginPath();cx.moveTo(480,90);cx.lineTo(480,500);cx.stroke();
+  cx.beginPath();cx.moveTo(620,90);cx.lineTo(620,500);cx.stroke();
+  cx.strokeStyle='#e8d8c0';cx.lineWidth=1;
+  cx.beginPath();cx.moveTo(0,140);cx.lineTo(800,140);cx.stroke();
+  cx.beginPath();cx.moveTo(0,300);cx.lineTo(800,300);cx.stroke();
+  cx.beginPath();cx.moveTo(0,440);cx.lineTo(800,440);cx.stroke();
+  cx.beginPath();cx.moveTo(120,90);cx.lineTo(120,500);cx.stroke();
+  cx.beginPath();cx.moveTo(560,90);cx.lineTo(560,500);cx.stroke();
+  cx.beginPath();cx.moveTo(720,90);cx.lineTo(720,500);cx.stroke();
+
+  // ── 5. Parks (filled green) ──
+  PARKS.forEach(function(p){
+    cx.fillStyle=p.cl;cx.fillRect(p.x,p.y,p.w,p.h);
+    cx.fillStyle='#6a9848';cx.fillRect(p.x,p.y+p.h-3,p.w,3);
+    cx.fillStyle='#3a5a28';
+    for(var t=0;t<8;t++){var tx=p.x+5+t*((p.w-10)/8),ty=p.y+5+((t*7)%3)*4;
+      cx.beginPath();cx.arc(tx,ty,2.5,0,Math.PI*2);cx.fill()}
+  });
+
+  // ── 6. Canals (thick blue lines with name labels) ──
   CANALS.forEach(function(c){
     if(!c.n)return;
-    cx.fillStyle='#1e3a58';cx.fillRect(c.x,c.y,c.w,c.h);
-    cx.fillStyle='#3a6890';for(var i=0;i<c.w;i+=16)cx.fillRect(c.x+i+Math.sin(Date.now()/1800+i)*2,c.y+2,6,1);
-    cx.fillStyle='#1a2a4060';for(var j=0;j<c.w;j+=28)cx.fillRect(c.x+j,c.y+1,2,c.h-2);
-    if(c.w>60&&c.h<30){cx.fillStyle='#a0c8e0aa';cx.font='italic 9px sans-serif';cx.textAlign='center';cx.fillText(c.n,c.x+c.w/2,c.y+c.h/2+3)}
-    cx.fillStyle='#0a1828';cx.fillRect(c.x,c.y+c.h-2,c.w,2);
+    var isRiver=c.tp==='river';
+    cx.fillStyle=isRiver?'#4a86b4':'#5a90c0';
+    cx.fillRect(c.x,c.y,c.w,c.h);
+    cx.fillStyle=isRiver?'#6aa0c8':'#88b4d8';
+    for(var i=0;i<c.w;i+=14){cx.fillRect(c.x+i+((Date.now()/600+i)%3|0),c.y+c.h/2-1,4,1)}
+    cx.fillStyle='#3a6890';
+    cx.fillRect(c.x,c.y,c.w,1);
+    cx.fillRect(c.x,c.y+c.h-1,c.w,1);
+    if(c.w>50){
+      cx.font='italic 9px sans-serif';cx.fillStyle='#3a6890';cx.textAlign='center';
+      cx.fillText(c.n,c.x+c.w/2,c.y+c.h/2+3);
+    }
   });
 
-  // === Bridges (Amsterdam white-painted arched + lampposts) ===
+  // ── 7. Bridges (Mini Metro style: white rectangles with small lamp dots) ──
   BRIDGES.forEach(function(b){
-    cx.fillStyle='#0005';cx.fillRect(b.x+3,b.y+b.h+1,b.w,3);
-    cx.fillStyle='#6a5a48';cx.fillRect(b.x,b.y+b.h-3,b.w,4);cx.fillStyle='#8a7a68';cx.fillRect(b.x,b.y+b.h-5,b.w,2);
-    cx.fillStyle='#a08560';cx.fillRect(b.x,b.y,b.w,b.h-5);
-    cx.fillStyle='#604020';for(var pl=1;pl<b.w;pl+=8)cx.fillRect(b.x+pl,b.y,1,b.h-5);
-    cx.fillStyle='#f0f0e8';cx.fillRect(b.x-1,b.y-5,b.w+2,2);cx.fillRect(b.x-1,b.y-2,b.w+2,1);
-    cx.fillStyle='#d0d0c0';for(var pp=2;pp<b.w;pp+=8)cx.fillRect(b.x+pp,b.y-5,1,4);
-    cx.fillStyle='#1a1a1a';cx.fillRect(b.x-1,b.y-12,2,7);cx.fillRect(b.x+b.w-1,b.y-12,2,7);
-    cx.fillStyle='#f0d860';cx.beginPath();cx.arc(b.x,b.y-13,2,0,Math.PI*2);cx.fill();
-    cx.beginPath();cx.arc(b.x+b.w,b.y-13,2,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#ffffff';cx.fillRect(b.x-3,b.y-2,b.w+6,5);
+    cx.fillStyle='#f0e8d4';cx.fillRect(b.x-3,b.y+3,b.w+6,1);
+    cx.fillStyle='#3a3a3a';
+    cx.beginPath();cx.arc(b.x-2,b.y-4,1.5,0,Math.PI*2);cx.fill();
+    cx.beginPath();cx.arc(b.x+b.w+2,b.y-4,1.5,0,Math.PI*2);cx.fill();
+    cx.font='7px sans-serif';cx.fillStyle='#3a3a3a';cx.textAlign='center';
+    cx.fillText(b.n,b.x+b.w/2,b.y-5);
   });
 
-  // === Trees (canopy + trunk + 3-layer shading) ===
-  TREES.forEach(function(t){
-    cx.fillStyle='#0004';cx.beginPath();cx.ellipse(t.x+2,t.y+3,t.r,t.r*0.5,0,0,Math.PI*2);cx.fill();
-    cx.fillStyle='#5a3a20';cx.fillRect(t.x-2,t.y-t.r/2,4,t.r/2);
-    cx.fillStyle='#1a3a18';cx.beginPath();cx.arc(t.x,t.y,t.r,0,Math.PI*2);cx.fill();
-    cx.fillStyle='#2a4a20';cx.beginPath();cx.arc(t.x-2,t.y-2,t.r-2,0,Math.PI*2);cx.fill();
-    cx.fillStyle='#3a6a30';cx.beginPath();cx.arc(t.x-4,t.y-4,t.r/2.5,0,Math.PI*2);cx.fill();
-  });
-
-  // === Buildings with Dutch gabled facades ===
-  function dutchGable(b){var cxm=b.x+b.w/2;
-    if(b.tp==='station'){  // Centraal Station has twin towers
-      cx.fillStyle=shadeColor(b.cl,40);cx.fillRect(b.x-3,b.y-16,8,16);cx.fillRect(b.x+b.w-5,b.y-16,8,16);
-      cx.fillStyle='#a02020';cx.fillRect(b.x-2,b.y-18,6,3);cx.fillRect(b.x+b.w-4,b.y-18,6,3);
-    } else if(b.tp==='bar'||b.tp==='brew'){  // step gable (neck gable) for industrial buildings
-      cx.fillStyle=shadeColor(b.cl,-15);var st=4;
-      for(var i=0;i<3;i++){var w=b.w-i*st*2;cx.fillRect(b.x+i*st,b.y-st*i-st,w,st*1.5)}
-    } else {  // bell gable for residential
-      cx.fillStyle=shadeColor(b.cl,-20);
-      cx.beginPath();cx.moveTo(b.x+2,b.y);cx.lineTo(b.x+b.w/2-5,b.y-3);cx.quadraticCurveTo(b.x+b.w/2,b.y-10,b.x+b.w/2+5,b.y-3);cx.lineTo(b.x+b.w-2,b.y);cx.closePath();cx.fill();
-      cx.fillStyle='#ffffff50';cx.fillRect(cxm-1,b.y-7,2,4);
-    }
-  }
-  var sorted=BLDGS.slice().sort(function(a,b){return (a.y+a.h)-(b.y+b.h)});
-  sorted.forEach(function(b){
-    cx.fillStyle='#0006';cx.beginPath();cx.ellipse(b.x+b.w/2+4,b.y+b.h+3,b.w/2+4,4,0,0,Math.PI*2);cx.fill();
-    // 2.5D right wall (darker)
-    cx.fillStyle=shadeColor(b.cl,-50);cx.beginPath();cx.moveTo(b.x+b.w,b.y);cx.lineTo(b.x+b.w+10,b.y-6);cx.lineTo(b.x+b.w+10,b.y+b.h-6);cx.lineTo(b.x+b.w,b.y+b.h);cx.closePath();cx.fill();
-    // 2.5D roof (lighter)
-    cx.fillStyle=shadeColor(b.cl,30);cx.beginPath();cx.moveTo(b.x,b.y);cx.lineTo(b.x+10,b.y-6);cx.lineTo(b.x+b.w+10,b.y-6);cx.lineTo(b.x+b.w,b.y);cx.closePath();cx.fill();
+  // ── 8. CIVIC decorative canal houses (Mini Metro: small filled rectangles) ──
+  CIVIC.forEach(function(b){
+    cx.fillStyle='#0002';cx.fillRect(b.x+1,b.y+b.h,b.w,1);
     cx.fillStyle=b.cl;cx.fillRect(b.x,b.y,b.w,b.h);
-    // tall narrow Dutch windows (warm interior glow)
-    cx.fillStyle='#f0e8a8';cx.fillRect(b.x+4,b.y+4,3,b.h-12);cx.fillRect(b.x+b.w-7,b.y+4,3,b.h-12);
-    cx.fillStyle=shadeColor(b.cl,-40);cx.fillRect(b.x+b.w/2-3,b.y+b.h-9,6,9); // door
-    dutchGable(b);
-    if(['apt','bar','brew','sofie','chen','lib','pablo','lab','ravi','station'].indexOf(b.id)>=0){
-      cx.fillStyle='#3a2820';cx.fillRect(b.x+b.w-9,b.y-18,5,14);cx.fillStyle='#504030';cx.fillRect(b.x+b.w-10,b.y-20,7,3);
-    }
-    cx.fillStyle='#fffc';cx.font='bold 7px sans-serif';cx.textAlign='center';cx.fillText(b.ic+b.n,b.x+b.w/2+5,b.y-22);
+    cx.fillStyle='#f0e0a0';cx.fillRect(b.x+b.w/2-1,b.y+b.h/2-1,2,2);
   });
 
-  // === CIVIC decorative canal houses (dense narrow Amsterdam row houses) ===
-  // No labels, no icons — pure visual texture to show the urban fabric.
-  var civicSorted=CIVIC.slice().sort(function(a,b){return (a.y+a.h)-(b.y+b.h)});
-  civicSorted.forEach(function(b){
-    cx.fillStyle='#0005';cx.beginPath();cx.ellipse(b.x+b.w/2,b.y+b.h+2,b.w/2+2,3,0,0,Math.PI*2);cx.fill();
-    // 2.5D right wall
-    cx.fillStyle=shadeColor(b.cl,-45);cx.beginPath();cx.moveTo(b.x+b.w,b.y);cx.lineTo(b.x+b.w+6,b.y-4);cx.lineTo(b.x+b.w+6,b.y+b.h-4);cx.lineTo(b.x+b.w,b.y+b.h);cx.closePath();cx.fill();
-    // roof
-    cx.fillStyle=shadeColor(b.cl,25);cx.beginPath();cx.moveTo(b.x,b.y);cx.lineTo(b.x+6,b.y-4);cx.lineTo(b.x+b.w+6,b.y-4);cx.lineTo(b.x+b.w,b.y);cx.closePath();cx.fill();
-    // front face
-    cx.fillStyle=b.cl;cx.fillRect(b.x,b.y,b.w,b.h);
-    // tall narrow windows (warm interior glow)
-    var winX=b.x+Math.floor(b.w/2)-2;
-    for(var wy=b.y+5;wy<b.y+b.h-8;wy+=8){cx.fillStyle='#f0e0a0';cx.fillRect(winX,wy,3,5);cx.fillStyle='#0a0604';cx.fillRect(winX,wy,3,1)}
-    // tiny gable peak (bell or step)
-    if((b.x/30|0)%3===0){  // mix gable styles
-      cx.fillStyle=shadeColor(b.cl,-25);
-      cx.beginPath();cx.moveTo(b.x+1,b.y);cx.lineTo(b.x+b.w/2-3,b.y-2);cx.quadraticCurveTo(b.x+b.w/2,b.y-6,b.x+b.w/2+3,b.y-2);cx.lineTo(b.x+b.w-1,b.y);cx.closePath();cx.fill();
-    } else {
-      cx.fillStyle=shadeColor(b.cl,-20);
-      cx.beginPath();cx.moveTo(b.x+b.w/2-3,b.y);cx.lineTo(b.x+b.w/2,b.y-5);cx.lineTo(b.x+b.w/2+3,b.y);cx.closePath();cx.fill();
-    }
-    // roof tiles (red tiles on most canal houses)
-    cx.fillStyle='#7a2818';for(var rt=0;rt<3;rt++)cx.fillRect(b.x+rt*Math.floor(b.w/3),b.y-3,Math.floor(b.w/3)-1,2);
-  });
-
-  // === Houseboats (Amsterdam has ~2500 official houseboats) ===
+  // ── 9. Houseboats (small colored rects along canal edges) ──
   HOUSEBOATS.forEach(function(b){
-    // hull (rounded bottom)
-    cx.fillStyle='#0006';cx.beginPath();cx.ellipse(b.x+b.w/2,b.y+b.h+1,b.w/2,2,0,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#0002';cx.fillRect(b.x+1,b.y+b.h,b.w,1);
     cx.fillStyle=b.cl;cx.fillRect(b.x,b.y,b.w,b.h);
-    cx.fillStyle=shadeColor(b.cl,-30);cx.beginPath();cx.ellipse(b.x+b.w/2,b.y+b.h,b.w/2,b.h/2,0,0,Math.PI*2);cx.fill();
-    // house on top (cabin)
-    cx.fillStyle=shadeColor(b.cl,30);cx.fillRect(b.x+2,b.y-4,b.w-4,4);
-    // little window on cabin
-    cx.fillStyle='#f0d880';cx.fillRect(b.x+b.w/2-2,b.y-3,4,2);
-    // water reflection
-    cx.fillStyle=b.cl+'40';cx.fillRect(b.x,b.y+b.h-1,b.w,2);
+    cx.fillStyle='#f0e0a0';cx.fillRect(b.x+b.w/2-1,b.y-1,2,1);
   });
 
-  // === Neighborhood labels ===
-  cx.font='bold 10px sans-serif';cx.textAlign='left';
-  cx.fillStyle='#5a8aa0';cx.fillText('NOORD',110,18);
-  cx.fillStyle='#c0a060';cx.fillText('CENTRUM',280,118);
-  cx.fillStyle='#6090b0';cx.font='italic 9px sans-serif';cx.fillText('Grachtengordel',420,260);
-  cx.fillStyle='#d08060';cx.fillText('DE PIJP',220,398);
-  cx.fillStyle='#80b080';cx.fillText('OOST / Science Park',580,180);
+  // ── 10. Interactive BLDGS (circles with emoji icon) — Mini Metro style ──
+  var sorted=BLDGS.slice().sort(function(a,b){return (a.y)-(b.y)});
+  sorted.forEach(function(b){
+    var cxm=b.x+b.w/2,cym=b.y+b.h/2;
+    cx.fillStyle='#0003';cx.beginPath();cx.arc(cxm,cym+b.r*0.4,b.r,0,Math.PI*2);cx.fill();
+    cx.strokeStyle='#ffffff';cx.lineWidth=2;
+    cx.fillStyle=b.cl;
+    cx.beginPath();cx.arc(cxm,cym,b.r,0,Math.PI*2);cx.fill();
+    cx.stroke();
+    cx.font=(b.r>=13?'14px sans-serif':'11px sans-serif');cx.textAlign='center';cx.textBaseline='middle';
+    cx.fillText(b.ic,cxm,cym+0.5);
+    cx.textBaseline='alphabetic';
+    cx.font='bold 8px sans-serif';cx.fillStyle='#1a1a1a';
+    cx.fillText(b.n,cxm,b.y+b.h+11);
+  });
 
-  // === Church spires (Amsterdam's three iconic towers) ===
-  // Oude Kerk (De Wallen, east of Dam) - old brick gothic spire
-  cx.fillStyle='#7a4830';cx.beginPath();cx.moveTo(580,260);cx.lineTo(584,260);cx.lineTo(584,225);cx.lineTo(582,225);cx.closePath();cx.fill();
-  cx.fillStyle='#a06040';cx.fillRect(580,225,6,8);
-  cx.fillStyle='#c87040';cx.beginPath();cx.moveTo(583,225);cx.lineTo(583,205);cx.lineTo(580,212);cx.lineTo(586,212);cx.lineTo(583,205);cx.fill();
-  cx.fillStyle='#e8a020';cx.beginPath();cx.arc(583,203,2,0,Math.PI*2);cx.fill();
-  cx.fillStyle='#fff';cx.font='7px sans-serif';cx.textAlign='center';cx.fillText('⛪ Oude Kerk',583,218);
-  // Nieuwe Kerk (Dam Square) - tall tower with crown
-  cx.fillStyle='#7a4830';cx.beginPath();cx.moveTo(348,225);cx.lineTo(360,225);cx.lineTo(360,180);cx.lineTo(348,180);cx.closePath();cx.fill();
-  cx.fillStyle='#a06040';cx.fillRect(347,180,14,8);
-  cx.fillStyle='#c87040';cx.beginPath();cx.moveTo(354,180);cx.lineTo(354,158);cx.lineTo(350,168);cx.lineTo(358,168);cx.lineTo(354,158);cx.fill();
-  cx.fillStyle='#e8a020';cx.fillRect(351,156,6,4);
-  cx.fillStyle='#fff';cx.font='7px sans-serif';cx.textAlign='center';cx.fillText('⛪ Nieuwe Kerk',354,196);
-  // Westerkerk (Jordaan, west) - blue spire
-  cx.fillStyle='#3a5070';cx.beginPath();cx.moveTo(110,260);cx.lineTo(118,260);cx.lineTo(118,222);cx.lineTo(110,222);cx.closePath();cx.fill();
-  cx.fillStyle='#5070a0';cx.fillRect(109,222,10,8);
-  cx.fillStyle='#3070a0';cx.beginPath();cx.moveTo(114,222);cx.lineTo(114,200);cx.lineTo(110,210);cx.lineTo(118,210);cx.lineTo(114,200);cx.fill();
-  cx.fillStyle='#e8a020';cx.beginPath();cx.arc(114,198,2,0,Math.PI*2);cx.fill();
-  cx.fillStyle='#fff';cx.font='7px sans-serif';cx.textAlign='center';cx.fillText('⛪ Westerkerk',114,238);
+  // ── 11. Church spires (Amsterdam three iconic towers) ──
+  function drawSpire(x,y,h,bodyCl,roofCl,crownCl,label){
+    cx.fillStyle=bodyCl;cx.fillRect(x-2,y-8,4,h);
+    cx.fillStyle=roofCl;
+    cx.beginPath();cx.moveTo(x,y-8);cx.lineTo(x-3,y-12);cx.lineTo(x+3,y-12);cx.closePath();cx.fill();
+    cx.fillStyle=crownCl;cx.beginPath();cx.arc(x,y-13,2,0,Math.PI*2);cx.fill();
+    cx.font='bold 7px sans-serif';cx.fillStyle='#1a1a1a';cx.textAlign='center';
+    cx.fillText(label,x,y-16);
+  }
+  drawSpire(80, 235, 22,'#7a4830','#a06040','#e8a020','⛪ Westerkerk');
+  drawSpire(335, 230, 26,'#7a4830','#a06040','#e8a020','⛪ Nieuwe Kerk');
+  drawSpire(580, 240, 20,'#7a4830','#c87040','#e8a020','⛪ Oude Kerk');
 
-  // === Specific canal + street name labels ===
-  cx.font='bold 8px sans-serif';cx.fillStyle='#d0e8f8cc';
-  cx.fillText('Singel',118,221);cx.fillText('Herengracht',228,221);cx.fillText('Keizersgracht',348,221);cx.fillText('Prinsengracht',488,221);
-  cx.font='bold 9px sans-serif';cx.fillStyle='#a0c8e0dd';
-  cx.fillText('IJ',30,98);cx.fillText('Amstel',715,295);
-  // vertical canals labels
-  cx.font='7px sans-serif';cx.fillStyle='#a0c8e0aa';
-  cx.save();cx.translate(285,180);cx.rotate(-Math.PI/2);cx.textAlign='center';cx.fillText('Singel',0,0);cx.restore();
-  cx.save();cx.translate(437,340);cx.rotate(-Math.PI/2);cx.textAlign='center';cx.fillText('Vijzelstr.',0,0);cx.restore();
-  // street names (Amsterdam-style italic)
-  cx.font='italic 8px sans-serif';cx.fillStyle='#fff3';cx.textAlign='left';
-  cx.fillText('Damrak',395,115);  // north-south street between station and Dam
-  cx.fillText('Kalverstraat',340,205);  // south of Dam
-  cx.fillText('Rokin',340,300);  // south of Dam (south end)
-  cx.fillText('Haarlemmerdijk',255,80);  // NW of station
-  cx.fillText('Spui',495,205);  // south end of Kalverstraat
-  cx.fillText('Albert Cuyp',260,406);  // De Pijp market street
-  cx.fillText('Ceintuurbaan',475,406);  // De Pijp east street
-  cx.fillText('Sarphatipark',395,465);  // park in De Pijp
-  cx.fillText('Plantage Middenlaan',585,255);  // east of canal belt
-  // Dam Square landmark
-  cx.fillStyle='#e8d090';cx.font='bold 9px sans-serif';cx.textAlign='center';
-  cx.fillText('◆ DAM ◆',354,255);
+  // ── 12. Dam Square diamond ──
+  cx.fillStyle='#e8d090';cx.font='bold 10px sans-serif';cx.textAlign='center';
+  cx.fillText('◆ DAM ◆',335,225);
 
-  // === Tiny legend (top right under compass) ===
-  cx.fillStyle='#0a0a0a80';cx.fillRect(720,45,75,80);
-  cx.fillStyle='#fff';cx.font='8px sans-serif';cx.textAlign='left';
-  cx.fillText('— Canal',722,57);
-  cx.fillStyle='#a0c8e0';cx.fillRect(720,60,8,2);
-  cx.fillStyle='#5a2a2a';cx.fillRect(720,68,8,2);
-  cx.fillText('— Bike path',722,73);
-  cx.fillStyle='#c0a020';cx.fillRect(720,80,8,2);
-  cx.fillText('— Tram',722,87);
-  cx.fillStyle='#7a4830';cx.fillRect(720,94,8,4);
-  cx.fillText('— House',722,102);
-  cx.fillStyle='#3a7060';cx.fillRect(720,110,8,2);
-  cx.fillText('— Houseboat',722,119);
+  // ── 13. Street labels (italic, light gray) ──
+  STREETS.forEach(function(s){
+    cx.save();
+    cx.translate(s.x,s.y);if(s.ang)cx.rotate(s.ang);
+    cx.font='italic 8px sans-serif';cx.fillStyle='#7a6850';cx.textAlign='left';
+    cx.fillText(s.t,0,0);
+    cx.restore();
+  });
 
-  // === N/S/E/W compass ===
-  var cmpX=755,cmpY=20;
-  cx.fillStyle='#1a1a1ac0';cx.beginPath();cx.arc(cmpX,cmpY,16,0,Math.PI*2);cx.fill();
-  cx.fillStyle='#888';cx.font='bold 9px sans-serif';cx.textAlign='center';
-  cx.fillText('N',cmpX,cmpY-5);cx.fillText('S',cmpX,cmpY+11);cx.fillText('W',cmpX-9,cmpY+4);cx.fillText('E',cmpX+9,cmpY+4);
-  cx.strokeStyle='#e8a020';cx.lineWidth=1;cx.beginPath();cx.moveTo(cmpX,cmpY+3);cx.lineTo(cmpX,cmpY-3);cx.stroke();
+  // ── 14. Mini legend (top right) ──
+  cx.fillStyle='#00000050';cx.fillRect(680,8,115,72);
+  cx.font='bold 8px sans-serif';cx.fillStyle='#1a1a1a';cx.textAlign='left';
+  cx.fillText('AMSTERDAM',688,18);
+  cx.font='7px sans-serif';
+  cx.fillStyle='#5a90c0';cx.fillRect(688,24,10,3);cx.fillStyle='#1a1a1a';cx.fillText('Canal',702,28);
+  cx.fillStyle='#8b3a1a';cx.fillRect(688,32,8,8);cx.fillStyle='#1a1a1a';cx.fillText('Canal house',702,39);
+  cx.fillStyle='#7aa848';cx.fillRect(688,44,10,5);cx.fillStyle='#1a1a1a';cx.fillText('Park',702,49);
+  cx.strokeStyle='#c0a020';cx.lineWidth=1;cx.beginPath();cx.moveTo(688,55);cx.lineTo(700,55);cx.stroke();
+  cx.fillStyle='#1a1a1a';cx.fillText('Tram line',702,59);
+  cx.fillStyle='#3a7060';cx.fillRect(688,64,10,3);cx.fillStyle='#1a1a1a';cx.fillText('Houseboat',702,69);
+  cx.fillStyle='#ffffff';cx.fillRect(688,73,10,2);cx.strokeStyle='#1a1a1a';cx.strokeRect(688,73,10,2);
+  cx.fillStyle='#1a1a1a';cx.fillText('Bridge',702,77);
 
-  // === Player (3D character) ===
+  // ── 15. Compass (top left) ──
+  cx.fillStyle='#00000050';cx.beginPath();cx.arc(28,28,18,0,Math.PI*2);cx.fill();
+  cx.font='bold 9px sans-serif';cx.fillStyle='#1a1a1a';cx.textAlign='center';
+  cx.fillText('N',28,21);cx.fillText('S',28,38);cx.fillText('W',18,30);cx.fillText('E',38,30);
+  cx.strokeStyle='#c83030';cx.lineWidth=1.5;cx.beginPath();cx.moveTo(28,26);cx.lineTo(28,17);cx.stroke();
+
+  // ── 16. Player (3D character on top) ──
   var bob=Math.sin(Date.now()/150)*1.5,p=G.p;
   var mdd=Math.sqrt((p.tx-p.x)*(p.tx-p.x)+(p.ty-p.y)*(p.ty-p.y));
   var facing=mdd>1?Math.atan2(p.ty-p.y,p.tx-p.x):0;
-  cx.fillStyle='#0006';cx.beginPath();cx.ellipse(p.x+1,p.y+4,7,3,0,0,Math.PI*2);cx.fill();
+  cx.fillStyle='#0004';cx.beginPath();cx.ellipse(p.x+1,p.y+4,7,3,0,0,Math.PI*2);cx.fill();
   cx.save();cx.translate(p.x,p.y+bob);cx.rotate(facing*0.15);
   cx.fillStyle='#3a3a3a';cx.fillRect(-3,2,7,7);
   cx.fillStyle='#3a78c0';cx.fillRect(-3,0,7,8);
@@ -989,12 +1026,18 @@ function drawMap(){
     cx.beginPath();cx.moveTo(p.tx,p.ty);cx.lineTo(p.tx-nx*7+ny*4,p.ty-ny*7-nx*4);cx.lineTo(p.tx-nx*7-ny*4,p.ty-ny*7+nx*4);cx.closePath();cx.fill();
     var secs=Math.max(1,Math.round(mdd/1.5));
     cx.font='bold 10px monospace';cx.textAlign='center';
-    cx.fillStyle='#0a0c14';cx.fillRect((aex+bex)/2-16,(aey+bey)/2-7,32,12);
-    cx.fillStyle='#ecb457';cx.fillText(secs+'s',(aex+bex)/2,(aey+bey)/2+3);
+    cx.fillStyle='#f0e8d4';cx.fillRect((aex+bex)/2-16,(aey+bey)/2-7,32,12);
+    cx.fillStyle='#1a1a1a';cx.fillText(secs+'s',(aex+bex)/2,(aey+bey)/2+3);
     cx.restore();
   }
-  var cb=curBldg();if(cb&&!G.inside&&!G.mg){cx.strokeStyle='#ecb457';cx.lineWidth=2;cx.setLineDash([4,2]);cx.strokeRect(cb.x-1,cb.y-1,cb.w+2,cb.h+2);cx.setLineDash([])}
-  var al=[0.05,0,0,0,0.30,0.45][G.ti];cx.fillStyle='rgba(10,15,30,'+al+')';cx.fillRect(0,0,W,H);cx.textAlign='start';
+
+  var cb=curBldg();
+  if(cb&&!G.inside&&!G.mg){
+    cx.strokeStyle='#c83030';cx.lineWidth=2;cx.setLineDash([3,2]);
+    cx.beginPath();cx.arc(cb.x+cb.w/2,cb.y+cb.h/2,cb.r+3,0,Math.PI*2);cx.stroke();
+    cx.setLineDash([]);
+  }
+  cx.textAlign='start';
 }
 
 function drawMG(){

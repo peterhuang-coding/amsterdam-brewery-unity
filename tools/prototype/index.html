@@ -1139,6 +1139,26 @@ function drawMG(){
     cx.fillStyle='#f0e0a0';cx.font='bold 11px sans-serif';cx.textAlign='center';
     cx.fillText('🍺 Brouwerij De Pijl',615,72);
     cx.fillStyle='#7a4a25';cx.fillRect(540,85,150,2);
+    // Round wall clock (left, ticking)
+    var clkT=Date.now()/1000;
+    var clkM=(clkT/60)%60,clkH=(clkT/3600)%12;
+    cx.fillStyle='#1a0a05';cx.beginPath();cx.arc(105,95,22,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#f0e8a0';cx.beginPath();cx.arc(105,95,20,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#222';cx.fillRect(104,95,2,2);
+    cx.strokeStyle='#222';cx.lineWidth=1;
+    for(var ck=0;ck<12;ck++){var ca=ck/12*Math.PI*2;cx.beginPath();cx.moveTo(105+Math.cos(ca)*16,95+Math.sin(ca)*16);cx.lineTo(105+Math.cos(ca)*18,95+Math.sin(ca)*18);cx.stroke()}
+    cx.strokeStyle='#222';cx.lineWidth=2;cx.beginPath();cx.moveTo(105,95);cx.lineTo(105+Math.cos(clkH/12*Math.PI*2-Math.PI/2)*9,95+Math.sin(clkH/12*Math.PI*2-Math.PI/2)*9);cx.stroke();
+    cx.strokeStyle='#a02020';cx.lineWidth=1;cx.beginPath();cx.moveTo(105,95);cx.lineTo(105+Math.cos(clkM/60*Math.PI*2-Math.PI/2)*13,95+Math.sin(clkM/60*Math.PI*2-Math.PI/2)*13);cx.stroke();
+    // Wooden barrel stack (right corner)
+    cx.fillStyle='#0006';cx.beginPath();cx.ellipse(700,288,28,5,0,0,Math.PI*2);cx.fill();
+    for(var brl=0;brl<3;brl++){var bx=678,by=205+brl*28;
+      cx.fillStyle='#7a4a25';cx.fillRect(bx,by,40,26);
+      cx.fillStyle='#5a2a10';cx.fillRect(bx,by,40,4);cx.fillRect(bx,by+22,40,4);
+      cx.fillStyle='#d0a040';cx.fillRect(bx-1,by+5,3,16);cx.fillRect(bx+38,by+5,3,16);
+      cx.fillStyle='#3a1a08';cx.fillRect(bx+8,by+10,24,1);cx.fillRect(bx+8,by+15,24,1);
+      cx.fillStyle='#f0e0a0';cx.fillRect(bx+12,by+8,16,8);
+      cx.fillStyle='#3a1a08';cx.font='6px sans-serif';cx.textAlign='center';cx.fillText('HOPPY',bx+20,by+14);
+    }
     // 3 copper fermentation tanks (background row)
     for(var ft=0;ft<3;ft++){var fx=120+ft*170;
       // shadow
@@ -1300,6 +1320,15 @@ function drawMG(){
     cx.fillStyle='#444';cx.fillRect(115,215,40,8);
     cx.fillStyle='#aaa';cx.fillRect(132,217,4,4);
     cx.fillStyle='#666';cx.fillRect(110,238,50,3);
+    // burlap coffee bean sack (counter, left)
+    cx.fillStyle='#8a6a30';cx.beginPath();cx.moveTo(230,278);cx.lineTo(225,310);cx.lineTo(310,310);cx.lineTo(305,278);cx.closePath();cx.fill();
+    cx.fillStyle='#a08040';cx.fillRect(228,278,75,3);
+    cx.fillStyle='#5a3a10';for(var bgr=0;bgr<4;bgr++)cx.fillRect(228,288+bgr*5,75,1);
+    cx.fillStyle='#3a2010';cx.fillRect(240,294,55,9);
+    cx.fillStyle='#f0e0a0';cx.font='bold 7px sans-serif';cx.textAlign='center';
+    cx.fillText('ARABICA',267,301);
+    cx.fillStyle='#5a3018';cx.beginPath();cx.arc(247,283,2,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#5a3018';cx.beginPath();cx.moveTo(245,283);cx.lineTo(248,283);cx.stroke();
     // espresso machine (right foreground)
     cx.fillStyle='#c0c0c0';cx.fillRect(560,180,100,60);
     cx.fillStyle='#e0e0e0';cx.fillRect(560,180,100,4);
@@ -1367,6 +1396,18 @@ function drawMG(){
     var lightAlpha=s.li/14*0.18;
     cx.fillStyle='rgba(255,255,170,'+lightAlpha+')';
     cx.beginPath();cx.moveTo(380,65);cx.lineTo(420,65);cx.lineTo(460,200);cx.lineTo(340,200);cx.closePath();cx.fill();
+    // Round hygrometer dial (left wall, like a clock)
+    var hyT=Date.now()/2000;
+    cx.fillStyle='#3a3020';cx.beginPath();cx.arc(155,100,30,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#f5ecd0';cx.beginPath();cx.arc(155,100,27,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#888';cx.font='7px sans-serif';cx.textAlign='center';cx.fillText('%RH',155,82);
+    cx.strokeStyle='#a04030';cx.lineWidth=1;
+    for(var hy=0;hy<11;hy++){var ha=Math.PI+hy/10*Math.PI;cx.beginPath();cx.moveTo(155+Math.cos(ha)*24,100+Math.sin(ha)*24);cx.lineTo(155+Math.cos(ha)*26,100+Math.sin(ha)*26);cx.stroke()}
+    var humNorm=Math.max(0,Math.min(1,(s.hu-40)/60));
+    var hyAng=Math.PI+humNorm*Math.PI;
+    cx.strokeStyle='#a02020';cx.lineWidth=2;cx.beginPath();cx.moveTo(155,100);cx.lineTo(155+Math.cos(hyAng)*20,100+Math.sin(hyAng)*20);cx.stroke();
+    cx.fillStyle='#222';cx.beginPath();cx.arc(155,100,2,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#5a4030';cx.font='6px sans-serif';cx.fillText('🌡️',155,140);
     // Shelves + 3 backup monotub jars (top shelf)
     cx.fillStyle='#3a2a18';cx.fillRect(120,290,560,8);
     cx.fillStyle='#2a1a08';cx.fillRect(80,480,640,10);
@@ -1438,6 +1479,18 @@ function drawMG(){
     cx.fillStyle='#40688060';cx.fillRect(80,220,640,8);
     cx.fillStyle='#406080';for(var pi=0;pi<6;pi++)cx.fillRect(150+pi*30,225,4,15);
     cx.fillStyle='#3a5060';cx.fillRect(150,210,180,10);
+    // Floating buoy bobbing on horizon
+    var buoyT=Date.now()/1000;
+    var buoyY=222+Math.sin(buoyT)*2;
+    cx.fillStyle='#a02020';cx.fillRect(420,buoyY-6,8,8);
+    cx.fillStyle='#fff';cx.fillRect(420,buoyY-2,8,2);
+    cx.strokeStyle='#222';cx.lineWidth=1;cx.beginPath();cx.moveTo(424,buoyY-6);cx.lineTo(424,buoyY-14);cx.stroke();
+    cx.fillStyle='#f05050';cx.beginPath();cx.arc(424,buoyY-15,2,0,Math.PI*2);cx.fill();
+    // Seagull silhouette
+    var gullT=Date.now()/1200;
+    var gullX=300+gullT%600;
+    cx.strokeStyle='#3a2820';cx.lineWidth=2;
+    cx.beginPath();cx.moveTo(gullX,60);cx.quadraticCurveTo(gullX+4,56,gullX+8,60);cx.quadraticCurveTo(gullX+12,56,gullX+16,60);cx.stroke();
     cx.fillStyle='#ffffff';cx.fillRect(640,180,10,40);
     cx.fillStyle='#a02020';cx.fillRect(640,175,10,5);cx.fillRect(640,193,10,5);
     cx.fillStyle='#ffff80';cx.beginPath();cx.arc(645,177,4,0,Math.PI*2);cx.fill();
@@ -1502,6 +1555,23 @@ function drawMG(){
     cx.fillText('Accept rate: 24%',570,99);
     cx.fillText('Reviewers: 3',570,110);
     cx.fillStyle='#0a0';cx.font='bold 10px sans-serif';cx.fillText('★ STRONG',570,128);
+    // Whiteboard (between bookshelf and poster) with formula + scribbles
+    cx.fillStyle='#5a4a30';cx.fillRect(335,55,140,80);
+    cx.fillStyle='#f5f5e8';cx.fillRect(340,60,130,72);
+    cx.fillStyle='#1a3a8a';cx.font='bold 9px sans-serif';cx.textAlign='left';
+    cx.fillText('L = E[log π]',345,75);
+    cx.fillStyle='#a02020';cx.fillText('− β·KL',395,75);
+    cx.fillStyle='#222';cx.font='9px sans-serif';
+    cx.fillText('alignment',345,90);
+    cx.fillStyle='#1a7050';cx.font='bold 8px sans-serif';cx.fillText('✓ p<0.01',345,103);
+    // chart sketch
+    cx.strokeStyle='#4060a0';cx.lineWidth=1;
+    cx.beginPath();cx.moveTo(420,128);cx.lineTo(430,118);cx.lineTo(440,122);cx.lineTo(450,108);cx.lineTo(460,112);cx.stroke();
+    // sticky notes
+    cx.fillStyle='#f0e060';cx.fillRect(345,108,20,18);
+    cx.fillStyle='#222';cx.font='6px sans-serif';cx.fillText('TODO',348,116);cx.fillText('cite',348,124);
+    cx.fillStyle='#90d090';cx.fillRect(450,108,18,18);
+    cx.fillStyle='#222';cx.fillText('run',452,116);cx.fillText('exp 3',452,124);
     // DESK
     cx.fillStyle='#5a3a1a';cx.fillRect(80,310,640,180);
     cx.fillStyle='#7a4a25';cx.fillRect(80,308,640,3);
@@ -1580,6 +1650,18 @@ function drawMG(){
       cx.fillStyle='#1a0a05';cx.fillRect(bx+3,bh-5,8,6);
       cx.fillStyle='#ffffff20';cx.fillRect(bx+1,bh,2,22);
     }}
+    // Chalkboard price list (between neon and shelf)
+    cx.fillStyle='#3a2010';cx.fillRect(380,135,135,75);
+    cx.fillStyle='#1a2818';cx.fillRect(385,140,125,65);
+    cx.fillStyle='#f0e8a0';cx.font='bold 9px sans-serif';cx.textAlign='left';
+    cx.fillText('★ DRAFT LIST',390,152);
+    cx.font='8px sans-serif';cx.fillStyle='#f0e8a0';
+    cx.fillText('Heineken  €3.5',390,165);
+    cx.fillText('IPA Tap   €4.2',390,177);
+    cx.fillText('Jägermeister €4',390,189);
+    cx.fillText('Old Genever €5',390,201);
+    // chalk dust
+    cx.fillStyle='#f0e8a020';for(var cd2=0;cd2<6;cd2++){cx.beginPath();cx.arc(420+cd2*15,193+Math.random()*8,1.2,0,Math.PI*2);cx.fill()}
     // Tap handles (right wall)
     cx.fillStyle='#666';cx.fillRect(660,160,8,100);
     cx.fillStyle='#a0a0a0';cx.beginPath();cx.arc(664,158,6,0,Math.PI*2);cx.fill();

@@ -399,6 +399,44 @@ const STREETS=[
   {x:640,y:415,t:'Mauritskade',ang:0},
 ];
 
+// Curved street paths — real Amsterdam streets bend along canals & IJ.
+// Each path is a quadratic Bezier: (xs,ys) start, (cpx,cpy) control, (xe,ye) end.
+const STREET_PATHS=[
+  // Damrak — curves slightly as it follows the IJ inlet
+  {xs:340,ys:60,cpx:355,cpy:85,xe:340,ye:108,t:'Damrak',off:-8},
+  // Haarlemmerdijk — bends west around Westerkerk
+  {xs:120,ys:55,cpx:160,cpy:60,xe:200,ye:60,t:'Haarlemmerdijk',off:-7},
+  // Kalverstraat / Rokin — gentle S along the Amstel
+  {xs:340,ys:120,cpx:380,cpy:150,xe:340,ye:200,t:'Kalverstraat',off:-7},
+  {xs:340,ys:200,cpx:380,cpy:215,xe:340,ye:230,t:'Rokin',off:-7},
+  // Vijzelstraat — curves toward Muntplein
+  {xs:430,ys:300,cpx:415,cpy:320,xe:430,ye:340,t:'Vijzelstraat',off:-7},
+  // Spui — short curve from Rokin
+  {xs:470,ys:170,cpx:485,cpy:185,xe:480,ye:200,t:'Spui',off:-7},
+  // Nieuwendijk — gentle west bow
+  {xs:80,ys:130,cpx:110,cpy:155,xe:140,ye:175,t:'Nieuwendijk',off:-7},
+  // Reguliersbreestraat — eastward sweep
+  {xs:520,ys:140,cpx:545,cpy:160,xe:560,ye:175,t:'Reguliersbreestraat',off:-7},
+  // Sarphatistraat — southward curve toward De Pijp
+  {xs:300,ys:380,cpx:330,cpy:400,xe:300,ye:415,t:'Sarphatistraat',off:7},
+  // Albert Cuyp — wavy market street
+  {xs:130,ys:415,cpx:170,cpy:425,xe:170,ye:425,t:'Albert Cuyp',off:7},
+  // Ferdinand Bolstraat — slight curve along Sarphatipark
+  {xs:220,ys:430,cpx:240,cpy:420,xe:255,ye:430,t:'Ferdinand Bolstraat',off:7},
+  // Ceintuurbaan — gentle bow
+  {xs:480,ys:415,cpx:495,cpy:425,xe:510,ye:425,t:'Ceintuurbaan',off:7},
+  // Mauritskade — east-side sweep along the Singelgracht
+  {xs:600,ys:360,cpx:625,cpy:390,xe:640,ye:415,t:'Mauritskade',off:-7},
+  // Plantage Middenlaan — wooded curve
+  {xs:580,ys:230,cpx:600,cpy:250,xe:580,ye:270,t:'Plantage Middenlaan',off:7},
+  // Oosterdok — water-edge curve along IJ
+  {xs:680,ys:80,cpx:700,cpy:110,xe:680,ye:140,t:'Oosterdok',off:7},
+  // Prinsengracht — long sweeping canal-side street
+  {xs:80,ys:315,cpx:140,cpy:325,xe:200,ye:320,t:'Prinsengracht',off:-7},
+  // Leidsegracht — short canal-side bend
+  {xs:80,ys:340,cpx:140,cpy:345,xe:200,ye:340,t:'Leidsegracht',off:7},
+];
+
 // ═══════════════════════════════════════════
 // WINDMILLS — historic Dutch landmarks, drawn as decorative silhouettes.
 // Real Amsterdam-area mills: De Gooyer (outside city wall), Molen van Sloten.
@@ -1051,10 +1089,37 @@ function drawMap(){
   cx.fillStyle='#e8d090';cx.font='bold 10px sans-serif';cx.textAlign='center';
   cx.fillText('◆ DAM ◆',335,225);
 
-  // ── 13. Street labels (italic, light gray) ──
+  // ── 13. Curved street paths (Bezier) + italic labels along the curve ──
+  STREET_PATHS.forEach(function(p){
+    // shadow line (subtle paper depth)
+    cx.strokeStyle='#d8c8a820';cx.lineWidth=3.5;cx.beginPath();
+    cx.moveTo(p.xs+1,p.ys+1);cx.quadraticCurveTo(p.cpx+1,p.cpy+1,p.xe+1,p.ye+1);cx.stroke();
+    // main street line — warm asphalt
+    cx.strokeStyle='#c8b898';cx.lineWidth=2;cx.beginPath();
+    cx.moveTo(p.xs,p.ys);cx.quadraticCurveTo(p.cpx,p.cpy,p.xe,p.ye);cx.stroke();
+    // dashed center line
+    cx.strokeStyle='#e8d8b8';cx.lineWidth=0.8;cx.setLineDash([3,2]);
+    cx.beginPath();cx.moveTo(p.xs,p.ys);cx.quadraticCurveTo(p.cpx,p.cpy,p.xe,p.ye);cx.stroke();
+    cx.setLineDash([]);
+    // label offset above curve midpoint; only rotate when path is long + horizontal-ish
+    var mx=(p.xs+p.xe)/2,my=(p.ys+p.ye)/2;
+    var dx=p.xe-p.xs,dy=p.ye-p.ys;
+    var pathLen=Math.sqrt(dx*dx+dy*dy);
+    cx.font='italic 8px sans-serif';cx.fillStyle='#7a6850';cx.textAlign='center';
+    if(pathLen>60&&Math.abs(dx)>Math.abs(dy)*2){
+      cx.save();cx.translate(mx,my+p.off);
+      var ang=Math.atan2(dy,dx);
+      if(ang>Math.PI/2||ang<-Math.PI/2){cx.rotate(ang+Math.PI)}else{cx.rotate(ang)}
+      cx.fillText(p.t,0,0);
+      cx.restore();
+    }else{
+      cx.fillText(p.t,mx+p.off,my+p.off);
+    }
+  });
+  // Fallback straight street labels (legacy entries not yet in STREET_PATHS)
   STREETS.forEach(function(s){
-    cx.save();
-    cx.translate(s.x,s.y);if(s.ang)cx.rotate(s.ang);
+    if(STREET_PATHS.some(function(p){return p.t===s.t}))return;
+    cx.save();cx.translate(s.x,s.y);if(s.ang)cx.rotate(s.ang);
     cx.font='italic 8px sans-serif';cx.fillStyle='#7a6850';cx.textAlign='left';
     cx.fillText(s.t,0,0);
     cx.restore();

@@ -391,6 +391,21 @@ const STREETS=[
   {x:680,y:140,t:'Oosterdok',ang:0},
   {x:200,y:320,t:'Prinsengracht',ang:0},
   {x:200,y:340,t:'Leidsegracht',ang:0},
+  // Round 1 additions — real Amsterdam names for stronger identity
+  {x:140,y:175,t:'Nieuwendijk',ang:0},
+  {x:560,y:175,t:'Reguliersbreestraat',ang:0},
+  {x:430,y:340,t:'Vijzelstraat',ang:0},
+  {x:255,y:430,t:'Ferdinand Bolstraat',ang:0},
+  {x:640,y:415,t:'Mauritskade',ang:0},
+];
+
+// ═══════════════════════════════════════════
+// WINDMILLS — historic Dutch landmarks, drawn as decorative silhouettes.
+// Real Amsterdam-area mills: De Gooyer (outside city wall), Molen van Sloten.
+// ═══════════════════════════════════════════
+const WINDMILLS=[
+  {x:755,y:85,n:'De Gooyer'},
+  {x:25,y:430,n:'Molen v.Sloten'},
 ];
 
 // ═══════════════════════════════════════════
@@ -957,18 +972,80 @@ function drawMap(){
     cx.fillText(b.n,cxm,b.y+b.h+11);
   });
 
-  // ── 11. Church spires (Amsterdam three iconic towers) ──
-  function drawSpire(x,y,h,bodyCl,roofCl,crownCl,label){
-    cx.fillStyle=bodyCl;cx.fillRect(x-2,y-8,4,h);
+  // ── 11. Church spires (Amsterdam three iconic towers, drawn more carefully) ──
+  function drawSpire(x,y,h,bodyCl,roofCl,crownCl,label,style){
+    // body (tapered brick tower)
+    cx.fillStyle=bodyCl;
+    cx.beginPath();
+    cx.moveTo(x-2.5,y);
+    cx.lineTo(x-2,y-4);
+    cx.lineTo(x-2,y-h+8);
+    cx.lineTo(x+2,y-h+8);
+    cx.lineTo(x+2,y-4);
+    cx.lineTo(x+2.5,y);
+    cx.closePath();cx.fill();
+    // brick lines (3 courses)
+    cx.fillStyle='#0002';
+    for(var bi=0;bi<3;bi++){cx.fillRect(x-2,y-6-bi*((h-10)/3),4,1)}
+    // arched windows (2 small dark slits)
+    cx.fillStyle='#2a1a10';
+    cx.fillRect(x-1,y-8,2,3);
+    cx.fillRect(x-1,y-13,2,3);
+    // roof — varies by style (Westerkerk = imperial crown, Oude Kerk = squat wood, Nieuwe Kerk = tall gothic)
     cx.fillStyle=roofCl;
-    cx.beginPath();cx.moveTo(x,y-8);cx.lineTo(x-3,y-12);cx.lineTo(x+3,y-12);cx.closePath();cx.fill();
-    cx.fillStyle=crownCl;cx.beginPath();cx.arc(x,y-13,2,0,Math.PI*2);cx.fill();
+    cx.beginPath();
+    if(style==='imperial'){
+      // Westerkerk: blue imperial crown with gold ball
+      cx.moveTo(x-3,y-h+8);cx.lineTo(x-3,y-h+2);cx.lineTo(x-1,y-h+5);
+      cx.lineTo(x,y-h);cx.lineTo(x+1,y-h+5);cx.lineTo(x+3,y-h+2);cx.lineTo(x+3,y-h+8);cx.closePath();cx.fill();
+      cx.fillStyle=crownCl;cx.beginPath();cx.arc(x,y-h-1,1.6,0,Math.PI*2);cx.fill();
+      cx.fillStyle='#3a6890';cx.fillRect(x-3.5,y-h+8,7,1.5); // blue band
+    }else if(style==='gothic'){
+      // Nieuwe Kerk: tall pointed spire with cross
+      cx.moveTo(x-3,y-h+8);cx.lineTo(x,y-h-3);cx.lineTo(x+3,y-h+8);cx.closePath();cx.fill();
+      cx.strokeStyle=crownCl;cx.lineWidth=1;
+      cx.beginPath();cx.moveTo(x,y-h-3);cx.lineTo(x,y-h-7);cx.stroke();
+      cx.beginPath();cx.moveTo(x-1.5,y-h-5);cx.lineTo(x+1.5,y-h-5);cx.stroke();
+    }else{
+      // Oude Kerk: squat wooden cap (looks like an old covered wagon)
+      cx.moveTo(x-4,y-h+8);cx.lineTo(x-3,y-h+1);cx.lineTo(x+3,y-h+1);cx.lineTo(x+4,y-h+8);cx.closePath();cx.fill();
+      cx.fillStyle='#0003';cx.fillRect(x-3,y-h+3,6,1);
+      cx.fillStyle=crownCl;cx.beginPath();cx.arc(x,y-h,1.4,0,Math.PI*2);cx.fill();
+    }
     cx.font='bold 7px sans-serif';cx.fillStyle='#1a1a1a';cx.textAlign='center';
-    cx.fillText(label,x,y-16);
+    cx.fillText(label,x,y-17);
   }
-  drawSpire(80, 235, 22,'#7a4830','#a06040','#e8a020','⛪ Westerkerk');
-  drawSpire(335, 230, 26,'#7a4830','#a06040','#e8a020','⛪ Nieuwe Kerk');
-  drawSpire(580, 240, 20,'#7a4830','#c87040','#e8a020','⛪ Oude Kerk');
+  // Three iconic Amsterdam churches, each with its own crown style.
+  // Real Westerkerk = imperial crown (blue+gold); Nieuwe Kerk = tall gothic spire; Oude Kerk = squat wooden cap.
+  drawSpire(80, 235, 22,'#7a4830','#a06040','#e8a020','⛪ Westerkerk','imperial');
+  drawSpire(335, 230, 30,'#7a4830','#a06040','#e8a020','⛪ Nieuwe Kerk','gothic');
+  drawSpire(580, 240, 18,'#7a4830','#c87040','#e8a020','⛪ Oude Kerk','wood');
+
+  // ── 11b. Windmills (Dutch identity) — drawn as small silhouettes in the outskirts ──
+  function drawWindmill(wx,wy){
+    // base/hill
+    cx.fillStyle='#9aa868';cx.beginPath();cx.ellipse(wx,wy+10,9,3,0,0,Math.PI*2);cx.fill();
+    // tower (tapered)
+    cx.fillStyle='#7a4830';
+    cx.beginPath();cx.moveTo(wx-4,wy+8);cx.lineTo(wx-3,wy-6);cx.lineTo(wx+3,wy-6);cx.lineTo(wx+4,wy+8);cx.closePath();cx.fill();
+    // cap (round top)
+    cx.fillStyle='#a06040';cx.beginPath();cx.ellipse(wx,wy-7,4,2,0,0,Math.PI*2);cx.fill();
+    // 4 sails (X) — animate slowly via current time
+    var ang=Date.now()/900;
+    cx.strokeStyle='#3a2010';cx.lineWidth=1.2;
+    for(var s=0;s<4;s++){
+      var a=ang+s*Math.PI/2;
+      cx.beginPath();cx.moveTo(wx,wy-7);
+      cx.lineTo(wx+Math.cos(a)*9,wy-7+Math.sin(a)*9);cx.stroke();
+      // sail lattice
+      var sx=wx+Math.cos(a)*9,sy=wy-7+Math.sin(a)*9;
+      var px=-Math.sin(a)*3,py=Math.cos(a)*3;
+      cx.beginPath();cx.moveTo(sx-px,sy-py);cx.lineTo(sx+px,sy+py);cx.stroke();
+    }
+    cx.font='bold 6px sans-serif';cx.fillStyle='#3a2010';cx.textAlign='center';
+    cx.fillText('🌬',wx,wy+18);
+  }
+  WINDMILLS.forEach(function(wm){drawWindmill(wm.x,wm.y)});
 
   // ── 12. Dam Square diamond ──
   cx.fillStyle='#e8d090';cx.font='bold 10px sans-serif';cx.textAlign='center';

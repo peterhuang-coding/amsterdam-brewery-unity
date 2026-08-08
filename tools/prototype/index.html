@@ -438,6 +438,25 @@ const STREET_PATHS=[
 ];
 
 // ═══════════════════════════════════════════
+// UI COLOR TOKENS — single source of truth for HUD / modal / status colors.
+// In-scene paints (brick, wood, water) stay literal; HUD elements use these.
+// ═══════════════════════════════════════════
+const UI={
+  // text
+  tx:'#fff',txD:'#222',txM:'#aaa',txS:'#888',
+  // backgrounds (HUD cards, modal panels)
+  bg:'#1a1a1a',bgA:'#1a1a1a98',bgL:'#00000050',
+  card:'#fff8',cardH:'#fffc',cardS:'#fff8',
+  // brand + status
+  brand:'#3a78c0',gold:'#e8a020',goldL:'#ecb457',
+  ok:'#78c878',warn:'#f0a030',bad:'#f05050',
+  // bar fill backgrounds
+  fill:'#fff1',fillD:'#1a0a05',
+  // shadow
+  sh:'#0006',
+};
+
+// ═══════════════════════════════════════════
 // WINDMILLS — historic Dutch landmarks, drawn as decorative silhouettes.
 // Real Amsterdam-area mills: De Gooyer (outside city wall), Molen van Sloten.
 // ═══════════════════════════════════════════
@@ -1431,7 +1450,7 @@ function drawMG(){
     // === HUD overlay ===
     cx.fillStyle='#fff';cx.font='bold 13px sans-serif';cx.textAlign='center';
     var cst=['白寡妇','紫雾','Amsterdam Haze'];
-    var htCol=s.ht>70?'#f05050':s.ht>40?'#f0a030':'#78c878';
+    var htCol=s.ht>70?UI.bad:s.ht>40?UI.warn:UI.ok;
     cx.fillText('🌿 咖啡店 — $'+s.pr+'/g · '+cst[s.st]+' · 热度 '+Math.round(s.ht)+'%',400,358);
     if(s.c&&!s.raid){
       const left=Math.max(0,Math.ceil((s.c.patience*1000-(Date.now()-s.c.born))/1000));
@@ -1439,14 +1458,14 @@ function drawMG(){
       cx.fillStyle='#fff';cx.font='11px sans-serif';cx.fillText(s.c.face+' 顾客出价$'+s.c.max+' · 耐心 '+left+'s'+warn,400,376);
       cx.fillStyle=s.pr<=s.c.max?'#78c878':'#f05050';
       cx.fillText(s.pr<=s.c.max?'SPACE成交':'降价或SPACE拒客',400,394);
-      cx.fillStyle='#fff1';cx.fillRect(250,403,300,6);
-      cx.fillStyle=left<3?'#f05050':left<6?'#f0a030':'#78c878';
+      cx.fillStyle=UI.fill;cx.fillRect(250,403,300,6);
+      cx.fillStyle=left<3?UI.bad:left<6?UI.warn:UI.ok;
       cx.fillRect(250,403,300*(left/s.c.patience),6);
     }
-    if(s.raid){cx.fillStyle='#f05050';cx.font='bold 24px sans-serif';cx.fillText('🚨 警察突击！',400,250)}
+    if(s.raid){cx.fillStyle=UI.bad;cx.font='bold 24px sans-serif';cx.fillText('🚨 警察突击！',400,250)}
     // sales counter + heat bar
     cx.fillStyle='#fff';cx.font='12px sans-serif';cx.fillText('今日 '+s.sd+'/5 人 · $'+s.earn,400,425);
-    cx.fillStyle='#fff1';cx.fillRect(250,435,300,12);
+    cx.fillStyle=UI.fill;cx.fillRect(250,435,300,12);
     cx.fillStyle=htCol;cx.fillRect(250,435,300*Math.min(1,s.ht/100),12);
     cx.fillStyle='#aaa';cx.font='9px sans-serif';cx.fillText('热度自然下降 -1.5%/s',400,460);
   }else if(mg==='shroom'){
@@ -1512,7 +1531,7 @@ function drawMG(){
     // HUD overlay
     cx.fillStyle='#fff';cx.font='bold 13px sans-serif';cx.textAlign='center';
     cx.fillText('🍄 '+s.st.n+' 生长 '+Math.round(s.gr)+'%'+(s.contam?' · ⚠️ 污染!':''),400,52);
-    if(s.contam){cx.fillStyle='#f05050';cx.font='bold 11px sans-serif';cx.fillText('🦠 菌丝感染 · 整批报废',400,72)}
+    if(s.contam){cx.fillStyle=UI.bad;cx.font='bold 11px sans-serif';cx.fillText('🦠 菌丝感染 · 整批报废',400,72)}
     // 3 parameter dial widgets
     var tgts=s.known?[{l:'💧湿度',v:s.hu,t:s.st.h,u:'%',col:'#4090e0'},{l:'🌡温度',v:s.tp,t:s.st.t,u:'°C',col:'#e85040'},{l:'💡光照',v:s.li,t:s.st.l,u:'h',col:'#f0c040'}]:[{l:'💧湿度',v:s.hu,t:null,u:'%',col:'#4090e0'},{l:'🌡温度',v:s.tp,t:null,u:'°C',col:'#e85040'},{l:'💡光照',v:s.li,t:null,u:'h',col:'#f0c040'}];
     tgts.forEach(function(g,i){
@@ -1596,7 +1615,7 @@ function drawMG(){
     cx.fillStyle='#fff';cx.font='bold 12px sans-serif';cx.textAlign='left';cx.fillText('🏄 '+s.wave.n,135,455);
     cx.fillStyle='#fff';cx.textAlign='right';cx.fillText(s.sc+'分 · '+s.at+'次抓'+(s.perfect>0?' · perfect×'+s.perfect:''),665,455);
     cx.fillStyle='#1a1a1a';cx.fillRect(135,463,250,10);
-    cx.fillStyle=s.stamina>60?'#78c878':s.stamina>30?'#f0a030':'#f05050';cx.fillRect(135,463,250*(s.stamina/100),10);
+    cx.fillStyle=s.stamina>60?UI.ok:s.stamina>30?UI.warn:UI.bad;cx.fillRect(135,463,250*(s.stamina/100),10);
     cx.fillStyle='#aaa';cx.font='9px sans-serif';cx.textAlign='left';cx.fillText('体力 '+s.stamina+'%',390,471);
     var greenState=pos>0.6&&pos<0.8?'完美区!':pos>0.3&&pos<0.95?'白区':'错过!';
     cx.fillStyle='#ecb457';cx.font='bold 11px sans-serif';cx.textAlign='center';cx.fillText(greenState,400,455);
@@ -1674,7 +1693,7 @@ function drawMG(){
       cx.fillStyle='#aaa';cx.font='10px sans-serif';cx.fillText('协同组合加分 (e.g. 红队+因果 +20)',400,351);
       s.ids.forEach(function(id,i){
         var y=355+i*22,cardW=240,cardX=400-cardW/2;
-        cx.fillStyle=s.sel.includes(i)?'#ecb45740':'#fff8';
+        cx.fillStyle=s.sel.includes(i)?UI.goldL+'40':UI.card;
         cx.fillRect(cardX,y,cardW,18);
         cx.strokeStyle=s.sel.includes(i)?'#ecb457':'#aaa';cx.lineWidth=1;cx.strokeRect(cardX,y,cardW,18);
         cx.fillStyle='#222';cx.font='10px sans-serif';cx.textAlign='left';
@@ -1687,7 +1706,7 @@ function drawMG(){
       cx.fillStyle='#444';cx.font='10px sans-serif';
       cx.fillText(s.ids[s.sel[0]].t+' + '+s.ids[s.sel[1]].t+(s.synergy>0?'  ✨协同+'+s.synergy:''),400,372);
       var pct=Math.min(100,(Date.now()-s.ws)/3);
-      cx.fillStyle='#fff8';cx.strokeStyle='#666';cx.strokeRect(280,400,240,8);
+      cx.fillStyle=UI.card;cx.strokeStyle='#666';cx.strokeRect(280,400,240,8);
       cx.fillStyle='#3a78c0';cx.fillRect(280,400,240*pct/100,8);
       cx.fillStyle='#222';cx.font='10px sans-serif';cx.fillText('预计 '+s.sc+' 分 ('+s.venue+') · SPACE提交',400,425);
       // pen moving across paper
@@ -1775,7 +1794,7 @@ function drawMG(){
       // patience bar
       var left=Math.max(0,c.patience*1000-(Date.now()-c.born));
       var pct=left/(c.patience*1000);
-      cx.fillStyle='#fff1';cx.fillRect(ccx-15,cy-38,30,5);
+      cx.fillStyle=UI.fill;cx.fillRect(ccx-15,cy-38,30,5);
       cx.fillStyle=pct<0.3?'#f05050':pct<0.6?'#f0a030':'#78c878';cx.fillRect(ccx-15,cy-38,30*pct,5);
       // patron label
       cx.fillStyle='#fff';cx.font='bold 11px sans-serif';cx.textAlign='center';

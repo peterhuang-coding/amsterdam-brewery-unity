@@ -114,6 +114,16 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 .upg-card .un{font-size:11px;color:var(--text);line-height:1.4}
 .upg-card .ud{font-size:10px;color:var(--muted);margin-top:4px}
 #upg-skip{display:block;margin:14px auto 0;background:transparent;border:1px solid var(--muted);color:var(--muted)}
+
+/* Achievements panel */
+#ach-list{padding:4px 8px;display:flex;flex-direction:column;gap:3px;max-height:160px;overflow-y:auto}
+.ach-row{background:var(--card);border-radius:6px;padding:4px 7px;font-size:10px;border-left:2px solid var(--muted);opacity:.55;transition:all .3s}
+.ach-row.unlocked{border-left-color:var(--gold);opacity:1;animation:slideIn .4s}
+.ach-row .ai{font-size:14px;margin-right:4px}
+.ach-row .an{color:var(--text);font-weight:600}
+.ach-row .ad{display:block;color:var(--muted);font-size:9px;margin-top:1px;line-height:1.3}
+.ach-toast{position:fixed;top:64px;right:24px;background:var(--panel);border:1px solid var(--gold);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--gold);box-shadow:0 6px 30px #000c;z-index:130;animation:slideIn .35s;max-width:280px}
+.ach-toast em{display:block;color:var(--muted);font-style:normal;font-size:10px;margin-top:2px}
 </style>
 </head>
 <body>
@@ -129,6 +139,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div class="tb"><span class="vl" id="t-explore">🏄 今日:— · 已发现 0/7 · perfect +50?</span></div>
 <div class="tb"><span class="vl" id="t-escape">🚇 Lv 0 · 周已逃 0 次</span></div>
 <div class="tb"><span class="ic">💭</span><span class="vl" id="t-mood">😐</span></div>
+<div class="tb"><span class="ic">🏅</span><span class="vl" id="t-ach" style="color:var(--gold)">0/12</span></div>
 <div id="mods"></div>
 </div>
 
@@ -155,6 +166,8 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div id="sched"></div>
 <h3>📋 事件</h3>
 <div id="evts"></div>
+<h3>🏅 成就 <span id="ach-count" style="color:var(--gold);font-size:9px;float:right">0/12</span></h3>
+<div id="ach-list"><div style="font-size:10px;color:var(--muted);padding:4px">达成目标自动解锁</div></div>
 </div>
 
 <div id="bottom">
@@ -490,6 +503,77 @@ const UP_POOL=[
   {id:'canal_cruise',cat:'阿姆斯特丹',cost:30,t:'🚢 Canal Cruise 通票',d:'每日 +5 rep，含水上介绍'}
 ];
 
+// ═══════════════════════════════════════════
+// ACHIEVEMENTS (Round 6) — 12 unlock-only badges, persistent in localStorage.
+// Independent of meta/upgrades — purely reward exploration milestones.
+// Each id is evaluated by tryUnlock(id) at the relevant hook (brew finish,
+// coffee sale, surf catch, endGame, etc). Unlocks show as a toast + right-panel
+// list + top-bar badge.
+// ═══════════════════════════════════════════
+const ACH_POOL=[
+  {id:'first_run',ic:'🥇',n:'初出茅庐',d:'完成第一局 7 天肉鸽'},
+  {id:'perfect_week',ic:'🌟',n:'完美一周',d:'7 天 3 目标每日全达成'},
+  {id:'all_industries_max',ic:'🏭',n:'产业大亨',d:'单局 5 个产业全部满级'},
+  {id:'mega_profit',ic:'💰',n:'万元户',d:'单局累计收入 ≥ $1000'},
+  {id:'no_raid',ic:'🛡️',n:'无突击通关',d:'一整局未触发警察突击'},
+  {id:'explorer',ic:'🗺️',n:'城市漫游者',d:'进入 ≥ 6 个不同建筑'},
+  {id:'meta_collector',ic:'⭐',n:'Meta 收藏家',d:'累计 meta ≥ 50★'},
+  {id:'canal_king',ic:'👑',n:'运河之王',d:'单局 rep ≥ 30'},
+  {id:'socialite',ic:'💬',n:'社交蝴蝶',d:'单局与所有 4 NPC 都聊过'},
+  {id:'brew_master',ic:'🍺',n:'酿酒大师',d:'单局完成 ≥ 5 个酿酒订单'},
+  {id:'coffee_legend',ic:'☕',n:'咖啡传奇',d:'咖啡店完成且本局未遇卧底'},
+  {id:'surf_perfectionist',ic:'🏄',n:'完美浪人',d:'单次冲浪中 perfect barrel ≥ 3'}
+];
+const ACH_BY_ID=Object.fromEntries(ACH_POOL.map(a=>[a.id,a]));
+
+// ═══════════════════════════════════════════
+// WEB AUDIO (Round 6) — procedural synth, no external assets.
+// AudioContext is lazy-init on first user gesture (browser autoplay rule).
+// Each minigame event maps to a tiny preset: short oscillator + envelope.
+// Volume is conservative (peak ~0.15) and master muted until first play.
+// ═══════════════════════════════════════════
+const AUDIO={
+  ctx:null,muted:false,master:null,
+  init(){
+    if(this.ctx)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;this.ctx=new C();this.master=this.ctx.createGain();this.master.gain.value=0.18;this.master.connect(this.ctx.destination)}catch(e){console.warn('audio init failed',e)}
+  },
+  resume(){if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume().catch(()=>{})},
+  blip(freq,dur,type='sine',vol=1,slide=0){
+    if(!this.ctx||this.muted)return;this.resume();
+    const t=this.ctx.currentTime,o=this.ctx.createOscillator(),g=this.ctx.createGain();
+    o.type=type;o.frequency.setValueAtTime(freq,t);if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(40,freq+slide),t+dur);
+    g.gain.setValueAtTime(0.001,t);g.gain.exponentialRampToValueAtTime(vol,t+0.01);g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+    o.connect(g);g.connect(this.master);o.start(t);o.stop(t+dur+0.02);
+  },
+  noise(dur,vol=0.4,bp=1000){
+    if(!this.ctx||this.muted)return;this.resume();
+    const t=this.ctx.currentTime,buf=this.ctx.createBuffer(1,Math.ceil(this.ctx.sampleRate*dur),this.ctx.sampleRate),d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/d.length*4);
+    const s=this.ctx.createBufferSource();s.buffer=buf;
+    const f=this.ctx.createBiquadFilter();f.type='bandpass';f.frequency.value=bp;f.Q.value=1.5;
+    const g=this.ctx.createGain();g.gain.value=vol;
+    s.connect(f);f.connect(g);g.connect(this.master);s.start(t);s.stop(t+dur);
+  },
+  play(name){
+    if(!this.ctx)this.init();if(!this.ctx||this.muted)return;
+    switch(name){
+      case 'brew_ok':     this.blip(660,0.12,'sine',0.9,200);break;
+      case 'brew_fail':   this.blip(220,0.22,'sawtooth',0.5,-80);break;
+      case 'coffee_sale': this.blip(1320,0.06,'square',0.5);this.blip(1760,0.08,'sine',0.5);break;
+      case 'coffee_raid': this.blip(220,0.4,'sawtooth',0.6,-120);this.noise(0.3,0.3,800);break;
+      case 'shroom_pick': this.blip(440,0.18,'triangle',0.7);this.blip(660,0.14,'sine',0.4);break;
+      case 'surf_perfect':this.blip(880,0.08,'sine',0.7,400);this.blip(1320,0.12,'sine',0.5,300);break;
+      case 'surf_catch':  this.blip(520,0.05,'triangle',0.5);break;
+      case 'bar_clink':   this.blip(1760,0.04,'sine',0.6);this.blip(2400,0.05,'sine',0.4);break;
+      case 'bar_sale':    this.blip(1760,0.04,'sine',0.6);this.blip(2400,0.05,'sine',0.4);this.blip(440,0.1,'triangle',0.5);break;
+      case 'objective':   this.blip(523,0.07,'sine',0.6);this.blip(659,0.07,'sine',0.6);this.blip(784,0.12,'sine',0.6);break;
+      case 'achievement': this.blip(523,0.08,'sine',0.7);this.blip(659,0.08,'sine',0.7);this.blip(784,0.08,'sine',0.7);this.blip(1046,0.18,'sine',0.7);break;
+      case 'click':       this.blip(880,0.03,'square',0.4);break;
+      case 'raid_alarm':  this.noise(0.5,0.5,1200);this.blip(180,0.5,'sawtooth',0.5,-40);break;
+    }
+  }
+};
+
 // Seed abbreviation (matches RunSeed.cs Abbrev algorithm)
 const ABBREV_ALPH='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 function seedAbbrev(s){return s+'-'+ABBREV_ALPH[Math.floor(s/ABBREV_ALPH.length)%ABBREV_ALPH.length]+ABBREV_ALPH[s%ABBREV_ALPH.length]}
@@ -516,6 +600,22 @@ function industryFactor(id){
 }
 function saveMeta(){try{localStorage.setItem('ab_meta_v2',JSON.stringify({version:2,meta:G.meta,upgrades:G.upgrades,legacy:G.legacy,run:G.run}))}catch(e){console.warn('ab_meta_v2 save failed',e)}}
 function loadMeta(){try{const d=JSON.parse(localStorage.getItem('ab_meta_v2'));if(d&&d.version===2){G.meta=Math.max(0,d.meta|0);G.upgrades=Array.isArray(d.upgrades)?[...new Set(d.upgrades)]:[];G.legacy=Math.max(0,d.legacy|0);G.run=Math.max(0,d.run|0)}}catch(e){console.warn('ab_meta_v2 load failed',e)}}
+function saveAch(){try{localStorage.setItem('ab_ach_v1',JSON.stringify({version:1,unlocked:G.achievements}))}catch(e){console.warn('ab_ach_v1 save failed',e)}}
+function loadAch(){try{const d=JSON.parse(localStorage.getItem('ab_ach_v1'));if(d&&d.version===1&&Array.isArray(d.unlocked))G.achievements=Array.from(new Set(d.unlocked))}catch(e){console.warn('ab_ach_v1 load failed',e)}}
+function tryUnlock(id){
+  if(!ACH_BY_ID[id])return false;if(G.achievements.includes(id))return false;
+  G.achievements.push(id);saveAch();AUDIO.play('achievement');
+  const a=ACH_BY_ID[id];addEvt('good',`🏅 解锁成就 ${a.ic} ${a.n}`);
+  // Toast
+  const t=document.createElement('div');t.className='ach-toast';
+  t.innerHTML=`🏅 解锁成就 · ${a.ic} ${a.n}<em>${a.d}</em>`;
+  document.body.appendChild(t);setTimeout(()=>t.remove(),3200);
+  return true;
+}
+// Per-run scratch counters (reset each newRun)
+function resetRunCounters(){
+  G._run={orders:0,coffeeRaid:false,coffeeNoUndercover:true,perfectWaves:0,policeHits:0,brewsFinished:0,sawUndercover:false,greetedAll:{}};
+}
 function showHelp(){document.getElementById('help-modal').classList.remove('hidden')}
 function closeHelp(){document.getElementById('help-modal').classList.add('hidden')}
 function modalOpen(){const s=document.getElementById('start-modal'),h=document.getElementById('help-modal');return (s&&!s.classList.contains('hidden'))||(h&&!h.classList.contains('hidden'))}
@@ -529,7 +629,7 @@ function startFromModal(){
 }
 function skipTutorial(){try{localStorage.setItem('ab_skip_tutorial','1')}catch(e){console.warn('ab_skip_tutorial save failed',e)};document.getElementById('start-modal').classList.add('hidden');startFromModal()}
 
-const G={p:{x:100,y:400,tx:100,ty:400},day:1,ti:0,money:250,rep:0,loc:'de_pijp',ind:{},bs:[5,3,2],brewI:-1,brewT:0,events:[],mods:[],auto:false,inside:null,mg:null,ended:false,ts:0,tr:0,run:0,legacy:0,_at:null,_wp:null,_otx:null,_oty:null,_st:0,_sx:0,_sy:0,sch:[],seed:42,meta:0,metaPending:0,objs:[],upgrades:[],objDefs:{},_objDay:0,mood:0,greetedToday:[],visitedToday:[],visited:[],shop:{},surfDiscovered:[],inventory:[],todayWave:null,escapeLevel:0,escapeTeacher:null,escUsed:0,escapeLearnDay:0,keys:{},lastClickAt:0};
+const G={p:{x:100,y:400,tx:100,ty:400},day:1,ti:0,money:250,rep:0,loc:'de_pijp',ind:{},bs:[5,3,2],brewI:-1,brewT:0,events:[],mods:[],auto:false,inside:null,mg:null,ended:false,ts:0,tr:0,run:0,legacy:0,_at:null,_wp:null,_otx:null,_oty:null,_st:0,_sx:0,_sy:0,sch:[],seed:42,meta:0,metaPending:0,objs:[],upgrades:[],objDefs:{},_objDay:0,mood:0,greetedToday:[],visitedToday:[],visited:[],shop:{},surfDiscovered:[],inventory:[],todayWave:null,escapeLevel:0,escapeTeacher:null,escUsed:0,escapeLearnDay:0,keys:{},lastClickAt:0,achievements:[],_run:{}};
 for(const k of Object.keys(IND_DEF))G.ind[k]={lv:0,xp:0};
 const MG={};
 
@@ -643,12 +743,12 @@ function brewIn(k){const s=MG.brew;if(!s)return;
   if(s.ph==='sel'){if(k==='1')s.m=(s.m+1)%3;if(k==='2')s.h=(s.h+1)%3;if(k==='3')s.y=(s.y+1)%3;if(k===' '){s.ph='brew';s.started=Date.now();s.deadline=s.started+s.order.limit*1000;setStatus('🍺 酿酒订单',`订单:${s.order.type} · 控温中`,'⬆⬇调温 · SPACE提交')}
   }else if(s.ph==='brew'){if(k==='arrowup')s.t=Math.min(90,s.t+3);if(k==='arrowdown')s.t=Math.max(20,s.t-3);if(k===' ')finBrew()}}
 function finBrew(timeout){const s=MG.brew;if(!s||s.ph==='done')return;s.ph='done';const o=s.order,recipeOk=s.m===o.recipe[0]&&s.h===o.recipe[1]&&s.y===o.recipe[2],tempErr=Math.abs(s.t-o.temp);
-  if(timeout||!recipeOk||tempErr>12){if(timeout&&G.bs[0]>0)G.bs[0]--;G.shop.order=null;addEvt('bad',timeout?'⏱ 酿酒订单超时，顾客流失':`🍺 订单${!recipeOk?'配方错误':'温差过大(>'+tempErr.toFixed(0)+'°C)'}`);setStatus(timeout?'❌ 订单超时':'❌ 订单失败',timeout?'库存-1':'tip 受损','按 Esc 离开');setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},900);return}
+  if(timeout||!recipeOk||tempErr>12){if(timeout&&G.bs[0]>0)G.bs[0]--;G.shop.order=null;addEvt('bad',timeout?'⏱ 酿酒订单超时，顾客流失':`🍺 订单${!recipeOk?'配方错误':'温差过大(>'+tempErr.toFixed(0)+'°C)'}`);setStatus(timeout?'❌ 订单超时':'❌ 订单失败',timeout?'库存-1':'tip 受损','按 Esc 离开');AUDIO.play('brew_fail');setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},900);return}
   // Quality scales with temp accuracy + yeast health. ±5°C is the "excellent" band.
   const tempAcc=Math.max(0.4, 1-tempErr*0.05); // 1.0 perfect, 0.6 at ±8°C, 0.4 at ±12°C
   const base=Math.round((35+(10+o.temp/10)*tipFactor())*tempAcc*s.yeast),inc=Math.round(base*1.3*industryFactor('brewing')*(o.bonus||1));
   const quality=tempAcc>=0.95?'★完美':tempAcc>=0.8?'好':'一般';
-  G.money+=inc;G.ind.brewing.xp+=Math.round(inc*(hasUpgrade('legacy_xp')?1.25:1));G.shop.order=null;addEvt('good',`🍺 ${o.type} 订单完成 +$${inc} · ${quality}`);setMsg(`🍺 ${quality} · +$${inc}`);addSch('🍺',`${o.type} +$${inc}`);G.mg=null;G.inside=null;chkLv('brewing');setStatus('✅ 订单完成',`+$${inc} · ${quality}`,'');tickObj('Brew',1);tickObj('Earn',inc);renderAll()}
+  G.money+=inc;G.ind.brewing.xp+=Math.round(inc*(hasUpgrade('legacy_xp')?1.25:1));G.shop.order=null;addEvt('good',`🍺 ${o.type} 订单完成 +$${inc} · ${quality}`);setMsg(`🍺 ${quality} · +$${inc}`);addSch('🍺',`${o.type} +$${inc}`);G.mg=null;G.inside=null;chkLv('brewing');setStatus('✅ 订单完成',`+$${inc} · ${quality}`,'');tickObj('Brew',1);tickObj('Earn',inc);G._run.brewsFinished++;tryUnlock('brew_master');AUDIO.play('brew_ok');renderAll()}
 function updateBrew(){const s=MG.brew;if(!s||s.ph!=='brew')return;if(Date.now()>s.deadline)finBrew(true)}
 function startCoffee(){
   if(hasMod('police_raid')||G.shop.coffeeBlockedDay===G.day){G.mg=null;G.inside=null;setStatus('🚓 咖啡店关闭','今日检查，暂不可经营','明日再来');setMsg('🌿 今日咖啡店停业');return}
@@ -660,6 +760,7 @@ function startCoffee(){
 }
 function sCoffeeC(){const s=MG.coffee;if(!s)return;
   const undercover=seeded(60+s.sd*13)<.1;
+  if(undercover)G._run.sawUndercover=true;
   // Customer patience: 7-12s. Tourists patient, locals impatient.
   const patience=7+Math.floor(seeded(64+s.sd)*6);
   s.c={face:['🧑','🙂','🧐','🥴'][Math.floor(seeded(61+s.sd)*4)],
@@ -682,8 +783,8 @@ function updateCoffee(){
 }
 function coffeeIn(k){const s=MG.coffee;if(!s||s.raid)return;s.lastT=Date.now();if(k==='1')s.st=0;if(k==='2')s.st=1;if(k==='3')s.st=2;if(k==='q')s.pr=Math.max(5,s.pr-1);if(k==='w')s.pr=Math.min(50,s.pr+1);
   if(k==='x'&&s.c){setMsg(s.c.undercover?'🛡️ 拒绝卧底，安全 (-8°)' :'❌ 顾客离店 (-2°)');if(s.c.undercover){G.rep+=2;addEvt('good','🛡️ 识破卧底 +2 rep')}s.sd++;s.ht=Math.max(0,s.ht-(s.c.undercover?8:2));if(s.sd>=s.target)finCoffee();else sCoffeeC();renderAll();return}
-  if(k===' '){if(!s.c||s.sd>=s.target){finCoffee();return}const cst=[8,14,22];if(s.pr<=s.c.max){if(s.c.undercover){s.raid=true;G.shop.coffeeBlockedDay=G.day;G.bs[1]=Math.max(0,G.bs[1]-1);addEvt('bad','🚨 卧底成交，突击没收货物');setStatus('🚨 被突击！','卧底成交，咖啡店今日停业','明日才能继续');setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},1200);return}s.earn+=s.pr;s.ht+=Math.round(s.pr/cst[s.st]*8);setMsg('✅ 成交')}else{setMsg('❌ 出价过高，顾客走了 (-3°)');s.ht=Math.max(0,s.ht-3)}s.sd++;s.ht=Math.min(100,s.ht+3);if(s.ht>=100){s.raid=true;G.shop.coffeeBlockedDay=G.day;G.bs[1]=Math.max(0,G.bs[1]-1);setStatus('🚨 被突击！','热度过高，咖啡店今日停业','');setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},1200);return}if(s.sd>=s.target)finCoffee();else sCoffeeC();renderAll()}}
-function finCoffee(){const s=MG.coffee;if(!s)return;G.money+=Math.round(s.earn*tipFactor());G.ind.coffee_shop.xp+=Math.round(s.earn*1.5);addEvt('good',`🌿 咖啡店 +$${Math.round(s.earn*tipFactor())}`);addSch('🌿',`咖啡店 +$${Math.round(s.earn*tipFactor())}`);G.mg=null;G.inside=null;chkLv('coffee_shop');setStatus('✅ 咖啡店打烊',`目标${s.sd}/${s.target} · +$${Math.round(s.earn*tipFactor())}`,'');tickObj('Earn',Math.max(1,Math.floor(s.earn/10)));tickObj('Explore',1);renderAll()}
+  if(k===' '){if(!s.c||s.sd>=s.target){finCoffee();return}const cst=[8,14,22];if(s.pr<=s.c.max){if(s.c.undercover){s.raid=true;G.shop.coffeeBlockedDay=G.day;G.bs[1]=Math.max(0,G.bs[1]-1);addEvt('bad','🚨 卧底成交，突击没收货物');setStatus('🚨 被突击！','卧底成交，咖啡店今日停业','明日才能继续');AUDIO.play('coffee_raid');G._run.coffeeRaid=true;setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},1200);return}s.earn+=s.pr;s.ht+=Math.round(s.pr/cst[s.st]*8);setMsg('✅ 成交');AUDIO.play('coffee_sale')}else{setMsg('❌ 出价过高，顾客走了 (-3°)');s.ht=Math.max(0,s.ht-3)}s.sd++;s.ht=Math.min(100,s.ht+3);if(s.ht>=100){s.raid=true;G.shop.coffeeBlockedDay=G.day;G.bs[1]=Math.max(0,G.bs[1]-1);setStatus('🚨 被突击！','热度过高，咖啡店今日停业','');AUDIO.play('coffee_raid');G._run.coffeeRaid=true;setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},1200);return}if(s.sd>=s.target)finCoffee();else sCoffeeC();renderAll()}}
+function finCoffee(){const s=MG.coffee;if(!s)return;G.money+=Math.round(s.earn*tipFactor());G.ind.coffee_shop.xp+=Math.round(s.earn*1.5);addEvt('good',`🌿 咖啡店 +$${Math.round(s.earn*tipFactor())}`);addSch('🌿',`咖啡店 +$${Math.round(s.earn*tipFactor())}`);G.mg=null;G.inside=null;chkLv('coffee_shop');setStatus('✅ 咖啡店打烊',`目标${s.sd}/${s.target} · +$${Math.round(s.earn*tipFactor())}`,'');tickObj('Earn',Math.max(1,Math.floor(s.earn/10)));tickObj('Explore',1);if(!G._run.coffeeRaid&&!G._run.sawUndercover)tryUnlock('coffee_legend');AUDIO.play('objective');renderAll()}
 
 function startShroom(){if(hasMod('police_raid')){G.inside=null;setStatus('🚓 SmartShop 关闭','今日检查，暂不可经营','明日再来');return}
   // Strain knowledge carries across runs (G.strainNotes remembers your first grow).
@@ -753,7 +854,7 @@ function surfIn(k){const s=MG.surf;if(!s||s.ended||k!==' ')return;
   if(barrel)setMsg('🏄 Perfect barrel +50!');
   else setMsg(`🏄 抓浪 +${sc} · 体力${s.stamina}% · combo×${s.combo}`);
   if(s.stamina<=0){s.drowned=true;finSurf(true)}else renderAll()}
-function finSurf(drowned){const s=MG.surf;if(!s||s.ended)return;s.ended=true;const perfectBonus=s.perfect*50;const bonus=s.combo>=3?1.2:1,raw=Math.round((s.sc+perfectBonus)*bonus*tipFactor()),inc=drowned?Math.floor(raw*.5):raw;G.money+=inc;G.ind.surfing.xp+=inc*3;const item=rollSurfItem(s.wave);G.inventory.push(item);addEvt(drowned?'bad':'good',`🏄 ${s.wave.n} 带回${item} · +$${inc}${perfectBonus>0?' (含 perfect ×'+s.perfect+')':''}`);addSch('🏄',`冲浪 +$${inc} · ${item}`);G.mg=null;G.inside=null;chkLv('surfing');setStatus(drowned?'🌊 溺水':'✅ 冲浪结束',`${s.sc}分 · ${item} · +$${inc}`,'');tickObj('Earn',Math.max(1,Math.floor(inc/10)));tickObj('Explore',1);renderAll()}
+function finSurf(drowned){const s=MG.surf;if(!s||s.ended)return;s.ended=true;const perfectBonus=s.perfect*50;const bonus=s.combo>=3?1.2:1,raw=Math.round((s.sc+perfectBonus)*bonus*tipFactor()),inc=drowned?Math.floor(raw*.5):raw;G.money+=inc;G.ind.surfing.xp+=inc*3;const item=rollSurfItem(s.wave);G.inventory.push(item);addEvt(drowned?'bad':'good',`🏄 ${s.wave.n} 带回${item} · +$${inc}${perfectBonus>0?' (含 perfect ×'+s.perfect+')':''}`);addSch('🏄',`冲浪 +$${inc} · ${item}`);G.mg=null;G.inside=null;chkLv('surfing');setStatus(drowned?'🌊 溺水':'✅ 冲浪结束',`${s.sc}分 · ${item} · +$${inc}`,'');tickObj('Earn',Math.max(1,Math.floor(inc/10)));tickObj('Explore',1);if(s.perfect>=3)tryUnlock('surf_perfectionist');AUDIO.play(s.perfect>=3?'surf_perfect':'surf_catch');renderAll()}
 function updateSurf(){const s=MG.surf;if(!s||G.mg!=='surf'||s.ended)return;
   // Real waves come in sets: wx position only moves during "set" phase; lulls pause it.
   // Each set lasts ~3s, then ~1.5s lull, then a new set. Auto-play exploits this naturally.
@@ -861,7 +962,7 @@ function finBar(){
   addEvt('good',`🍻 酒吧打烊 · combo最高${s.combo} · +$${inc}`);addSch('🍻',`酒吧打烊 +$${inc}`);
   G.mg=null;G.inside=null;chkLv('brewing');
   setStatus('✅ 酒吧打烊',`服务${s.sd}人 · +$${inc}`+(s.vipDay?' · VIP 日':''),'');
-  tickObj('Serve',s.sd);tickObj('Earn',Math.max(1,Math.floor(inc/10)));renderAll();
+  tickObj('Serve',s.sd);tickObj('Earn',Math.max(1,Math.floor(inc/10)));AUDIO.play('objective');renderAll();
 }
 
 // ═══════════════════════════════════════════
@@ -1712,7 +1813,7 @@ function tickObj(cat,n=1){
   G.objs.forEach(o=>{
     if(o.done||o.cat!==cat)return;
     o.cur=Math.min(o.need,o.cur+n);
-    if(o.cur>=o.need){o.done=true;let reward=o.sc;if(cat==='Earn'&&hasMod('tulip_auction'))reward+=5;if(hasUpgrade('meta_cap'))reward=Math.ceil(reward*1.5);G.metaPending+=reward;addEvt('good','🎯 目标完成:'+o.t+' +'+reward+'★（结算时到账）')}
+    if(o.cur>=o.need){o.done=true;let reward=o.sc;if(cat==='Earn'&&hasMod('tulip_auction'))reward+=5;if(hasUpgrade('meta_cap'))reward=Math.ceil(reward*1.5);G.metaPending+=reward;addEvt('good','🎯 目标完成:'+o.t+' +'+reward+'★（结算时到账）');AUDIO.play('objective')}
   });
 }
 function workInd(){if(G.inside||G.mg)return;const map={tweede_kans:'brewing',noord:'surfing',bloemenmarkt:'smart_shop',science_park:'academic',de_pijp:'brewing'};const id=map[G.loc];if(!id)return;const def=IND_DEF[id],ind=G.ind[id];const inc=Math.round((def.inc[ind.lv]+Math.floor(seeded(200+G.events.length)*5))*industryFactor(id==='surfing'?'surf':id));G.money+=inc;ind.xp+=Math.round(inc*2*(hasUpgrade('legacy_xp')?1.25:1));chkLv(id);setMsg(`${def.n} +$${inc}`);addEvt('good',`${def.n} +$${inc}`);addSch(def.n.substring(0,2),`经营 +$${inc}`);tickObj('Earn',inc);renderAll()}
@@ -1721,7 +1822,20 @@ function endGame(won){if(G.ended)return;G.ended=true;G.auto=false;clearTimeout(G
   const objDone=G.objs.filter(o=>o.done).length,objReward=G.metaPending;G.meta+=objReward;G.metaPending=0;saveMeta();
   document.getElementById('ba').textContent='▶ 自动运行';document.getElementById('ba').classList.remove('on');
   setStatus(won?'🍺 胜利！':'📋 Run 结束',`$${G.money} · 今日目标 ${objDone}/3`,`+${objReward}★ meta · 遗产 ${G.legacy}`);
-  setMsg(won?`目标达成！$${G.money} · +${objReward}★`:`7 天结束 · $${G.money} · +${objReward}★`);renderAll();
+  setMsg(won?`目标达成！$${G.money} · +${objReward}★`:`7 天结束 · $${G.money} · +${objReward}★`);
+  // Evaluate end-of-run achievements
+  tryUnlock('first_run');
+  if(won&&objDone===G.objs.length)tryUnlock('perfect_week');
+  if(Object.values(G.ind).every(i=>i.lv>=2))tryUnlock('all_industries_max');
+  if(G.money>=1000)tryUnlock('mega_profit');
+  if(!G._run.coffeeRaid&&!G.events.some(e=>e.tx&&e.tx.includes('突击')))tryUnlock('no_raid');
+  if(G.visited.length>=6)tryUnlock('explorer');
+  if(G.meta>=50)tryUnlock('meta_collector');
+  if(G.rep>=30)tryUnlock('canal_king');
+  const npcIds=['pablo','ravi','sofie','chen'];
+  if(npcIds.every(n=>G._run.greetedAll&&G._run.greetedAll[n]))tryUnlock('socialite');
+  if(G._run.brewsFinished>=5)tryUnlock('brew_master');
+  renderAll();
   setTimeout(()=>showUpgradeModal(),500);
 }
 
@@ -1739,6 +1853,8 @@ function renderAll(){
   document.getElementById('t-explore').textContent=`🏄 今日:${G.todayWave?G.todayWave.n:'—'} · 已发现 ${getDiscoveredCount()}/7 · perfect +50?`;
   document.getElementById('t-escape').textContent=`🚇 Lv ${G.escapeLevel} · 周已逃 ${G.escUsed} 次`;
   document.getElementById('t-mood').textContent=moodEmoji();
+  document.getElementById('t-ach').textContent=`${G.achievements.length}/${ACH_POOL.length}`;
+  document.getElementById('ach-count').textContent=`${G.achievements.length}/${ACH_POOL.length}`;
   // Roguelike info
   var ri=document.getElementById('rogue-info');
   var riskCount=0;for(var k in G.ind){if(G.ind[k].lv>0)riskCount++}
@@ -1770,6 +1886,13 @@ function renderAll(){
   document.getElementById('sched').innerHTML=G.sch.length?G.sch.map(s=>`<div class="sched-row"><span class="sched-time">${s.time}</span><span class="sched-emoji">${s.emoji}</span><span class="sched-act">${s.act}</span></div>`).join(''):'<div style="font-size:10px;color:var(--muted);padding:4px">⏭ 今日行程尚未开始 · 按 Space 推进</div>';
   // Events
   document.getElementById('evts').innerHTML=(G.events.length?G.events.slice(0,15):[{tp:'info',time:'',tx:'🎬 还没事件 · 按 ▶ 自动运行观察 7 天'}]).map(e=>`<div class="evt ${e.tp}"><div class="et">${e.time}</div><div class="eb">${e.tx}</div></div>`).join('');
+  // Achievements list (show unlocked first, then locked greyed)
+  const unlocked=G.achievements,locked=ACH_POOL.filter(a=>!unlocked.includes(a.id));
+  const order=[...unlocked.map(id=>ACH_BY_ID[id]).filter(Boolean),...locked];
+  document.getElementById('ach-list').innerHTML=order.map(a=>{
+    const isOn=unlocked.includes(a.id);
+    return `<div class="ach-row${isOn?' unlocked':''}"><span class="ai">${a.ic}</span><span class="an">${a.n}</span><span class="ad">${a.d}</span></div>`;
+  }).join('');
   // Center overlay
   const title=document.getElementById('cov-title'),det=document.getElementById('cov-sub'),hint=document.getElementById('cov-hint');
   if(G.mg){
@@ -1798,7 +1921,7 @@ document.addEventListener('keydown',e=>{
     renderAll();return;
   }
   if(G.inside){if(k==='escape'||k==='e'){G.inside=null;setStatus('🟢 就绪','','');renderAll();return}
-    if(k==='t'&&G.inside.tp==='npc'){const npc=G.inside.npc;if(!G.greetedToday)G.greetedToday=[];const isFirst=!G.greetedToday.includes(npc);if(isFirst){G.greetedToday.push(npc);const r=10+Math.floor(seeded(180+G.day)*15);G.money+=r;setMsg(`${npc}: +$${r} (今日首次)`);addEvt('good',`💬 ${npc} +$${r}`);addSch('💬',`${npc} +$${r}`);tickObj('Talk',1);tickObj('Earn',r);if(G.escapeLevel<4)learnEscape(npc);renderAll()}else{setMsg(`${npc} 今日已聊过（再来不再奖励）`);addEvt('info',`💬 ${npc} 今日已聊过`);renderAll()}}
+    if(k==='t'&&G.inside.tp==='npc'){const npc=G.inside.npc;if(!G.greetedToday)G.greetedToday=[];const isFirst=!G.greetedToday.includes(npc);if(isFirst){G.greetedToday.push(npc);G._run.greetedAll[npc]=1;const r=10+Math.floor(seeded(180+G.day)*15);G.money+=r;setMsg(`${npc}: +$${r} (今日首次)`);addEvt('good',`💬 ${npc} +$${r}`);addSch('💬',`${npc} +$${r}`);tickObj('Talk',1);tickObj('Earn',r);if(G.escapeLevel<4)learnEscape(npc);renderAll()}else{setMsg(`${npc} 今日已聊过（再来不再奖励）`);addEvt('info',`💬 ${npc} 今日已聊过`);renderAll()}}
     if(k==='r'&&G.inside.tp==='home'){advanceTimeAuto();renderAll()}return}
   // Track held keys for continuous movement
   if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)){G.keys[k]=true;G._wp=null;setMoveMsg()}
@@ -1812,7 +1935,7 @@ document.addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(G.keys)dele
 cv.addEventListener('click',e=>{if(modalOpen())return;if(Date.now()-G.lastClickAt<200)return;G.lastClickAt=Date.now();if(!G.inside&&!G.mg&&!G.ended){G._wp=null;const r=cv.getBoundingClientRect();const scale=r.width/W;const tx=(e.clientX-r.left)/scale;const ty=(e.clientY-r.top)/scale;const cl=clampTargetToWalkable(tx,ty);if(cl){G.p.tx=cl.x;G.p.ty=cl.y}else{G.p.tx=tx;G.p.ty=ty}}});
 
 function newRunInner(){
-  G.day=1;G.ti=0;G.ended=false;G.metaPending=0;G.visited=[];G.visitedToday=[];G.greetedToday=[];G.keys={};
+  G.day=1;G.ti=0;G.ended=false;G.metaPending=0;G.visited=[];G.visitedToday=[];G.greetedToday=[];G.keys={};resetRunCounters();
   const seeds=[200,220,250,280,300];G.money=seeds[Math.floor(seeded(501)*seeds.length)]+G.legacy*10+(hasUpgrade('extra_cash')?50:0);
   G.rep=0;G.bs=[3+Math.floor(seeded(502)*4)+(hasUpgrade('extra_brew')?2:0),2+Math.floor(seeded(503)*3),1+Math.floor(seeded(504)*3)];G.brewI=-1;G.brewT=0;G.events=[];G.mods=[];G.auto=false;G.inside=null;G.mg=null;G.sch=[];G.ts=0;G.tr=0;G.loc='de_pijp';G.p={x:100,y:400,tx:100,ty:400};G._wp=null;G._st=0;G.objs=[];G._objDay=0;G.todayWave=null;
   for(const k of Object.keys(IND_DEF))G.ind[k]={lv:0,xp:0};
@@ -1835,17 +1958,18 @@ document.getElementById('upg-skip').addEventListener('click',()=>{
   document.getElementById('upg-modal').classList.add('hidden');newRun();
 });
 loadMeta();
+loadAch();
 renderAll();
 // Populate seed input from URL, or auto-skip if previously dismissed
 try{if(localStorage.getItem('ab_skip_tutorial')==='1'){startFromModal()}}catch(e){}
 const _qp=new URLSearchParams(location.search);const _qs=_qp.get('seed');if(_qs)document.getElementById('start-seed').value=_qs;
 window.AB_TEST={
-  data:{industries:IND_DEF,events:EV_POOL,upgrades:UP_POOL,objectives:OBJ_CATS},state:G,
+  data:{industries:IND_DEF,events:EV_POOL,upgrades:UP_POOL,objectives:OBJ_CATS,achievements:ACH_POOL},state:G,
   seedAbbrev,seeded,rollDayObjectives,rollDayModifier,tickObj,newRun,endGame,clampTargetToWalkable,
-  industryFactor,tipFactor,
+  industryFactor,tipFactor,tryUnlock,saveAch,loadAch,AUDIO,resetRunCounters,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
-    return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function'};
+    return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};
   }
 };
 </script>

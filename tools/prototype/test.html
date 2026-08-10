@@ -25,6 +25,15 @@ frame.addEventListener('load',async()=>{
   check('升级 ID 唯一',()=>v.upgradeIds);
   check('所有事件有效果说明',()=>v.modifierEffects);
   check('冲浪入口存在',()=>v.surfEntry);
+  // Round 6 — Amsterdam-themed upgrades (ov_fiets / museumkaart / iamsterdam_card / heineken_pass / coffee_passport / canal_cruise)
+  const amIds=['ov_fiets','museumkaart','iamsterdam_card','heineken_pass','coffee_passport','canal_cruise'];
+  check('6 个阿姆斯特丹升级全部存在',()=>amIds.every(id=>t.data.upgrades.some(u=>u.id===id)));
+  check('阿姆斯特丹升级 cat=阿姆斯特丹',()=>amIds.every(id=>{const u=t.data.upgrades.find(x=>x.id===id);return u&&u.cat==='阿姆斯特丹'}));
+  check('阿姆斯特丹升级均含中文描述',()=>amIds.every(id=>{const u=t.data.upgrades.find(x=>x.id===id);return u&&u.t&&u.d&&u.cost>0}));
+  check('升级 ID 唯一含阿姆斯特丹项',()=>v.upgradeIds);
+  check('museumkaart 学术因子=1.25',()=>{const had=t.state.upgrades.slice();t.state.upgrades=['museumkaart'];const f=win.industryFactor('academic');t.state.upgrades=had;return Math.abs(f-1.25)<1e-6});
+  check('coffee_passport 咖啡因子=1.2',()=>{const had=t.state.upgrades.slice();t.state.upgrades=['coffee_passport'];const f=win.industryFactor('coffee');t.state.upgrades=had;return Math.abs(f-1.2)<1e-6});
+  check('museumkaart 叠加 museum_night=1.875',()=>{const had=t.state.upgrades.slice(),hadMods=t.state.mods.slice();t.state.upgrades=['museumkaart'];t.state.mods=[{id:'museum_night'}];const f=win.industryFactor('academic');t.state.upgrades=had;t.state.mods=hadMods;return Math.abs(f-1.875)<1e-6});
   check('Seed 缩写稳定',()=>t.seedAbbrev(42)===t.seedAbbrev(42));
   check('相同 Seed 的每日事件稳定',()=>{const a=t.rollDayModifier().id,b=t.rollDayModifier().id;return a===b});
   check('Run 状态范围合法',()=>t.state.day>=1&&t.state.day<=7&&t.state.run>=0);

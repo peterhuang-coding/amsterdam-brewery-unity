@@ -469,6 +469,9 @@ const EV_POOL=[
 ];
 
 // Upgrade pool (3-pick-1 at end of each run)
+// First 4 are functional (resource / XP / event / meta). Last 6 are real Amsterdam
+// references chosen so each one touches a different system: speed, academic, tourism,
+// brewing, coffee, social. All costs sized so a fresh run can usually buy 1 of them.
 const UP_POOL=[
   {id:'extra_brew',cat:'永久',cost:30,t:'🍺 起始库存+2',d:'新 run 起始 🍺+2'},
   {id:'extra_cash',cat:'永久',cost:40,t:'💵 起始资金+$50',d:'新 run 起始资金 $50'},
@@ -477,7 +480,14 @@ const UP_POOL=[
   {id:'tip_boost',cat:'永久',cost:35,t:'💰 酒吧小费 +25%',d:'酒吧 tip +25%'},
   {id:'meta_cap',cat:'永久',cost:80,t:'⭐ Meta 收益 +50%',d:'完成 objective meta 奖励 +50%'},
   {id:'ipa_recipe',cat:'永久',cost:90,t:'🍺 解锁 IPA 配方',d:'酿酒订单可出现高收益 IPA'},
-  {id:'extra_event',cat:'永久',cost:70,t:'🎪 解锁节庆日',d:'每日额外 roll modifier +1'}
+  {id:'extra_event',cat:'永久',cost:70,t:'🎪 解锁节庆日',d:'每日额外 roll modifier +1'},
+  // === Real Amsterdam-themed upgrades (round 6) ===
+  {id:'ov_fiets',cat:'阿姆斯特丹',cost:40,t:'🚲 OV-fiets 共享单车',d:'WASD 移动速度 +50%'},
+  {id:'museumkaart',cat:'阿姆斯特丹',cost:45,t:'🎫 Museumkaart 博物馆卡',d:'学术产业收益 +25%'},
+  {id:'iamsterdam_card',cat:'阿姆斯特丹',cost:35,t:'💳 I amsterdam Card',d:'旅游旺季（tourism）TIP +20%'},
+  {id:'heineken_pass',cat:'阿姆斯特丹',cost:50,t:'🍺 Heineken Pass 啤酒体验',d:'IPA 订单 ×1.3（与配方叠加）'},
+  {id:'coffee_passport',cat:'阿姆斯特丹',cost:40,t:'📒 Coffee Passport 咖啡护照',d:'咖啡店收益 +20%（不受热度影响）'},
+  {id:'canal_cruise',cat:'阿姆斯特丹',cost:30,t:'🚢 Canal Cruise 通票',d:'每日 +5 rep，含水上介绍'}
 ];
 
 // Seed abbreviation (matches RunSeed.cs Abbrev algorithm)
@@ -485,19 +495,24 @@ const ABBREV_ALPH='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 function seedAbbrev(s){return s+'-'+ABBREV_ALPH[Math.floor(s/ABBREV_ALPH.length)%ABBREV_ALPH.length]+ABBREV_ALPH[s%ABBREV_ALPH.length]}
 function seeded(n){const x=Math.sin((G.seed+n*9973+G.day*7919)*12.9898)*43758.5453;return x-Math.floor(x)}
 function moodEmoji(){return G.mood>0?'😊':G.mood<0?'😠':'😐'}
-function tipFactor(){let f=G.mood>0?1.2:G.mood<0?.8:1;if(hasUpgrade('tip_boost'))f*=1.25;if(hasMod('tourism'))f*=1.5;return f}
+function tipFactor(){let f=G.mood>0?1.2:G.mood<0?.8:1;if(hasUpgrade('tip_boost'))f*=1.25;if(hasMod('tourism'))f*=1.5;if(hasMod('tourism')&&hasUpgrade('iamsterdam_card'))f*=1.2;return f}
 function hasUpgrade(id){return G.upgrades.includes(id)}
 function hasMod(id){return G.mods.some(m=>m.id===id)}
 function industryFactor(id){
-  if(id==='brewing'&&hasMod('beer_festival'))return 1.2;
-  if(id==='coffee'&&hasMod('coffee_wave'))return 1.3;
-  if(id==='shroom'&&hasMod('shroom_boom'))return 2;
-  if(id==='surf'&&hasMod('north_sea_storm'))return 2;
-  if(id==='surf'&&hasMod('cold_snap'))return .5;
-  if(id==='academic'&&hasMod('ai_conference'))return 2;
-  if(id==='bar'&&hasMod('kings_day'))return 1.5;
-  if(id==='academic'&&hasMod('museum_night'))return 1.5;
-  return 1;
+  // Multiplicative: modifier and AM-them upgrade can stack on the same industry.
+  // Example: museumkaart (1.25) on museum_night day (1.5) = 1.875 academic reward.
+  let f=1;
+  if(id==='brewing'&&hasMod('beer_festival'))f*=1.2;
+  if(id==='coffee'&&hasMod('coffee_wave'))f*=1.3;
+  if(id==='coffee'&&hasUpgrade('coffee_passport'))f*=1.2;
+  if(id==='shroom'&&hasMod('shroom_boom'))f*=2;
+  if(id==='surf'&&hasMod('north_sea_storm'))f*=2;
+  if(id==='surf'&&hasMod('cold_snap'))f*=.5;
+  if(id==='academic'&&hasMod('ai_conference'))f*=2;
+  if(id==='academic'&&hasMod('museum_night'))f*=1.5;
+  if(id==='academic'&&hasUpgrade('museumkaart'))f*=1.25;
+  if(id==='bar'&&hasMod('kings_day'))f*=1.5;
+  return f;
 }
 function saveMeta(){try{localStorage.setItem('ab_meta_v2',JSON.stringify({version:2,meta:G.meta,upgrades:G.upgrades,legacy:G.legacy,run:G.run}))}catch(e){console.warn('ab_meta_v2 save failed',e)}}
 function loadMeta(){try{const d=JSON.parse(localStorage.getItem('ab_meta_v2'));if(d&&d.version===2){G.meta=Math.max(0,d.meta|0);G.upgrades=Array.isArray(d.upgrades)?[...new Set(d.upgrades)]:[];G.legacy=Math.max(0,d.legacy|0);G.run=Math.max(0,d.run|0)}}catch(e){console.warn('ab_meta_v2 load failed',e)}}
@@ -619,7 +634,7 @@ function startBrew(){
   const i=Math.floor(seeded(41)*3);
   // Real brewery: target temp is hidden — brewer has to know IPA=55, Stout=68, Lager=48
   // from memory or recipe notes. Each batch's yeast health drifts ±15%.
-  const order={type:types[i],recipe:recipes[i],temp:[55,68,48][i],limit:180,bonus:hasUpgrade('ipa_recipe')&&types[i]==='IPA'?1.5:1};
+  const order={type:types[i],recipe:recipes[i],temp:[55,68,48][i],limit:180,bonus:(hasUpgrade('ipa_recipe')&&types[i]==='IPA'?1.5:1)*(hasUpgrade('heineken_pass')&&types[i]==='IPA'?1.3:1)};
   const yeast=0.85+seeded(42+G.day*7)*0.3; // 0.85..1.15 batch variability
   G.shop.order=order;MG.brew={ph:'sel',m:0,h:0,y:0,t:50,started:0,deadline:0,order:order,yeast};G.mg='brew';
   setStatus('🍺 酿酒订单',`订单:${order.type} · 目标温 ?°C(凭经验)${order.bonus>1?' · IPA配方 x'+order.bonus:''}`,'1/2/3选原料 · SPACE开始/完成');renderAll()
@@ -1582,7 +1597,7 @@ function update(){
   if(G.inside||G.mg)return;
   // Continuous movement: while WASD is held, aim target far ahead in that direction
   if(G.keys){const k=G.keys;let dx=0,dy=0;if(k['w']||k['arrowup'])dy=-1;if(k['s']||k['arrowdown'])dy=1;if(k['a']||k['arrowleft'])dx=-1;if(k['d']||k['arrowright'])dx=1;if(dx||dy){G._wp=null;G.p.tx=G.p.x+dx*W;G.p.ty=G.p.y+dy*H}}
-  const p=G.p,dx=p.tx-p.x,dy=p.ty-p.y,d=Math.sqrt(dx*dx+dy*dy);if(d<1)return;const sp=G.auto?3:1.5;
+  const p=G.p,dx=p.tx-p.x,dy=p.ty-p.y,d=Math.sqrt(dx*dx+dy*dy);if(d<1)return;const sp=G.auto?3:1.5*(hasUpgrade('ov_fiets')?1.5:1);
   const opx=p.x,opy=p.y,nx=p.x+dx/d*sp,ny=p.y+dy/d*sp;
   if(!inCanal(nx,p.y)||onBridge(nx,p.y))p.x=nx;if(!inCanal(p.x,ny)||onBridge(p.x,ny))p.y=ny;
   p.x=Math.max(6,Math.min(W-6,p.x));p.y=Math.max(6,Math.min(H-6,p.y));
@@ -1648,6 +1663,7 @@ function autoStep(){
 function advanceTimeAuto(){
   if(G.ended)return;G.ti++;if(G.ti>=6){G.ti=0;G.day++;G.sch=[];G.visitedToday=[];G.greetedToday=[];
     if(G.day>7){endGame(G.objs.every(o=>o.done));return}
+    if(hasUpgrade('canal_cruise')){G.rep+=5;addEvt('info','🚢 Canal Cruise 通票 +5 rep')}
     rollDayObjectives();
     const mod=rollDayModifier();G.mods=[{t:mod.ic+' '+mod.t,id:mod.id,effect:mod.effect}];
     if(hasUpgrade('extra_event')){const mod2=rollDayModifier();if(mod2.id!==mod.id)G.mods.push({t:mod2.ic+' '+mod2.t,id:mod2.id,effect:mod2.effect})}
@@ -1826,6 +1842,7 @@ const _qp=new URLSearchParams(location.search);const _qs=_qp.get('seed');if(_qs)
 window.AB_TEST={
   data:{industries:IND_DEF,events:EV_POOL,upgrades:UP_POOL,objectives:OBJ_CATS},state:G,
   seedAbbrev,seeded,rollDayObjectives,rollDayModifier,tickObj,newRun,endGame,clampTargetToWalkable,
+  industryFactor,tipFactor,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function'};

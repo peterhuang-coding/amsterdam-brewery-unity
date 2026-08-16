@@ -608,6 +608,10 @@ function shroomQuality(err){
   if(err<0.5)return 2;
   return 1;
 }
+// funify-v3 (B1 brew): streak multiplier — 0→1.0, 3→1.1, 5→1.3, 10→1.5
+function brewStreakMul(n){if(n<3)return 1;if(n<5)return 1.1;if(n<10)return 1.3;return 1.5}
+// funify-v3 (B1 brew): cross-run recipe notes — mastery 0..3 (count capped at 3)
+function brewNoteProgress(notes,type){const n=notes&&notes[type]?notes[type].count:0;return Math.min(3,n|0)}
 function hasUpgrade(id){return G.upgrades.includes(id)}
 function hasMod(id){return G.mods.some(m=>m.id===id)}
 function industryFactor(id){
@@ -1995,7 +1999,7 @@ window.AB_TEST={
   data:{industries:IND_DEF,events:EV_POOL,upgrades:UP_POOL,objectives:OBJ_CATS,achievements:ACH_POOL},state:G,
   seedAbbrev,seeded,rollDayObjectives,rollDayModifier,tickObj,newRun,endGame,clampTargetToWalkable,
   industryFactor,tipFactor,tryUnlock,saveAch,loadAch,AUDIO,resetRunCounters,
-  barTipPreview,barPatienceLeft,coffeeHeatZone,coffeeFitHint,shroomQuality,
+  barTipPreview,barPatienceLeft,coffeeHeatZone,coffeeFitHint,shroomQuality,brewStreakMul,brewNoteProgress,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

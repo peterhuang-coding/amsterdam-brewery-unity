@@ -78,6 +78,13 @@ frame.addEventListener('load',async()=>{
   // ═══ funify-v3 Round 1 — shroom real-time quality predictor (BACKLOG B2) ═══
   check('shroomQuality 公式映射 OK',()=>win.eval('shroomQuality(0.05)===5&&shroomQuality(0.15)===4&&shroomQuality(0.25)===3&&shroomQuality(0.4)===2&&shroomQuality(0.6)===1'));
 
+  // ═══ funify-v3 Round 1 — brewery streak + recipe notes (BACKLOG B1) ═══
+  check('brewStreakMul 公式正确',()=>win.eval('brewStreakMul(0)===1&&brewStreakMul(3)===1.1&&brewStreakMul(5)===1.3&&brewStreakMul(10)===1.5'));
+  check('brewNoteProgress 空笔记 → 0',()=>win.eval('brewNoteProgress({},"IPA")')===0);
+  check('brewNoteProgress 1 次成功 → 1',()=>win.eval('brewNoteProgress({IPA:{count:1}},"IPA")')===1);
+  check('brewNoteProgress 99 次成功 → 3 (封顶)',()=>win.eval('brewNoteProgress({IPA:{count:99}},"IPA")')===3);
+  check('brewNoteProgress 未知类型 → 0',()=>win.eval('brewNoteProgress({IPA:{count:5}},"Stout")')===0);
+
   // ═══ Round 6 — Achievement system + WebAudio ═══
   check('ACH_POOL 至少 10 个成就',()=>t.data.achievements&&t.data.achievements.length>=10);
   check('所有成就 ID 唯一',()=>new Set(t.data.achievements.map(a=>a.id)).size===t.data.achievements.length);

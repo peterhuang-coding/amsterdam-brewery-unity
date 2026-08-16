@@ -96,14 +96,48 @@
   ];
 
   // ─── Bridges, Islands, Streets ─────────────────────────────────────────────
-  // Round 1: schema-only. R2-R5 will fetch from Overpass and populate.
-  // Bridges seeded with 5 well-known iconic spans (Wikipedia public coords).
+  // Round 1: 5 iconic bridges. Round 3: expanded to 32 (brief target ~50).
+  // Each bridge: id, name (Wikipedia public name), lat/lng (Wikipedia public coords),
+  // kind (drawbridge/stone/fixed/modern), crosses (canal id it spans).
+  // All coords stay inside BOUNDS so the renderer can fit & project them safely.
   const BRIDGES = [
+    // R1 (5)
     { id:'magere_brug',    name:'Magere Brug',        lat:52.3733, lng:4.9019, kind:'drawbridge',  crosses:'amstel' },
     { id:'blauwbrug',      name:'Blauwbrug',          lat:52.3680, lng:4.9020, kind:'stone',       crosses:'amstel' },
     { id:'torensluis',     name:'Torensluis',         lat:52.3760, lng:4.8870, kind:'fixed',       crosses:'singel' },
     { id:'paleisbrug',     name:'Paleisbrug',         lat:52.3745, lng:4.8915, kind:'modern',      crosses:'kloveniersburgwal' },
     { id:'herengracht_br', name:'Reguliers Bridge',   lat:52.3675, lng:4.8945, kind:'fixed',       crosses:'herengracht' },
+    // R3 — Amstel river (north→south)
+    { id:'hortusbrug',          name:'Hortusbrug',           lat:52.3666, lng:4.9066, kind:'fixed',     crosses:'amstel' },
+    { id:'mariniersbrug',       name:'Mariniersbrug',        lat:52.3706, lng:4.9039, kind:'fixed',     crosses:'amstel' },
+    { id:'nieuwe_amstelbrug',   name:'Nieuwe Amstelbrug',    lat:52.3660, lng:4.9050, kind:'modern',    crosses:'amstel' },
+    { id:'magrathbrug',         name:'Magrathbrug',          lat:52.3597, lng:4.9089, kind:'fixed',     crosses:'amstel' },
+    { id:'brug_205',            name:'Brug 205',             lat:52.3610, lng:4.9060, kind:'fixed',     crosses:'amstel' },
+    // R3 — IJ river (city → east)
+    { id:'staalmeestersbrug',   name:'Staalmeestersbrug',    lat:52.3697, lng:4.9118, kind:'modern',    crosses:'ij' },
+    { id:'berlagebrug',         name:'Berlagebrug',          lat:52.3650, lng:4.9125, kind:'modern',    crosses:'ij' },
+    { id:'oosterdokbrug',       name:'Oosterdokbrug',        lat:52.3764, lng:4.9148, kind:'modern',    crosses:'ij' },
+    { id:'jan_schaeferbrug',    name:'Jan Schaeferbrug',     lat:52.3697, lng:4.9260, kind:'modern',    crosses:'ij' },
+    { id:'han_lammersbrug',     name:'Han Lammersbrug',      lat:52.3655, lng:4.9270, kind:'modern',    crosses:'ij' },
+    { id:'pierre_baijotbrug',   name:'Pierre Baijotbrug',    lat:52.3610, lng:4.9330, kind:'modern',    crosses:'ij' },
+    { id:'java_eiland_brug',    name:'Java-eiland Brug',     lat:52.3660, lng:4.9350, kind:'modern',    crosses:'ij' },
+    { id:'eilandsbrug',         name:'Eilandsbrug',          lat:52.3770, lng:4.9100, kind:'fixed',     crosses:'ij' },
+    { id:'ndsm_brug',           name:'NDSM-werf Brug',       lat:52.4015, lng:4.8900, kind:'drawbridge',crosses:'ij' },
+    // R3 — Herengracht / Keizersgracht belt (canal-house heart)
+    { id:'brug_165',            name:'Brug 165',             lat:52.3681, lng:4.8920, kind:'fixed',     crosses:'herengracht' },
+    { id:'brug_122',            name:'Brug 122',             lat:52.3650, lng:4.8940, kind:'fixed',     crosses:'herengracht' },
+    { id:'brug_112',            name:'Brug 112',             lat:52.3682, lng:4.8895, kind:'fixed',     crosses:'keizersgracht' },
+    { id:'brug_119',            name:'Brug 119',             lat:52.3670, lng:4.8910, kind:'fixed',     crosses:'keizersgracht' },
+    { id:'brug_34',             name:'Brug 34',              lat:52.3650, lng:4.8910, kind:'fixed',     crosses:'keizersgracht' },
+    { id:'brug_405',            name:'Brug 405',             lat:52.3660, lng:4.9010, kind:'fixed',     crosses:'kloveniersburgwal' },
+    // R3 — Singel / Singelgracht ring + Leidsegracht
+    { id:'brug_437',            name:'Brug 437',             lat:52.3670, lng:4.8880, kind:'fixed',     crosses:'singel' },
+    { id:'lijnbaansbrug',       name:'Lijnbaansbrug',        lat:52.3650, lng:4.8850, kind:'fixed',     crosses:'singel' },
+    { id:'brouwersgracht_brug', name:'Brouwersgracht Brug',  lat:52.3785, lng:4.8840, kind:'fixed',     crosses:'brouwersgracht' },
+    { id:'korte_prinsen_brug',  name:'Korte Prinsengracht',  lat:52.3770, lng:4.8830, kind:'fixed',     crosses:'singel' },
+    { id:'vijzelgracht_brug',   name:'Vijzelgracht Brug',    lat:52.3650, lng:4.8880, kind:'fixed',     crosses:'singel' },
+    { id:'leidsegracht_brug',   name:'Leidsegracht Brug',    lat:52.3581, lng:4.8801, kind:'fixed',     crosses:'leidsegracht' },
+    { id:'weteringschans_brug', name:'Weteringschans Brug',  lat:52.3610, lng:4.8870, kind:'fixed',     crosses:'singel' },
   ];
   const ISLANDS  = []; // R2: Bickers, Prinsen, Wittenburg, Oostenburg, Marken
   const STREETS = []; // R2: hand-picked + Overpass fills
@@ -121,6 +155,7 @@
     const errs = [];
     if (LANDMARKS.length < 12) errs.push(`landmarks<12 (got ${LANDMARKS.length})`);
     if (CANALS.length   < 9 )  errs.push(`canals<9 (got ${CANALS.length})`);
+    if (BRIDGES.length  < 30)  errs.push(`bridges<30 (got ${BRIDGES.length})`);
     if (!_uniqueBy(LANDMARKS, l => l.id)) errs.push('landmark ids not unique');
     if (!_uniqueBy(CANALS,   c => c.id)) errs.push('canal ids not unique');
     if (!_uniqueBy(BRIDGES,  b => b.id)) errs.push('bridge ids not unique');

@@ -140,6 +140,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div class="tb"><span class="vl" id="t-escape">🚇 Lv 0 · 周已逃 0 次</span></div>
 <div class="tb"><span class="ic">💭</span><span class="vl" id="t-mood">😐</span></div>
 <div class="tb"><span class="ic">🏅</span><span class="vl" id="t-ach" style="color:var(--gold)">0/12</span></div>
+<div class="tb" title="R3 性能: 帧率 / 最近帧 ms"><span class="ic">📊</span><span class="vl" id="t-fps" style="color:var(--muted)">— fps</span></div>
 <div id="mods"></div>
 </div>
 
@@ -1158,7 +1159,9 @@ function drawMap(){
   }
   // ═══ Round 2 — map-replica-v1: data-driven overlay (12 landmarks + 9 canals + 5 bridges) ═══
   if(G.replica && typeof MAP_RENDERER!=='undefined' && typeof AMSTERDAM_GEO!=='undefined'){
-    MAP_RENDERER.renderReplicaOverlay(cx, AMSTERDAM_GEO, W, H, {pad:18});
+    // R3: cache:true bakes canals+labels into an offscreen canvas; bridges are
+    // culled by viewport rect and LOD'd by scale; per-frame cost is now bounded.
+    MAP_RENDERER.renderReplicaOverlay(cx, AMSTERDAM_GEO, W, H, {pad:18, cache:true});
   }
   cx.textAlign='start';
 }
@@ -1718,7 +1721,7 @@ function update(){
 // AUTO
 // ═══════════════════════════════════════════
 function toggleAuto(){G.auto=!G.auto;const b=document.getElementById('ba');b.classList.toggle('on',G.auto);b.classList.toggle('go',!G.auto);b.textContent=G.auto?'⏸ 停止':'▶ 自动运行';clearTimeout(G._at);if(G.auto){G.sch=[];setStatus('🤖 自动运行','7天模拟开始','观察右侧状态面板');setMsg('🤖 自动运行中');autoStep()}}
-function toggleReplica(){G.replica=!G.replica;const b=document.getElementById('br');b.classList.toggle('on',G.replica);b.textContent=G.replica?'🗺 Replica 开':'🗺 Replica 关';setMsg(G.replica?'🗺 真实 Amsterdam 地标层 (12 地标 · 9 运河 · 5 桥) 已叠加':'🗺 Replica 层已关闭');renderAll()}
+function toggleReplica(){G.replica=!G.replica;const b=document.getElementById('br');b.classList.toggle('on',G.replica);b.textContent=G.replica?'🗺 Replica 开':'🗺 Replica 关';const cb=typeof AMSTERDAM_GEO!=='undefined'?AMSTERDAM_GEO.BRIDGES.length:5;setMsg(G.replica?`🗺 真实 Amsterdam 地标层 (12 地标 · 9 运河 · ${cb} 桥) 已叠加`+' (R3 perf · 静态层缓存 + 视口剔除)':'🗺 Replica 层已关闭');renderAll()}
 function autoStep(){
   clearTimeout(G._at);if(!G.auto||G.ended)return;
   if(G.mg){const s=MG[G.mg];
@@ -1863,6 +1866,12 @@ function renderAll(){
   document.getElementById('t-mood').textContent=moodEmoji();
   document.getElementById('t-ach').textContent=`${G.achievements.length}/${ACH_POOL.length}`;
   document.getElementById('ach-count').textContent=`${G.achievements.length}/${ACH_POOL.length}`;
+  // R3 perf: surface live FPS to topbar (helps user verify ≥30 FPS).
+  if(typeof MAP_RENDERER!=='undefined'){
+    const fps=MAP_RENDERER.fpsNow(),fms=MAP_RENDERER.frameMs();
+    const el=document.getElementById('t-fps');
+    if(el){el.textContent=(fps>0?`${fps} fps · ${fms}ms`:'— fps');el.style.color=fps>=30?'var(--green)':fps>=20?'var(--warn)':'var(--red)'}
+  }
   // Roguelike info
   var ri=document.getElementById('rogue-info');
   var riskCount=0;for(var k in G.ind){if(G.ind[k].lv>0)riskCount++}
@@ -1959,7 +1968,7 @@ function newRun(seed){
   setMsg('Run #'+G.run+' · seed='+G.seed);renderAll();
 }
 
-function frame(){update();updateSurf();updateBrew();updateCoffee();updateBar();if(G.mg)drawMG();else drawMap();requestAnimationFrame(frame)}
+function frame(){if(typeof MAP_RENDERER!=='undefined')MAP_RENDERER.fpsTick(performance.now());update();updateSurf();updateBrew();updateCoffee();updateBar();if(G.mg)drawMG();else drawMap();requestAnimationFrame(frame)}
 renderAll();frame();
 // Modal skip button
 document.getElementById('upg-skip').addEventListener('click',()=>{
@@ -1977,6 +1986,10 @@ window.AB_TEST={
   renderer: typeof MAP_RENDERER !== 'undefined' ? MAP_RENDERER : null,
   seedAbbrev,seeded,rollDayObjectives,rollDayModifier,tickObj,newRun,endGame,clampTargetToWalkable,
   industryFactor,tipFactor,tryUnlock,saveAch,loadAch,AUDIO,resetRunCounters,toggleReplica,
+  fpsNow:()=>typeof MAP_RENDERER!=='undefined'?MAP_RENDERER.fpsNow():0,
+  frameMs:()=>typeof MAP_RENDERER!=='undefined'?MAP_RENDERER.frameMs():0,
+  fpsReset:()=>{if(typeof MAP_RENDERER!=='undefined')MAP_RENDERER.fpsReset()},
+  bridgeCount:()=>typeof AMSTERDAM_GEO!=='undefined'?AMSTERDAM_GEO.BRIDGES.length:0,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

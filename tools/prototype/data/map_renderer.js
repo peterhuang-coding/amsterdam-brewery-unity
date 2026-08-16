@@ -1,4 +1,4 @@
-/* map_renderer.js — Round 2 renderer for the Amsterdam map replica.
+/* map_renderer.js — Round 3 (perf) — Amsterdam map replica renderer.
  *
  * Consumes AMSTERDAM_GEO (data layer) and draws it onto an arbitrary canvas.
  * No DOM, no globals besides the export. Pure projection + draw functions so
@@ -8,17 +8,23 @@
  *           renderReplicaOverlay (composes all layers).
  *
  * Layer order matches the brief:
- *   1. water (canals as polylines)
- *   2. bridges (white bars)
+ *   1. water (canals as polylines) — baked once into a static offscreen canvas
+ *   2. bridges (white bars) — culled by viewport rect, LOD'd by scale
  *   3. landmark pins (circle + icon + label)
  *   4. legend (corner)
+ *
+ * Round 3 additions (perf):
+ *   - viewportRect / inViewport — bounding-box culling for bridges
+ *   - getStaticLayer — offscreen canvas cache for the (static) canal layer
+ *   - bridgeLOD — at low zoom show only famous bridges (named ones)
+ *   - fpsTick / fpsNow / frameMs / fpsReset — sliding-window FPS meter
  *
  * Goal ID: 20260816-224507-webdemo-map-replica-24h-v1-1095
  */
 (function (global) {
   'use strict';
 
-  const VERSION = 'map-replica-v1-render-1';
+  const VERSION = 'map-replica-v1-render-2';
 
   // ─── Visual mapping ────────────────────────────────────────────────────────
   // kind → emoji + fill colour. Mini-Metro aesthetic: bright pastel pins.
@@ -123,18 +129,63 @@
     };
   }
 
+  // ─── R3 · Viewport rect (for culling) ──────────────────────────────────────
+  // Returns the rect {x0,y0,x1,y1} inside which an object is visible. The whole
+  // canvas is in scope — features outside pad get culled.
+  function viewportRect(vp, W, H, pad) {
+    pad = pad == null ? 24 : pad;
+    if (!vp) return { x0: -1e9, y0: -1e9, x1: 1e9, y1: 1e9 };
+    return { x0: -pad, y0: -pad, x1: W + pad, y1: H + pad };
+  }
+  // Quick reject for a point (x,y) with radius r against a rect.
+  function inViewport(x, y, r, rect) {
+    if (!rect) return true;
+    return x + r >= rect.x0 && x - r <= rect.x1 &&
+           y + r >= rect.y0 && y - r <= rect.y1;
+  }
+
+  // ─── R3 · LOD (level-of-detail) for bridges ───────────────────────────────
+  // Famous bridges (Magere Brug, Blauwbrug, etc.) always render. Lesser
+  // numbered bridges only render when scale >= 0.6 (default fit ~1.0).
+  const FAMOUS_BRIDGES = new Set([
+    'magere_brug', 'blauwbrug', 'torensluis', 'paleisbrug', 'hortusbrug',
+    'berlagebrug', 'oosterdokbrug', 'ndsm_brug', 'jan_schaeferbrug',
+    'han_lammersbrug', 'staalmeestersbrug', 'eilandsbrug',
+  ]);
+  function bridgeLOD(bridges, scale) {
+    if (!bridges || scale >= 0.6) return bridges || [];
+    return bridges.filter(b => FAMOUS_BRIDGES.has(b.id));
+  }
+
   // ─── Draw fn (consumes scene → paints ctx) ─────────────────────────────────
   function renderReplicaOverlay(ctx, geo, W, H, opts) {
     opts = opts || {};
     const scene = buildReplicaScene(geo, W, H, opts);
-    drawCanals(ctx, scene);
-    drawBridges(ctx, scene);
+    const useCache = opts.cache === true && typeof document !== 'undefined';
+    let cacheHit = false;
+    if (useCache) {
+      const sl = getStaticLayer(geo, W, H, opts, scene);
+      if (sl && sl.canvas) {
+        ctx.drawImage(sl.canvas, 0, 0);
+        cacheHit = !!sl.hit;
+      } else {
+        drawCanals(ctx, scene);
+      }
+    } else {
+      drawCanals(ctx, scene);
+    }
+    const rect = viewportRect(scene.viewport, W, H, opts.pad == null ? 24 : opts.pad);
+    drawBridges(ctx, scene, { rect, lod: true, cull: true });
     drawLandmarks(ctx, scene);
     drawLegend(ctx, scene, opts);
-    return scene;
+    return { scene, cacheHit };
   }
 
   function drawCanals(ctx, scene) {
+    drawCanalsImpl(ctx, scene);
+  }
+  // Internal: shared by drawCanals (live) and the static-layer baker.
+  function drawCanalsImpl(ctx, scene) {
     // Sort: wide rivers under, narrow canals on top so labels stay readable.
     const sorted = scene.canals.slice().sort((a, b) => b.widthPx - a.widthPx);
     ctx.save();
@@ -176,9 +227,17 @@
     ctx.restore();
   }
 
-  function drawBridges(ctx, scene) {
+  function drawBridges(ctx, scene, opts) {
+    opts = opts || {};
+    const doCull = opts.cull === true;
+    const doLOD  = opts.lod  === true;
+    const rect   = opts.rect || null;
+    const scale  = scene.viewport ? scene.viewport.scale : 1;
+    let bridges = scene.bridges;
+    if (doLOD) bridges = bridgeLOD(bridges, scale);
+    if (doCull && rect) bridges = bridges.filter(b => inViewport(b.x, b.y, 6, rect));
     ctx.save();
-    for (const b of scene.bridges) {
+    for (const b of bridges) {
       // White bar 8×2 perpendicular-ish (horizontal for simplicity at this zoom).
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(b.x - 4, b.y - 1, 8, 2);
@@ -192,6 +251,7 @@
       ctx.beginPath(); ctx.arc(b.x + 4, b.y + 1, 1, 0, Math.PI * 2); ctx.fill();
     }
     ctx.restore();
+    return { drawn: bridges.length, culled: scene.bridges.length - bridges.length };
   }
 
   function drawLandmarks(ctx, scene) {
@@ -246,12 +306,82 @@
     ctx.restore();
   }
 
+  // ─── R3 · Static layer cache ──────────────────────────────────────────────
+  // Canals + their labels never change between frames (W,H,opts are stable).
+  // Bake them once into an offscreen canvas; per-frame just `ctx.drawImage`.
+  // Cache is keyed by (geo, W, H, opts.pad) via WeakMap so it auto-cleans if
+  // the geo object is GC'd. Browser-only — falls through to live draw otherwise.
+  const _staticCache = new WeakMap();
+  function _cacheKey(W, H, opts) {
+    return `${W}x${H}|${opts && opts.pad != null ? opts.pad : 24}`;
+  }
+  function getStaticLayer(geo, W, H, opts, scene) {
+    if (typeof document === 'undefined') return null;     // test harness: no DOM
+    opts = opts || {};
+    const key = _cacheKey(W, H, opts);
+    let entry = _staticCache.get(geo);
+    if (!entry) { entry = {}; _staticCache.set(geo, entry); }
+    if (entry[key]) return { canvas: entry[key], hit: true };
+    const c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    const cctx = c.getContext('2d');
+    if (!scene) scene = buildReplicaScene(geo, W, H, opts);
+    drawCanalsImpl(cctx, scene);
+    entry[key] = c;
+    return { canvas: c, hit: false };
+  }
+  function clearStaticCache(geo) {
+    if (geo) _staticCache.delete(geo);
+    else _staticCache.clear && _staticCache.clear();
+  }
+
+  // ─── R3 · FPS measurement (sliding window) ───────────────────────────────
+  // Caller drives fpsTick(performance.now()) once per renderAll. fpsNow returns
+  // the smoothed instantaneous FPS; frameMs the most recent frame time in ms.
+  const FPS_WINDOW = 60;
+  let _frameTimes = [];
+  let _lastFrameAt = 0;
+  function fpsTick(now) {
+    if (now == null) now = (typeof performance !== 'undefined' && performance.now)
+      ? performance.now() : Date.now();
+    if (_lastFrameAt > 0) {
+      const dt = now - _lastFrameAt;
+      // Guard against pathological dt (>250ms = paused tab) by dropping it.
+      if (dt > 0 && dt < 250) {
+        _frameTimes.push(dt);
+        if (_frameTimes.length > FPS_WINDOW) _frameTimes.shift();
+      }
+    }
+    _lastFrameAt = now;
+  }
+  function fpsNow() {
+    if (_frameTimes.length === 0) return 0;
+    let s = 0;
+    for (const t of _frameTimes) s += t;
+    const avg = s / _frameTimes.length;
+    return avg > 0 ? Math.round(1000 / avg) : 0;
+  }
+  function frameMs() {
+    if (_frameTimes.length === 0) return 0;
+    const last = _frameTimes[_frameTimes.length - 1];
+    return Math.round(last * 100) / 100;
+  }
+  function fpsReset() {
+    _frameTimes = [];
+    _lastFrameAt = 0;
+  }
+
   // ─── Export ────────────────────────────────────────────────────────────────
   global.MAP_RENDERER = {
     VERSION,
     KIND_ICON, KIND_COLOR,
+    FAMOUS_BRIDGES,
     viewportFit, projectPoint,
     projectLandmark, projectCanalPath, projectBridge,
     buildReplicaScene, renderReplicaOverlay,
+    // R3 perf layer
+    viewportRect, inViewport, bridgeLOD, drawBridges,
+    getStaticLayer, clearStaticCache,
+    fpsTick, fpsNow, frameMs, fpsReset,
   };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -156,7 +156,7 @@ frame.addEventListener('load',async()=>{
   const scene = R.buildReplicaScene(G, 800, 500, {pad:18});
   check('buildReplicaScene 返回 landmarks=12',()=>scene && scene.counts.landmarks === 12);
   check('buildReplicaScene 返回 canals=9',()=>scene && scene.counts.canals === 9);
-  check('buildReplicaScene 返回 bridges=5',()=>scene && scene.counts.bridges === 5);
+  check('buildReplicaScene 返回 bridges≥30 (R3 扩容)',()=>scene && scene.counts.bridges >= 30);
   check('buildReplicaScene 每条运河 ≥2 投影点',()=>scene && scene.canals.every(c => c.points && c.points.length >= 2));
   check('buildReplicaScene 每条运河 widthPx > 0',()=>scene && scene.canals.every(c => c.widthPx > 0));
   check('buildReplicaScene 每条运河 widthPx ≤ 8',()=>scene && scene.canals.every(c => c.widthPx <= 8));
@@ -216,6 +216,63 @@ frame.addEventListener('load',async()=>{
     reRenderOk = calls2.length >= 5;
   }catch(e){reRenderOk=false}
   check('toggleReplica 后再次渲染仍正常',()=>reRenderOk);
+
+  // ═══ Round 3 — map-replica-v1 perf layer (viewport + cache + FPS + LOD) ═══
+  check('BRIDGES 至少 30 桥 (R3 扩容)',()=>G.BRIDGES.length >= 30);
+  check('validate() 现在要求 bridges >= 30',()=>G.validate().ok);
+  // R3 — Set duck-type check (instanceof Set breaks across iframe realms)
+  check('FAMOUS_BRIDGES 是 Set 且含 magere_brug',()=>R && R.FAMOUS_BRIDGES && typeof R.FAMOUS_BRIDGES.has === 'function' && R.FAMOUS_BRIDGES.has('magere_brug'));
+  check('FAMOUS_BRIDGES 含 oosterdokbrug',()=>R && R.FAMOUS_BRIDGES.has('oosterdokbrug'));
+  const vp3 = R.viewportFit(G, 800, 500, 24);
+  const rect3 = R.viewportRect(vp3, 800, 500, 24);
+  check('viewportRect 返回 {x0,y0,x1,y1}',()=>rect3 && Number.isFinite(rect3.x0) && Number.isFinite(rect3.y0) && Number.isFinite(rect3.x1) && Number.isFinite(rect3.y1));
+  check('inViewport 内部 true',()=>R.inViewport(400, 250, 5, rect3) === true);
+  check('inViewport 外部 false',()=>R.inViewport(-1000, -1000, 5, rect3) === false);
+  const bridgesProj = G.BRIDGES.map(b=>R.projectBridge(G, b, vp3)).filter(Boolean);
+  check('bridgeLOD 默认 scale=1 返回全部',()=>R.bridgeLOD(bridgesProj, 1.0).length === bridgesProj.length);
+  const lodLow = R.bridgeLOD(bridgesProj, 0.3);
+  check('bridgeLOD scale=0.3 仅返回著名桥 (< 总数)',()=>lodLow.length < bridgesProj.length && lodLow.length >= 5);
+  check('bridgeLOD scale=0.3 返回的桥全部是著名桥',()=>lodLow.every(b=>R.FAMOUS_BRIDGES.has(b.id)));
+  R.fpsReset();
+  for(let i=0;i<10;i++) R.fpsTick(performance.now() + i*16);
+  check('fpsTick + fpsNow 返回 > 0',()=>R.fpsNow() > 0);
+  R.fpsReset();
+  R.fpsTick(100); R.fpsTick(116);
+  check('frameMs 返回最近帧 ms (≈16)',()=>R.frameMs() >= 14 && R.frameMs() <= 17);
+  R.fpsReset();
+  R.fpsTick(100); R.fpsTick(116);
+  R.fpsReset();
+  check('fpsReset 后 fpsNow=0',()=>R.fpsNow() === 0);
+  check('clearStaticCache 不抛错',()=>{try{R.clearStaticCache(G);return true}catch(e){return false}});
+  // Static layer cache — only meaningful in browser (iframe has DOM)
+  let cacheHitOk = true, cacheNoThrow = true;
+  try{
+    R.clearStaticCache(G);
+    const a = R.getStaticLayer(G, 800, 500, {pad:18});
+    const b = R.getStaticLayer(G, 800, 500, {pad:18});
+    if(!a || !b || b.hit !== true) cacheHitOk = false;
+  }catch(e){cacheNoThrow=false}
+  check('getStaticLayer 第二次 hit=true',()=>cacheHitOk);
+  check('getStaticLayer 不抛错',()=>cacheNoThrow);
+  // drawBridges cull + LOD return shape
+  const scene3 = R.buildReplicaScene(G, 800, 500, {pad:18});
+  const drawResult = R.drawBridges(buildFakeCtx([]), scene3, {rect:rect3, lod:true, cull:true});
+  check('drawBridges 返回 {drawn, culled}',()=>drawResult && typeof drawResult.drawn === 'number' && typeof drawResult.culled === 'number');
+  check('drawBridges culled >= 0',()=>drawResult.culled >= 0);
+  // renderReplicaOverlay with cache:true in real DOM canvas
+  let cacheRenderOk = true;
+  try{
+    const realCanvas = document.createElement('canvas');
+    realCanvas.width = 800; realCanvas.height = 500;
+    const realCtx = realCanvas.getContext('2d');
+    const ret = R.renderReplicaOverlay(realCtx, G, 800, 500, {pad:18, cache:true});
+    if(!ret || !ret.scene) cacheRenderOk = false;
+  }catch(e){cacheRenderOk=false}
+  check('renderReplicaOverlay(cache:true) 不抛错',()=>cacheRenderOk);
+  // AB_TEST exposes fpsNow/frameMs/bridgeCount
+  check('AB_TEST.fpsNow 是函数',()=>typeof t.fpsNow === 'function');
+  check('AB_TEST.frameMs 是函数',()=>typeof t.frameMs === 'function');
+  check('AB_TEST.bridgeCount() >= 30',()=>t.bridgeCount() >= 30);
 
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });

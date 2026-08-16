@@ -1157,7 +1157,7 @@ function drawMap(){
     cx.beginPath();cx.arc(cb.x+cb.w/2,cb.y+cb.h/2,cb.r+3,0,Math.PI*2);cx.stroke();
     cx.setLineDash([]);
   }
-  // ═══ Round 2 — map-replica-v1: data-driven overlay (12 landmarks + 9 canals + 5 bridges) ═══
+  // ═══ Round 2 — map-replica-v1: data-driven overlay (30 landmarks + 9 canals + 50 bridges + 30 islands, R5 expanded) ═══
   if(G.replica && typeof MAP_RENDERER!=='undefined' && typeof AMSTERDAM_GEO!=='undefined'){
     // R3: cache:true bakes canals+labels into an offscreen canvas; bridges are
     // culled by viewport rect and LOD'd by scale; per-frame cost is now bounded.

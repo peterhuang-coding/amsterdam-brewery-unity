@@ -9,7 +9,7 @@ shipped with the bundle.
 
 ### Wikipedia landmark coordinates (CC BY-SA)
 
-The 12 landmarks (`tools/prototype/data/amsterdam_geo.js → LANDMARKS`) use
+The 30 landmarks (`tools/prototype/data/amsterdam_geo.js → LANDMARKS`) use
 public Wikipedia coordinates for the most photographed sites in Amsterdam:
 
 | id             | Wikipedia article                                       |
@@ -28,11 +28,36 @@ public Wikipedia coordinates for the most photographed sites in Amsterdam:
 | `ijburg`       | https://en.wikipedia.org/wiki/IJburg                    |
 | `buiksloterham`| https://en.wikipedia.org/wiki/Buiksloterham             |
 | `allard_pierson`| https://en.wikipedia.org/wiki/Allard_Pierson_(museum)  |
+| `oosterpark`   | https://en.wikipedia.org/wiki/Oosterpark                |
+| `westerpark`   | https://en.wikipedia.org/wiki/Westerpark                |
+| `artis`        | https://en.wikipedia.org/wiki/Artis_(zoo)               |
+| `albert_cuyp`  | https://en.wikipedia.org/wiki/Albert_Cuyp_Market       |
+| `de_waag`      | https://en.wikipedia.org/wiki/Waag_(Amsterdam)          |
+| `paleis`       | https://en.wikipedia.org/wiki/Royal_Palace_of_Amsterdam |
+| `nieuwe_kerk`  | https://en.wikipedia.org/wiki/Nieuwe_Kerk,_Amsterdam    |
+| `oude_kerk`    | https://en.wikipedia.org/wiki/Oude_Kerk,_Amsterdam      |
+| `magna_plaza`  | https://en.wikipedia.org/wiki/Magna_Plaza               |
+| `beurs_van_berlage`| https://en.wikipedia.org/wiki/Beurs_van_Berlage     |
+| `stopera`      | https://en.wikipedia.org/wiki/Stopera                   |
+| `paradiso`     | https://en.wikipedia.org/wiki/Paradiso_(Amsterdam)      |
+| `melkweg`      | https://en.wikipedia.org/wiki/Melkweg_(venue)           |
+| `foam`         | https://en.wikipedia.org/wiki/FOAM_(photography_museum) |
+| `eye_filmmuseum`| https://en.wikipedia.org/wiki/Eye_Film_Institute_Netherlands |
+| `hermitage`    | https://en.wikipedia.org/wiki/Hermitage_Amsterdam       |
 
-Bridge coordinates (`BRIDGES`, 32 entries) come from the same Wikipedia pages,
+Bridge coordinates (`BRIDGES`, 50 entries) come from the same Wikipedia pages,
 either inline (e.g. Magere Brug, Blauwbrug, Torensluis, Paleisbrug) or from the
 public Amsterdam bridge-numbering map maintained by the city's open-data
 program. Bridges are named exactly as they appear on municipal signage.
+
+### Islands (R5 — 30 entries, Wikipedia public coords)
+
+The `ISLANDS` array covers the IJ river artificial islands (Westelijke
+Eilanden, Oostelijke Eilanden, IJburg cluster), park islands (Vondelpark,
+Oosterpark, Sarphati, Beatrix, Westerpark, Hermitage Tuin), the Watergraafsmeer
+polder, and a handful of historic neighborhood "islands" enclosed by the
+canal ring. Coords verified against each island's Wikipedia article and
+constrained to the rendering bbox.
 
 ### Canal centerlines (hand-drawn)
 

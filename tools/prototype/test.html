@@ -133,7 +133,7 @@ frame.addEventListener('load',async()=>{
   check('BRIDGES 含 Blauwbrug',()=>G.BRIDGES.some(b=>b.id==='blauwbrug'));
   check('validate() ok=true',()=>G.validate().ok);
   check('validate().errors 为空数组',()=>G.validate().errors.length === 0);
-  check('stats() 返回 landmarks=14 (R4 加 buiksloterham/allard_pierson)',()=>G.stats().landmarks === 14);
+  check('stats() 返回 landmarks=30 (R5 加 16 地标)',()=>G.stats().landmarks === 30);
   check('stats() 返回 canals=9',()=>G.stats().canals === 9);
   check('stats().canvas.w 在 [400, 800] px',()=>{const c=G.stats().canvas;return c.w>400 && c.w<800});
   check('stats().canvas.h 在 [400, 800] px',()=>{const c=G.stats().canvas;return c.h>400 && c.h<800});
@@ -154,7 +154,7 @@ frame.addEventListener('load',async()=>{
   check('viewportFit drawn 尺寸 ≤ 800×500 (含 pad)',()=>vp800x500 && vp800x500.w <= 800 && vp800x500.h <= 500);
   check('viewportFit drawn 居中 (ox+pad≥0, oy+pad≥0)',()=>vp800x500 && vp800x500.ox + 24 >= -1 && vp800x500.oy + 24 >= -1);
   const scene = R.buildReplicaScene(G, 800, 500, {pad:18});
-  check('buildReplicaScene 返回 landmarks=14',()=>scene && scene.counts.landmarks === 14);
+  check('buildReplicaScene 返回 landmarks=30',()=>scene && scene.counts.landmarks === 30);
   check('buildReplicaScene 返回 canals=9',()=>scene && scene.counts.canals === 9);
   check('buildReplicaScene 返回 bridges≥30 (R3 扩容)',()=>scene && scene.counts.bridges >= 30);
   check('buildReplicaScene 每条运河 ≥2 投影点',()=>scene && scene.canals.every(c => c.points && c.points.length >= 2));
@@ -279,7 +279,7 @@ frame.addEventListener('load',async()=>{
   check('getReplSceneStats 是函数',()=>typeof t.getReplSceneStats === 'function');
   const stats = t.getReplSceneStats(800, 500);
   check('getReplSceneStats 不返回 null',()=>stats !== null);
-  check('stats.counts.landmarks=14 (R4)',()=>stats && stats.counts && stats.counts.landmarks === 14);
+  check('stats.counts.landmarks=30 (R5)',()=>stats && stats.counts && stats.counts.landmarks === 30);
   check('stats.counts.canals=9',()=>stats && stats.counts.canals === 9);
   check('stats.counts.bridges≥30',()=>stats && stats.counts.bridges >= 30);
   check('stats.viewport.scale>0',()=>stats && stats.viewport && stats.viewport.scale > 0);
@@ -337,7 +337,7 @@ frame.addEventListener('load',async()=>{
     t.newRun(42);
     t.state.ended = false;
     const prime = t.getReplSceneStats(800, 500);
-    if (!prime || prime.counts.landmarks !== 14) e2eDetail += 'prime='+(prime?prime.counts.landmarks:'null')+';';
+    if (!prime || prime.counts.landmarks !== 30) e2eDetail += 'prime='+(prime?prime.counts.landmarks:'null')+';';
     doc.getElementById('ba').click();
     // Poll for run end (max ~120s of virtual time — full suite budget allows this)
     const startMs = Date.now();
@@ -345,7 +345,7 @@ frame.addEventListener('load',async()=>{
     if (!t.state.ended) e2eDetail += 'ended='+t.state.ended+' day='+t.state.day+';';
     // After 7 days and many mini-games, scene stats still report the same counts
     const post = t.getReplSceneStats(800, 500);
-    if (!post || post.counts.landmarks !== 14 || post.counts.canals !== 9 || post.counts.bridges < 30) {
+    if (!post || post.counts.landmarks !== 30 || post.counts.canals !== 9 || post.counts.bridges < 50) {
       e2eDetail += 'post='+(post?post.counts.landmarks+'/'+post.counts.canals+'/'+post.counts.bridges:'null')+';';
     }
     if (t.state.replica !== true) e2eDetail += 'replica='+t.state.replica+';';
@@ -354,9 +354,9 @@ frame.addEventListener('load',async()=>{
     R.clearStaticCache(G);
   } catch (e) { e2ePass = false; e2eDetail += 'err:'+e.message; }
   if (e2ePass) {
-    check('E2E: 7 天 auto-run 后 Replica scene 仍报告 landmarks=14 / canals=9 / bridges≥30',()=>true);
+    check('E2E: 7 天 auto-run 后 Replica scene 仍报告 landmarks=30 / canals=9 / bridges≥50',()=>true);
   } else {
-    total++; row(false, 'E2E: 7 天 auto-run 后 Replica scene 仍报告 landmarks=14 / canals=9 / bridges≥30', e2eDetail);
+    total++; row(false, 'E2E: 7 天 auto-run 后 Replica scene 仍报告 landmarks=30 / canals=9 / bridges≥50', e2eDetail);
   }
 
   // 4f · Replica toggle works while a mini-game is active (no crash)
@@ -369,13 +369,50 @@ frame.addEventListener('load',async()=>{
     // Toggle replica while inside brew
     win.toggleReplica();
     const mid = t.getReplSceneStats(800, 500);
-    if (!mid || mid.counts.landmarks !== 14) toggleInGameOk = false;
+    if (!mid || mid.counts.landmarks !== 30) toggleInGameOk = false;
     // Force end mini-game via escape path
     t.state.mg = null;
     t.state.inside = null;
     t.state.replica = prevRep;
   } catch (e) { toggleInGameOk = false; }
-  check('E2E: mini-game 中切换 Replica 不抛错 + scene 仍 14 landmarks',()=>toggleInGameOk);
+  check('E2E: mini-game 中切换 Replica 不抛错 + scene 仍 30 landmarks',()=>toggleInGameOk);
+
+  // ═══ Round 5 — map-replica-v1 data expansion (islands + landmarks + bridges) ═══
+  // Brief acceptance: 9+ canals · ~50 bridges · ~30 islands · 30+ landmarks.
+  // R1: 12+2 landmarks. R5: 30 islands + reach 30 landmarks + reach 50 bridges.
+  check('ISLANDS 已挂载 (R5 引入)',()=>Array.isArray(G.ISLANDS));
+  check('ISLANDS ≥ 30 (brief target)',()=>G.ISLANDS.length >= 30);
+  check('ISLANDS id 唯一',()=>new Set(G.ISLANDS.map(i=>i.id)).size === G.ISLANDS.length);
+  check('ISLANDS 每条都有 name/lat/lng',()=>G.ISLANDS.every(i=>i.id && i.name && Number.isFinite(i.lat) && Number.isFinite(i.lng)));
+  check('ISLANDS 全部在 BOUNDS 内',()=>G.ISLANDS.every(i=>i.lat>=G.BOUNDS.south && i.lat<=G.BOUNDS.north && i.lng>=G.BOUNDS.west && i.lng<=G.BOUNDS.east));
+  check('ISLANDS 含 IJburg cluster (haveneiland)',()=>G.ISLANDS.some(i=>i.id==='haveneiland'));
+  check('ISLANDS 含 westelijke eilanden (bickerseiland)',()=>G.ISLANDS.some(i=>i.id==='bickerseiland'));
+  check('ISLANDS 含 oostelijke eilanden (wittenburg)',()=>G.ISLANDS.some(i=>i.id==='wittenburg'));
+  check('ISLANDS 含 Vondelpark eiland',()=>G.ISLANDS.some(i=>i.id==='vondelpark_eiland'));
+  check('ISLANDS kind 字段非空 (natural|artificial|polder|park)',()=>G.ISLANDS.every(i=>i.kind && ['natural','artificial','polder','park','neighborhood'].includes(i.kind)));
+
+  check('LANDMARKS ≥ 30 (brief target, R5 扩容)',()=>G.LANDMARKS.length >= 30);
+  check('LANDMARKS 14 → 30 之间',()=>G.LANDMARKS.length >= 14 && G.LANDMARKS.length <= 35);
+  check('BRIDGES ≥ 50 (brief target, R5 扩容)',()=>G.BRIDGES.length >= 50);
+  check('BRIDGES 32 → 60 之间',()=>G.BRIDGES.length >= 32 && G.BRIDGES.length <= 60);
+  check('validate() 在新阈值下 ok=true (30+30+50)',()=>G.validate().ok);
+  check('validate().errors 为空',()=>G.validate().errors.length === 0);
+  check('stats().islands ≥ 30',()=>G.stats().islands >= 30);
+  check('stats().landmarks ≥ 30',()=>G.stats().landmarks >= 30);
+  check('stats().bridges ≥ 50',()=>G.stats().bridges >= 50);
+
+  // Project one of the new islands to confirm it lands in viewport space.
+  const islandVp = R.viewportFit(G, 800, 500, 24);
+  const iProj = R.projectPoint(G, G.ISLANDS[0].lat, G.ISLANDS[0].lng, islandVp);
+  check('ISLANDS[0] 可投影到 viewport',()=>iProj && Number.isFinite(iProj.x) && Number.isFinite(iProj.y));
+
+  // E2E smoke: full buildReplicaScene with new counts
+  const scene5 = R.buildReplicaScene(G, 800, 500, {pad:18});
+  check('buildReplicaScene landmarks ≥ 30',()=>scene5 && scene5.counts.landmarks >= 30);
+  check('buildReplicaScene bridges ≥ 50',()=>scene5 && scene5.counts.bridges >= 50);
+  const stats5 = t.getReplSceneStats(800, 500);
+  check('getReplSceneStats landmarks ≥ 30',()=>stats5 && stats5.counts && stats5.counts.landmarks >= 30);
+  check('getReplSceneStats bridges ≥ 50',()=>stats5 && stats5.counts && stats5.counts.bridges >= 50);
 
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });

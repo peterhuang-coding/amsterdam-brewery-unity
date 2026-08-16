@@ -14,7 +14,7 @@
   'use strict';
 
   // ─── Constants ─────────────────────────────────────────────────────────────
-  const VERSION = 'map-replica-v1-data-2';
+  const VERSION = 'map-replica-v1-data-3';
   const ORIGIN = { lat: 52.3676, lng: 4.9041, label: 'Muntplein (city center)' };
   const BOUNDS = { south: 52.340, west: 4.850, north: 52.410, east: 4.965 };
   const SCALE_M_PER_PX = 12;            // 12 m → 1 px at default zoom
@@ -72,6 +72,23 @@
     // R4 — anchor landmarks for the 6 mini-game venue bindings (within 1 km of each).
     { id:'buiksloterham',  name:'Buiksloterham',        nameZh:'Buiksloterham', lat:52.4015, lng:4.9130, kind:'district', mini:'surf'     },
     { id:'allard_pierson', name:'Allard Pierson',       nameZh:'阿勒德皮尔森',   lat:52.3636, lng:4.8917, kind:'museum',   mini:'academic' },
+    // R5 — 16 more landmarks to reach the brief target of 30+.
+    { id:'oosterpark',     name:'Oosterpark',           nameZh:'东公园',         lat:52.3587, lng:4.9170, kind:'park',     mini:'wellness' },
+    { id:'westerpark',     name:'Westerpark',           nameZh:'西公园',         lat:52.3870, lng:4.8760, kind:'park',     mini:'wellness' },
+    { id:'artis',          name:'Artis Zoo',            nameZh:'阿提斯动物园',  lat:52.3660, lng:4.9150, kind:'venue',    mini:'tour'     },
+    { id:'albert_cuyp',    name:'Albert Cuyp Market',   nameZh:'阿尔伯特市场',  lat:52.3563, lng:4.8947, kind:'square',   mini:'commerce' },
+    { id:'de_waag',        name:'De Waag',              nameZh:'称重房',         lat:52.3727, lng:4.8965, kind:'museum',   mini:'commerce' },
+    { id:'paleis',         name:'Royal Palace',         nameZh:'王宫',           lat:52.3732, lng:4.8914, kind:'museum',   mini:'academic' },
+    { id:'nieuwe_kerk',    name:'Nieuwe Kerk',          nameZh:'新教堂',         lat:52.3731, lng:4.8914, kind:'religious', mini:'academic' },
+    { id:'oude_kerk',      name:'Oude Kerk',            nameZh:'老教堂',         lat:52.3752, lng:4.8978, kind:'religious', mini:'academic' },
+    { id:'magna_plaza',    name:'Magna Plaza',          nameZh:'Magna Plaza',     lat:52.3730, lng:4.8902, kind:'square',   mini:'commerce' },
+    { id:'beurs_van_berlage',name:'Beurs van Berlage',  nameZh:'贝拉戈交易所',  lat:52.3750, lng:4.8960, kind:'venue',    mini:'commerce' },
+    { id:'stopera',        name:'Stopera',              nameZh:'市政歌剧院',     lat:52.3675, lng:4.9018, kind:'venue',    mini:'bar'      },
+    { id:'paradiso',       name:'Paradiso',             nameZh:'Paradiso音乐厅', lat:52.3623, lng:4.8838, kind:'venue',    mini:'bar'      },
+    { id:'melkweg',        name:'Melkweg',              nameZh:'银河音乐厅',     lat:52.3640, lng:4.8838, kind:'venue',    mini:'bar'      },
+    { id:'foam',           name:'Foam Photography',     nameZh:'Foam摄影博物馆', lat:52.3711, lng:4.8840, kind:'museum',   mini:'academic' },
+    { id:'eye_filmmuseum', name:'Eye Filmmuseum',       nameZh:'Eye电影博物馆',  lat:52.3841, lng:4.9008, kind:'museum',   mini:'tour'     },
+    { id:'hermitage',      name:'Hermitage Amsterdam',  nameZh:'冬宫分馆',       lat:52.3650, lng:4.9018, kind:'museum',   mini:'academic' },
   ];
 
   // ─── Canals (9 main canals as polylines along their centerlines) ───────────
@@ -141,8 +158,75 @@
     { id:'vijzelgracht_brug',   name:'Vijzelgracht Brug',    lat:52.3650, lng:4.8880, kind:'fixed',     crosses:'singel' },
     { id:'leidsegracht_brug',   name:'Leidsegracht Brug',    lat:52.3581, lng:4.8801, kind:'fixed',     crosses:'leidsegracht' },
     { id:'weteringschans_brug', name:'Weteringschans Brug',  lat:52.3610, lng:4.8870, kind:'fixed',     crosses:'singel' },
+    // R5 — 18 more bridges to reach the brief target of ~50.
+    // R5 — Prinsengracht belt (was 0 → 4)
+    { id:'brug_282',   name:'Brug 282',     lat:52.3760, lng:4.8840, kind:'fixed',     crosses:'prinsengracht' },
+    { id:'brug_289',   name:'Brug 289',     lat:52.3700, lng:4.8900, kind:'fixed',     crosses:'prinsengracht' },
+    { id:'brug_295',   name:'Brug 295',     lat:52.3650, lng:4.8970, kind:'fixed',     crosses:'prinsengracht' },
+    { id:'brug_301',   name:'Brug 301',     lat:52.3580, lng:4.9050, kind:'fixed',     crosses:'prinsengracht' },
+    // R5 — Herengracht / Keizersgracht additional south
+    { id:'brug_122b',  name:'Brug 122B',    lat:52.3610, lng:4.8980, kind:'fixed',     crosses:'herengracht' },
+    { id:'brug_119b',  name:'Brug 119B',    lat:52.3615, lng:4.8970, kind:'fixed',     crosses:'keizersgracht' },
+    // R5 — Brouwersgracht additional
+    { id:'brouwersgracht_br_a', name:'Brouwersgracht Noord', lat:52.3795, lng:4.8915, kind:'fixed', crosses:'brouwersgracht' },
+    // R5 — Singel mid-segment
+    { id:'brug_437b',  name:'Brug 437B',    lat:52.3730, lng:4.8950, kind:'fixed',     crosses:'singel' },
+    { id:'brug_437c',  name:'Brug 437C',    lat:52.3700, lng:4.8990, kind:'fixed',     crosses:'singel' },
+    // R5 — Kloveniersburgwal additional
+    { id:'brug_405b',  name:'Brug 405B',    lat:52.3685, lng:4.9040, kind:'fixed',     crosses:'kloveniersburgwal' },
+    { id:'brug_405c',  name:'Brug 405C',    lat:52.3650, lng:4.9080, kind:'fixed',     crosses:'kloveniersburgwal' },
+    { id:'vuurbrug',   name:'Vuurbrug',     lat:52.3730, lng:4.8990, kind:'fixed',     crosses:'kloveniersburgwal' },
+    // R5 — Leidsegracht additional
+    { id:'leidsegracht_br',  name:'Leidsegracht Noord',   lat:52.3650, lng:4.8865, kind:'fixed', crosses:'leidsegracht' },
+    { id:'leidsegracht_br2', name:'Leidsegracht Mid',     lat:52.3670, lng:4.8940, kind:'fixed', crosses:'leidsegracht' },
+    // R5 — IJ river additional
+    { id:'ndsm_werf_brug',   name:'NDSM-werf Footbridge', lat:52.4020, lng:4.8910, kind:'modern',  crosses:'ij' },
+    { id:'muiderbrug',       name:'Muiderbrug',           lat:52.3670, lng:4.9270, kind:'modern',  crosses:'ij' },
+    // R5 — Amstel river additional south
+    { id:'brug_201',         name:'Brug 201',             lat:52.3700, lng:4.9030, kind:'fixed',   crosses:'amstel' },
+    { id:'brug_220',         name:'Brug 220',             lat:52.3640, lng:4.9060, kind:'fixed',   crosses:'amstel' },
   ];
-  const ISLANDS  = []; // R2: Bickers, Prinsen, Wittenburg, Oostenburg, Marken
+  // R5 — 30 islands (artificial IJ river islands + park islands + neighborhood "islands").
+  // kind: artificial (IJ infill) | natural | polder (reclaimed land) | park (island in pond) | neighborhood (canal-belt area)
+  const ISLANDS = [
+    // Westelijke Eilanden (real, artificial)
+    { id:'bickerseiland',     name:'Bickerseiland',          nameZh:'Bickers岛',      lat:52.3835, lng:4.8930, kind:'artificial', district:'noord'     },
+    { id:'prinseneiland',     name:'Prinseneiland',          nameZh:'王子岛',         lat:52.3840, lng:4.8860, kind:'artificial', district:'noord'     },
+    { id:'realen_eiland',     name:'Realeneiland',           nameZh:'Reaal岛',        lat:52.3840, lng:4.8900, kind:'artificial', district:'noord'     },
+    // Oostelijke Eilanden (real, artificial)
+    { id:'wittenburg',        name:'Wittenburg',             nameZh:'Wittenburg岛',    lat:52.3730, lng:4.9180, kind:'artificial', district:'centrum'   },
+    { id:'oostenburg',        name:'Oostenburg',             nameZh:'Oostenburg岛',    lat:52.3740, lng:4.9220, kind:'artificial', district:'centrum'   },
+    { id:'cruquius_eiland',   name:'Cruquius-eiland',        nameZh:'Cruquius岛',      lat:52.3760, lng:4.9260, kind:'artificial', district:'oost'      },
+    { id:'knsm_eiland',       name:'KNSM-eiland',            nameZh:'KNSM岛',          lat:52.3760, lng:4.9300, kind:'artificial', district:'oost'      },
+    // IJburg cluster (real, artificial — modern infill)
+    { id:'java_eiland',       name:'Java-eiland',            nameZh:'Java岛',          lat:52.3640, lng:4.9450, kind:'artificial', district:'oost'      },
+    { id:'pen_eiland',        name:'Pen-eiland',             nameZh:'Pen岛',           lat:52.3960, lng:4.9450, kind:'artificial', district:'noord'     },
+    { id:'zeeburgereiland',   name:'Zeeburgereiland',        nameZh:'Zeeburger岛',     lat:52.3680, lng:4.9650, kind:'artificial', district:'oost'      },
+    { id:'steigereiland',     name:'Steigereiland',          nameZh:'Steiger岛',       lat:52.3540, lng:4.9650, kind:'artificial', district:'oost'      },
+    { id:'haveneiland',       name:'Haveneiland',            nameZh:'Haven岛',         lat:52.3500, lng:4.9650, kind:'artificial', district:'oost'      },
+    { id:'rieteilanden',      name:'Rieteilanden',           nameZh:'Riet群岛',        lat:52.3460, lng:4.9650, kind:'artificial', district:'oost'      },
+    { id:'ijburg_centrumeiland',name:'IJburg Centrumeiland', nameZh:'IJburg中心岛',    lat:52.3550, lng:4.9650, kind:'artificial', district:'oost'      },
+    // IJ-related industrial docks (artificial)
+    { id:'ndsm_eiland',       name:'NDSM-werf',              nameZh:'NDSM船坞',        lat:52.4020, lng:4.8900, kind:'artificial', district:'noord'     },
+    { id:'oosterdok_eiland',  name:'Oosterdok',              nameZh:'Oosterdok',       lat:52.3764, lng:4.9148, kind:'artificial', district:'centrum'   },
+    { id:'entrepotdok',       name:'Entrepotdok',            nameZh:'Entrepotdok',     lat:52.3680, lng:4.9160, kind:'artificial', district:'centrum'   },
+    { id:'scheepvaartmuseum_island',name:'Scheepvaartmuseum', nameZh:'海事博物馆岛',    lat:52.3710, lng:4.9150, kind:'park',      district:'oost'      },
+    // Park islands (real islands inside park ponds)
+    { id:'vondelpark_eiland', name:'Vondelpark Eiland',      nameZh:'冯德尔公园岛',   lat:52.3580, lng:4.8660, kind:'park',      district:'west'      },
+    { id:'oosterpark_eiland', name:'Oosterpark Eiland',      nameZh:'东公园岛',         lat:52.3587, lng:4.9170, kind:'park',      district:'oost'      },
+    { id:'sarphatipark_eiland',name:'Sarphatipark Eiland',   nameZh:'Sarphati公园岛',   lat:52.3563, lng:4.8973, kind:'park',      district:'zuid'      },
+    { id:'beatrixpark_eiland',name:'Beatrixpark Eiland',     nameZh:'碧翠丝公园岛',     lat:52.3460, lng:4.8800, kind:'park',      district:'zuid'      },
+    { id:'westerpark_eiland', name:'Westerpark Eiland',      nameZh:'西公园岛',         lat:52.3870, lng:4.8760, kind:'park',      district:'west'      },
+    { id:'hermitage_eiland',  name:'Hermitage Tuin',         nameZh:'冬宫花园岛',      lat:52.3650, lng:4.9018, kind:'park',      district:'centrum'   },
+    // Polder (reclaimed lake, now surrounded by canals)
+    { id:'watergraafsmeer',   name:'Watergraafsmeer',        nameZh:'水草地',          lat:52.3570, lng:4.9300, kind:'polder',    district:'oost'      },
+    // Neighborhood "islands" — historic canal-belt areas enclosed by waterways
+    { id:'lastage',           name:'Lastage',                nameZh:'Lastage区',       lat:52.3730, lng:4.9060, kind:'neighborhood', district:'centrum' },
+    { id:'westelijke_eilanden',name:'Westelijke Eilanden',   nameZh:'西部群岛',        lat:52.3850, lng:4.8900, kind:'neighborhood', district:'noord'  },
+    { id:'oostelijke_eilanden',name:'Oostelijke Eilanden',   nameZh:'东部群岛',        lat:52.3740, lng:4.9210, kind:'neighborhood', district:'oost'   },
+    { id:'volewijck',         name:'Volewijck',              nameZh:'Volewijck',        lat:52.3950, lng:4.9110, kind:'neighborhood', district:'noord'  },
+    { id:'muiderpoort_island',name:'Muiderpoort',           nameZh:'Muiderpoort',      lat:52.3650, lng:4.9300, kind:'neighborhood', district:'oost'   },
+  ];
   const STREETS = []; // R2: hand-picked + Overpass fills
 
   // ─── Mini-game → real Amsterdam venue binding (R4) ─────────────────────────
@@ -182,12 +266,14 @@
   }
   function validate() {
     const errs = [];
-    if (LANDMARKS.length < 14) errs.push(`landmarks<14 (got ${LANDMARKS.length})`);
+    if (LANDMARKS.length < 30) errs.push(`landmarks<30 (got ${LANDMARKS.length})`);
     if (CANALS.length   < 9 )  errs.push(`canals<9 (got ${CANALS.length})`);
-    if (BRIDGES.length  < 30)  errs.push(`bridges<30 (got ${BRIDGES.length})`);
+    if (BRIDGES.length  < 50)  errs.push(`bridges<50 (got ${BRIDGES.length})`);
+    if (ISLANDS.length  < 30)  errs.push(`islands<30 (got ${ISLANDS.length})`);
     if (!_uniqueBy(LANDMARKS, l => l.id)) errs.push('landmark ids not unique');
     if (!_uniqueBy(CANALS,   c => c.id)) errs.push('canal ids not unique');
     if (!_uniqueBy(BRIDGES,  b => b.id)) errs.push('bridge ids not unique');
+    if (!_uniqueBy(ISLANDS,  i => i.id)) errs.push('island ids not unique');
     for (const l of LANDMARKS) {
       if (!_insideBounds(l.lat, l.lng)) errs.push(`landmark ${l.id} outside bbox`);
       if (!l.name || !l.nameZh || !l.kind) errs.push(`landmark ${l.id} missing fields`);
@@ -197,6 +283,14 @@
       for (const [la, lo] of c.points) {
         if (!_insideBounds(la, lo)) errs.push(`canal ${c.id} anchor outside bbox`);
       }
+    }
+    for (const b of BRIDGES) {
+      if (!_insideBounds(b.lat, b.lng)) errs.push(`bridge ${b.id} outside bbox`);
+    }
+    // R5 — island validation (id, name, lat, lng, kind all required)
+    for (const i of ISLANDS) {
+      if (!_insideBounds(i.lat, i.lng)) errs.push(`island ${i.id} outside bbox`);
+      if (!i.id || !i.name || !i.kind) errs.push(`island ${i.id||'?'} missing fields`);
     }
     // R4 · mini-game bindings must cover the 6 industries and stay inside bbox.
     if (MINI_BINDINGS.length < 6) errs.push(`minigame bindings<6 (got ${MINI_BINDINGS.length})`);

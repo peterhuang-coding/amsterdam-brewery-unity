@@ -133,7 +133,7 @@ frame.addEventListener('load',async()=>{
   check('BRIDGES 含 Blauwbrug',()=>G.BRIDGES.some(b=>b.id==='blauwbrug'));
   check('validate() ok=true',()=>G.validate().ok);
   check('validate().errors 为空数组',()=>G.validate().errors.length === 0);
-  check('stats() 返回 landmarks=12',()=>G.stats().landmarks === 12);
+  check('stats() 返回 landmarks=14 (R4 加 buiksloterham/allard_pierson)',()=>G.stats().landmarks === 14);
   check('stats() 返回 canals=9',()=>G.stats().canals === 9);
   check('stats().canvas.w 在 [400, 800] px',()=>{const c=G.stats().canvas;return c.w>400 && c.w<800});
   check('stats().canvas.h 在 [400, 800] px',()=>{const c=G.stats().canvas;return c.h>400 && c.h<800});
@@ -154,7 +154,7 @@ frame.addEventListener('load',async()=>{
   check('viewportFit drawn 尺寸 ≤ 800×500 (含 pad)',()=>vp800x500 && vp800x500.w <= 800 && vp800x500.h <= 500);
   check('viewportFit drawn 居中 (ox+pad≥0, oy+pad≥0)',()=>vp800x500 && vp800x500.ox + 24 >= -1 && vp800x500.oy + 24 >= -1);
   const scene = R.buildReplicaScene(G, 800, 500, {pad:18});
-  check('buildReplicaScene 返回 landmarks=12',()=>scene && scene.counts.landmarks === 12);
+  check('buildReplicaScene 返回 landmarks=14',()=>scene && scene.counts.landmarks === 14);
   check('buildReplicaScene 返回 canals=9',()=>scene && scene.counts.canals === 9);
   check('buildReplicaScene 返回 bridges≥30 (R3 扩容)',()=>scene && scene.counts.bridges >= 30);
   check('buildReplicaScene 每条运河 ≥2 投影点',()=>scene && scene.canals.every(c => c.points && c.points.length >= 2));
@@ -273,6 +273,109 @@ frame.addEventListener('load',async()=>{
   check('AB_TEST.fpsNow 是函数',()=>typeof t.fpsNow === 'function');
   check('AB_TEST.frameMs 是函数',()=>typeof t.frameMs === 'function');
   check('AB_TEST.bridgeCount() >= 30',()=>t.bridgeCount() >= 30);
+
+  // ═══ Round 4 — UI integration (introspection + bindings + E2E smoke) ═══
+  // 4a · getReplSceneStats single-call introspection
+  check('getReplSceneStats 是函数',()=>typeof t.getReplSceneStats === 'function');
+  const stats = t.getReplSceneStats(800, 500);
+  check('getReplSceneStats 不返回 null',()=>stats !== null);
+  check('stats.counts.landmarks=14 (R4)',()=>stats && stats.counts && stats.counts.landmarks === 14);
+  check('stats.counts.canals=9',()=>stats && stats.counts.canals === 9);
+  check('stats.counts.bridges≥30',()=>stats && stats.counts.bridges >= 30);
+  check('stats.viewport.scale>0',()=>stats && stats.viewport && stats.viewport.scale > 0);
+  check('stats.bridges.total≥30',()=>stats && stats.bridges && stats.bridges.total >= 30);
+  check('stats.bridges.famous≥5',()=>stats && stats.bridges && stats.bridges.famous >= 5);
+  check('stats.perf 含 fps/frameMs/samples',()=>stats && typeof stats.perf.fps === 'number' && typeof stats.perf.frameMs === 'number' && typeof stats.perf.samples === 'number');
+  check('stats.cache.hit 是 boolean',()=>stats && typeof stats.cache.hit === 'boolean');
+
+  // 4b · MINI_BINDINGS — every mini-game maps to a real Amsterdam address
+  const binds = G.MINI_BINDINGS;
+  check('MINI_BINDINGS 已挂载',()=>Array.isArray(binds));
+  check('MINI_BINDINGS 至少 6 条 (6 个 mini-game)',()=>binds && binds.length >= 6);
+  const requiredIndustries = ['brewing','coffee_shop','smart_shop','surfing','academic','bar'];
+  for (const ind of requiredIndustries) {
+    check(`MINI_BINDINGS 含 ${ind}`,()=>binds && binds.some(m => m.industry === ind));
+  }
+  check('MINI_BINDINGS industry 全部唯一',()=>binds && new Set(binds.map(m=>m.industry)).size === binds.length);
+  check('MINI_BINDINGS id 全部唯一',()=>binds && new Set(binds.map(m=>m.id)).size === binds.length);
+  check('MINI_BINDINGS 每条都有 name/address/lat/lng',()=>binds && binds.every(m=>m.name && m.address && Number.isFinite(m.lat) && Number.isFinite(m.lng)));
+  check('MINI_BINDINGS 每条都含街道关键词 (Amsterdam|straat|plein|laan|gracht|park)',()=>{
+    if(!binds) return false;
+    const re = /Amsterdam|straat|plein|laan|gracht|park|werf|markt/i;
+    return binds.every(m => re.test(m.address));
+  });
+  check('MINI_BINDINGS 全部在 BOUNDS 内',()=>binds && binds.every(m=>m.lat>=G.BOUNDS.south && m.lat<=G.BOUNDS.north && m.lng>=G.BOUNDS.west && m.lng<=G.BOUNDS.east));
+  check('brewing 绑定在 Centraal 南部 (lat>52.37)',()=>{const m=binds.find(x=>x.industry==='brewing');return m && m.lat>52.37});
+  check('academic 绑定在 central Amsterdam (lat<52.37)',()=>{const m=binds.find(x=>x.industry==='academic');return m && m.lat<52.37});
+  check('surfing 绑定在 Noord (lat>52.39)',()=>{const m=binds.find(x=>x.industry==='surfing');return m && m.lat>52.39});
+
+  // 4c · Address ↔ landmark consistency — every venue within 1 km of a landmark
+  check('每个 mini-game venue 与最近 landmark 距离 < 1km',()=>{
+    if(!binds) return false;
+    return binds.every(m => {
+      let nearest = Infinity;
+      for (const l of G.LANDMARKS) {
+        const d = G.distanceMeters({lat:m.lat,lng:m.lng}, {lat:l.lat,lng:l.lng});
+        if (d < nearest) nearest = d;
+      }
+      return nearest < 1000;
+    });
+  });
+
+  // 4d · AB_TEST.minigameBindings mirrors the geo export
+  check('AB_TEST.minigameBindings = AMSTERDAM_GEO.MINI_BINDINGS',()=>t.minigameBindings === G.MINI_BINDINGS);
+
+  // 4e · E2E smoke — Replica layer survives mini-game lifecycle
+  // Toggle replica on → run a complete 7-day auto-run with mini-games →
+  // verify the static-layer cache + scene stats stay valid afterwards.
+  let e2ePass = true;
+  let e2eDetail = '';
+  try {
+    R.clearStaticCache(G);
+    // Enable replica, prime scene stats while inside a mini-game
+    t.state.replica = true;
+    t.newRun(42);
+    t.state.ended = false;
+    const prime = t.getReplSceneStats(800, 500);
+    if (!prime || prime.counts.landmarks !== 14) e2eDetail += 'prime='+(prime?prime.counts.landmarks:'null')+';';
+    doc.getElementById('ba').click();
+    // Poll for run end (max ~120s of virtual time — full suite budget allows this)
+    const startMs = Date.now();
+    while (Date.now() - startMs < 120000 && !t.state.ended) await wait(500);
+    if (!t.state.ended) e2eDetail += 'ended='+t.state.ended+' day='+t.state.day+';';
+    // After 7 days and many mini-games, scene stats still report the same counts
+    const post = t.getReplSceneStats(800, 500);
+    if (!post || post.counts.landmarks !== 14 || post.counts.canals !== 9 || post.counts.bridges < 30) {
+      e2eDetail += 'post='+(post?post.counts.landmarks+'/'+post.counts.canals+'/'+post.counts.bridges:'null')+';';
+    }
+    if (t.state.replica !== true) e2eDetail += 'replica='+t.state.replica+';';
+    if (e2eDetail) e2ePass = false;
+    t.state.replica = prevRep;
+    R.clearStaticCache(G);
+  } catch (e) { e2ePass = false; e2eDetail += 'err:'+e.message; }
+  if (e2ePass) {
+    check('E2E: 7 天 auto-run 后 Replica scene 仍报告 landmarks=14 / canals=9 / bridges≥30',()=>true);
+  } else {
+    total++; row(false, 'E2E: 7 天 auto-run 后 Replica scene 仍报告 landmarks=14 / canals=9 / bridges≥30', e2eDetail);
+  }
+
+  // 4f · Replica toggle works while a mini-game is active (no crash)
+  let toggleInGameOk = true;
+  try {
+    R.clearStaticCache(G);
+    t.state.replica = false;
+    // Force-start brew mini-game
+    if (typeof win.startBrew === 'function') win.startBrew();
+    // Toggle replica while inside brew
+    win.toggleReplica();
+    const mid = t.getReplSceneStats(800, 500);
+    if (!mid || mid.counts.landmarks !== 14) toggleInGameOk = false;
+    // Force end mini-game via escape path
+    t.state.mg = null;
+    t.state.inside = null;
+    t.state.replica = prevRep;
+  } catch (e) { toggleInGameOk = false; }
+  check('E2E: mini-game 中切换 Replica 不抛错 + scene 仍 14 landmarks',()=>toggleInGameOk);
 
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });

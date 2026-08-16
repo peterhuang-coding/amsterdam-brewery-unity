@@ -14,7 +14,7 @@
   'use strict';
 
   // ─── Constants ─────────────────────────────────────────────────────────────
-  const VERSION = 'map-replica-v1-data-1';
+  const VERSION = 'map-replica-v1-data-2';
   const ORIGIN = { lat: 52.3676, lng: 4.9041, label: 'Muntplein (city center)' };
   const BOUNDS = { south: 52.340, west: 4.850, north: 52.410, east: 4.965 };
   const SCALE_M_PER_PX = 12;            // 12 m → 1 px at default zoom
@@ -69,6 +69,9 @@
     { id:'ndsm',           name:'NDSM Werf',            nameZh:'NDSM船坞',     lat:52.4020, lng:4.8910, kind:'venue',    mini:'tour'     },
     { id:'plantage',       name:'Plantage',             nameZh:'普兰塔吉',     lat:52.3670, lng:4.9130, kind:'district', mini:'coffee'   },
     { id:'ijburg',         name:'IJburg',               nameZh:'IJburg新区',   lat:52.3570, lng:4.9610, kind:'district', mini:'surf'     },
+    // R4 — anchor landmarks for the 6 mini-game venue bindings (within 1 km of each).
+    { id:'buiksloterham',  name:'Buiksloterham',        nameZh:'Buiksloterham', lat:52.4015, lng:4.9130, kind:'district', mini:'surf'     },
+    { id:'allard_pierson', name:'Allard Pierson',       nameZh:'阿勒德皮尔森',   lat:52.3636, lng:4.8917, kind:'museum',   mini:'academic' },
   ];
 
   // ─── Canals (9 main canals as polylines along their centerlines) ───────────
@@ -142,6 +145,32 @@
   const ISLANDS  = []; // R2: Bickers, Prinsen, Wittenburg, Oostenburg, Marken
   const STREETS = []; // R2: hand-picked + Overpass fills
 
+  // ─── Mini-game → real Amsterdam venue binding (R4) ─────────────────────────
+  // Each binding maps a mini-game industry to a real Amsterdam address with
+  // public coords. Used by:
+  //   - the Replica overlay layer (to anchor the building at its true location)
+  //   - tooltips in `index.html` (so the player sees the real street name)
+  //   - test.html assertions (binding integrity + within-bbox + address ≠ null)
+  // Schema: { industry, id, name, address, lat, lng, district, landmarkId }
+  //   industry must match a key in IND_DEF (brewing|coffee_shop|smart_shop|
+  //              surfing|academic|bar)
+  //   landmarkId is optional — when present, the binding reuses an existing
+  //              landmark's coords (single source of truth).
+  const MINI_BINDINGS = [
+    { industry:'brewing',    id:'brew',    name:'Brouwerij De Pijl', address:'Warmoesstraat 19, 1012 JD Amsterdam',
+      lat:52.3762, lng:4.8970, district:'tweede_kans',  landmarkId:null },
+    { industry:'coffee_shop',id:'coffee',  name:'Noord Coffeeshop',  address:'Van der Pekstraat 8, 1031 JP Amsterdam-Noord',
+      lat:52.4020, lng:4.8910, district:'noord',        landmarkId:'ndsm' },
+    { industry:'smart_shop', id:'shroom',  name:'Damstraat SmartShop', address:'Damstraat 22, 1012 JL Amsterdam',
+      lat:52.3732, lng:4.8965, district:'bloemenmarkt', landmarkId:null },
+    { industry:'surfing',    id:'surf',    name:'Buiksloterham Surf', address:'Buiksloterham, 1034 Amsterdam-Noord',
+      lat:52.4015, lng:4.9130, district:'noord',        landmarkId:'buiksloterham' },
+    { industry:'academic',   id:'acad',    name:'Allard Pierson',    address:'Oude Turfmarkt 127, 1012 GC Amsterdam',
+      lat:52.3636, lng:4.8917, district:'science_park', landmarkId:'allard_pierson' },
+    { industry:'bar',        id:'bar',     name:'Café Tweede Kans',  address:'Warmoesstraat 19, 1012 JD Amsterdam',
+      lat:52.3762, lng:4.8970, district:'tweede_kans',  landmarkId:null },
+  ];
+
   // ─── Schema validation + stats ─────────────────────────────────────────────
   function _insideBounds(lat, lng) {
     return lat >= BOUNDS.south && lat <= BOUNDS.north &&
@@ -153,7 +182,7 @@
   }
   function validate() {
     const errs = [];
-    if (LANDMARKS.length < 12) errs.push(`landmarks<12 (got ${LANDMARKS.length})`);
+    if (LANDMARKS.length < 14) errs.push(`landmarks<14 (got ${LANDMARKS.length})`);
     if (CANALS.length   < 9 )  errs.push(`canals<9 (got ${CANALS.length})`);
     if (BRIDGES.length  < 30)  errs.push(`bridges<30 (got ${BRIDGES.length})`);
     if (!_uniqueBy(LANDMARKS, l => l.id)) errs.push('landmark ids not unique');
@@ -169,6 +198,14 @@
         if (!_insideBounds(la, lo)) errs.push(`canal ${c.id} anchor outside bbox`);
       }
     }
+    // R4 · mini-game bindings must cover the 6 industries and stay inside bbox.
+    if (MINI_BINDINGS.length < 6) errs.push(`minigame bindings<6 (got ${MINI_BINDINGS.length})`);
+    if (!_uniqueBy(MINI_BINDINGS, m => m.industry)) errs.push('minigame industries not unique');
+    if (!_uniqueBy(MINI_BINDINGS, m => m.id))       errs.push('minigame ids not unique');
+    for (const m of MINI_BINDINGS) {
+      if (!m.industry || !m.id || !m.name || !m.address) errs.push(`minigame ${m.id||'?'} missing fields`);
+      if (!_insideBounds(m.lat, m.lng)) errs.push(`minigame ${m.id} outside bbox`);
+    }
     return { ok: errs.length === 0, errors: errs };
   }
   function stats() {
@@ -182,6 +219,7 @@
       bridges:   BRIDGES.length,
       islands:   ISLANDS.length,
       streets:   STREETS.length,
+      minigames: MINI_BINDINGS.length,
       canvas:    projectedBoundsPx(),
     };
   }
@@ -189,7 +227,7 @@
   // ─── Export ────────────────────────────────────────────────────────────────
   global.AMSTERDAM_GEO = {
     VERSION, BOUNDS, ORIGIN, SCALE_M_PER_PX,
-    LANDMARKS, CANALS, BRIDGES, ISLANDS, STREETS,
+    LANDMARKS, CANALS, BRIDGES, ISLANDS, STREETS, MINI_BINDINGS,
     lngLatToCanvas, canvasToLngLat, distanceMeters, projectedBoundsPx,
     validate, stats,
   };

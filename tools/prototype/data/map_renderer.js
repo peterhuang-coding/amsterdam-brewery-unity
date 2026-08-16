@@ -371,6 +371,52 @@
     _lastFrameAt = 0;
   }
 
+  // ─── R4 · Scene stats (runtime introspection) ──────────────────────────────
+  // Single-call summary for tests + dev console. Reports data, viewport, perf,
+  // and cache state so we can assert "replica layer actually rendered X
+  // features at Y fps" without scraping canvas pixels.
+  function getReplSceneStats(geo, W, H, opts) {
+    const scene = buildReplicaScene(geo, W, H, opts || {});
+    const vp = scene.viewport;
+    const lodScale = vp ? vp.scale : 1;
+    const lodBridges = bridgeLOD(scene.bridges, lodScale);
+    const rect = viewportRect(vp, W, H, (opts && opts.pad) || 24);
+    const culledBridges = lodBridges.filter(b => inViewport(b.x, b.y, 6, rect));
+    return {
+      version: VERSION,
+      geoVersion: geo && geo.VERSION ? geo.VERSION : null,
+      counts: {
+        landmarks: geo ? geo.LANDMARKS.length : 0,
+        canals: geo ? geo.CANALS.length : 0,
+        bridges: geo ? geo.BRIDGES.length : 0,
+        islands: geo ? geo.ISLANDS.length : 0,
+        streets: geo ? geo.STREETS.length : 0,
+      },
+      viewport: vp ? { scale: vp.scale, w: vp.w, h: vp.h } : null,
+      canvas: { W, H },
+      bridges: {
+        total: scene.bridges.length,
+        lod: { shown: lodBridges.length, hidden: scene.bridges.length - lodBridges.length },
+        culled: { shown: culledBridges.length, hidden: lodBridges.length - culledBridges.length },
+        famous: lodBridges.filter(b => FAMOUS_BRIDGES.has(b.id)).length,
+      },
+      cache: {
+        // Probe whether the static cache is hot for the current key. Returns
+        // hit=true if drawReplicaOverlay with cache:true would skip live draw.
+        hit: (typeof document !== 'undefined') &&
+              (function () {
+                const sl = getStaticLayer(geo, W, H, opts || {}, scene);
+                return !!(sl && sl.hit);
+              })(),
+      },
+      perf: {
+        fps: fpsNow(),
+        frameMs: frameMs(),
+        samples: _frameTimes.length,
+      },
+    };
+  }
+
   // ─── Export ────────────────────────────────────────────────────────────────
   global.MAP_RENDERER = {
     VERSION,
@@ -383,5 +429,7 @@
     viewportRect, inViewport, bridgeLOD, drawBridges,
     getStaticLayer, clearStaticCache,
     fpsTick, fpsNow, frameMs, fpsReset,
+    // R4 introspection
+    getReplSceneStats,
   };
 })(typeof window !== 'undefined' ? window : globalThis);

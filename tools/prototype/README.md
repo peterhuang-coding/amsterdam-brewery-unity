@@ -57,13 +57,15 @@ localStorage.removeItem('ab_skip_tutorial')
 
 ## 验证
 
-打开 `test.html`。**当前 19/19 PASS**，覆盖：
+打开 `test.html`。**当前 ≥ 145/145 PASS**（逐轮递增），覆盖：
 
-- 数据契约（5 产业、事件 ID 唯一、升级 ID 唯一、modifier 都有 effect、冲浪入口、Seed 稳定）
+- 数据契约（5 产业、事件 ID 唯一、升级 ID 唯一、modifier 都有 effect、冲浪入口、Seed 稳定、6 mini-game 真实地址绑定）
 - 运行时契约（目标生成数量、必须含 Explore/Talk、升级包含三张死亡升级）
 - 首开 UX（fresh localStorage 看到模态、模态打开时 WASD 不生效、seed 输入框回车可启动）
 - 运河改道（点击运河坐标会被改道到最近桥端）
 - 完整闭环（自动运行 100s 内必达 ended；购买升级后 run +1 且 upgrades 增加且 ended 已复位）
+- Amsterdam 地图层（14 landmarks · 9 canals · 32 bridges；投影往返；canvas 边界；LOD 视口剔除；FPS 测量；静态层缓存）
+- 端到端 smoke：mini-game 跑满 7 天后 Replica scene 仍稳定
 
 ### 手动验收
 
@@ -73,9 +75,29 @@ localStorage.removeItem('ab_skip_tutorial')
 4. 点击自动运行，确认第 7 天完成结算。
 5. 选择升级，刷新页面并开始下一局，确认升级与 meta 保留。
 6. 将浏览器缩到约 390px 宽，确认主要按钮仍可使用。
+7. 点右下角 **🗺 Replica 开**，叠上真实 Amsterdam 地标/运河/桥层；确认图例数字 (12/9/32) 与右上角 FPS 数字。
+
+## Replica 地图层 (map-replica-v1)
+
+独立的真实 Amsterdam 渲染层，可在游戏内开关（右下角按钮）：
+
+- **数据层** `data/amsterdam_geo.js`：14 landmarks (Wikipedia 公开坐标 + 2 个 mini-game venue anchor)、9 主运河 (UNESCO canal ring + Amstel + IJ)、32 桥（Magere Brug/Blauwbrug 等名桥 + 编号桥）。等距投影 (12 m/px)，bbox `{52.340, 4.850, 52.410, 4.965}`。
+- **渲染层** `data/map_renderer.js`：viewport fit → 静态层缓存 → 桥视口剔除 + LOD → 地标 pin + 图例。`getReplSceneStats()` 一次性返回 counts / viewport / LOD / cache / fps。
+- **6 mini-game 真实地址绑定** (`AMSTERDAM_GEO.MINI_BINDINGS`)：每个 mini-game industry 都绑定到一个真实 Amsterdam 地址，坐标在 bbox 内、距最近 landmark < 1 km。
+- **数据源** 见 `CREDITS.md`。
+
+### Runtime introspection
+
+```js
+// In the browser console (page open on index.html)
+AB_TEST.getReplSceneStats()        // single-call summary
+AB_TEST.minigameBindings           // 6 mini-game → Amsterdam address mapping
+AMSTERDAM_GEO.stats()              // pure data counts
+```
 
 ## 当前边界
 
 - 这是桌面浏览器优先的 Canvas 原型，窄屏只提供基础可用布局。
 - 没有后端、账号、云存档或多人模式。
 - 不在这里定义 Web Demo 到 Unity 的迁移方式；该阶段在 Web Demo 玩法验收后另行讨论。
+- Replica 层是 2D 抽象地图，不替代真实 OSM 矢量瓦片；坐标为公开来源，精度足够用于教学/玩法背景。

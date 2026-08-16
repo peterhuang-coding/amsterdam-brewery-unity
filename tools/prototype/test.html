@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Amsterdam Brewery Web Demo Tests</title>
+<style>body{font:16px system-ui;background:#0a0c14;color:#e0d8c8;padding:24px}h2.pass{color:#78c878}h2.fail{color:#f05050}.row{margin:6px 0;font-family:monospace}.pass{color:#78c878}.fail{color:#f05050}iframe{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}</style></head>
+<body><h1>Web Demo contract tests</h1><div id="results">正在加载…</div><iframe id="demo" src="index.html?seed=42"></iframe>
+<script>
+const results=document.getElementById('results'),frame=document.getElementById('demo');
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function row(ok,name,detail=''){const el=document.createElement('div');el.className='row '+(ok?'pass':'fail');el.textContent=(ok?'PASS':'FAIL')+' — '+name+(detail?' · '+detail:'');results.appendChild(el);return ok}
+
+frame.addEventListener('load',async()=>{
+  results.textContent='';let passed=0,total=0;
+  const check=(name,fn)=>{total++;try{const r=fn();if(row(Boolean(r),name,typeof r==='object'&&r&&r.detail?r.detail:''))passed++}catch(e){row(false,name,e.message)}};
+
+  // Wait for AB_TEST ready
+  for(let i=0;i<80;i++){if(frame.contentWindow&&frame.contentWindow.AB_TEST)break;await wait(100)}
+  const win=frame.contentWindow,doc=frame.contentDocument;
+  const t=win.AB_TEST;
+
+  // Phase 1: contract tests against the loaded instance
+  check('测试接口可用',()=>t&&t.validate);
+  const v=t.validate();
+  check('定义 5 个产业',()=>v.industries);
+  check('事件 ID 唯一',()=>v.eventIds);
+  check('升级 ID 唯一',()=>v.upgradeIds);
+  check('所有事件有效果说明',()=>v.modifierEffects);
+  check('冲浪入口存在',()=>v.surfEntry);
+  // Round 6 — Amsterdam-themed upgrades (ov_fiets / museumkaart / iamsterdam_card / heineken_pass / coffee_passport / canal_cruise)
+  const amIds=['ov_fiets','museumkaart','iamsterdam_card','heineken_pass','coffee_passport','canal_cruise'];
+  check('6 个阿姆斯特丹升级全部存在',()=>amIds.every(id=>t.data.upgrades.some(u=>u.id===id)));
+  check('阿姆斯特丹升级 cat=阿姆斯特丹',()=>amIds.every(id=>{const u=t.data.upgrades.find(x=>x.id===id);return u&&u.cat==='阿姆斯特丹'}));
+  check('阿姆斯特丹升级均含中文描述',()=>amIds.every(id=>{const u=t.data.upgrades.find(x=>x.id===id);return u&&u.t&&u.d&&u.cost>0}));
+  check('升级 ID 唯一含阿姆斯特丹项',()=>v.upgradeIds);
+  check('museumkaart 学术因子=1.25',()=>{const had=t.state.upgrades.slice();t.state.upgrades=['museumkaart'];const f=win.industryFactor('academic');t.state.upgrades=had;return Math.abs(f-1.25)<1e-6});
+  check('coffee_passport 咖啡因子=1.2',()=>{const had=t.state.upgrades.slice();t.state.upgrades=['coffee_passport'];const f=win.industryFactor('coffee');t.state.upgrades=had;return Math.abs(f-1.2)<1e-6});
+  check('museumkaart 叠加 museum_night=1.875',()=>{const had=t.state.upgrades.slice(),hadMods=t.state.mods.slice();t.state.upgrades=['museumkaart'];t.state.mods=[{id:'museum_night'}];const f=win.industryFactor('academic');t.state.upgrades=had;t.state.mods=hadMods;return Math.abs(f-1.875)<1e-6});
+  check('Seed 缩写稳定',()=>t.seedAbbrev(42)===t.seedAbbrev(42));
+  check('相同 Seed 的每日事件稳定',()=>{const a=t.rollDayModifier().id,b=t.rollDayModifier().id;return a===b});
+  check('Run 状态范围合法',()=>t.state.day>=1&&t.state.day<=7&&t.state.run>=0);
+  check('目标生成固定为 3 条',()=>{t.rollDayObjectives();return t.state.objs.length===3});
+  check('目标至少含 1 项 Explore 或 Talk',()=>t.state.objs.some(o=>o.cat==='Explore'||o.cat==='Talk'));
+  check('升级 ID 含 ipa_recipe/extra_event/event_freq',()=>t.data.upgrades.some(u=>u.id==='ipa_recipe')&&t.data.upgrades.some(u=>u.id==='extra_event')&&t.data.upgrades.some(u=>u.id==='event_freq'));
+  const snapped=t.clampTargetToWalkable(400,158);
+  check('运河改道函数可用',()=>snapped&&(snapped.y===144||snapped.y===158||snapped.y===286));
+
+  // ═══ funify-v3 Round 1 — ARIA + a11y (BACKLOG #4) ═══
+  check('start-modal 有 role=dialog',()=>doc.getElementById('start-modal').getAttribute('role')==='dialog');
+  check('start-modal 有 aria-modal=true',()=>doc.getElementById('start-modal').getAttribute('aria-modal')==='true');
+  check('start-modal 有 aria-labelledby 绑定 h1',()=>doc.getElementById('start-modal').getAttribute('aria-labelledby')==='start-modal-title'&&!!doc.getElementById('start-modal-title'));
+  check('seed input 自动聚焦',()=>doc.activeElement&&doc.activeElement.id==='start-seed');
+  check('CSS 含 prefers-reduced-motion + .btn.go 动画关闭',()=>{
+    for(const s of doc.styleSheets){
+      let rules;try{rules=s.cssRules}catch(e){continue}
+      for(const r of rules){
+        if(r.type===4&&r.media&&r.media.mediaText.includes('prefers-reduced-motion')&&r.cssText.includes('.btn.go')&&r.cssText.includes('animation'))return true
+      }
+    }return false
+  });
+
+  // ═══ Round 6 — Achievement system + WebAudio ═══
+  check('ACH_POOL 至少 10 个成就',()=>t.data.achievements&&t.data.achievements.length>=10);
+  check('所有成就 ID 唯一',()=>new Set(t.data.achievements.map(a=>a.id)).size===t.data.achievements.length);
+  check('每个成就有 ic/n/d',()=>t.data.achievements.every(a=>a.ic&&a.n&&a.d));
+  // tryUnlock: calling twice should only fire once
+  const beforeUnlock=t.state.achievements.length;
+  const unlockA=win.tryUnlock('first_run');const unlockB=win.tryUnlock('first_run');
+  check('tryUnlock 首次 true · 重复 false',()=>unlockA===true&&unlockB===false);
+  check('tryUnlock 持久化到 state.achievements',()=>t.state.achievements.includes('first_run'));
+  check('AUDIO.play 函数存在',()=>t.AUDIO&&typeof t.AUDIO.play==='function');
+  check('AUDIO.blip 函数存在',()=>t.AUDIO&&typeof t.AUDIO.blip==='function');
+  check('AUDIO.noise 函数存在',()=>t.AUDIO&&typeof t.AUDIO.noise==='function');
+  // Try each preset to confirm no exception
+  let audioOk=true;
+  for(const k of['brew_ok','brew_fail','coffee_sale','coffee_raid','shroom_pick','surf_perfect','surf_catch','bar_clink','bar_sale','objective','achievement','click','raid_alarm']){
+    try{t.AUDIO.play(k)}catch(_){audioOk=false}
+  }
+  check('AUDIO 13 个预设全部可调用',()=>audioOk);
+  // Reset per-run counters exist
+  check('G._run 计数器存在',()=>t.state._run&&typeof t.state._run==='object');
+  // Save & load roundtrip (synthetic)
+  const prevAch=t.state.achievements.slice();
+  t.state.achievements=['first_run','mega_profit'];
+  win.saveAch();
+  win.loadAch();
+  check('saveAch/loadAch 往返一致性',()=>JSON.stringify(t.state.achievements.sort())===JSON.stringify(['first_run','mega_profit']));
+  t.state.achievements=prevAch;win.saveAch();
+  check('fresh 下 start-modal 可见',()=>!doc.getElementById('start-modal').classList.contains('hidden'));
+  // Modal guard: W should not move player while modal visible
+  const ty0=t.state.p.ty;
+  win.dispatchEvent(new KeyboardEvent('keydown',{key:'w',bubbles:true}));
+  await wait(120);
+  check('模态打开时 WASD 不修改目标',()=>t.state.p.ty===ty0);
+  // Enter in seed input
+  doc.getElementById('start-seed').value='7';
+  doc.getElementById('start-seed').focus();
+  doc.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
+  await wait(500);
+  check('教程输入框回车可启动',()=>t.state.seed===7&&doc.getElementById('start-modal').classList.contains('hidden'));
+  // Auto-run completes within 100s
+  t.newRun(42);t.state.ended=false;
+  doc.getElementById('ba').click();
+  let reached=false;
+  for(let i=0;i<200;i++){if(t.state.ended){reached=true;break}await wait(500)}
+  check('自动运行跑满 7 天必达 ended',()=>reached);
+  // Pick upgrade → next run counter +1
+  const beforeRun=t.state.run,beforeUpgrades=t.state.upgrades.length;
+  const next=t.data.upgrades.find(u=>!t.state.upgrades.includes(u.id));
+  if(!next){row(false,'有可购买升级','')}
+  else{
+    t.state.meta=Math.max(t.state.meta,next.cost);
+    win.eval(`pickUpgrade(${JSON.stringify(next)})`);
+    await wait(200);
+    check('购买升级后 run 计数 +1 且 upgrades 增加',()=>t.state.run===beforeRun+1&&t.state.upgrades.length===beforeUpgrades+1);
+    check('升级后 G.ended 已复位',()=>t.state.ended===false);
+  }
+  const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
+});
+setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);
+</script></body></html>

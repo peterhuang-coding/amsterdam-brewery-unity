@@ -182,9 +182,11 @@ frame.addEventListener('load',async()=>{
   const buildFakeCtx = (sink) => ({
     save(){},restore(){},fillRect(){sink.push('fillRect')},strokeRect(){sink.push('strokeRect')},
     beginPath(){sink.push('beginPath')},moveTo(){sink.push('moveTo')},lineTo(){sink.push('lineTo')},
+    closePath(){sink.push('closePath')},
     stroke(){sink.push('stroke')},fill(){sink.push('fill')},arc(){sink.push('arc')},
     translate(){sink.push('translate')},rotate(){sink.push('rotate')},
-    fillText(){sink.push('fillText')},measureText(){sink.push('measureText');return{width:10}},
+    fillText(){sink.push('fillText')},strokeText(){sink.push('strokeText')},
+    measureText(){sink.push('measureText');return{width:10}},
     clearRect(){},setLineDash(){},setTransform(){},transform(){},scale(){},clip(){},
     set fillStyle(v){},set strokeStyle(v){},set lineWidth(v){},set lineCap(v){},set lineJoin(v){},
     set font(v){},set textAlign(v){},set textBaseline(v){},set globalAlpha(v){},
@@ -413,6 +415,151 @@ frame.addEventListener('load',async()=>{
   const stats5 = t.getReplSceneStats(800, 500);
   check('getReplSceneStats landmarks ≥ 30',()=>stats5 && stats5.counts && stats5.counts.landmarks >= 30);
   check('getReplSceneStats bridges ≥ 50',()=>stats5 && stats5.counts && stats5.counts.bridges >= 50);
+
+  // ═══ Round 6 — Mini-game markers + island labels + 1 km scale bar ═══
+  // Brief §2 验收 #2 — 6 mini-game 真实地址 binding now visually present on the
+  // replica overlay (diamond + industry icon). R6 also adds 30 island pins and
+  // a 1 km scale bar so the geo layer is fully readable.
+
+  // 6a · Renderer exports
+  check('R6 · MINI_ICON 覆盖 6 个 industry',()=>R && ['brewing','coffee_shop','smart_shop','surfing','academic','bar'].every(k=>R.MINI_ICON[k]));
+  check('R6 · MINI_COLOR 覆盖 6 个 industry',()=>R && ['brewing','coffee_shop','smart_shop','surfing','academic','bar'].every(k=>R.MINI_COLOR[k]));
+  check('R6 · MINI_ICON 6 个 icon 互不相同',()=>{
+    if(!R) return false;
+    const seen = new Set();
+    for (const k of Object.keys(R.MINI_ICON)) seen.add(R.MINI_ICON[k]);
+    return seen.size === Object.keys(R.MINI_ICON).length;
+  });
+  check('R6 · MINI_COLOR 6 个色值互不相同',()=>{
+    if(!R) return false;
+    const seen = new Set();
+    for (const k of Object.keys(R.MINI_COLOR)) seen.add(R.MINI_COLOR[k]);
+    return seen.size === Object.keys(R.MINI_COLOR).length;
+  });
+  check('R6 · ISLAND_COLOR 覆盖 5 种 kind',()=>R && ['artificial','park','polder','neighborhood','natural'].every(k=>R.ISLAND_COLOR[k]));
+  check('R6 · projectMiniGame 已暴露',()=>typeof R.projectMiniGame === 'function');
+  check('R6 · projectIsland 已暴露',()=>typeof R.projectIsland === 'function');
+  check('R6 · drawMiniGames 已暴露',()=>typeof R.drawMiniGames === 'function');
+  check('R6 · drawIslands 已暴露',()=>typeof R.drawIslands === 'function');
+  check('R6 · drawScaleBar 已暴露',()=>typeof R.drawScaleBar === 'function');
+
+  // 6b · projectMiniGame output
+  const sampleMg = G.MINI_BINDINGS[0];
+  const vp6 = R.viewportFit(G, 800, 500, 24);
+  const projMg = R.projectMiniGame(G, sampleMg, vp6);
+  check('R6 · projectMiniGame 返回坐标',()=>projMg && Number.isFinite(projMg.x) && Number.isFinite(projMg.y));
+  check('R6 · projectMiniGame 含 industry/name/color',()=>projMg && projMg.industry && projMg.name && projMg.color);
+  check('R6 · projectMiniGame 6 个全部投影到画布',()=>{
+    if(!G.MINI_BINDINGS) return false;
+    return G.MINI_BINDINGS.every(m => {
+      const p = R.projectMiniGame(G, m, vp6);
+      return p && p.x >= -1 && p.x <= 801 && p.y >= -1 && p.y <= 501;
+    });
+  });
+  check('R6 · 每个 mini-game venue 含真实地址',()=>G.MINI_BINDINGS.every(m => m.address && m.address.length > 5));
+  check('R6 · 每个 mini-game industry 唯一',()=>new Set(G.MINI_BINDINGS.map(m=>m.industry)).size === G.MINI_BINDINGS.length);
+
+  // 6c · projectIsland output
+  const sampleIs = G.ISLANDS[0];
+  const projIs = R.projectIsland(G, sampleIs, vp6);
+  check('R6 · projectIsland 返回坐标',()=>projIs && Number.isFinite(projIs.x) && Number.isFinite(projIs.y));
+  check('R6 · projectIsland 30 个全部投影到画布',()=>{
+    if(!G.ISLANDS) return false;
+    return G.ISLANDS.every(i => {
+      const p = R.projectIsland(G, i, vp6);
+      return p && p.x >= -1 && p.x <= 801 && p.y >= -1 && p.y <= 501;
+    });
+  });
+
+  // 6d · buildReplicaScene includes miniGames + islands
+  const scene6 = R.buildReplicaScene(G, 800, 500, {pad:18});
+  check('R6 · buildReplicaScene 返回 miniGames=6',()=>scene6 && scene6.miniGames && scene6.miniGames.length === 6);
+  check('R6 · buildReplicaScene 返回 islands=30',()=>scene6 && scene6.islands && scene6.islands.length === 30);
+  check('R6 · scene.counts.miniGames = 6',()=>scene6 && scene6.counts.miniGames === 6);
+  check('R6 · scene.counts.islands = 30',()=>scene6 && scene6.counts.islands === 30);
+  check('R6 · scene.miniGames 每个都有 industry 颜色',()=>scene6 && scene6.miniGames.every(m => m.color && m.color.startsWith('#')));
+
+  // 6e · getReplSceneStats includes miniGames count
+  const stats6 = t.getReplSceneStats(800, 500);
+  check('R6 · getReplSceneStats counts.miniGames = 6',()=>stats6 && stats6.counts && stats6.counts.miniGames === 6);
+
+  // 6f · drawMiniGames + drawIslands + drawScaleBar run without throw
+  let drawMgOk = true, drawIsOk = true, scaleOk = true;
+  try { R.drawMiniGames(buildFakeCtx([]), scene6, {}); } catch (e) { drawMgOk = false; }
+  try { R.drawIslands(buildFakeCtx([]), scene6, {}); } catch (e) { drawIsOk = false; }
+  try { R.drawScaleBar(buildFakeCtx([]), G, scene6, {}); } catch (e) { scaleOk = false; }
+  check('R6 · drawMiniGames 不抛错',()=>drawMgOk);
+  check('R6 · drawIslands 不抛错',()=>drawIsOk);
+  check('R6 · drawScaleBar 不抛错',()=>scaleOk);
+
+  // 6g · drawScaleBar returns a valid rect
+  const sbRect = R.drawScaleBar(buildFakeCtx([]), G, scene6, {});
+  check('R6 · drawScaleBar 返回 rect {x,y,w,h}',()=>sbRect && Number.isFinite(sbRect.x) && Number.isFinite(sbRect.y) && Number.isFinite(sbRect.w) && Number.isFinite(sbRect.h));
+  check('R6 · drawScaleBar rect.w 接近 1 km on-screen px',()=>{
+    if(!sbRect) return false;
+    // rect.w ≈ (1000/SCALE_M_PER_PX) × vp.scale + 32 (label padding). Just assert ≥ 4 px.
+    return sbRect.w >= 4 && sbRect.w <= 200;
+  });
+  check('R6 · drawScaleBar rect 在画布底部 (y > H-50)',()=>sbRect && sbRect.y > scene6.canvas.H - 50);
+
+  // 6h · drawIslands LOD
+  const scene6Low = R.buildReplicaScene(G, 800, 500, {pad:18});
+  // Force low-zoom viewport by overriding scale on a clone
+  const scene6ZoomOut = JSON.parse(JSON.stringify(scene6));
+  scene6ZoomOut.viewport.scale = 0.3;
+  let drawnLow = 0, drawnHigh = 0;
+  try {
+    const low = R.drawIslands(buildFakeCtx([]), scene6ZoomOut, {});
+    drawnLow = low && typeof low.drawn === 'number' ? low.drawn : 0;
+    const hi = R.drawIslands(buildFakeCtx([]), scene6, {});
+    drawnHigh = hi && typeof hi.drawn === 'number' ? hi.drawn : 0;
+  } catch (e) {}
+  check('R6 · drawIslands scale=0.3 仅显示 park/polder (< 总数)',()=>drawnLow < 30 && drawnLow >= 0);
+  check('R6 · drawIslands scale≈1 显示全部 30 个',()=>drawnHigh === 30);
+  check('R6 · drawIslands 返回 {drawn, hidden}',()=>{
+    try {
+      const r = R.drawIslands(buildFakeCtx([]), scene6, {});
+      return r && typeof r.drawn === 'number' && typeof r.hidden === 'number';
+    } catch (e) { return false; }
+  });
+
+  // 6i · E2E renderReplicaOverlay now draws miniGames + islands + scaleBar
+  // First call at (800,500) — should NOT throw after the closePath fix
+  let r6Ok = true, r6Calls = 0;
+  try {
+    const sink = [];
+    const out = R.renderReplicaOverlay(buildFakeCtx(sink), G, 800, 500, {pad:18});
+    r6Calls = sink.length;
+    if (!out || !out.scene || out.scene.miniGames.length !== 6) r6Ok = false;
+  } catch (e) { r6Ok = false; }
+  check('R6 · renderReplicaOverlay 含 6 个 mini-game 场景',()=>r6Ok);
+  check('R6 · renderReplicaOverlay 调用次数 ≥ 100 (新增层)',()=>r6Calls >= 100);
+
+  // 6j · Real DOM canvas: scale bar visible (≥1 fillRect drawn in bottom area)
+  let domScaleOk = true;
+  try {
+    const c = document.createElement('canvas');
+    c.width = 800; c.height = 500;
+    const cx = c.getContext('2d');
+    // track fillRect at y > 480
+    const origFillRect = cx.fillRect.bind(cx);
+    let scaleRectDrawn = false;
+    cx.fillRect = function (x, y, w, h) { if (y > 470) scaleRectDrawn = true; return origFillRect(x, y, w, h); };
+    R.renderReplicaOverlay(cx, G, 800, 500, {pad:18});
+    if (!scaleRectDrawn) domScaleOk = false;
+  } catch (e) { domScaleOk = false; }
+  check('R6 · 真实 canvas · 1 km scale bar 在画布底部绘制',()=>domScaleOk);
+
+  // 6k · MINI_BINDINGS distance to landmark — sanity < 1.5 km for venues with landmarkId
+  let distOk = true;
+  for (const m of G.MINI_BINDINGS) {
+    if (!m.landmarkId) continue;
+    const lm = G.LANDMARKS.find(l => l.id === m.landmarkId);
+    if (!lm) { distOk = false; break; }
+    const d = G.distanceMeters({lat:m.lat,lng:m.lng}, {lat:lm.lat,lng:lm.lng});
+    if (d > 1500) { distOk = false; break; }
+  }
+  check('R6 · 每个带 landmarkId 的 mini-game venue 距对应 landmark < 1.5 km',()=>distOk);
 
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });

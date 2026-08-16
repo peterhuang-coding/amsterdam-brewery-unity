@@ -1,23 +1,38 @@
-/* map_renderer.js — Round 3 (perf) — Amsterdam map replica renderer.
+/* map_renderer.js — Round 3 (perf) + Round 6 (mini-game + island pins) —
+ * Amsterdam map replica renderer.
  *
  * Consumes AMSTERDAM_GEO (data layer) and draws it onto an arbitrary canvas.
  * No DOM, no globals besides the export. Pure projection + draw functions so
  * test.html can call them directly.
  *
- * Pipeline: viewportFit → projectLandmark/projectCanalPath/projectBridge →
+ * Pipeline: viewportFit → projectLandmark/projectCanalPath/projectBridge/
+ *                            projectMiniGame/projectIsland →
  *           renderReplicaOverlay (composes all layers).
  *
  * Layer order matches the brief:
  *   1. water (canals as polylines) — baked once into a static offscreen canvas
  *   2. bridges (white bars) — culled by viewport rect, LOD'd by scale
  *   3. landmark pins (circle + icon + label)
- *   4. legend (corner)
+ *   4. mini-game markers (diamond + industry icon + venue name)
+ *   5. island pins (small filled circle + name) — only at high zoom
+ *   6. scale bar (1 km reference, bottom-left)
+ *   7. legend (corner)
  *
  * Round 3 additions (perf):
  *   - viewportRect / inViewport — bounding-box culling for bridges
  *   - getStaticLayer — offscreen canvas cache for the (static) canal layer
  *   - bridgeLOD — at low zoom show only famous bridges (named ones)
  *   - fpsTick / fpsNow / frameMs / fpsReset — sliding-window FPS meter
+ *
+ * Round 6 additions (brief §2 验收 #2 — 6 mini-game 真实地址 binding):
+ *   - MINI_ICON / MINI_COLOR per industry (brewing/coffee_shop/smart_shop/
+ *     surfing/academic/bar) — distinct color per venue
+ *   - projectMiniGame + drawMiniGames — diamond marker with industry icon,
+ *     under landmark pins but above bridges
+ *   - projectIsland + drawIslands — small filled circle + name; LOD'd to
+ *     only show when scale >= 0.7 so the dense center isn't cluttered
+ *   - drawScaleBar — 1 km reference bar at bottom-left using the geo
+ *     SCALE_M_PER_PX so it stays accurate across viewport sizes
  *
  * Goal ID: 20260816-224507-webdemo-map-replica-24h-v1-1095
  */
@@ -47,6 +62,36 @@
     brewery:   '#c87030',
     venue:     '#a058a0',
     religious: '#8a6840',
+  };
+  // ─── Round 6 — Mini-game venues ────────────────────────────────────────────
+  // Each industry gets a distinct diamond colour so 6 venues never collide with
+  // landmark pins. Icon pairs with the existing industry emoji in game.js so
+  // the player recognises the same building type in the modal.
+  const MINI_ICON = {
+    brewing:     '🍺',
+    coffee_shop: '☕',
+    smart_shop:  '🍄',
+    surfing:     '🏄',
+    academic:    '📚',
+    bar:         '🍻',
+  };
+  const MINI_COLOR = {
+    brewing:     '#e85050',   // warm red
+    coffee_shop: '#a87040',   // coffee brown
+    smart_shop:  '#50a050',   // psilocybin green
+    surfing:     '#3090c0',   // wave blue
+    academic:    '#8060b0',   // learned purple
+    bar:         '#e0a020',   // beer amber
+  };
+  // ─── Round 6 — Islands ─────────────────────────────────────────────────────
+  // kind → (fill, edge, alpha). Islands use a small filled circle (radius 3)
+  // and italic labels — they sit under landmark pins.
+  const ISLAND_COLOR = {
+    artificial:   { fill: '#7aa848', edge: '#3a5a20', alpha: 0.55 },
+    park:         { fill: '#4a9858', edge: '#2a5028', alpha: 0.50 },
+    polder:       { fill: '#a8b890', edge: '#586048', alpha: 0.45 },
+    neighborhood: { fill: '#a08868', edge: '#604030', alpha: 0.40 },
+    natural:      { fill: '#6aa890', edge: '#3a6850', alpha: 0.50 },
   };
   // Canal rendering. Real canals are blue; IJ river is wider & slightly different hue.
   function canalColor(c) {
@@ -112,6 +157,32 @@
     return { id: b.id, name: b.name, kind: b.kind, crosses: b.crosses, x: p.x, y: p.y };
   }
 
+  // ─── R6 · Mini-game projecter ──────────────────────────────────────────────
+  // Industry → distinct diamond marker. Falls back to landmarkId for the
+  // hover/click hit test so the existing pick path still works.
+  function projectMiniGame(geo, m, vp) {
+    const p = projectPoint(geo, m.lat, m.lng, vp);
+    if (!p) return null;
+    return {
+      id: m.id, industry: m.industry, name: m.name, address: m.address,
+      landmarkId: m.landmarkId, district: m.district,
+      x: p.x, y: p.y,
+      icon: MINI_ICON[m.industry] || '◆',
+      color: MINI_COLOR[m.industry] || '#888',
+    };
+  }
+  // ─── R6 · Island projecter ─────────────────────────────────────────────────
+  function projectIsland(geo, i, vp) {
+    const p = projectPoint(geo, i.lat, i.lng, vp);
+    if (!p) return null;
+    const c = ISLAND_COLOR[i.kind] || ISLAND_COLOR.neighborhood;
+    return {
+      id: i.id, name: i.name, nameZh: i.nameZh, kind: i.kind,
+      x: p.x, y: p.y,
+      color: c.fill, edge: c.edge, alpha: c.alpha,
+    };
+  }
+
   // ─── Composite (pure data → list of layers) ────────────────────────────────
   function buildReplicaScene(geo, W, H, opts) {
     opts = opts || {};
@@ -119,13 +190,21 @@
     const landmarks = geo.LANDMARKS.map(l => projectLandmark(geo, l, vp)).filter(Boolean);
     const canals    = geo.CANALS.map(c => projectCanalPath(geo, c, vp));
     const bridges   = geo.BRIDGES.map(b => projectBridge(geo, b, vp)).filter(Boolean);
+    const miniGames = (geo.MINI_BINDINGS || []).map(m => projectMiniGame(geo, m, vp)).filter(Boolean);
+    const islands   = (geo.ISLANDS || []).map(i => projectIsland(geo, i, vp)).filter(Boolean);
     return {
       version: VERSION,
       viewport: vp,
       canvas: { W, H },
-      landmarks, canals, bridges,
+      landmarks, canals, bridges, miniGames, islands,
       // Counts surfaced for tests + UI.
-      counts: { landmarks: landmarks.length, canals: canals.length, bridges: bridges.length },
+      counts: {
+        landmarks: landmarks.length,
+        canals: canals.length,
+        bridges: bridges.length,
+        miniGames: miniGames.length,
+        islands: islands.length,
+      },
     };
   }
 
@@ -177,6 +256,9 @@
     const rect = viewportRect(scene.viewport, W, H, opts.pad == null ? 24 : opts.pad);
     drawBridges(ctx, scene, { rect, lod: true, cull: true });
     drawLandmarks(ctx, scene);
+    drawIslands(ctx, scene, opts);
+    drawMiniGames(ctx, scene, opts);
+    drawScaleBar(ctx, geo, scene, opts);
     drawLegend(ctx, scene, opts);
     return { scene, cacheHit };
   }
@@ -306,6 +388,134 @@
     ctx.restore();
   }
 
+  // ─── R6 · Mini-game markers (diamond + industry icon + venue name) ─────────
+  // Brief §2 验收 #2 — 6 mini-game 真实地址 binding. Each marker is a 5px-radius
+  // diamond with the industry emoji inside and the venue name (short) below.
+  // Skipped when opts.miniGames === false so the renderer can be tested without
+  // them.
+  function drawMiniGames(ctx, scene, opts) {
+    if (opts && opts.miniGames === false) return;
+    if (!scene || !scene.miniGames || !scene.miniGames.length) return;
+    const sorted = scene.miniGames.slice().sort((a, b) => a.y - b.y);
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (const m of sorted) {
+      // Shadow
+      ctx.fillStyle = '#0004';
+      ctx.beginPath();
+      ctx.moveTo(m.x, m.y - 6);
+      ctx.lineTo(m.x + 5, m.y);
+      ctx.lineTo(m.x, m.y + 6);
+      ctx.lineTo(m.x - 5, m.y);
+      ctx.closePath();
+      ctx.fill();
+      // Diamond body
+      ctx.fillStyle = m.color;
+      ctx.beginPath();
+      ctx.moveTo(m.x, m.y - 5);
+      ctx.lineTo(m.x + 5, m.y);
+      ctx.lineTo(m.x, m.y + 5);
+      ctx.lineTo(m.x - 5, m.y);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      // Icon
+      ctx.font = '7px sans-serif';
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillText(m.icon, m.x, m.y + 0.5);
+      // Short label below (industry + venue)
+      ctx.font = 'bold 6px sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 2;
+      const label = (m.name || m.industry).slice(0, 8);
+      ctx.strokeText(label, m.x, m.y + 13);
+      ctx.fillText(label, m.x, m.y + 13);
+    }
+    ctx.restore();
+    return { drawn: sorted.length };
+  }
+
+  // ─── R6 · Island pins (filled circle + name) ───────────────────────────────
+  // At default zoom (scale ~1) all 30 are visible. At low zoom (scale < 0.7)
+  // we only keep the park/polder landmarks so the dense centre stays legible.
+  function drawIslands(ctx, scene, opts) {
+    if (opts && opts.islands === false) return;
+    if (!scene || !scene.islands || !scene.islands.length) return;
+    const scale = (scene.viewport && scene.viewport.scale) || 1;
+    let shown = scene.islands;
+    if (scale < 0.7) {
+      // Keep only park + polder when zoomed out — those are the visually distinct
+      // green islands. Hide the dense artificial / neighborhood cluster.
+      shown = scene.islands.filter(i => i.kind === 'park' || i.kind === 'polder');
+    } else if (scale < 0.5) {
+      shown = [];
+    }
+    const sorted = shown.slice().sort((a, b) => a.y - b.y);
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (const i of sorted) {
+      // Pin
+      ctx.globalAlpha = i.alpha;
+      ctx.fillStyle = i.color;
+      ctx.beginPath(); ctx.arc(i.x, i.y, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = i.edge;
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+      // Italic label
+      ctx.font = 'italic 6px sans-serif';
+      ctx.fillStyle = '#3a3a3a';
+      const label = (i.nameZh || i.name || '').slice(0, 8);
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.strokeText(label, i.x, i.y - 6);
+      ctx.fillText(label, i.x, i.y - 6);
+      ctx.globalAlpha = 1;
+    }
+    ctx.restore();
+    return { drawn: sorted.length, hidden: scene.islands.length - sorted.length };
+  }
+
+  // ─── R6 · 1 km scale bar (bottom-left) ─────────────────────────────────────
+  // Uses scene.viewport.scale × geo.SCALE_M_PER_PX so the bar is always
+  // physically correct regardless of fit / window size. Returns the rect so
+  // tests can assert it's well-formed.
+  function drawScaleBar(ctx, geo, scene, opts) {
+    if (opts && opts.scaleBar === false) return null;
+    if (!geo || !geo.SCALE_M_PER_PX || !scene || !scene.viewport) return null;
+    const W = scene.canvas.W, H = scene.canvas.H;
+    // 1 km in geo-canvas px = 1000 / SCALE_M_PER_PX. Multiply by vp.scale to
+    // get on-screen px.
+    const km = 1;
+    const px = (km * 1000 / geo.SCALE_M_PER_PX) * scene.viewport.scale;
+    const x = 12, y = H - 18;
+    const halfH = 4;
+    ctx.save();
+    // Background pill
+    ctx.fillStyle = '#00000060';
+    ctx.fillRect(x - 4, y - halfH - 4, px + 32, halfH * 2 + 12);
+    // Bar
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x, y - 1, px, 2);
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 0.5;
+    ctx.strokeRect(x, y - 1, px, 2);
+    // End caps
+    ctx.fillRect(x, y - halfH, 1, halfH * 2);
+    ctx.fillRect(x + px - 1, y - halfH, 1, halfH * 2);
+    // Label
+    ctx.font = 'bold 8px sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'left';
+    ctx.fillText('1 km', x + px + 4, y + 3);
+    ctx.restore();
+    return { x, y, w: px + 32, h: halfH * 2 + 12 };
+  }
+
   // ─── R3 · Static layer cache ──────────────────────────────────────────────
   // Canals + their labels never change between frames (W,H,opts are stable).
   // Bake them once into an offscreen canvas; per-frame just `ctx.drawImage`.
@@ -391,6 +601,7 @@
         bridges: geo ? geo.BRIDGES.length : 0,
         islands: geo ? geo.ISLANDS.length : 0,
         streets: geo ? geo.STREETS.length : 0,
+        miniGames: geo && geo.MINI_BINDINGS ? geo.MINI_BINDINGS.length : 0,
       },
       viewport: vp ? { scale: vp.scale, w: vp.w, h: vp.h } : null,
       canvas: { W, H },
@@ -421,10 +632,14 @@
   global.MAP_RENDERER = {
     VERSION,
     KIND_ICON, KIND_COLOR,
+    MINI_ICON, MINI_COLOR,            // R6 — mini-game venue markers
+    ISLAND_COLOR,                     // R6 — island pin palette
     FAMOUS_BRIDGES,
     viewportFit, projectPoint,
     projectLandmark, projectCanalPath, projectBridge,
+    projectMiniGame, projectIsland,   // R6
     buildReplicaScene, renderReplicaOverlay,
+    drawMiniGames, drawIslands, drawScaleBar,  // R6 — exposed for tests
     // R3 perf layer
     viewportRect, inViewport, bridgeLOD, drawBridges,
     getStaticLayer, clearStaticCache,

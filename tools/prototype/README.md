@@ -57,7 +57,7 @@ localStorage.removeItem('ab_skip_tutorial')
 
 ## 验证
 
-打开 `test.html`。**当前 ≥ 184/184 PASS**（逐轮递增），覆盖：
+打开 `test.html`。**当前 ≥ 220/220 PASS**（逐轮递增），覆盖：
 
 - 数据契约（5 产业、事件 ID 唯一、升级 ID 唯一、modifier 都有 effect、冲浪入口、Seed 稳定、6 mini-game 真实地址绑定）
 - 运行时契约（目标生成数量、必须含 Explore/Talk、升级包含三张死亡升级）
@@ -66,6 +66,7 @@ localStorage.removeItem('ab_skip_tutorial')
 - 完整闭环（自动运行 100s 内必达 ended；购买升级后 run +1 且 upgrades 增加且 ended 已复位）
 - Amsterdam 地图层（30 landmarks · 9 canals · 50 bridges · 30 islands；投影往返；canvas 边界；LOD 视口剔除；FPS 测量；静态层缓存）
 - 端到端 smoke：mini-game 跑满 7 天后 Replica scene 仍稳定
+- R6 · 6 mini-game 菱形 marker + industry 颜色 + 真实地址 + < 1.5 km 锚定；30 岛 pin + zoom-aware LOD；1 km scale bar
 
 ### 手动验收
 
@@ -82,7 +83,7 @@ localStorage.removeItem('ab_skip_tutorial')
 独立的真实 Amsterdam 渲染层，可在游戏内开关（右下角按钮）：
 
 - **数据层** `data/amsterdam_geo.js`：30 landmarks (Wikipedia 公开坐标 + 2 个 mini-game venue anchor + 16 R5 文化地标)、9 主运河 (UNESCO canal ring + Amstel + IJ)、50 桥（Magere Brug/Blauwbrug 等名桥 + 编号桥）、30 岛（IJ 河人工岛 Westelijke/Oostelijke Eilanden + IJburg cluster + 6 公园岛 + Watergraafsmeer polder + 5 街区岛）。等距投影 (12 m/px)，bbox `{52.340, 4.850, 52.410, 4.965}`。
-- **渲染层** `data/map_renderer.js`：viewport fit → 静态层缓存 → 桥视口剔除 + LOD → 地标 pin + 图例。`getReplSceneStats()` 一次性返回 counts / viewport / LOD / cache / fps。
+- **渲染层** `data/map_renderer.js`：viewport fit → 静态层缓存 → 桥视口剔除 + LOD → 地标 pin + 30 岛 pin (zoom-aware LOD) + 6 mini-game 菱形 marker (industry 颜色 + emoji) + 1 km scale bar + 图例。`getReplSceneStats()` 一次性返回 counts / viewport / LOD / cache / fps。
 - **6 mini-game 真实地址绑定** (`AMSTERDAM_GEO.MINI_BINDINGS`)：每个 mini-game industry 都绑定到一个真实 Amsterdam 地址，坐标在 bbox 内、距最近 landmark < 1 km。
 - **数据源** 见 `CREDITS.md`。
 

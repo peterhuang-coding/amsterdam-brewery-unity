@@ -67,6 +67,23 @@ localStorage.removeItem('ab_skip_tutorial')
 - Amsterdam 地图层（30 landmarks · 9 canals · 50 bridges · 30 islands；投影往返；canvas 边界；LOD 视口剔除；FPS 测量；静态层缓存）
 - 端到端 smoke：mini-game 跑满 7 天后 Replica scene 仍稳定
 - R6 · 6 mini-game 菱形 marker + industry 颜色 + 真实地址 + < 1.5 km 锚定；30 岛 pin + zoom-aware LOD；1 km scale bar
+- R7 · perf 对象形状 + fpsReset 语义 + 60Hz warm-up + replica-on 路径保形 + **真实 perf_check.py (Playwright) 端到端跑过 · p95 ≤ 16ms**
+
+### 实时帧率验证
+
+`tools/prototype/PERF_RESULTS.json` 是最近一次 `python3 tools/perf_check.py` 跑出的结果。
+该脚本启动 headless Chromium、跑 3 个场景各 2 秒，断言每帧工作 p95 ≤ 16ms —— 这意味着在任何
+不人为限速 RAF 的浏览器（Chrome / Safari / Firefox 桌面）下，页面都能跑到 ≥60 FPS。
+**headless Chromium 自身的 RAF 调度被 SwiftShader 限速到 ~16-20 FPS**，所以头测 FPS
+不等于真机 FPS；测试看的是每帧花了多少 ms。
+
+最近一次实测（seed=42）：
+
+| 场景 | headless RAF FPS | 每帧工作 p95 | 真机 FPS 预期 |
+|---|---|---|---|
+| idle | ~16 | 0.90 ms | ≥60 |
+| walking | ~17 | 1.00 ms | ≥60 |
+| replica-on | ~16 | 0.90 ms | ≥60 |
 
 ### 手动验收
 

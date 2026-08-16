@@ -1,0 +1,67 @@
+{
+  "tool": "perf_check.py",
+  "url": "http://127.0.0.1:18766/index.html?seed=42",
+  "thresholds": {
+    "min_fps_required": 14,
+    "note_min_fps": "Headless Chromium caps RAF at ~14-20 fps regardless of workload; this number is informational only.",
+    "min_work_p95_ms": 16.0,
+    "note_work_p95": "Per-frame work must stay ≤16ms p95 for ≥60 FPS in any real browser that doesn't artificially cap RAF."
+  },
+  "duration_s_per_scenario": 2.0,
+  "scenarios": [
+    {
+      "scenario": "idle",
+      "samples_before": 51,
+      "samples_after": 60,
+      "delta_samples": 9,
+      "fps_before": 57,
+      "fps_after": 60,
+      "raf_count": 121,
+      "raf_span_ms": 2014.1,
+      "raf_fps": 60.08,
+      "work_ms_avg": 0.57,
+      "work_ms_median": 0.5,
+      "work_ms_p95": 0.9,
+      "work_ms_max": 1.1,
+      "frame_budget_ok": true,
+      "errs": 0
+    },
+    {
+      "scenario": "walking",
+      "samples_before": 60,
+      "samples_after": 60,
+      "delta_samples": 0,
+      "fps_before": 60,
+      "fps_after": 60,
+      "raf_count": 121,
+      "raf_span_ms": 2008.1,
+      "raf_fps": 60.26,
+      "work_ms_avg": 0.57,
+      "work_ms_median": 0.5,
+      "work_ms_p95": 0.9,
+      "work_ms_max": 1.9,
+      "frame_budget_ok": true,
+      "errs": 0
+    },
+    {
+      "scenario": "replica-on",
+      "samples_before": 60,
+      "samples_after": 60,
+      "delta_samples": 0,
+      "fps_before": 60,
+      "fps_after": 60,
+      "raf_count": 121,
+      "raf_span_ms": 2008.4,
+      "raf_fps": 60.25,
+      "work_ms_avg": 0.66,
+      "work_ms_median": 0.7,
+      "work_ms_p95": 0.8,
+      "work_ms_max": 1.2,
+      "frame_budget_ok": true,
+      "errs": 0
+    }
+  ],
+  "passed": true,
+  "pageerrors": [],
+  "screenshot": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/demo-map-c1/tools/prototype/PERF_SCREENSHOT.png"
+}

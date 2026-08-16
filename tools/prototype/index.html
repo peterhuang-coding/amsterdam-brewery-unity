@@ -585,6 +585,21 @@ function tipFactor(){let f=G.mood>0?1.2:G.mood<0?.8:1;if(hasUpgrade('tip_boost')
 function barTipPreview(offer,hit,regular,tf){return Math.round((offer+(hit?4:(regular?1:-1)))*(tf||1))}
 // funify-v3 (B4 bar): patience countdown — 1 → 0 over `patience` seconds
 function barPatienceLeft(c){if(!c||!c.patience)return 0;const left=1-(Date.now()-c.born)/1000/c.patience;return left>0?left:0}
+// funify-v3 (B3 coffee): 4-band heat zone overlay — 安全/警戒/危险/末日
+function coffeeHeatZone(heat){
+  if(heat<30)return{col:'#78c878',label:'安全',danger:0};
+  if(heat<70)return{col:'#e8a020',label:'警戒',danger:1};
+  if(heat<90)return{col:'#f05050',label:'危险',danger:2};
+  return{col:'#a02020',label:'末日',danger:3};
+}
+// funify-v3 (B3 coffee): live price-vs-buyer fit hint — gap≥0 ok, gap>=-3 yellow, gap<-3 red
+function coffeeFitHint(price,budget){
+  if(!budget)return{col:'#888',label:'无客',ok:false,gap:0};
+  const gap=budget-price;
+  if(gap>=0)return{col:'#78c878',label:'✓成交',ok:true,gap};
+  if(gap>=-3)return{col:'#e8a020',label:'!偏高',ok:false,gap};
+  return{col:'#f05050',label:'✗拒',ok:false,gap};
+}
 function hasUpgrade(id){return G.upgrades.includes(id)}
 function hasMod(id){return G.mods.some(m=>m.id===id)}
 function industryFactor(id){
@@ -1972,7 +1987,7 @@ window.AB_TEST={
   data:{industries:IND_DEF,events:EV_POOL,upgrades:UP_POOL,objectives:OBJ_CATS,achievements:ACH_POOL},state:G,
   seedAbbrev,seeded,rollDayObjectives,rollDayModifier,tickObj,newRun,endGame,clampTargetToWalkable,
   industryFactor,tipFactor,tryUnlock,saveAch,loadAch,AUDIO,resetRunCounters,
-  barTipPreview,barPatienceLeft,
+  barTipPreview,barPatienceLeft,coffeeHeatZone,coffeeFitHint,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

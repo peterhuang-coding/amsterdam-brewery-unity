@@ -65,6 +65,16 @@ frame.addEventListener('load',async()=>{
   check('barPatienceLeft 刚生成时≈1',()=>win.eval('barPatienceLeft({patience:10,born:Date.now()})>0.95'));
   check('barPatienceLeft 超时返回 0',()=>win.eval('barPatienceLeft({patience:10,born:Date.now()-20000})===0'));
 
+  // ═══ funify-v3 Round 1 — coffee heat zone + fit hint (BACKLOG B3) ═══
+  check('coffeeHeatZone(20)==安全/绿',()=>{const z=win.eval('coffeeHeatZone(20)');return z.col==='#78c878'&&z.label==='安全'&&z.danger===0});
+  check('coffeeHeatZone(50)==警戒/黄',()=>{const z=win.eval('coffeeHeatZone(50)');return z.col==='#e8a020'&&z.label==='警戒'&&z.danger===1});
+  check('coffeeHeatZone(85)==危险/红',()=>{const z=win.eval('coffeeHeatZone(85)');return z.col==='#f05050'&&z.label==='危险'&&z.danger===2});
+  check('coffeeHeatZone(100)==末日/深红',()=>{const z=win.eval('coffeeHeatZone(100)');return z.label==='末日'&&z.danger===3});
+  check('coffeeFitHint 报价≤出价 → ok 绿 ✓成交',()=>{const f=win.eval('coffeeFitHint(15,18)');return f.ok===true&&f.col==='#78c878'&&f.label==='✓成交'&&f.gap===3});
+  check('coffeeFitHint 略高(差-2) → 黄 !偏高',()=>{const f=win.eval('coffeeFitHint(20,18)');return f.ok===false&&f.col==='#e8a020'&&f.label==='!偏高'&&f.gap===-2});
+  check('coffeeFitHint 远高(差-7) → 红 ✗拒',()=>{const f=win.eval('coffeeFitHint(25,18)');return f.ok===false&&f.col==='#f05050'&&f.label==='✗拒'&&f.gap===-7});
+  check('coffeeFitHint 无客 → 灰',()=>{const f=win.eval('coffeeFitHint(15,0)');return f.col==='#888'&&f.label==='无客'});
+
   // ═══ Round 6 — Achievement system + WebAudio ═══
   check('ACH_POOL 至少 10 个成就',()=>t.data.achievements&&t.data.achievements.length>=10);
   check('所有成就 ID 唯一',()=>new Set(t.data.achievements.map(a=>a.id)).size===t.data.achievements.length);

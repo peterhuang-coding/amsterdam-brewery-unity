@@ -24,6 +24,21 @@
  *   - bridgeLOD — at low zoom show only famous bridges (named ones)
  *   - fpsTick / fpsNow / frameMs / fpsReset — sliding-window FPS meter
  *
+ * Round 8 additions (polish — label declutter + mini-map):
+ *   - LM_PRIORITY + planLandmarkLabels — pure-data declutter pass: sorts
+ *     landmarks by priority (museum/station/square > religious > district >
+ *     park > brewery > venue), greedily stacks overlapping labels down up to
+ *     MAX_STACK_PX, falls back to a dashed leader-line + abbrev; any further
+ *     collision hides the label entirely (clipped to canvas). Deterministic;
+ *     tests verify zero overlaps in the output.
+ *   - drawLandmarks now consumes the plan and never paints two overlapping
+ *     text boxes. Pins still draw — only their labels move/shrink/hide.
+ *   - drawMiniMap — 90×90 overview panel in bottom-right. Plots every
+ *     landmark as a 1.5-px colored dot scaled to the geo extent, so labels
+ *     that get hidden in the main view are still findable here.
+ *   - getReplSceneStats now reports `labels: { total, shown, hidden,
+ *     leaderLines }` so tests + console can assert declutter actually fired.
+ *
  * Round 6 additions (brief §2 验收 #2 — 6 mini-game 真实地址 binding):
  *   - MINI_ICON / MINI_COLOR per industry (brewing/coffee_shop/smart_shop/
  *     surfing/academic/bar) — distinct color per venue
@@ -183,6 +198,125 @@
     };
   }
 
+  // ─── R8 · Label declutter ──────────────────────────────────────────────────
+  // Brief §验收 #1 — "真实 Amsterdam 地图渲染(运河、桥、街、地标)" demands that
+  // every landmark be findable. With ~30 landmarks crammed into a 800×500
+  // viewport, the centre cluster (Dam Square / Centraal / Anne Frank / Jordaan)
+  // paints 5-6 labels on top of each other. This pass:
+  //   1. Sorts landmarks by (priority desc, y asc). Major landmarks always
+  //      get first pick of their natural position.
+  //   2. Greedy collision check against already-placed rects (text-bbox of
+  //      "bold 7px sans-serif" ≈ 7 px per CJK char × 0.95).
+  //   3. Pushes overlapping labels down by MAX_STACK_PX up to MAX_TRIES rows;
+  //      once the bottom row is full, tries a leader-line abbrev at the
+  //      bottom-most slot.
+  //   4. Hides the label entirely if even the leader slot collides (the pin
+  //      still draws — only the text disappears). The mini-map (R8) is the
+  //      fallback discoverability path.
+  //
+  // Pure data: returns an array of {landmark, _rect, _shown, _leader}. No DOM,
+  // no canvas — tests assert the algorithm directly.
+  const LM_PRIORITY = {
+    museum: 8, station: 7, square: 7, religious: 6,
+    district: 5, park: 4, brewery: 3, venue: 2,
+  };
+  const MAX_STACK_PX = 14;     // row height (px) when pushing labels down
+  const MAX_TRIES = 3;         // 3 rows of stacked labels before falling back
+  const LABEL_H = 9;           // "bold 7px sans-serif" bbox height
+  const LABEL_CHAR_W = 6.5;    // px per CJK char @ 7px bold
+  function _labelText(lm, abbrev) {
+    const raw = lm.nameZh || lm.name || lm.id || '';
+    return abbrev ? raw.slice(0, 4) : raw.slice(0, 10);
+  }
+  function _labelWidth(txt, abbrev) {
+    const n = txt.length;
+    return Math.max(18, Math.round(n * LABEL_CHAR_W));
+  }
+  function _rectsOverlap(a, b) {
+    return !(a.x + a.w < b.x || b.x + b.w < a.x ||
+             a.y + a.h < b.y || b.y + b.h < a.y);
+  }
+  function planLandmarkLabels(scene, canvasH) {
+    canvasH = canvasH || (scene && scene.canvas ? scene.canvas.H : 0);
+    if (!scene || !scene.landmarks || !scene.landmarks.length) return [];
+    const sorted = scene.landmarks.slice().sort((a, b) => {
+      const pa = LM_PRIORITY[a.kind] != null ? LM_PRIORITY[a.kind] : 0;
+      const pb = LM_PRIORITY[b.kind] != null ? LM_PRIORITY[b.kind] : 0;
+      if (pb !== pa) return pb - pa;
+      return a.y - b.y;
+    });
+    const placed = [];
+    const plans = new Array(scene.landmarks.length);
+    let idx = 0;
+    for (const lm of sorted) {
+      const fullText = _labelText(lm, false);
+      const fullW = _labelWidth(fullText, false);
+      let chosen = null;
+      let leader = null;
+      // Row 0..MAX_TRIES-1: stack the label down by MAX_STACK_PX each try.
+      for (let row = 0; row < MAX_TRIES; row++) {
+        const centerY = lm.y + 11 + row * MAX_STACK_PX;
+        const rect = {
+          x: lm.x - fullW / 2,
+          y: centerY - LABEL_H / 2,
+          w: fullW,
+          h: LABEL_H,
+          abbrev: false,
+          row,
+        };
+        if (canvasH && rect.y + rect.h > canvasH - 6) continue;  // clip to canvas
+        const hit = placed.find(p => _rectsOverlap(rect, p));
+        if (!hit) { chosen = rect; break; }
+      }
+      // Leader-line abbrev fallback — last chance before hiding.
+      if (!chosen) {
+        const abbrText = _labelText(lm, true);
+        const abbrW = _labelWidth(abbrText, true);
+        const leaderY = lm.y + 11 + MAX_TRIES * MAX_STACK_PX + 2;
+        const leaderRect = {
+          x: lm.x - abbrW / 2,
+          y: leaderY - LABEL_H / 2,
+          w: abbrW,
+          h: LABEL_H,
+          abbrev: true,
+          row: MAX_TRIES,
+        };
+        if (!(canvasH && leaderRect.y + leaderRect.h > canvasH - 6)) {
+          const hit = placed.find(p => _rectsOverlap(leaderRect, p));
+          if (!hit) {
+            chosen = leaderRect;
+            leader = {
+              x1: lm.x, y1: lm.y,
+              x2: leaderRect.x + leaderRect.w / 2,
+              y2: leaderRect.y + leaderRect.h / 2,
+              text: abbrText,
+            };
+          }
+        }
+      }
+      const plan = {
+        landmark: lm,
+        _rect: chosen,
+        _shown: !!chosen,
+        _leader: leader,
+        _hiddenReason: chosen ? null : 'no_clear_slot',
+      };
+      if (chosen) placed.push(chosen);
+      plans[idx++] = plan;
+    }
+    return plans;
+  }
+  function declutterStats(plans) {
+    const total = plans.length;
+    let shown = 0, hidden = 0, leaderLines = 0;
+    for (const p of plans) {
+      if (p._shown) shown++;
+      else hidden++;
+      if (p._leader) leaderLines++;
+    }
+    return { total, shown, hidden, leaderLines };
+  }
+
   // ─── Composite (pure data → list of layers) ────────────────────────────────
   function buildReplicaScene(geo, W, H, opts) {
     opts = opts || {};
@@ -259,6 +393,7 @@
     drawIslands(ctx, scene, opts);
     drawMiniGames(ctx, scene, opts);
     drawScaleBar(ctx, geo, scene, opts);
+    drawMiniMap(ctx, scene, opts);
     drawLegend(ctx, scene, opts);
     return { scene, cacheHit };
   }
@@ -337,12 +472,16 @@
   }
 
   function drawLandmarks(ctx, scene) {
-    // Painter's algorithm: sort by y so northern pins are under, southern over.
-    const sorted = scene.landmarks.slice().sort((a, b) => a.y - b.y);
+    // R8 · declutter pass first — pure data, no drawing.
+    const plans = planLandmarkLabels(scene);
+    // Painter's algorithm: sort the plans by y so northern pins draw under
+    // southern ones (consistent with prior rounds).
+    const sorted = plans.slice().sort((a, b) => a.landmark.y - b.landmark.y);
     ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    for (const lm of sorted) {
+    for (const plan of sorted) {
+      const lm = plan.landmark;
       // Drop shadow
       ctx.fillStyle = '#0003';
       ctx.beginPath(); ctx.arc(lm.x + 1, lm.y + 2, 7, 0, Math.PI * 2); ctx.fill();
@@ -356,12 +495,26 @@
       ctx.font = '9px sans-serif';
       ctx.fillStyle = '#1a1a1a';
       ctx.fillText(lm.icon, lm.x, lm.y + 0.5);
-      // Label below
+      if (!plan._shown || !plan._rect) continue;
+      // Optional dashed leader-line for abbrev labels.
+      if (plan._leader) {
+        ctx.strokeStyle = '#3a3a3a';
+        ctx.lineWidth = 0.5;
+        ctx.setLineDash([2, 2]);
+        ctx.beginPath();
+        ctx.moveTo(plan._leader.x1, plan._leader.y1);
+        ctx.lineTo(plan._leader.x2, plan._leader.y2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+      // Label — full or abbrev depending on which slot won.
+      const txt = plan._leader ? plan._leader.text : _labelText(lm, false);
       ctx.font = 'bold 7px sans-serif';
       ctx.fillStyle = '#1a1a1a';
-      ctx.fillText(lm.nameZh, lm.x, lm.y + 11);
+      ctx.fillText(txt, lm.x, plan._rect.y + plan._rect.h / 2);
     }
     ctx.restore();
+    return declutterStats(plans);
   }
 
   function drawLegend(ctx, scene, opts) {
@@ -516,6 +669,68 @@
     return { x, y, w: px + 32, h: halfH * 2 + 12 };
   }
 
+  // ─── R8 · Mini-map overview (bottom-right) ─────────────────────────────────
+  // Fallback discoverability for labels hidden by the declutter pass in the
+  // dense centre. Plots every landmark as a 1.5-px colored dot scaled to the
+  // viewport's drawn region; no text (the legend at the top already names the
+  // kind colours). Sits in the bottom-right corner so it doesn't fight with
+  // the scale bar (bottom-left) or the legend (top-right). Opt out via
+  // opts.miniMap === false.
+  const MINI_MAP_SIZE = 90;
+  const MINI_MAP_PAD  = 6;
+  const MINI_MAP_BOTTOM_OFFSET = 18;  // leaves room for the 1 km scale bar
+  function drawMiniMap(ctx, scene, opts) {
+    if (opts && opts.miniMap === false) return null;
+    if (!scene || !scene.landmarks || !scene.landmarks.length) return null;
+    const vp = scene.viewport;
+    if (!vp) return null;
+    const W = scene.canvas.W, H = scene.canvas.H;
+    const size = MINI_MAP_SIZE;
+    const x0 = W - size - MINI_MAP_PAD;
+    const y0 = H - size - MINI_MAP_PAD - MINI_MAP_BOTTOM_OFFSET;
+    ctx.save();
+    // Background
+    ctx.fillStyle = '#00000060';
+    ctx.fillRect(x0, y0, size, size);
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 0.5;
+    ctx.strokeRect(x0, y0, size, size);
+    // Title (above the box)
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 7px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('MINI-MAP · ' + scene.counts.landmarks, x0, y0 - 2);
+    // Map (vp.ox..vp.ox+vp.w) → (x0..x0+size). Defensive against zero-width
+    // viewport so we never divide by zero.
+    const drawnX = vp.ox, drawnY = vp.oy;
+    const drawnW = Math.max(1, vp.w), drawnH = Math.max(1, vp.h);
+    function px(x) { return x0 + ((x - drawnX) / drawnW) * size; }
+    function py(y) { return y0 + ((y - drawnY) / drawnH) * size; }
+    let plotted = 0;
+    for (const lm of scene.landmarks) {
+      const mx = px(lm.x), my = py(lm.y);
+      if (mx < x0 + 1 || mx > x0 + size - 1 || my < y0 + 1 || my > y0 + size - 1) continue;
+      ctx.fillStyle = lm.color;
+      ctx.beginPath(); ctx.arc(mx, my, 1.5, 0, Math.PI * 2); ctx.fill();
+      plotted++;
+    }
+    // Optional viewport center crosshair — opts.viewportCenter={x,y}.
+    if (opts && opts.viewportCenter && typeof opts.viewportCenter.x === 'number') {
+      const cx = px(opts.viewportCenter.x);
+      const cy = py(opts.viewportCenter.y);
+      if (cx >= x0 && cx <= x0 + size && cy >= y0 && cy <= y0 + size) {
+        ctx.strokeStyle = '#ecb457';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(cx - 3, cy); ctx.lineTo(cx + 3, cy);
+        ctx.moveTo(cx, cy - 3); ctx.lineTo(cx, cy + 3);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+    return { x: x0, y: y0, w: size, h: size, plotted };
+  }
+
   // ─── R3 · Static layer cache ──────────────────────────────────────────────
   // Canals + their labels never change between frames (W,H,opts are stable).
   // Bake them once into an offscreen canvas; per-frame just `ctx.drawImage`.
@@ -592,6 +807,10 @@
     const lodBridges = bridgeLOD(scene.bridges, lodScale);
     const rect = viewportRect(vp, W, H, (opts && opts.pad) || 24);
     const culledBridges = lodBridges.filter(b => inViewport(b.x, b.y, 6, rect));
+    // R8 · run the same declutter pass the renderer uses, so tests + console
+    // can assert on identical numbers. Pure data; no canvas touched.
+    const labelPlans = planLandmarkLabels(scene, H);
+    const labels = declutterStats(labelPlans);
     return {
       version: VERSION,
       geoVersion: geo && geo.VERSION ? geo.VERSION : null,
@@ -611,6 +830,7 @@
         culled: { shown: culledBridges.length, hidden: lodBridges.length - culledBridges.length },
         famous: lodBridges.filter(b => FAMOUS_BRIDGES.has(b.id)).length,
       },
+      labels,                              // R8 — declutter summary
       cache: {
         // Probe whether the static cache is hot for the current key. Returns
         // hit=true if drawReplicaOverlay with cache:true would skip live draw.
@@ -635,11 +855,15 @@
     MINI_ICON, MINI_COLOR,            // R6 — mini-game venue markers
     ISLAND_COLOR,                     // R6 — island pin palette
     FAMOUS_BRIDGES,
+    LM_PRIORITY,                      // R8 — declutter priority table
     viewportFit, projectPoint,
     projectLandmark, projectCanalPath, projectBridge,
     projectMiniGame, projectIsland,   // R6
     buildReplicaScene, renderReplicaOverlay,
     drawMiniGames, drawIslands, drawScaleBar,  // R6 — exposed for tests
+    drawLandmarks,                    // R8 — now consumes planLandmarkLabels
+    // R8 polish
+    planLandmarkLabels, declutterStats, drawMiniMap,
     // R3 perf layer
     viewportRect, inViewport, bridgeLOD, drawBridges,
     getStaticLayer, clearStaticCache,

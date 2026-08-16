@@ -57,7 +57,7 @@ localStorage.removeItem('ab_skip_tutorial')
 
 ## 验证
 
-打开 `test.html`。**当前 ≥ 220/220 PASS**（逐轮递增），覆盖：
+打开 `test.html`。**当前 ≥ 250/250 PASS**（逐轮递增），覆盖：
 
 - 数据契约（5 产业、事件 ID 唯一、升级 ID 唯一、modifier 都有 effect、冲浪入口、Seed 稳定、6 mini-game 真实地址绑定）
 - 运行时契约（目标生成数量、必须含 Explore/Talk、升级包含三张死亡升级）
@@ -68,6 +68,7 @@ localStorage.removeItem('ab_skip_tutorial')
 - 端到端 smoke：mini-game 跑满 7 天后 Replica scene 仍稳定
 - R6 · 6 mini-game 菱形 marker + industry 颜色 + 真实地址 + < 1.5 km 锚定；30 岛 pin + zoom-aware LOD；1 km scale bar
 - R7 · perf 对象形状 + fpsReset 语义 + 60Hz warm-up + replica-on 路径保形 + **真实 perf_check.py (Playwright) 端到端跑过 · p95 ≤ 16ms**
+- R8 · **label declutter** (priority + stack + leader-line + hide) — 中心簇不重叠 + 确定性 + 0 重叠；**mini-map 面板** — 右下角 90×90 地标总览 + opt-out 旗标
 
 ### 实时帧率验证
 

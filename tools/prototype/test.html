@@ -142,6 +142,81 @@ frame.addEventListener('load',async()=>{
     return Math.abs(a.x-b.x)<1e-3 && Math.abs(a.y-b.y)<1e-3 && Math.abs(a.w-b.w)<1e-3 && Math.abs(a.h-b.h)<1e-3;
   });
 
+  // ═══ Round 2 — map-replica-v1 renderer ═══
+  const R = t.renderer;
+  check('MAP_RENDERER 已挂载',()=>R && typeof R === 'object');
+  check('MAP_RENDERER VERSION 字段',()=>R && typeof R.VERSION === 'string' && R.VERSION.startsWith('map-replica-v1'));
+  check('KIND_ICON 覆盖 8 种 kind',()=>R && ['museum','station','park','square','district','brewery','venue','religious'].every(k=>R.KIND_ICON[k]));
+  check('KIND_COLOR 覆盖 8 种 kind',()=>R && ['museum','station','park','square','district','brewery','venue','religious'].every(k=>R.KIND_COLOR[k]));
+  const vp800x500 = R.viewportFit(G, 800, 500, 24);
+  check('viewportFit 800×500 返回 {scale,ox,oy,w,h}',()=>vp800x500 && Number.isFinite(vp800x500.scale) && Number.isFinite(vp800x500.ox) && Number.isFinite(vp800x500.oy) && Number.isFinite(vp800x500.w) && Number.isFinite(vp800x500.h));
+  check('viewportFit scale > 0 且 < 5',()=>vp800x500 && vp800x500.scale > 0 && vp800x500.scale < 5);
+  check('viewportFit drawn 尺寸 ≤ 800×500 (含 pad)',()=>vp800x500 && vp800x500.w <= 800 && vp800x500.h <= 500);
+  check('viewportFit drawn 居中 (ox+pad≥0, oy+pad≥0)',()=>vp800x500 && vp800x500.ox + 24 >= -1 && vp800x500.oy + 24 >= -1);
+  const scene = R.buildReplicaScene(G, 800, 500, {pad:18});
+  check('buildReplicaScene 返回 landmarks=12',()=>scene && scene.counts.landmarks === 12);
+  check('buildReplicaScene 返回 canals=9',()=>scene && scene.counts.canals === 9);
+  check('buildReplicaScene 返回 bridges=5',()=>scene && scene.counts.bridges === 5);
+  check('buildReplicaScene 每条运河 ≥2 投影点',()=>scene && scene.canals.every(c => c.points && c.points.length >= 2));
+  check('buildReplicaScene 每条运河 widthPx > 0',()=>scene && scene.canals.every(c => c.widthPx > 0));
+  check('buildReplicaScene 每条运河 widthPx ≤ 8',()=>scene && scene.canals.every(c => c.widthPx <= 8));
+  check('buildReplicaScene 每个地标含 icon/color',()=>scene && scene.landmarks.every(l => l.icon && l.color));
+  check('buildReplicaScene 每个地标 (x,y) 在 [0,W]×[0,H]',()=>scene && scene.landmarks.every(l => l.x >= -1 && l.x <= 801 && l.y >= -1 && l.y <= 501));
+  check('buildReplicaScene Rijksmuseum 投影 x < Centraal x (东)',()=>{
+    const r = scene.landmarks.find(l=>l.id==='rijksmuseum');
+    const c = scene.landmarks.find(l=>l.id==='centraal');
+    return r && c && r.x < c.x;
+  });
+  check('buildReplicaScene Vondelpark x < Rijksmuseum (西)',()=>{
+    const v = scene.landmarks.find(l=>l.id==='vondelpark');
+    const r = scene.landmarks.find(l=>l.id==='rijksmuseum');
+    return v && r && v.x < r.x;
+  });
+  check('buildReplicaScene IJburg 投影 x 最右 (东端)',()=>{
+    const ij = scene.landmarks.find(l=>l.id==='ijburg');
+    const others = scene.landmarks.filter(l=>l.id!=='ijburg');
+    return ij && others.every(o => ij.x >= o.x);
+  });
+  check('buildReplicaScene 5 桥坐标都在画布内',()=>scene && scene.bridges.every(b => b.x >= 0 && b.x <= 800 && b.y >= 0 && b.y <= 500));
+  // Render to an in-memory canvas context; verify no throw + pixel touched.
+  const buildFakeCtx = (sink) => ({
+    save(){},restore(){},fillRect(){sink.push('fillRect')},strokeRect(){sink.push('strokeRect')},
+    beginPath(){sink.push('beginPath')},moveTo(){sink.push('moveTo')},lineTo(){sink.push('lineTo')},
+    stroke(){sink.push('stroke')},fill(){sink.push('fill')},arc(){sink.push('arc')},
+    translate(){sink.push('translate')},rotate(){sink.push('rotate')},
+    fillText(){sink.push('fillText')},measureText(){sink.push('measureText');return{width:10}},
+    clearRect(){},setLineDash(){},setTransform(){},transform(){},scale(){},clip(){},
+    set fillStyle(v){},set strokeStyle(v){},set lineWidth(v){},set lineCap(v){},set lineJoin(v){},
+    set font(v){},set textAlign(v){},set textBaseline(v){},set globalAlpha(v){},
+  });
+  let renderOk=false, renderTouched=false;
+  try{
+    const calls=[];
+    R.renderReplicaOverlay(buildFakeCtx(calls), G, 800, 500, {pad:18});
+    renderOk = true;
+    renderTouched = calls.length >= 10;  // any meaningful draw happened
+  }catch(e){renderOk=false;console.warn('render err',e.message)}
+  check('renderReplicaOverlay 不抛错',()=>renderOk);
+  check('renderReplicaOverlay 至少 10 次绘制调用',()=>renderTouched);
+  check('toggleReplica 暴露在 AB_TEST',()=>typeof win.toggleReplica === 'function');
+  // Toggle on/off without throwing and without breaking state
+  const prevRep = t.state.replica;
+  let toggleOk = true;
+  try{
+    win.toggleReplica();  // on
+    win.toggleReplica();  // off
+  }catch(e){toggleOk=false}
+  check('toggleReplica on/off 不抛错',()=>toggleOk);
+  t.state.replica = prevRep;
+  // Re-render after toggle should still work
+  let reRenderOk = false;
+  try{
+    const calls2=[];
+    R.renderReplicaOverlay(buildFakeCtx(calls2), G, 800, 500, {pad:18});
+    reRenderOk = calls2.length >= 5;
+  }catch(e){reRenderOk=false}
+  check('toggleReplica 后再次渲染仍正常',()=>reRenderOk);
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

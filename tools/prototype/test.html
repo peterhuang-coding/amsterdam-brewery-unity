@@ -57,6 +57,14 @@ frame.addEventListener('load',async()=>{
     }return false
   });
 
+  // ═══ funify-v3 Round 1 — bar live tip preview (BACKLOG B4) ═══
+  check('barTipPreview 基础公式 (-10% 错过推荐)',()=>win.eval('barTipPreview(10,false,false,1.0)===9'));
+  check('barTipPreview 命中+常客叠加 (+44%)',()=>win.eval('barTipPreview(10,true,true,1.0)===14'));
+  check('barTipPreview 命中 +20%',()=>win.eval('barTipPreview(20,true,false,1.0)===24'));
+  check('barTipPreview 常客 +20%',()=>win.eval('barTipPreview(15,false,true,1.0)===16'));
+  check('barPatienceLeft 刚生成时≈1',()=>win.eval('barPatienceLeft({patience:10,born:Date.now()})>0.95'));
+  check('barPatienceLeft 超时返回 0',()=>win.eval('barPatienceLeft({patience:10,born:Date.now()-20000})===0'));
+
   // ═══ Round 6 — Achievement system + WebAudio ═══
   check('ACH_POOL 至少 10 个成就',()=>t.data.achievements&&t.data.achievements.length>=10);
   check('所有成就 ID 唯一',()=>new Set(t.data.achievements.map(a=>a.id)).size===t.data.achievements.length);

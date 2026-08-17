@@ -148,6 +148,15 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 .tal-card.locked{opacity:.42;cursor:not-allowed}
 .tal-card b{display:block;font-size:12px;margin-bottom:2px}
 .tal-card em{color:var(--muted);font-style:normal;font-size:10px}
+/* Phase E2 — faction panel (reuses tal-modal shell, F 键) */
+.fac-bar{position:relative;height:14px;background:#ffffff14;border-radius:7px;overflow:hidden;margin-top:4px}
+.fac-bar-fill{position:absolute;top:0;bottom:0;left:50%;background:var(--gold);transition:width .2s}
+.fac-bar-fill.neg{left:auto;right:50%;background:#f05050}
+.fac-card{border:1px solid #ffffff22;border-radius:8px;padding:8px 10px;margin-bottom:8px;background:#ffffff08}
+.fac-card .fac-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;font-size:13px}
+.fac-card .fac-events{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.5}
+.fac-card .fac-events b{color:var(--gold)}
+.fac-card .fac-events.bad b{color:#ff9090}
 .mut-badge{display:inline-block;padding:1px 6px;border-radius:8px;background:#ffd98a22;border:1px solid #ffd98a66;color:#ffd98a;font-size:10px}
 #upg-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .upg-card{background:var(--card);border-radius:8px;padding:10px;cursor:pointer;border:2px solid transparent;transition:all .15s}
@@ -254,6 +263,15 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div class="um-meta">你有 <b id="tal-meta-v">0</b>★ meta · 已选 <b id="tal-cnt">0</b>/4 · 每个 5★ · <b>本 run 有效</b> · 按 <kbd>T</kbd> 或 <kbd>ESC</kbd> 关闭</div>
 <div id="tal-mut" class="tal-mut"></div>
 <div id="tal-grid"></div>
+</div>
+</div>
+
+<!-- Phase E2 — Faction panel (F 键) -->
+<div id="fac-modal" class="hidden">
+<div class="um-box">
+<h2>🚩 派系关系 · 本 Run</h2>
+<div class="um-meta">3 派系 · rep ∈ [-100, +100] · ±50 触发事件 · ±100 永久改变 · 按 <kbd>F</kbd> 或 <kbd>ESC</kbd> 关闭</div>
+<div id="fac-grid"></div>
 </div>
 </div>
 
@@ -746,6 +764,80 @@ function rollDayMutator(){
 }
 
 // ═══════════════════════════════════════════
+// Phase E2 — Faction System (3 派系,±50/±100 阈值触发事件)
+// 每个派系绑定 1 个核心产业,rep 在 [-100, +100] 间线性折成 industryFactor 乘区。
+// 派系事件在跨阈值时一次性触发,效果直接落到 factionBonus (per-run 永久乘区)。
+// F 键开面板。
+// ═══════════════════════════════════════════
+const FACTION_POOL=[
+  {id:'heineken',ic:'🍺',n:'Heineken Rep',d:'本地酿酒商联合',ind:'brewing',
+    plus50:{id:'hk_supply',t:'区域经理来访',d:'酿酒收入 ×1.2 (一次性)'},
+    minus50:{id:'hk_blackout',t:'负面新闻',d:'-$20 立即损失'},
+    plus100:{id:'hk_corp',t:'大客户合同',d:'酿酒收入 ×1.3 (run 永久)'},
+    minus100:{id:'hk_rival',t:'对手起诉',d:'酿酒收入 ×0.7 (run 永久)'}},
+  {id:'coffee',ic:'☕',n:'Coffee Cartel',d:'Noord 黑市咖啡帮派',ind:'coffee',
+    plus50:{id:'cf_favor',t:'帮派关照',d:'咖啡收入 ×1.15 (一次性)'},
+    minus50:{id:'cf_shakedown',t:'帮派勒索',d:'-$15 + 心情 -1'},
+    plus100:{id:'cf_cartel',t:'垄断货源',d:'咖啡收入 ×1.4 (run 永久)'},
+    minus100:{id:'cf_war',t:'帮派火拼',d:'咖啡收入 ×0.7 (run 永久)'}},
+  {id:'smartshop',ic:'🍄',n:'Smart Shop Synd.',d:'Bloemenmarkt 蘑菇联盟',ind:'shroom',
+    plus50:{id:'ss_newstrain',t:'新菌株解锁',d:'蘑菇收入 ×1.3 (一次性)'},
+    minus50:{id:'ss_bust',t:'市场搜查',d:'次日禁入 + 库存 -2'},
+    plus100:{id:'ss_master',t:'大师认证',d:'蘑菇收入 ×1.4 (run 永久)'},
+    minus100:{id:'ss_ban',t:'永久禁入',d:'蘑菇收入 ×0.6 (run 永久)'}}
+];
+const FAC_BY_ID=Object.fromEntries(FACTION_POOL.map(f=>[f.id,f]));
+function curFac(id){return FAC_BY_ID[id]}
+function factionRep(id){return (G.factions&&typeof G.factions[id]==='number')?G.factions[id]:0}
+// 派系乘区:rep 0 → 1.0;+50 → 1.25;+100 → 1.5;-100 → 0.5;clamp [0.5, 1.5]
+function factionRepFactor(id){
+  let f=1;
+  for(const fac of FACTION_POOL){
+    if(fac.ind!==id)continue;
+    const r=factionRep(fac.id);
+    const m=1+r/200;
+    f*=Math.max(0.5,Math.min(1.5,m));
+  }
+  return f;
+}
+// 派系事件触发后,一次性把乘区写到 G._run.factionBonus
+function triggerFactionEvent(fac,which){
+  const ev=fac[which];if(!ev)return;
+  addEvt(which.startsWith('plus')?'good':'bad',`🚩 ${fac.ic} ${ev.t} — ${ev.d}`);
+  if(!G._run.factionBonus)G._run.factionBonus={brewing:1,coffee:1,shroom:1,bar:1};
+  const fb=G._run.factionBonus;
+  switch(ev.id){
+    case 'hk_supply':    fb.brewing*=1.2;break;
+    case 'cf_favor':     fb.coffee*=1.15;break;
+    case 'ss_newstrain': fb.shroom*=1.3;break;
+    case 'hk_blackout':  G.money=Math.max(0,G.money-20);break;
+    case 'cf_shakedown': G.money=Math.max(0,G.money-15);G.mood=Math.max(moodFloor(),G.mood-1);break;
+    case 'ss_bust':      G.shop.marketBanDay=Math.max(G.shop.marketBanDay||0,G.day+1);G.bs[2]=Math.max(0,G.bs[2]-2);break;
+    case 'hk_corp':      fb.brewing*=1.3;break;
+    case 'cf_cartel':    fb.coffee*=1.4;break;
+    case 'ss_master':    fb.shroom*=1.4;break;
+    case 'hk_rival':     fb.brewing*=0.7;break;
+    case 'cf_war':       fb.coffee*=0.7;break;
+    case 'ss_ban':       fb.shroom*=0.6;break;
+  }
+}
+// 改 rep:clamp 到 [-100,100],跨过 ±50/±100 阈值时触发事件
+function bumpFaction(id,delta,why){
+  if(!G.factions)G.factions={heineken:0,coffee:0,smartshop:0};
+  const fac=FAC_BY_ID[id];if(!fac)return;
+  const before=G.factions[id]||0;
+  const after=Math.max(-100,Math.min(100,before+delta));
+  if(after===before)return;
+  G.factions[id]=after;
+  const sf=v=>(v>=0?'+':'')+v;
+  addEvt('info',`🚩 ${fac.ic} ${fac.n} rep ${sf(before)}→${sf(after)}${why?' · '+why:''}`);
+  if(before<50&&after>=50)triggerFactionEvent(fac,'plus50');
+  if(before>-50&&after<=-50)triggerFactionEvent(fac,'minus50');
+  if(before<100&&after>=100)triggerFactionEvent(fac,'plus100');
+  if(before>-100&&after<=-100)triggerFactionEvent(fac,'minus100');
+}
+
+// ═══════════════════════════════════════════
 // WEB AUDIO (Round 6) — procedural synth, no external assets.
 // AudioContext is lazy-init on first user gesture (browser autoplay rule).
 // Each minigame event maps to a tiny preset: short oscillator + envelope.
@@ -865,6 +957,9 @@ function industryFactor(id){
   // Phase E1/E3 — talent (per-run build) × daily mutator (per-day rule warp)
   // 乘区叠在最后,保证 modifier/upgrade 的既有平衡关系不被改写,只被放缩。
   f*=talentFactor(id)*mutatorFactor(id);
+  // Phase E2 — faction rep (-100..+100) → [0.5, 1.5] 线性 + 派系事件 bonus (per-run 永久)
+  const fb=(G._run&&G._run.factionBonus&&G._run.factionBonus[id])||1;
+  f*=factionRepFactor(id)*fb;
   return f;
 }
 // funify-v3 Round 23 — lvMaxBoost helper (BACKLOG #9 #4 closure)
@@ -888,7 +983,7 @@ function tryUnlock(id){
 }
 // Per-run scratch counters (reset each newRun)
 function resetRunCounters(){
-  G._run={orders:0,coffeeRaid:false,coffeeNoUndercover:true,perfectWaves:0,policeHits:0,brewsFinished:0,sawUndercover:false,greetedAll:{}};
+  G._run={orders:0,coffeeRaid:false,coffeeNoUndercover:true,perfectWaves:0,policeHits:0,brewsFinished:0,sawUndercover:false,greetedAll:{},factionBonus:{brewing:1,coffee:1,shroom:1,bar:1},factionTriggered:{}};
 }
 function showHelp(){document.getElementById('help-modal').classList.remove('hidden')}
 function closeHelp(){document.getElementById('help-modal').classList.add('hidden')}
@@ -926,7 +1021,15 @@ function talentBadgeHtml(){
   const mutRow=m?'<div class="sb-row" style="font-size:10px">🏷️ <span class="mut-badge">'+m.ic+' '+m.n+'</span></div>':'';
   const ts=(G.talents||[]).map(id=>TAL_BY_ID[id]).filter(Boolean);
   const talRow='<div class="sb-row" style="color:var(--muted);font-size:10px">🌳 '+(ts.length?ts.map(t=>t.ic+t.n).join(' · '):'无天赋')+' ('+ts.length+'/'+TALENT_MAX+') · 按 T</div>';
-  return mutRow+talRow;
+  // Phase E2 — 派系 rep 三色徽章
+  const fs=G.factions||{heineken:0,coffee:0,smartshop:0};
+  const facRow='<div class="sb-row" style="font-size:10px">🚩 '+
+    FACTION_POOL.map(f=>{
+      const r=fs[f.id]||0;
+      const col=r>=50?'#5fd35f':r<=-50?'#f05050':'#ffd98a';
+      return `<span style="color:${col}">${f.ic}${r>=0?'+':''}${r}</span>`;
+    }).join(' · ')+' · 按 F</div>';
+  return mutRow+facRow+talRow;
 }
 function buyTalent(id){
   const t=TAL_BY_ID[id];if(!t)return;
@@ -943,7 +1046,33 @@ function buyTalent(id){
   setMsg('🌳 '+t.n+' 已激活');
   renderTalents();renderAll();
 }
-function modalOpen(){const s=document.getElementById('start-modal'),h=document.getElementById('help-modal'),m=document.getElementById('mg-hint-modal'),t=document.getElementById('tal-modal');return(s&&!s.classList.contains('hidden'))||(h&&!h.classList.contains('hidden'))||(m&&!m.classList.contains('hidden'))||(t&&!t.classList.contains('hidden'))}
+// ═══ Phase E2 — Faction panel (F 键) ═══
+function facOpen(){return!document.getElementById('fac-modal').classList.contains('hidden')}
+function showFactions(){document.getElementById('fac-modal').classList.remove('hidden');renderFactions()}
+function closeFactions(){document.getElementById('fac-modal').classList.add('hidden')}
+function toggleFactions(){facOpen()?closeFactions():showFactions()}
+function renderFactions(){
+  const fb=(G._run&&G._run.factionBonus)||{brewing:1,coffee:1,shroom:1,bar:1};
+  document.getElementById('fac-grid').innerHTML=FACTION_POOL.map(fac=>{
+    const r=factionRep(fac.id);
+    const pct=Math.max(-50,Math.min(50,r/2));
+    const fillClass=r<0?'neg':'';
+    const fillW=Math.abs(pct)+'%';
+    const sign=r>=0?'+':'';
+    const color=r>=50?'#5fd35f':r<=-50?'#f05050':'#ffd98a';
+    const evHtml=(ev,cls)=>`<div class="fac-events ${cls||''}"><b>${ev.t}</b> · ${ev.d}</div>`;
+    let body='';
+    if(r<=-100)body=evHtml(fac.minus100,'bad');
+    else if(r>=100)body=evHtml(fac.plus100);
+    else if(r<=-50)body=evHtml(fac.minus50,'bad');
+    else if(r>=50)body=evHtml(fac.plus50);
+    else body='<div class="fac-events">尚未到达阈值 (±50) — 多做对应产业触发事件</div>';
+    const bonus=fb[fac.ind]||1;
+    const bonusTxt=bonus!==1?'<span style="color:#5fd35f"> · 派系 bonus ×'+bonus.toFixed(2)+'</span>':'';
+    return `<div class="fac-card"><div class="fac-head"><b>${fac.ic} ${fac.n}</b><span style="color:${color}">${sign}${r}</span></div><div style="font-size:10px;color:var(--muted)">${fac.d} · 绑定产业 ${fac.ind}${bonusTxt}</div><div class="fac-bar"><div class="fac-bar-fill ${fillClass}" style="width:${fillW}"></div></div>${body}</div>`;
+  }).join('');
+}
+function modalOpen(){const s=document.getElementById('start-modal'),h=document.getElementById('help-modal'),m=document.getElementById('mg-hint-modal'),t=document.getElementById('tal-modal'),f=document.getElementById('fac-modal');return(s&&!s.classList.contains('hidden'))||(h&&!h.classList.contains('hidden'))||(m&&!m.classList.contains('hidden'))||(t&&!t.classList.contains('hidden'))||(f&&!f.classList.contains('hidden'))}
 // funify-v3 Round 14 — first-time mini-game key overlay (BACKLOG #3 close)
 const MG_HINT_KEYS={
   brew:{ic:'🍺',name:'酿酒厂（啤酒订单）',keys:[['<kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd>','原料:麦芽/啤酒花/酵母各选 0/1/2'],['<kbd>SPACE</kbd>','开始酿造 (订单 180s 内完成)'],['<kbd>⬆</kbd>/<kbd>⬇</kbd>','控温 ±3°C（IPA=55°·Stout=68°·Lager=48°）'],['<kbd>ESC</kbd>','离开不收尾']],tip:'配方顺序 + 目标温度是订单的两大隐藏轴；温度误差 ≤±5°C 触发完美品。'},
@@ -1222,6 +1351,8 @@ function finBrew(timeout){const s=MG.brew;if(!s||s.ph==='done')return;s.ph='done
   const base=Math.round((35+(10+o.temp/10)*tipFactor())*tempAcc*s.yeast),inc=Math.round(base*1.3*industryFactor('brewing')*(o.bonus||1)*streakMul*phaseMult);
   const quality=tempAcc>=0.95?'★完美':tempAcc>=0.8?'好':'一般';
   G.money+=inc;G.ind.brewing.xp+=Math.round(inc*(hasUpgrade('legacy_xp')?1.25:1));G.shop.order=null;
+  // Phase E2 — faction rep drift (brew 利好 Heineken,挤压 Coffee Cartel)
+  bumpFaction('heineken',2,'酿酒出单');bumpFaction('coffee',-1,'酿酒冲咖啡');
   // Phase A B1: brew → bar inventory (capped 12/day, overflow sells $5)
   const _bt=o.type==='IPA'?'ipa':o.type==='Stout'?'stout':'lager';
   if(G.barStock[_bt]<12){G.barStock[_bt]++;addEvt('info',`🍺 酒吧库存 +1 ${o.type} (${G.barStock[_bt]}/12)`)}
@@ -1471,6 +1602,8 @@ function shroomIn(k){const s=MG.shroom;if(!s)return;if(k==='arrowup')s.hu=Math.m
     if(s.tn>=s.mx||s.gr>=100){
       const q=Math.round(Math.min(100,s.gr)/20);
       const bonus=q*12+5;G.money+=bonus;G.ind.smart_shop.xp+=bonus*2;
+      // Phase E2 — 蘑菇收获提升 Smart Shop Syndicate rep,挤压 Coffee Cartel
+      bumpFaction('smartshop',2,'蘑菇收获');bumpFaction('coffee',-1,'蘑菇抢咖啡');
       // Phase C B2: ★4+ shroom 收获解锁学术研究主题 (4-★ 1 个,5-★ 全 3 个)
       if(!G.researchTopics)G.researchTopics=[];
       const candidates=['psilocybin','mycelium','microdosing'];
@@ -1530,6 +1663,8 @@ function shopliftCaught(s,cur){
   s.caught=true;
   G.money=Math.max(0,G.money-30);G.rep=Math.max(-30,G.rep-5);
   G.shop.marketBanDay=G.day+1;
+  // Phase E2 — 被抓重击 Smart Shop Syndicate rep
+  bumpFaction('smartshop',-5,'市场被抓');
   addEvt('bad',`🥷 在 ${cur.n} 被抓 · 罚款 -$30 · rep -5 · 市场禁入 1 日`);
   AUDIO.play('brew_fail');
   setStatus('🚓 被识破','罚款 -$30 · 市场禁入 1 日','按 E 离开');
@@ -1914,6 +2049,8 @@ function finBar(){
   const s=MG.bar;const inc=Math.round(s.earn*tipFactor());
   G.money+=inc;G.ts+=s.sd;G.tr+=inc;
   G.workedToday=G.workedToday||{brew:0,coffee:0,bar:0};G.workedToday.bar=1;
+  // Phase E2 — 酒吧收入同时给 Heineken + Coffee Cartel 加 rep(双派系共用)
+  bumpFaction('heineken',1,'酒吧出单');bumpFaction('coffee',1,'酒吧出单');
   addEvt('good',`🍻 酒吧打烊 · combo最高${s.combo} · +$${inc}`);addSch('🍻',`酒吧打烊 +$${inc}`);
   G.mg=null;G.inside=null;chkLv('brewing');
   setStatus('✅ 酒吧打烊',`服务${s.sd}人 · +$${inc}`+(s.vipDay?' · VIP 日':''),'');
@@ -3203,8 +3340,9 @@ function renderAll(){
 // INPUT
 // ═══════════════════════════════════════════
 document.addEventListener('keydown',e=>{
-  // Phase E1 — talent panel swallows all keys while open (T/ESC to close)
+  // Phase E1/E2 — talent & faction panels swallow all keys while open (T/F/ESC to close)
   if(talOpen()){const tk=e.key.toLowerCase();if(tk==='t'||tk==='escape'){e.preventDefault();closeTalents()}return}
+  if(facOpen()){const tk=e.key.toLowerCase();if(tk==='f'||tk==='escape'){e.preventDefault();closeFactions()}return}
   if(modalOpen()){if(e.key==='Enter'&&document.activeElement&&document.activeElement.id==='start-seed'){e.preventDefault();startFromModal();return}if(e.key==='Escape'||e.key==='Enter'){const hm=document.getElementById('mg-hint-modal');if(hm&&!hm.classList.contains('hidden')){closeMgHint();return}const hp=document.getElementById('help-modal');if(hp&&!hp.classList.contains('hidden')&&e.key==='Escape'){closeHelp();return}}if(e.key.toLowerCase()==='m'){AUDIO.toggleMute();return}return}
   // funify-v3 Round 6 — M key toggles audio mute (works even when ended/modal)
   if(e.key==='M'||e.key==='m'){AUDIO.toggleMute();setMsg(AUDIO.muted?'🔇 音频已静音':'🔊 音频开启');return}
@@ -3229,6 +3367,7 @@ document.addEventListener('keydown',e=>{
   if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)){G.keys[k]=true;G._wp=null;setMoveMsg()}
   if(k==='e')enterBldg();if(k===' ')advanceTimeAuto();if(k==='n')newRun();if(k==='h')showHelp();
   if(k==='t'){toggleTalents();return}
+  if(k==='f'){toggleFactions();return}
   if(k==='1'){G.loc='de_pijp';G._wp=null;G.p.tx=100;G.p.ty=390}if(k==='2'){G.loc='science_park';G._wp=null;G.p.tx=640;G.p.ty=330}
   if(k==='3'){G.loc='tweede_kans';G._wp=null;G.p.tx=380;G.p.ty=410}if(k==='4'){G.loc='bloemenmarkt';G._wp=null;G.p.tx=310;G.p.ty=90}
   if(k==='5'){G.loc='noord';G._wp=null;G.p.tx=90;G.p.ty=55}
@@ -3266,6 +3405,8 @@ function newRunInner(){
   G.shop.streak=0;G.shop.streakBest=0;
   // Phase E1/E3 — per-run talent build + daily mutator slot
   G.talents=[];G.mutator=null;
+  // Phase E2 — per-run faction rep (seeded [-15, +15] 起始,3 派系)
+  G.factions={heineken:Math.round((seeded(610)-0.5)*30),coffee:Math.round((seeded(611)-0.5)*30),smartshop:Math.round((seeded(612)-0.5)*30)};
   for(const k of Object.keys(IND_DEF))G.ind[k]={lv:0,xp:0};
 }
 

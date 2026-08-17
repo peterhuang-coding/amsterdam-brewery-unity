@@ -410,9 +410,15 @@ frame.addEventListener('load',async()=>{
   // ═══ funify-v3 Round 11 — Legendary 4 项 polish (close Round 10 risks) ═══
   // 1. legendary_no_raid 全套免疫 — 卧底归零 + 热度封顶 95
   check('legendary_no_raid 描述含「热度封顶 95」',()=>{const u=t.data.upgrades.find(x=>x.id==='legendary_no_raid');return u&&u.d.includes('热度封顶 95')});
-  check('legendary_no_raid 升级源审计: heat clamp 95',()=>_r6src.includes("s.ht=Math.min(noRaid?95:100,s.ht+3)"));
+  check('legendary_no_raid 升级源审计: heat clamp via coffeeHeatCap()',()=>_r6src.includes("s.ht=Math.min(coffeeHeatCap(),s.ht+3)"));
   check('legendary_no_raid 升级源审计: 卧底短路豁免',()=>_r6src.includes("if(!noRaid){s.raid=true"));
-  check('legendary_no_raid 升级源审计: auto-run 同步',()=>_r6src.includes("hasUpgrade('legendary_no_raid')?95:100"));
+  check('legendary_no_raid 升级源审计: auto-run 同步 coffeeHeatCap()',()=>_r6src.includes("s.ht=Math.min(coffeeHeatCap(),s.ht+3)"));
+  // funify-e1 — coffeeHeatCap() + coffeeRaidThreshold() helpers honor both legendary_no_raid + t_survivor_raid
+  check('coffeeHeatCap() 默认 100',()=>{const had=t.state.upgrades.slice(),hadT=t.state.talentPicks.slice();t.state.upgrades=[];t.state.talentPicks=[];const c=win.coffeeHeatCap();t.state.upgrades=had;t.state.talentPicks=hadT;return c===100});
+  check('coffeeHeatCap() 装 legendary_no_raid → 95',()=>{const had=t.state.upgrades.slice();t.state.upgrades=['legendary_no_raid'];const c=win.coffeeHeatCap();t.state.upgrades=had;return c===95});
+  check('coffeeHeatCap() t_survivor_raid → 90',()=>{const had=t.state.talentPicks.slice();t.state.talentPicks=['t_survivor_raid'];const c=win.coffeeHeatCap();t.state.talentPicks=had;return c===90});
+  check('coffeeRaidThreshold() 默认 100',()=>{const had=t.state.upgrades.slice(),hadT=t.state.talentPicks.slice();t.state.upgrades=[];t.state.talentPicks=[];const c=win.coffeeRaidThreshold();t.state.upgrades=had;t.state.talentPicks=hadT;return c===100});
+  check('coffeeRaidThreshold() t_survivor_raid → 90',()=>{const had=t.state.talentPicks.slice();t.state.talentPicks=['t_survivor_raid'];const c=win.coffeeRaidThreshold();t.state.talentPicks=had;return c===90});
   // 2. legendary_meta_x2 meta 黑洞封顶 30/obj
   check('legendaryMetaCap 函数返回 30 (装上)',()=>{const had=t.state.upgrades.slice();t.state.upgrades=['legendary_meta_x2'];const c=win.legendaryMetaCap();t.state.upgrades=had;return c===30});
   check('legendaryMetaCap 函数返回 Infinity (未装)',()=>win.legendaryMetaCap()===Infinity);
@@ -1089,6 +1095,58 @@ frame.addEventListener('load',async()=>{
   check('源码审计: 6 项 round24 polish 钩子全部接入',()=>{
     const src=win.eval("document.documentElement.outerHTML");
     return /_brewQCol/.test(src)&&/sweet-spot/.test(src)&&/floatTexts/.test(src)&&/_phasePct/.test(src)&&/_rbStatus/.test(src)&&/urgencyFlash/.test(src);
+  });
+
+  // ═══ funify-e1 — Talent Tree (Phase E1) ═══
+  // 1. data shape
+  check('TALENT_POOL 含 12 talents',()=>Array.isArray(win.AB_TEST.TALENT_POOL)&&win.AB_TEST.TALENT_POOL.length===12);
+  check('TALENT_BRANCHES 含 4 分支',()=>Array.isArray(win.AB_TEST.TALENT_BRANCHES)&&win.AB_TEST.TALENT_BRANCHES.length===4);
+  check('TALENT_POOL 4 分支 × 3 节点分布正确',()=>{
+    const m={brew:0,street:0,scholar:0,survivor:0};
+    win.AB_TEST.TALENT_POOL.forEach(t=>m[t.br]++);
+    return m.brew===3&&m.street===3&&m.scholar===3&&m.survivor===3;
+  });
+  check('TALENT_BY_ID 含所有 12 id 查找',()=>{
+    const ids=['t_brew_xp','t_brew_tip','t_brew_start','t_bar_patience','t_bar_rep','t_bar_x','t_scholar_xp','t_scholar_meta','t_scholar_rep','t_survivor_mood','t_survivor_raid','t_survivor_inv'];
+    return ids.every(id=>win.AB_TEST.TALENT_BY_ID[id]&&win.AB_TEST.TALENT_BY_ID[id].id===id);
+  });
+  // 2. state
+  check('G.talents 在 newRun 后重置为 12',()=>{const had=t.state.talentPicks.slice();t.state.talentPicks=['t_brew_xp'];win.newRun(42);const len=t.state.talents.length;t.state.talentPicks=had;return len===12});
+  check('G.talentPicks 在 newRun 后清零',()=>{const had=t.state.talentPicks.slice();t.state.talentPicks=['t_brew_xp'];win.newRun(42);const len=t.state.talentPicks.length;t.state.talentPicks=had;return len===0});
+  // 3. helpers
+  check('hasTalent() 默认 false',()=>{const had=t.state.talentPicks.slice();t.state.talentPicks=[];const r=win.hasTalent('t_brew_xp');t.state.talentPicks=had;return r===false});
+  check('hasTalent() 选后 true',()=>{const had=t.state.talentPicks.slice();t.state.talentPicks=['t_brew_xp'];const r=win.hasTalent('t_brew_xp');t.state.talentPicks=had;return r===true});
+  // 4. system hooks actually wired (source audit)
+  check('t_brew_xp 钩入: brew xp ×1.2',()=>_r6src.includes("hasTalent('t_brew_xp')?1.2:1"));
+  check('t_brew_tip 钩入: tipFactor ×1.15',()=>_r6src.includes("hasTalent('t_brew_tip'))f*=1.15"));
+  check('t_brew_start 钩入: 起始库存 +2',()=>_r6src.includes("hasTalent('t_brew_start')?2:0"));
+  check('t_bar_patience 钩入: sBarC 1.2 mul',()=>_r6src.includes("hasTalent('t_bar_patience')?1.2:1"));
+  check('t_bar_rep 钩入: finBar +1 rep/客',()=>_r6src.includes("hasTalent('t_bar_rep'))"));
+  check('t_bar_x 钩入: industryFactor bar ×1.05',()=>_r6src.includes("id==='bar'&&hasTalent('t_bar_x'))f*=1.05"));
+  check('t_scholar_xp 钩入: academic xp ×1.25',()=>_r6src.includes("hasTalent('t_scholar_xp')?1.25:1"));
+  check('t_scholar_meta 钩入: ok 路径 +2 meta',()=>_r6src.includes("hasTalent('t_scholar_meta')&&ok"));
+  check('t_scholar_rep 钩入: enterBldg academic +1 rep',()=>_r6src.includes("b.tp==='academic'&&hasTalent('t_scholar_rep')"));
+  check('t_survivor_mood 钩入: dawn +0.2 mood',()=>_r6src.includes("hasTalent('t_survivor_mood')&&G.mood<2"));
+  check('t_survivor_inv 钩入: rollSurfItem .42 vs .3',()=>_r6src.includes("hasTalent('t_survivor_inv')?.42:.3"));
+  // 5. modal flow
+  check('showTalentModal() 打开 #talent-modal',()=>{const el=document.getElementById('talent-modal');const had=el.classList.contains('hidden');win.showTalentModal();const now=el.classList.contains('hidden');if(had&&!now){el.classList.add('hidden');return true}return false});
+  check('closeTalentModal() 关闭 #talent-modal',()=>{const el=document.getElementById('talent-modal');win.showTalentModal();win.closeTalentModal();return el.classList.contains('hidden')});
+  check('toggleTalentPick() 4 上限',()=>{const had=t.state.talentPicks.slice();t.state.talentPicks=['t_brew_xp','t_brew_tip','t_brew_start','t_bar_patience'];win.toggleTalentPick('t_bar_x');const r=t.state.talentPicks.length;t.state.talentPicks=had;return r===4});
+  check('toggleTalentPick() 取消已选',()=>{const had=t.state.talentPicks.slice();t.state.talentPicks=['t_brew_xp','t_brew_tip'];win.toggleTalentPick('t_brew_xp');const r=t.state.talentPicks.length===1&&t.state.talentPicks[0]==='t_brew_tip';t.state.talentPicks=had;return r});
+  // 6. regression: Phase A/B/C mechanics still intact
+  check('regression: hasUpgrade 仍正常',()=>typeof win.hasUpgrade==='function');
+  check('regression: tipFactor 函数可调用',()=>{try{win.tipFactor();return true}catch(e){return false}});
+  check('regression: industryFactor 函数可调用',()=>{try{win.industryFactor('brewing');return true}catch(e){return false}});
+  check('regression: G.talents/talentPicks 默认空',()=>Array.isArray(t.state.talents)&&Array.isArray(t.state.talentPicks));
+  // 7. behavioral: tipFactor +15% with t_brew_tip
+  check('tipFactor t_brew_tip ×1.15 叠加',()=>{
+    const hadUp=t.state.upgrades.slice(),hadMood=t.state.mood,hadT=t.state.talentPicks.slice(),hadMod=(t.state.mods||[]).slice();
+    t.state.upgrades=[];t.state.mood=0;t.state.talentPicks=[];t.state.mods=[];
+    const base=win.tipFactor();
+    t.state.talentPicks=['t_brew_tip'];
+    const bumped=win.tipFactor();
+    t.state.upgrades=hadUp;t.state.mood=hadMood;t.state.talentPicks=hadT;t.state.mods=hadMod;
+    return Math.abs(bumped/base-1.15)<1e-6;
   });
 
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);

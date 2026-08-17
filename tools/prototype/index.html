@@ -158,6 +158,18 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 .fac-card .fac-events b{color:var(--gold)}
 .fac-card .fac-events.bad b{color:#ff9090}
 .mut-badge{display:inline-block;padding:1px 6px;border-radius:8px;background:#ffd98a22;border:1px solid #ffd98a66;color:#ffd98a;font-size:10px}
+/* Phase E6 — Body Trade modal (Inscryption body-part homage: 心情换 meta) */
+#body-modal{position:fixed;inset:0;background:#000000a8;display:flex;align-items:center;justify-content:center;z-index:102}
+#body-modal.hidden{display:none}
+#body-modal .um-box{background:var(--panel);border:1px solid #f07070;border-radius:12px;padding:18px;max-width:520px;width:92%}
+#body-modal h2{color:#ff9090;font-size:16px;margin-bottom:4px;text-align:center}
+#body-modal .um-meta{text-align:center;color:var(--muted);font-size:11px;margin-bottom:12px}
+#body-modal .bt-body{color:var(--text);font-size:12px;line-height:1.6}
+#body-modal .bt-row{display:flex;justify-content:space-between;align-items:center;background:#ffffff0a;border:1px solid #ffffff18;border-radius:8px;padding:10px 12px;margin-bottom:8px}
+#body-modal .bt-row b{color:#ff9090}
+#body-modal .bt-row .btn{padding:6px 12px;font-size:12px}
+#body-modal .bt-row.locked{opacity:.4}
+#body-modal .bt-row.locked .btn{pointer-events:none}
 /* Phase E4 — craft/gift tabs (单 modal 双 tab,共用 um-box shell) */
 .craft-tab{display:inline-block;padding:3px 10px;margin-right:4px;cursor:pointer;border-radius:6px;background:#ffffff10;color:var(--muted);font-size:11px}
 .craft-tab.on{background:var(--gold);color:#000;font-weight:bold}
@@ -201,12 +213,22 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 .ach-row .ad{display:block;color:var(--muted);font-size:9px;margin-top:1px;line-height:1.3}
 .ach-toast{position:fixed;top:64px;right:24px;background:var(--panel);border:1px solid var(--gold);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--gold);box-shadow:0 6px 30px #000c;z-index:130;animation:slideIn .35s;max-width:280px}
 .ach-toast em{display:block;color:var(--muted);font-style:normal;font-size:10px;margin-top:2px}
+/* Phase E10 — 7-day timeline progress bar + run summary */
+#day-bar{position:relative;width:84px;height:6px;background:#ffffff14;border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:5px}
+#day-bar-fill{position:absolute;top:0;left:0;bottom:0;background:linear-gradient(90deg,var(--green),var(--gold));transition:width .4s}
+#day-dots{position:relative;width:84px;height:6px;display:inline-block;vertical-align:middle;margin-left:5px}
+.day-dot{position:absolute;top:1px;width:4px;height:4px;border-radius:50%;background:#ffffff30}
+.day-dot.done{background:var(--gold)}
+.day-dot.cur{background:var(--green);box-shadow:0 0 5px var(--green)}
+.run-card{background:var(--card);border:1px solid var(--gold);border-radius:8px;padding:10px 14px;margin-bottom:6px;font-size:12px;line-height:1.7}
+.run-card b{color:var(--gold)}
+.run-card .big{font-size:18px;color:var(--green);font-weight:700}
 </style>
 </head>
 <body>
 <div id="app">
 <div id="top">
-<div class="tb"><span class="ic">☀️</span><span id="t-time">Day 1 · Dawn</span></div>
+<div class="tb"><span class="ic">☀️</span><span id="t-time">Day 1 · Dawn</span><span id="day-bar"><div id="day-bar-fill"></div></span><span id="day-dots"></span></div>
 <div class="tb"><span class="ic">💰</span><span class="vl" id="t-money">$250</span></div>
 <div class="tb"><span class="ic">⭐</span><span class="vl" id="t-rep">0 rep</span></div>
 <div class="tb"><span class="ic">📦</span><span id="t-stock">🍺5 🥃3 🍷2</span></div>
@@ -265,6 +287,8 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div class="um-box">
 <h2>🏆 选择本 Run 终极升级</h2>
 <div class="um-meta">你有 <b id="um-meta-v">0</b> meta<span id="um-summary"></span> · 选 1 个(或 Skip 留 meta 给下个 run)</div>
+<div id="run-card-now" style="margin-bottom:10px"></div>
+<details style="margin-bottom:8px"><summary style="cursor:pointer;color:var(--muted);font-size:11px">📜 历史 Run 卡片 (本地保存 10 条)</summary><div id="run-history" style="max-height:200px;overflow-y:auto;margin-top:6px"></div></details>
 <div id="upg-choices"></div>
 <button id="upg-skip" class="btn">⏭ Skip</button>
 </div>
@@ -305,11 +329,24 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 </div>
 </div>
 
+<!-- Phase E6 — Body Trade modal (B 键,心情永久换 meta,Inscryption body-parts 致敬) -->
+<div id="body-modal" class="hidden">
+<div class="um-box">
+<h2>🩸 肉体交易 · 心情换 meta</h2>
+<div class="um-meta">心情永久 -1 · <b>+5★ meta</b> · trauma 标记 7 天每日 -1 mood floor · 按 <kbd>B</kbd> 或 <kbd>ESC</kbd> 关闭</div>
+<div class="bt-body">
+  <p style="margin:0 0 8px">在阿姆斯特丹的运河边,有人愿意收你一点"心情"换星星。<br>这会<b>永久</b>改变你的 mind floor —— 7 天内更容易被罚款压垮,但 meta 立刻到账。</p>
+  <div id="bt-rows"></div>
+  <p style="font-size:10px;color:var(--muted);margin:8px 0 0">每次交易会打上 <b>trauma</b> 标签 · 7 天后自动消除 · 心情 floor 期间 1 mood = 5 meta,但请衡量你的 mental。</p>
+</div>
+</div>
+</div>
+
 <!-- Phase 1 start tutorial: visible on a fresh browser, skippable thereafter -->
 <div id="start-modal" role="dialog" aria-modal="true" aria-labelledby="start-modal-title">
 <div class="intro-box">
 <h1 id="start-modal-title">Amsterdam Brewery — 肉鸽中台</h1>
-<div class="intro-sub">7 天城市经营 roguelike · 输入 Seed 开始本 Run</div>
+<div class="intro-sub">Day 1 of 7 · 🌱 一周城市经营 roguelike · 输入 Seed 开始本 Run</div>
 <h2>玩法目标</h2>
 <div class="start-summary">🎯 7 天内每天完成 <b>3 个目标</b>，应对每日 <b>随机事件</b><br>🏭 5 个产业（酿酒/酒吧/咖啡/蘑菇/冲浪/学术）会真实改变收益<br>🏆 跑完获得 <b>★ meta</b>，在 3 选 1 升级中囤积下一局起跑线</div>
 <h2>操作图</h2>
@@ -324,7 +361,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div id="help-modal" class="hidden">
 <div class="intro-box">
 <h1>操作帮助</h1>
-<div class="help-grid"><div><b>W/A/S/D</b> 移动小人（方向键也可）</div><div><b>E</b> 进入附近建筑</div><div><b>Space</b> 推进时间 / 小游戏确认</div><div><b>Q/W</b> 变体中调价或调节参数</div><div><b>X</b> 拒绝咖啡卧底或酒吧顾客</div><div><b>H</b> 打开本帮助，<b>Esc</b> 退出当前界面</div></div>
+<div class="help-grid"><div><b>W/A/S/D</b> 移动小人（方向键也可）</div><div><b>E</b> 进入附近建筑</div><div><b>Space</b> 推进时间 / 小游戏确认</div><div><b>Q/W</b> 变体中调价或调节参数</div><div><b>X</b> 拒绝咖啡卧底或酒吧顾客</div><div><b>H</b> 打开本帮助，<b>Esc</b> 退出当前界面</div><div><b>T</b> 天赋树 · <b>F</b> 派系 · <b>C</b> 配方 · <b>G</b> 送礼 · <b>B</b> 肉体交易</div><div><b>1-9</b> 选关 · <b>▶▶</b> 切换速度 1×/2×/4× · <b>M</b> 静音</div></div>
 <button class="btn help-close" onclick="closeHelp()">关闭</button>
 </div>
 </div>
@@ -754,7 +791,10 @@ const ACH_POOL=[
   {id:'surf_perfectionist',ic:'🏄',n:'完美浪人',d:'单次冲浪中 perfect barrel ≥ 3'},
   // Phase E5 — 灵魂相机 (Death Cards)
   {id:'death_card',ic:'📸',n:'灵魂相机',d:'卧底成交后,该 archetype 被拍照 7 天不出现'},
-  {id:'soul_snatcher',ic:'👻',n:'灵魂收藏家',d:'单局累计拍摄 ≥ 3 个卧底灵魂'}
+  {id:'soul_snatcher',ic:'👻',n:'灵魂收藏家',d:'单局累计拍摄 ≥ 3 个卧底灵魂'},
+  // Phase E6 — 肉体交易 (Body Trade, Inscryption body-parts 致敬)
+  {id:'body_trade_1',ic:'🩸',n:'第一次卖身',d:'第一次完成肉体交易 (心情 → meta)'},
+  {id:'body_trade_3',ic:'🩸🩸🩸',n:'廉价灵魂',d:'单局累计完成 ≥ 3 次肉体交易'}
 ];
 const ACH_BY_ID=Object.fromEntries(ACH_POOL.map(a=>[a.id,a]));
 
@@ -799,7 +839,7 @@ function talentFactor(ind){
   return f;
 }
 // 心情下限:默认 -2,滑不留手 talent 放宽到 -3
-function moodFloor(){return(talentFlag('slip')||mutFlag('slip'))?-3:-2}
+function moodFloor(){const base=(talentFlag('slip')||mutFlag('slip'))?-3:-2;const trauma=(G.shop&&G.shop.traumaUntil&&G.shop.traumaUntil>=G.day)?-1:0;return base+trauma}
 // 罚款计算:滑不留手 talent 减半;mutator strict_city 翻倍
 function fineAmt(base){let v=base;if(talentFlag('slip'))v=Math.round(v/2);if(mutFlag('strictCity'))v=Math.round(v*2);return v}
 
@@ -1021,7 +1061,7 @@ const ABBREV_ALPH='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 function seedAbbrev(s){return s+'-'+ABBREV_ALPH[Math.floor(s/ABBREV_ALPH.length)%ABBREV_ALPH.length]+ABBREV_ALPH[s%ABBREV_ALPH.length]}
 function seeded(n){const x=Math.sin((G.seed+n*9973+G.day*7919)*12.9898)*43758.5453;return x-Math.floor(x)}
 function moodEmoji(){return G.mood>0?'😊':G.mood<0?'😠':'😐'}
-function tipFactor(){const effectiveMood=hasUpgrade('legendary_mood_lock')?Math.max(0,G.mood):G.mood;let f=effectiveMood>0?1.2:effectiveMood<0?.8:1;if(hasUpgrade('tip_boost'))f*=1.25;if(hasMod('tourism'))f*=1.5;if(hasMod('tourism')&&hasUpgrade('iamsterdam_card'))f*=1.2;return f}
+function tipFactor(){const effectiveMood=hasUpgrade('legendary_mood_lock')?Math.max(0,G.mood):G.mood;let f=effectiveMood>0?1.2:effectiveMood<0?.8:1;if(hasUpgrade('tip_boost'))f*=1.25;if(hasMod('tourism'))f*=1.5;if(hasMod('tourism')&&hasUpgrade('iamsterdam_card'))f*=1.2;if(G.shop&&G.shop.crazyTipMul)f*=G.shop.crazyTipMul;return f}
 // funify-v3 (B4 bar): live tip preview — 命中推荐 +$4 / 常客 +$1 / 错过推荐 -$1
 function barTipPreview(offer,hit,regular,tf){return Math.round((offer+(hit?4:(regular?1:-1)))*(tf||1))}
 // funify-v3 (B4 bar): patience countdown — 1 → 0 over `patience` seconds
@@ -1099,6 +1139,38 @@ function industryFactor(id){
 function lvMaxBoost(id){const keyMap={coffee:'coffee_shop',surf:'surfing'};const key=keyMap[id]||id;const ind=G.ind[key];return(ind&&ind.lv>=2)?1.1:1}
 function saveMeta(){try{localStorage.setItem('ab_meta_v2',JSON.stringify({version:2,meta:G.meta,upgrades:G.upgrades,legacy:G.legacy,run:G.run}))}catch(e){console.warn('ab_meta_v2 save failed',e)}}
 function loadMeta(){try{const d=JSON.parse(localStorage.getItem('ab_meta_v2'));if(d&&d.version===2){G.meta=Math.max(0,d.meta|0);G.upgrades=Array.isArray(d.upgrades)?[...new Set(d.upgrades)]:[];G.legacy=Math.max(0,d.legacy|0);G.run=Math.max(0,d.run|0)}}catch(e){console.warn('ab_meta_v2 load failed',e)}}
+// Phase E7 — Run Summary Card (本地历史 ≤10)
+function buildRunSummary(objDone,objTotal,tier){
+  const factRep={heineken:G.factions.heineken,coffee:G.factions.coffee,smartshop:G.factions.smartshop};
+  const topFact=Object.entries(factRep).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1]))[0];
+  const factIc={heineken:'🍺',coffee:'☕',smartshop:'🍄'}[topFact[0]]||'🚩';
+  const archCount={};for(const s of G.barRegulars||[])archCount[s]=(archCount[s]||0)+1;
+  const topArch=Object.entries(archCount).sort((a,b)=>b[1]-a[1])[0];
+  return {
+    run:G.run,seed:G.seed,tier:tier.tier,tierIc:tier.ic,objDone,objTotal,
+    money:G.money,rep:G.rep,mood:G.mood,meta:G.meta,
+    sigArch:topArch?topArch[0]:'—',sigFact:factIc,sigTalent:(G.talents&&G.talents[0])||'—',sigMutator:(G.mutator&&G.mutator.ic)||'🏷️'
+  };
+}
+function pushRunHistory(card){
+  try{
+    const d=JSON.parse(localStorage.getItem('ab_runs_v1')||'{"version":1,"runs":[]}');
+    if(!d.runs)d.runs=[];d.runs.unshift(card);
+    while(d.runs.length>10)d.runs.pop();
+    localStorage.setItem('ab_runs_v1',JSON.stringify(d));
+  }catch(e){console.warn('ab_runs_v1 save failed',e)}
+}
+function loadRunHistory(){try{const d=JSON.parse(localStorage.getItem('ab_runs_v1'));return(d&&d.runs)||[]}catch(e){return[]}}
+function renderRunHistory(){
+  const el=document.getElementById('run-history');if(!el)return;
+  const runs=loadRunHistory();
+  if(!runs.length){el.innerHTML='<div class="run-card">尚无历史 · 完成首局 Run 后,这里会显示 Run 卡片</div>';return}
+  el.innerHTML=runs.map(r=>`<div class="run-card">
+    <b>#${r.run}</b> · seed ${r.seed} · ${r.tierIc} ${r.tier} · ${r.objDone}/${r.objTotal} 目标<br>
+    <span class="big">$${r.money}</span> · <b>${r.rep} rep</b> · 心情 ${r.mood>=0?'+':''}${r.mood} · ${r.meta}★ meta<br>
+    <span style="font-size:14px">${r.sigArch}</span> 常客 · <span style="font-size:14px">${r.sigFact}</span> 派系 · <span style="font-size:14px">${r.sigTalent}</span> 天赋 · <span style="font-size:14px">${r.sigMutator}</span> 变量
+  </div>`).join('');
+}
 function saveAch(){try{localStorage.setItem('ab_ach_v1',JSON.stringify({version:1,unlocked:G.achievements}))}catch(e){console.warn('ab_ach_v1 save failed',e)}}
 function loadAch(){try{const d=JSON.parse(localStorage.getItem('ab_ach_v1'));if(d&&d.version===1&&Array.isArray(d.unlocked))G.achievements=Array.from(new Set(d.unlocked))}catch(e){console.warn('ab_ach_v1 load failed',e)}}
 function tryUnlock(id){
@@ -1113,7 +1185,7 @@ function tryUnlock(id){
 }
 // Per-run scratch counters (reset each newRun)
 function resetRunCounters(){
-  G._run={orders:0,coffeeRaid:false,coffeeNoUndercover:true,perfectWaves:0,policeHits:0,brewsFinished:0,sawUndercover:false,greetedAll:{},factionBonus:{brewing:1,coffee:1,shroom:1,bar:1},factionTriggered:{}};
+  G._run={orders:0,coffeeRaid:false,coffeeNoUndercover:true,perfectWaves:0,policeHits:0,brewsFinished:0,sawUndercover:false,greetedAll:{},factionBonus:{brewing:1,coffee:1,shroom:1,bar:1},factionTriggered:{},bodyTradeCount:0};
 }
 function showHelp(){document.getElementById('help-modal').classList.remove('hidden')}
 function closeHelp(){document.getElementById('help-modal').classList.add('hidden')}
@@ -1211,6 +1283,49 @@ function renderFactions(){
 function craftOpen(){return!document.getElementById('craft-modal').classList.contains('hidden')}
 function showCraft(tab){document.getElementById('craft-modal').classList.remove('hidden');craftTab(tab||'craft')}
 function closeCraft(){document.getElementById('craft-modal').classList.add('hidden')}
+// Phase E6 — Body Trade: mood → meta exchange (Inscryption body-parts 致敬)
+function bodyOpen(){return !document.getElementById('body-modal').classList.contains('hidden')}
+function openBodyTrade(){
+  if(G.mg||G.inside||G.ended)return;
+  document.getElementById('body-modal').classList.remove('hidden');
+  renderBodyTrade();
+}
+function closeBodyTrade(){document.getElementById('body-modal').classList.add('hidden')}
+function renderBodyTrade(){
+  const c=document.getElementById('bt-rows');if(!c)return;
+  const floor=moodFloor();
+  const tradesLeft=Math.max(0,2-G.mood-floor); // 当前 mood 离 floor 有几格可换
+  const metaPending=G.metaPending||0;
+  const inTrauma=(G.shop&&G.shop.traumaUntil&&G.shop.traumaUntil>=G.day);
+  let html='';
+  html+=`<div class="bt-row${G.mood<=floor?' locked':''}">
+    <div>🩸 <b>卖 1 心情</b><br><span style="color:var(--muted);font-size:10px">永久 mood -1 · 立即 +5★ meta</span></div>
+    <div><button class="btn" onclick="doBodyTrade(1)" ${G.mood<=floor?'disabled':''}>交易</button></div>
+  </div>`;
+  if(metaPending>0){
+    html+=`<div class="bt-row"><div>📥 欠款 meta (下局到账)<br><span style="color:var(--muted);font-size:10px">死亡/重启时领取</span></div><div><b>+${metaPending}★</b></div></div>`;
+  }
+  html+=`<div class="bt-row" style="background:#ffffff05">
+    <div>📊 状态:心情 <b>${G.mood}</b> · floor <b>${floor}</b> · trauma ${inTrauma?`还有 ${G.shop.traumaUntil-G.day+1} 天`:'无'}</div>
+    <div>可换 <b>${tradesLeft}</b> 次</div>
+  </div>`;
+  c.innerHTML=html;
+}
+function doBodyTrade(n){
+  n=n||1;
+  const floor=moodFloor();
+  if(G.mood<=floor){setMsg('🩸 心情已到 floor,无价可换');return}
+  G.mood=Math.max(moodFloor(),G.mood-n);
+  G.meta+=5*n;
+  G.shop.traumaUntil=G.day+6; // 7 天 trauma (含今日)
+  setMsg(`🩸 交易成功 · 心情 -${n} · +${5*n}★ meta · trauma 7d`);
+  addEvt('bad',`🩸 肉体交易 · 心情 -${n} 永久 · +${5*n}★ meta · 7 天 trauma`);
+  addSch('🩸',`肉体交易 -${n} mood +${5*n}★`);
+  tryUnlock('body_trade_1');
+  if(!G._run.bodyTradeCount)G._run.bodyTradeCount=0;G._run.bodyTradeCount++;
+  if(G._run.bodyTradeCount>=3)tryUnlock('body_trade_3');
+  saveMeta();renderAll();renderBodyTrade();
+}
 function craftTab(t){
   const ce=document.getElementById('craft-tab-craft'),ge=document.getElementById('craft-tab-gift');
   const cp=document.getElementById('craft-pane-craft'),gp=document.getElementById('craft-pane-gift');
@@ -1396,6 +1511,16 @@ function showUpgradeModal(){
   document.getElementById('um-meta-v').textContent=G.meta;
   // Round 5: show run summary (tier + streakBest + objDone) so player picks upgrade with context
   const sum=document.getElementById('um-summary');if(sum){const r=G._run||{},t=endGameTier(r.lastObjDone||0,r.lastObjTotal||3);sum.textContent=` · ${t.ic}${t.label} 目标 ${r.lastObjDone||0}/${r.lastObjTotal||3}${r.streakBest>0?' 🔥×'+r.streakBest:''}`}
+  // Phase E7 — 渲染本局 Run Summary Card + 历史 10 条
+  const card=G._run.summaryCard;if(card){
+    const rh=document.getElementById('run-card-now');
+    if(rh)rh.innerHTML=`<div class="run-card">
+      <b>本局 Run #${card.run}</b> · seed ${card.seed} · ${card.tierIc} ${card.tier} · 目标 ${card.objDone}/${card.objTotal}<br>
+      <span class="big">$${card.money}</span> · <b>${card.rep} rep</b> · 心情 ${card.mood>=0?'+':''}${card.mood} · <b>${card.meta}★ meta</b><br>
+      <span style="font-size:14px">${card.sigArch}</span> 常客 · <span style="font-size:14px">${card.sigFact}</span> 派系 · <span style="font-size:14px">${card.sigTalent}</span> 天赋 · <span style="font-size:14px">${card.sigMutator}</span> 变量
+    </div>`;
+  }
+  renderRunHistory();
   const wrap=document.getElementById('upg-choices');
   wrap.innerHTML='';
   const choices=rollUpgradeChoices();
@@ -1439,7 +1564,7 @@ function nnBridge(px,py){let b=null,d=Infinity;BRIDGES.forEach(br=>{const bx=br.
 // brew/coffee/surf = morning work · academic = afternoon/evening · bar/shroom = evening+ · station = rush hours
 function bldgPhaseOk(b){
   const tp=b.tp;
-  if(tp==='brew'||tp==='coffee'||tp==='surf')return G.ti<=2;
+  if(tp==='brew'||tp==='coffee'||tp==='surf')return G.ti<=2||(G.shop&&G.shop.crazyMidnight&&G.ti===0);
   if(tp==='academic')return G.ti===2||G.ti===3;
   if(tp==='station')return G.ti===1||G.ti===3;
   if(tp==='bar'||tp==='shroom')return G.ti>=2;
@@ -1514,7 +1639,7 @@ function finBrew(timeout){const s=MG.brew;if(!s||s.ph==='done')return;s.ph='done
   const phaseMissPct=s.phases?s.phases.reduce((sum,p)=>sum+(p.hit?0:p.miss),0):0;
   const phaseMult=Math.max(0.1,1-phaseMissPct);
   const phaseHits=s.phases?s.phases.filter(p=>p.hit).length:3;
-  const base=Math.round((35+(10+o.temp/10)*tipFactor())*tempAcc*s.yeast),inc=Math.round(base*1.3*industryFactor('brewing')*(o.bonus||1)*streakMul*phaseMult);
+  const base=Math.round((35+(10+o.temp/10)*tipFactor())*tempAcc*s.yeast),inc=Math.round(base*1.3*industryFactor('brewing')*(o.bonus||1)*streakMul*phaseMult*(1+0.08*(G.shop.crazyBrewOrders||0)));
   const quality=tempAcc>=0.95?'★完美':tempAcc>=0.8?'好':'一般';
   G.money+=inc;G.ind.brewing.xp+=Math.round(inc*(hasUpgrade('legacy_xp')?1.25:1));G.shop.order=null;
   // Phase E2 — faction rep drift (brew 利好 Heineken,挤压 Coffee Cartel)
@@ -1941,7 +2066,7 @@ function pickWavePoint(n){const w=WAVE_POINTS[n-1];if(!w)return;G.todayWave=w;
   // Phase C A3a: surf board life — 0 = 窗口 -25% & 体力 -50%
   if(G.surfBoardLife===undefined)G.surfBoardLife=15;
   const boardWorn=G.surfBoardLife<=0;
-  G.mg='surf';G._mgEnterAt=Date.now();dropIng('shell');MG.surf={wave:w,wx:400,sc:0,at:0,stamina:100,combo:0,perfect:0,perfectStreak:0,started:Date.now(),
+  G.mg='surf';G._mgEnterAt=Date.now();dropIng('shell');MG.surf={wave:w,wx:400,sc:0,at:0,stamina:Math.max(20,100+(G.shop.crazySurfStam||0)),combo:0,perfect:0,perfectStreak:0,started:Date.now(),
     lastCatch:0,drowned:false,ended:false,setPhase:true,nextLull:Date.now()+3500,wipeouts:0,
     boardWorn,windowWidth:boardWorn?0.075:0.1,staminaDrainMult:boardWorn?0.5:1};
   if(!G.surfDiscovered.includes(w.id)){G.surfDiscovered.push(w.id);G.meta+=5;addEvt('good',`🗺️ 首次发现 ${w.n} +5★ meta`)}
@@ -2182,7 +2307,7 @@ function sBarC(){
   // Tier-scaled patience: easy ×1.25 / normal ×1.0 / hard ×0.85 (min 3s floor)
   const basePatience=6+Math.floor(seeded(74+s.sd)*4);
   const patience=Math.max(3,Math.round(basePatience*diff.patienceMult));
-  s.cs.push({arch,face:arch.face,faceMark:arch.n==='VIP'?'🎩':custRelLv>=2?'💛':'',patience,
+  s.cs.push({arch,face:arch.face,faceMark:G.shop.crazyFaceMark||(arch.n==='VIP'?'🎩':custRelLv>=2?'💛':''),patience,
     born:Date.now(),wantReco,isRegular,offer,floor,ceiling,drink,diffLabel:diff.label,mood,custRelLv});
   s.offer=s.cs[s.cs.length-1];
   renderAll();
@@ -3112,7 +3237,7 @@ function update(){
 // ═══════════════════════════════════════════
 // funify-v3 Round 19 — Game speed slider 1×/2×/4×, persisted in ab_speed_v1
 // Pure interval divisor; 4× speed → base / 4 (capped at 15ms floor for stability)
-function speedMs(base){const s=G.speed||1;return Math.max(15,Math.round(base/s))}
+function speedMs(base){const s=G.speed||1;const slow=(G.shop&&G.shop.crazySlow)?0.5:1;return Math.max(15,Math.round(base/s*slow))}
 function cycleSpeed(){G.speed=G.speed===1?2:G.speed===2?4:1;saveSpeed();renderSpeedBtn();clearTimeout(G._at);if(G.auto)autoStep();setMsg('⏩ 速度 '+G.speed+'×')}
 function renderSpeedBtn(){const b=document.getElementById('speed-btn');if(!b)return;b.textContent=G.speed===1?'▶▶ 1×':G.speed===2?'▶▶▶ 2×':'⚡ 4×';b.classList.toggle('sp2',G.speed===2);b.classList.toggle('sp4',G.speed===4)}
 function saveSpeed(){try{localStorage.setItem('ab_speed_v1',String(G.speed||1))}catch(e){}}
@@ -3435,6 +3560,9 @@ function endGame(won){if(G.ended)return;G.ended=true;G.auto=false;clearTimeout(G
   const legacyObjBonus=objDone*5;G.legacy+=Math.round((legacyBase+legacyObjBonus)*tier.mult);
   // Store run record for upgrade modal summary
   G._run.streakBest=G.shop.streakBest||0;G._run.lastObjDone=objDone;G._run.lastObjTotal=objTotal;G._run.lastTier=tier.tier;
+  // Phase E7 — Run Summary Card (本地历史 10 条,localStorage)
+  G._run.summaryCard=buildRunSummary(objDone,objTotal,tier);
+  pushRunHistory(G._run.summaryCard);
   const objReward=G.metaPending;G.meta+=objReward;G.metaPending=0;saveMeta();
   document.getElementById('ba').textContent='▶ 自动运行';document.getElementById('ba').classList.remove('on');
   setStatus(won?'🍺 胜利！':'📋 Run 结束',`${tier.ic} ${tier.label} · $${G.money} · 目标 ${objDone}/${objTotal}${G._run.streakBest>0?' · 🔥×'+G._run.streakBest:''}`,`+${objReward}★ meta · 遗产 ${G.legacy}`);
@@ -3463,6 +3591,9 @@ function endGame(won){if(G.ended)return;G.ended=true;G.auto=false;clearTimeout(G
 // ═══════════════════════════════════════════
 function renderAll(){
   document.getElementById('t-time').textContent=`Day ${G.day} · ${TIMES[G.ti]}`;
+  // Phase E10 — 7-day timeline progress bar
+  const _dbf=document.getElementById('day-bar-fill');if(_dbf)_dbf.style.width=Math.min(100,(G.day/7)*100)+'%';
+  const _dd=document.getElementById('day-dots');if(_dd){let dh='';for(let i=1;i<=7;i++){const cls=i<G.day?'done':i===G.day?'cur':'';dh+=`<div class="day-dot ${cls}" style="left:${(i-1)*11+2}px"></div>`;}_dd.innerHTML=dh;}
   const m=document.getElementById('t-money');m.textContent='$'+G.money;m.className='vl '+(G.money<50?'mc':G.money<100?'mw':'mg');
   document.getElementById('t-rep').textContent=G.rep+' rep';document.getElementById('t-stock').textContent=`🍺${G.bs[0]} 🥃${G.bs[1]} 🍷${G.bs[2]}`;
   document.getElementById('t-run').textContent='Run #'+G.run+' · 遗产'+G.legacy;
@@ -3537,6 +3668,8 @@ document.addEventListener('keydown',e=>{
   if(facOpen()){const tk=e.key.toLowerCase();if(tk==='f'||tk==='escape'){e.preventDefault();closeFactions()}return}
   // Phase E4 — craft/gift panel swallows keys while open; C/G/ESC close, G inside switches tab
   if(craftOpen()){const tk=e.key.toLowerCase();if(tk==='c'||tk==='escape'){e.preventDefault();closeCraft()}else if(tk==='g'){e.preventDefault();craftTab('gift')}return}
+  // Phase E6 — Body Trade panel swallows keys while open
+  if(bodyOpen()){const tk=e.key.toLowerCase();if(tk==='b'||tk==='escape'){e.preventDefault();closeBodyTrade()}return}
   if(modalOpen()){if(e.key==='Enter'&&document.activeElement&&document.activeElement.id==='start-seed'){e.preventDefault();startFromModal();return}if(e.key==='Escape'||e.key==='Enter'){const hm=document.getElementById('mg-hint-modal');if(hm&&!hm.classList.contains('hidden')){closeMgHint();return}const hp=document.getElementById('help-modal');if(hp&&!hp.classList.contains('hidden')&&e.key==='Escape'){closeHelp();return}}if(e.key.toLowerCase()==='m'){AUDIO.toggleMute();return}return}
   // funify-v3 Round 6 — M key toggles audio mute (works even when ended/modal)
   if(e.key==='M'||e.key==='m'){AUDIO.toggleMute();setMsg(AUDIO.muted?'🔇 音频已静音':'🔊 音频开启');return}
@@ -3562,6 +3695,8 @@ document.addEventListener('keydown',e=>{
   if(k==='e')enterBldg();if(k===' ')advanceTimeAuto();if(k==='n')newRun();if(k==='h')showHelp();
   if(k==='t'){toggleTalents();return}
   if(k==='f'){toggleFactions();return}
+  // Phase E6 — Body Trade (B 键,心情换 meta)
+  if(k==='b'){openBodyTrade();return}
   if(k==='c'){showCraft('craft');return}
   if(k==='g'){showCraft('gift');return}
   if(k==='1'){G.loc='de_pijp';G._wp=null;G.p.tx=100;G.p.ty=390}if(k==='2'){G.loc='science_park';G._wp=null;G.p.tx=640;G.p.ty=330}
@@ -3610,6 +3745,8 @@ function newRunInner(){
   // Phase E8 — Crazy Events 当日效果基线
   G.shop.crazyTipMul=1;G.shop.crazyBrewOrders=0;G.shop.crazySurfStam=0;
   G.shop.crazyFaceMark='';G.shop.crazyMidnight=false;G.shop.crazyBlessing=false;G.shop.crazySlow=false;
+  // Phase E6 — 肉体交易 trauma 标记(每 run 重置)
+  G.shop.traumaUntil=0;
   for(const k of Object.keys(IND_DEF))G.ind[k]={lv:0,xp:0};
 }
 
@@ -3651,6 +3788,7 @@ window.AB_TEST={
   seedAbbrev,seeded,rollDayObjectives,rollDayModifier,pickObjDef,tickObj,newRun,endGame,clampTargetToWalkable,
   industryFactor,tipFactor,tryUnlock,saveAch,loadAch,AUDIO,resetRunCounters,
   barTipPreview,barPatienceLeft,barDayDifficulty,coffeeHeatZone,coffeeFitHint,shroomQuality,brewStreakMul,brewNoteProgress,surfPerfectStreakMul,surfBreakerTelegraph,acadPartialCredit,acadRebuttalCost,acadRebuttalBoost,acadWriteMs,acadSubmitCooldownMs,VENUE_DEF,phaseNarr,showPhaseFlash,PHASE_NARR,confettiBurst,confettiClear,confettiUpdate,confettiDraw,CONFETTI_PALETTE,isLegendary,legendarySpeedMs,legendaryCost,legendaryMetaCap,rollUpgradeChoices,NPC_DIALOGUES,pickNpcDialog,NPC_TEACH_FLAVOR,NPC_BUILDING_FLAVOR,MG_HINT_KEYS,showMgHint,closeMgHint,mgHintSeen,getHoverBldg,speedMs,cycleSpeed,saveSpeed,loadSpeed,cancelAuto,renderAutoBtn,AUTO_CANCEL_GRACE_MS,showHelp,closeHelp,lvMaxBoost,
+  buildRunSummary,pushRunHistory,loadRunHistory,renderRunHistory,doBodyTrade,openBodyTrade,closeBodyTrade,bodyOpen,moodFloor,startBrew,startSurf,sBarC,endGame,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

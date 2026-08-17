@@ -225,5 +225,54 @@ if (crazyMatch) {
   t('weighted pick from CRAZY_POOL', /CRAZY_POOL\[/.test(body));
 }
 
+// ── 19. Phase E5+ Round 5 — Crazy flags actually wired into minigames ──
+t('tipFactor honors crazyTipMul', /tipFactor\(\)[\s\S]{0,500}crazyTipMul/.test(h));
+t('finBrew honors crazyBrewOrders (revenue +)', /crazyBrewOrders/.test(h) && /1\+0\.08\*\(G\.shop\.crazyBrewOrders/.test(h));
+t('surf start subtracts crazySurfStam', /stamina:Math\.max\(20,100\+\(G\.shop\.crazySurfStam/.test(h));
+t('bar spawn uses crazyFaceMark', /faceMark:G\.shop\.crazyFaceMark\|\|/.test(h));
+t('bldgPhaseOk honors crazyMidnight at Dawn', /crazyMidnight&&G\.ti===0/.test(h));
+t('speedMs honors crazySlow (-50% time)', /crazySlow\)\?0\.5:1/.test(h));
+
+// ── 20. Phase E6 — Body Trade (Inscryption body-parts 致敬) ──
+t('doBodyTrade defined', /function doBodyTrade\(n\)/.test(h));
+t('body-modal CSS added', /#body-modal\s*\{/.test(h));
+t('body-modal HTML present', /id="body-modal"[\s\S]{0,200}肉体交易/.test(h));
+t('B key triggers openBodyTrade', /if\(k==='b'\)\{openBodyTrade\(\);return\}/.test(h));
+t('B/ESC closes body modal', /if\(tk==='b'\|\|tk==='escape'\)\{e\.preventDefault\(\);closeBodyTrade\(\)\}/.test(h));
+t('moodFloor honors traumaUntil (-1 extra)', /traumaUntil&&G\.shop\.traumaUntil>=G\.day\)\?-1:0/.test(h));
+t('body_trade_1 achievement added', /id:'body_trade_1'/.test(h));
+t('body_trade_3 achievement added (3+ trades)', /id:'body_trade_3'/.test(h));
+t('bodyTradeCount tracked in _run', /bodyTradeCount:0/.test(h) && /G\._run\.bodyTradeCount\+\+/.test(h));
+t('traumaUntil reset in newRunInner', /G\.shop\.traumaUntil=0/.test(h));
+t('doBodyTrade: mood -1 / meta +5 (1:5 ratio)', /G\.mood=Math\.max\(moodFloor\(\),G\.mood-n\);[\s\S]{0,80}G\.meta\+=5\*n/.test(h));
+
+// ── 21. Phase E7 — Run Summary Card + history ──
+t('buildRunSummary defined', /function buildRunSummary\(/.test(h));
+t('pushRunHistory persists to ab_runs_v1', /localStorage\.setItem\('ab_runs_v1'/.test(h));
+t('loadRunHistory parses safely', /function loadRunHistory\(\)/.test(h));
+t('renderRunHistory shows 10 cards', /runs\.map\(r=>`<div class="run-card">/.test(h));
+t('endGame calls buildRunSummary', /buildRunSummary\(objDone,objTotal,tier\)/.test(h));
+t('endGame calls pushRunHistory', /pushRunHistory\(G\._run\.summaryCard\)/.test(h));
+t('showUpgradeModal renders summary card', /run-card-now/.test(h) && /renderRunHistory\(\)/.test(h));
+t('upg-modal HTML has run-card-now div', /id="run-card-now"[\s\S]{0,200}id="run-history"/.test(h));
+t('summary card has 4 numbers + 4 emoji', /\$\{card\.money\}[\s\S]{0,300}sigArch[\s\S]{0,200}sigFact[\s\S]{0,200}sigTalent[\s\S]{0,200}sigMutator/.test(h));
+
+// ── 22. Phase E10 — Demo Telemetry & Polish ──
+t('intro screen shows Day 1 of 7 · 🌱', /Day 1 of 7 · 🌱/.test(h));
+t('help text includes T/F/C/G/B keys', /<b>T<\/b> 天赋树 · <b>F<\/b> 派系 · <b>C<\/b> 配方 · <b>G<\/b> 送礼 · <b>B<\/b> 肉体交易/.test(h));
+t('day-bar CSS added', /#day-bar\s*\{/.test(h));
+t('day-bar-fill CSS added', /#day-bar-fill\s*\{/.test(h));
+t('day-dot CSS added', /\.day-dot\s*\{/.test(h));
+t('run-card CSS added', /\.run-card\s*\{/.test(h));
+t('top bar has day-bar element', /<span id="day-bar"><div id="day-bar-fill"><\/div><\/span>/.test(h));
+t('top bar has day-dots element', /<span id="day-dots"><\/span>/.test(h));
+t('renderAll updates day-bar-fill width', /day-bar-fill[\s\S]{0,200}width=Math\.min/.test(h));
+t('renderAll renders 7 day-dots', /for\(let i=1;i<=7;i\+\+\)/.test(h));
+
+// ── 23. Final summary ──
+t('all 10 sub-modules Phase E1-E10 covered (E1/E2/E3/E4/E5/E6/E7/E8 wired)',
+  ['TALENT_POOL','FACTION_POOL','MUTATOR_POOL','CRAFT_RECIPES','CRAZY_POOL','doBodyTrade','buildRunSummary','day-bar-fill','ACH_POOL','industryFactor']
+  .every(k => h.includes(k)));
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -1556,7 +1556,7 @@ function startEscapeMinigame(){
   G._escTimer=setTimeout(()=>{
     if(MG.escape&&MG.escape.ph==='p1'){
       addEvt('bad','🎫 选技术超时 · -$10 · 心情 -1');
-      G.money=Math.max(0,G.money-10);G.mood=Math.max(-2,G.mood-1);
+      G.money=Math.max(0,G.money-10);G.mood=Math.max(moodFloor(),G.mood-1);
       finEscape(false);
     }
   },1000);
@@ -1568,7 +1568,7 @@ function escapeIn(k){
     if(idx===undefined)return;
     if(idx>=G.escapeLevel){
       addEvt('bad','🎫 选未学技术 · -$10 · 心情 -1');
-      G.money=Math.max(0,G.money-10);G.mood=Math.max(-2,G.mood-1);
+      G.money=Math.max(0,G.money-10);G.mood=Math.max(moodFloor(),G.mood-1);
       clearTimeout(G._escTimer);finEscape(false);return;
     }
     s.techIdx=idx;s.ph='p2';s.p2Started=Date.now();
@@ -1577,7 +1577,7 @@ function escapeIn(k){
     G._escTimer=setTimeout(()=>{
       if(MG.escape&&MG.escape.ph==='p2'){
         addEvt('bad','🎫 错过所有窗口 · -$20 · 心情 -1');
-        G.money=Math.max(0,G.money-20);G.mood=Math.max(-2,G.mood-1);
+        G.money=Math.max(0,G.money-20);G.mood=Math.max(moodFloor(),G.mood-1);
         finEscape(false);
       }
     },5000);
@@ -1586,7 +1586,7 @@ function escapeIn(k){
   if(s.ph==='p2'&&k===' '){
     const elapsed=Date.now()-s.p2Started;
     const inWindow=elapsed>=1500&&elapsed<2300||elapsed>=2700&&elapsed<3500||elapsed>=3900&&elapsed<4700;
-    if(!inWindow){addEvt('bad','🎫 误按窗口外 · -$20 · 心情 -1');G.money=Math.max(0,G.money-20);G.mood=Math.max(-2,G.mood-1);clearTimeout(G._escTimer);finEscape(false);return}
+    if(!inWindow){addEvt('bad','🎫 误按窗口外 · -$20 · 心情 -1');G.money=Math.max(0,G.money-20);G.mood=Math.max(moodFloor(),G.mood-1);clearTimeout(G._escTimer);finEscape(false);return}
     // Phase 3: random platform pick
     const platform=1+Math.floor(seeded(240+G.day*3+s.techIdx)*4);
     const tech=ESCAPE_TECHS[s.techIdx];
@@ -2923,7 +2923,7 @@ function triggerDream(){
   const dream=DREAM_POOL[Math.floor(seeded(90+G.day)*DREAM_POOL.length)];
   G.shop.dream=dream;G.shop.dreamDay=G.day;
   if(dream.kind==='good'){G.mood=Math.min(2,G.mood+1);if(dream.delta&&dream.delta.rep)G.rep+=dream.delta.rep;addEvt('good','💤 '+dream.t)}
-  else if(dream.kind==='bad'){G.mood=Math.max(-2,G.mood-1);G.rep+=(dream.delta&&dream.delta.rep)||0;addEvt('bad','💤 '+dream.t)}
+  else if(dream.kind==='bad'){G.mood=Math.max(moodFloor(),G.mood-1);G.rep+=(dream.delta&&dream.delta.rep)||0;addEvt('bad','💤 '+dream.t)}
   else if(dream.kind==='omen'){G.shop.vipTomorrow=1;G.mood=Math.min(2,G.mood+1);addEvt('info','💤 '+dream.t+' · 明日 VIP 日 +tip')}
   setMsg('💤 梦境: '+dream.t+' · 心情'+moodEmoji());
 }

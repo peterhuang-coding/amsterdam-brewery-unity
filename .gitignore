@@ -23,3 +23,4 @@ Assets/Scripts/.claude/
 __pycache__/
 *.pyc
 *.pyo
+node_modules/

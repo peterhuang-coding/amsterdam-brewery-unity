@@ -1,9 +1,0 @@
-{
-    "customers": [
-        { "type": 0, "displayName": "普通客人", "greeting": "I'll have the usual.", "patienceSeconds": 8, "tipMultiplier": 1.0, "groupSize": 1 },
-        { "type": 1, "displayName": "熟客", "greeting": "Hey, good to see you again!", "patienceSeconds": 10, "tipMultiplier": 1.5, "groupSize": 1 },
-        { "type": 2, "displayName": "挑剔客", "greeting": "Make it quick, I'm in a hurry.", "patienceSeconds": 5, "tipMultiplier": 0.8, "groupSize": 1 },
-        { "type": 3, "displayName": "醉汉", "greeting": "Anu... anu... gimme... *hic*", "patienceSeconds": 12, "tipMultiplier": 1.3, "groupSize": 1 },
-        { "type": 4, "displayName": "旅行团", "greeting": "Three beers please! Quick!", "patienceSeconds": 7, "tipMultiplier": 0.5, "groupSize": 3 }
-    ]
-}

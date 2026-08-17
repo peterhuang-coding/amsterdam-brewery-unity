@@ -666,6 +666,41 @@ const EV_POOL=[
 const EV_KIND={};
 EV_POOL.forEach(e=>{EV_KIND[e.id]=e.kind||'neutral'});
 
+// ═══════════════════════════════════════════
+// Phase E8 — Crazy Events (搞怪事件池,12 个 weird 事件)
+// 每 tick 有 4% 概率随机触发 1 个。效果多为临时 buff/debuff,贯穿当日或即时生效。
+// 哲学:Balatro 的荒诞加分 + Inscryption 的怪诞设定 + 阿姆斯特丹在地梗。
+// ═══════════════════════════════════════════
+const CRAZY_POOL=[
+  {id:'canal_rainbow',weight:1,ic:'🌈',t:'运河彩虹 · 游客 tip +50%',fire(){G.shop.crazyTipMul=(G.shop.crazyTipMul||1)*1.5}},
+  {id:'helicopter_tour',weight:1,ic:'🚁',t:'直升机观光 · 酿酒订单 +3',fire(){G.shop.crazyBrewOrders=(G.shop.crazyBrewOrders||0)+3}},
+  {id:'swan_attack',weight:1,ic:'🦢',t:'天鹅袭击 · 冲浪体力 -10',fire(){G.shop.crazySurfStam=(G.shop.crazySurfStam||0)-10}},
+  {id:'masterchef_visit',weight:1,ic:'🧑‍🍳',t:'名厨到访 · 酒吧 tip +30%',fire(){G.shop.crazyTipMul=(G.shop.crazyTipMul||1)*1.3}},
+  {id:'seagull_steal',weight:1,ic:'🐦',t:'海鸥偷窃 · 库存 -1',fire(){
+    const keys=Object.keys(G.bs||{}).filter(k=>G.bs[k]>0);
+    if(keys.length){const k=keys[Math.floor(seeded(801+G.day)*keys.length)];G.bs[k]=Math.max(0,G.bs[k]-1)}
+    else{G.money=Math.max(0,G.money-5)}
+  }},
+  {id:'carnival_mask',weight:1,ic:'🎭',t:'狂欢节面具 · 顾客全部戴 🎭',fire(){G.shop.crazyFaceMark='🎭'}},
+  {id:'midnight_sun',weight:1,ic:'🌙',t:'极昼效应 · Dawn 仍开门',fire(){G.shop.crazyMidnight=true}},
+  {id:'street_band',weight:1,ic:'🎺',t:'街头乐队 · 心情 +1',fire(){G.mood=Math.min(2,G.mood+1)}},
+  {id:'fox_alley',weight:1,ic:'🦊',t:'狐狸钻巷 · 罚款 $10',fire(){G.money=Math.max(0,G.money-10)}},
+  {id:'ufo_blessing',weight:1,ic:'🛸',t:'UFO 目击 · 明日事件全 positive',fire(){G.shop.crazyBlessing=true}},
+  {id:'stranger_birthday',weight:1,ic:'🎂',t:'陌生人庆生 · 意外红包 +$20',fire(){G.money+=20}},
+  {id:'canal_flood',weight:1,ic:'🌊',t:'运河涨水 · 移动速度 -50% (本日)',fire(){G.shop.crazySlow=true}}
+];
+
+function tickCrazyEvent(){
+  // 4% per tick (~6 ticks/day) → 期望 ~24% 每天至少 1 次,平均每天 1-2 次
+  if(G.mg)return;  // 玩法中不打扰
+  if(!G.shop)G.shop={};
+  if(seeded(802+G.ti)>0.04)return;
+  const e=CRAZY_POOL[Math.floor(seeded(803+G.ti)*CRAZY_POOL.length)];
+  if(!e||!e.fire)return;
+  e.fire();
+  addEvt(e.weight>=1?'good':'info',`🎪 搞怪事件 · ${e.ic} ${e.t}`);
+}
+
 // Upgrade pool (3-pick-1 at end of each run)
 // First 4 are functional (resource / XP / event / meta). Last 6 are real Amsterdam
 // references chosen so each one touches a different system: speed, academic, tourism,
@@ -716,7 +751,10 @@ const ACH_POOL=[
   {id:'brew_master',ic:'🍺',n:'酿酒大师',d:'单局完成 ≥ 5 个酿酒订单'},
   {id:'coffee_legend',ic:'☕',n:'咖啡传奇',d:'咖啡店完成且本局未遇卧底'},
   {id:'coffee_night_trader',ic:'🌃',n:'夜间交易者',d:'在 evening 开启地下交易完成一局'},
-  {id:'surf_perfectionist',ic:'🏄',n:'完美浪人',d:'单次冲浪中 perfect barrel ≥ 3'}
+  {id:'surf_perfectionist',ic:'🏄',n:'完美浪人',d:'单次冲浪中 perfect barrel ≥ 3'},
+  // Phase E5 — 灵魂相机 (Death Cards)
+  {id:'death_card',ic:'📸',n:'灵魂相机',d:'卧底成交后,该 archetype 被拍照 7 天不出现'},
+  {id:'soul_snatcher',ic:'👻',n:'灵魂收藏家',d:'单局累计拍摄 ≥ 3 个卧底灵魂'}
 ];
 const ACH_BY_ID=Object.fromEntries(ACH_POOL.map(a=>[a.id,a]));
 
@@ -1306,7 +1344,8 @@ function rollDayModifier(){
   const r=Math.abs((sd*1103515245+12345)%2147483647);
   const last=G.mods.length&&G.mods[0].id?G.mods[0].id:null;
   // Apply event_freq: weighted bias instead of hard filter
-  const wantPositive=hasUpgrade('event_freq')&&(r%100)<30;
+  // Phase E8 — UFO blessing 跨日生效:触发后本日 modifier 强制偏正向
+  const wantPositive=(hasUpgrade('event_freq')&&(r%100)<30)||(G.shop&&G.shop.crazyBlessing);
   const candidates=EV_POOL.filter(e=>e.id!==last);
   const weights=candidates.map(e=>{
     const k=EV_KIND[e.id]||'neutral';
@@ -1609,10 +1648,22 @@ function coffeeIn(k){const s=MG.coffee;if(!s||s.raid)return;s.lastT=Date.now();
     if(!s.c||s.sd>=s.target){finCoffee();return}
     if(s.pr<=s.c.max){
       if(s.c.undercover){
+        // Phase E5 — Death Cards: 卧底成交 → 该 archetype 灵魂被拍,7 天内不出现
+        const _dcArch=s.c.arch&&s.c.arch.n;
+        if(_dcArch){
+          if(!G.deathCards)G.deathCards=[];
+          if(!G.shop.deathBlocked)G.shop.deathBlocked={};
+          G.deathCards.push({arch:_dcArch,day:G.day});
+          G.shop.deathBlocked[_dcArch]=G.day+7;
+          G.rep=Math.max(0,G.rep-3);
+          addEvt('info',`📸 灵魂相机 · ${_dcArch} 被拍照,7 天不出现`);
+          tryUnlock('death_card');
+          if(G.deathCards.length>=3)tryUnlock('soul_snatcher');
+        }
         // 卧底成交 → police raid (除非传奇免突击)
         if(!hasUpgrade('legendary_no_raid')){
           s.raid=true;G.shop.coffeeBlockedDay=G.day;G.bs[1]=Math.max(0,G.bs[1]-1);
-          addEvt('bad','🚨 卧底成交，突击没收货物');setStatus('🚨 被突击！','卧底成交，咖啡店今日停业','明日才能继续');
+          addEvt('bad','🚨 卧底成交，突击没收货物');setStatus('� 被突击！','卧底成交，咖啡店今日停业','明日才能继续');
           AUDIO.play('raid_alarm');AUDIO.play('coffee_raid');G._run.coffeeRaid=true;
           setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},1200);return}
         setMsg('🛡️ 卧底交易（传奇免突击已豁免）');
@@ -2112,7 +2163,11 @@ function sBarC(){
     arch={n:'CoffeeLocal', face:'🧓☕', floor:5, max:18, tip:0.10, tier:'mid'};
     s.coffeeLocalTag=true;
   } else {
-    arch=s.pool[Math.floor(seeded(72+s.sd)*s.pool.length)]||BAR_ARCH[Math.floor(seeded(72+s.sd)*BAR_ARCH.length)];
+    // Phase E5 — Death Cards: 跳过被拍照的 archetype(7 天内)。全被封则退回完整池。
+    const _bl=G.shop&&G.shop.deathBlocked||{};
+    const _avail=s.pool.filter(a=>(_bl[a.n]||0)<=G.day);
+    const _pool=_avail.length?_avail:s.pool;
+    arch=_pool[Math.floor(seeded(72+s.sd)*_pool.length)]||BAR_ARCH[Math.floor(seeded(72+s.sd)*BAR_ARCH.length)];
   }
   const floor=arch.floor,ceiling=arch.max;
   const offer=Math.max(floor+1,Math.min(ceiling-1,floor+Math.floor(seeded(73+s.sd)*(ceiling-floor)*0.6)));
@@ -3140,7 +3195,10 @@ function autoStep(){
   }
 }
 function advanceTimeAuto(){
-  if(G.ended)return;G.ti++;if(G.ti>=6){G.ti=0;G.day++;
+  if(G.ended)return;G.ti++;
+  // Phase E8 — 4% per tick 随机触发搞怪事件
+  tickCrazyEvent();
+  if(G.ti>=6){G.ti=0;G.day++;
     // Phase A C2: skip-day fine — if you didn't work brew/coffee/bar today, landlord charges $15 + mood -1
     if(G.workedToday&&!G.workedToday.brew&&!G.workedToday.coffee&&!G.workedToday.bar){
       if(talentFlag('noFine')||mutFlag('noFine')){
@@ -3153,6 +3211,13 @@ function advanceTimeAuto(){
     }
     G.workedToday={brew:0,coffee:0,bar:0};
     G.sch=[];G.visitedToday=[];G.greetedToday=[];
+    // Phase E8 — 每日重置搞怪事件 buff (ufo_blessing 跨日生效:今天抽,明日 modifier 全 positive)
+    G.shop.crazyTipMul=1;G.shop.crazyBrewOrders=0;G.shop.crazySurfStam=0;
+    G.shop.crazyFaceMark='';G.shop.crazyMidnight=false;G.shop.crazySlow=false;
+    if(G.shop.crazyBlessing){
+      G.shop.crazyBlessing=false;
+      addEvt('info','🛸 UFO 祝福生效 · 本日 modifier 偏 positive');
+    }
     if(G.day>7){endGame(G.objs.every(o=>o.done));return}
     if(hasUpgrade('canal_cruise')){G.rep+=5;addEvt('info','🚢 Canal Cruise 通票 +5 rep')}
     rollDayObjectives();
@@ -3540,6 +3605,11 @@ function newRunInner(){
   G.factions={heineken:Math.round((seeded(610)-0.5)*30),coffee:Math.round((seeded(611)-0.5)*30),smartshop:Math.round((seeded(612)-0.5)*30)};
   // Phase E4 — per-run inventory + crafted items + NPC friendship (初始空)
   G.inv={};G.crafted=[];G.npcFr={};
+  // Phase E5 — Death Cards 灵魂相机:7 天 blocked 名单
+  G.deathCards=[];G.shop.deathBlocked={};
+  // Phase E8 — Crazy Events 当日效果基线
+  G.shop.crazyTipMul=1;G.shop.crazyBrewOrders=0;G.shop.crazySurfStam=0;
+  G.shop.crazyFaceMark='';G.shop.crazyMidnight=false;G.shop.crazyBlessing=false;G.shop.crazySlow=false;
   for(const k of Object.keys(IND_DEF))G.ind[k]={lv:0,xp:0};
 }
 

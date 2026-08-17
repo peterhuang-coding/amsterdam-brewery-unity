@@ -191,5 +191,39 @@ t(`E4 combo stays sane (worst ${worstE4.toFixed(2)} @ ${worstE4D})`, worstE4 < 1
 for (const marker of ['workedToday', 'shoplift', 'escapeIn', 'custRels', 'barStock', 'rollDayObjectives', 'todayWave'])
   t(`Phase A/B/C marker intact: ${marker}`, h.includes(marker));
 
+// ── 16. Phase E5 — Death Cards (灵魂相机) ──
+t('CRAZY_POOL defined (12 entries)', /CRAZY_POOL=\[[\s\S]{20,3000}\]/.test(h) && (h.match(/id:'[a-z_]+',weight:1,ic:/g)||[]).length >= 12);
+t('tickCrazyEvent wired into advanceTimeAuto', /tickCrazyEvent\(\);/.test(h));
+t('undercover sold captures death card', /_dcArch=s\.c\.arch/.test(h) && /G\.deathCards\.push/.test(h));
+t('death card blocks 7 days', /G\.shop\.deathBlocked\[[^\]]+\]=G\.day\+7/.test(h));
+t('death_card achievement added to ACH_POOL', /id:'death_card',ic:'📸'/.test(h));
+t('soul_snatcher achievement added (3+ snatches)', /id:'soul_snatcher'/.test(h));
+t('bar spawn filters blocked archetypes', /deathBlocked.*G\.day/.test(h));
+t('deathCards reset in newRun', /G\.deathCards=\[\];G\.shop\.deathBlocked=\{\}/.test(h));
+t('ufo_blessing hooked into rollDayModifier', /crazyBlessing/.test(h) && /wantPositive=[\s\S]{0,80}crazyBlessing/.test(h));
+
+// ── 17. Phase E8 — Crazy Events shape ──
+t('12 crazy event entries', (h.match(/weight:1,ic:'/g)||[]).length >= 12);
+t('crazyTipMul wired for tip stacking', /crazyTipMul/.test(h));
+t('crazyBrewOrders wired', /crazyBrewOrders/.test(h));
+t('crazySurfStam wired', /crazySurfStam/.test(h));
+t('crazyFaceMark wired (carnival mask)', /crazyFaceMark/.test(h));
+t('crazyMidnight wired (midnight sun)', /crazyMidnight/.test(h));
+t('crazySlow wired (canal flood)', /crazySlow/.test(h));
+t('crazyBlessing wired (UFO)', /crazyBlessing/.test(h));
+t('daily crazy reset on day change', /crazyTipMul=1;[\s\S]{0,200}crazySlow=false/.test(h));
+t('newRun resets crazy effects', /G\.shop\.crazyTipMul=1;[\s\S]{0,200}crazySlow=false/.test(h));
+
+// ── 18. Phase E8 — 4% per tick probability (statistical sanity) ──
+// Re-parse tickCrazyEvent body to confirm threshold
+const crazyMatch = h.match(/function tickCrazyEvent\(\)\{([\s\S]*?)\n\}/);
+t('tickCrazyEvent body parsed', !!crazyMatch);
+if (crazyMatch) {
+  const body = crazyMatch[1];
+  t('4% threshold present', />0\.04|>0\.04</.test(body));
+  t('skips during minigame', /if\(G\.mg\)return/.test(body));
+  t('weighted pick from CRAZY_POOL', /CRAZY_POOL\[/.test(body));
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -158,6 +158,20 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 .fac-card .fac-events b{color:var(--gold)}
 .fac-card .fac-events.bad b{color:#ff9090}
 .mut-badge{display:inline-block;padding:1px 6px;border-radius:8px;background:#ffd98a22;border:1px solid #ffd98a66;color:#ffd98a;font-size:10px}
+/* Phase E4 — craft/gift tabs (单 modal 双 tab,共用 um-box shell) */
+.craft-tab{display:inline-block;padding:3px 10px;margin-right:4px;cursor:pointer;border-radius:6px;background:#ffffff10;color:var(--muted);font-size:11px}
+.craft-tab.on{background:var(--gold);color:#000;font-weight:bold}
+.craft-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.craft-card{border:1px solid #ffffff22;border-radius:8px;padding:8px;background:#ffffff08;font-size:11px;line-height:1.5}
+.craft-card .ch{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;color:var(--gold)}
+.craft-card .cb{background:var(--gold);color:#000;border:none;border-radius:5px;padding:3px 8px;cursor:pointer;margin-top:4px;font-size:10px}
+.craft-card .cb:disabled{background:#ffffff22;color:var(--muted);cursor:not-allowed}
+.craft-card .cb.x{border:1px solid var(--gold);background:transparent;color:var(--gold)}
+.gift-card{border:1px solid #ffffff22;border-radius:8px;padding:8px;margin-bottom:6px;background:#ffffff08}
+.gift-card .gh{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-size:13px}
+.gift-card .gx{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.gift-card .gx button{background:#ffffff10;border:1px solid var(--gold);color:var(--gold);border-radius:5px;padding:2px 6px;cursor:pointer;font-size:10px}
+.gift-card .gx button:disabled{background:#ffffff10;border-color:#ffffff22;color:var(--muted);cursor:not-allowed}
 #upg-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .upg-card{background:var(--card);border-radius:8px;padding:10px;cursor:pointer;border:2px solid transparent;transition:all .15s}
 .upg-card:hover{border-color:var(--gold);background:#202838}
@@ -272,6 +286,22 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <h2>🚩 派系关系 · 本 Run</h2>
 <div class="um-meta">3 派系 · rep ∈ [-100, +100] · ±50 触发事件 · ±100 永久改变 · 按 <kbd>F</kbd> 或 <kbd>ESC</kbd> 关闭</div>
 <div id="fac-grid"></div>
+</div>
+</div>
+
+<!-- Phase E4 — Craft book + Gift panel (C 键配方册 / G 键送礼,复用同一 modal,tab 切换) -->
+<div id="craft-modal" class="hidden">
+<div class="um-box">
+<h2>🛠️ 合成 &amp; 送礼 · 本 Run</h2>
+<div class="um-meta">
+  <span id="craft-tab-info">按 <kbd>C</kbd> 配方册 / <kbd>G</kbd> 送礼 / <kbd>ESC</kbd> 关闭 · 6 原料 · 8 配方 · 4 NPC L0-3</span>
+  <span style="display:block;margin-top:4px">
+    <a id="craft-tab-craft" class="craft-tab on" onclick="craftTab('craft')">📖 配方册 (C)</a>
+    <a id="craft-tab-gift"  class="craft-tab"    onclick="craftTab('gift')">🎁 送礼 (G)</a>
+  </span>
+</div>
+<div id="craft-pane-craft"></div>
+<div id="craft-pane-gift" class="hidden"></div>
 </div>
 </div>
 
@@ -838,6 +868,66 @@ function bumpFaction(id,delta,why){
 }
 
 // ═══════════════════════════════════════════
+// Phase E4 — Item Crafting + NPC Gift (C 键配方册 / G 键送礼)
+// 6 原料 (每个 minigame 入门掉 1) · 8 配方 (2 原料 → 1 合成物) · 4 NPC L0-3
+// 合成物是 industryFactor 末尾乘区 · L3 NPC 解锁单产业终极乘区
+// ═══════════════════════════════════════════
+const CRAFT_ING_POOL=[
+  {id:'malt',ic:'🌾',n:'麦芽'},{id:'hop',ic:'🌿',n:'啤酒花'},
+  {id:'bean',ic:'☕',n:'咖啡豆'},{id:'leaf',ic:'🍃',n:'茶叶'},
+  {id:'shell',ic:'🐚',n:'海贝'},{id:'paper',ic:'📄',n:'论文草稿'}
+];
+const CRAFT_ING_BY_ID=Object.fromEntries(CRAFT_ING_POOL.map(i=>[i.id,i]));
+const CRAFT_RECIPES=[
+  {id:'r1',a:'malt',b:'hop',   o:'brew_bundle',f:{brewing:1.25},d:'麦芽+啤酒花→精酿六连装'},
+  {id:'r2',a:'hop',b:'bean',  o:'amaro',      f:{bar:1.3},     d:'酒花+咖啡豆→阿马罗苦酒'},
+  {id:'r3',a:'leaf',b:'bean', o:'spice_rack', f:{coffee:1.2},  d:'茶叶+咖啡豆→调味架'},
+  {id:'r4',a:'leaf',b:'shell',o:'truffle',    f:{shroom:1.35}, d:'茶叶+海贝→松露酱'},
+  {id:'r5',a:'shell',b:'paper',o:'perfume',   f:{bar:1.15},    d:'海贝+草稿→海风香水'},
+  {id:'r6',a:'paper',b:'malt',o:'atlas',      f:{academic:1.3},d:'草稿+麦芽→航海地图'},
+  {id:'r7',a:'bean',b:'shell',o:'jetlag',     f:{surf:1.25},   d:'咖啡豆+海贝→抗时差冲剂'},
+  {id:'r8',a:'hop',b:'paper', o:'promo',      f:{'*':1.15},    d:'酒花+草稿→城市宣传页'}
+];
+const CRAFT_BY_ID=Object.fromEntries(CRAFT_RECIPES.map(r=>[r.id,r]));
+const CRAFT_BY_OUT=Object.fromEntries(CRAFT_RECIPES.map(r=>[r.o,r]));
+// 4 NPC 友谊:绑 1 个心爱礼物,L3 解锁单产业终极乘区
+const NPC_FRIENDSHIP=[
+  {id:'marta',n:'Marta',ic:'👩‍🍳',where:'brew',     fav:'brew_bundle',L3:{brewing:1.5}},
+  {id:'daan', n:'Daan', ic:'👨‍🔬',where:'academic', fav:'atlas',       L3:{academic:1.5}},
+  {id:'lotte',n:'Lotte',ic:'👩‍🦰',where:'bar',      fav:'amaro',       L3:{bar:1.4}},
+  {id:'bram', n:'Bram', ic:'🧔',  where:'surf',     fav:'jetlag',      L3:{surf:1.4}}
+];
+const NPC_BY_ID=Object.fromEntries(NPC_FRIENDSHIP.map(n=>[n.id,n]));
+function dropIng(id){if(!G.inv)G.inv={};G.inv[id]=(G.inv[id]||0)+1}
+function invCount(id){return(G.inv&&G.inv[id])||0}
+function craftFactor(ind){let f=1;for(const rid of (G.crafted||[])){const r=CRAFT_BY_OUT[rid];if(!r||!r.f)continue;f*=(r.f[ind]!==undefined)?r.f[ind]:(r.f['*']||1)}return f}
+function npcLvl(id){return Math.min(3,Math.max(0,(G.npcFr&&G.npcFr[id])||0))}
+function npcFriendshipFactor(ind){let f=1;for(const n of NPC_FRIENDSHIP){if(!n.L3[ind]||npcLvl(n.id)<3)continue;f*=n.L3[ind]}return f}
+function doCraft(rid){
+  const r=CRAFT_BY_ID[rid];if(!r)return;
+  if(invCount(r.a)<1||invCount(r.b)<1){setMsg('原料不足 ('+r.a+' '+invCount(r.a)+'/1,'+r.b+' '+invCount(r.b)+'/1)');return}
+  if(!G.inv)G.inv={};G.inv[r.a]--;G.inv[r.b]--;
+  if(!G.crafted)G.crafted=[];
+  if(!G.crafted.includes(r.o))G.crafted.push(r.o);
+  addEvt('good','🛠️ 合成 · '+r.d);
+  setMsg('🛠️ '+CRAFT_BY_OUT[r.o].d.split('→')[1]+' ×1');AUDIO.play('achievement');
+  renderCraft();renderGifts();renderAll();
+}
+function doGift(npcid,item){
+  const n=NPC_BY_ID[npcid];if(!n)return;
+  if(!Array.isArray(G.crafted)||!G.crafted.includes(item)){setMsg('未持有 '+item);return}
+  const idx=G.crafted.indexOf(item);if(idx>=0)G.crafted.splice(idx,1);
+  if(!G.npcFr)G.npcFr={};const before=npcLvl(npcid);
+  G.npcFr[npcid]=(G.npcFr[npcid]||0)+1;
+  if(G.npcFr[npcid]>3)G.npcFr[npcid]=3;
+  addEvt('good',n.ic+' '+n.n+' L'+npcLvl(npcid)+' · 收到 '+item);
+  setMsg('🎁 '+n.n+' L'+npcLvl(npcid)+'/'+3);
+  AUDIO.play('achievement');
+  if(before<3&&npcLvl(npcid)===3)addEvt('info','✨ '+n.n+' 终极羁绊 · '+Object.keys(n.L3)[0]+' 收入 ×'+Object.values(n.L3)[0]);
+  renderCraft();renderGifts();renderAll();
+}
+
+// ═══════════════════════════════════════════
 // WEB AUDIO (Round 6) — procedural synth, no external assets.
 // AudioContext is lazy-init on first user gesture (browser autoplay rule).
 // Each minigame event maps to a tiny preset: short oscillator + envelope.
@@ -960,6 +1050,8 @@ function industryFactor(id){
   // Phase E2 — faction rep (-100..+100) → [0.5, 1.5] 线性 + 派系事件 bonus (per-run 永久)
   const fb=(G._run&&G._run.factionBonus&&G._run.factionBonus[id])||1;
   f*=factionRepFactor(id)*fb;
+  // Phase E4 — crafted items + NPC L3 终极羁绊 (per-run 永久 · 8 配方 × 4 NPC)
+  f*=craftFactor(id)*npcFriendshipFactor(id);
   return f;
 }
 // funify-v3 Round 23 — lvMaxBoost helper (BACKLOG #9 #4 closure)
@@ -1029,7 +1121,12 @@ function talentBadgeHtml(){
       const col=r>=50?'#5fd35f':r<=-50?'#f05050':'#ffd98a';
       return `<span style="color:${col}">${f.ic}${r>=0?'+':''}${r}</span>`;
     }).join(' · ')+' · 按 F</div>';
-  return mutRow+facRow+talRow;
+  // Phase E4 — 原料/合成物 + NPC 友谊 概览
+  const invHtml=CRAFT_ING_POOL.map(i=>`<span style="color:${invCount(i.id)?'#5fd35f':'var(--muted)'}">${i.ic}${(G.inv&&G.inv[i.id])||0}</span>`).join(' ');
+  const craftHtml=(G.crafted&&G.crafted.length)?'<span style="color:var(--gold)">🛠️ '+G.crafted.length+' 物</span>':'<span style="color:var(--muted)">🛠️ 0 物</span>';
+  const npcHtml=NPC_FRIENDSHIP.map(n=>`<span style="color:${npcLvl(n.id)===3?'#5fd35f':npcLvl(n.id)>=2?'#ffd98a':'var(--muted)'}">${n.ic}L${npcLvl(n.id)}</span>`).join(' ');
+  const craftRow='<div class="sb-row" style="font-size:10px">🎒 '+invHtml+' '+craftHtml+' · 🎁 '+npcHtml+' · 按 C/G</div>';
+  return mutRow+facRow+talRow+craftRow;
 }
 function buyTalent(id){
   const t=TAL_BY_ID[id];if(!t)return;
@@ -1072,7 +1169,37 @@ function renderFactions(){
     return `<div class="fac-card"><div class="fac-head"><b>${fac.ic} ${fac.n}</b><span style="color:${color}">${sign}${r}</span></div><div style="font-size:10px;color:var(--muted)">${fac.d} · 绑定产业 ${fac.ind}${bonusTxt}</div><div class="fac-bar"><div class="fac-bar-fill ${fillClass}" style="width:${fillW}"></div></div>${body}</div>`;
   }).join('');
 }
-function modalOpen(){const s=document.getElementById('start-modal'),h=document.getElementById('help-modal'),m=document.getElementById('mg-hint-modal'),t=document.getElementById('tal-modal'),f=document.getElementById('fac-modal');return(s&&!s.classList.contains('hidden'))||(h&&!h.classList.contains('hidden'))||(m&&!m.classList.contains('hidden'))||(t&&!t.classList.contains('hidden'))||(f&&!f.classList.contains('hidden'))}
+// ═══ Phase E4 — Craft book + Gift panel (C 键配方册 / G 键送礼,单 modal 双 tab) ═══
+function craftOpen(){return!document.getElementById('craft-modal').classList.contains('hidden')}
+function showCraft(tab){document.getElementById('craft-modal').classList.remove('hidden');craftTab(tab||'craft')}
+function closeCraft(){document.getElementById('craft-modal').classList.add('hidden')}
+function craftTab(t){
+  const ce=document.getElementById('craft-tab-craft'),ge=document.getElementById('craft-tab-gift');
+  const cp=document.getElementById('craft-pane-craft'),gp=document.getElementById('craft-pane-gift');
+  if(t==='gift'){ce.classList.remove('on');ge.classList.add('on');cp.classList.add('hidden');gp.classList.remove('hidden');renderGifts()}
+  else{ge.classList.remove('on');ce.classList.add('on');gp.classList.add('hidden');cp.classList.remove('hidden');renderCraft()}
+}
+function renderCraft(){
+  const html=CRAFT_RECIPES.map(r=>{
+    const a=invCount(r.a),b=invCount(r.b),ok=a>=1&&b>=1;
+    const out=Object.entries(r.f).map(([k,v])=>k==='*'?'全产业 ×'+v:k+' ×'+v).join(' · ');
+    return `<div class="craft-card"><div class="ch"><span>${r.d.split('→')[1]}</span><span style="color:var(--muted);font-size:10px">${r.d.split('→')[0]}</span></div><div style="color:var(--muted)">${CRAFT_ING_BY_ID[r.a].ic+r.a} <b style="color:${a?'#5fd35f':'#f05050'}">${a}</b>/1 · ${CRAFT_ING_BY_ID[r.b].ic+r.b} <b style="color:${b?'#5fd35f':'#f05050'}">${b}</b>/1</div><div style="color:var(--gold);margin-top:2px">${out}</div><button class="cb" onclick="doCraft('${r.id}')" ${ok?'':'disabled'}>${ok?'🛠️ 合成':'原料不足'}</button></div>`;
+  }).join('');
+  document.getElementById('craft-pane-craft').innerHTML='<div class="craft-grid">'+html+'</div>';
+}
+function renderGifts(){
+  const owned=G.crafted||[];
+  const html=NPC_FRIENDSHIP.map(n=>{
+    const lv=npcLvl(n.id);
+    const prog=lv<3?`L${lv} → L${lv+1}`:'L3 ✨ 已满';
+    const favBtn=`<button onclick="doGift('${n.id}','${n.fav}')" ${owned.includes(n.fav)?'':'disabled'}>${CRAFT_BY_OUT[n.fav].d.split('→')[1]}${owned.includes(n.fav)?'':' (无)'}</button>`;
+    const others=CRAFT_RECIPES.filter(r=>r.o!==n.fav).map(r=>`<button onclick="doGift('${n.id}','${r.o}')" ${owned.includes(r.o)?'':'disabled'}>${CRAFT_BY_OUT[r.o].d.split('→')[1]}${owned.includes(r.o)?'':' (无)'}</button>`).join('');
+    const bonus=lv===3?'<div style="color:#5fd35f;font-size:10px">✨ 终极羁绊 '+Object.keys(n.L3)[0]+' ×'+Object.values(n.L3)[0]+'</div>':'';
+    return `<div class="gift-card"><div class="gh"><b>${n.ic} ${n.n}</b><span style="color:${lv===3?'#5fd35f':lv>=2?'#ffd98a':'var(--muted)'};font-size:11px">${prog}</span></div><div style="font-size:10px;color:var(--muted)">心爱:${CRAFT_BY_OUT[n.fav].d.split('→')[1]}</div>${bonus}<div class="gx">${favBtn}${others}</div></div>`;
+  }).join('');
+  document.getElementById('craft-pane-gift').innerHTML=html;
+}
+function modalOpen(){const s=document.getElementById('start-modal'),h=document.getElementById('help-modal'),m=document.getElementById('mg-hint-modal'),t=document.getElementById('tal-modal'),f=document.getElementById('fac-modal'),c=document.getElementById('craft-modal');return(s&&!s.classList.contains('hidden'))||(h&&!h.classList.contains('hidden'))||(m&&!m.classList.contains('hidden'))||(t&&!t.classList.contains('hidden'))||(f&&!f.classList.contains('hidden'))||(c&&!c.classList.contains('hidden'))}
 // funify-v3 Round 14 — first-time mini-game key overlay (BACKLOG #3 close)
 const MG_HINT_KEYS={
   brew:{ic:'🍺',name:'酿酒厂（啤酒订单）',keys:[['<kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd>','原料:麦芽/啤酒花/酵母各选 0/1/2'],['<kbd>SPACE</kbd>','开始酿造 (订单 180s 内完成)'],['<kbd>⬆</kbd>/<kbd>⬇</kbd>','控温 ±3°C（IPA=55°·Stout=68°·Lager=48°）'],['<kbd>ESC</kbd>','离开不收尾']],tip:'配方顺序 + 目标温度是订单的两大隐藏轴；温度误差 ≤±5°C 触发完美品。'},
@@ -1318,7 +1445,7 @@ function startBrew(){
     {hit:false,tStart:80000,tEnd:84000,miss:0.30,label:'🔥 Boil (75-79s)'},
     {hit:false,tStart:140000,tEnd:144000,miss:0.40,label:'🧫 Ferment (135-139s)'}
   ];
-  G.shop.order=order;MG.brew={ph:'sel',m:0,h:0,y:0,t:50,started:0,deadline:0,order:order,yeast,phases};G.mg='brew';G._mgEnterAt=Date.now();
+  G.shop.order=order;MG.brew={ph:'sel',m:0,h:0,y:0,t:50,started:0,deadline:0,order:order,yeast,phases};G.mg='brew';G._mgEnterAt=Date.now();dropIng('malt');
   setStatus('🍺 酿酒订单',`订单:${order.type} · 目标温 ?°C${order.bonus>1?' · IPA配方 x'+order.bonus:''} · 🌾/🔥/🧫 3 段命中窗口`,'1/2/3选原料 · ⬆⬇调温 · SPACE 命中阶段/提交');renderAll()
 }
 function brewIn(k){const s=MG.brew;if(!s)return;
@@ -1342,7 +1469,7 @@ function finBrew(timeout){const s=MG.brew;if(!s||s.ph==='done')return;s.ph='done
   // Quality scales with temp accuracy + yeast health. ±5°C is the "excellent" band.
   const tempAcc=Math.max(0.4, 1-tempErr*0.05); // 1.0 perfect, 0.6 at ±8°C, 0.4 at ±12°C
   // funify-v3 Round 3: brew streak multiplier — consecutive successes compound (Balatro style)
-  G.shop.streak=(G.shop.streak||0)+1;if(G.shop.streak>(G.shop.streakBest||0))G.shop.streakBest=G.shop.streak;
+  G.shop.streak=(G.shop.streak||0)+1;if(G.shop.streak>(G.shop.streakBest||0))G.shop.streakBest=G.shop.streak;dropIng('hop');
   const streakMul=brewStreakMul(G.shop.streak);
   // Phase C A1a: 3 段节奏 (mash/boil/ferment) miss 累加扣收益
   const phaseMissPct=s.phases?s.phases.reduce((sum,p)=>sum+(p.hit?0:p.miss),0):0;
@@ -1382,7 +1509,7 @@ function startCoffee(){
   });
   const defaultPrice={espresso:15,drip:8,cold_brew:22,special:35};
   const defaultProdKey=availableProducts[0];
-  MG.coffee={
+  dropIng('bean');MG.coffee={
     st:0, pr:defaultPrice[defaultProdKey], ht:0, sd:0, earn:0, raid:false, c:null,
     target, warn:0, lastT:Date.now(),
     last3Locals:0, history:[], productMult:COFFEE_PRODUCTS[defaultProdKey].mult,
@@ -1583,7 +1710,7 @@ function startShroom(){showMgHint('shroom');if(hasMod('police_raid')){G.inside=n
   if(!G.strainNotes)G.strainNotes={};
   const sts=[{n:'金色导师',h:70,t:24,l:6},{n:'亚马逊',h:85,t:28,l:4},{n:'哲学家',h:55,t:20,l:10}];
   const st=sts[Math.floor(seeded(120)*3)];const known=!!G.strainNotes[st.n];
-  MG.shroom={hu:60,tp:22,li:8,gr:0,tn:0,mx:4,st,known,contam:false,started:Date.now()};G.mg='shroom';G._mgEnterAt=Date.now();
+  MG.shroom={hu:60,tp:22,li:8,gr:0,tn:0,mx:4,st,known,contam:false,started:Date.now()};G.mg='shroom';G._mgEnterAt=Date.now();dropIng('leaf');
   setStatus('🍄 蘑菇种植',`菌株: ${st.n}${known?' (笔记已有)':' (首次种植 — 目标未知)'}`,'⬆⬇←→QW调参 SPACE推进')}
 function shroomIn(k){const s=MG.shroom;if(!s)return;if(k==='arrowup')s.hu=Math.min(100,s.hu+5);if(k==='arrowdown')s.hu=Math.max(0,s.hu-5);if(k==='arrowright')s.tp=Math.min(35,s.tp+1);if(k==='arrowleft')s.tp=Math.max(10,s.tp-1);if(k==='q')s.li=Math.max(0,s.li-1);if(k==='w')s.li=Math.min(14,s.li+1);
   if(k===' '){
@@ -1763,7 +1890,7 @@ function pickWavePoint(n){const w=WAVE_POINTS[n-1];if(!w)return;G.todayWave=w;
   // Phase C A3a: surf board life — 0 = 窗口 -25% & 体力 -50%
   if(G.surfBoardLife===undefined)G.surfBoardLife=15;
   const boardWorn=G.surfBoardLife<=0;
-  G.mg='surf';G._mgEnterAt=Date.now();MG.surf={wave:w,wx:400,sc:0,at:0,stamina:100,combo:0,perfect:0,perfectStreak:0,started:Date.now(),
+  G.mg='surf';G._mgEnterAt=Date.now();dropIng('shell');MG.surf={wave:w,wx:400,sc:0,at:0,stamina:100,combo:0,perfect:0,perfectStreak:0,started:Date.now(),
     lastCatch:0,drowned:false,ended:false,setPhase:true,nextLull:Date.now()+3500,wipeouts:0,
     boardWorn,windowWidth:boardWorn?0.075:0.1,staminaDrainMult:boardWorn?0.5:1};
   if(!G.surfDiscovered.includes(w.id)){G.surfDiscovered.push(w.id);G.meta+=5;addEvt('good',`🗺️ 首次发现 ${w.n} +5★ meta`)}
@@ -1846,7 +1973,7 @@ function startAcad(){
   // Conference prestige varies: certain days have major venues (NeurIPS/ACL) = more $$$ if accepted
   const venuePool=['本地研讨','ICML投稿','NeurIPS投稿','ACL投稿'];
   const venue=G.day===5||G.day===7?venuePool[3]:G.day===3?venuePool[2]:venuePool[0];
-  MG.academic={ids,ph:'gather',sel:[],sc:0,venue,rebuttals:0,speed:1};
+  MG.academic={ids,ph:'gather',sel:[],sc:0,venue,rebuttals:0,speed:1};dropIng('paper');
   G.mg='academic';G._mgEnterAt=Date.now();setStatus('📚 学术',`投稿目标:${venue} · 门槛 ${VENUE_DEF[venue].thr}分 · 选2个主题(协同组合加分)`,'按1-5选2个 · 写论文中按2切换1×/2×速')}
 function acadIn(k){const s=MG.academic;if(!s)return;
   if(s.ph==='gather'&&k>='1'&&k<='5'){const i=parseInt(k)-1;if(s.sel.includes(i))s.sel=s.sel.filter(x=>x!==i);else if(s.sel.length<2)s.sel.push(i);if(s.sel.length===2){
@@ -3343,6 +3470,8 @@ document.addEventListener('keydown',e=>{
   // Phase E1/E2 — talent & faction panels swallow all keys while open (T/F/ESC to close)
   if(talOpen()){const tk=e.key.toLowerCase();if(tk==='t'||tk==='escape'){e.preventDefault();closeTalents()}return}
   if(facOpen()){const tk=e.key.toLowerCase();if(tk==='f'||tk==='escape'){e.preventDefault();closeFactions()}return}
+  // Phase E4 — craft/gift panel swallows keys while open; C/G/ESC close, G inside switches tab
+  if(craftOpen()){const tk=e.key.toLowerCase();if(tk==='c'||tk==='escape'){e.preventDefault();closeCraft()}else if(tk==='g'){e.preventDefault();craftTab('gift')}return}
   if(modalOpen()){if(e.key==='Enter'&&document.activeElement&&document.activeElement.id==='start-seed'){e.preventDefault();startFromModal();return}if(e.key==='Escape'||e.key==='Enter'){const hm=document.getElementById('mg-hint-modal');if(hm&&!hm.classList.contains('hidden')){closeMgHint();return}const hp=document.getElementById('help-modal');if(hp&&!hp.classList.contains('hidden')&&e.key==='Escape'){closeHelp();return}}if(e.key.toLowerCase()==='m'){AUDIO.toggleMute();return}return}
   // funify-v3 Round 6 — M key toggles audio mute (works even when ended/modal)
   if(e.key==='M'||e.key==='m'){AUDIO.toggleMute();setMsg(AUDIO.muted?'🔇 音频已静音':'🔊 音频开启');return}
@@ -3368,6 +3497,8 @@ document.addEventListener('keydown',e=>{
   if(k==='e')enterBldg();if(k===' ')advanceTimeAuto();if(k==='n')newRun();if(k==='h')showHelp();
   if(k==='t'){toggleTalents();return}
   if(k==='f'){toggleFactions();return}
+  if(k==='c'){showCraft('craft');return}
+  if(k==='g'){showCraft('gift');return}
   if(k==='1'){G.loc='de_pijp';G._wp=null;G.p.tx=100;G.p.ty=390}if(k==='2'){G.loc='science_park';G._wp=null;G.p.tx=640;G.p.ty=330}
   if(k==='3'){G.loc='tweede_kans';G._wp=null;G.p.tx=380;G.p.ty=410}if(k==='4'){G.loc='bloemenmarkt';G._wp=null;G.p.tx=310;G.p.ty=90}
   if(k==='5'){G.loc='noord';G._wp=null;G.p.tx=90;G.p.ty=55}
@@ -3407,6 +3538,8 @@ function newRunInner(){
   G.talents=[];G.mutator=null;
   // Phase E2 — per-run faction rep (seeded [-15, +15] 起始,3 派系)
   G.factions={heineken:Math.round((seeded(610)-0.5)*30),coffee:Math.round((seeded(611)-0.5)*30),smartshop:Math.round((seeded(612)-0.5)*30)};
+  // Phase E4 — per-run inventory + crafted items + NPC friendship (初始空)
+  G.inv={};G.crafted=[];G.npcFr={};
   for(const k of Object.keys(IND_DEF))G.ind[k]={lv:0,xp:0};
 }
 

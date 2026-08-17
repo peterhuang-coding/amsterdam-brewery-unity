@@ -15,15 +15,15 @@ const t = (n, c) => c ? pass++ : (fail++, console.log('  FAIL: ' + n));
 const scripts = [...h.matchAll(/<script(?![^>]*src)[^>]*>([\s\S]*?)<\/script>/g)];
 t('inline scripts parse', scripts.every(s => { try { new Function(s[1]); return true } catch (e) { console.log('    ' + e.message); return false } }));
 
-// ── 1. isolate the Phase E block (E1 + E3 + E2 in source order) ──
+// ── 1. isolate the Phase E block (E1 + E3 + E2 + E4 in source order) ──
 const start = h.indexOf('// Phase E1 — Talent Tree');
 const audioIdx = h.indexOf('// WEB AUDIO (Round 6)');
 // Stub addEvt so bumpFaction (which calls it) doesn't ReferenceError in tests
 const src = 'function addEvt(kind, msg){ /* test stub */ }\n' + h.slice(start, audioIdx);
-const G = { talents: [], mutator: null, seed: 42, day: 1, mood: 0, factions: {heineken:0,coffee:0,smartshop:0}, _run: {factionBonus:{brewing:1,coffee:1,shroom:1,bar:1}}, money: 250, bs: [5,3,2], shop: {} };
+const G = { talents: [], mutator: null, seed: 42, day: 1, mood: 0, factions: {heineken:0,coffee:0,smartshop:0}, _run: {factionBonus:{brewing:1,coffee:1,shroom:1,bar:1}}, money: 250, bs: [5,3,2], shop: {}, inv:{}, crafted:[], npcFr:{} };
 function seeded(n) { const x = Math.sin((G.seed + n * 9973 + G.day * 7919) * 12.9898) * 43758.5453; return x - Math.floor(x) }
 const A = new Function('G', 'seeded', '"use strict";' + src +
-  '; return {TALENT_POOL,TALENT_BRANCHES,MUTATOR_POOL,FACTION_POOL,FAC_BY_ID,talentFactor,mutatorFactor,rollDayMutator,moodFloor,fineAmt,mutFlag,TALENT_MAX,factionRep,factionRepFactor,bumpFaction,triggerFactionEvent};')(G, seeded);
+  '; return {TALENT_POOL,TALENT_BRANCHES,MUTATOR_POOL,FACTION_POOL,FAC_BY_ID,talentFactor,mutatorFactor,rollDayMutator,moodFloor,fineAmt,mutFlag,TALENT_MAX,factionRep,factionRepFactor,bumpFaction,triggerFactionEvent,CRAFT_RECIPES,CRAFT_BY_ID,CRAFT_BY_OUT,CRAFT_ING_POOL,CRAFT_ING_BY_ID,NPC_FRIENDSHIP,NPC_BY_ID,invCount,craftFactor,npcLvl,npcFriendshipFactor,doCraft,doGift};')(G, seeded);
 
 // ── 2. shape ──
 t('12 talents', A.TALENT_POOL.length === 12);
@@ -139,7 +139,55 @@ t('F key handler toggles faction panel', /k==='f'.*toggleFactions/.test(h));
 t('F panel consumes F/ESC while open', /facOpen\(\)\)\{[^}]*closeFactions/.test(h));
 t('sidebar shows faction badges', /FACTION_POOL\.map\(f=>/.test(h) || /FACTION_POOL\.map\(f=>/.test(h.replace(/\s+/g, ' ')));
 
-// ── 11. Phase A/B/C regression markers still present ──
+// ── 11. Phase E4 — Craft + Gift shape ──
+t('6 ingredients', A.CRAFT_ING_POOL.length === 6);
+t('8 recipes', A.CRAFT_RECIPES.length === 8);
+t('4 NPC friendship', A.NPC_FRIENDSHIP.length === 4);
+t('unique recipe outputs', new Set(A.CRAFT_RECIPES.map(r=>r.o)).size === 8);
+t('unique NPC fav', new Set(A.NPC_FRIENDSHIP.map(n=>n.fav)).size === 4);
+t('every recipe has a factor', A.CRAFT_RECIPES.every(r => r.f && Object.keys(r.f).length));
+t('every NPC has a L3 bonus bound to one industry', A.NPC_FRIENDSHIP.every(n => n.L3 && Object.keys(n.L3).length === 1 && ['brewing','coffee','shroom','bar','surf','academic'].includes(Object.keys(n.L3)[0])));
+t('every recipe maps both ingredients to known ing', A.CRAFT_RECIPES.every(r => A.CRAFT_ING_BY_ID[r.a] && A.CRAFT_ING_BY_ID[r.b]));
+
+// ── 12. Phase E4 — craft + gift helpers wire correctly ──
+t('craft/npc folded into industryFactor', /craftFactor\(id\)\*npcFriendshipFactor\(id\)/.test(h));
+t('craft baseline = 1', A.craftFactor('brewing') === 1 && A.craftFactor('coffee') === 1);
+G.crafted = ['brew_bundle'];
+t('craft factor applies to bound industry', Math.abs(A.craftFactor('brewing') - 1.25) < 1e-9);
+G.crafted = ['promo'];
+t('craft wildcard hits other industries', Math.abs(A.craftFactor('bar') - 1.15) < 1e-9);
+t('npcLvl defaults to 0', A.npcLvl('marta') === 0);
+G.npcFr = {marta: 3};
+t('npcLvl clamps at 3', A.npcLvl('marta') === 3);
+t('npcFriendshipFactor baseline = 1 below L3', (G.npcFr={}, A.npcFriendshipFactor('brewing')) === 1);
+G.npcFr = {marta: 3};
+t('L3 NPC contributes its bonus', Math.abs(A.npcFriendshipFactor('brewing') - 1.5) < 1e-9);
+G.npcFr = {marta: 3, lotte: 3};
+t('L3 NPCs stack multiplicatively across industries', Math.abs(A.npcFriendshipFactor('bar') - 1.4) < 1e-9);
+
+// ── 13. Phase E4 — DOM + key wiring ──
+t('craft modal exists in DOM', h.includes('id="craft-modal"') && h.includes('id="craft-pane-craft"') && h.includes('id="craft-pane-gift"'));
+t('C key handler opens craft pane', /k==='c'.*showCraft\('craft'\)/.test(h));
+t('G key handler opens gift pane', /k==='g'.*showCraft\('gift'\)/.test(h));
+t('craft modal swallows C/G/ESC', /craftOpen\(\)\)\{[^}]*closeCraft/.test(h));
+t('ingredient drop wired in 5 minigame entry points', (h.match(/dropIng\(/g)||[]).length >= 6);
+t('ingredient pool has all 6 ids', new Set(A.CRAFT_ING_POOL.map(i=>i.id)).size === 6);
+t('newRunInner initializes E4 state', /G\.inv=\{\};G\.crafted=\[\];G\.npcFr=\{\}/.test(h));
+t('sidebar shows ingredient counts', /CRAFT_ING_POOL\.map\(i=>/.test(h));
+
+// ── 14. Phase E4 — balance guard (E4 stack ceiling) ──
+// Worst combo: t_sur_all (1.1*) + m_grant (1.25*) + max faction + craft promo (1.15*) + 4 NPC L3
+G.npcFr = {marta:3, daan:3, lotte:3, bram:3}; G.crafted = ['promo','brew_bundle','amaro','truffle','atlas','jetlag','spice_rack','perfume'];
+G.talents = ['t_sur_all']; G.mutator = 'm_grant'; G.factions = {heineken:100, coffee:100, smartshop:100};
+G._run.factionBonus = {brewing: 1.7, coffee: 1.7, shroom: 1.7, bar: 1};
+let worstE4 = 0, worstE4D = '';
+for (const i of ['brewing','coffee','shroom','surf','academic','bar']) {
+  const v = A.talentFactor(i) * A.mutatorFactor(i) * A.factionRepFactor(i) * (G._run.factionBonus[i]||1) * A.craftFactor(i) * A.npcFriendshipFactor(i);
+  if (v > worstE4) { worstE4 = v; worstE4D = i; }
+}
+t(`E4 combo stays sane (worst ${worstE4.toFixed(2)} @ ${worstE4D})`, worstE4 < 16);
+
+// ── 15. Phase A/B/C regression markers still present ──
 for (const marker of ['workedToday', 'shoplift', 'escapeIn', 'custRels', 'barStock', 'rollDayObjectives', 'todayWave'])
   t(`Phase A/B/C marker intact: ${marker}`, h.includes(marker));
 

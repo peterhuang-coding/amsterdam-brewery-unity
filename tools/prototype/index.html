@@ -299,7 +299,7 @@ const BLDGS=[
   {x:720,y:395,r:12,id:'lib',n:'图书馆',cl:'#708090',d:'science_park',tp:'academic',ic:'📖',real:'Allard Pierson'},
   {x:680,y:395,r:12,id:'ravi',n:'Ravi宿舍',cl:'#f0c850',d:'science_park',tp:'npc',ic:'💻',npc:'ravi',real:'Science Park'},
   // === DE PIJP (south of Amstel) ===
-  {x:220,y:470,r:12,id:'market',n:'Albert Cuyp',cl:'#c0a060',d:'de_pijp',tp:'market',ic:'🛒',real:'Albert Cuypstraat'},
+  {x:220,y:470,r:12,id:'market',n:'Albert Cuyp',cl:'#c0a060',d:'de_pijp',tp:'market',ic:'🛒',real:'Albert Cuypstraat',crime:'shoplift'},
   {x:330,y:470,r:12,id:'sofie',n:'Sofie花店',cl:'#dc6e8c',d:'de_pijp',tp:'npc',ic:'🌷',npc:'sofie',real:'Ceintuurbaan'},
   {x:430,y:470,r:12,id:'apt',n:'Sarphati公寓',cl:'#8b6b4a',d:'de_pijp',tp:'home',ic:'🏠',real:'Sarphatipark'},
 ];
@@ -492,6 +492,14 @@ const ESCAPE_TECHS=[
 {lv:2,teacher:'ravi',name:'装作打电话',suc:.7,desc:'耳机+讲代码,沉浸'},
 {lv:3,teacher:'sofie',name:'装作游客',suc:.85,desc:'拍照+问路,自然不自然'},
 {lv:4,teacher:'chen',name:'装作残疾人',suc:.95,desc:'借关怀通道(道德灰色)'}
+];
+
+// Phase B D1 — Albert Cuyp shoplift stalls. Each stall = 1 grab attempt.
+// 4s loop: green 1.5s / amber 0.5s / red 2s. SPACE in green = loot, amber = 50/50, red = caught.
+const SHOP_STALLS = [
+  {n:'奶酪摊',ic:'🧀',val:8,flv:'Gouda 老奶酪 · 运河边工厂直供'},
+  {n:'郁金香球茎',ic:'🌷',val:12,flv:'Sarphatipark 花圃批发'},
+  {n:'焦糖华夫饼',ic:'🧇',val:6,flv:'街边摊 · 焦糖手工拉丝'}
 ];
 
 // funify-v3 Round 12 — NPC 三段式对话 (BACKLOG #11 NPC_DIALOGUES)
@@ -1006,6 +1014,7 @@ function enterBldg(){
   if(!G.visitedToday.includes(b.id)){G.visitedToday.push(b.id);tickObj('Explore',1)}
   if(b.tp==='bar')startBar();else if(b.tp==='brew')startBrew();else if(b.tp==='coffee')startCoffee();
   else if(b.tp==='shroom')startShroom();else if(b.tp==='surf')startSurf();else if(b.tp==='academic')startAcad();else if(b.tp==='station')startStation();
+  else if(b.tp==='market')startShoplift();
   else{setStatus('🏠 '+b.n,'按 T 对话 / 收益 +$10~24','按 E / Esc 离开');addSch(b.ic,b.n)}
 }
 
@@ -1253,8 +1262,132 @@ function shroomIn(k){const s=MG.shroom;if(!s)return;if(k==='arrowup')s.hu=Math.m
     renderAll()}}
 
 function startStation(){if(G.ti!==1&&G.ti!==3){setStatus('🚇 中央车站','非通勤时间','Morning/Evening 才能通勤');return}G.mg='station';setStatus('🚇 中央车站 — 通勤时间','💰 买票 -$5 · 🎫 逃票 · ❌ 不去','按 1/2/3 选择')}
-function commuteChoice(n){if(n==='1'){G.money-=5;G.mood=Math.min(2,G.mood+1);G.mg=null;G.inside=null;addEvt('info','🚇 买票通勤 -$5');setStatus('🚇 通勤','安全到达','')}else if(n==='2'&&G.escapeLevel>0)tryEscape();else if(n==='3'||n==='escape'){G.mg=null;G.inside=null;setStatus('🟢 就绪','','')}renderAll()}
-function tryEscape(){const t=ESCAPE_TECHS[G.escapeLevel-1],ok=seeded(130+G.escUsed)<t.suc;G.escUsed++;G.mg=null;G.inside=null;if(ok){G.mood=Math.min(2,G.mood+1);addEvt('good',`🚇 逃票成功：${t.name}，省$5`);setStatus('✅ 逃票成功','省 $5 · 心情 +1','')}else{G.money-=20;G.mood=Math.max(-2,G.mood-1);addEvt('bad','🚇 逃票失败，罚款 -$20');setStatus('❌ 逃票失败','罚款 -$20 · 心情 -1','')}renderAll()}
+function commuteChoice(n){if(n==='1'){G.money-=5;G.mood=Math.min(2,G.mood+1);G.mg=null;G.inside=null;addEvt('info','🚇 买票通勤 -$5');setStatus('🚇 通勤','安全到达','')}else if(n==='2'&&G.escapeLevel>0)startEscapeMinigame();else if(n==='3'||n==='escape'){G.mg=null;G.inside=null;setStatus('🟢 就绪','','')}renderAll()}
+
+// ═══════════════════════════════════════════
+// Phase B D1 — Albert Cuyp shoplift (3 stalls, traffic-light timing)
+// ═══════════════════════════════════════════
+function startShoplift(){
+  if((G.shop.marketBanDay||0)>G.day){setStatus('🚓 市场禁入','昨日偷窃被识破','明日再来');return}
+  G.mg='shoplift';
+  MG.shop={stallIdx:0,cycleStarted:Date.now(),loot:[],caught:false};
+  setStatus(`🥷 偷货 1/3 — ${SHOP_STALLS[0].n}`,'绿灯按 SPACE 抓 · 红灯收手','按 E / Esc 离开');
+  AUDIO.play('bar_sale');
+  renderAll();
+}
+function shopliftIn(k){
+  const s=MG.shop;if(!s)return;
+  if(k!==' ')return;
+  if(s.caught)return;
+  const elapsed=(Date.now()-s.cycleStarted)%4000;
+  let phase='red';
+  if(elapsed<1500)phase='green';
+  else if(elapsed<2000)phase='amber';
+  const cur=SHOP_STALLS[s.stallIdx];
+  if(phase==='green'){
+    s.loot.push({...cur});addEvt('info',`🥷 顺手 ${cur.ic} ${cur.n} +${cur.flv?'隐':''}`);
+    advanceStall(s);
+  } else if(phase==='amber'){
+    if(seeded(220+G.day*7+s.stallIdx)<.5){
+      s.loot.push({...cur});addEvt('good',`🥷 趁店员回头 偷 ${cur.ic}`);
+      advanceStall(s);
+    } else shopliftCaught(s,cur);
+  } else {
+    shopliftCaught(s,cur);
+  }
+  renderAll();
+}
+function advanceStall(s){
+  s.stallIdx++;s.cycleStarted=Date.now();
+  if(s.stallIdx>=SHOP_STALLS.length){finShoplift(true);return}
+  const n=SHOP_STALLS[s.stallIdx];
+  setStatus(`🥷 偷货 ${s.stallIdx+1}/3 — ${n.n}`,`${s.loot.length} 件到手 · 绿灯按 SPACE 抓`,'红/黄被识破罚款');
+}
+function shopliftCaught(s,cur){
+  s.caught=true;
+  G.money=Math.max(0,G.money-30);G.rep=Math.max(-30,G.rep-5);
+  G.shop.marketBanDay=G.day+1;
+  addEvt('bad',`🥷 在 ${cur.n} 被抓 · 罚款 -$30 · rep -5 · 市场禁入 1 日`);
+  AUDIO.play('brew_fail');
+  setStatus('🚓 被识破','罚款 -$30 · 市场禁入 1 日','按 E 离开');
+}
+function finShoplift(success){
+  const s=MG.shop;
+  if(success){
+    if(!G.shop.hotGoods)G.shop.hotGoods=[];
+    for(const x of s.loot)G.shop.hotGoods.push({...x,day:G.day,value:x.val});
+    const total=s.loot.reduce((a,b)=>a+b.val,0);
+    G.money+=total;addEvt('good',`🥷 偷货成功 · 入手 ${s.loot.length} 件 · 黑市 +$${total}`);
+    addSch('🥷',`黑市货 +$${total}`);
+    setStatus('✅ 偷货成功',`${s.loot.length} 件 · 黑市 +$${total}`,'按 E 离开');
+  }
+  G.mg=null;G.inside=null;renderAll();
+}
+
+// ═══════════════════════════════════════════
+// Phase B D2 — escape minigame (3 phases, fail tiers)
+// ═══════════════════════════════════════════
+function startEscapeMinigame(){
+  G.mg='escape';MG.escape={ph:'p1',techIdx:-1,p2Started:0};
+  setStatus('🎫 Phase 1/3 · 选技术','按 1=Pablo · 2=Ravi · 3=Sofie · 4=Chen','1s 内按键(只可选学过的)');
+  G._escTimer=setTimeout(()=>{
+    if(MG.escape&&MG.escape.ph==='p1'){
+      addEvt('bad','🎫 选技术超时 · -$10 · 心情 -1');
+      G.money=Math.max(0,G.money-10);G.mood=Math.max(-2,G.mood-1);
+      finEscape(false);
+    }
+  },1000);
+}
+function escapeIn(k){
+  const s=MG.escape;if(!s)return;
+  if(s.ph==='p1'){
+    const idx={'1':0,'2':1,'3':2,'4':3}[k];
+    if(idx===undefined)return;
+    if(idx>=G.escapeLevel){
+      addEvt('bad','🎫 选未学技术 · -$10 · 心情 -1');
+      G.money=Math.max(0,G.money-10);G.mood=Math.max(-2,G.mood-1);
+      clearTimeout(G._escTimer);finEscape(false);return;
+    }
+    s.techIdx=idx;s.ph='p2';s.p2Started=Date.now();
+    setStatus('🎫 Phase 2/3 · 等上车窗口','窗口内按 SPACE','5s · 3 个 0.8s 窗口');
+    clearTimeout(G._escTimer);
+    G._escTimer=setTimeout(()=>{
+      if(MG.escape&&MG.escape.ph==='p2'){
+        addEvt('bad','🎫 错过所有窗口 · -$20 · 心情 -1');
+        G.money=Math.max(0,G.money-20);G.mood=Math.max(-2,G.mood-1);
+        finEscape(false);
+      }
+    },5000);
+    return;
+  }
+  if(s.ph==='p2'&&k===' '){
+    const elapsed=Date.now()-s.p2Started;
+    const inWindow=elapsed>=1500&&elapsed<2300||elapsed>=2700&&elapsed<3500||elapsed>=3900&&elapsed<4700;
+    if(!inWindow){addEvt('bad','🎫 误按窗口外 · -$20 · 心情 -1');G.money=Math.max(0,G.money-20);G.mood=Math.max(-2,G.mood-1);clearTimeout(G._escTimer);finEscape(false);return}
+    // Phase 3: random platform pick
+    const platform=1+Math.floor(seeded(240+G.day*3+s.techIdx)*4);
+    const tech=ESCAPE_TECHS[s.techIdx];
+    // higher tech = better, but pick a high platform reduces risk (4 platforms → opposite end of station)
+    const platformRisk=platform===1?0.15:platform===2?0.05:platform===3?-0.05:-0.15;
+    const ok=seeded(241+G.day*7)<tech.suc-platformRisk;
+    clearTimeout(G._escTimer);
+    if(!ok){
+      addEvt('bad',`🎫 ${platform}号站台被查 · ${tech.name}失败 · -$30 · rep -2`);
+      G.money=Math.max(0,G.money-30);G.rep=Math.max(-30,G.rep-2);
+      AUDIO.play('brew_fail');
+      finEscape(false);return;
+    }
+    addEvt('good',`🎫 ${tech.name} · ${platform}号站上车成功`);
+    G.escUsed++;G.mood=Math.min(2,G.mood+1);
+    finEscape(true);
+  }
+}
+function finEscape(success){
+  if(success){setStatus('✅ 逃票成功','省 $5 · 心情 +1','');G.money+=5;AUDIO.play('bar_sale')}
+  else setStatus('❌ 逃票失败','罚款','按 Esc 离开');
+  G.mg=null;G.inside=null;clearTimeout(G._escTimer);G._escTimer=null;renderAll();
+}
+function tryEscape(){startEscapeMinigame()}
 function learnEscape(teacher){const t=ESCAPE_TECHS[G.escapeLevel];if(!t||t.teacher!==teacher||G.escapeLearnDay===G.day){setMsg(G.escapeLearnDay===G.day?'今天已经学过技术':'请找对应老师');return}G.escapeLevel=t.lv;G.escapeTeacher=teacher;G.escapeLearnDay=G.day;
   // funify-v3 Round 13 — 教学风格二次抽样 (BACKLOG #11 close)
   const teach=NPC_TEACH_FLAVOR[teacher]||'...';
@@ -1458,7 +1591,7 @@ function startBar(){
   setStatus('🍻 黑市讨价',`今日推荐 ${BAR_DRINK[recoIdx]} (命中 +tip) · 库存 🍺${_st.ipa} 🥃${_st.stout} 🍷${_st.lager} · ${diff.label}`,'顾客开价 · Q/W 调整 · SPACE 成交 · X 拒客 · 库存空则 -50%')
 }
 // Phase A B1: bar drink → brew stock mapping (whiskey=stout, beer=IPA, wine=lager)
-const BAR_DRINK_STOCK={🥃:'stout',🍺:'ipa',🍷:'lager'};
+const BAR_DRINK_STOCK={'🥃':'stout','🍺':'ipa','🍷':'lager'};
 function sBarC(){
   const s=MG.bar;if(!s)return;
   if(s.sd>=s.mx){finBar();return}
@@ -2081,6 +2214,45 @@ function drawMG(){
     cx.fillText('回合 '+(s.tn+1)+'/'+s.mx+(s.known?' · 笔记已知':' · 首次种植')+' · 污染风险 '+contamRisk+'%',400,498);
   }else if(mg==='waveSelect'){cx.fillText('🏄 选择浪点（1-7）',400,60);WAVE_POINTS.forEach((w,i)=>{const known=G.surfDiscovered.includes(w.id);cx.fillStyle='#fff';cx.fillText((i+1)+'. '+(known?w.n:'🆕 ???'),400,95+i*38)})
   }else if(mg==='station'){cx.fillText('🚇 中央车站 — 通勤时间',400,160);cx.fillText('1 买票 -$5   2 逃票 Lv'+G.escapeLevel+'   3 不去',400,205);
+  }else if(mg==='shoplift'){
+    // Albert Cuyp stalls: stall name + traffic-light timing + loot row
+    var ss=MG.shop,cur=SHOP_STALLS[ss.stallIdx];
+    cx.font='20px sans-serif';cx.fillStyle='#fde68a';cx.fillText('🥷 '+cur.ic+' '+cur.n+' (摊位 '+(ss.stallIdx+1)+'/3)',400,75);
+    cx.font='14px sans-serif';cx.fillStyle='#a8a8a8';cx.fillText(cur.flv,400,100);
+    // traffic-light box
+    var elapsed=(Date.now()-ss.cycleStarted)%4000;
+    var phase=elapsed<1500?'green':elapsed<2000?'amber':'red';
+    var phaseColor=phase==='green'?'#5ee05e':phase==='amber'?'#ffb84a':'#e04040';
+    var remaining=elapsed<1500?(1500-elapsed):elapsed<2000?(2000-elapsed):(4000-elapsed);
+    cx.fillStyle='#1a1010';cx.fillRect(340,140,120,140);
+    cx.fillStyle='#0a0a0a';cx.fillRect(360,150,80,40);cx.fillRect(360,200,80,40);
+    cx.fillStyle=phase==='green'?phaseColor:'#222';cx.beginPath();cx.arc(400,170,16,0,Math.PI*2);cx.fill();
+    cx.fillStyle=phase==='amber'?phaseColor:'#222';cx.beginPath();cx.arc(400,220,16,0,Math.PI*2);cx.fill();
+    cx.fillStyle=phase==='red'?phaseColor:'#222';cx.beginPath();cx.arc(400,270,16,0,Math.PI*2);cx.fill();
+    cx.font='13px sans-serif';cx.fillStyle=phaseColor;cx.fillText(phase.toUpperCase()+' · '+Math.ceil(remaining/100)/10+'s',400,310);
+    // loot row
+    cx.font='14px sans-serif';cx.fillStyle='#c0c0c0';
+    var lootText=ss.loot.length?'到手: '+ss.loot.map(function(x){return x.ic}).join(' '):'尚未得手';
+    cx.fillText(lootText,400,355);
+    cx.fillStyle='#888';cx.fillText('SPACE 抓 · 红灯抓 = 被识破罚款 $30',400,385);
+  }else if(mg==='escape'){
+    var es=MG.escape;
+    if(es.ph==='p1'){
+      cx.font='22px sans-serif';cx.fillStyle='#fde68a';cx.fillText('🎫 Phase 1/3 · 选技术',400,80);
+      cx.font='16px sans-serif';cx.fillStyle='#e0e0e0';
+      var opts=['1 Pablo · 装作学生 (Lv1)','2 Ravi · 装作打电话 (Lv2)','3 Sofie · 装作游客 (Lv3)','4 Chen · 装作残疾人 (Lv4)'];
+      for(var i=0;i<4;i++){cx.fillStyle=i<G.escapeLevel?'#e0e0e0':'#555';cx.fillText(opts[i],400,150+i*40)}
+      cx.fillStyle='#5ee05e';cx.fillText('已学 Lv'+G.escapeLevel+' · 1s 内按键',400,340);
+    } else if(es.ph==='p2'){
+      var el=Date.now()-es.p2Started;
+      var win=el>=1500&&el<2300?1:el>=2700&&el<3500?2:el>=3900&&el<4700?3:0;
+      cx.font='22px sans-serif';cx.fillStyle='#fde68a';cx.fillText('🎫 Phase 2/3 · 上车窗口',400,80);
+      cx.fillStyle=win?'#5ee05e':'#e04040';cx.font='40px sans-serif';
+      cx.fillText(win?'🟢 窗口 '+(win):'🔴 等待',400,180);
+      cx.font='16px sans-serif';cx.fillStyle='#c0c0c0';
+      cx.fillText('已用 '+(el/1000).toFixed(1)+'s / 5s · SPACE',400,260);
+      cx.fillStyle='#888';cx.fillText('3 个 0.8s 窗口: 1.5s / 2.7s / 3.9s',400,300);
+    }
   }else if(mg==='surf'){
     // === Surf POV: inside the wave tube looking out toward horizon ===
     // Sky gradient
@@ -2750,6 +2922,8 @@ function renderAll(){
     else if(G.mg==='surf'){const s=MG.surf;const tg=surfBreakerTelegraph(s);const psM=s.perfectStreak>=2?` · 🔥×${s.perfectStreak}(${surfPerfectStreakMul(s.perfectStreak)}x)`:'';title.textContent='🏄 巨浪生存';det.textContent='体力'+s.stamina+'% · combo'+s.combo+' · 已抓'+s.at+(s.perfect>0?' · perfect +'+(s.perfect*50):'')+psM;hint.textContent='SPACE抓 · 30s持续 · 8% perfect barrel +50 · 浪组:'+(tg.phase==='set'?'进行中':`静默${tg.msLeftLabel}s`)+' · 体力'+(tg.staminaWarn==='low'?'⚠':tg.staminaWarn==='med'?'~':'✓')}
     else if(G.mg==='academic'){title.textContent='📚 学术';det.textContent='';hint.textContent=''}
     else if(G.mg==='bar'){const s=MG.bar;const cur=s.cs[s.cs.length-1];const _tipH=cur&&cur.drink===s.recoDrink;const _tipR=cur&&cur.isRegular;const _tipEx=cur?barTipPreview(cur.offer,_tipH,_tipR,tipFactor()):null;title.textContent='🍻 酒吧 · 黑市讨价'+(s.diff?' ('+s.diff.label+')':'')+(cur?' · '+(_tipEx>=cur.offer?'💚':'💔')+'$'+_tipEx:'');det.textContent=cur?`${cur.face} ${cur.arch.n} 报价$${cur.offer} (底${cur.floor}/上${cur.ceiling})`:'暂无顾客';hint.textContent='Q/W ±1 报价 · SPACE成交 · X拒客 · 今日推荐 '+BAR_DRINK[s.reco]+(s.vipDay?' · VIP日':'')+(cur?' · 💸 实时tip':'')+(s.diff?' · '+s.diff.label:'')}
+    else if(G.mg==='shoplift'){const s=MG.shop;const cur=SHOP_STALLS[s.stallIdx];const el=(Date.now()-s.cycleStarted)%4000;const phase=el<1500?'🟢 绿灯':el<2000?'🟡 黄灯':'🔴 红灯';title.textContent=`🥷 ${s.stallIdx+1}/3 · ${cur.ic} ${cur.n}`;det.textContent=`${phase} · ${s.loot.length} 件到手${s.caught?' · 🚓 被抓':''}`;hint.textContent='SPACE 抓 · 绿灯100% · 黄灯50% · 红灯=罚款$30+禁入1日'}
+    else if(G.mg==='escape'){const s=MG.escape;if(s.ph==='p1'){title.textContent='🎫 Phase 1/3 · 选技术';det.textContent='按 1/2/3/4 (学过的) · 1s 内';hint.textContent='未学 = 罚款 $10'}else if(s.ph==='p2'){const el=Date.now()-s.p2Started;const win=el>=1500&&el<2300?1:el>=2700&&el<3500?2:el>=3900&&el<4700?3:0;title.textContent=`🎫 Phase 2/3 · 上车窗口 ${win?'🟢 '+(win)+'/3':'⏳'}`;det.textContent=`已用 ${(el/1000).toFixed(1)}s / 5s`;hint.textContent='窗口内按 SPACE'}}
   }else if(G.day===1&&G.ti===0&&!G.sch.length){title.textContent='🟢 Day 1 · 就绪';det.textContent='按 WASD 移动 · 按 E 进入建筑';hint.textContent='💡 走到公寓/酒吧/咖啡店 · 或按 ▶ 自动运行跑完整局'}
   else{title.textContent='';det.textContent='';hint.textContent=''}
 }
@@ -2766,6 +2940,8 @@ document.addEventListener('keydown',e=>{
     if(k==='escape'){cancelAuto('escape');G.mg=null;G.inside=null;setStatus('🟢 就绪','','');renderAll();return}
     if(G.mg==='brew')brewIn(k);else if(G.mg==='coffee')coffeeIn(k);else if(G.mg==='shroom')shroomIn(k);
     else if(G.mg==='surf')surfIn(k);else if(G.mg==='bar')barIn(k);
+    else if(G.mg==='shoplift')shopliftIn(k);
+    else if(G.mg==='escape')escapeIn(k);
     else if(G.mg==='waveSelect'){if(k==='escape')hideWaveSelect();else if(k>='1'&&k<='7')pickWavePoint(parseInt(k));return}
     else if(G.mg==='station'){if(k==='1'||k==='2'||k==='3')commuteChoice(k);return}
     renderAll();return;
@@ -2806,6 +2982,9 @@ function newRunInner(){
   G.workedToday={brew:0,coffee:0,bar:0};
   G.barStock={ipa:0,stout:0,lager:0};
   G.coffeeEarnedToday=0;
+  // Phase B: per-run crime state (shoplift hotGoods + market ban + escape tracking)
+  G.shop.hotGoods=[];G.shop.marketBanDay=0;G.shop.lastShopliftDay=0;
+  G._escTimer=null;
   // funify-v3 Round 3: brew streak counter — resets on each new run, persists for the whole run
   G.shop.streak=0;G.shop.streakBest=0;
   for(const k of Object.keys(IND_DEF))G.ind[k]={lv:0,xp:0};

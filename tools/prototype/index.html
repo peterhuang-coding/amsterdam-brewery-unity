@@ -631,6 +631,7 @@ const ACH_POOL=[
   {id:'socialite',ic:'💬',n:'社交蝴蝶',d:'单局与所有 4 NPC 都聊过'},
   {id:'brew_master',ic:'🍺',n:'酿酒大师',d:'单局完成 ≥ 5 个酿酒订单'},
   {id:'coffee_legend',ic:'☕',n:'咖啡传奇',d:'咖啡店完成且本局未遇卧底'},
+  {id:'coffee_night_trader',ic:'🌃',n:'夜间交易者',d:'在 evening 开启地下交易完成一局'},
   {id:'surf_perfectionist',ic:'🏄',n:'完美浪人',d:'单次冲浪中 perfect barrel ≥ 3'}
 ];
 const ACH_BY_ID=Object.fromEntries(ACH_POOL.map(a=>[a.id,a]));
@@ -783,7 +784,7 @@ function modalOpen(){const s=document.getElementById('start-modal'),h=document.g
 // funify-v3 Round 14 — first-time mini-game key overlay (BACKLOG #3 close)
 const MG_HINT_KEYS={
   brew:{ic:'🍺',name:'酿酒厂（啤酒订单）',keys:[['<kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd>','原料:麦芽/啤酒花/酵母各选 0/1/2'],['<kbd>SPACE</kbd>','开始酿造 (订单 180s 内完成)'],['<kbd>⬆</kbd>/<kbd>⬇</kbd>','控温 ±3°C（IPA=55°·Stout=68°·Lager=48°）'],['<kbd>ESC</kbd>','离开不收尾']],tip:'配方顺序 + 目标温度是订单的两大隐藏轴；温度误差 ≤±5°C 触发完美品。'},
-  coffee:{ic:'🌿',name:'Noord 咖啡店',keys:[['<kbd>1</kbd>','普通价（$8）'],['<kbd>2</kbd>','精品价（$14）'],['<kbd>3</kbd>','奢华价（$22）'],['<kbd>Q</kbd>/<kbd>W</kbd>','自定义调价 ±1（5-50 之间）'],['<kbd>SPACE</kbd>','与下一个顾客成交（匹配即成交）'],['<kbd>X</kbd>','拒绝卧底/嫌贵顾客'],['<kbd>ESC</kbd>','结束打烊']],tip:'热度到 100 即触发 police_raid，今日停业；legendary_no_raid 升级豁免至 95。'},
+  coffee:{ic:'🌿',name:'Noord 咖啡店',keys:[['<kbd>1-4</kbd>','选品 (espresso/drip/cold_brew/special, rep 解锁)'],['<kbd>Q</kbd>/<kbd>W</kbd>','自定义调价 ±1 (5-50)'],['<kbd>P</kbd>','雇帮派 $50 · 卧底 -80% · 衰减 ×2'],['<kbd>E</kbd>','🌃 夜间地下交易 (仅 evening · rep≥20)'],['<kbd>SPACE</kbd>','成交 · 匹配产品 +25% · 高 tier +15%'],['<kbd>X</kbd>','拒绝卧底 (-8°) / 离店 (-2°)'],['<kbd>ESC</kbd>','结束打烊']],tip:'8 客群随时间段刷新 · 热度随价格+卧底积累 · 雇佣帮派/开夜市都是风险收益权衡 · 5 连正确服务触发 streak +20% 。'},
   shroom:{ic:'🍄',name:'SmartShop（蘑菇培养）',keys:[['<kbd>⬆</kbd>/<kbd>⬇</kbd>','湿度 ±5（目标 60%）'],['<kbd>⬅</kbd>/<kbd>➡</kbd>','温度 ±1（目标 22°C）'],['<kbd>Q</kbd>/<kbd>W</kbd>','光照 ±1（目标 8）'],['<kbd>SPACE</kbd>','启动培养'],['<kbd>ESC</kbd>','取消并离开']],tip:'偏离参数会拉高污染风险；参数过偏导致报废本批收入清零。'},
   surf:{ic:'🏄',name:'冲浪（Noord 海滩）',keys:[['<kbd>⬆</kbd>/<kbd>⬇</kbd>','加速/减速（体能消耗调整）'],['<kbd>⬅</kbd>/<kbd>➡</kbd>','左右躲闪破浪'],['<kbd>SPACE</kbd>','完美抓（相位于绿色完美圈时）'],['<kbd>ESC</kbd>','中断并带回分数']],tip:'相位于绿色圈 + 3 连完美触发 perfect streak multiplier；体力见底将自动带回。'},
   academic:{ic:'📚',name:'学术答辩（Science Park）',keys:[['<kbd>1</kbd>','方法论Ⅰ'],['<kbd>2</kbd>','方法论Ⅱ'],['<kbd>3</kbd>','方法论Ⅲ'],['<kbd>SPACE</kbd>','提交方法论'],['<kbd>ESC</kbd>','中断并扣分']],tip:'方法论与挑战 (Venue) 匹配给部分学分；Venue 越难基础回报越高。'},
@@ -1022,43 +1023,167 @@ function updateBrew(){const s=MG.brew;if(!s||s.ph!=='brew')return;if(Date.now()>
 function startCoffee(){
   showMgHint('coffee');
   if(hasMod('police_raid')||G.shop.coffeeBlockedDay===G.day){G.mg=null;G.inside=null;setStatus('🚓 咖啡店关闭','今日检查，暂不可经营','明日再来');setMsg('🌿 今日咖啡店停业');return}
-  // Real Amsterdam coffeeshop: heat decays ~6%/s when idle (police patrol cools the street).
-  // Each customer has a 7-12s patience window — if you dawdle they walk out and your tip + rep drops.
-  const target=3+Math.floor(seeded(51)*5);
-  MG.coffee={st:0,pr:15,ht:0,sd:0,earn:0,raid:false,c:null,target,warn:0,lastT:Date.now()};
-  G.mg='coffee';G._mgEnterAt=Date.now();sCoffeeC();setStatus('🌿 咖啡店',`目标 ${target} 人 · 热度0% · 热度会自然下降`,'Q/W调价 · SPACE成交 · X拒客')
+  // Round 25: 4-8 customers per session. Product unlock gated by rep.
+  const target=4+Math.floor(seeded(51)*5);
+  const phase=coffeeDayPhase();
+  const availableProducts=COFFEE_PROD_LIST.filter(k=>{
+    const u=COFFEE_PRODUCTS[k].unlock;
+    if(u==='always')return true;
+    if(u.startsWith('rep>='))return G.rep>=parseInt(u.slice(4));
+    return true;
+  });
+  const defaultPrice={espresso:15,drip:8,cold_brew:22,special:35};
+  const defaultProdKey=availableProducts[0];
+  MG.coffee={
+    st:0, pr:defaultPrice[defaultProdKey], ht:0, sd:0, earn:0, raid:false, c:null,
+    target, warn:0, lastT:Date.now(),
+    last3Locals:0, history:[], productMult:COFFEE_PRODUCTS[defaultProdKey].mult,
+    productName:COFFEE_PRODUCTS[defaultProdKey].n, availableProducts,
+    gang:false, gangPaid:false, nightTradeActive:false, undercoversSpotted:0,
+    revenueBoost:1.0, streakCorrect:0, lastRaidTick:0
+  };
+  G.mg='coffee';G._mgEnterAt=Date.now();sCoffeeC();
+  const phaseIcon=phase==='morning'?'☀️早':phase==='afternoon'?'🌤️午':'🌃夜';
+  setStatus('🌿 咖啡店',`${phaseIcon} · 目标 ${target}人 · 客群随时间段 · 卧底率 ${Math.round(coffeeUndercoverProb(MG.coffee)*100)}% · 热度 0%`,
+    `1-4选品 · Q/W调价 · SPACE成交 · X拒客 · E${phase==='evening'?'🌃地下':'🔒'} · P🛡️雇帮$50`);
 }
-function sCoffeeC(){const s=MG.coffee;if(!s)return;
-  // funify-v3 Round 11: legendary_no_raid 全套免疫 — 卧底概率归零 + 热度封顶 95 永不触发 police_raid
-  const noRaid=hasUpgrade('legendary_no_raid');
-  const undercover=noRaid?false:seeded(60+s.sd*13)<.1;
-  if(undercover)G._run.sawUndercover=true;
-  // Customer patience: 7-12s. Tourists patient, locals impatient.
-  const patience=7+Math.floor(seeded(64+s.sd)*6);
-  s.c={face:['🧑','🙂','🧐','🥴'][Math.floor(seeded(61+s.sd)*4)],
-       max:undercover?28+Math.floor(seeded(62+s.sd)*18):12+Math.floor(seeded(63+s.sd)*20),
-       undercover,patience,born:Date.now()};
-  s.warn=undercover?1:0;
-  s.lastT=Date.now();
+function sCoffeeC(){
+  const s=MG.coffee;if(!s)return;
+  const phase=coffeeDayPhase();
+  const arch=coffeePickArchetype(s);
+  // Heat-driven undercover (see coffeeUndercoverProb)
+  const uProb=coffeeUndercoverProb(s);
+  const isUndercover=seeded(60+s.sd*13)<uProb;
+  if(isUndercover){
+    G._run.sawUndercover=true;s.undercoversSpotted++;
+    const ucMax=15+Math.floor(seeded(62+s.sd)*16);
+    s.c={arch:{n:'Local',face:'🧓',tier:'budget',min:12,max:ucMax,want:'espresso',tip:0},
+      face:'🧓',faceMark:'⚠️',undercover:true,
+      patience:8+Math.floor(seeded(64+s.sd)*5),born:Date.now(),
+      product:null,productName:null};
+  }else{
+    const wantProdKey=arch.want;
+    const wantProd=COFFEE_PRODUCTS[wantProdKey];
+    const patBase=arch.patience[0]+Math.floor(seeded(64+s.sd)*(arch.patience[1]-arch.patience[0]));
+    const phaseBonus=phase==='evening'?1:phase==='afternoon'?0.5:0;
+    s.c={arch,face:arch.face,faceMark:arch.tier==='high'?'✨':arch.tier==='mid'?'·':'',
+      undercover:false,patience:Math.round(patBase+phaseBonus),born:Date.now(),
+      product:wantProdKey,productName:wantProd.n};
+  }
+  s.warn=isUndercover?2:0;s.lastT=Date.now();
 }
-// Heat decays between customers (police patrol cools things down)
+// Heat decays between customers (gang protection 2× faster). Night trade accumulates heat.
 function updateCoffee(){
   const s=MG.coffee;if(!s||G.mg!=='coffee'||s.raid)return;
   const now=Date.now();
   if(s.c&&!s.raid){
     const left=Math.max(0, s.c.patience*1000 - (now-s.c.born));
-    if(left<=0){s.sd++;s.ht=Math.max(0,s.ht-5);addEvt('bad',`⏱ ${s.c.face} 顾客等太久走了`);if(s.sd>=s.target)finCoffee();else sCoffeeC();renderAll();return}
+    if(left<=0){
+      const u=s.c.undercover, archN=s.c.arch.n;
+      s.sd++;
+      if(!u&&archN==='Local')s.last3Locals=Math.min(3,s.last3Locals+1);else s.last3Locals=0;
+      s.ht=Math.max(0,s.ht-(u?8:s.c.arch.tier==='high'?1:2));
+      addEvt('bad',`⏱ ${s.c.face}${u?'(卧底)':''} 等太久走了`);
+      if(!u&&s.c.arch.tier!=='high')G.rep=Math.max(0,G.rep-1);
+      if(s.sd>=s.target)finCoffee();else sCoffeeC();renderAll();return;
+    }
   }
-  // Heat decay: -1.5% per second since last action, floors at 0
   const dt=(now-s.lastT)/1000;s.lastT=now;
-  s.ht=Math.max(0,s.ht-dt*1.5);
+  const decay=s.gang?2.5:1.5;
+  s.ht=Math.max(0,s.ht-dt*decay);
+  if(s.nightTradeActive)s.ht=Math.min(100,s.ht+dt*0.8);
 }
-function coffeeIn(k){const s=MG.coffee;if(!s||s.raid)return;s.lastT=Date.now();if(k==='1')s.st=0;if(k==='2')s.st=1;if(k==='3')s.st=2;if(k==='q')s.pr=Math.max(5,s.pr-1);if(k==='w')s.pr=Math.min(50,s.pr+1);
-  if(k==='x'&&s.c){setMsg(s.c.undercover?'🛡️ 拒绝卧底，安全 (-8°)' :'❌ 顾客离店 (-2°)');if(s.c.undercover){G.rep+=2;addEvt('good','🛡️ 识破卧底 +2 rep')}s.sd++;s.ht=Math.max(0,s.ht-(s.c.undercover?8:2));if(s.sd>=s.target)finCoffee();else sCoffeeC();renderAll();return}
-  if(k===' '){if(!s.c||s.sd>=s.target){finCoffee();return}const cst=[8,14,22];if(s.pr<=s.c.max){if(s.c.undercover){if(!noRaid){s.raid=true;G.shop.coffeeBlockedDay=G.day;G.bs[1]=Math.max(0,G.bs[1]-1);addEvt('bad','🚨 卧底成交，突击没收货物');setStatus('🚨 被突击！','卧底成交，咖啡店今日停业','明日才能继续');AUDIO.play('raid_alarm');AUDIO.play('coffee_raid');G._run.coffeeRaid=true;setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},1200);return}setMsg('🛡️ 卧底交易（传奇免突击已豁免）');}else{s.earn+=s.pr;s.ht+=Math.round(s.pr/cst[s.st]*8);setMsg('✅ 成交');AUDIO.play('coffee_sale')}}else{setMsg('❌ 出价过高，顾客走了 (-3°)');s.ht=Math.max(0,s.ht-3)}s.sd++;s.ht=Math.min(noRaid?95:100,s.ht+3);if(s.ht>=100){if(!noRaid){s.raid=true;G.shop.coffeeBlockedDay=G.day;G.bs[1]=Math.max(0,G.bs[1]-1);setStatus('🚨 被突击！','热度过高，咖啡店今日停业','');AUDIO.play('raid_alarm');AUDIO.play('coffee_raid');G._run.coffeeRaid=true;setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},1200);return}setMsg('🌡️ 热度封顶 95（传奇免突击）');}if(s.sd>=s.target)finCoffee();else sCoffeeC();renderAll()}}
-function finCoffee(){const s=MG.coffee;if(!s)return;G.money+=Math.round(s.earn*tipFactor());G.ind.coffee_shop.xp+=Math.round(s.earn*1.5);addEvt('good',`🌿 咖啡店 +$${Math.round(s.earn*tipFactor())}`);addSch('🌿',`咖啡店 +$${Math.round(s.earn*tipFactor())}`);G.mg=null;G.inside=null;chkLv('coffee_shop');setStatus('✅ 咖啡店打烊',`目标${s.sd}/${s.target} · +$${Math.round(s.earn*tipFactor())}`,'');tickObj('Earn',Math.max(1,Math.floor(s.earn/10)));tickObj('Explore',1);if(!G._run.coffeeRaid&&!G._run.sawUndercover)tryUnlock('coffee_legend');AUDIO.play('objective');
-  // funify-v3 Round 8: green/gold confetti (avoid over-celebrate during police raid)
-  if(!s.raid)confettiBurst(400,260,{n:8,palette:CONFETTI_PALETTE.coffee});
+function coffeeIn(k){const s=MG.coffee;if(!s||s.raid)return;s.lastT=Date.now();
+  // 1-4 选品 — 索引到 COFFEE_PROD_LIST
+  if(k==='1'&&s.availableProducts&&s.availableProducts[0]){const k0=s.availableProducts[0];s.productName=COFFEE_PRODUCTS[k0].n;s.productMult=COFFEE_PRODUCTS[k0].mult;s.st=k0;s.pr=COFFEE_PRODUCTS[k0].cost+10;setMsg(`选品 · ${COFFEE_PRODUCTS[k0].n} $${s.pr}/份`)}
+  if(k==='2'&&s.availableProducts&&s.availableProducts[1]){const k1=s.availableProducts[1];s.productName=COFFEE_PRODUCTS[k1].n;s.productMult=COFFEE_PRODUCTS[k1].mult;s.st=k1;s.pr=COFFEE_PRODUCTS[k1].cost+12;setMsg(`选品 · ${COFFEE_PRODUCTS[k1].n} $${s.pr}/份`)}
+  if(k==='3'&&s.availableProducts&&s.availableProducts[2]){const k2=s.availableProducts[2];s.productName=COFFEE_PRODUCTS[k2].n;s.productMult=COFFEE_PRODUCTS[k2].mult;s.st=k2;s.pr=COFFEE_PRODUCTS[k2].cost+15;setMsg(`选品 · ${COFFEE_PRODUCTS[k2].n} $${s.pr}/份`)}
+  if(k==='4'&&s.availableProducts&&s.availableProducts[3]){const k3=s.availableProducts[3];s.productName=COFFEE_PRODUCTS[k3].n;s.productMult=COFFEE_PRODUCTS[k3].mult;s.st=k3;s.pr=COFFEE_PRODUCTS[k3].cost+18;setMsg(`选品 · ${COFFEE_PRODUCTS[k3].n} $${s.pr}/份`)}
+  // Q/W 调价 ±1(5..50)
+  if(k==='q')s.pr=Math.max(5,s.pr-1);
+  if(k==='w')s.pr=Math.min(50,s.pr+1);
+  // P 雇佣帮派 ($50 一次性, -80% 卧底概率, 2× 热度衰减)
+  if(k==='p'&&!s.gangPaid&&G.money>=50){G.money-=50;s.gang=true;s.gangPaid=true;setMsg('🛡️ 帮派护航 · 卧底 -80% · 热度衰减 ×2 (本日)');addEvt('good','🛡️ 雇佣帮派 -$50 · 卧底概率 -32%')}
+  if(k==='p'&&s.gangPaid)setMsg('🛡️ 帮派已雇佣');
+  if(k==='p'&&!s.gangPaid&&G.money<50)setMsg('💸 帮派雇佣 $50,余额不足');
+  // E 切换夜间地下交易(仅 evening,且 rep≥20)
+  if(k==='e'){
+    if(coffeeDayPhase()!=='evening'){setMsg('🌃 地下交易仅在 evening 开放');}
+    else if(G.rep<20){setMsg('🌃 地下交易需要 rep≥20')}
+    else{s.nightTradeActive=!s.nightTradeActive;setMsg(s.nightTradeActive?'🌃 地下交易开启 · 收益 ×1.5 · 热度 +0.8%/s':'🌃 地下交易关闭')}
+  }
+  // X 拒客(卧底-8° 普通-2°)
+  if(k==='x'&&s.c){
+    if(s.c.undercover){G.rep+=2;addEvt('good','🛡️ 识破卧底 +2 rep');setMsg('🛡️ 拒绝卧底，安全 (-8°)')}
+    else{setMsg('❌ 顾客离店 (-2°) · -1 rep');if(s.c.arch.tier!=='high')G.rep=Math.max(0,G.rep-1)}
+    s.sd++;
+    s.ht=Math.max(0,s.ht-(s.c.undercover?8:2));
+    if(s.sd>=s.target)finCoffee();else sCoffeeC();renderAll();return}
+  // SPACE 成交
+  if(k===' '){
+    if(!s.c||s.sd>=s.target){finCoffee();return}
+    if(s.pr<=s.c.max){
+      if(s.c.undercover){
+        // 卧底成交 → police raid (除非传奇免突击)
+        if(!hasUpgrade('legendary_no_raid')){
+          s.raid=true;G.shop.coffeeBlockedDay=G.day;G.bs[1]=Math.max(0,G.bs[1]-1);
+          addEvt('bad','🚨 卧底成交，突击没收货物');setStatus('🚨 被突击！','卧底成交，咖啡店今日停业','明日才能继续');
+          AUDIO.play('raid_alarm');AUDIO.play('coffee_raid');G._run.coffeeRaid=true;
+          setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},1200);return}
+        setMsg('🛡️ 卧底交易（传奇免突击已豁免）');
+      }else{
+        // 合法成交 — 算奖金
+        let base=s.pr;
+        const matchBonus=(s.c.product===s.st)?Math.round(base*0.25):0;  // 匹配产品 +25%
+        const tipMult=1+s.c.arch.tip;
+        const nightMult=s.nightTradeActive?1.5:1;
+        const repBonus=Math.floor(G.rep/30);  // rep 每 30 +1 元奖励
+        const streakBonus=s.streakCorrect>=5?Math.round(base*0.2):0;
+        const highTierBonus=s.c.arch.tier==='high'?Math.round(base*0.15):0;
+        const total=Math.round((base+matchBonus+repBonus+streakBonus+highTierBonus)*s.productMult*tipMult*nightMult);
+        s.earn+=total;
+        s.ht+=Math.round(s.pr/12*8);  // 热度按价格增长
+        if(s.c.product===s.st)s.streakCorrect++;else s.streakCorrect=0;
+        const tag=`${matchBonus?' ✓匹配+'+matchBonus:''}${streakBonus?' 🔥连击+'+streakBonus:''}${highTierBonus?' ✨VIP+'+highTierBonus:''}${nightMult>1?' 🌃×1.5':''}`;
+        setMsg(`✅ ${s.c.face} +$${total}${tag}`);
+        AUDIO.play('coffee_sale');
+        // 高 tier 正确服务 bonus rep
+        if(s.c.arch.tier==='high'&&s.c.product===s.st)G.rep+=1;
+      }
+    }else{
+      setMsg('❌ 出价过高，顾客走了 (-3° · -1 rep)');s.ht=Math.max(0,s.ht-3);
+      if(s.c.arch.tier!=='high')G.rep=Math.max(0,G.rep-1);
+    }
+    s.sd++;
+    s.ht=Math.min(hasUpgrade('legendary_no_raid')?95:100,s.ht+3);
+    if(s.ht>=100&&!hasUpgrade('legendary_no_raid')){
+      s.raid=true;G.shop.coffeeBlockedDay=G.day;G.bs[1]=Math.max(0,G.bs[1]-1);
+      setStatus('🚨 被突击！','热度过高，咖啡店今日停业','');
+      AUDIO.play('raid_alarm');AUDIO.play('coffee_raid');G._run.coffeeRaid=true;
+      setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},1200);return}
+    setMsg(s.ht>=95?'🌡️ 热度封顶 95 (传奇免突击)':'');
+    if(s.sd>=s.target)finCoffee();else sCoffeeC();renderAll()}
+}
+function finCoffee(){const s=MG.coffee;if(!s)return;
+  // Round 25 streak bonus — 5 连击 +20% revenue
+  const streakBonus=s.streakCorrect>=5?Math.round(s.earn*0.2):0;
+  const nightBonus=s.nightTradeActive?Math.round(s.earn*0.3):0;
+  const totalEarned=Math.round((s.earn+streakBonus+nightBonus)*tipFactor());
+  G.money+=totalEarned;
+  G.ind.coffee_shop.xp+=Math.round(totalEarned*1.5);
+  const bonusTags=[streakBonus?`🔥连击+$${streakBonus}`:'',nightBonus?`🌃地下+$${nightBonus}`:'',s.gangPaid?' 🛡️帮派':'',s.streakCorrect>=5?' · coffee_streak_master':''].filter(Boolean).join('');
+  addEvt(s.raid?'bad':'good',`🌿 咖啡店 +$${totalEarned}${bonusTags}`);
+  addSch('🌿',`咖啡店 +$${totalEarned}`);
+  // 高 tier 服务 bonus rep
+  const correctServes=(s.history||[]).filter(h=>h.match&&h.tier==='high').length;
+  if(correctServes>=3)G.rep+=2;
+  G.mg=null;G.inside=null;chkLv('coffee_shop');
+  setStatus(s.raid?'🚨 咖啡店关闭':'✅ 咖啡店打烊',`目标${s.sd}/${s.target} · +$${totalEarned}`+(s.streakCorrect>=5?' · 🔥×'+s.streakCorrect:'')+(s.nightTradeActive?' · 🌃地下':''),'');
+  tickObj('Earn',Math.max(1,Math.floor(totalEarned/10)));tickObj('Explore',1);
+  if(!G._run.coffeeRaid&&!G._run.sawUndercover)tryUnlock('coffee_legend');
+  if(s.nightTradeActive&&G.rep>=20&&!G.achievements.includes('coffee_night_trader'))tryUnlock('coffee_night_trader');
+  AUDIO.play('objective');
+  if(!s.raid)confettiBurst(400,260,{n:s.streakCorrect>=5?14:8,palette:CONFETTI_PALETTE.coffee});
   renderAll()}
 
 function startShroom(){showMgHint('shroom');if(hasMod('police_raid')){G.inside=null;setStatus('🚓 SmartShop 关闭','今日检查，暂不可经营','明日再来');return}
@@ -1222,6 +1347,58 @@ function acadIn(k){const s=MG.academic;if(!s)return;
 // === V-D 酒吧 · 黑市讨价 === 8 archetype + Q/W 调整 + SPACE 成交 + X 拒客
 const BAR_ARCH=[{n:'Normal',face:'🧑',floor:6,max:14},{n:'Regular',face:'🧔',floor:8,max:18},{n:'Picky',face:'🧐',floor:4,max:10},{n:'Drunk',face:'🥴',floor:5,max:22},{n:'Group',face:'👨‍👩‍👧',floor:12,max:30},{n:'Tourist',face:'🧳',floor:10,max:24},{n:'Local',face:'🧓',floor:7,max:15},{n:'VIP',face:'🎩',floor:25,max:60}];
 const BAR_DRINK=['🥃','🍺','🍷'];
+
+// === funify-v3 Round 25 (coffee redesign): 8 customer archetypes ===
+// tier='budget/mid/high/undercover' — 决定 product preference + patience
+// want=product type the customer wants (player serves correct = bonus)
+// tierMax=highest price tier the customer will accept (price > tierMax = customer walks)
+const COFFEE_ARCH=[
+  {n:'Local',     face:'🧓', tier:'budget',   min:8,  max:14, want:'espresso',   patience:[5,7],  tip:0.05, weight:{morning:30,afternoon:15,evening:5}},
+  {n:'Tourist',   face:'🧳', tier:'budget',   min:12, max:18, want:'espresso',   patience:[10,14],tip:0.10, weight:{morning:10,afternoon:30,evening:8}},
+  {n:'Student',   face:'🎓', tier:'budget',   min:5,  max:9,  want:'drip',       patience:[8,11], tip:0.02, weight:{morning:25,afternoon:10,evening:3}},
+  {n:'Creative',  face:'🎨', tier:'mid',      min:15, max:22, want:'cold_brew',  patience:[7,10], tip:0.08, weight:{morning:5, afternoon:12,evening:22}},
+  {n:'Business',  face:'💼', tier:'mid',      min:18, max:28, want:'espresso',   patience:[5,7],  tip:0.15, weight:{morning:8, afternoon:18,evening:4}},
+  {n:'Foodie',    face:'🍽️', tier:'high',    min:22, max:32, want:'special',    patience:[12,15],tip:0.20, weight:{morning:2, afternoon:5, evening:15}},
+  {n:'Celebrity', face:'⭐', tier:'high',    min:35, max:60, want:'special',    patience:[14,18],tip:0.30, weight:{morning:0, afternoon:1, evening:6}},
+  {n:'NightOwl',  face:'🦉', tier:'mid',      min:20, max:30, want:'special',    patience:[10,13],tip:0.25, weight:{morning:0, afternoon:0, evening:14}, undergroundOnly:true}
+];
+// Undercover spawn weight is computed (not random) — see coffeeUndercoverProb()
+// === funify-v3 Round 25: 4 product lines + meta-progression unlock ===
+const COFFEE_PRODUCTS={
+  espresso:  {n:'☕ Espresso',    cost:3,  mult:1.0, prep:1, hot:true,  unlock:'always'},
+  drip:      {n:'🥤 Drip',        cost:1,  mult:0.7, prep:1, hot:true,  unlock:'always'},
+  cold_brew: {n:'🧊 Cold Brew',   cost:4,  mult:1.4, prep:2, hot:false, unlock:'rep>=15'},
+  special:   {n:'🌿 Special',     cost:8,  mult:2.2, prep:3, hot:false, unlock:'rep>=30'}
+};
+const COFFEE_PROD_LIST=['espresso','drip','cold_brew','special'];
+// funify-v3 Round 25: day phase based on ti (time of day) — morning/afternoon/evening
+function coffeeDayPhase(){
+  if(G.ti===0||G.ti===1)return'morning';
+  if(G.ti===2)return'afternoon';
+  return'evening';
+}
+// funify-v3 Round 25: heat-based undercover probability — replaces 10% flat RNG
+// Higher heat + recent Local sales + evening → undercover more likely
+// gangProtection (-80%) + legendary_no_raid (full immune) reduce it
+function coffeeUndercoverProb(s){
+  if(hasUpgrade('legendary_no_raid'))return 0;
+  const heatP=s.ht*0.006;        // 0..0.7 across full heat range
+  const localRecent=s.last3Locals>=3?0.18:0;  // 3 locals in a row = suspicious pattern
+  const eveningBonus=coffeeDayPhase()==='evening'?0.05:0;
+  const gangRed=s.gang?-0.32:0;
+  const nightTrade=s.nightTradeActive?0.12:0;  // underground trade draws police
+  const base=0.04;
+  return Math.max(0,Math.min(0.85,base+heatP+localRecent+eveningBonus+gangRed+nightTrade));
+}
+// funify-v3 Round 25: pick archetype weighted by day phase (excludes undercover/nightOwl)
+function coffeePickArchetype(s){
+  const phase=coffeeDayPhase();
+  const pool=COFFEE_ARCH.filter(a=>!a.undergroundOnly);
+  const total=pool.reduce((sum,a)=>sum+(a.weight[phase]||0),0);
+  let r=seeded(50+s.sd*7)*total;
+  for(const a of pool){r-=(a.weight[phase]||0);if(r<=0)return a}
+  return pool[0];
+}
 // funify-v3 Round 17 (BACKLOG #7 节奏): 3-tier day difficulty — day 1-3 入门档 / day 4-5 标准档 / day 6-7 高难档
 // - 入门档: 4 友好 archetype (Normal/Regular/Local/Tourist), +25% patience, +1 顾客, 25% 推荐需求 (练习)
 // - 标准档: 5 archetype (+Picky/Group), 默认 patience, 35% 推荐需求 (中段)

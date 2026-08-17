@@ -978,9 +978,28 @@ function inCanal(px,py){return CANALS.some(c=>px>c.x&&px<c.x+c.w&&py>c.y&&py<c.y
 function onBridge(px,py){return BRIDGES.some(b=>px>b.x-4&&px<b.x+b.w+4&&py>b.y-4&&py<b.y+b.h+4)}
 function nnBridge(px,py){let b=null,d=Infinity;BRIDGES.forEach(br=>{const bx=br.x+br.w/2,by=br.y+br.h/2,d2=Math.abs(px-bx)+Math.abs(py-by);if(d2<d){d=d2;b={x:bx,y:by}}});return b}
 
+// Phase A C1: time-of-day gates — buildings close/open by phase to drive rhythm.
+// brew/coffee/surf = morning work · academic = afternoon/evening · bar/shroom = evening+ · station = rush hours
+function bldgPhaseOk(b){
+  const tp=b.tp;
+  if(tp==='brew'||tp==='coffee'||tp==='surf')return G.ti<=2;
+  if(tp==='academic')return G.ti===2||G.ti===3;
+  if(tp==='station')return G.ti===1||G.ti===3;
+  if(tp==='bar'||tp==='shroom')return G.ti>=2;
+  // market, home, npc — all phases
+  return true;
+}
+function bldgPhaseLabel(tp){
+  if(tp==='brew'||tp==='coffee'||tp==='surf')return'Dawn/Morning/Afternoon';
+  if(tp==='academic')return'Afternoon/Evening';
+  if(tp==='station')return'Morning/Evening 通勤';
+  if(tp==='bar'||tp==='shroom')return'Afternoon 起营业';
+  return'';
+}
 function enterBldg(){
   const b=curBldg();if(!b||G.inside||G.mg)return;
   if(b.tp==='market'&&hasMod('canal_block')){setStatus('🚢 市集关闭','运河堵塞导致今日无法营业','明日再来');return}
+  if(!bldgPhaseOk(b)){setStatus('⏰ '+b.n+' 已闭店',bldgPhaseLabel(b.tp)+' 才营业','按时段再来');return}
   G.inside=b;G.loc=b.d;G.p.tx=G.p.x;G.p.ty=G.p.y;
   if(!G.visited.includes(b.id))G.visited.push(b.id);
   if(!G.visitedToday.length)G.visitedToday=[];
@@ -1016,7 +1035,18 @@ function finBrew(timeout){const s=MG.brew;if(!s||s.ph==='done')return;s.ph='done
   const streakMul=brewStreakMul(G.shop.streak);
   const base=Math.round((35+(10+o.temp/10)*tipFactor())*tempAcc*s.yeast),inc=Math.round(base*1.3*industryFactor('brewing')*(o.bonus||1)*streakMul);
   const quality=tempAcc>=0.95?'★完美':tempAcc>=0.8?'好':'一般';
-  G.money+=inc;G.ind.brewing.xp+=Math.round(inc*(hasUpgrade('legacy_xp')?1.25:1));G.shop.order=null;addEvt('good',`🍺 ${o.type} 订单完成 +$${inc} · ${quality}${streakMul>1?' · 🔥×'+G.shop.streak+'(x'+streakMul+')':''}`);setMsg(`🍺 ${quality} · +$${inc}${streakMul>1?' · 连击×'+G.shop.streak:''}`);addSch('🍺',`${o.type} +$${inc}`);G.mg=null;G.inside=null;chkLv('brewing');setStatus('✅ 订单完成',`+$${inc} · ${quality}${streakMul>1?' · 🔥×'+G.shop.streak+'(x'+streakMul+')':''}`,'');tickObj('Brew',1);tickObj('Earn',inc);G._run.brewsFinished++;tryUnlock('brew_master');AUDIO.play('brew_ok');
+  G.money+=inc;G.ind.brewing.xp+=Math.round(inc*(hasUpgrade('legacy_xp')?1.25:1));G.shop.order=null;
+  // Phase A B1: brew → bar inventory (capped 12/day, overflow sells $5)
+  const _bt=o.type==='IPA'?'ipa':o.type==='Stout'?'stout':'lager';
+  if(G.barStock[_bt]<12){G.barStock[_bt]++;addEvt('info',`🍺 酒吧库存 +1 ${o.type} (${G.barStock[_bt]}/12)`)}
+  else{G.money+=5;addEvt('info',`🍺 酒吧库存已满,溢出卖出 +$5`)}
+  addEvt('good',`🍺 ${o.type} 订单完成 +$${inc} · ${quality}${streakMul>1?' · 🔥×'+G.shop.streak+'(x'+streakMul+')':''}`);
+  setMsg(`🍺 ${quality} · +$${inc}${streakMul>1?' · 连击×'+G.shop.streak:''}`);addSch('🍺',`${o.type} +$${inc}`);
+  G.mg=null;G.inside=null;chkLv('brewing');
+  setStatus('✅ 订单完成',`+$${inc} · ${quality}${streakMul>1?' · 🔥×'+G.shop.streak+'(x'+streakMul+')':''}`,'');
+  tickObj('Brew',1);tickObj('Earn',inc);
+  G._run.brewsFinished++;G.workedToday=G.workedToday||{brew:0,coffee:0,bar:0};G.workedToday.brew=1;
+  tryUnlock('brew_master');AUDIO.play('brew_ok');
   // funify-v3 Round 8: streak ≥5 big burst, normal success small burst (gold palette)
   confettiBurst(400,260,{n:streakMul>=1.3?14:8,palette:CONFETTI_PALETTE.brew});
   renderAll()}
@@ -1172,6 +1202,8 @@ function finCoffee(){const s=MG.coffee;if(!s)return;
   const totalEarned=Math.round((s.earn+streakBonus+nightBonus)*tipFactor());
   G.money+=totalEarned;
   G.ind.coffee_shop.xp+=Math.round(totalEarned*1.5);
+  G.workedToday=G.workedToday||{brew:0,coffee:0,bar:0};G.workedToday.coffee=1;
+  G.coffeeEarnedToday=totalEarned;  // Phase A B4 read-side: bar first customer reacts
   const bonusTags=[streakBonus?`🔥连击+$${streakBonus}`:'',nightBonus?`🌃地下+$${nightBonus}`:'',s.gangPaid?' 🛡️帮派':'',s.streakCorrect>=5?' · coffee_streak_master':''].filter(Boolean).join('');
   addEvt(s.raid?'bad':'good',`🌿 咖啡店 +$${totalEarned}${bonusTags}`);
   addSch('🌿',`咖啡店 +$${totalEarned}`);
@@ -1421,8 +1453,12 @@ function startBar(){
   // Track regulars across this Run. Returning customers tip +20%.
   if(!G.barRegulars)G.barRegulars=[];
   MG.bar={cs:[],sd:0,earn:0,combo:0,mx:6+diff.mxDelta,offer:null,reco:recoIdx,recoDrink:BAR_DRINK[recoIdx],pool,vipDay:isVipDay,diff};G.mg='bar';G._mgEnterAt=Date.now();sBarC();
-  setStatus('🍻 黑市讨价',`今日推荐 ${BAR_DRINK[recoIdx]} (命中 +tip) · 耐心倒计时 · ${diff.label}`,'顾客开价 · Q/W 调整 · SPACE 成交 · X 拒客')
+  // Phase A B1: surface brew→bar inventory in HUD (empty stock = -50% pay for that drink)
+  const _st=G.barStock||{ipa:0,stout:0,lager:0};
+  setStatus('🍻 黑市讨价',`今日推荐 ${BAR_DRINK[recoIdx]} (命中 +tip) · 库存 🍺${_st.ipa} 🥃${_st.stout} 🍷${_st.lager} · ${diff.label}`,'顾客开价 · Q/W 调整 · SPACE 成交 · X 拒客 · 库存空则 -50%')
 }
+// Phase A B1: bar drink → brew stock mapping (whiskey=stout, beer=IPA, wine=lager)
+const BAR_DRINK_STOCK={🥃:'stout',🍺:'ipa',🍷:'lager'};
 function sBarC(){
   const s=MG.bar;if(!s)return;
   if(s.sd>=s.mx){finBar();return}
@@ -1450,14 +1486,20 @@ function barIn(k){const s=MG.bar;if(!s)return;const cur=s.cs[s.cs.length-1];if(!
     const drinkMatch=cur.drink===s.recoDrink;
     const drinkMult=drinkMatch?1.2:0.9;
     const regularBonus=cur.isRegular?0.2:0;
-    const final=Math.round(cur.offer*tipFactor()*drinkMult*(1+regularBonus));
+    // Phase A B1: stock check — empty = house brand (-50%); with stock consume 1 unit
+    const _sk=BAR_DRINK_STOCK[cur.drink];
+    const _haveStock=G.barStock&&G.barStock[_sk]>0;
+    if(_haveStock)G.barStock[_sk]--;
+    const stockMult=_haveStock?1:0.5;
+    const stockTag=_haveStock?'':' 🏷️house brand';
+    const final=Math.round(cur.offer*tipFactor()*drinkMult*stockMult*(1+regularBonus));
     s.earn+=final;s.combo++;s.sd++;
     const vipBonus=cur.arch.n==='VIP'&&s.vipDay?30:0;
     if(vipBonus){G.meta+=30;addEvt('good','🎩 VIP 顾客服务成功 +30★ meta')}
     if(!G.barRegulars.includes(cur.arch.n))G.barRegulars.push(cur.arch.n);
     const tag=drinkMatch?' ✨命中推荐':cur.wantReco?' (拒绝想要的酒)':'';
     const reg=regularBonus?' 👤常客+20%':'';
-    addEvt('good',`🍻 ${cur.face}${cur.arch.n} 成交 +$${final}${tag}${reg}`);setMsg(`✅ ${cur.arch.n} +$${final}${tag}`);AUDIO.play('bar_sale');
+    addEvt('good',`🍻 ${cur.face}${cur.arch.n} 成交 +$${final}${tag}${reg}${stockTag}`);setMsg(`✅ ${cur.arch.n} +$${final}${tag}${stockTag}`);AUDIO.play('bar_sale');
     s.cs.pop();
     if(s.sd>=s.mx)finBar();else sBarC();renderAll();return}
   if(k==='x'){setMsg('🚶 顾客离店');s.cs.pop();s.sd++;if(s.sd>=s.mx)finBar();else sBarC();renderAll();return}
@@ -1474,6 +1516,7 @@ function updateBar(){
 function finBar(){
   const s=MG.bar;const inc=Math.round(s.earn*tipFactor());
   G.money+=inc;G.ts+=s.sd;G.tr+=inc;
+  G.workedToday=G.workedToday||{brew:0,coffee:0,bar:0};G.workedToday.bar=1;
   addEvt('good',`🍻 酒吧打烊 · combo最高${s.combo} · +$${inc}`);addSch('🍻',`酒吧打烊 +$${inc}`);
   G.mg=null;G.inside=null;chkLv('brewing');
   setStatus('✅ 酒吧打烊',`服务${s.sd}人 · +$${inc}`+(s.vipDay?' · VIP 日':''),'');
@@ -2350,15 +2393,27 @@ function autoStep(){
   advanceTimeAuto();
   if(G.ended)return;
   let target;
-  if(G.ti>=3&&G.ti<=5)target=BLDGS.find(b=>b.id==='bar');
+  // Phase A C1: auto-picker respects time gates — phase-closed buildings are skipped
+  const morningOpen=BLDGS.filter(b=>['brew','coffee','surf'].includes(b.tp)&&G.ti<=2);
+  const afternoonOpen=BLDGS.filter(b=>['brew','coffee','surf'].includes(b.tp)&&G.ti===2).concat(
+                       BLDGS.filter(b=>b.tp==='academic'&&(G.ti===2||G.ti===3)));
+  const eveningOpen=BLDGS.filter(b=>(b.tp==='bar'||b.tp==='shroom')&&G.ti>=2&&G.ti<=5);
+  const _pool=[...morningOpen,...afternoonOpen,...eveningOpen];
+  if(G.ti>=3&&G.ti<=5){target=BLDGS.find(b=>b.id==='bar')||_pool[Math.floor(seeded(190+G.ti)*_pool.length)]}
   else if(G.ti<=2){
     const npcVisit=G.escapeLevel<4&&seeded(195+G.day)<.12;
     if(npcVisit)target=BLDGS.find(b=>b.tp==='npc'&&b.npc===ESCAPE_TECHS[G.escapeLevel].teacher);
-    if(!target){const ch=BLDGS.filter(b=>['brew','coffee','shroom','surf','academic'].includes(b.tp));target=ch[Math.floor(seeded(190+G.ti)*ch.length)]}
+    if(!target){
+      // Prefer morning-open first; fall back to any time-ok building
+      const ch=_pool.length?_pool:BLDGS.filter(b=>['brew','coffee','shroom','surf','academic'].includes(b.tp));
+      target=ch[Math.floor(seeded(190+G.ti)*ch.length)];
+    }
   }
   if(target){
     G.p.x=target.x+target.w/2;G.p.y=target.y+target.h/2+12;G.p.tx=G.p.x;G.p.ty=G.p.y;G.loc=target.d;G.inside=target;
-    if(target.tp==='bar'){if(G.ti>=3)startBar();else{G.inside=null;G._at=setTimeout(autoStep,200);renderAll();return}}
+    // Phase A C1: only start if target is currently open; otherwise re-roll
+    if(!bldgPhaseOk(target)){G.inside=null;G._at=setTimeout(autoStep,200);renderAll();return}
+    if(target.tp==='bar')startBar();
     else if(target.tp==='brew')startBrew();else if(target.tp==='coffee')startCoffee();
     else if(target.tp==='shroom')startShroom();else if(target.tp==='surf')startSurf();
     else if(target.tp==='academic')startAcad();
@@ -2385,7 +2440,14 @@ function autoStep(){
   }
 }
 function advanceTimeAuto(){
-  if(G.ended)return;G.ti++;if(G.ti>=6){G.ti=0;G.day++;G.sch=[];G.visitedToday=[];G.greetedToday=[];
+  if(G.ended)return;G.ti++;if(G.ti>=6){G.ti=0;G.day++;
+    // Phase A C2: skip-day fine — if you didn't work brew/coffee/bar today, landlord charges $15 + mood -1
+    if(G.workedToday&&!G.workedToday.brew&&!G.workedToday.coffee&&!G.workedToday.bar){
+      G.money=Math.max(0,G.money-15);G.mood=Math.max(-2,G.mood-1);
+      addEvt('bad','💸 今日未营业 · 房东罚款 -$15 · 心情 -1');
+    }
+    G.workedToday={brew:0,coffee:0,bar:0};
+    G.sch=[];G.visitedToday=[];G.greetedToday=[];
     if(G.day>7){endGame(G.objs.every(o=>o.done));return}
     if(hasUpgrade('canal_cruise')){G.rep+=5;addEvt('info','🚢 Canal Cruise 通票 +5 rep')}
     rollDayObjectives();
@@ -2740,6 +2802,10 @@ function newRunInner(){
   G.day=1;G.ti=0;G.ended=false;G.metaPending=0;G.visited=[];G.visitedToday=[];G.greetedToday=[];G.keys={};resetRunCounters();
   const seeds=[200,220,250,280,300];G.money=seeds[Math.floor(seeded(501)*seeds.length)]+G.legacy*10+(hasUpgrade('extra_cash')?50:0);
   G.rep=0;G.bs=[3+Math.floor(seeded(502)*4)+(hasUpgrade('extra_brew')?2:0),2+Math.floor(seeded(503)*3),1+Math.floor(seeded(504)*3)];G.brewI=-1;G.brewT=0;G.events=[];G.mods=[];G.auto=false;G.inside=null;G.mg=null;G.sch=[];G.ts=0;G.tr=0;G.loc='de_pijp';G.p={x:100,y:400,tx:100,ty:400};G._wp=null;G._st=0;G.objs=[];G._objDay=0;G.todayWave=null;
+  // Phase A: per-run state for C1/C2/B1
+  G.workedToday={brew:0,coffee:0,bar:0};
+  G.barStock={ipa:0,stout:0,lager:0};
+  G.coffeeEarnedToday=0;
   // funify-v3 Round 3: brew streak counter — resets on each new run, persists for the whole run
   G.shop.streak=0;G.shop.streakBest=0;
   for(const k of Object.keys(IND_DEF))G.ind[k]={lv:0,xp:0};

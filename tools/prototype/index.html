@@ -25,6 +25,8 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 #left h3{font-size:10px;color:var(--muted);padding:5px 8px;letter-spacing:1px}
 .ind-card{background:var(--card);border-radius:8px;padding:8px 10px;cursor:pointer;border-left:3px solid transparent;transition:all .2s}
 .ind-card:hover{background:#202838}.ind-card.active{border-left-color:var(--gold)!important}
+.ind-card.legendary{background-image:linear-gradient(var(--card),var(--card)),linear-gradient(135deg,#ecb45744 0%,#f8e09066 50%,#ecb45744 100%);background-origin:border-box;background-clip:padding-box,border-box;border-left-color:#ecb457!important;box-shadow:inset 0 0 6px #ecb45733}
+.ind-card.legendary .il{background:linear-gradient(90deg,#ecb457,#f8e090);color:#1a1410;font-weight:700;text-shadow:0 0 2px #fff8}
 .ind-card .ih{display:flex;align-items:center;gap:5px}.ind-card .ii{font-size:16px}.ind-card .in{font-weight:700;font-size:11px;flex:1}.ind-card .il{font-size:9px;padding:1px 6px;border-radius:6px;background:#fff1}
 .ind-card .im{font-size:9px;color:var(--muted);margin-top:2px}
 .ind-card .ib{height:3px;background:#fff1;border-radius:2px;margin-top:4px;overflow:hidden}
@@ -60,25 +62,50 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 .evt .et{font-size:9px;color:var(--muted)}.evt .eb{margin-top:1px}
 @keyframes slideIn{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
 
+/* funify-v3 Round 7 — phase flash overlay (day/phase transition ritual) */
+#phase-flash{position:absolute;left:50%;top:36%;transform:translate(-50%,-50%);padding:14px 28px;background:#000c;border:1px solid var(--gold);border-radius:12px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 8px 32px #000a;pointer-events:none;opacity:0;z-index:50;text-align:center;transition:opacity .35s ease-out}
+#phase-flash.on{opacity:1;animation:phaseFlashIn .35s ease-out}
+#phase-flash .pf-d{font-size:11px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+#phase-flash .pf-t{font-size:20px;font-weight:800;color:#fff;text-shadow:0 2px 12px #000c}
+#phase-flash .pf-n{font-size:12px;color:var(--muted);margin-top:4px;font-style:italic}
+@keyframes phaseFlashIn{from{opacity:0;transform:translate(-50%,-50%) scale(.92)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+
 #bottom{grid-column:1/-1;grid-row:4;display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--panel)}
 .btn{padding:5px 12px;border-radius:8px;border:1px solid #fff2;background:var(--card);color:var(--text);cursor:pointer;font-size:11px;font-weight:600;transition:all .15s;display:flex;align-items:center;gap:3px;white-space:nowrap}
 .btn:hover{border-color:var(--gold);color:#fff}
 .btn.go{border-color:var(--warn);color:var(--warn);animation:pulse .8s infinite}
-.btn.on{border-color:var(--green);color:var(--green)}
+.btn.on{border-color:var(--green);color:var(--green);box-shadow:0 0 12px var(--green);animation:pulseGreen 1.6s ease-in-out infinite}@keyframes pulseGreen{50%{box-shadow:0 0 18px var(--green);opacity:.85}}
+.btn.sp2{border-color:#88aaff;color:#cce0ff;background:#2a3a5a}
+.btn.sp4{border-color:#ff88ec;color:#ffd0ff;background:#3a1a4a;box-shadow:0 0 8px #ff88ec55}
 @keyframes pulse{50%{opacity:.5}}
 #msg{margin-left:auto;font-size:11px;color:var(--muted);font-style:italic;max-width:280px;text-align:right}
 .btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.ind-card:focus-visible,.upg-card:focus-visible,.obj-row:focus-visible{outline:2px solid var(--gold);outline-offset:2px;background:#202838}
+.ind-card[tabindex]:focus-visible,.upg-card[tabindex]:focus-visible,.obj-row[tabindex]:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+#msg{transition:color .25s}#msg.flash{color:var(--gold)}
+@media(prefers-reduced-motion:reduce){.btn.go{animation:none!important}#phase-flash.on{animation:none!important}}
 @media(max-width:760px){
   body{display:block;user-select:auto}#app{height:auto;min-height:100vh;grid-template-columns:1fr;grid-template-rows:auto auto 420px auto auto}
   #top,#tbar,#bottom{grid-column:1}#left{grid-column:1;grid-row:4;min-height:0;max-height:220px}#center{grid-column:1;grid-row:3;min-height:420px}#right{grid-column:1;grid-row:5;min-height:0}#bottom{grid-row:6;position:sticky;bottom:0;z-index:20;overflow-x:auto}#center canvas{width:100%;height:auto}.keys{grid-template-columns:repeat(2,1fr)!important}
 }
 
 /* Phase 1 tutorial/help and variant HUD */
-#start-modal,#help-modal{position:fixed;inset:0;background:#00000080;display:flex;align-items:center;justify-content:center;z-index:120;backdrop-filter:blur(5px)}
-#start-modal.hidden,#help-modal.hidden{display:none}
+#start-modal,#help-modal,#mg-hint-modal{position:fixed;inset:0;background:#00000080;display:flex;align-items:center;justify-content:center;z-index:120;backdrop-filter:blur(5px)}
+#start-modal.hidden,#help-modal.hidden,#mg-hint-modal.hidden{display:none}
 #start-modal::before{content:"";position:absolute;inset:0;background:rgba(236,180,87,.04);pointer-events:none}
 .intro-box{background:var(--panel);border:1px solid var(--gold);border-radius:14px;padding:22px;max-width:700px;width:92%;box-shadow:0 12px 50px #000c;position:relative;z-index:1}
 .intro-box h1{color:var(--gold);font-size:21px;text-align:center;margin-bottom:6px}.intro-box h2{color:var(--gold);font-size:15px;margin:12px 0 6px}.intro-sub{text-align:center;color:var(--muted);font-size:11px}.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}.key-card{background:var(--card);border-radius:7px;padding:7px;font-size:11px;display:flex;align-items:center;gap:8px}.key-card kbd{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:28px;border:1px solid var(--gold);border-radius:5px;color:var(--gold);font:bold 14px monospace;background:#0004}.seed-form{display:flex;gap:8px;margin-top:13px}.seed-form input{flex:1;background:var(--card);border:1px solid #fff3;color:var(--text);border-radius:7px;padding:8px;font:12px monospace}.seed-form button{padding:8px 16px}.intro-actions{display:flex;justify-content:center;gap:8px;margin-top:12px}.intro-actions .btn{justify-content:center}.help-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;color:var(--text);font-size:11px}.help-grid div{background:var(--card);border-radius:6px;padding:7px}.help-close{display:block;margin:14px auto 0}
+/* funify-v3 Round 14 — first-time mini-game key overlay */
+#mg-hint-modal .intro-box{max-width:520px;border-color:var(--green)}
+#mg-hint-modal h1{color:var(--green)}
+#mh-body{text-align:center}
+#mh-ic{font-size:48px;margin:6px 0}
+#mh-name{color:var(--gold);font-size:16px;font-weight:bold;margin-bottom:12px}
+#mh-keys{display:grid;grid-template-columns:1fr;gap:5px;text-align:left;color:var(--text);font-size:12px;margin:10px 0}
+#mh-keys>div{background:var(--card);border-radius:6px;padding:7px 10px;border-left:3px solid var(--gold)}
+#mh-keys kbd{display:inline-block;min-width:24px;padding:2px 6px;border:1px solid var(--gold);border-radius:4px;color:var(--gold);font:bold 11px monospace;background:#0006;margin-right:8px}
+#mh-tip{color:var(--muted);font-size:11px;margin-top:8px;font-style:italic}
+@media(max-width:760px){#mg-hint-modal .intro-box{padding:14px;max-width:94vw}#mh-ic{font-size:36px}}
 .seed-form .btn-go{padding:10px 22px;font-size:13px;font-weight:800;background:var(--gold);color:#0a0c14;border:none;letter-spacing:1px}
 .seed-form .btn-go:hover{filter:brightness(1.1);color:#0a0c14}
 .start-summary{font-size:11px;color:var(--muted);text-align:center;margin-top:8px;line-height:1.6}
@@ -113,6 +140,15 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 .upg-card .up{color:var(--green);font-weight:700;font-size:12px}
 .upg-card .un{font-size:11px;color:var(--text);line-height:1.4}
 .upg-card .ud{font-size:10px;color:var(--muted);margin-top:4px}
+/* Round 10 — Amsterdam-themed upgrade cards (Dutch flag gradient red→white→blue) */
+.upg-card.amsterdam{border-color:#ae1c28;box-shadow:0 0 0 1px #ffffff44,0 0 12px #21468b33}
+.upg-card.amsterdam:hover{border-color:#21468b;background:#1a2238}
+/* Round 10 — Legendary upgrade cards (gold glow + gradient border + animated shine) */
+.upg-card.legendary{border:2px solid transparent;background-image:linear-gradient(var(--card),var(--card)),linear-gradient(135deg,#ecb457 0%,#f8e090 25%,#ecb457 50%,#a8782e 75%,#ecb457 100%);background-origin:border-box;background-clip:padding-box,border-box;box-shadow:0 0 16px #ecb45755,inset 0 0 8px #ecb45722}
+.upg-card.legendary:hover{box-shadow:0 0 24px #ecb457aa,inset 0 0 12px #ecb45744}
+.upg-card.legendary .uc{color:var(--gold);font-weight:700;text-shadow:0 0 4px #ecb45788}
+.upg-card.legendary .up{color:var(--gold)}
+@media (prefers-reduced-motion: reduce){.upg-card.legendary{box-shadow:0 0 12px #ecb45755}}
 #upg-skip{display:block;margin:14px auto 0;background:transparent;border:1px solid var(--muted);color:var(--muted)}
 
 /* Achievements panel */
@@ -136,11 +172,10 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div class="tb"><span class="ic">📅</span><span id="t-run">Run #1 · 遗产0</span></div>
 <div class="tb seed-tb"><span class="ic">🎲</span><span class="vl" id="t-seed">—</span></div>
 <div class="tb"><span class="vl" id="t-meta">🏆 meta 0</span><span class="vl" id="t-meta-pending" style="color:var(--warn);margin-left:4px"></span></div>
-<div class="tb"><span class="vl" id="t-explore">🏄 今日:— · 已发现 0/7 · perfect +50?</span></div>
+<div class="tb"><span class="vl" id="t-explore">🏄 今日:— · 已发现 0/7 · 完美抓 +50★</span></div>
 <div class="tb"><span class="vl" id="t-escape">🚇 Lv 0 · 周已逃 0 次</span></div>
 <div class="tb"><span class="ic">💭</span><span class="vl" id="t-mood">😐</span></div>
 <div class="tb"><span class="ic">🏅</span><span class="vl" id="t-ach" style="color:var(--gold)">0/12</span></div>
-<div class="tb" title="R3 性能: 帧率 / 最近帧 ms"><span class="ic">📊</span><span class="vl" id="t-fps" style="color:var(--muted)">— fps</span></div>
 <div id="mods"></div>
 </div>
 
@@ -154,6 +189,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div id="center">
 <canvas id="cv" width="800" height="500"></canvas>
 <div id="cov"><div id="cov-title"></div><div id="cov-sub"></div><div id="cov-hint"></div></div>
+<div id="phase-flash"><div class="pf-d"></div><div class="pf-t"></div><div class="pf-n"></div></div>
 </div>
 
 <div id="right">
@@ -176,9 +212,10 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <button class="btn" onclick="G.advanceTime()">⏭ 推进时间</button>
 <button class="btn" onclick="enterBldg()">🚪 进入建筑</button>
 <button class="btn" onclick="workInd()">🔧 快速经营</button>
-<button class="btn" id="br" onclick="toggleReplica()">🗺 Replica 关</button>
 <button class="btn" onclick="newRun()">🔄 新游戏</button>
-<span id="msg">WASD走 · E进建筑 · A自动运行 · 按 H 查看帮助</span>
+<button class="btn" id="speed-btn" onclick="cycleSpeed()" aria-label="切换游戏速度 1×/2×/4×" title="切换 1×/2×/4× 步速 (越快越省时)">▶▶ 1×</button>
+<button class="btn" id="mute-btn" onclick="toggleMuteBtn()" aria-label="切换音频" title="按 M 键切换">🔊</button>
+<span id="msg" aria-live="polite" aria-atomic="true">WASD走 · E进建筑 · A自动运行 · 按 H 查看帮助</span>
 </div>
 </div>
 
@@ -186,16 +223,16 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div id="upg-modal" class="hidden">
 <div class="um-box">
 <h2>🏆 选择本 Run 终极升级</h2>
-<div class="um-meta">你有 <b id="um-meta-v">0</b> meta · 选 1 个(或 Skip 留 meta 给下个 run)</div>
+<div class="um-meta">你有 <b id="um-meta-v">0</b> meta<span id="um-summary"></span> · 选 1 个(或 Skip 留 meta 给下个 run)</div>
 <div id="upg-choices"></div>
 <button id="upg-skip" class="btn">⏭ Skip</button>
 </div>
 </div>
 
 <!-- Phase 1 start tutorial: visible on a fresh browser, skippable thereafter -->
-<div id="start-modal">
+<div id="start-modal" role="dialog" aria-modal="true" aria-labelledby="start-modal-title">
 <div class="intro-box">
-<h1>Amsterdam Brewery — 肉鸽中台</h1>
+<h1 id="start-modal-title">Amsterdam Brewery — 肉鸽中台</h1>
 <div class="intro-sub">7 天城市经营 roguelike · 输入 Seed 开始本 Run</div>
 <h2>玩法目标</h2>
 <div class="start-summary">🎯 7 天内每天完成 <b>3 个目标</b>，应对每日 <b>随机事件</b><br>🏭 5 个产业（酿酒/酒吧/咖啡/蘑菇/冲浪/学术）会真实改变收益<br>🏆 跑完获得 <b>★ meta</b>，在 3 选 1 升级中囤积下一局起跑线</div>
@@ -204,7 +241,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div class="key-card"><kbd>W</kbd><span>向上移动</span></div><div class="key-card"><kbd>A</kbd><span>向左移动</span></div><div class="key-card"><kbd>S</kbd><span>向下移动</span></div>
 <div class="key-card"><kbd>D</kbd><span>向右移动</span></div><div class="key-card"><kbd>E</kbd><span>进入建筑</span></div><div class="key-card"><kbd>Space</kbd><span>推进时间</span></div>
 </div>
-<form class="seed-form" onsubmit="event.preventDefault();startFromModal()"><input id="start-seed" type="number" placeholder="Seed（数字，可留空随机）" autocomplete="off"><button type="submit" class="btn btn-go">▶ Start</button></form>
+<form class="seed-form" onsubmit="event.preventDefault();startFromModal()"><input id="start-seed" type="number" placeholder="Seed（数字，可留空随机）" autocomplete="off" autofocus><button type="submit" class="btn btn-go">▶ Start</button></form>
 <div class="intro-actions"><button class="btn" onclick="skipTutorial()">Skip 教程（下次直接进入）</button><button class="btn" onclick="showHelp()">? 查看帮助</button></div>
 </div>
 </div>
@@ -216,8 +253,15 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 </div>
 </div>
 
-<script src="data/amsterdam_geo.js"></script>
-<script src="data/map_renderer.js"></script>
+<!-- funify-v3 Round 14 — first-time mini-game key overlay -->
+<div id="mg-hint-modal" class="hidden">
+<div class="intro-box">
+<h1 id="mh-title">🎮 小游戏键位</h1>
+<div id="mh-body"><div id="mh-ic"></div><div id="mh-name"></div><div id="mh-keys"></div><div id="mh-tip"></div></div>
+<button class="btn help-close" id="mh-btn" onclick="closeMgHint()">知道了 (Enter)</button>
+</div>
+</div>
+
 <script>
 // ═══════════════════════════════════════════
 // MAP
@@ -225,85 +269,6 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 const W=800,H=500;
 const cv=document.getElementById('cv'),cx=cv.getContext('2d');
 cv.width=W;cv.height=H;
-
-// R7 perf — cache the *static* map background (paper texture + streets +
-// districts + park bases + churches + DAM + legend + compass) to an offscreen
-// canvas and blit it once per frame via drawImage(). Saves ~6 250 loop
-// iterations in the paper texture and ~12 stroke() calls per frame.
-let _staticMap=null;
-function getStaticMapLayer(){
-  if(_staticMap && _staticMap.width===W && _staticMap.height===H) return _staticMap;
-  const oc=document.createElement('canvas');
-  oc.width=W;oc.height=H;
-  const ox=oc.getContext('2d');
-  // 1. Cream paper-like ground
-  ox.fillStyle='#f0e8d4';ox.fillRect(0,0,W,H);
-  // 2. Subtle paper texture (dots)
-  ox.fillStyle='#e0d4ba';
-  for(var i=0;i<W;i+=8){for(var j=0;j<H;j+=8){if(((i*7+j*13)%23)===0)ox.fillRect(i,j,1,1)}}
-  // 3. District labels (faded backdrop)
-  ox.save();ox.globalAlpha=0.18;ox.font='bold 11px sans-serif';ox.textAlign='center';
-  DISTRICTS.forEach(function(d){ox.fillStyle=d.cl;ox.fillText(d.t,d.x,d.y)});
-  ox.restore();
-  // 4. Streets (thin lines, real Amsterdam street grid)
-  ox.strokeStyle='#d8c8a8';ox.lineWidth=2;
-  ox.beginPath();ox.moveTo(0,200);ox.lineTo(800,200);ox.stroke();
-  ox.beginPath();ox.moveTo(0,380);ox.lineTo(800,380);ox.stroke();
-  ox.beginPath();ox.moveTo(200,90);ox.lineTo(200,500);ox.stroke();
-  ox.beginPath();ox.moveTo(340,90);ox.lineTo(340,500);ox.stroke();
-  ox.beginPath();ox.moveTo(480,90);ox.lineTo(480,500);ox.stroke();
-  ox.beginPath();ox.moveTo(620,90);ox.lineTo(620,500);ox.stroke();
-  ox.strokeStyle='#e8d8c0';ox.lineWidth=1;
-  ox.beginPath();ox.moveTo(0,140);ox.lineTo(800,140);ox.stroke();
-  ox.beginPath();ox.moveTo(0,300);ox.lineTo(800,300);ox.stroke();
-  ox.beginPath();ox.moveTo(0,440);ox.lineTo(800,440);ox.stroke();
-  ox.beginPath();ox.moveTo(120,90);ox.lineTo(120,500);ox.stroke();
-  ox.beginPath();ox.moveTo(560,90);ox.lineTo(560,500);ox.stroke();
-  ox.beginPath();ox.moveTo(720,90);ox.lineTo(720,500);ox.stroke();
-  // 5. Parks (filled green base)
-  PARKS.forEach(function(p){
-    ox.fillStyle=p.cl;ox.fillRect(p.x,p.y,p.w,p.h);
-    ox.fillStyle='#6a9848';ox.fillRect(p.x,p.y+p.h-3,p.w,3);
-    ox.fillStyle='#3a5a28';
-    for(var t=0;t<8;t++){var tx=p.x+5+t*((p.w-10)/8),ty=p.y+5+((t*7)%3)*4;
-      ox.beginPath();ox.arc(tx,ty,2.5,0,Math.PI*2);ox.fill()}
-  });
-  // 11. Church spires (Amsterdam three iconic towers)
-  function _spire(x,y,h,bodyCl,roofCl,crownCl,label){
-    ox.fillStyle=bodyCl;ox.fillRect(x-2,y-8,4,h);
-    ox.fillStyle=roofCl;
-    ox.beginPath();ox.moveTo(x,y-8);ox.lineTo(x-3,y-12);ox.lineTo(x+3,y-12);ox.closePath();ox.fill();
-    ox.fillStyle=crownCl;ox.beginPath();ox.arc(x,y-13,2,0,Math.PI*2);ox.fill();
-    ox.font='bold 7px sans-serif';ox.fillStyle='#1a1a1a';ox.textAlign='center';
-    ox.fillText(label,x,y-16);
-  }
-  _spire(80, 235, 22,'#7a4830','#a06040','#e8a020','⛪ Westerkerk');
-  _spire(335, 230, 26,'#7a4830','#a06040','#e8a020','⛪ Nieuwe Kerk');
-  _spire(580, 240, 20,'#7a4830','#c87040','#e8a020','⛪ Oude Kerk');
-  // 12. Dam Square diamond
-  ox.fillStyle='#e8d090';ox.font='bold 10px sans-serif';ox.textAlign='center';
-  ox.fillText('◆ DAM ◆',335,225);
-  // 14. Mini legend (top right)
-  ox.fillStyle='#00000050';ox.fillRect(680,8,115,72);
-  ox.font='bold 8px sans-serif';ox.fillStyle='#1a1a1a';ox.textAlign='left';
-  ox.fillText('AMSTERDAM',688,18);
-  ox.font='7px sans-serif';
-  ox.fillStyle='#5a90c0';ox.fillRect(688,24,10,3);ox.fillStyle='#1a1a1a';ox.fillText('Canal',702,28);
-  ox.fillStyle='#8b3a1a';ox.fillRect(688,32,8,8);ox.fillStyle='#1a1a1a';ox.fillText('Canal house',702,39);
-  ox.fillStyle='#7aa848';ox.fillRect(688,44,10,5);ox.fillStyle='#1a1a1a';ox.fillText('Park',702,49);
-  ox.strokeStyle='#c0a020';ox.lineWidth=1;ox.beginPath();ox.moveTo(688,55);ox.lineTo(700,55);ox.stroke();
-  ox.fillStyle='#1a1a1a';ox.fillText('Tram line',702,59);
-  ox.fillStyle='#3a7060';ox.fillRect(688,64,10,3);ox.fillStyle='#1a1a1a';ox.fillText('Houseboat',702,69);
-  ox.fillStyle='#ffffff';ox.fillRect(688,73,10,2);ox.strokeStyle='#1a1a1a';ox.strokeRect(688,73,10,2);
-  ox.fillStyle='#1a1a1a';ox.fillText('Bridge',702,77);
-  // 15. Compass (top left)
-  ox.fillStyle='#00000050';ox.beginPath();ox.arc(28,28,18,0,Math.PI*2);ox.fill();
-  ox.font='bold 9px sans-serif';ox.fillStyle='#1a1a1a';ox.textAlign='center';
-  ox.fillText('N',28,21);ox.fillText('S',28,38);ox.fillText('W',18,30);ox.fillText('E',38,30);
-  ox.strokeStyle='#c83030';ox.lineWidth=1.5;ox.beginPath();ox.moveTo(28,26);ox.lineTo(28,17);ox.stroke();
-  _staticMap=oc;
-  return _staticMap;
-}
 
 // Real Amsterdam geography: north=up, south=down. IJ river separates Noord from the rest.
 // Canal belt runs east-west across center. Amstel river flows from east curving south.
@@ -528,6 +493,55 @@ const ESCAPE_TECHS=[
 {lv:4,teacher:'chen',name:'装作残疾人',suc:.95,desc:'借关怀通道(道德灰色)'}
 ];
 
+// funify-v3 Round 12 — NPC 三段式对话 (BACKLOG #11 NPC_DIALOGUES)
+// 4 NPC × 3 段专属对话 (run%3 切换),Amsterdam 风物诗 + 个人专业梗 + 中文/英文混搭
+const NPC_DIALOGUES={
+  pablo:[
+    'P:"IJ 河边书市又开了,改天带你去——如果你不被赶走的话。"',
+    'P:"Den IJ-tunnel 那个 IJ 怎么念？我说,像荷兰人那样咳嗽一声。"',
+    'P:"UvA 那边博物馆夜要排长队,记得戴 OV-fiets,否则只能门口发呆。"'
+  ],
+  ravi:[
+    'R:"我刚写完一段 CUDA,准备去 Vondelpark 跑一下 debug——结果更迷了。"',
+    'R:"Science Park 食堂的 stampot 不错,但被教授撞见我翘班就不好玩了。"',
+    'R:"你刷 OV-chipkaart 别忘了 check-in,NS 罚款 €4 是真的会要。"'
+  ],
+  sofie:[
+    'S:"Albert Cuyp 市场今天特价郁金香球茎,要买趁早——运河风大。"',
+    'S:"Sarphatipark 那家 brunch 排号 40 分钟,你若饿,我藏了 stroopwafel。"',
+    'S:"Ceintuurbaan 这边常下雨,你那把伞终于派上用场。"'
+  ],
+  chen:[
+    'C:"今天 PCR 跑了 96 板,coffee 是真的续命——别忘了按 1 号杯。"',
+    'C:"组里 postdoc 发了篇 Nature 子刊,庆祝去酒吧——但酒别冲太烫。"',
+    'C:"你那台破离心机又漏了——回头让你看看我的新冷冻电镜。"'
+  ]
+};
+function pickNpcDialog(npc){
+  const pool=NPC_DIALOGUES[npc];if(!pool)return null;
+  const idx=Math.abs(G.run|0)%3;
+  const seedR=10+Math.floor(seeded(180+G.day)*15);
+  return{q:pool[idx],r:seedR,idx};
+}
+
+// funify-v3 Round 13 — NPC 教学 + 建筑 风味短句 (BACKLOG #11 close)
+// NPC_TEACH_FLAVOR: each teacher's escape lesson style (different from
+//   casual NPC_DIALOGUES quote; shown on learnEscape as second sample).
+// NPC_BUILDING_FLAVOR: 4 NPC buildings' one-line personality shown on
+//   first greet (both manual T key and auto-step path).
+const NPC_TEACH_FLAVOR={
+  pablo:'装作学生最稳——UvA 校园永远有赶论文的研二生能蹭饭堂',
+  ravi:'装作打电话时拿 CS 课本翻,Conductor 不打扰「程序员」',
+  sofie:'装作游客最安全——掏出手机拍 canal house 一秒入境',
+  chen:'别装作残疾人,代价太高——教你 NS app check-in 漏检就行'
+};
+const NPC_BUILDING_FLAVOR={
+  pablo:'📚 UvA 文学教授办公室,二手书堆到天花板',
+  ravi:'💻 Science Park CS PhD 工位,三块显示器永久开机',
+  sofie:'🌷 De Pijp 花店,郁金香整日不缺水',
+  chen:'🔬 实验台永远排满 96 板 PCR,蓝光荧荧'
+};
+
 
 // Roguelike: 5 objective categories with seeded daily pools
 const OBJ_CATS=[
@@ -550,19 +564,23 @@ const OBJ_CATS=[
 
 // Extended event pool (replaces existing evs=[6 items])
 const EV_POOL=[
-  {id:'police_raid',ic:'👮',t:'警察突击灰色产业',mod:['coffee','shroom'],effect:'咖啡/蘑菇暂停 1 天'},
-  {id:'tourism',ic:'✈️',t:'旅游旺季',mod:['bar','coffee'],effect:'小费与售价 +50%'},
-  {id:'kings_day',ic:'🎉',t:'国王节全城狂欢',mod:['bar'],effect:'酒吧客流量翻倍'},
-  {id:'north_sea_storm',ic:'🌧️',t:'北海风暴',mod:['surf'],effect:'冲浪收益 ×2'},
-  {id:'ai_conference',ic:'🎓',t:'AI 顶会',mod:['academic'],effect:'学术收益 ×2'},
-  {id:'shroom_boom',ic:'🍄',t:'蘑菇热潮',mod:['shroom'],effect:'蘑菇售价 ×2'},
-  {id:'beer_festival',ic:'🍺',t:'啤酒节',mod:['brewing','bar'],effect:'酿酒收益 +20%'},
-  {id:'tulip_auction',ic:'🌹',t:'郁金香拍卖',mod:[],effect:'完成赚钱目标额外 +5★'},
-  {id:'canal_block',ic:'🚢',t:'运河堵塞',mod:['market'],effect:'市集关闭 1 天'},
-  {id:'coffee_wave',ic:'☕',t:'第三波咖啡浪潮',mod:['coffee'],effect:'咖啡售价 +30%'},
-  {id:'museum_night',ic:'🎵',t:'博物馆夜未眠',mod:['academic'],effect:'学术声望 +50%'},
-  {id:'cold_snap',ic:'🥶',t:'寒潮来袭',mod:['surf'],effect:'冲浪收益 ×0.5'}
+  {id:'police_raid',kind:'bad',ic:'👮',t:'警察突击灰色产业',mod:['coffee','shroom'],effect:'咖啡/蘑菇暂停 1 天'},
+  {id:'tourism',kind:'good',ic:'✈️',t:'旅游旺季',mod:['bar','coffee'],effect:'小费与售价 +50%'},
+  {id:'kings_day',kind:'good',ic:'🎉',t:'国王节全城狂欢',mod:['bar'],effect:'酒吧客流量翻倍'},
+  {id:'north_sea_storm',kind:'good',ic:'🌧️',t:'北海风暴',mod:['surf'],effect:'冲浪收益 ×2'},
+  {id:'ai_conference',kind:'good',ic:'🎓',t:'AI 顶会',mod:['academic'],effect:'学术收益 ×2'},
+  {id:'shroom_boom',kind:'good',ic:'🍄',t:'蘑菇热潮',mod:['shroom'],effect:'蘑菇售价 ×2'},
+  {id:'beer_festival',kind:'good',ic:'🍺',t:'啤酒节',mod:['brewing','bar'],effect:'酿酒收益 +20%'},
+  {id:'tulip_auction',kind:'neutral',ic:'🌹',t:'郁金香拍卖',mod:[],effect:'完成赚钱目标额外 +5★'},
+  {id:'canal_block',kind:'bad',ic:'🚢',t:'运河堵塞',mod:['market'],effect:'市集关闭 1 天'},
+  {id:'coffee_wave',kind:'good',ic:'☕',t:'第三波咖啡浪潮',mod:['coffee'],effect:'咖啡售价 +30%'},
+  {id:'museum_night',kind:'good',ic:'🎵',t:'博物馆夜未眠',mod:['academic'],effect:'学术声望 +50%'},
+  {id:'cold_snap',kind:'bad',ic:'🥶',t:'寒潮来袭',mod:['surf'],effect:'冲浪收益 ×0.5'}
 ];
+// Auto-derive EV_KIND from EV_POOL[].kind so adding a new event in one place
+// can't drift from the wantPositive filter. Fallback to 'neutral' for safety.
+const EV_KIND={};
+EV_POOL.forEach(e=>{EV_KIND[e.id]=e.kind||'neutral'});
 
 // Upgrade pool (3-pick-1 at end of each run)
 // First 4 are functional (resource / XP / event / meta). Last 6 are real Amsterdam
@@ -583,7 +601,15 @@ const UP_POOL=[
   {id:'iamsterdam_card',cat:'阿姆斯特丹',cost:35,t:'💳 I amsterdam Card',d:'旅游旺季（tourism）TIP +20%'},
   {id:'heineken_pass',cat:'阿姆斯特丹',cost:50,t:'🍺 Heineken Pass 啤酒体验',d:'IPA 订单 ×1.3（与配方叠加）'},
   {id:'coffee_passport',cat:'阿姆斯特丹',cost:40,t:'📒 Coffee Passport 咖啡护照',d:'咖啡店收益 +20%（不受热度影响）'},
-  {id:'canal_cruise',cat:'阿姆斯特丹',cost:30,t:'🚢 Canal Cruise 通票',d:'每日 +5 rep，含水上介绍'}
+  {id:'canal_cruise',cat:'阿姆斯特丹',cost:30,t:'🚢 Canal Cruise 通票',d:'每日 +5 rep，含水上介绍'},
+  // === Legendary upgrades (Round 10 — BACKLOG #9 死亡升级) ===
+  // 6 顶级跨 run 升级,cost 180-300★,触发强力永久效果
+  {id:'legendary_income',cat:'传奇',cost:200,t:'💎 传奇收入 ×2',d:'所有产业收入永久 ×2 (与现有倍率叠加)'},
+  {id:'legendary_no_raid',cat:'传奇',cost:220,t:'🛡️ 永久免突击',d:'咖啡店卧底归零 + 热度封顶 95,产业永不被没收'},
+  {id:'legendary_speed',cat:'传奇',cost:180,t:'⚡ 阿姆斯特丹时光',d:'自动运行节奏 +50% (120ms → 80ms)'},
+  {id:'legendary_perfect',cat:'传奇',cost:280,t:'🎯 完美大师',d:'冲浪/酿酒完美抓 +50% (×1.5 mul 叠加)'},
+  {id:'legendary_mood_lock',cat:'传奇',cost:240,t:'☀️ 永久好心情',d:'心情永远 ≥0 (tip 永久 1.2×,不会低落)'},
+  {id:'legendary_meta_x2',cat:'传奇',cost:300,t:'⭐ Meta 黑洞',d:'所有 Meta 收益 ×2 (含 meta_cap 叠加 = ×3)'}
 ];
 
 // ═══════════════════════════════════════════
@@ -618,9 +644,12 @@ const ACH_BY_ID=Object.fromEntries(ACH_POOL.map(a=>[a.id,a]));
 const AUDIO={
   ctx:null,muted:false,master:null,
   init(){
-    if(this.ctx)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;this.ctx=new C();this.master=this.ctx.createGain();this.master.gain.value=0.18;this.master.connect(this.ctx.destination)}catch(e){console.warn('audio init failed',e)}
+    if(this.ctx)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;this.ctx=new C();this.master=this.ctx.createGain();this.master.gain.value=this.muted?0:0.18;this.master.connect(this.ctx.destination)}catch(e){console.warn('audio init failed',e)}
   },
   resume(){if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume().catch(()=>{})},
+  // funify-v3 Round 6 — M-key mute toggle, persisted in ab_mute_v1
+  toggleMute(){this.muted=!this.muted;if(this.master)this.master.gain.value=this.muted?0:0.18;try{localStorage.setItem('ab_mute_v1',this.muted?'1':'0')}catch(e){}return this.muted},
+  loadMute(){try{const v=localStorage.getItem('ab_mute_v1');if(v==='1'){this.muted=true;if(this.master)this.master.gain.value=0}}catch(e){}},
   blip(freq,dur,type='sine',vol=1,slide=0){
     if(!this.ctx||this.muted)return;this.resume();
     const t=this.ctx.currentTime,o=this.ctx.createOscillator(),g=this.ctx.createGain();
@@ -662,13 +691,56 @@ const ABBREV_ALPH='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 function seedAbbrev(s){return s+'-'+ABBREV_ALPH[Math.floor(s/ABBREV_ALPH.length)%ABBREV_ALPH.length]+ABBREV_ALPH[s%ABBREV_ALPH.length]}
 function seeded(n){const x=Math.sin((G.seed+n*9973+G.day*7919)*12.9898)*43758.5453;return x-Math.floor(x)}
 function moodEmoji(){return G.mood>0?'😊':G.mood<0?'😠':'😐'}
-function tipFactor(){let f=G.mood>0?1.2:G.mood<0?.8:1;if(hasUpgrade('tip_boost'))f*=1.25;if(hasMod('tourism'))f*=1.5;if(hasMod('tourism')&&hasUpgrade('iamsterdam_card'))f*=1.2;return f}
+function tipFactor(){const effectiveMood=hasUpgrade('legendary_mood_lock')?Math.max(0,G.mood):G.mood;let f=effectiveMood>0?1.2:effectiveMood<0?.8:1;if(hasUpgrade('tip_boost'))f*=1.25;if(hasMod('tourism'))f*=1.5;if(hasMod('tourism')&&hasUpgrade('iamsterdam_card'))f*=1.2;return f}
+// funify-v3 (B4 bar): live tip preview — 命中推荐 +$4 / 常客 +$1 / 错过推荐 -$1
+function barTipPreview(offer,hit,regular,tf){return Math.round((offer+(hit?4:(regular?1:-1)))*(tf||1))}
+// funify-v3 (B4 bar): patience countdown — 1 → 0 over `patience` seconds
+function barPatienceLeft(c){if(!c||!c.patience)return 0;const left=1-(Date.now()-c.born)/1000/c.patience;return left>0?left:0}
+// funify-v3 (B3 coffee): 4-band heat zone overlay — 安全/警戒/危险/末日
+function coffeeHeatZone(heat){
+  if(heat<30)return{col:'#78c878',label:'安全',danger:0};
+  if(heat<70)return{col:'#e8a020',label:'警戒',danger:1};
+  if(heat<90)return{col:'#f05050',label:'危险',danger:2};
+  return{col:'#a02020',label:'末日',danger:3};
+}
+// funify-v3 (B3 coffee): live price-vs-buyer fit hint — gap≥0 ok, gap>=-3 yellow, gap<-3 red
+function coffeeFitHint(price,budget){
+  if(!budget)return{col:'#888',label:'无客',ok:false,gap:0};
+  const gap=budget-price;
+  if(gap>=0)return{col:'#78c878',label:'✓成交',ok:true,gap};
+  if(gap>=-3)return{col:'#e8a020',label:'!偏高',ok:false,gap};
+  return{col:'#f05050',label:'✗拒',ok:false,gap};
+}
+// funify-v3 (B2 shroom): real-time quality mapping from error magnitude → ★1-5
+function shroomQuality(err){
+  if(err<0.1)return 5;
+  if(err<0.2)return 4;
+  if(err<0.3)return 3;
+  if(err<0.5)return 2;
+  return 1;
+}
+// funify-v3 (B1 brew): streak multiplier — 0→1.0, 3→1.1, 5→1.3, 10→1.5
+function brewStreakMul(n){if(n<3)return 1;if(n<5)return 1.1;if(n<10)return 1.3;return 1.5}
+// funify-v3 (B1 brew): cross-run recipe notes — mastery 0..3 (count capped at 3)
+function brewNoteProgress(notes,type){const n=notes&&notes[type]?notes[type].count:0;return Math.min(3,n|0)}
+// funify-v3 (B5 surf): perfect-streak multiplier — consecutive perfect catches compound (Balatro joker style)
+function surfPerfectStreakMul(n){if(n<2)return 1;if(n<4)return 1.2;if(n<7)return 1.4;return 1.5}
+// funify-v3 (B5 surf): breaker telegraph — tells player when the next set starts so they can pre-position
+function surfBreakerTelegraph(s){if(!s)return null;const now=Date.now();const phase=s.setPhase?'set':'lull';const msLeft=Math.max(0,s.nextLull-now);return {phase,msLeft,msLeftLabel:msLeft<1000?Math.round(msLeft/100)+'₀':'·',staminaPct:s.stamina,staminaWarn:s.stamina<=20?'low':s.stamina<=50?'med':'ok'}}
 function hasUpgrade(id){return G.upgrades.includes(id)}
 function hasMod(id){return G.mods.some(m=>m.id===id)}
+// Round 10 — Legendary helpers (BACKLOG #9 死亡升级)
+function isLegendary(id){const u=UP_POOL.find(x=>x.id===id);return u&&u.cat==='传奇'}
+function legendarySpeedMs(){return hasUpgrade('legendary_speed')?Math.round(120*0.667):120}
+function legendaryCost(id){const u=UP_POOL.find(x=>x.id===id);return u?u.cost:0}
+// Round 11 — Meta cap helper (legendary_meta_x2 黑洞封顶,避免累积过冲)
+function legendaryMetaCap(){return hasUpgrade('legendary_meta_x2')?30:Infinity}
 function industryFactor(id){
   // Multiplicative: modifier and AM-them upgrade can stack on the same industry.
   // Example: museumkaart (1.25) on museum_night day (1.5) = 1.875 academic reward.
-  let f=1;
+  // Round 10: legendary_income ×2 baseline (always first so all stack on top)
+  // Round 23: lvMaxBoost ×1.1 when ind.lv>=2 (满级传奇静态加成,激励玩家跑满 3 阶)
+  let f=hasUpgrade('legendary_income')?2:1;
   if(id==='brewing'&&hasMod('beer_festival'))f*=1.2;
   if(id==='coffee'&&hasMod('coffee_wave'))f*=1.3;
   if(id==='coffee'&&hasUpgrade('coffee_passport'))f*=1.2;
@@ -679,8 +751,14 @@ function industryFactor(id){
   if(id==='academic'&&hasMod('museum_night'))f*=1.5;
   if(id==='academic'&&hasUpgrade('museumkaart'))f*=1.25;
   if(id==='bar'&&hasMod('kings_day'))f*=1.5;
+  f*=lvMaxBoost(id);
   return f;
 }
+// funify-v3 Round 23 — lvMaxBoost helper (BACKLOG #9 #4 closure)
+// Returns 1.1 when industry id has reached max level (lv>=2 — 学徒/酿酒师/大师), else 1.0.
+// Pure function — does not mutate G, safe to call from industryFactor.
+// Maps industryFactor ids ('coffee'/'surf') to G.ind keys ('coffee_shop'/'surfing').
+function lvMaxBoost(id){const keyMap={coffee:'coffee_shop',surf:'surfing'};const key=keyMap[id]||id;const ind=G.ind[key];return(ind&&ind.lv>=2)?1.1:1}
 function saveMeta(){try{localStorage.setItem('ab_meta_v2',JSON.stringify({version:2,meta:G.meta,upgrades:G.upgrades,legacy:G.legacy,run:G.run}))}catch(e){console.warn('ab_meta_v2 save failed',e)}}
 function loadMeta(){try{const d=JSON.parse(localStorage.getItem('ab_meta_v2'));if(d&&d.version===2){G.meta=Math.max(0,d.meta|0);G.upgrades=Array.isArray(d.upgrades)?[...new Set(d.upgrades)]:[];G.legacy=Math.max(0,d.legacy|0);G.run=Math.max(0,d.run|0)}}catch(e){console.warn('ab_meta_v2 load failed',e)}}
 function saveAch(){try{localStorage.setItem('ab_ach_v1',JSON.stringify({version:1,unlocked:G.achievements}))}catch(e){console.warn('ab_ach_v1 save failed',e)}}
@@ -701,7 +779,37 @@ function resetRunCounters(){
 }
 function showHelp(){document.getElementById('help-modal').classList.remove('hidden')}
 function closeHelp(){document.getElementById('help-modal').classList.add('hidden')}
-function modalOpen(){const s=document.getElementById('start-modal'),h=document.getElementById('help-modal');return (s&&!s.classList.contains('hidden'))||(h&&!h.classList.contains('hidden'))}
+function modalOpen(){const s=document.getElementById('start-modal'),h=document.getElementById('help-modal'),m=document.getElementById('mg-hint-modal');return(s&&!s.classList.contains('hidden'))||(h&&!h.classList.contains('hidden'))||(m&&!m.classList.contains('hidden'))}
+// funify-v3 Round 14 — first-time mini-game key overlay (BACKLOG #3 close)
+const MG_HINT_KEYS={
+  brew:{ic:'🍺',name:'酿酒厂（啤酒订单）',keys:[['<kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd>','原料:麦芽/啤酒花/酵母各选 0/1/2'],['<kbd>SPACE</kbd>','开始酿造 (订单 180s 内完成)'],['<kbd>⬆</kbd>/<kbd>⬇</kbd>','控温 ±3°C（IPA=55°·Stout=68°·Lager=48°）'],['<kbd>ESC</kbd>','离开不收尾']],tip:'配方顺序 + 目标温度是订单的两大隐藏轴；温度误差 ≤±5°C 触发完美品。'},
+  coffee:{ic:'🌿',name:'Noord 咖啡店',keys:[['<kbd>1</kbd>','普通价（$8）'],['<kbd>2</kbd>','精品价（$14）'],['<kbd>3</kbd>','奢华价（$22）'],['<kbd>Q</kbd>/<kbd>W</kbd>','自定义调价 ±1（5-50 之间）'],['<kbd>SPACE</kbd>','与下一个顾客成交（匹配即成交）'],['<kbd>X</kbd>','拒绝卧底/嫌贵顾客'],['<kbd>ESC</kbd>','结束打烊']],tip:'热度到 100 即触发 police_raid，今日停业；legendary_no_raid 升级豁免至 95。'},
+  shroom:{ic:'🍄',name:'SmartShop（蘑菇培养）',keys:[['<kbd>⬆</kbd>/<kbd>⬇</kbd>','湿度 ±5（目标 60%）'],['<kbd>⬅</kbd>/<kbd>➡</kbd>','温度 ±1（目标 22°C）'],['<kbd>Q</kbd>/<kbd>W</kbd>','光照 ±1（目标 8）'],['<kbd>SPACE</kbd>','启动培养'],['<kbd>ESC</kbd>','取消并离开']],tip:'偏离参数会拉高污染风险；参数过偏导致报废本批收入清零。'},
+  surf:{ic:'🏄',name:'冲浪（Noord 海滩）',keys:[['<kbd>⬆</kbd>/<kbd>⬇</kbd>','加速/减速（体能消耗调整）'],['<kbd>⬅</kbd>/<kbd>➡</kbd>','左右躲闪破浪'],['<kbd>SPACE</kbd>','完美抓（相位于绿色完美圈时）'],['<kbd>ESC</kbd>','中断并带回分数']],tip:'相位于绿色圈 + 3 连完美触发 perfect streak multiplier；体力见底将自动带回。'},
+  academic:{ic:'📚',name:'学术答辩（Science Park）',keys:[['<kbd>1</kbd>','方法论Ⅰ'],['<kbd>2</kbd>','方法论Ⅱ'],['<kbd>3</kbd>','方法论Ⅲ'],['<kbd>SPACE</kbd>','提交方法论'],['<kbd>ESC</kbd>','中断并扣分']],tip:'方法论与挑战 (Venue) 匹配给部分学分；Venue 越难基础回报越高。'},
+  bar:{ic:'🍸',name:'Tweede Kans 酒吧',keys:[['<kbd>1</kbd>','推荐常客的酒'],['<kbd>2</kbd>','高价推荐'],['<kbd>3</kbd>','低价推荐'],['<kbd>SPACE</kbd>','递酒给当前顾客'],['<kbd>X</kbd>','拒当前顾客'],['<kbd>ESC</kbd>','打烊']],tip:'VIP 日（Vrijdag）每位顾客 ×2 小费；patience 归零顾客走人并损失连续。'}
+};
+function loadMgHints(){try{const s=localStorage.getItem('ab_mg_hints_seen_v1');return new Set(s?JSON.parse(s):[])}catch(e){return new Set()}}
+function saveMgHints(set){try{localStorage.setItem('ab_mg_hints_seen_v1',JSON.stringify(Array.from(set)))}catch(e){console.warn('ab_mg_hints_seen_v1 save failed',e)}}
+let _mgHintsSeen=loadMgHints();
+function showMgHint(mgId){
+  // funify-v3 Round 14 — auto-run never interrupts with hints (BACKLOG #3 close)
+  if(G.auto)return;
+  const m=document.getElementById('mg-hint-modal');if(!m)return;
+  const data=MG_HINT_KEYS[mgId];if(!data)return;
+  if(_mgHintsSeen.has(mgId))return; // already seen
+  document.getElementById('mh-ic').textContent=data.ic;
+  document.getElementById('mh-name').textContent=data.name;
+  const keysEl=document.getElementById('mh-keys');keysEl.innerHTML=data.keys.map(([k,d])=>`<div>${k} <span style="color:var(--muted);font-size:11px">${d}</span></div>`).join('');
+  document.getElementById('mh-tip').textContent='💡 '+data.tip;
+  m.dataset.mgId=mgId;m.classList.remove('hidden');
+}
+function closeMgHint(){
+  const m=document.getElementById('mg-hint-modal');if(!m)return;
+  const mgId=m.dataset.mgId;if(mgId){_mgHintsSeen.add(mgId);saveMgHints(_mgHintsSeen);delete m.dataset.mgId}
+  m.classList.add('hidden');
+}
+function mgHintSeen(mgId){return _mgHintsSeen.has(mgId)}
 function suggestVisit(){if(!G.visitedToday)G.visitedToday=[];return G.visitedToday}
 function clampTargetToWalkable(tx,ty){if(inCanal(tx,ty)&&!onBridge(tx,ty)){const br=nnBridge(tx,ty);if(br)return{x:br.x,y:br.y};return null}return{x:tx,y:ty}}
 function startFromModal(){
@@ -712,11 +820,32 @@ function startFromModal(){
 }
 function skipTutorial(){try{localStorage.setItem('ab_skip_tutorial','1')}catch(e){console.warn('ab_skip_tutorial save failed',e)};document.getElementById('start-modal').classList.add('hidden');startFromModal()}
 
-const G={p:{x:100,y:400,tx:100,ty:400},day:1,ti:0,money:250,rep:0,loc:'de_pijp',ind:{},bs:[5,3,2],brewI:-1,brewT:0,events:[],mods:[],auto:false,inside:null,mg:null,ended:false,ts:0,tr:0,run:0,legacy:0,_at:null,_wp:null,_otx:null,_oty:null,_st:0,_sx:0,_sy:0,sch:[],seed:42,meta:0,metaPending:0,objs:[],upgrades:[],objDefs:{},_objDay:0,mood:0,greetedToday:[],visitedToday:[],visited:[],shop:{},surfDiscovered:[],inventory:[],todayWave:null,escapeLevel:0,escapeTeacher:null,escUsed:0,escapeLearnDay:0,keys:{},lastClickAt:0,achievements:[],_run:{},replica:false};
+const G={p:{x:100,y:400,tx:100,ty:400},day:1,ti:0,money:250,rep:0,loc:'de_pijp',ind:{},bs:[5,3,2],brewI:-1,brewT:0,events:[],mods:[],auto:false,inside:null,mg:null,ended:false,ts:0,tr:0,run:0,legacy:0,_at:null,_wp:null,_otx:null,_oty:null,_st:0,_sx:0,_sy:0,sch:[],seed:42,meta:0,metaPending:0,objs:[],upgrades:[],objDefs:{},_objDay:0,mood:0,greetedToday:[],visitedToday:[],visited:[],shop:{},surfDiscovered:[],inventory:[],todayWave:null,escapeLevel:0,escapeTeacher:null,escUsed:0,escapeLearnDay:0,keys:{},lastClickAt:0,achievements:[],_run:{}};
 for(const k of Object.keys(IND_DEF))G.ind[k]={lv:0,xp:0};
 const MG={};
 
 // Roguelike: roll 3 daily objectives, seeded by (seed + day), third slot forced different category
+// funify-v3 Round 21 — day-bucketed OBJ difficulty curve (BACKLOG #6)
+//   day 1-2: easy def (idx 0 after n-ascending sort)  ·  day 3-4: medium def (idx 1)  ·  day 5-7: hard def (idx 2)
+//   Explore/Talk stay at idx 0 throughout (manual play should not be gated)
+//   Defs are sorted by `n` ascending first so "easy/medium/hard" is consistent across all cats
+//   Deterministic per (cat, day) so seed-replay stays consistent
+function pickObjDef(defs,day,catId){
+  if(!defs||!defs.length)return null;
+  // Sort by need ascending so low-n = easy, high-n = hard regardless of source order
+  const sorted=defs.slice().sort((a,b)=>a.n-b.n);
+  if(catId==='Explore'||catId==='Talk'){
+    // Manual goals: keep easy until last 2 days, then medium
+    const idx=day>=6&&sorted.length>=2?1:0;
+    return sorted[Math.min(idx,sorted.length-1)];
+  }
+  // Earn/Serve/Brew: ramp
+  let idx;
+  if(day<=2)idx=0;
+  else if(day<=4)idx=1;
+  else idx=2;
+  return sorted[Math.min(idx,sorted.length-1)];
+}
 function rollDayObjectives(){
   const sd=G.seed+G.day*17;
   const r1=(sd*9301+49297)%233280;const r2=(sd*7919+12347)%233280;const r3=(sd*104729+7919)%233280;
@@ -727,7 +856,17 @@ function rollDayObjectives(){
   // Soft-bias: if neither c1 nor c2 is Explore, force c3 to Explore (or Talk fallback)
   const hasExploreOrTalk=c1.id==='Explore'||c1.id==='Talk'||c2.id==='Explore'||c2.id==='Talk';
   if(!hasExploreOrTalk){const explore=OBJ_CATS.find(c=>c.id==='Explore');c3=explore}
-  const o1=c1.def[r1%c1.def.length];const o2=c2.def[r2%c2.def.length];const o3=c3.def[r3%c3.def.length];
+  // funify-v3 Round 21 — day-bucketed difficulty curve (BACKLOG #6 OBJ 难度递增):
+  //   day 1-2: easy def (index 0) — onboarding
+  //   day 3-4: medium def (index 1) — rhythm
+  //   day 5-7: hard def (index 2) — grind for gold tier
+  //   Explore/Talk 保持 index 0 (manual play should not be gated)
+  // funify-v3 Round 21 — day-bucketed difficulty curve (BACKLOG #6 OBJ 难度递增):
+  //   day 1-2: easy def (index 0) — onboarding
+  //   day 3-4: medium def (index 1) — rhythm
+  //   day 5-7: hard def (index 2) — grind for gold tier
+  //   Explore/Talk 保持 index 0 (manual play should not be gated)
+  const o1=pickObjDef(c1.def,G.day,c1.id);const o2=pickObjDef(c2.def,G.day,c2.id);const o3=pickObjDef(c3.def,G.day,c3.id);
   G.objs=[
     {cat:c1.id,ic:c1.ic,label:c1.label,t:o1.t,need:o1.n,cur:0,sc:o1.sc,done:false},
     {cat:c2.id,ic:c2.ic,label:c2.label,t:o2.t,need:o2.n,cur:0,sc:o2.sc,done:false},
@@ -737,26 +876,51 @@ function rollDayObjectives(){
 }
 
 // Roll today's modifier (1 of EV_POOL, never repeats 2 days in a row).
-// Mark each event as positive / negative so event_freq upgrade can bias roll.
-const EV_KIND={police_raid:'bad',canal_block:'bad',cold_snap:'bad',tourism:'good',kings_day:'good',north_sea_storm:'good',ai_conference:'good',shroom_boom:'good',beer_festival:'good',tulip_auction:'good',coffee_wave:'good',museum_night:'good'};
+// EV_KIND auto-derived from EV_POOL[].kind (see data section above).
+// funify-v3 Round 20 — weighted pick instead of hard filter (BACKLOG #6):
+//   Without event_freq: uniform weights (good=1, neutral=1, bad=1).
+//   With event_freq + 30% chance: good=3, neutral=1, bad=0.5
+//   (≈60% good · ≈20% neutral · ≈10% bad when triggered; pool never shrinks).
 function rollDayModifier(){
   const sd=G.seed+G.day*31+7;
   const r=Math.abs((sd*1103515245+12345)%2147483647);
   const last=G.mods.length&&G.mods[0].id?G.mods[0].id:null;
-  // Apply event_freq: bias toward positive events
+  // Apply event_freq: weighted bias instead of hard filter
   const wantPositive=hasUpgrade('event_freq')&&(r%100)<30;
-  const pool=EV_POOL.filter(e=>wantPositive?EV_KIND[e.id]==='good':true);
-  const src=pool.length?pool:EV_POOL;
-  let idx=Math.abs(r)%src.length;
-  if(src[idx].id===last)idx=(idx+1)%src.length;
-  return src[idx];
+  const candidates=EV_POOL.filter(e=>e.id!==last);
+  const weights=candidates.map(e=>{
+    const k=EV_KIND[e.id]||'neutral';
+    if(wantPositive){
+      if(k==='good')return 3;
+      if(k==='bad')return 0.5;
+      return 1;
+    }
+    return 1;
+  });
+  const total=weights.reduce((s,w)=>s+w,0);
+  let roll=r%total,idx=0;
+  for(let i=0;i<weights.length;i++){
+    if(roll<weights[i]){idx=i;break}
+    roll-=weights[i];
+  }
+  const picked=candidates[idx];
+  if(wantPositive&&EV_KIND[picked.id]==='good'){
+    addEvt('good','🎲 event_freq 已生效 (30%偏正向 · 本日好事件)');
+  }
+  return picked;
 }
 
 // Pick 3 unique upgrades for end-of-run modal
 function rollUpgradeChoices(){
   const bought=new Set(G.upgrades);
   const pool=UP_POOL.filter(u=>!bought.has(u.id));
+  // funify-v3 Round 11: 传奇权重偏置 — 池子里还有传奇时,首张卡 60% 概率抽传奇 (普通玩家 3 张卡看到 ≥1 传奇概率 ≈60%)
+  const legPool=pool.filter(u=>u.cat==='传奇');
   const choices=[];const seen=new Set();
+  if(legPool.length&&seeded(311+G.run*7)<0.6){
+    const lu=legPool[Math.floor(seeded(312+G.run)*legPool.length)];
+    seen.add(lu.id);choices.push(lu);
+  }
   let attempts=0;
   while(choices.length<3&&attempts<30){
     const u=pool[Math.floor(seeded(300+G.run*11+attempts)*pool.length)];
@@ -771,13 +935,15 @@ function rollUpgradeChoices(){
 function showUpgradeModal(){
   const m=document.getElementById('upg-modal');if(!m)return;
   document.getElementById('um-meta-v').textContent=G.meta;
+  // Round 5: show run summary (tier + streakBest + objDone) so player picks upgrade with context
+  const sum=document.getElementById('um-summary');if(sum){const r=G._run||{},t=endGameTier(r.lastObjDone||0,r.lastObjTotal||3);sum.textContent=` · ${t.ic}${t.label} 目标 ${r.lastObjDone||0}/${r.lastObjTotal||3}${r.streakBest>0?' 🔥×'+r.streakBest:''}`}
   const wrap=document.getElementById('upg-choices');
   wrap.innerHTML='';
   const choices=rollUpgradeChoices();
   choices.forEach(u=>{
     const canBuy=G.meta>=u.cost;
     const c=document.createElement('div');
-    c.className='upg-card'+(canBuy?'':' cant');
+    c.className='upg-card'+(u.cat==='阿姆斯特丹'?' amsterdam':'')+(u.cat==='传奇'?' legendary':'')+(canBuy?'':' cant');
     c.innerHTML=`<div class="uh"><span class="uc">${u.cat}</span><span class="up">★ ${u.cost}</span></div><div class="un">${u.t}</div><div class="ud">${u.d}</div>`;
     if(canBuy)c.onclick=()=>{pickUpgrade(u)};
     wrap.appendChild(c);
@@ -793,6 +959,19 @@ function pickUpgrade(u){
 }
 
 function curBldg(){return BLDGS.find(b=>G.p.x>b.x-4&&G.p.x<b.x+b.w+4&&G.p.y>b.y-4&&G.p.y<b.y+b.h+4)}
+// funify-v3 Round 18 — mouse-based building hover detection (BACKLOG #38 hover halo + Round 17 risk tooltip)
+function getHoverBldg(mx,my){
+  // BLDGS drawn as circle at (b.x+b.w/2, b.y+b.h/2) with radius b.r; also accept slightly outside circle for easier targeting
+  let hit=null,bestD=Infinity;
+  BLDGS.forEach(function(b){
+    const cxm=b.x+b.w/2,cym=b.y+b.h/2;
+    const dx=mx-cxm,dy=my-cym,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<=b.r+2 && d<bestD){bestD=d;hit=b}
+  });
+  return hit;
+}
+// Hover state — independent of player position (player gets red ring via curBldg; mouse gets white halo)
+G._hoverBldg=null;
 function inCanal(px,py){return CANALS.some(c=>px>c.x&&px<c.x+c.w&&py>c.y&&py<c.y+c.h)}
 function onBridge(px,py){return BRIDGES.some(b=>px>b.x-4&&px<b.x+b.w+4&&py>b.y-4&&py<b.y+b.h+4)}
 function nnBridge(px,py){let b=null,d=Infinity;BRIDGES.forEach(br=>{const bx=br.x+br.w/2,by=br.y+br.h/2,d2=Math.abs(px-bx)+Math.abs(py-by);if(d2<d){d=d2;b={x:bx,y:by}}});return b}
@@ -813,36 +992,46 @@ function enterBldg(){
 // MINI-GAMES
 // ═══════════════════════════════════════════
 function startBrew(){
+  showMgHint('brew');
   const types=['IPA','Stout','Lager'],recipes=[[1,0,2],[2,1,0],[0,2,1]];
   const i=Math.floor(seeded(41)*3);
   // Real brewery: target temp is hidden — brewer has to know IPA=55, Stout=68, Lager=48
   // from memory or recipe notes. Each batch's yeast health drifts ±15%.
   const order={type:types[i],recipe:recipes[i],temp:[55,68,48][i],limit:180,bonus:(hasUpgrade('ipa_recipe')&&types[i]==='IPA'?1.5:1)*(hasUpgrade('heineken_pass')&&types[i]==='IPA'?1.3:1)};
   const yeast=0.85+seeded(42+G.day*7)*0.3; // 0.85..1.15 batch variability
-  G.shop.order=order;MG.brew={ph:'sel',m:0,h:0,y:0,t:50,started:0,deadline:0,order:order,yeast};G.mg='brew';
+  G.shop.order=order;MG.brew={ph:'sel',m:0,h:0,y:0,t:50,started:0,deadline:0,order:order,yeast};G.mg='brew';G._mgEnterAt=Date.now();
   setStatus('🍺 酿酒订单',`订单:${order.type} · 目标温 ?°C(凭经验)${order.bonus>1?' · IPA配方 x'+order.bonus:''}`,'1/2/3选原料 · SPACE开始/完成');renderAll()
 }
 function brewIn(k){const s=MG.brew;if(!s)return;
   if(s.ph==='sel'){if(k==='1')s.m=(s.m+1)%3;if(k==='2')s.h=(s.h+1)%3;if(k==='3')s.y=(s.y+1)%3;if(k===' '){s.ph='brew';s.started=Date.now();s.deadline=s.started+s.order.limit*1000;setStatus('🍺 酿酒订单',`订单:${s.order.type} · 控温中`,'⬆⬇调温 · SPACE提交')}
   }else if(s.ph==='brew'){if(k==='arrowup')s.t=Math.min(90,s.t+3);if(k==='arrowdown')s.t=Math.max(20,s.t-3);if(k===' ')finBrew()}}
 function finBrew(timeout){const s=MG.brew;if(!s||s.ph==='done')return;s.ph='done';const o=s.order,recipeOk=s.m===o.recipe[0]&&s.h===o.recipe[1]&&s.y===o.recipe[2],tempErr=Math.abs(s.t-o.temp);
-  if(timeout||!recipeOk||tempErr>12){if(timeout&&G.bs[0]>0)G.bs[0]--;G.shop.order=null;addEvt('bad',timeout?'⏱ 酿酒订单超时，顾客流失':`🍺 订单${!recipeOk?'配方错误':'温差过大(>'+tempErr.toFixed(0)+'°C)'}`);setStatus(timeout?'❌ 订单超时':'❌ 订单失败',timeout?'库存-1':'tip 受损','按 Esc 离开');AUDIO.play('brew_fail');setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},900);return}
+  if(timeout||!recipeOk||tempErr>12){if(timeout&&G.bs[0]>0)G.bs[0]--;G.shop.order=null;if(G.shop.streak>0)addEvt('info',`🔥 酿酒连击中断 (×${G.shop.streak})`);G.shop.streak=0;addEvt('bad',timeout?'⏱ 酿酒订单超时，顾客流失':`🍺 订单${!recipeOk?'配方错误':'温差过大(>'+tempErr.toFixed(0)+'°C)'}`);setStatus(timeout?'❌ 订单超时':'❌ 订单失败',timeout?'库存-1':'tip 受损','按 Esc 离开');AUDIO.play('brew_fail');setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},900);return}
   // Quality scales with temp accuracy + yeast health. ±5°C is the "excellent" band.
   const tempAcc=Math.max(0.4, 1-tempErr*0.05); // 1.0 perfect, 0.6 at ±8°C, 0.4 at ±12°C
-  const base=Math.round((35+(10+o.temp/10)*tipFactor())*tempAcc*s.yeast),inc=Math.round(base*1.3*industryFactor('brewing')*(o.bonus||1));
+  // funify-v3 Round 3: brew streak multiplier — consecutive successes compound (Balatro style)
+  G.shop.streak=(G.shop.streak||0)+1;if(G.shop.streak>(G.shop.streakBest||0))G.shop.streakBest=G.shop.streak;
+  const streakMul=brewStreakMul(G.shop.streak);
+  const base=Math.round((35+(10+o.temp/10)*tipFactor())*tempAcc*s.yeast),inc=Math.round(base*1.3*industryFactor('brewing')*(o.bonus||1)*streakMul);
   const quality=tempAcc>=0.95?'★完美':tempAcc>=0.8?'好':'一般';
-  G.money+=inc;G.ind.brewing.xp+=Math.round(inc*(hasUpgrade('legacy_xp')?1.25:1));G.shop.order=null;addEvt('good',`🍺 ${o.type} 订单完成 +$${inc} · ${quality}`);setMsg(`🍺 ${quality} · +$${inc}`);addSch('🍺',`${o.type} +$${inc}`);G.mg=null;G.inside=null;chkLv('brewing');setStatus('✅ 订单完成',`+$${inc} · ${quality}`,'');tickObj('Brew',1);tickObj('Earn',inc);G._run.brewsFinished++;tryUnlock('brew_master');AUDIO.play('brew_ok');renderAll()}
+  G.money+=inc;G.ind.brewing.xp+=Math.round(inc*(hasUpgrade('legacy_xp')?1.25:1));G.shop.order=null;addEvt('good',`🍺 ${o.type} 订单完成 +$${inc} · ${quality}${streakMul>1?' · 🔥×'+G.shop.streak+'(x'+streakMul+')':''}`);setMsg(`🍺 ${quality} · +$${inc}${streakMul>1?' · 连击×'+G.shop.streak:''}`);addSch('🍺',`${o.type} +$${inc}`);G.mg=null;G.inside=null;chkLv('brewing');setStatus('✅ 订单完成',`+$${inc} · ${quality}${streakMul>1?' · 🔥×'+G.shop.streak+'(x'+streakMul+')':''}`,'');tickObj('Brew',1);tickObj('Earn',inc);G._run.brewsFinished++;tryUnlock('brew_master');AUDIO.play('brew_ok');
+  // funify-v3 Round 8: streak ≥5 big burst, normal success small burst (gold palette)
+  confettiBurst(400,260,{n:streakMul>=1.3?14:8,palette:CONFETTI_PALETTE.brew});
+  renderAll()}
 function updateBrew(){const s=MG.brew;if(!s||s.ph!=='brew')return;if(Date.now()>s.deadline)finBrew(true)}
 function startCoffee(){
+  showMgHint('coffee');
   if(hasMod('police_raid')||G.shop.coffeeBlockedDay===G.day){G.mg=null;G.inside=null;setStatus('🚓 咖啡店关闭','今日检查，暂不可经营','明日再来');setMsg('🌿 今日咖啡店停业');return}
   // Real Amsterdam coffeeshop: heat decays ~6%/s when idle (police patrol cools the street).
   // Each customer has a 7-12s patience window — if you dawdle they walk out and your tip + rep drops.
   const target=3+Math.floor(seeded(51)*5);
   MG.coffee={st:0,pr:15,ht:0,sd:0,earn:0,raid:false,c:null,target,warn:0,lastT:Date.now()};
-  G.mg='coffee';sCoffeeC();setStatus('🌿 咖啡店',`目标 ${target} 人 · 热度0% · 热度会自然下降`,'Q/W调价 · SPACE成交 · X拒客')
+  G.mg='coffee';G._mgEnterAt=Date.now();sCoffeeC();setStatus('🌿 咖啡店',`目标 ${target} 人 · 热度0% · 热度会自然下降`,'Q/W调价 · SPACE成交 · X拒客')
 }
 function sCoffeeC(){const s=MG.coffee;if(!s)return;
-  const undercover=seeded(60+s.sd*13)<.1;
+  // funify-v3 Round 11: legendary_no_raid 全套免疫 — 卧底概率归零 + 热度封顶 95 永不触发 police_raid
+  const noRaid=hasUpgrade('legendary_no_raid');
+  const undercover=noRaid?false:seeded(60+s.sd*13)<.1;
   if(undercover)G._run.sawUndercover=true;
   // Customer patience: 7-12s. Tourists patient, locals impatient.
   const patience=7+Math.floor(seeded(64+s.sd)*6);
@@ -866,16 +1055,19 @@ function updateCoffee(){
 }
 function coffeeIn(k){const s=MG.coffee;if(!s||s.raid)return;s.lastT=Date.now();if(k==='1')s.st=0;if(k==='2')s.st=1;if(k==='3')s.st=2;if(k==='q')s.pr=Math.max(5,s.pr-1);if(k==='w')s.pr=Math.min(50,s.pr+1);
   if(k==='x'&&s.c){setMsg(s.c.undercover?'🛡️ 拒绝卧底，安全 (-8°)' :'❌ 顾客离店 (-2°)');if(s.c.undercover){G.rep+=2;addEvt('good','🛡️ 识破卧底 +2 rep')}s.sd++;s.ht=Math.max(0,s.ht-(s.c.undercover?8:2));if(s.sd>=s.target)finCoffee();else sCoffeeC();renderAll();return}
-  if(k===' '){if(!s.c||s.sd>=s.target){finCoffee();return}const cst=[8,14,22];if(s.pr<=s.c.max){if(s.c.undercover){s.raid=true;G.shop.coffeeBlockedDay=G.day;G.bs[1]=Math.max(0,G.bs[1]-1);addEvt('bad','🚨 卧底成交，突击没收货物');setStatus('🚨 被突击！','卧底成交，咖啡店今日停业','明日才能继续');AUDIO.play('coffee_raid');G._run.coffeeRaid=true;setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},1200);return}s.earn+=s.pr;s.ht+=Math.round(s.pr/cst[s.st]*8);setMsg('✅ 成交');AUDIO.play('coffee_sale')}else{setMsg('❌ 出价过高，顾客走了 (-3°)');s.ht=Math.max(0,s.ht-3)}s.sd++;s.ht=Math.min(100,s.ht+3);if(s.ht>=100){s.raid=true;G.shop.coffeeBlockedDay=G.day;G.bs[1]=Math.max(0,G.bs[1]-1);setStatus('🚨 被突击！','热度过高，咖啡店今日停业','');AUDIO.play('coffee_raid');G._run.coffeeRaid=true;setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},1200);return}if(s.sd>=s.target)finCoffee();else sCoffeeC();renderAll()}}
-function finCoffee(){const s=MG.coffee;if(!s)return;G.money+=Math.round(s.earn*tipFactor());G.ind.coffee_shop.xp+=Math.round(s.earn*1.5);addEvt('good',`🌿 咖啡店 +$${Math.round(s.earn*tipFactor())}`);addSch('🌿',`咖啡店 +$${Math.round(s.earn*tipFactor())}`);G.mg=null;G.inside=null;chkLv('coffee_shop');setStatus('✅ 咖啡店打烊',`目标${s.sd}/${s.target} · +$${Math.round(s.earn*tipFactor())}`,'');tickObj('Earn',Math.max(1,Math.floor(s.earn/10)));tickObj('Explore',1);if(!G._run.coffeeRaid&&!G._run.sawUndercover)tryUnlock('coffee_legend');AUDIO.play('objective');renderAll()}
+  if(k===' '){if(!s.c||s.sd>=s.target){finCoffee();return}const cst=[8,14,22];if(s.pr<=s.c.max){if(s.c.undercover){if(!noRaid){s.raid=true;G.shop.coffeeBlockedDay=G.day;G.bs[1]=Math.max(0,G.bs[1]-1);addEvt('bad','🚨 卧底成交，突击没收货物');setStatus('🚨 被突击！','卧底成交，咖啡店今日停业','明日才能继续');AUDIO.play('raid_alarm');AUDIO.play('coffee_raid');G._run.coffeeRaid=true;setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},1200);return}setMsg('🛡️ 卧底交易（传奇免突击已豁免）');}else{s.earn+=s.pr;s.ht+=Math.round(s.pr/cst[s.st]*8);setMsg('✅ 成交');AUDIO.play('coffee_sale')}}else{setMsg('❌ 出价过高，顾客走了 (-3°)');s.ht=Math.max(0,s.ht-3)}s.sd++;s.ht=Math.min(noRaid?95:100,s.ht+3);if(s.ht>=100){if(!noRaid){s.raid=true;G.shop.coffeeBlockedDay=G.day;G.bs[1]=Math.max(0,G.bs[1]-1);setStatus('🚨 被突击！','热度过高，咖啡店今日停业','');AUDIO.play('raid_alarm');AUDIO.play('coffee_raid');G._run.coffeeRaid=true;setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},1200);return}setMsg('🌡️ 热度封顶 95（传奇免突击）');}if(s.sd>=s.target)finCoffee();else sCoffeeC();renderAll()}}
+function finCoffee(){const s=MG.coffee;if(!s)return;G.money+=Math.round(s.earn*tipFactor());G.ind.coffee_shop.xp+=Math.round(s.earn*1.5);addEvt('good',`🌿 咖啡店 +$${Math.round(s.earn*tipFactor())}`);addSch('🌿',`咖啡店 +$${Math.round(s.earn*tipFactor())}`);G.mg=null;G.inside=null;chkLv('coffee_shop');setStatus('✅ 咖啡店打烊',`目标${s.sd}/${s.target} · +$${Math.round(s.earn*tipFactor())}`,'');tickObj('Earn',Math.max(1,Math.floor(s.earn/10)));tickObj('Explore',1);if(!G._run.coffeeRaid&&!G._run.sawUndercover)tryUnlock('coffee_legend');AUDIO.play('objective');
+  // funify-v3 Round 8: green/gold confetti (avoid over-celebrate during police raid)
+  if(!s.raid)confettiBurst(400,260,{n:8,palette:CONFETTI_PALETTE.coffee});
+  renderAll()}
 
-function startShroom(){if(hasMod('police_raid')){G.inside=null;setStatus('🚓 SmartShop 关闭','今日检查，暂不可经营','明日再来');return}
+function startShroom(){showMgHint('shroom');if(hasMod('police_raid')){G.inside=null;setStatus('🚓 SmartShop 关闭','今日检查，暂不可经营','明日再来');return}
   // Strain knowledge carries across runs (G.strainNotes remembers your first grow).
   // First time growing a strain the targets are hidden — you learn by trial.
   if(!G.strainNotes)G.strainNotes={};
   const sts=[{n:'金色导师',h:70,t:24,l:6},{n:'亚马逊',h:85,t:28,l:4},{n:'哲学家',h:55,t:20,l:10}];
   const st=sts[Math.floor(seeded(120)*3)];const known=!!G.strainNotes[st.n];
-  MG.shroom={hu:60,tp:22,li:8,gr:0,tn:0,mx:4,st,known,contam:false,started:Date.now()};G.mg='shroom';
+  MG.shroom={hu:60,tp:22,li:8,gr:0,tn:0,mx:4,st,known,contam:false,started:Date.now()};G.mg='shroom';G._mgEnterAt=Date.now();
   setStatus('🍄 蘑菇种植',`菌株: ${st.n}${known?' (笔记已有)':' (首次种植 — 目标未知)'}`,'⬆⬇←→QW调参 SPACE推进')}
 function shroomIn(k){const s=MG.shroom;if(!s)return;if(k==='arrowup')s.hu=Math.min(100,s.hu+5);if(k==='arrowdown')s.hu=Math.max(0,s.hu-5);if(k==='arrowright')s.tp=Math.min(35,s.tp+1);if(k==='arrowleft')s.tp=Math.max(10,s.tp-1);if(k==='q')s.li=Math.max(0,s.li-1);if(k==='w')s.li=Math.min(14,s.li+1);
   if(k===' '){
@@ -886,6 +1078,9 @@ function shroomIn(k){const s=MG.shroom;if(!s)return;if(k==='arrowup')s.hu=Math.m
     if(seeded(135+s.tn)<contamRisk){s.contam=true;addEvt('bad','🦠 培养皿污染，本批报废');setStatus('❌ 污染报废',`参数过偏导致菌株感染 · 收入 $0`,'按 Esc 离开');setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},900);return}
     const acc=1-err/3;
     s.gr+=20+acc*15;s.tn++;
+    // funify-v3 Round 24: float "+X%" 飘字 on successful grow tick
+    if(!s.floatTexts)s.floatTexts=[];
+    s.floatTexts.push({text:'+'+Math.round(20+acc*15)+'%',x:380,y:380,born:Date.now(),col:acc>0.7?'#78ffa0':acc>0.4?'#e8d878':'#f0a878'});
     // Learn the strain on first successful grow (>=2 stars)
     if(!G.strainNotes[st.n]&&s.tn>=s.mx){G.strainNotes[st.n]={h:st.h,t:st.t,l:st.l};addEvt('info',`📓 笔记记录菌株 ${st.n}: 湿${st.h}% · 温${st.t}°C · 光${st.l}h`)}
     if(s.tn>=s.mx||s.gr>=100){
@@ -893,23 +1088,30 @@ function shroomIn(k){const s=MG.shroom;if(!s)return;if(k==='arrowup')s.hu=Math.m
       const bonus=q*12+5;G.money+=bonus;G.ind.smart_shop.xp+=bonus*2;
       addEvt('good',`🍄 收获 +$${bonus} · ${'★'.repeat(q)}品质`);addSch('🍄',`蘑菇 +$${bonus}`);
       G.mg=null;G.inside=null;chkLv('smart_shop');setStatus('✅ 蘑菇收获',`${'★'.repeat(q)}品质 +$${bonus}`,'');
-      tickObj('Earn',Math.max(1,Math.floor(bonus/10)));tickObj('Explore',1)
+      tickObj('Earn',Math.max(1,Math.floor(bonus/10)));tickObj('Explore',1);AUDIO.play('shroom_pick');
+      // funify-v3 Round 8: green/brown burst — bigger on ★5 (perfect grow)
+      confettiBurst(400,320,{n:q>=5?14:7,palette:CONFETTI_PALETTE.shroom})
     }else{setStatus('🍄 生长中',`${Math.round(s.gr)}% 回合${s.tn+1}/${s.mx} · 污染风险 ${Math.round(contamRisk*100)}%`,'继续调参')}
     renderAll()}}
 
 function startStation(){if(G.ti!==1&&G.ti!==3){setStatus('🚇 中央车站','非通勤时间','Morning/Evening 才能通勤');return}G.mg='station';setStatus('🚇 中央车站 — 通勤时间','💰 买票 -$5 · 🎫 逃票 · ❌ 不去','按 1/2/3 选择')}
 function commuteChoice(n){if(n==='1'){G.money-=5;G.mood=Math.min(2,G.mood+1);G.mg=null;G.inside=null;addEvt('info','🚇 买票通勤 -$5');setStatus('🚇 通勤','安全到达','')}else if(n==='2'&&G.escapeLevel>0)tryEscape();else if(n==='3'||n==='escape'){G.mg=null;G.inside=null;setStatus('🟢 就绪','','')}renderAll()}
 function tryEscape(){const t=ESCAPE_TECHS[G.escapeLevel-1],ok=seeded(130+G.escUsed)<t.suc;G.escUsed++;G.mg=null;G.inside=null;if(ok){G.mood=Math.min(2,G.mood+1);addEvt('good',`🚇 逃票成功：${t.name}，省$5`);setStatus('✅ 逃票成功','省 $5 · 心情 +1','')}else{G.money-=20;G.mood=Math.max(-2,G.mood-1);addEvt('bad','🚇 逃票失败，罚款 -$20');setStatus('❌ 逃票失败','罚款 -$20 · 心情 -1','')}renderAll()}
-function learnEscape(teacher){const t=ESCAPE_TECHS[G.escapeLevel];if(!t||t.teacher!==teacher||G.escapeLearnDay===G.day){setMsg(G.escapeLearnDay===G.day?'今天已经学过技术':'请找对应老师');return}G.escapeLevel=t.lv;G.escapeTeacher=teacher;G.escapeLearnDay=G.day;addEvt('good',`${teacher} 教会你：${t.name}`);setMsg(`🎫 学会${t.name}`);renderAll()}
+function learnEscape(teacher){const t=ESCAPE_TECHS[G.escapeLevel];if(!t||t.teacher!==teacher||G.escapeLearnDay===G.day){setMsg(G.escapeLearnDay===G.day?'今天已经学过技术':'请找对应老师');return}G.escapeLevel=t.lv;G.escapeTeacher=teacher;G.escapeLearnDay=G.day;
+  // funify-v3 Round 13 — 教学风格二次抽样 (BACKLOG #11 close)
+  const teach=NPC_TEACH_FLAVOR[teacher]||'...';
+  addEvt('good',`🎓 ${teacher} 教会你 ${t.name} — ${teach}`);
+  setMsg(`🎓 ${teacher} 教会你 ${t.name}`);
+  renderAll()}
 
 function getDiscoveredCount(){return G.surfDiscovered.length}
-function startSurf(){showWaveSelect()}
+function startSurf(){showMgHint('surf');showWaveSelect()}
 function showWaveSelect(){G.mg='waveSelect';MG.waveSelect={};setStatus('🏄 选择浪点',`已发现 ${getDiscoveredCount()}/7`,'按 1-7 选择 · ESC 取消');renderAll()}
 function hideWaveSelect(){if(G.mg==='waveSelect'){G.mg=null;G.inside=null;setStatus('🟢 就绪','','');renderAll()}}
 function pickWavePoint(n){const w=WAVE_POINTS[n-1];if(!w)return;G.todayWave=w;
   // Real surf: waves come in SETS — between sets there's a lull with no waves.
   // wx position auto-advances only during "set" phase. Aim for the green zone on the wave.
-  G.mg='surf';MG.surf={wave:w,wx:400,sc:0,at:0,stamina:100,combo:0,perfect:0,started:Date.now(),
+  G.mg='surf';G._mgEnterAt=Date.now();MG.surf={wave:w,wx:400,sc:0,at:0,stamina:100,combo:0,perfect:0,perfectStreak:0,started:Date.now(),
     lastCatch:0,drowned:false,ended:false,setPhase:true,nextLull:Date.now()+3500,wipeouts:0};
   if(!G.surfDiscovered.includes(w.id)){G.surfDiscovered.push(w.id);G.meta+=5;addEvt('good',`🗺️ 首次发现 ${w.n} +5★ meta`)}
   setStatus('🏄 '+w.n,`难度${w.diff} · 特殊:${w.special} · 浪组周期`,'SPACE抓浪 · 绿区=perfect · 错过=翻船');renderAll()}
@@ -929,15 +1131,18 @@ function surfIn(k){const s=MG.surf;if(!s||s.ended||k!==' ')return;
     return;
   }
   let sc=inGreen?Math.round((1-Math.abs(pos-0.7)/0.1)*30+10):Math.round((1-Math.abs(pos-0.7)/0.3)*10+3);
-  if(inGreen){s.combo++;s.perfect++}else s.combo=0;
+  if(inGreen){s.combo++;s.perfect++;s.perfectStreak++}else{s.combo=0;s.perfectStreak=0}
   if(barrel)sc+=50;
   s.sc+=sc;s.at++;s.stamina=Math.max(0,s.stamina-(5+Math.floor(s.at/15))); // board fatigue after many catches
   s.lastCatch=Date.now();
   s.wx=400+seeded(150+s.at)*200;
   if(barrel)setMsg('🏄 Perfect barrel +50!');
-  else setMsg(`🏄 抓浪 +${sc} · 体力${s.stamina}% · combo×${s.combo}`);
+  else setMsg(`🏄 抓浪 +${sc} · 体力${s.stamina}% · combo×${s.combo}${inGreen&&s.perfectStreak>=2?' 🔥×'+s.perfectStreak+' ('+surfPerfectStreakMul(s.perfectStreak)+'x)':''}`);
   if(s.stamina<=0){s.drowned=true;finSurf(true)}else renderAll()}
-function finSurf(drowned){const s=MG.surf;if(!s||s.ended)return;s.ended=true;const perfectBonus=s.perfect*50;const bonus=s.combo>=3?1.2:1,raw=Math.round((s.sc+perfectBonus)*bonus*tipFactor()),inc=drowned?Math.floor(raw*.5):raw;G.money+=inc;G.ind.surfing.xp+=inc*3;const item=rollSurfItem(s.wave);G.inventory.push(item);addEvt(drowned?'bad':'good',`🏄 ${s.wave.n} 带回${item} · +$${inc}${perfectBonus>0?' (含 perfect ×'+s.perfect+')':''}`);addSch('🏄',`冲浪 +$${inc} · ${item}`);G.mg=null;G.inside=null;chkLv('surfing');setStatus(drowned?'🌊 溺水':'✅ 冲浪结束',`${s.sc}分 · ${item} · +$${inc}`,'');tickObj('Earn',Math.max(1,Math.floor(inc/10)));tickObj('Explore',1);if(s.perfect>=3)tryUnlock('surf_perfectionist');AUDIO.play(s.perfect>=3?'surf_perfect':'surf_catch');renderAll()}
+function finSurf(drowned){const s=MG.surf;if(!s||s.ended)return;s.ended=true;const perfectStreakMul=surfPerfectStreakMul(s.perfectStreak)*(hasUpgrade('legendary_perfect')?1.5:1);const perfectBonus=Math.round(s.perfect*50*perfectStreakMul);const bonus=s.combo>=3?1.2:1,raw=Math.round((s.sc+perfectBonus)*bonus*tipFactor()),inc=drowned?Math.floor(raw*.5):raw;G.money+=inc;G.ind.surfing.xp+=inc*3;const item=rollSurfItem(s.wave);G.inventory.push(item);addEvt(drowned?'bad':'good',`🏄 ${s.wave.n} 带回${item} · +$${inc}${perfectBonus>0?' (含 perfect ×'+s.perfect+' streak×'+perfectStreakMul+')':''}`);addSch('🏄',`冲浪 +$${inc} · ${item}`);G.mg=null;G.inside=null;chkLv('surfing');setStatus(drowned?'🌊 溺水':'✅ 冲浪结束',`${s.sc}分 · ${item} · +$${inc}`,'');tickObj('Earn',Math.max(1,Math.floor(inc/10)));tickObj('Explore',1);if(s.perfect>=3)tryUnlock('surf_perfectionist');AUDIO.play(s.perfect>=3?'surf_perfect':'surf_catch');
+  // funify-v3 Round 8: blue/silver burst — big if perfectStreak≥4 (celebrate streak), small if drowned (skip)
+  if(!drowned)confettiBurst(400,280,{n:s.perfectStreak>=4?14:8,palette:CONFETTI_PALETTE.surf});
+  renderAll()}
 function updateSurf(){const s=MG.surf;if(!s||G.mg!=='surf'||s.ended)return;
   // Real waves come in sets: wx position only moves during "set" phase; lulls pause it.
   // Each set lasts ~3s, then ~1.5s lull, then a new set. Auto-play exploits this naturally.
@@ -953,66 +1158,115 @@ function updateSurf(){const s=MG.surf;if(!s||G.mg!=='surf'||s.ended)return;
 // Synergy map: certain AI research topic pairs combine well. Real conferences reward
 // methodological coherence (e.g. red-teaming causal claims). Picks the right pair = bonus.
 const TOPIC_SYNERGY={'红队测试+因果推断':20,'红队测试+机制解释':15,'因果推断+机制解释':15,'偏好建模+价值对齐':12,'对抗鲁棒+红队测试':12,'公平约束+价值对齐':10};
+// funify-v3 (B6 academic): venue data — threshold + multiplier + rebuttal cost
+const VENUE_DEF={'本地研讨':{thr:30,mult:1.0,rebuttal:3},'ICML投稿':{thr:50,mult:1.4,rebuttal:5},'NeurIPS投稿':{thr:65,mult:2.0,rebuttal:10},'ACL投稿':{thr:80,mult:1.8,rebuttal:15}};
+// funify-v3 (B6 academic): partial credit — star rating + label for rejected papers (Balatro "near-miss" feedback)
+function acadPartialCredit(sc,venue){const v=VENUE_DEF[venue]||VENUE_DEF['本地研讨'];const thr=v.thr;const gap=thr-sc;if(sc>=thr)return{stars:5,label:'✓接收',col:'#78c878',gap:0,thr,accepted:true};if(gap<=8)return{stars:2,label:'!差一丢丢',col:'#e8a020',gap,thr,accepted:false};if(gap<=20)return{stars:1,label:'~凑合拒稿',col:'#e8a020',gap,thr,accepted:false};return{stars:0,label:'✗拒稿',col:'#f05050',gap,thr,accepted:false}}
+// funify-v3 (B6 academic): rebuttal cost — pay 70% of the would-have-been pay to retry with score+15 boost
+function acadRebuttalCost(venue){const v=VENUE_DEF[venue]||VENUE_DEF['本地研讨'];return v.rebuttal}
+// funify-v3 (B6 academic): applied score after a successful rebuttal — boost +15 (one-shot)
+function acadRebuttalBoost(sc){return sc+15}
+// funify-v3 Round 16: write speed control — 2 key toggles 1× ↔ 2×, write duration + SPACE cooldown scale inversely
+function acadWriteMs(s){return s&&s.speed?Math.round(3000/s.speed):3000}
+function acadSubmitCooldownMs(s){return s&&s.speed?Math.round(300/s.speed):300}
 function startAcad(){
+  showMgHint('academic');
   const topics=['偏好建模','价值对齐','红队测试','对抗鲁棒','因果推断','机制解释','安全审查','公平约束'];
   const ids=[];for(let i=0;i<5;i++)ids.push({t:topics[Math.floor(seeded(160+i)*topics.length)],q:1+Math.floor(seeded(170+i)*3)});
   // Conference prestige varies: certain days have major venues (NeurIPS/ACL) = more $$$ if accepted
   const venuePool=['本地研讨','ICML投稿','NeurIPS投稿','ACL投稿'];
   const venue=G.day===5||G.day===7?venuePool[3]:G.day===3?venuePool[2]:venuePool[0];
-  MG.academic={ids,ph:'gather',sel:[],sc:0,venue};
-  G.mg='academic';setStatus('📚 学术',`投稿目标:${venue} · 选2个主题(协同组合加分)`,'按1-5选2个')}
-function acadIn(k){const s=MG.academic;if(!s)return;if(s.ph==='gather'&&k>='1'&&k<='5'){const i=parseInt(k)-1;if(s.sel.includes(i))s.sel=s.sel.filter(x=>x!==i);else if(s.sel.length<2)s.sel.push(i);if(s.sel.length===2){
+  MG.academic={ids,ph:'gather',sel:[],sc:0,venue,rebuttals:0,speed:1};
+  G.mg='academic';G._mgEnterAt=Date.now();setStatus('📚 学术',`投稿目标:${venue} · 门槛 ${VENUE_DEF[venue].thr}分 · 选2个主题(协同组合加分)`,'按1-5选2个 · 写论文中按2切换1×/2×速')}
+function acadIn(k){const s=MG.academic;if(!s)return;
+  if(s.ph==='gather'&&k>='1'&&k<='5'){const i=parseInt(k)-1;if(s.sel.includes(i))s.sel=s.sel.filter(x=>x!==i);else if(s.sel.length<2)s.sel.push(i);if(s.sel.length===2){
     s.ph='write';s.ws=Date.now();
     const t1=s.ids[s.sel[0]].t,t2=s.ids[s.sel[1]].t;
     const baseQ=s.ids[s.sel[0]].q*15+s.ids[s.sel[1]].q*15;
     const bonus=(TOPIC_SYNERGY[t1+'+'+t2]||TOPIC_SYNERGY[t2+'+'+t1]||0);
     s.synergy=bonus;
     s.sc=30+baseQ+bonus+Math.floor(seeded(180+G.day)*15);
-    setStatus('📚 写论文',`${t1} + ${t2}${bonus>0?' ✨协同+'+bonus:''}`,`预计${s.sc}分 · ${s.venue} SPACE提交`)}}
-  if(s.ph==='write'&&k===' '&&Date.now()-s.ws>300){
-    const ok=s.sc>60;
+    const pc=acadPartialCredit(s.sc,s.venue);
+    setStatus('📚 写论文',`${t1} + ${t2}${bonus>0?' ✨协同+'+bonus:''}${s.speed===2?' ⚡2×速':''}`,`预计${s.sc}分 · ${s.venue}(门槛 ${pc.thr}) ${pc.label} · SPACE提交 · 2 切换速档`)}}
+  // Speed toggle (Round 16): write phase, key 2 flips 1× ↔ 2×
+  if(s.ph==='write'&&k==='2'){s.speed=s.speed===2?1:2;setMsg(`⚡ 写论文速度 ${s.speed}× · ${s.speed===2?'SPACE冷却 '+acadSubmitCooldownMs(s)+'ms':''}`);return}
+  // Rebuttal: pay to boost +15 and try again (funify-v3 Round 24: 5s cooldown after use)
+  if(s.ph==='write'&&(k==='r'||k==='R')){
+    if(s.rebutted===true){setMsg('� 已申诉过 (本回合不可重复)');return}
+    if(s._rebuttalAt&&Date.now()-s._rebuttalAt<5000){setMsg('⏳ 申诉冷却 '+Math.ceil((5000-(Date.now()-s._rebuttalAt))/1000)+'s');return}
+    const pc=acadPartialCredit(s.sc,s.venue);
+    if(pc.accepted){setMsg('✅ 已接收,无需申诉');return}
+    const cost=acadRebuttalCost(s.venue);
+    if(G.money<cost){setMsg(`💸 申诉费 $${cost},余额不足`);return}
+    G.money-=cost;s.rebuttals=(s.rebuttals||0)+1;s.rebutted=true;s._rebuttalAt=Date.now();
+    const newSc=acadRebuttalBoost(s.sc);s.sc=newSc;
+    const pc2=acadPartialCredit(s.sc,s.venue);
+    setMsg(`📝 申诉 -$${cost} · 分数 ${newSc-15}→${newSc} · ${pc2.label} · 5s冷却`);
+    return}
+  if(s.ph==='write'&&k===' '&&Date.now()-s.ws>acadSubmitCooldownMs(s)){
+    const pc=acadPartialCredit(s.sc,s.venue);
+    const ok=pc.accepted;
     // Venue multiplier: NeurIPS/ACL pays 2x if accepted, but rejection rate is higher too.
-    const venueMult=s.venue==='NeurIPS投稿'?2:s.venue==='ACL投稿'?1.8:s.venue==='ICML投稿'?1.4:1;
+    const venueMult=(VENUE_DEF[s.venue]||VENUE_DEF['本地研讨']).mult;
     const basePay=ok?60:15;const g=Math.round(basePay*venueMult);
     G.money+=g;G.rep+=Math.round(s.sc/10);G.ind.academic.xp+=Math.round(s.sc*1.5);
-    addEvt(ok?'good':'info',`📚 ${s.venue}${ok?'接收':'被拒'} ${s.sc}分 +$${g}${s.synergy>0?' (含协同+'+s.synergy+')':''}`);
+    addEvt(ok?'good':'info',`📚 ${s.venue}${ok?'接收':'被拒'} ${s.sc}分 ${pc.label} +$${g}${s.synergy>0?' (含协同+'+s.synergy+')':''}`);
     addSch('📚',`${s.venue} +$${g}`);
     G.mg=null;G.inside=null;chkLv('academic');
-    setStatus(ok?'🎉 论文接收':`📋 论文被拒`, `${s.sc}分 · ${s.venue} +$${g}`,'');
-    tickObj('Earn',Math.max(1,Math.floor(g/10)));tickObj('Explore',1);tickObj('Talk',1);renderAll()}}
+    setStatus(ok?'🎉 论文接收':`📋 论文被拒 (${pc.label})`, `${s.sc}分 · ${s.venue} +$${g}`,'');
+    tickObj('Earn',Math.max(1,Math.floor(g/10)));tickObj('Explore',1);tickObj('Talk',1);
+    // funify-v3 Round 8: purple/gold burst — biggest on accepted × high venue (ACL/NeurIPS), small otherwise
+    if(ok)confettiBurst(400,200,{n:s.venue==='ACL投稿'?14:s.venue==='NeurIPS投稿'?10:7,palette:CONFETTI_PALETTE.acad});
+    renderAll()}}
 
 // === V-D 酒吧 · 黑市讨价 === 8 archetype + Q/W 调整 + SPACE 成交 + X 拒客
 const BAR_ARCH=[{n:'Normal',face:'🧑',floor:6,max:14},{n:'Regular',face:'🧔',floor:8,max:18},{n:'Picky',face:'🧐',floor:4,max:10},{n:'Drunk',face:'🥴',floor:5,max:22},{n:'Group',face:'👨‍👩‍👧',floor:12,max:30},{n:'Tourist',face:'🧳',floor:10,max:24},{n:'Local',face:'🧓',floor:7,max:15},{n:'VIP',face:'🎩',floor:25,max:60}];
 const BAR_DRINK=['🥃','🍺','🍷'];
+// funify-v3 Round 17 (BACKLOG #7 节奏): 3-tier day difficulty — day 1-3 入门档 / day 4-5 标准档 / day 6-7 高难档
+// - 入门档: 4 友好 archetype (Normal/Regular/Local/Tourist), +25% patience, +1 顾客, 25% 推荐需求 (练习)
+// - 标准档: 5 archetype (+Picky/Group), 默认 patience, 35% 推荐需求 (中段)
+// - 高难档: 7 全 archetype (+Drunk), -15% patience, 50% 推荐需求 (冲刺)
+function barDayDifficulty(day){
+  if(day<=3)return {tier:'easy',poolNames:['Normal','Regular','Local','Tourist'],patienceMult:1.25,mxDelta:1,wantRecoP:0.25,label:'🌱 入门档',color:'#78c878'};
+  if(day<=5)return {tier:'normal',poolNames:['Normal','Regular','Local','Tourist','Picky','Group'],patienceMult:1.0,mxDelta:0,wantRecoP:0.35,label:'⚡ 标准档',color:'#e8a020'};
+  return           {tier:'hard', poolNames:['Normal','Regular','Local','Tourist','Picky','Drunk','Group'],patienceMult:0.85,mxDelta:0,wantRecoP:0.5,label:'🔥 高难档',color:'#f05050'};
+}
 function startBar(){
-  const todays=[];for(let i=0;i<BAR_ARCH.length;i++)todays.push(BAR_ARCH[i]);
+  showMgHint('bar');
+  const diff=barDayDifficulty(G.day);
+  // Filter pool by tier (VIP always allowed; injected again below for VIP days)
+  const todays=BAR_ARCH.filter(a=>a.n==='VIP'||diff.poolNames.includes(a.n));
   const dayPick=Math.floor(seeded(70)*todays.length),special=todays.splice(dayPick,1)[0];
   const isVipDay=G.day===5||G.day===7;
   const pool=todays;if(isVipDay)pool.unshift(BAR_ARCH[7]);
   const recoIdx=Math.floor(seeded(71)*BAR_DRINK.length);
   // Track regulars across this Run. Returning customers tip +20%.
   if(!G.barRegulars)G.barRegulars=[];
-  MG.bar={cs:[],sd:0,earn:0,combo:0,mx:6,offer:null,reco:recoIdx,recoDrink:BAR_DRINK[recoIdx],pool,vipDay:isVipDay};G.mg='bar';sBarC();
-  setStatus('🍻 黑市讨价',`今日推荐 ${BAR_DRINK[recoIdx]} (命中 +tip) · 耐心倒计时`,'顾客开价 · Q/W 调整 · SPACE 成交 · X 拒客')
+  MG.bar={cs:[],sd:0,earn:0,combo:0,mx:6+diff.mxDelta,offer:null,reco:recoIdx,recoDrink:BAR_DRINK[recoIdx],pool,vipDay:isVipDay,diff};G.mg='bar';G._mgEnterAt=Date.now();sBarC();
+  setStatus('🍻 黑市讨价',`今日推荐 ${BAR_DRINK[recoIdx]} (命中 +tip) · 耐心倒计时 · ${diff.label}`,'顾客开价 · Q/W 调整 · SPACE 成交 · X 拒客')
 }
 function sBarC(){
   const s=MG.bar;if(!s)return;
   if(s.sd>=s.mx){finBar();return}
+  const diff=s.diff||barDayDifficulty(G.day);
   const arch=s.pool[Math.floor(seeded(72+s.sd)*s.pool.length)]||BAR_ARCH[Math.floor(seeded(72+s.sd)*BAR_ARCH.length)];
   const floor=arch.floor,ceiling=arch.max;
   const offer=Math.max(floor+1,Math.min(ceiling-1,floor+Math.floor(seeded(73+s.sd)*(ceiling-floor)*0.6)));
-  // 35% of customers ask for today's recommended drink (preference match)
-  const wantReco=seeded(76+s.sd)<0.35;
+  // Tier-scaled: easy 25% / normal 35% / hard 50% customers ask for today's recommended drink
+  const wantReco=seeded(76+s.sd)<diff.wantRecoP;
   const drink=wantReco?s.recoDrink:BAR_DRINK[Math.floor(seeded(75+s.sd)*BAR_DRINK.length)];
   const isRegular=G.barRegulars.includes(arch.n);
-  s.cs.push({arch,face:arch.face,faceMark:arch.n==='VIP'?'🎩':'',patience:6+Math.floor(seeded(74+s.sd)*4),
-    born:Date.now(),wantReco,isRegular,offer,floor,ceiling,drink});
+  // Tier-scaled patience: easy ×1.25 / normal ×1.0 / hard ×0.85 (min 3s floor)
+  const basePatience=6+Math.floor(seeded(74+s.sd)*4);
+  const patience=Math.max(3,Math.round(basePatience*diff.patienceMult));
+  s.cs.push({arch,face:arch.face,faceMark:arch.n==='VIP'?'🎩':'',patience,
+    born:Date.now(),wantReco,isRegular,offer,floor,ceiling,drink,diffLabel:diff.label});
   s.offer=s.cs[s.cs.length-1];
   renderAll();
 }
 function barIn(k){const s=MG.bar;if(!s)return;const cur=s.cs[s.cs.length-1];if(!cur)return;
-  if(k==='q')cur.offer=Math.max(cur.floor,cur.offer-1);
-  if(k==='w')cur.offer=Math.min(cur.ceiling,cur.offer+1);
+  if(k==='q'){cur.offer=Math.max(cur.floor,cur.offer-1);AUDIO.play('bar_clink')}
+  if(k==='w'){cur.offer=Math.min(cur.ceiling,cur.offer+1);AUDIO.play('bar_clink')}
   if(k===' '){if(cur.offer>=cur.ceiling){setMsg('😅 报太高，顾客走');cur.patience-=2;s.cs.pop();s.sd++;if(s.sd>=s.mx)finBar();else sBarC();renderAll();return}
     // Drink match bonus: if you served what they wanted, +20% tip. Mismatch: -10%.
     const drinkMatch=cur.drink===s.recoDrink;
@@ -1025,7 +1279,7 @@ function barIn(k){const s=MG.bar;if(!s)return;const cur=s.cs[s.cs.length-1];if(!
     if(!G.barRegulars.includes(cur.arch.n))G.barRegulars.push(cur.arch.n);
     const tag=drinkMatch?' ✨命中推荐':cur.wantReco?' (拒绝想要的酒)':'';
     const reg=regularBonus?' 👤常客+20%':'';
-    addEvt('good',`🍻 ${cur.face}${cur.arch.n} 成交 +$${final}${tag}${reg}`);setMsg(`✅ ${cur.arch.n} +$${final}${tag}`);
+    addEvt('good',`🍻 ${cur.face}${cur.arch.n} 成交 +$${final}${tag}${reg}`);setMsg(`✅ ${cur.arch.n} +$${final}${tag}`);AUDIO.play('bar_sale');
     s.cs.pop();
     if(s.sd>=s.mx)finBar();else sBarC();renderAll();return}
   if(k==='x'){setMsg('🚶 顾客离店');s.cs.pop();s.sd++;if(s.sd>=s.mx)finBar();else sBarC();renderAll();return}
@@ -1045,7 +1299,10 @@ function finBar(){
   addEvt('good',`🍻 酒吧打烊 · combo最高${s.combo} · +$${inc}`);addSch('🍻',`酒吧打烊 +$${inc}`);
   G.mg=null;G.inside=null;chkLv('brewing');
   setStatus('✅ 酒吧打烊',`服务${s.sd}人 · +$${inc}`+(s.vipDay?' · VIP 日':''),'');
-  tickObj('Serve',s.sd);tickObj('Earn',Math.max(1,Math.floor(inc/10)));AUDIO.play('objective');renderAll();
+  tickObj('Serve',s.sd);tickObj('Earn',Math.max(1,Math.floor(inc/10)));AUDIO.play('objective');
+  // funify-v3 Round 8: red/gold burst — bigger on combo≥3 (celebrate combo)
+  confettiBurst(400,280,{n:s.combo>=3?12:7,palette:CONFETTI_PALETTE.bar});
+  renderAll();
 }
 
 // ═══════════════════════════════════════════
@@ -1056,15 +1313,47 @@ function shadeColor(hex, light){const c=parseInt(hex.slice(1),16);return 'rgb('+
 function drawMap(){
   // ═══════════════════════════════════════════
   // Mini Metro-style Amsterdam map
-  // Layer order: static-blit (ground+streets+districts+parks+churches+
-  //   legend+compass+DAM) → canals → bridges → CIVIC → houseboats →
-  //   BLDGS → street labels → player → replica overlay.
-  // R7: static background is cached as an offscreen canvas; drawMap only
-  //     draws the truly dynamic layer each frame.
+  // Layer order: ground → streets → parks → canals → bridges →
+  //              districts (faded) → CIVIC houses → houseboats →
+  //              BLDGS (circles+icon) → street labels → canals labels →
+  //              churches → legend → player
   // ═══════════════════════════════════════════
 
-  // ── 0. Static background (paper + streets + districts + parks + churches + legend + compass) ──
-  cx.drawImage(getStaticMapLayer(), 0, 0);
+  // ── 1. Cream paper-like ground (Amsterdam cobblestone base) ──
+  cx.fillStyle='#f0e8d4';cx.fillRect(0,0,W,H);
+
+  // ── 2. Subtle paper texture (dots) ──
+  cx.fillStyle='#e0d4ba';for(var i=0;i<W;i+=8){for(var j=0;j<H;j+=8){if(((i*7+j*13)%23)===0)cx.fillRect(i,j,1,1)}}
+
+  // ── 3. District labels (small, faded — backdrop) ──
+  cx.save();cx.globalAlpha=0.18;cx.font='bold 11px sans-serif';cx.textAlign='center';
+  DISTRICTS.forEach(function(d){cx.fillStyle=d.cl;cx.fillText(d.t,d.x,d.y)});
+  cx.restore();
+
+  // ── 4. Streets (thin lines, real Amsterdam street grid pattern) ──
+  cx.strokeStyle='#d8c8a8';cx.lineWidth=2;
+  cx.beginPath();cx.moveTo(0,200);cx.lineTo(800,200);cx.stroke();
+  cx.beginPath();cx.moveTo(0,380);cx.lineTo(800,380);cx.stroke();
+  cx.beginPath();cx.moveTo(200,90);cx.lineTo(200,500);cx.stroke();
+  cx.beginPath();cx.moveTo(340,90);cx.lineTo(340,500);cx.stroke();
+  cx.beginPath();cx.moveTo(480,90);cx.lineTo(480,500);cx.stroke();
+  cx.beginPath();cx.moveTo(620,90);cx.lineTo(620,500);cx.stroke();
+  cx.strokeStyle='#e8d8c0';cx.lineWidth=1;
+  cx.beginPath();cx.moveTo(0,140);cx.lineTo(800,140);cx.stroke();
+  cx.beginPath();cx.moveTo(0,300);cx.lineTo(800,300);cx.stroke();
+  cx.beginPath();cx.moveTo(0,440);cx.lineTo(800,440);cx.stroke();
+  cx.beginPath();cx.moveTo(120,90);cx.lineTo(120,500);cx.stroke();
+  cx.beginPath();cx.moveTo(560,90);cx.lineTo(560,500);cx.stroke();
+  cx.beginPath();cx.moveTo(720,90);cx.lineTo(720,500);cx.stroke();
+
+  // ── 5. Parks (filled green) ──
+  PARKS.forEach(function(p){
+    cx.fillStyle=p.cl;cx.fillRect(p.x,p.y,p.w,p.h);
+    cx.fillStyle='#6a9848';cx.fillRect(p.x,p.y+p.h-3,p.w,3);
+    cx.fillStyle='#3a5a28';
+    for(var t=0;t<8;t++){var tx=p.x+5+t*((p.w-10)/8),ty=p.y+5+((t*7)%3)*4;
+      cx.beginPath();cx.arc(tx,ty,2.5,0,Math.PI*2);cx.fill()}
+  });
 
   // ── 6. Canals (thick blue lines with name labels) ──
   CANALS.forEach(function(c){
@@ -1122,6 +1411,24 @@ function drawMap(){
     cx.textBaseline='alphabetic';
     cx.font='bold 8px sans-serif';cx.fillStyle='#1a1a1a';
     cx.fillText(b.n,cxm,b.y+b.h+11);
+    // funify-v3 Round 18 — mouse-hover 1px white halo + Amsterdam real-location tooltip (BACKLOG #38 + #11 tooltip)
+    if(G._hoverBldg&&G._hoverBldg.id===b.id){
+      cx.save();
+      cx.strokeStyle='#ffffff';cx.lineWidth=1;cx.setLineDash([]);
+      cx.beginPath();cx.arc(cxm,cym,b.r+3,0,Math.PI*2);cx.stroke();
+      cx.lineWidth=2;cx.strokeStyle='#ecb457';
+      cx.beginPath();cx.arc(cxm,cym,b.r+1,0,Math.PI*2);cx.stroke();
+      cx.restore();
+      // Tooltip: real Amsterdam location + key prompt (placed above-left of circle, never below screen edge)
+      var tip=((b.real?'📍 '+b.real+' · ':'')+'按 E 进入').split('');
+      var tw=tip.length*5.4+10,th=14;
+      var tx=Math.min(W-tw-2,cxm-b.r-tw/2),ty=Math.max(2,cym-b.r-th-4);
+      cx.fillStyle='#1a1a1ae0';cx.fillRect(tx,ty,tw,th);
+      cx.strokeStyle='#ecb457';cx.lineWidth=1;cx.strokeRect(tx,ty,tw,th);
+      cx.fillStyle='#f0e8d4';cx.font='bold 9px sans-serif';cx.textAlign='left';cx.textBaseline='middle';
+      cx.fillText(tip.join(''),tx+5,ty+th/2+0.5);
+      cx.textBaseline='alphabetic';
+    }
   });
 
   // ── 11. Church spires (Amsterdam three iconic towers) ──
@@ -1164,11 +1471,15 @@ function drawMap(){
   cx.fillStyle='#ffffff';cx.fillRect(688,73,10,2);cx.strokeStyle='#1a1a1a';cx.strokeRect(688,73,10,2);
   cx.fillStyle='#1a1a1a';cx.fillText('Bridge',702,77);
 
-  // ── 15. Compass (top left) ──
+  // ── 15. Compass (top left) — funify-v3 Round 22: arrow no longer overlaps N label ──
   cx.fillStyle='#00000050';cx.beginPath();cx.arc(28,28,18,0,Math.PI*2);cx.fill();
   cx.font='bold 9px sans-serif';cx.fillStyle='#1a1a1a';cx.textAlign='center';
-  cx.fillText('N',28,21);cx.fillText('S',28,38);cx.fillText('W',18,30);cx.fillText('E',38,30);
-  cx.strokeStyle='#c83030';cx.lineWidth=1.5;cx.beginPath();cx.moveTo(28,26);cx.lineTo(28,17);cx.stroke();
+  // N shifted up to top of arc (above arrow tip); W/E at horizontal edge; S at bottom
+  cx.fillText('N',28,16);cx.fillText('S',28,42);cx.fillText('W',12,31);cx.fillText('E',44,31);
+  // Red needle: short, below N label so they no longer collide
+  cx.strokeStyle='#c83030';cx.lineWidth=1.5;cx.beginPath();cx.moveTo(28,30);cx.lineTo(28,22);cx.stroke();
+  // Tiny dot at center
+  cx.fillStyle='#c83030';cx.beginPath();cx.arc(28,30,1.2,0,Math.PI*2);cx.fill();
 
   // ── 16. Player (3D character on top) ──
   var bob=Math.sin(Date.now()/150)*1.5,p=G.p;
@@ -1186,10 +1497,10 @@ function drawMap(){
 
   if(mdd>1){
     var nx=(p.tx-p.x)/mdd,ny=(p.ty-p.y)/mdd;
-    cx.save();cx.strokeStyle='#ecb457';cx.lineWidth=2;cx.setLineDash([5,4]);
+    cx.save();cx.strokeStyle='#ecb457';cx.lineWidth=2;cx.setLineDash([5,4]);cx.lineDashOffset=-Date.now()/200%9;
     var aex=p.x+nx*12,aey=p.y+bob+ny*12,bex=p.tx-nx*5,bey=p.ty-ny*5;
     cx.beginPath();cx.moveTo(aex,aey);cx.lineTo(bex,bey);cx.stroke();
-    cx.setLineDash([]);cx.fillStyle='#ecb457';
+    cx.setLineDash([]);cx.lineDashOffset=0;cx.fillStyle='#ecb457';
     cx.beginPath();cx.moveTo(p.tx,p.ty);cx.lineTo(p.tx-nx*7+ny*4,p.ty-ny*7-nx*4);cx.lineTo(p.tx-nx*7-ny*4,p.ty-ny*7+nx*4);cx.closePath();cx.fill();
     var secs=Math.max(1,Math.round(mdd/1.5));
     cx.font='bold 10px monospace';cx.textAlign='center';
@@ -1200,15 +1511,9 @@ function drawMap(){
 
   var cb=curBldg();
   if(cb&&!G.inside&&!G.mg){
-    cx.strokeStyle='#c83030';cx.lineWidth=2;cx.setLineDash([3,2]);
+    cx.strokeStyle='#c83030';cx.lineWidth=2;cx.setLineDash([3,2]);cx.lineDashOffset=-Date.now()/300%5;
     cx.beginPath();cx.arc(cb.x+cb.w/2,cb.y+cb.h/2,cb.r+3,0,Math.PI*2);cx.stroke();
-    cx.setLineDash([]);
-  }
-  // ═══ Round 2 — map-replica-v1: data-driven overlay (30 landmarks + 9 canals + 50 bridges + 30 islands, R5 expanded) ═══
-  if(G.replica && typeof MAP_RENDERER!=='undefined' && typeof AMSTERDAM_GEO!=='undefined'){
-    // R3: cache:true bakes canals+labels into an offscreen canvas; bridges are
-    // culled by viewport rect and LOD'd by scale; per-frame cost is now bounded.
-    MAP_RENDERER.renderReplicaOverlay(cx, AMSTERDAM_GEO, W, H, {pad:18, cache:true});
+    cx.setLineDash([]);cx.lineDashOffset=0;
   }
   cx.textAlign='start';
 }
@@ -1295,18 +1600,26 @@ function drawMG(){
         });
       });
       var tq=maltItems[s.m].q+hopItems[s.h].q+yeastItems[s.y].q;
+      // funify-v3 Round 24: 3-tier brew quality color — gold (>=7) / bronze (>=4) / dim (<4)
+      var _brewQCol=tq>=7?'#e8a020':tq>=4?'#b89858':'#806040';
+      var _brewQLabel=tq>=7?'✨ 传奇配方':tq>=4?'✓ 经典':'� 凑合';
       // Order ticket (white card on counter)
       cx.fillStyle='#f0e8d0';cx.fillRect(160,425,200,28);
       cx.fillStyle='#222';cx.font='bold 11px sans-serif';cx.textAlign='left';cx.fillText('📝 订单:'+s.order.type,168,442);
       cx.fillStyle='#888';cx.font='9px sans-serif';cx.fillText('目标温 ?°C · 酵母 '+Math.round(s.yeast*100)+'%',168,452);
       // Recipe quality bar
       cx.fillStyle='#1a0a05';cx.fillRect(380,425,260,18);
-      var tqW=tq/9*260;cx.fillStyle='#e8a020';cx.fillRect(380,425,tqW,18);
-      cx.fillStyle='#78c878';cx.fillRect(380+tqW-2,423,4,22);
-      cx.fillStyle='#fff';cx.font='bold 10px sans-serif';cx.textAlign='left';cx.fillText('配方品质: '+'★'.repeat(tq),386,438);
+      var tqW=tq/9*260;cx.fillStyle=_brewQCol;cx.fillRect(380,425,tqW,18);
+      cx.fillStyle=_brewQCol;cx.fillRect(380+tqW-2,423,4,22);
+      cx.fillStyle=_brewQCol;cx.font='bold 10px sans-serif';cx.textAlign='left';cx.fillText('配方品质: '+'★'.repeat(tq)+' '+_brewQLabel,386,438);
     } else {
       // === Brewing phase: copper kettle + thermometer + ingredient drops ===
       cx.fillStyle='#fff';cx.font='bold 13px sans-serif';cx.textAlign='center';
+      // funify-v3 Round 3: show streak badge — 🔥×N (×1.xx) — breathes when active
+      const _streak=G.shop.streak||0,_streakMul=brewStreakMul(_streak);
+      const _streakOn=_streak>0?_streak:0;
+      const _streakPulse=_streak>0?(0.7+0.3*Math.sin(Date.now()/300)):0;
+      if(_streak>0){cx.fillStyle='rgba(232,160,32,'+_streakPulse+')';cx.font='bold 14px sans-serif';cx.textAlign='right';cx.fillText('🔥×'+_streak+' (×'+_streakMul+')',760,55);cx.font='bold 13px sans-serif';cx.textAlign='center';}
       cx.fillText('🫗 控温 '+Math.round(s.t)+'°C  · 酵母 '+Math.round(s.yeast*100)+'%  (凭经验调温)',400,55);
       // Wooden bar counter at bottom
       cx.fillStyle='#5a3a1a';cx.fillRect(80,420,640,40);
@@ -1377,9 +1690,9 @@ function drawMG(){
     cx.fillStyle='#3a4a3a';cx.fillRect(140,45,190,3);
     cx.fillStyle='#f0e8a0';cx.font='bold 12px sans-serif';cx.textAlign='left';cx.fillText('☕ MENU',150,62);
     cx.font='11px sans-serif';
-    cx.fillText('1 白寡妇    €8',150,82);
-    cx.fillText('2 紫雾      €14',150,98);
-    cx.fillText('3 Amsterdam  €22',150,114);
+    cx.fillText('1 白寡妇    $8',150,82);
+    cx.fillText('2 紫雾      $14',150,98);
+    cx.fillText('3 Amsterdam  $22',150,114);
     // chalk dust
     cx.fillStyle='#f0e8a030';for(var cd=0;cd<8;cd++){cx.beginPath();cx.arc(165+cd*22,125+Math.random()*12,1.5,0,Math.PI*2);cx.fill()}
     // Amsterdam green-cross neon sign (right wall)
@@ -1434,13 +1747,17 @@ function drawMG(){
     cx.fillStyle='#fff';cx.font='bold 13px sans-serif';cx.textAlign='center';
     var cst=['白寡妇','紫雾','Amsterdam Haze'];
     var htCol=s.ht>70?'#f05050':s.ht>40?'#f0a030':'#78c878';
-    cx.fillText('🌿 咖啡店 — $'+s.pr+'/g · '+cst[s.st]+' · 热度 '+Math.round(s.ht)+'%',400,358);
+    // funify-v3 Round 3: heat zone uses 4-band warning from coffeeHeatZone
+    const _hz=coffeeHeatZone(s.ht);
+    cx.fillText('🌿 咖啡店 — $'+s.pr+'/g · '+cst[s.st]+' · 热度 '+Math.round(s.ht)+'% ('+_hz.label+')',400,358);
     if(s.c&&!s.raid){
       const left=Math.max(0,Math.ceil((s.c.patience*1000-(Date.now()-s.c.born))/1000));
       const warn=s.c.undercover?' 🚨卧底!':'';
+      // funify-v3 Round 3: coffeeFitHint shows whether current price fits customer budget
+      const _fit=coffeeFitHint(s.pr,s.c.max);
       cx.fillStyle='#fff';cx.font='11px sans-serif';cx.fillText(s.c.face+' 顾客出价$'+s.c.max+' · 耐心 '+left+'s'+warn,400,376);
-      cx.fillStyle=s.pr<=s.c.max?'#78c878':'#f05050';
-      cx.fillText(s.pr<=s.c.max?'SPACE成交':'降价或SPACE拒客',400,394);
+      cx.fillStyle=_fit.col;cx.font='bold 12px sans-serif';cx.textAlign='center';
+      cx.fillText('💰 '+_fit.label+(s.pr<=s.c.max?' · SPACE成交':' · 降价或拒客'),400,394);
       cx.fillStyle='#fff1';cx.fillRect(250,403,300,6);
       cx.fillStyle=left<3?'#f05050':left<6?'#f0a030':'#78c878';
       cx.fillRect(250,403,300*(left/s.c.patience),6);
@@ -1449,8 +1766,16 @@ function drawMG(){
     // sales counter + heat bar
     cx.fillStyle='#fff';cx.font='12px sans-serif';cx.fillText('今日 '+s.sd+'/5 人 · $'+s.earn,400,425);
     cx.fillStyle='#fff1';cx.fillRect(250,435,300,12);
-    cx.fillStyle=htCol;cx.fillRect(250,435,300*Math.min(1,s.ht/100),12);
-    cx.fillStyle='#aaa';cx.font='9px sans-serif';cx.fillText('热度自然下降 -1.5%/s',400,460);
+    // funify-v3 Round 24: sweet-spot zone overlay (30-70% = ideal "成交" range, light green tint)
+    cx.fillStyle='#78c87830';cx.fillRect(250+300*0.3,435,300*0.4,12);
+    // funify-v3 Round 24: ≥80% heat flips to bright green = "cash-out window" before 突击
+    var _heatBarCol=(s.ht>=80&&s.ht<95)?'#80ffa0':_hz.col;
+    cx.fillStyle=_heatBarCol;cx.fillRect(250,435,300*Math.min(1,s.ht/100),12);
+    // danger overlay: thin red border when _hz.danger >= 2
+    if(_hz.danger>=2){cx.fillStyle='#f05050aa';cx.fillRect(250,435,300,2);cx.fillRect(250,445,300,2)}
+    // funify-v3 Round 24: heat status pill
+    var _heatStatus=s.ht>=80&&s.ht<95?'💰 最佳成交窗口':_hz.label;
+    cx.fillStyle='#aaa';cx.font='9px sans-serif';cx.fillText(_heatStatus+' · 热度自然下降 -1.5%/s',400,460);
   }else if(mg==='shroom'){
     // === SmartShop grow room: warm dark walls + grow lamp + shelves with monotub jars ===
     cx.fillStyle='#1a1810';cx.fillRect(80,30,640,260);
@@ -1503,6 +1828,17 @@ function drawMG(){
     cx.fillStyle='#fff';cx.font='bold 13px sans-serif';cx.textAlign='center';
     cx.fillText('🍄 '+s.st.n+' 生长 '+Math.round(s.gr)+'%'+(s.contam?' · ⚠️ 污染!':''),400,52);
     if(s.contam){cx.fillStyle='#f05050';cx.font='bold 11px sans-serif';cx.fillText('🦠 菌丝感染 · 整批报废',400,72)}
+    // funify-v3 Round 24: floating "+X%" 飘字 (rise + fade)
+    if(s.floatTexts&&s.floatTexts.length){
+      s.floatTexts=s.floatTexts.filter(f=>Date.now()-f.born<1500);
+      s.floatTexts.forEach(function(f){
+        var age=Date.now()-f.born,alpha=Math.max(0,1-age/1500),yOff=age*0.04;
+        cx.fillStyle=f.col;cx.globalAlpha=alpha;
+        cx.font='bold 16px sans-serif';cx.textAlign='center';
+        cx.fillText(f.text,f.x,f.y-yOff);
+        cx.globalAlpha=1;
+      });
+    }
     // 3 parameter dial widgets
     var tgts=s.known?[{l:'💧湿度',v:s.hu,t:s.st.h,u:'%',col:'#4090e0'},{l:'🌡温度',v:s.tp,t:s.st.t,u:'°C',col:'#e85040'},{l:'💡光照',v:s.li,t:s.st.l,u:'h',col:'#f0c040'}]:[{l:'💧湿度',v:s.hu,t:null,u:'%',col:'#4090e0'},{l:'🌡温度',v:s.tp,t:null,u:'°C',col:'#e85040'},{l:'💡光照',v:s.li,t:null,u:'h',col:'#f0c040'}];
     tgts.forEach(function(g,i){
@@ -1578,6 +1914,18 @@ function drawMG(){
     cx.fillStyle='#aaa';cx.font='9px sans-serif';cx.textAlign='left';cx.fillText('体力 '+s.stamina+'%',390,471);
     var greenState=pos>0.6&&pos<0.8?'完美区!':pos>0.3&&pos<0.95?'白区':'错过!';
     cx.fillStyle='#ecb457';cx.font='bold 11px sans-serif';cx.textAlign='center';cx.fillText(greenState,400,455);
+    // funify-v3 Round 24: 浪组节奏 indicator — set (blue, pulsing) vs lull (gold) + ms countdown
+    var _rhythm=surfBreakerTelegraph(s);
+    if(_rhythm){
+      var rbX=395,rbY=465,rbW=270,rbH=5;
+      cx.fillStyle='#1a1a1a';cx.fillRect(rbX,rbY,rbW,rbH);
+      var _phasePct=_rhythm.phase==='set'?Math.max(0,1-_rhythm.msLeft/3500):Math.max(0,_rhythm.msLeft/2000);
+      if(_phasePct>1)_phasePct=1;
+      var _phaseCol=_rhythm.phase==='set'?'#4090c0':'#e8a020';
+      cx.fillStyle=_phaseCol;cx.fillRect(rbX,rbY,rbW*_phasePct,rbH);
+      cx.fillStyle='#fff';cx.font='9px sans-serif';cx.textAlign='left';
+      cx.fillText(_rhythm.phase==='set'?'🌊 浪组推进':(_rhythm.msLeftLabel&&_rhythm.msLeftLabel!=='·'?'� 静默 '+_rhythm.msLeftLabel+' 后下一组':'⏸ 静默'),rbX,rbY-3);
+    }
   }else if(mg==='academic'){
     // === Professor's office: warm wood wall + bookshelf + desk + laptop + coffee mug ===
     cx.fillStyle='#3a2818';cx.fillRect(80,30,640,210);
@@ -1647,10 +1995,14 @@ function drawMG(){
       cx.fillText('📝 写论文中...',400,355);
       cx.fillStyle='#444';cx.font='10px sans-serif';
       cx.fillText(s.ids[s.sel[0]].t+' + '+s.ids[s.sel[1]].t+(s.synergy>0?'  ✨协同+'+s.synergy:''),400,372);
-      var pct=Math.min(100,(Date.now()-s.ws)/3);
+      var pct=Math.min(100,(Date.now()-s.ws)/3*(s.speed||1));
       cx.fillStyle='#fff8';cx.strokeStyle='#666';cx.strokeRect(280,400,240,8);
       cx.fillStyle='#3a78c0';cx.fillRect(280,400,240*pct/100,8);
-      cx.fillStyle='#222';cx.font='10px sans-serif';cx.fillText('预计 '+s.sc+' 分 ('+s.venue+') · SPACE提交',400,425);
+      var _pc=acadPartialCredit(s.sc,s.venue);
+      cx.fillStyle=_pc.col;cx.font='bold 11px sans-serif';
+      // funify-v3 Round 24: rebuttal status pill — ✓已申诉 / 冷却Xs / R 申诉-$N +15分
+      var _rbStatus=s.rebutted?'✓已申诉 (本回合)':(s._rebuttalAt&&Date.now()-s._rebuttalAt<5000?'⏳冷却'+Math.ceil((5000-(Date.now()-s._rebuttalAt))/1000)+'s':'R 申诉 -$'+acadRebuttalCost(s.venue)+' +15分');
+      cx.fillText(s.sc+' 分 · '+_pc.label+(s.rebutted?' (申诉后)':'')+'  ·  '+_rbStatus+' · SPACE提交',400,425);
       // pen moving across paper
       cx.save();cx.translate(280+pct*2.4,395);cx.rotate(0.3);
       cx.fillStyle='#ffd700';cx.fillRect(0,0,40,2);
@@ -1724,8 +2076,14 @@ function drawMG(){
       // patience bar
       var left=Math.max(0,c.patience*1000-(Date.now()-c.born));
       var pct=left/(c.patience*1000);
+      // funify-v3 Round 24: pulse + countdown when <5s remaining
+      var _urgencyFlash=left<5000?(0.5+0.5*Math.sin(Date.now()/100)):1;
       cx.fillStyle='#fff1';cx.fillRect(ccx-15,cy-38,30,5);
-      cx.fillStyle=pct<0.3?'#f05050':pct<0.6?'#f0a030':'#78c878';cx.fillRect(ccx-15,cy-38,30*pct,5);
+      cx.fillStyle=pct<0.3?'#f05050':pct<0.6?'#f0a030':'#78c878';
+      cx.globalAlpha=_urgencyFlash;
+      cx.fillRect(ccx-15,cy-38,30*pct,5);
+      cx.globalAlpha=1;
+      if(left<5000){cx.fillStyle='#f05050';cx.font='bold 9px sans-serif';cx.textAlign='center';cx.fillText(Math.ceil(left/1000)+'s',ccx,cy-42)}
       // patron label
       cx.fillStyle='#fff';cx.font='bold 11px sans-serif';cx.textAlign='center';
       cx.fillText(c.face+' '+c.arch.n+(c.isRegular?' 👤':'')+(c.wantReco?' ✨想要'+s.recoDrink:''),ccx,cy-44);
@@ -1742,6 +2100,15 @@ function drawMG(){
       cx.fillStyle='#78c878';cx.fillRect(180,420,440*0.15,4);cx.fillRect(180+440*0.85,432,440*0.15,4);
       cx.fillStyle='#fff';cx.font='bold 11px sans-serif';cx.fillText('Q/W调整报价: $'+cur.offer+' (区间 '+cur.floor+'-'+cur.ceiling+')',400,431);
       cx.fillStyle='#f0d060';cx.font='10px sans-serif';cx.fillText(cur.drink+(cur.wantReco?' · 想要推荐酒':' · 不在意'),400,448);
+      // funify-v3 Round 3: live tip preview badge — what cur.offer pays right now
+      const _tipHit=cur.drink===s.recoDrink;const _tipReg=cur.isRegular;const _tipRaw=barTipPreview(cur.offer,_tipHit,_tipReg,tipFactor());
+      const _tipDelta=_tipRaw-cur.offer;const _tipSign=_tipDelta>0?'+':_tipDelta<0?'':'';
+      const _tipCol=_tipDelta>0?'#78c878':_tipDelta<0?'#f05050':'#aaa';
+      cx.fillStyle='#1a1a1acc';cx.fillRect(560,418,180,22);
+      cx.fillStyle=_tipCol;cx.font='bold 11px sans-serif';cx.textAlign='left';
+      cx.fillText('💸 预计到手 $'+_tipRaw+(_tipDelta?' ('+_tipSign+_tipDelta+')':''),568,432);
+      cx.fillStyle='#aaa';cx.font='9px sans-serif';cx.textAlign='right';
+      const _tipHints=(_tipHit?'命中 ':'')+(_tipReg?'常客 ':'');cx.fillText(_tipHints||'无加成',735,432);
     }
     cx.fillStyle='#fff';cx.font='11px sans-serif';cx.fillText('库存 🍺'+G.bs[0]+' 🥃'+G.bs[1]+' 🍷'+G.bs[2],400,465);
   }
@@ -1759,7 +2126,7 @@ function update(){
   const opx=p.x,opy=p.y,nx=p.x+dx/d*sp,ny=p.y+dy/d*sp;
   if(!inCanal(nx,p.y)||onBridge(nx,p.y))p.x=nx;if(!inCanal(p.x,ny)||onBridge(p.x,ny))p.y=ny;
   p.x=Math.max(6,Math.min(W-6,p.x));p.y=Math.max(6,Math.min(H-6,p.y));
-  if(Math.abs(p.x-opx)<0.5&&Math.abs(p.y-opy)<0.5&&inCanal(nx,ny)&&!onBridge(nx,ny)){G._st++;if(G._st>15){G._st=0;const br=nnBridge(p.x,p.y);if(br){G._wp=br;G._otx=p.tx;G._oty=p.ty}}}
+  if(Math.abs(p.x-opx)<0.5&&Math.abs(p.y-opy)<0.5&&inCanal(nx,ny)&&!onBridge(nx,ny)){G._st++;if(G._st>15){G._st=0;const br=nnBridge(p.x,p.y);if(br){G._wp=br;G._otx=p.tx;G._oty=p.ty;const bInfo=BRIDGES.find(b=>Math.abs(b.x+b.w/2-br.x)<1&&Math.abs(b.y+b.h/2-br.y)<1);setMsg('🚶 运河挡路 → 改道 '+(bInfo?bInfo.n:'桥'))}}}
   else G._st=0;
   if(G._wp){const wx=G._wp.x,wy=G._wp.y;if(Math.abs(p.x-wx)<12&&Math.abs(p.y-wy)<12){G._wp=null;p.tx=G._otx||p.x;p.ty=G._oty||p.y;G._otx=null;G._oty=null}else{if(!G._otx){G._otx=p.tx;G._oty=p.ty}p.tx=wx;p.ty=wy}}
 }
@@ -1767,19 +2134,35 @@ function update(){
 // ═══════════════════════════════════════════
 // AUTO
 // ═══════════════════════════════════════════
+// funify-v3 Round 19 — Game speed slider 1×/2×/4×, persisted in ab_speed_v1
+// Pure interval divisor; 4× speed → base / 4 (capped at 15ms floor for stability)
+function speedMs(base){const s=G.speed||1;return Math.max(15,Math.round(base/s))}
+function cycleSpeed(){G.speed=G.speed===1?2:G.speed===2?4:1;saveSpeed();renderSpeedBtn();clearTimeout(G._at);if(G.auto)autoStep();setMsg('⏩ 速度 '+G.speed+'×')}
+function renderSpeedBtn(){const b=document.getElementById('speed-btn');if(!b)return;b.textContent=G.speed===1?'▶▶ 1×':G.speed===2?'▶▶▶ 2×':'⚡ 4×';b.classList.toggle('sp2',G.speed===2);b.classList.toggle('sp4',G.speed===4)}
+function saveSpeed(){try{localStorage.setItem('ab_speed_v1',String(G.speed||1))}catch(e){}}
+function loadSpeed(){try{const v=localStorage.getItem('ab_speed_v1');const n=parseInt(v,10);G.speed=(n===1||n===2||n===4)?n:1}catch(e){G.speed=1}}
 function toggleAuto(){G.auto=!G.auto;const b=document.getElementById('ba');b.classList.toggle('on',G.auto);b.classList.toggle('go',!G.auto);b.textContent=G.auto?'⏸ 停止':'▶ 自动运行';clearTimeout(G._at);if(G.auto){G.sch=[];setStatus('🤖 自动运行','7天模拟开始','观察右侧状态面板');setMsg('🤖 自动运行中');autoStep()}}
-function toggleReplica(){G.replica=!G.replica;const b=document.getElementById('br');b.classList.toggle('on',G.replica);b.textContent=G.replica?'🗺 Replica 开':'🗺 Replica 关';const cb=typeof AMSTERDAM_GEO!=='undefined'?AMSTERDAM_GEO.BRIDGES.length:32;const lm=typeof AMSTERDAM_GEO!=='undefined'?AMSTERDAM_GEO.LANDMARKS.length:14;const mg=typeof AMSTERDAM_GEO!=='undefined'?AMSTERDAM_GEO.MINI_BINDINGS.length:6;setMsg(G.replica?`🗺 真实 Amsterdam 地标层 (${lm} 地标 · 9 运河 · ${cb} 桥 · ${mg} mini-game 真实地址) 已叠加`+' (R3 perf · 静态层缓存 + 视口剔除)':'🗺 Replica 层已关闭');renderAll()}
+// funify-v3 Round 22: auto-cancel grace period — only cancel on key if minigame has been entered for ≥800ms (prevents race on load). Also exits auto on Escape.
+const AUTO_CANCEL_GRACE_MS=800;
+function cancelAuto(reason){
+  if(!G.auto)return false;
+  if(reason==='escape'){G.auto=false;renderAutoBtn();return true}
+  // grace: skip if minigame just loaded (race) — but still allow Escape
+  if(G._mgEnterAt&&Date.now()-G._mgEnterAt<AUTO_CANCEL_GRACE_MS&&reason==='key')return false;
+  G.auto=false;renderAutoBtn();return true;
+}
+function renderAutoBtn(){const b=document.getElementById('ba');b.classList.toggle('on',G.auto);b.classList.toggle('go',!G.auto);b.textContent=G.auto?'⏸ 停止':'▶ 自动运行'}
 function autoStep(){
   clearTimeout(G._at);if(!G.auto||G.ended)return;
   if(G.mg){const s=MG[G.mg];
     if(G.mg==='waveSelect'){pickWavePoint(1);G._at=setTimeout(autoStep,300);return}
     if(G.mg==='coffee'&&s.raid){G.mg=null;G.inside=null;G._at=setTimeout(autoStep,400);return}
-    if(G.mg==='brew'){if(s.ph==='sel'){s.m=s.order.recipe[0];s.h=s.order.recipe[1];s.y=s.order.recipe[2];s.ph='brew';s.started=Date.now();s.deadline=s.started+s.order.limit*1000;setStatus('🍺 自动酿造','控温中...','');G._at=setTimeout(autoStep,1000);renderAll();return}else{s.t=s.order.temp+Math.floor(seeded(101)*3)-1;finBrew(false);G._at=setTimeout(autoStep,500);return}}
-    if(G.mg==='coffee'&&!s.raid){if(s.sd>=s.target){finCoffee();G._at=setTimeout(autoStep,500);return}if(s.c){if(s.c.undercover){s.pr=Math.min(50,s.c.max-1);s.sd++;s.ht=Math.max(0,s.ht-(50-s.ht)/5);if(s.sd>=s.target)finCoffee();else sCoffeeC();setStatus('🌿 自动经营','$'+s.earn+' '+s.sd+'/'+s.target+'人 ⛔拒卧底','');G._at=setTimeout(autoStep,500);renderAll();return}if(s.ht>60)s.pr=Math.max(5,s.c.max-8);else s.pr=s.c.max-2+Math.floor(seeded(99)*3);if(s.pr<=s.c.max){s.earn+=s.pr;s.ht+=Math.round(s.pr/[8,14,22][s.st]*8)}s.sd++;s.ht=Math.min(100,s.ht+3);if(s.ht>=100){s.raid=true;setStatus('🚨 被突击','','');G._at=setTimeout(()=>{G.mg=null;G.inside=null;addSch('🚨','咖啡突击提早下班');advanceTimeAuto();renderAll()},2000);return}if(s.sd>=s.target)finCoffee();else sCoffeeC();setStatus('🌿 自动经营','$'+s.earn+' '+s.sd+'/'+s.target+'人','');G._at=setTimeout(autoStep,500);renderAll();return}}
+    if(G.mg==='brew'){if(s.ph==='sel'){s.m=s.order.recipe[0];s.h=s.order.recipe[1];s.y=s.order.recipe[2];s.ph='brew';s.started=Date.now();s.deadline=s.started+s.order.limit*1000;setStatus('🍺 自动酿造',`控温中... · 🔥×${G.shop.streak||0}${G.shop.streakBest?'(最高×'+G.shop.streakBest+')':''}`,'');G._at=setTimeout(autoStep,1000);renderAll();return}else{s.t=s.order.temp+Math.floor(seeded(101)*3)-1;finBrew(false);G._at=setTimeout(autoStep,500);return}}
+    if(G.mg==='coffee'&&!s.raid){if(s.sd>=s.target){finCoffee();G._at=setTimeout(autoStep,500);return}if(s.c){if(s.c.undercover){if(hasUpgrade('legendary_no_raid')){s.pr=Math.min(50,s.c.max-1);s.earn+=s.pr;s.sd++;s.ht=Math.min(95,s.ht+2);setStatus('🌿 自动经营','$'+s.earn+' '+s.sd+'/'+s.target+'人 🛡️免突击','');G._at=setTimeout(autoStep,500);renderAll();return}s.pr=Math.min(50,s.c.max-1);s.sd++;s.ht=Math.max(0,s.ht-(50-s.ht)/5);if(s.sd>=s.target)finCoffee();else sCoffeeC();setStatus('🌿 自动经营','$'+s.earn+' '+s.sd+'/'+s.target+'人 ⛔拒卧底','');G._at=setTimeout(autoStep,500);renderAll();return}if(s.ht>60)s.pr=Math.max(5,s.c.max-8);else s.pr=s.c.max-2+Math.floor(seeded(99)*3);if(s.pr<=s.c.max){s.earn+=s.pr;s.ht+=Math.round(s.pr/[8,14,22][s.st]*8)}s.sd++;s.ht=Math.min(hasUpgrade('legendary_no_raid')?95:100,s.ht+3);if(s.ht>=100&&!hasUpgrade('legendary_no_raid')){s.raid=true;setStatus('🚨 被突击','','');G._at=setTimeout(()=>{G.mg=null;G.inside=null;addSch('🚨','咖啡突击提早下班');advanceTimeAuto();renderAll()},2000);return}if(s.sd>=s.target)finCoffee();else sCoffeeC();setStatus('🌿 自动经营','$'+s.earn+' '+s.sd+'/'+s.target+'人','');G._at=setTimeout(autoStep,500);renderAll();return}}
     if(G.mg==='shroom'){if(s.tn<s.mx){const st=s.st;s.hu+=(st.h-s.hu>0?5:-5);s.tp+=(st.t-s.tp>0?1:-1);s.li+=(st.l-s.li>0?1:-1);const acc=1-(Math.abs(s.hu-st.h)/100+Math.abs(s.tp-st.t)/35+Math.abs(s.li-st.l)/14)/3;s.gr+=20+acc*15;s.tn++;if(s.tn>=s.mx||s.gr>=100){const q=Math.round(Math.min(100,s.gr)/20);const inc=q*12+5;G.money+=inc;G.ind.smart_shop.xp+=inc*2;addEvt('good','🍄 +$'+inc);addSch('🍄','蘑菇 +$'+inc);G.mg=null;G.inside=null;chkLv('smart_shop');setStatus('✅ 蘑菇收获','+$'+inc,'')}else setStatus('🍄 自动种植',Math.round(s.gr)+'%','');G._at=setTimeout(autoStep,600);renderAll();return}}
-    if(G.mg==='surf'){const ss=s;if(ss.ended){G._at=setTimeout(autoStep,300);return}ss.wx-=80;const pos=(ss.wx-200)/500,green=pos>0.6&&pos<0.8,barrel=seeded(80+ss.at)<.08;let sc=green?Math.round((1-Math.abs(pos-0.7)/0.1)*30+10):pos>0.3&&pos<0.95?Math.round((1-Math.abs(pos-0.7)/0.3)*10+3):1;if(green){ss.combo++;ss.perfect++}else ss.combo=0;if(barrel)sc+=50;ss.sc+=sc;ss.at++;ss.stamina=Math.max(0,ss.stamina-15);if(ss.stamina<=0){finSurf(true);G._at=setTimeout(autoStep,300);return}if(Date.now()-ss.started>=5000){finSurf(false);G._at=setTimeout(autoStep,300);return}setStatus('🏄 自动冲浪',ss.sc+'分 体力'+ss.stamina+'%','');G._at=setTimeout(autoStep,300);renderAll();return}
-    if(G.mg==='academic'){if(s.ph==='gather'){s.sel=[0,1];s.ph='write';s.ws=Date.now();s.sc=30+s.ids[0].q*15+s.ids[1].q*15+Math.floor(seeded(180+G.day)*15);setStatus('📚 自动写论文',s.ids[0].t+'+'+s.ids[1].t,'预计'+s.sc+'分');G._at=setTimeout(autoStep,1000);renderAll();return}
-      else{if(Date.now()-s.ws>800){const ok=s.sc>60;const g=ok?60:30;G.money+=g;G.rep+=Math.round(s.sc/10);G.ind.academic.xp+=Math.round(s.sc*1.5);addEvt(ok?'good':'info','📚 论文'+(ok?'接收':'被拒')+' '+s.sc+'分 +$'+g);addSch('📚','论文 +$'+g);G.mg=null;G.inside=null;chkLv('academic');setStatus(ok?'🎉 接收':'📋 被拒','+$'+g,'');G._at=setTimeout(autoStep,500);renderAll();return}else{G._at=setTimeout(autoStep,300);return}}}
+    if(G.mg==='surf'){const ss=s;if(ss.ended){G._at=setTimeout(autoStep,300);return}ss.wx-=80;const pos=(ss.wx-200)/500,green=pos>0.6&&pos<0.8,barrel=seeded(80+ss.at)<.08;let sc=green?Math.round((1-Math.abs(pos-0.7)/0.1)*30+10):pos>0.3&&pos<0.95?Math.round((1-Math.abs(pos-0.7)/0.3)*10+3):1;if(green){ss.combo++;ss.perfect++;ss.perfectStreak++}else{ss.combo=0;ss.perfectStreak=0}if(barrel)sc+=50;ss.sc+=sc;ss.at++;ss.stamina=Math.max(0,ss.stamina-15);if(ss.stamina<=0){finSurf(true);G._at=setTimeout(autoStep,300);return}if(Date.now()-ss.started>=5000){finSurf(false);G._at=setTimeout(autoStep,300);return}setStatus('🏄 自动冲浪',ss.sc+'分 体力'+ss.stamina+'%','');G._at=setTimeout(autoStep,300);renderAll();return}
+    if(G.mg==='academic'){if(s.ph==='gather'){s.sel=[0,1];s.ph='write';s.ws=Date.now();s.speed=1;s.sc=30+s.ids[0].q*15+s.ids[1].q*15+Math.floor(seeded(180+G.day)*15);setStatus('📚 自动写论文',s.ids[0].t+'+'+s.ids[1].t,'预计'+s.sc+'分');G._at=setTimeout(autoStep,1000);renderAll();return}
+      else{if(Date.now()-s.ws>acadWriteMs(s)*0.27){const pc=acadPartialCredit(s.sc,s.venue);const ok=pc.accepted;const venueMult=(VENUE_DEF[s.venue]||VENUE_DEF['本地研讨']).mult;const g=ok?Math.round(60*venueMult):Math.round(15*venueMult);G.money+=g;G.rep+=Math.round(s.sc/10);G.ind.academic.xp+=Math.round(s.sc*1.5);addEvt(ok?'good':'info','📚 论文'+(ok?'接收':'被拒')+' '+s.sc+'分 '+(pc.label||'')+' +$'+g+(s.speed===2?' (⚡2×速)':''));addSch('📚','论文 +$'+g);G.mg=null;G.inside=null;chkLv('academic');setStatus(ok?'🎉 接收':'📋 被拒','+$'+g,'');G._at=setTimeout(autoStep,500);renderAll();return}else{G._at=setTimeout(autoStep,300);return}}}
     if(G.mg==='bar'){const bs=s;if(bs.sd>=bs.mx){finBar();G._at=setTimeout(autoStep,300);renderAll();return}else if(!bs.cs.length){sBarC();G._at=setTimeout(autoStep,200);renderAll();return}else{const cur=bs.cs[bs.cs.length-1];const mid=Math.max(cur.floor+1,Math.min(cur.ceiling-1,Math.floor((cur.floor+cur.ceiling)/2)));cur.offer=mid;s.sd++;const final=Math.round(mid*tipFactor());s.earn+=final;addEvt('good','🍻 自动成交 '+cur.arch.n+' +$'+final);s.cs.pop();setStatus('🍻 自动酒吧','$'+s.earn+' '+s.sd+'/'+s.mx,'');G._at=setTimeout(autoStep,200);renderAll();return}}
     G.mg=null;G.inside=null;G._at=setTimeout(autoStep,400);renderAll();return;
   }
@@ -1805,8 +2188,12 @@ function autoStep(){
       if(!G.greetedToday)G.greetedToday=[];
       if(!G.greetedToday.includes(target.npc)){
         G.greetedToday.push(target.npc);
-        const r=10+Math.floor(seeded(180+G.day)*15);G.money+=r;
+        const dlg=pickNpcDialog(target.npc);
+        const r=dlg?dlg.r:10+Math.floor(seeded(180+G.day)*15);G.money+=r;
         addEvt('good',`💬 ${target.npc} +$${r}`);addSch('💬',`${target.npc} +$${r}`);
+        if(dlg)addEvt('info',dlg.q);
+        // funify-v3 Round 13 — 建筑风味短句首次入栈
+        const bf=NPC_BUILDING_FLAVOR[target.npc];if(bf)addEvt('info',bf);
         tickObj('Talk',1);tickObj('Earn',r);
         learnEscape(target.npc);
       }
@@ -1830,10 +2217,13 @@ function advanceTimeAuto(){
     addEvt('info',mod.ic+' '+mod.t+(mod.effect?' ('+mod.effect+')':''));
     G.mods.forEach(m=>{if(m.id!==mod.id)addEvt('info',m.t+' ('+m.effect+')')});
     setStatus('☀️ Day '+G.day,G.mods.map(m=>m.ic).join('')+' '+G.mods[0].t,'🎯 3 个新目标已生成');
+    // funify-v3 Round 7 — phase flash at Dawn of each new day (Roguelike 仪式感)
+    // funify-v3 Round 11: legendary_speed 时 auto-run 80ms 步进,默认 2400ms flash 会被跳秒错过;延长到 3000ms 让玩家能看清
+    showPhaseFlash(G.day,0,{titleOverride:'☀️ Day '+G.day+' · Dawn',ms:hasUpgrade('legendary_speed')?3000:2400});
     triggerDream();
   }
   if(G.brewI>=0){G.brewT--;if(G.brewT<=0){const y=[5,6,7,8,9][G.brewI],si=[0,0,0,1,2][G.brewI];G.bs[si]+=y;addEvt('good','✅ 酿造完成！');G.brewI=-1}}
-  G._at=setTimeout(autoStep,G.auto?120:250);renderAll();
+  G._at=setTimeout(autoStep,speedMs((G.auto?120:250))*(hasUpgrade('legendary_speed')?0.667:1));renderAll();
 }
 
 const DREAM_POOL=[
@@ -1855,6 +2245,151 @@ function triggerDream(){
   setMsg('💤 梦境: '+dream.t+' · 心情'+moodEmoji());
 }
 
+// funify-v3 Round 7 — phase flash overlay (Roguelike 仪式感)
+// PHASE_NARR: 6 phases × 4 Amsterdam-flavored narrations
+// Pure data; chosen by seeded hash so it's deterministic per (seed, day, ti)
+const PHASE_NARR={
+  Dawn:[
+    {ic:'🌅',n:'运河晨雾未散,Magere Brug 上的情侣刚起身'},
+    {ic:'🐦',n:'IJ 河边海鸥嘶叫,Albert Heijn 刚开门'},
+    {ic:'🚲',n:'晨光斜照运河,单车铃声此起彼伏'},
+    {ic:'☕',n:'咖啡烘焙香飘过 Jordaan 鹅卵石巷'}
+  ],
+  Morning:[
+    {ic:'☕',n:'De Pijp 街角咖啡馆坐满上班族'},
+    {ic:'🚋',n:'有轨电车 4 号线穿过 Muntplein 广场'},
+    {ic:'🌷',n:'Bloemenmarkt 花船卸下今日第一桶郁金香'},
+    {ic:'🏛️',n:'博物馆区排起长队,Rijksmuseum 开门'}
+  ],
+  Afternoon:[
+    {ic:'🛶',n:'运河观光船缓缓穿过 Prinsengracht'},
+    {ic:'🌞',n:'Vondelpark 草地上晒着慵懒的午后'},
+    {ic:'📚',n:'Science Park 图书馆翻书声沙沙'},
+    {ic:'🍺',n:'老酿酒厂午后试饮,Tweede Kans 排队'}
+  ],
+  Evening:[
+    {ic:'🌆',n:'红灯区霓虹初亮,运河泛起金光'},
+    {ic:'🍻',n:'Leidseplein 酒吧开张,爵士乐飘出窗外'},
+    {ic:'🚲',n:'下班族骑车涌过 Sarphatipark'},
+    {ic:'🍽️',n:'De Pijp 小酒馆摆出烛光晚餐'}
+  ],
+  Night:[
+    {ic:'🌃',n:'运河倒映星空,街灯拉出长影'},
+    {ic:'🎷',n:'Bimhuis 爵士俱乐部乐声低沉'},
+    {ic:'🌉',n:'Magere Brug 收桥,游客渐稀'},
+    {ic:'🍸',n:'Rembrandtplein 鸡尾酒吧灯火通明'}
+  ],
+  LateNight:[
+    {ic:'🌙',n:'城市入眠,只剩运河水拍岸声'},
+    {ic:'🦉',n:'Vondel Park 猫头鹰低鸣'},
+    {ic:'🚓',n:'Centrum 巡逻警车远去,街角寂静'},
+    {ic:'⭐',n:'凌晨 3 点,运河灯串与星空对话'}
+  ]
+};
+// phaseNarr(day, ti): pick deterministic narration for given day/phase
+function phaseNarr(day,ti){
+  const phase=TIMES[ti]||'Dawn';
+  const arr=PHASE_NARR[phase]||PHASE_NARR.Dawn;
+  const idx=Math.floor(seeded((day|0)*31+(ti|0)+777)*arr.length);
+  const e=arr[idx%arr.length];
+  return {phase,ic:e.ic,narr:e.n,title:`Day ${day} · ${phase}`,day:day|0,ti:ti|0};
+}
+// showPhaseFlash(): DOM overlay ~2.5s fade. Re-entrant safe (clearTimeout previous).
+let _phaseFlashTO=null;
+function showPhaseFlash(day,ti,opts){
+  const el=document.getElementById('phase-flash');if(!el)return;
+  const info=phaseNarr(day,ti);
+  el.querySelector('.pf-d').textContent=info.title;
+  el.querySelector('.pf-t').textContent=info.ic+(opts&&opts.iconOverride?'':' 欢迎来到 '+info.phase);
+  el.querySelector('.pf-n').textContent=info.narr;
+  if(opts&&opts.titleOverride){el.querySelector('.pf-t').textContent=opts.titleOverride}
+  el.classList.add('on');
+  if(_phaseFlashTO)clearTimeout(_phaseFlashTO);
+  _phaseFlashTO=setTimeout(()=>el.classList.remove('on'),opts&&opts.ms?opts.ms:2400);
+}
+
+// ═══════════════════════════════════════════
+// CONFETTI — 6 mini-game 成功时刻庆祝粒子 (BACKLOG #7 反馈感)
+// ═══════════════════════════════════════════
+// confettiBurst(x,y,opts): spawn N particles at (x,y) with palette + intensity tier.
+// opts: {n?:6-15, palette?:[colors], gravity?:0.18, life?:700ms, vyBase?:-6, spread?:2.0}
+// confettiUpdate(dt): physics step (called from frame()). confettiDraw(): render to canvas.
+// prefers-reduced-motion: confetti disabled (no animation fatigue).
+let _confetti=[]; // [{x,y,vx,vy,g,r,col,life,maxLife,shape}]
+function confettiBurst(x,y,opts){
+  // Respect reduced-motion preference: skip if user opted out
+  if(typeof matchMedia!=='undefined'&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  opts=opts||{};
+  const n=opts.n||8;
+  const palette=opts.palette||['#ecb457','#e8a020','#78c878','#f05050'];
+  const g=opts.gravity!=null?opts.gravity:0.16;
+  const life=opts.life||750;
+  const vyBase=opts.vyBase!=null?opts.vyBase:-5.5;
+  const spread=opts.spread!=null?opts.spread:2.4;
+  for(let i=0;i<n;i++){
+    const ang=(-Math.PI/2)+(Math.random()-0.5)*Math.PI*spread*0.5; // upward cone
+    const spd=vyBase+(Math.random()*1.5);
+    _confetti.push({
+      x:x+(Math.random()-0.5)*8,
+      y:y+(Math.random()-0.5)*4,
+      vx:Math.cos(ang)*(1+Math.random()*2),
+      vy:Math.sin(ang)*spd*0.8+spd,
+      g,
+      r:1.6+Math.random()*1.6,
+      col:palette[Math.floor(Math.random()*palette.length)],
+      life,
+      maxLife:life,
+      shape:Math.random()<0.5?'circle':'rect',
+      spin:(Math.random()-0.5)*0.3,
+      rot:Math.random()*Math.PI*2
+    });
+  }
+  // Hard cap to prevent runaway (auto-run might trigger many bursts)
+  if(_confetti.length>300)_confetti=_confetti.slice(-300);
+}
+function confettiClear(){_confetti=[]}
+function confettiUpdate(dt){
+  const dtS=Math.min(40,dt||16)/1000; // clamp dt to 40ms to avoid huge jumps
+  for(let i=_confetti.length-1;i>=0;i--){
+    const p=_confetti[i];
+    p.vy+=p.g*dtS*60; // gravity (tuned for 60fps baseline)
+    p.x+=p.vx*dtS*60;
+    p.y+=p.vy*dtS*60;
+    p.rot+=p.spin*dtS*60;
+    p.life-=dt;
+    if(p.life<=0||p.y>H+20)_confetti.splice(i,1);
+  }
+}
+function confettiDraw(){
+  if(!_confetti.length)return;
+  cx.save();
+  for(const p of _confetti){
+    const alpha=Math.max(0,Math.min(1,p.life/p.maxLife));
+    cx.globalAlpha=alpha;
+    cx.fillStyle=p.col;
+    if(p.shape==='circle'){
+      cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);cx.fill();
+    } else {
+      cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);
+      cx.fillRect(-p.r,-p.r*0.6,p.r*2,p.r*1.2);
+      cx.restore();
+    }
+  }
+  cx.globalAlpha=1;cx.restore();
+}
+// Confetti palette presets per mini-game (color-coded celebration)
+const CONFETTI_PALETTE={
+  brew:['#ecb457','#e8a020','#b89858','#f0e0a0'],       // gold/amber
+  coffee:['#78c878','#e8a020','#a0d8a0','#5a8848'],     // green/gold
+  surf:['#6090b0','#c0e0f0','#ecb457','#e0f0ff'],        // blue/silver/gold
+  bar:['#f05050','#ecb457','#a04040','#f0c850'],         // red/gold
+  shroom:['#78c878','#5a3018','#a0d8a0','#d0a050'],     // green/brown/gold
+  acad:['#a060c0','#ecb457','#d0a0e0','#f0e0a0'],        // purple/gold
+  endGame:['#ecb457','#78c878','#f05050','#6090b0','#a060c0'] // rainbow gold
+};
+// funify-v3 Round 8: hook each game's success path into confetti burst
+// (called *after* money+xp+events are committed, before final renderAll())
+
 // ═══════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════
@@ -1871,16 +2406,27 @@ function tickObj(cat,n=1){
   G.objs.forEach(o=>{
     if(o.done||o.cat!==cat)return;
     o.cur=Math.min(o.need,o.cur+n);
-    if(o.cur>=o.need){o.done=true;let reward=o.sc;if(cat==='Earn'&&hasMod('tulip_auction'))reward+=5;if(hasUpgrade('meta_cap'))reward=Math.ceil(reward*1.5);G.metaPending+=reward;addEvt('good','🎯 目标完成:'+o.t+' +'+reward+'★（结算时到账）');AUDIO.play('objective')}
+    if(o.cur>=o.need){o.done=true;let reward=o.sc;if(cat==='Earn'&&hasMod('tulip_auction'))reward+=5;if(hasUpgrade('meta_cap'))reward=Math.ceil(reward*1.5);if(hasUpgrade('legendary_meta_x2'))reward*=2;
+      // funify-v3 Round 11: meta 黑洞封顶 30/obj — meta_cap(×1.5) + legendary_meta_x2(×2) 叠加 = ×3,封顶避免 meta 累积过冲
+      if(hasUpgrade('legendary_meta_x2'))reward=Math.min(30,reward);
+      G.metaPending+=reward;addEvt('good','🎯 目标完成:'+o.t+' +'+reward+'★（结算时到账）');AUDIO.play('objective')}
   });
 }
 function workInd(){if(G.inside||G.mg)return;const map={tweede_kans:'brewing',noord:'surfing',bloemenmarkt:'smart_shop',science_park:'academic',de_pijp:'brewing'};const id=map[G.loc];if(!id)return;const def=IND_DEF[id],ind=G.ind[id];const inc=Math.round((def.inc[ind.lv]+Math.floor(seeded(200+G.events.length)*5))*industryFactor(id==='surfing'?'surf':id));G.money+=inc;ind.xp+=Math.round(inc*2*(hasUpgrade('legacy_xp')?1.25:1));chkLv(id);setMsg(`${def.n} +$${inc}`);addEvt('good',`${def.n} +$${inc}`);addSch(def.n.substring(0,2),`经营 +$${inc}`);tickObj('Earn',inc);renderAll()}
 G.advanceTime=advanceTimeAuto;
-function endGame(won){if(G.ended)return;G.ended=true;G.auto=false;clearTimeout(G._at);G.legacy+=Math.floor(G.money/300)+Object.values(G.ind).filter(i=>i.lv>0).length;
-  const objDone=G.objs.filter(o=>o.done).length,objReward=G.metaPending;G.meta+=objReward;G.metaPending=0;saveMeta();
+// 3-tier end-of-run rating (pure fn, testable)
+function endGameTier(objDone,total){total=Math.max(1,total|0);if(objDone>=total)return{tier:'gold',ic:'🥇',label:'完美',col:'#f0c850',mult:1.5};if(objDone>=Math.ceil(total*0.66))return{tier:'silver',ic:'🥈',label:'优秀',col:'#c8c8d0',mult:1.2};if(objDone>=Math.ceil(total*0.33))return{tier:'bronze',ic:'🥉',label:'及格',col:'#cd7f32',mult:1.0};return{tier:'fail',ic:'💔',label:'未达',col:'#a04040',mult:0.6}}
+function endGame(won){if(G.ended)return;G.ended=true;G.auto=false;clearTimeout(G._at);
+  const objDone=G.objs.filter(o=>o.done).length,objTotal=G.objs.length,tier=endGameTier(objDone,objTotal);
+  // Legacy: money/300 + active industries + objDone×5 bonus (encourage finishing)
+  const legacyBase=Math.floor(G.money/300)+Object.values(G.ind).filter(i=>i.lv>0).length;
+  const legacyObjBonus=objDone*5;G.legacy+=Math.round((legacyBase+legacyObjBonus)*tier.mult);
+  // Store run record for upgrade modal summary
+  G._run.streakBest=G.shop.streakBest||0;G._run.lastObjDone=objDone;G._run.lastObjTotal=objTotal;G._run.lastTier=tier.tier;
+  const objReward=G.metaPending;G.meta+=objReward;G.metaPending=0;saveMeta();
   document.getElementById('ba').textContent='▶ 自动运行';document.getElementById('ba').classList.remove('on');
-  setStatus(won?'🍺 胜利！':'📋 Run 结束',`$${G.money} · 今日目标 ${objDone}/3`,`+${objReward}★ meta · 遗产 ${G.legacy}`);
-  setMsg(won?`目标达成！$${G.money} · +${objReward}★`:`7 天结束 · $${G.money} · +${objReward}★`);
+  setStatus(won?'🍺 胜利！':'📋 Run 结束',`${tier.ic} ${tier.label} · $${G.money} · 目标 ${objDone}/${objTotal}${G._run.streakBest>0?' · 🔥×'+G._run.streakBest:''}`,`+${objReward}★ meta · 遗产 ${G.legacy}`);
+  setMsg(won?`目标达成！${tier.ic} ${tier.label} · $${G.money} · +${objReward}★`:`7 天结束 · ${tier.ic} ${tier.label} · $${G.money} · +${objReward}★`);
   // Evaluate end-of-run achievements
   tryUnlock('first_run');
   if(won&&objDone===G.objs.length)tryUnlock('perfect_week');
@@ -1893,6 +2439,9 @@ function endGame(won){if(G.ended)return;G.ended=true;G.auto=false;clearTimeout(G
   const npcIds=['pablo','ravi','sofie','chen'];
   if(npcIds.every(n=>G._run.greetedAll&&G._run.greetedAll[n]))tryUnlock('socialite');
   if(G._run.brewsFinished>=5)tryUnlock('brew_master');
+  // funify-v3 Round 8: endGame celebration burst — gold tier gets biggest rainbow burst
+  const _burstN=tier.tier==='gold'?18:tier.tier==='silver'?12:tier.tier==='bronze'?8:5;
+  confettiBurst(400,250,{n:_burstN,palette:CONFETTI_PALETTE.endGame,life:1100,vyBase:-7});
   renderAll();
   setTimeout(()=>showUpgradeModal(),500);
 }
@@ -1908,17 +2457,11 @@ function renderAll(){
   document.getElementById('t-seed').textContent=seedAbbrev(G.seed);
   document.getElementById('t-meta').textContent='🏆 meta '+G.meta;
   document.getElementById('t-meta-pending').textContent=G.metaPending?' (待结算 +'+G.metaPending+'★)':'';
-  document.getElementById('t-explore').textContent=`🏄 今日:${G.todayWave?G.todayWave.n:'—'} · 已发现 ${getDiscoveredCount()}/7 · perfect +50?`;
+  document.getElementById('t-explore').textContent=`🏄 今日:${G.todayWave?G.todayWave.n:'—'} · 已发现 ${getDiscoveredCount()}/7 · 完美抓 +50★`;
   document.getElementById('t-escape').textContent=`🚇 Lv ${G.escapeLevel} · 周已逃 ${G.escUsed} 次`;
   document.getElementById('t-mood').textContent=moodEmoji();
   document.getElementById('t-ach').textContent=`${G.achievements.length}/${ACH_POOL.length}`;
   document.getElementById('ach-count').textContent=`${G.achievements.length}/${ACH_POOL.length}`;
-  // R3 perf: surface live FPS to topbar (helps user verify ≥30 FPS).
-  if(typeof MAP_RENDERER!=='undefined'){
-    const fps=MAP_RENDERER.fpsNow(),fms=MAP_RENDERER.frameMs();
-    const el=document.getElementById('t-fps');
-    if(el){el.textContent=(fps>0?`${fps} fps · ${fms}ms`:'— fps');el.style.color=fps>=30?'var(--green)':fps>=20?'var(--warn)':'var(--red)'}
-  }
   // Roguelike info
   var ri=document.getElementById('rogue-info');
   var riskCount=0;for(var k in G.ind){if(G.ind[k].lv>0)riskCount++}
@@ -1928,11 +2471,12 @@ function renderAll(){
   // Left industries
   const lp=document.getElementById('left');let lh='<h3>🏭 产业 (点击跳转)</h3>';
   for(const[id,def]of Object.entries(IND_DEF)){const ind=G.ind[id],next=(ind.lv+1)*50,pct=Math.min(100,ind.xp/next*100);const _b=BLDGS.find(b=>b.d===def.loc&&['brew','coffee','shroom','surf','academic','home'].includes(b.tp));const _tx=_b?_b.x+_b.w/2:0,_ty=_b?_b.y+_b.h/2:0;
-    lh+=`<div class="ind-card ${G.loc===def.loc?'active':''}" onclick="G.loc='${def.loc}';G.p.tx=${_tx};G.p.ty=${_ty};G._wp=null;renderAll()" style="border-left-color:${def.cl}">
-      <div class="ih"><span class="ii">${def.n.substring(0,2)}</span><span class="in">${def.n}</span><span class="il">Lv${ind.lv+1}</span></div>
-      <div class="im">风险${def.risk} · $${def.inc[ind.lv]}/次 · ${ind.lv<2?'→'+def.lvs[ind.lv+1]:'满级'}</div>
+    const isMax=ind.lv>=2;
+    lh+=`<div class="ind-card ${G.loc===def.loc?'active':''} ${isMax?'legendary':''}" onclick="G.loc='${def.loc}';G.p.tx=${_tx};G.p.ty=${_ty};G._wp=null;renderAll()" style="border-left-color:${def.cl}">
+      <div class="ih"><span class="ii">${def.n.substring(0,2)}</span><span class="in">${def.n}</span><span class="il">${isMax?'Lv MAX':('Lv'+(ind.lv+1))}</span></div>
+      <div class="im">风险${def.risk} · $${def.inc[ind.lv]}/次 · ${isMax?'满级 ✦传奇 ×1.1':'→'+def.lvs[ind.lv+1]}</div>
       <div class="ib"><div class="if" style="width:${pct}%;background:${def.cl}"></div></div>
-      <div class="ix">${ind.xp}/${next} XP · ${ind.lv===2?'满级':'进度 '+(Math.round(pct))+'%'}</div></div>`}
+      <div class="ix">${ind.xp}/${next} XP · ${isMax?'满级 ×1.1':'进度 '+(Math.round(pct))+'%'}</div></div>`}
   lp.innerHTML=lh;
   // Right objectives (Roguelike)
   const objsEl=document.getElementById('objs');
@@ -1960,12 +2504,12 @@ function renderAll(){
   // Center overlay
   const title=document.getElementById('cov-title'),det=document.getElementById('cov-sub'),hint=document.getElementById('cov-hint');
   if(G.mg){
-    if(G.mg==='brew'){const s=MG.brew;title.textContent=s.ph==='sel'?'🍺 选择原料 (订单:'+s.order.type+')':'🍺 控温酿造 订单:'+s.order.type;det.textContent=s.ph==='sel'?'1/2/3切换 SPACE开始':'当前 '+Math.round(s.t)+'°C · SPACE提交';hint.textContent='🍺 订单:'+s.order.type+' · 剩余'+Math.max(0,Math.round((s.deadline-Date.now())/1000))+'s · 目标温 ?°C'}
-    else if(G.mg==='coffee'){const s=MG.coffee;const warn=s.c&&s.c.undercover?' 🚨卧底!':'';title.textContent='🌿 咖啡店';det.textContent='$'+s.pr+'/g · 目标 '+s.sd+'/'+s.target+warn;hint.textContent='Q/W调价 SPACE成交 X拒客 · 热度'+Math.round(s.ht)+'%'}
+    if(G.mg==='brew'){const s=MG.brew;const _st=G.shop.streak||0;title.textContent=s.ph==='sel'?'🍺 选择原料 (订单:'+s.order.type+')':'🍺 控温酿造 订单:'+s.order.type;det.textContent=s.ph==='sel'?'1/2/3切换 SPACE开始':'当前 '+Math.round(s.t)+'°C · SPACE提交';hint.textContent='🍺 订单:'+s.order.type+' · 剩余'+Math.max(0,Math.round((s.deadline-Date.now())/1000))+'s · 目标温 ?°C' + (_st>0?' · 🔥连击×'+_st+'(×'+brewStreakMul(_st)+')':'')}
+    else if(G.mg==='coffee'){const s=MG.coffee;const warn=s.c&&s.c.undercover?' 🚨卧底!':'';const _hzC=coffeeHeatZone(s.ht);const _fitC=s.c&&!s.raid?coffeeFitHint(s.pr,s.c.max):null;title.textContent='🌿 咖啡店 · 热度'+Math.round(s.ht)+'% '+_hzC.label;det.textContent='$'+s.pr+'/g · 目标 '+s.sd+'/'+s.target+warn+(_fitC?' · '+_fitC.label:'');hint.textContent='Q/W调价 SPACE成交 X拒客 · '+_hzC.label+(_fitC&&!_fitC.ok?' · 差'+(-_fitC.gap)+'元':'')}
     else if(G.mg==='shroom'){title.textContent='🍄 蘑菇种植';det.textContent='调参 SPACE推进';hint.textContent=''}
-    else if(G.mg==='surf'){const s=MG.surf;title.textContent='🏄 巨浪生存';det.textContent='体力'+s.stamina+'% · combo'+s.combo+' · 已抓'+s.at+(s.perfect>0?' · perfect +'+(s.perfect*50):'');hint.textContent='SPACE抓 · 30s持续 · 8% perfect barrel +50'}
+    else if(G.mg==='surf'){const s=MG.surf;const tg=surfBreakerTelegraph(s);const psM=s.perfectStreak>=2?` · 🔥×${s.perfectStreak}(${surfPerfectStreakMul(s.perfectStreak)}x)`:'';title.textContent='🏄 巨浪生存';det.textContent='体力'+s.stamina+'% · combo'+s.combo+' · 已抓'+s.at+(s.perfect>0?' · perfect +'+(s.perfect*50):'')+psM;hint.textContent='SPACE抓 · 30s持续 · 8% perfect barrel +50 · 浪组:'+(tg.phase==='set'?'进行中':`静默${tg.msLeftLabel}s`)+' · 体力'+(tg.staminaWarn==='low'?'⚠':tg.staminaWarn==='med'?'~':'✓')}
     else if(G.mg==='academic'){title.textContent='📚 学术';det.textContent='';hint.textContent=''}
-    else if(G.mg==='bar'){const s=MG.bar;const cur=s.cs[s.cs.length-1];title.textContent='🍻 酒吧 · 黑市讨价';det.textContent=cur?`${cur.face} ${cur.arch.n} 报价$${cur.offer} (底${cur.floor}/上${cur.ceiling})`:'暂无顾客';hint.textContent='Q/W ±1 报价 · SPACE成交 · X拒客 · 今日推荐 '+BAR_DRINK[s.reco]+(s.vipDay?' · VIP日':'')}
+    else if(G.mg==='bar'){const s=MG.bar;const cur=s.cs[s.cs.length-1];const _tipH=cur&&cur.drink===s.recoDrink;const _tipR=cur&&cur.isRegular;const _tipEx=cur?barTipPreview(cur.offer,_tipH,_tipR,tipFactor()):null;title.textContent='🍻 酒吧 · 黑市讨价'+(s.diff?' ('+s.diff.label+')':'')+(cur?' · '+(_tipEx>=cur.offer?'💚':'💔')+'$'+_tipEx:'');det.textContent=cur?`${cur.face} ${cur.arch.n} 报价$${cur.offer} (底${cur.floor}/上${cur.ceiling})`:'暂无顾客';hint.textContent='Q/W ±1 报价 · SPACE成交 · X拒客 · 今日推荐 '+BAR_DRINK[s.reco]+(s.vipDay?' · VIP日':'')+(cur?' · 💸 实时tip':'')+(s.diff?' · '+s.diff.label:'')}
   }else if(G.day===1&&G.ti===0&&!G.sch.length){title.textContent='🟢 Day 1 · 就绪';det.textContent='按 WASD 移动 · 按 E 进入建筑';hint.textContent='💡 走到公寓/酒吧/咖啡店 · 或按 ▶ 自动运行跑完整局'}
   else{title.textContent='';det.textContent='';hint.textContent=''}
 }
@@ -1974,10 +2518,12 @@ function renderAll(){
 // INPUT
 // ═══════════════════════════════════════════
 document.addEventListener('keydown',e=>{
-  if(modalOpen()){if(e.key==='Enter'&&document.activeElement&&document.activeElement.id==='start-seed'){e.preventDefault();startFromModal();return}if(e.key==='Escape'){if(!document.getElementById('help-modal').classList.contains('hidden'))closeHelp()}return}
+  if(modalOpen()){if(e.key==='Enter'&&document.activeElement&&document.activeElement.id==='start-seed'){e.preventDefault();startFromModal();return}if(e.key==='Escape'||e.key==='Enter'){const hm=document.getElementById('mg-hint-modal');if(hm&&!hm.classList.contains('hidden')){closeMgHint();return}const hp=document.getElementById('help-modal');if(hp&&!hp.classList.contains('hidden')&&e.key==='Escape'){closeHelp();return}}if(e.key.toLowerCase()==='m'){AUDIO.toggleMute();return}return}
+  // funify-v3 Round 6 — M key toggles audio mute (works even when ended/modal)
+  if(e.key==='M'||e.key==='m'){AUDIO.toggleMute();setMsg(AUDIO.muted?'🔇 音频已静音':'🔊 音频开启');return}
   if(G.ended){if(e.key==='n')newRun();return}const k=e.key.toLowerCase();
-  if(G.mg){G.auto=false;const b=document.getElementById('ba');b.classList.remove('on');b.classList.add('go');b.textContent='▶ 自动运行';
-    if(k==='escape'){G.mg=null;G.inside=null;setStatus('🟢 就绪','','');renderAll();return}
+  if(G.mg){cancelAuto('key');
+    if(k==='escape'){cancelAuto('escape');G.mg=null;G.inside=null;setStatus('🟢 就绪','','');renderAll();return}
     if(G.mg==='brew')brewIn(k);else if(G.mg==='coffee')coffeeIn(k);else if(G.mg==='shroom')shroomIn(k);
     else if(G.mg==='surf')surfIn(k);else if(G.mg==='bar')barIn(k);
     else if(G.mg==='waveSelect'){if(k==='escape')hideWaveSelect();else if(k>='1'&&k<='7')pickWavePoint(parseInt(k));return}
@@ -1985,7 +2531,10 @@ document.addEventListener('keydown',e=>{
     renderAll();return;
   }
   if(G.inside){if(k==='escape'||k==='e'){G.inside=null;setStatus('🟢 就绪','','');renderAll();return}
-    if(k==='t'&&G.inside.tp==='npc'){const npc=G.inside.npc;if(!G.greetedToday)G.greetedToday=[];const isFirst=!G.greetedToday.includes(npc);if(isFirst){G.greetedToday.push(npc);G._run.greetedAll[npc]=1;const r=10+Math.floor(seeded(180+G.day)*15);G.money+=r;setMsg(`${npc}: +$${r} (今日首次)`);addEvt('good',`💬 ${npc} +$${r}`);addSch('💬',`${npc} +$${r}`);tickObj('Talk',1);tickObj('Earn',r);if(G.escapeLevel<4)learnEscape(npc);renderAll()}else{setMsg(`${npc} 今日已聊过（再来不再奖励）`);addEvt('info',`💬 ${npc} 今日已聊过`);renderAll()}}
+    if(k==='t'&&G.inside.tp==='npc'){const npc=G.inside.npc;if(!G.greetedToday)G.greetedToday=[];const isFirst=!G.greetedToday.includes(npc);if(isFirst){G.greetedToday.push(npc);G._run.greetedAll[npc]=1;const dlg=pickNpcDialog(npc);const r=dlg?dlg.r:10+Math.floor(seeded(180+G.day)*15);G.money+=r;const line=dlg?dlg.q:`${npc}: +$${r} (今日首次)`;setMsg(line);addEvt('good',`💬 ${npc} +$${r}`);addSch('💬',`${npc} +$${r}`);if(dlg)addEvt('info',dlg.q);
+      // funify-v3 Round 13 — 建筑风味短句 (T 键首次入栈)
+      const bf=NPC_BUILDING_FLAVOR[npc];if(bf)addEvt('info',bf);
+      tickObj('Talk',1);tickObj('Earn',r);if(G.escapeLevel<4)learnEscape(npc);renderAll()}else{setMsg(`${npc} 今日已聊过（再来不再奖励）`);addEvt('info',`💬 ${npc} 今日已聊过`);renderAll()}}
     if(k==='r'&&G.inside.tp==='home'){advanceTimeAuto();renderAll()}return}
   // Track held keys for continuous movement
   if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)){G.keys[k]=true;G._wp=null;setMoveMsg()}
@@ -1996,14 +2545,30 @@ document.addEventListener('keydown',e=>{
   renderAll();
 });
 document.addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(G.keys)delete G.keys[k]});
-cv.addEventListener('click',e=>{if(modalOpen())return;if(Date.now()-G.lastClickAt<200)return;G.lastClickAt=Date.now();if(!G.inside&&!G.mg&&!G.ended){G._wp=null;const r=cv.getBoundingClientRect();const scale=r.width/W;const tx=(e.clientX-r.left)/scale;const ty=(e.clientY-r.top)/scale;const cl=clampTargetToWalkable(tx,ty);if(cl){G.p.tx=cl.x;G.p.ty=cl.y}else{G.p.tx=tx;G.p.ty=ty}}});
+cv.addEventListener('click',e=>{if(modalOpen())return;if(Date.now()-G.lastClickAt<200)return;G.lastClickAt=Date.now();AUDIO.play('click');if(!G.inside&&!G.mg&&!G.ended){G._wp=null;const r=cv.getBoundingClientRect();const scale=r.width/W;const tx=(e.clientX-r.left)/scale;const ty=(e.clientY-r.top)/scale;const cl=clampTargetToWalkable(tx,ty);if(cl){G.p.tx=cl.x;G.p.ty=cl.y}else{G.p.tx=tx;G.p.ty=ty}}});
+// funify-v3 Round 18 — mouse hover halo + Amsterdam real-location tooltip (BACKLOG #38 + Round 17 risk)
+cv.addEventListener('mousemove',e=>{
+  if(modalOpen()){G._hoverBldg=null;return}
+  const r=cv.getBoundingClientRect(),scale=r.width/W;
+  const mx=(e.clientX-r.left)/scale,my=(e.clientY-r.top)/scale;
+  const prev=G._hoverBldg&&G._hoverBldg.id;
+  const next=getHoverBldg(mx,my);
+  G._hoverBldg=next;
+  if((prev||'')!==((next&&next.id)||''))renderAll();
+});
+cv.addEventListener('mouseleave',()=>{if(G._hoverBldg){G._hoverBldg=null;renderAll()}});
 
 function newRunInner(){
   G.day=1;G.ti=0;G.ended=false;G.metaPending=0;G.visited=[];G.visitedToday=[];G.greetedToday=[];G.keys={};resetRunCounters();
   const seeds=[200,220,250,280,300];G.money=seeds[Math.floor(seeded(501)*seeds.length)]+G.legacy*10+(hasUpgrade('extra_cash')?50:0);
   G.rep=0;G.bs=[3+Math.floor(seeded(502)*4)+(hasUpgrade('extra_brew')?2:0),2+Math.floor(seeded(503)*3),1+Math.floor(seeded(504)*3)];G.brewI=-1;G.brewT=0;G.events=[];G.mods=[];G.auto=false;G.inside=null;G.mg=null;G.sch=[];G.ts=0;G.tr=0;G.loc='de_pijp';G.p={x:100,y:400,tx:100,ty:400};G._wp=null;G._st=0;G.objs=[];G._objDay=0;G.todayWave=null;
+  // funify-v3 Round 3: brew streak counter — resets on each new run, persists for the whole run
+  G.shop.streak=0;G.shop.streakBest=0;
   for(const k of Object.keys(IND_DEF))G.ind[k]={lv:0,xp:0};
 }
+
+// funify-v3 Round 6 — bottom-bar mute button: toggles AUDIO + refreshes label
+function toggleMuteBtn(){AUDIO.toggleMute();const b=document.getElementById('mute-btn');if(b)b.textContent=AUDIO.muted?'🔇':'🔊';setMsg(AUDIO.muted?'🔇 音频已静音':'🔊 音频开启')}
 
 function newRun(seed){
   G.run++;G.seed=Number.isFinite(seed)?seed:(42+Math.floor(Math.random()*900000));newRunInner();rollDayObjectives();
@@ -2012,10 +2577,13 @@ function newRun(seed){
   saveMeta();
   document.getElementById('ba').textContent='▶ 自动运行';document.getElementById('ba').classList.remove('on');document.getElementById('upg-modal').classList.add('hidden');
   setStatus('🟢 新游戏 #'+G.run+' · '+seedAbbrev(G.seed),'起始$'+G.money+' · 库存🍺'+G.bs[0]+'🥃'+G.bs[1]+'🍷'+G.bs[2],'🎯 今日目标已生成 · ▶ 自动运行可跑完整局');
-  setMsg('Run #'+G.run+' · seed='+G.seed);renderAll();
+  setMsg('Run #'+G.run+' · seed='+G.seed);
+  // funify-v3 Round 7 — phase flash on Day 1 start (Roguelike 开局仪式)
+  showPhaseFlash(1,0,{titleOverride:'🌅 Day 1 · Dawn · 阿姆斯特丹欢迎你'});
+  renderAll();
 }
 
-function frame(){if(typeof MAP_RENDERER!=='undefined')MAP_RENDERER.fpsTick(performance.now());update();updateSurf();updateBrew();updateCoffee();updateBar();if(G.mg)drawMG();else drawMap();requestAnimationFrame(frame)}
+function frame(){update();updateSurf();updateBrew();updateCoffee();updateBar();confettiUpdate(16);if(G.mg)drawMG();else drawMap();confettiDraw();requestAnimationFrame(frame)}
 renderAll();frame();
 // Modal skip button
 document.getElementById('upg-skip').addEventListener('click',()=>{
@@ -2023,29 +2591,19 @@ document.getElementById('upg-skip').addEventListener('click',()=>{
 });
 loadMeta();
 loadAch();
+AUDIO.loadMute();
+loadSpeed();
+renderSpeedBtn();
+const _mb=document.getElementById('mute-btn');if(_mb)_mb.textContent=AUDIO.muted?'🔇':'🔊';
 renderAll();
 // Populate seed input from URL, or auto-skip if previously dismissed
 try{if(localStorage.getItem('ab_skip_tutorial')==='1'){startFromModal()}}catch(e){}
 const _qp=new URLSearchParams(location.search);const _qs=_qp.get('seed');if(_qs)document.getElementById('start-seed').value=_qs;
 window.AB_TEST={
   data:{industries:IND_DEF,events:EV_POOL,upgrades:UP_POOL,objectives:OBJ_CATS,achievements:ACH_POOL},state:G,
-  geo: typeof AMSTERDAM_GEO !== 'undefined' ? AMSTERDAM_GEO : null,
-  renderer: typeof MAP_RENDERER !== 'undefined' ? MAP_RENDERER : null,
-  seedAbbrev,seeded,rollDayObjectives,rollDayModifier,tickObj,newRun,endGame,clampTargetToWalkable,
-  industryFactor,tipFactor,tryUnlock,saveAch,loadAch,AUDIO,resetRunCounters,toggleReplica,
-  fpsNow:()=>typeof MAP_RENDERER!=='undefined'?MAP_RENDERER.fpsNow():0,
-  frameMs:()=>typeof MAP_RENDERER!=='undefined'?MAP_RENDERER.frameMs():0,
-  fpsReset:()=>{if(typeof MAP_RENDERER!=='undefined')MAP_RENDERER.fpsReset()},
-  bridgeCount:()=>typeof AMSTERDAM_GEO!=='undefined'?AMSTERDAM_GEO.BRIDGES.length:0,
-  // R4 · single-call replica introspection (counts + viewport + LOD + cache + fps)
-  getReplSceneStats:(W,H)=>{
-    if(typeof MAP_RENDERER==='undefined'||typeof AMSTERDAM_GEO==='undefined')return null;
-    const Wd=W||(typeof window!=='undefined'?window.innerWidth:800);
-    const Hd=H||(typeof window!=='undefined'?window.innerHeight-180:520);
-    return MAP_RENDERER.getReplSceneStats(AMSTERDAM_GEO,Wd,Hd,{pad:18});
-  },
-  // R4 · mini-game → Amsterdam landmark binding (used by tests + tooltips)
-  minigameBindings: typeof AMSTERDAM_GEO!=='undefined' ? AMSTERDAM_GEO.MINI_BINDINGS : null,
+  seedAbbrev,seeded,rollDayObjectives,rollDayModifier,pickObjDef,tickObj,newRun,endGame,clampTargetToWalkable,
+  industryFactor,tipFactor,tryUnlock,saveAch,loadAch,AUDIO,resetRunCounters,
+  barTipPreview,barPatienceLeft,barDayDifficulty,coffeeHeatZone,coffeeFitHint,shroomQuality,brewStreakMul,brewNoteProgress,surfPerfectStreakMul,surfBreakerTelegraph,acadPartialCredit,acadRebuttalCost,acadRebuttalBoost,acadWriteMs,acadSubmitCooldownMs,VENUE_DEF,phaseNarr,showPhaseFlash,PHASE_NARR,confettiBurst,confettiClear,confettiUpdate,confettiDraw,CONFETTI_PALETTE,isLegendary,legendarySpeedMs,legendaryCost,legendaryMetaCap,rollUpgradeChoices,NPC_DIALOGUES,pickNpcDialog,NPC_TEACH_FLAVOR,NPC_BUILDING_FLAVOR,MG_HINT_KEYS,showMgHint,closeMgHint,mgHintSeen,getHoverBldg,speedMs,cycleSpeed,saveSpeed,loadSpeed,cancelAuto,renderAutoBtn,AUTO_CANCEL_GRACE_MS,showHelp,closeHelp,lvMaxBoost,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

@@ -132,6 +132,23 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 #upg-modal .um-box{background:var(--panel);border:1px solid var(--gold);border-radius:12px;padding:20px;max-width:680px;width:90%}
 #upg-modal h2{color:var(--gold);font-size:16px;margin-bottom:4px;text-align:center}
 #upg-modal .um-meta{text-align:center;color:var(--muted);font-size:11px;margin-bottom:14px}
+/* Phase E1 — talent tree panel (reuses upg-modal box shell) */
+#tal-modal{position:fixed;inset:0;background:#000000a8;display:flex;align-items:center;justify-content:center;z-index:101}
+#tal-modal.hidden{display:none}
+#tal-modal .um-box{background:var(--panel);border:1px solid var(--gold);border-radius:12px;padding:18px;max-width:760px;width:92%;max-height:86vh;overflow:auto}
+#tal-modal h2{color:var(--gold);font-size:16px;margin-bottom:4px;text-align:center}
+#tal-modal .um-meta{text-align:center;color:var(--muted);font-size:11px;margin-bottom:10px}
+.tal-mut{text-align:center;font-size:11px;margin-bottom:12px;padding:6px;border:1px dashed var(--gold);border-radius:8px;color:#ffd98a}
+.tal-br{margin-bottom:10px}
+.tal-br-h{font-size:12px;color:var(--gold);margin-bottom:4px}
+.tal-row{display:flex;gap:6px;flex-wrap:wrap}
+.tal-card{flex:1 1 30%;min-width:170px;border:1px solid #ffffff22;border-radius:8px;padding:7px 8px;font-size:11px;cursor:pointer;background:#ffffff08;transition:.15s}
+.tal-card:hover{border-color:var(--gold);background:#ffffff14}
+.tal-card.owned{border-color:#5fd35f;background:#5fd35f1c;cursor:default}
+.tal-card.locked{opacity:.42;cursor:not-allowed}
+.tal-card b{display:block;font-size:12px;margin-bottom:2px}
+.tal-card em{color:var(--muted);font-style:normal;font-size:10px}
+.mut-badge{display:inline-block;padding:1px 6px;border-radius:8px;background:#ffd98a22;border:1px solid #ffd98a66;color:#ffd98a;font-size:10px}
 #upg-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .upg-card{background:var(--card);border-radius:8px;padding:10px;cursor:pointer;border:2px solid transparent;transition:all .15s}
 .upg-card:hover{border-color:var(--gold);background:#202838}
@@ -227,6 +244,16 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div class="um-meta">你有 <b id="um-meta-v">0</b> meta<span id="um-summary"></span> · 选 1 个(或 Skip 留 meta 给下个 run)</div>
 <div id="upg-choices"></div>
 <button id="upg-skip" class="btn">⏭ Skip</button>
+</div>
+</div>
+
+<!-- Phase E1 — Talent Tree panel (T 键) -->
+<div id="tal-modal" class="hidden">
+<div class="um-box">
+<h2>🌳 天赋树 · 本 Run Build</h2>
+<div class="um-meta">你有 <b id="tal-meta-v">0</b>★ meta · 已选 <b id="tal-cnt">0</b>/4 · 每个 5★ · <b>本 run 有效</b> · 按 <kbd>T</kbd> 或 <kbd>ESC</kbd> 关闭</div>
+<div id="tal-mut" class="tal-mut"></div>
+<div id="tal-grid"></div>
 </div>
 </div>
 
@@ -646,6 +673,79 @@ const ACH_POOL=[
 const ACH_BY_ID=Object.fromEntries(ACH_POOL.map(a=>[a.id,a]));
 
 // ═══════════════════════════════════════════
+// Phase E1 — Talent Tree (per-run build, 4 branches × 3 nodes)
+// 每个 talent 5★ meta,本 run 有效,最多 4 个。T 键开面板。
+// f: 产业乘区 (折进 industryFactor) · flag: 非乘区钩子
+// ═══════════════════════════════════════════
+const TALENT_BRANCHES=[
+  {id:'brew',n:'酿酒大师',ic:'🍺'},
+  {id:'street',n:'街头智慧',ic:'🕶️'},
+  {id:'scholar',n:'学者',ic:'📚'},
+  {id:'survivor',n:'幸存者',ic:'🛟'}
+];
+const TALENT_POOL=[
+  // Brew Master
+  {id:'t_brew_yield',br:'brew',n:'酒花玄学',ic:'🌾',d:'酿造收入 ×1.25',cost:5,f:{brewing:1.25}},
+  {id:'t_brew_bar',br:'brew',n:'自产自销',ic:'🍻',d:'酒吧收入 ×1.2（自家酒好卖）',cost:5,f:{bar:1.2}},
+  {id:'t_brew_stock',br:'brew',n:'祖传酒窖',ic:'🛢️',d:'开局 +4 桶库存',cost:5,flag:'startStock'},
+  // Street Smart
+  {id:'t_street_heat',br:'street',n:'我看起来很无辜',ic:'😇',d:'咖啡店热度累积 -25%',cost:5,flag:'heatShield'},
+  {id:'t_street_fence',br:'street',n:'销赃人脉',ic:'💼',d:'蘑菇收入 ×1.3',cost:5,f:{shroom:1.3}},
+  {id:'t_street_slip',br:'street',n:'滑不留手',ic:'🧼',d:'各类罚款减半 · 心情下限 -3',cost:5,flag:'slip'},
+  // Scholar
+  {id:'t_sch_edge',br:'scholar',n:'同行评审黑手',ic:'🎓',d:'学术收入 ×1.35',cost:5,f:{academic:1.35}},
+  {id:'t_sch_coffee',br:'scholar',n:'咖啡因驱动研究',ic:'☕',d:'咖啡收入 ×1.25',cost:5,f:{coffee:1.25}},
+  {id:'t_sch_rich',br:'scholar',n:'启动资金申请成功',ic:'💶',d:'开局 +$120',cost:5,flag:'startCash'},
+  // Survivor
+  {id:'t_sur_surf',br:'survivor',n:'北海铁腿',ic:'🏄',d:'冲浪收入 ×1.4',cost:5,f:{surf:1.4}},
+  {id:'t_sur_calm',br:'survivor',n:'钝感力',ic:'🧘',d:'免疫每日未营业罚款',cost:5,flag:'noFine'},
+  {id:'t_sur_all',br:'survivor',n:'万事通（半吊子）',ic:'🤹',d:'全产业 ×1.1（但只有这一个才算数）',cost:5,f:{'*':1.1}}
+];
+const TAL_BY_ID=Object.fromEntries(TALENT_POOL.map(t=>[t.id,t]));
+const TALENT_MAX=4;
+function hasTalent(id){return Array.isArray(G.talents)&&G.talents.includes(id)}
+function talentFlag(f){return TALENT_POOL.some(t=>t.flag===f&&hasTalent(t.id))}
+function talentFactor(ind){
+  let f=1;
+  for(const id of (G.talents||[])){const t=TAL_BY_ID[id];if(!t||!t.f)continue;
+    // 具名产业优先于通配:"其余全部" 语义 — 通配只作用于未点名的产业
+    f*=(t.f[ind]!==undefined)?t.f[ind]:(t.f['*']||1);}
+  return f;
+}
+// 心情下限:默认 -2,滑不留手 talent 放宽到 -3
+function moodFloor(){return(talentFlag('slip')||mutFlag('slip'))?-3:-2}
+// 罚款计算:滑不留手 talent 减半;mutator strict_city 翻倍
+function fineAmt(base){let v=base;if(talentFlag('slip'))v=Math.round(v/2);if(mutFlag('strictCity'))v=Math.round(v*2);return v}
+
+// ═══════════════════════════════════════════
+// Phase E3 — Daily Mutator (12 池,每日开局抽 1,badge 常驻)
+// 与 modifier 正交:modifier 是天气/城市事件,mutator 是"本日规则变形"
+// ═══════════════════════════════════════════
+const MUTATOR_POOL=[
+  {id:'m_hangover',ic:'🥴',n:'集体宿醉',d:'酒吧 ×0.6,但咖啡 ×1.8（全城都在解酒）',f:{bar:.6,coffee:1.8}},
+  {id:'m_tulip',ic:'🌷',n:'郁金香泡沫',d:'蘑菇 ×2.0（投机者分不清球茎和菌菇）',f:{shroom:2}},
+  {id:'m_thesis',ic:'📝',n:'截稿日',d:'学术 ×1.8,其余全部 ×0.85',f:{academic:1.8,'*':.85}},
+  {id:'m_strike',ic:'🚋',n:'电车罢工',d:'全产业 ×0.8,但未营业不罚款（谁都到不了）',f:{'*':.8},flag:'noFine'},
+  {id:'m_influencer',ic:'🤳',n:'网红打卡日',d:'酿酒 ×1.6,咖啡 ×1.6（排队两小时拍照五分钟）',f:{brewing:1.6,coffee:1.6}},
+  {id:'m_strict',ic:'👮',n:'严打周',d:'所有罚款 ×2,但蘑菇 ×1.5（稀缺溢价）',f:{shroom:1.5},flag:'strictCity'},
+  {id:'m_storm',ic:'🌪️',n:'大风预警',d:'冲浪 ×2.2,其余 ×0.9（浪好但没人出门）',f:{surf:2.2,'*':.9}},
+  {id:'m_freebeer',ic:'🎁',n:'免费啤酒谣言',d:'酒吧 ×1.9,酿酒 ×0.7（库存被喝光）',f:{bar:1.9,brewing:.7}},
+  {id:'m_grant',ic:'🏛️',n:'市政补贴',d:'全产业 ×1.25（钱来得莫名其妙）',f:{'*':1.25}},
+  {id:'m_mercury',ic:'🪐',n:'水星逆行',d:'全产业 ×0.75,但心情不会掉到 -3 以下',f:{'*':.75},flag:'slipLite'},
+  {id:'m_swan',ic:'🦢',n:'天鹅暴动',d:'冲浪 ×0.5,酒吧 ×1.4（大家躲进酒吧）',f:{surf:.5,bar:1.4}},
+  {id:'m_ghost',ic:'👻',n:'鬼故事之夜',d:'咖啡 ×0.7,蘑菇 ×1.8,学术 ×1.3',f:{coffee:.7,shroom:1.8,academic:1.3}}
+];
+const MUT_BY_ID=Object.fromEntries(MUTATOR_POOL.map(m=>[m.id,m]));
+function curMut(){return G.mutator?MUT_BY_ID[G.mutator]:null}
+function mutFlag(f){const m=curMut();return!!(m&&(m.flag===f||(f==='slip'&&m.flag==='slipLite')))}
+function mutatorFactor(ind){const m=curMut();if(!m||!m.f)return 1;return(m.f[ind]!==undefined)?m.f[ind]:(m.f['*']||1)}
+function rollDayMutator(){
+  const i=Math.floor(seeded(9100+G.day*13)*MUTATOR_POOL.length);
+  const m=MUTATOR_POOL[Math.min(i,MUTATOR_POOL.length-1)];
+  G.mutator=m.id;return m;
+}
+
+// ═══════════════════════════════════════════
 // WEB AUDIO (Round 6) — procedural synth, no external assets.
 // AudioContext is lazy-init on first user gesture (browser autoplay rule).
 // Each minigame event maps to a tiny preset: short oscillator + envelope.
@@ -762,6 +862,9 @@ function industryFactor(id){
   if(id==='academic'&&hasUpgrade('museumkaart'))f*=1.25;
   if(id==='bar'&&hasMod('kings_day'))f*=1.5;
   f*=lvMaxBoost(id);
+  // Phase E1/E3 — talent (per-run build) × daily mutator (per-day rule warp)
+  // 乘区叠在最后,保证 modifier/upgrade 的既有平衡关系不被改写,只被放缩。
+  f*=talentFactor(id)*mutatorFactor(id);
   return f;
 }
 // funify-v3 Round 23 — lvMaxBoost helper (BACKLOG #9 #4 closure)
@@ -789,7 +892,58 @@ function resetRunCounters(){
 }
 function showHelp(){document.getElementById('help-modal').classList.remove('hidden')}
 function closeHelp(){document.getElementById('help-modal').classList.add('hidden')}
-function modalOpen(){const s=document.getElementById('start-modal'),h=document.getElementById('help-modal'),m=document.getElementById('mg-hint-modal');return(s&&!s.classList.contains('hidden'))||(h&&!h.classList.contains('hidden'))||(m&&!m.classList.contains('hidden'))}
+// ═══ Phase E1 — Talent panel (T 键) ═══
+function talOpen(){return!document.getElementById('tal-modal').classList.contains('hidden')}
+function showTalents(){document.getElementById('tal-modal').classList.remove('hidden');renderTalents()}
+function closeTalents(){document.getElementById('tal-modal').classList.add('hidden')}
+function toggleTalents(){talOpen()?closeTalents():showTalents()}
+function renderTalents(){
+  if(!G.talents)G.talents=[];
+  document.getElementById('tal-meta-v').textContent=G.meta;
+  document.getElementById('tal-cnt').textContent=G.talents.length;
+  const m=curMut();
+  document.getElementById('tal-mut').innerHTML=m
+    ?'🏷️ <b>今日变量</b> · '+m.ic+' '+m.n+' — '+m.d
+    :'🏷️ 今日变量未生成';
+  const full=G.talents.length>=TALENT_MAX;
+  document.getElementById('tal-grid').innerHTML=TALENT_BRANCHES.map(br=>{
+    const rows=TALENT_POOL.filter(t=>t.br===br.id).map(t=>{
+      const owned=hasTalent(t.id);
+      const locked=!owned&&(full||G.meta<t.cost);
+      const cls='tal-card'+(owned?' owned':(locked?' locked':''));
+      const tag=owned?'✅ 已激活':(full?'🔒 已满 4/4':(G.meta<t.cost?'🔒 需 '+t.cost+'★':'💰 '+t.cost+'★ 点击激活'));
+      return `<div class="${cls}" data-tal="${t.id}"><b>${t.ic} ${t.n}</b><em>${t.d}</em><em style="color:var(--gold)">${tag}</em></div>`;
+    }).join('');
+    return `<div class="tal-br"><div class="tal-br-h">${br.ic} ${br.n}</div><div class="tal-row">${rows}</div></div>`;
+  }).join('');
+  document.querySelectorAll('#tal-grid .tal-card').forEach(el=>{
+    el.addEventListener('click',()=>buyTalent(el.dataset.tal));
+  });
+}
+// 侧栏常驻:🏷️ 今日 mutator + 🌳 已激活天赋 (Phase E1/E3 可见性)
+function talentBadgeHtml(){
+  const m=curMut();
+  const mutRow=m?'<div class="sb-row" style="font-size:10px">🏷️ <span class="mut-badge">'+m.ic+' '+m.n+'</span></div>':'';
+  const ts=(G.talents||[]).map(id=>TAL_BY_ID[id]).filter(Boolean);
+  const talRow='<div class="sb-row" style="color:var(--muted);font-size:10px">🌳 '+(ts.length?ts.map(t=>t.ic+t.n).join(' · '):'无天赋')+' ('+ts.length+'/'+TALENT_MAX+') · 按 T</div>';
+  return mutRow+talRow;
+}
+function buyTalent(id){
+  const t=TAL_BY_ID[id];if(!t)return;
+  if(!G.talents)G.talents=[];
+  if(hasTalent(id))return;
+  if(G.talents.length>=TALENT_MAX){setMsg('🔒 天赋已满 '+TALENT_MAX+'/'+TALENT_MAX+'（本 run 不可更换）');return}
+  if(G.meta<t.cost){setMsg('★ meta 不足（需 '+t.cost+'★,你有 '+G.meta+'★）');return}
+  G.meta-=t.cost;G.talents.push(id);saveMeta();
+  // 即时生效的非乘区天赋
+  if(t.flag==='startStock'){G.bs[0]+=4;addEvt('good','🛢️ 祖传酒窖开封 · 库存 +4 桶')}
+  if(t.flag==='startCash'){G.money+=120;addEvt('good','💶 补贴到账 +$120')}
+  AUDIO.play('achievement');
+  addEvt('good','🌳 天赋激活 · '+t.ic+' '+t.n+' — '+t.d);
+  setMsg('🌳 '+t.n+' 已激活');
+  renderTalents();renderAll();
+}
+function modalOpen(){const s=document.getElementById('start-modal'),h=document.getElementById('help-modal'),m=document.getElementById('mg-hint-modal'),t=document.getElementById('tal-modal');return(s&&!s.classList.contains('hidden'))||(h&&!h.classList.contains('hidden'))||(m&&!m.classList.contains('hidden'))||(t&&!t.classList.contains('hidden'))}
 // funify-v3 Round 14 — first-time mini-game key overlay (BACKLOG #3 close)
 const MG_HINT_KEYS={
   brew:{ic:'🍺',name:'酿酒厂（啤酒订单）',keys:[['<kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd>','原料:麦芽/啤酒花/酵母各选 0/1/2'],['<kbd>SPACE</kbd>','开始酿造 (订单 180s 内完成)'],['<kbd>⬆</kbd>/<kbd>⬇</kbd>','控温 ±3°C（IPA=55°·Stout=68°·Lager=48°）'],['<kbd>ESC</kbd>','离开不收尾']],tip:'配方顺序 + 目标温度是订单的两大隐藏轴；温度误差 ≤±5°C 触发完美品。'},
@@ -2725,8 +2879,13 @@ function advanceTimeAuto(){
   if(G.ended)return;G.ti++;if(G.ti>=6){G.ti=0;G.day++;
     // Phase A C2: skip-day fine — if you didn't work brew/coffee/bar today, landlord charges $15 + mood -1
     if(G.workedToday&&!G.workedToday.brew&&!G.workedToday.coffee&&!G.workedToday.bar){
-      G.money=Math.max(0,G.money-15);G.mood=Math.max(-2,G.mood-1);
-      addEvt('bad','💸 今日未营业 · 房东罚款 -$15 · 心情 -1');
+      if(talentFlag('noFine')||mutFlag('noFine')){
+        addEvt('info','🧘 今日未营业 · 但你有豁免（罚款免除）');
+      }else{
+        const fine=fineAmt(15);
+        G.money=Math.max(0,G.money-fine);G.mood=Math.max(moodFloor(),G.mood-1);
+        addEvt('bad','💸 今日未营业 · 房东罚款 -$'+fine+' · 心情 -1');
+      }
     }
     G.workedToday={brew:0,coffee:0,bar:0};
     G.sch=[];G.visitedToday=[];G.greetedToday=[];
@@ -2736,6 +2895,8 @@ function advanceTimeAuto(){
     const mod=rollDayModifier();G.mods=[{t:mod.ic+' '+mod.t,id:mod.id,effect:mod.effect}];
     if(hasUpgrade('extra_event')){const mod2=rollDayModifier();if(mod2.id!==mod.id)G.mods.push({t:mod2.ic+' '+mod2.t,id:mod2.id,effect:mod2.effect})}
     if(G.money<0){endGame(false);return}
+    const mut=rollDayMutator();
+    addEvt('info','🏷️ 今日变量 · '+mut.ic+' '+mut.n+' — '+mut.d);
     addEvt('info',mod.ic+' '+mod.t+(mod.effect?' ('+mod.effect+')':''));
     G.mods.forEach(m=>{if(m.id!==mod.id)addEvt('info',m.t+' ('+m.effect+')')});
     setStatus('☀️ Day '+G.day,G.mods.map(m=>m.ic).join('')+' '+G.mods[0].t,'🎯 3 个新目标已生成');
@@ -2987,7 +3148,7 @@ function renderAll(){
   // Roguelike info
   var ri=document.getElementById('rogue-info');
   var riskCount=0;for(var k in G.ind){if(G.ind[k].lv>0)riskCount++}
-  ri.innerHTML='<div class="sb-row">🎯 Run #'+G.run+' · 💰遗产'+G.legacy+' · 7 天目标挑战</div><div class="sb-row" style="color:var(--muted);font-size:10px">⏰ '+Math.max(0,7-G.day+1)+'天剩余 · 🔄'+riskCount+'/5产业激活 · 待结算 ★'+G.metaPending+'</div>';
+  ri.innerHTML='<div class="sb-row">🎯 Run #'+G.run+' · 💰遗产'+G.legacy+' · 7 天目标挑战</div><div class="sb-row" style="color:var(--muted);font-size:10px">⏰ '+Math.max(0,7-G.day+1)+'天剩余 · 🔄'+riskCount+'/5产业激活 · 待结算 ★'+G.metaPending+'</div>'+talentBadgeHtml();
   document.getElementById('mods').innerHTML=G.mods.map(m=>`<span class="mp">${m.t}<em>${m.effect}</em></span>`).join('')||'<span style="font-size:10px;color:var(--muted)">尚无事件</span>';
   for(let i=0;i<6;i++){const el=document.getElementById('p'+i);el.classList.remove('active','done');if(i===G.ti)el.classList.add('active');else if(i<G.ti)el.classList.add('done')}
   // Left industries
@@ -3042,6 +3203,8 @@ function renderAll(){
 // INPUT
 // ═══════════════════════════════════════════
 document.addEventListener('keydown',e=>{
+  // Phase E1 — talent panel swallows all keys while open (T/ESC to close)
+  if(talOpen()){const tk=e.key.toLowerCase();if(tk==='t'||tk==='escape'){e.preventDefault();closeTalents()}return}
   if(modalOpen()){if(e.key==='Enter'&&document.activeElement&&document.activeElement.id==='start-seed'){e.preventDefault();startFromModal();return}if(e.key==='Escape'||e.key==='Enter'){const hm=document.getElementById('mg-hint-modal');if(hm&&!hm.classList.contains('hidden')){closeMgHint();return}const hp=document.getElementById('help-modal');if(hp&&!hp.classList.contains('hidden')&&e.key==='Escape'){closeHelp();return}}if(e.key.toLowerCase()==='m'){AUDIO.toggleMute();return}return}
   // funify-v3 Round 6 — M key toggles audio mute (works even when ended/modal)
   if(e.key==='M'||e.key==='m'){AUDIO.toggleMute();setMsg(AUDIO.muted?'🔇 音频已静音':'🔊 音频开启');return}
@@ -3065,6 +3228,7 @@ document.addEventListener('keydown',e=>{
   // Track held keys for continuous movement
   if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)){G.keys[k]=true;G._wp=null;setMoveMsg()}
   if(k==='e')enterBldg();if(k===' ')advanceTimeAuto();if(k==='n')newRun();if(k==='h')showHelp();
+  if(k==='t'){toggleTalents();return}
   if(k==='1'){G.loc='de_pijp';G._wp=null;G.p.tx=100;G.p.ty=390}if(k==='2'){G.loc='science_park';G._wp=null;G.p.tx=640;G.p.ty=330}
   if(k==='3'){G.loc='tweede_kans';G._wp=null;G.p.tx=380;G.p.ty=410}if(k==='4'){G.loc='bloemenmarkt';G._wp=null;G.p.tx=310;G.p.ty=90}
   if(k==='5'){G.loc='noord';G._wp=null;G.p.tx=90;G.p.ty=55}
@@ -3100,6 +3264,8 @@ function newRunInner(){
   G.coffeeEarnedToday=0;G.barStock={ipa:0,stout:0,lager:0};
   // funify-v3 Round 3: brew streak counter — resets on each new run, persists for the whole run
   G.shop.streak=0;G.shop.streakBest=0;
+  // Phase E1/E3 — per-run talent build + daily mutator slot
+  G.talents=[];G.mutator=null;
   for(const k of Object.keys(IND_DEF))G.ind[k]={lv:0,xp:0};
 }
 
@@ -3110,6 +3276,7 @@ function newRun(seed){
   G.run++;G.seed=Number.isFinite(seed)?seed:(42+Math.floor(Math.random()*900000));newRunInner();rollDayObjectives();
   const mod=rollDayModifier();G.mods=[{t:mod.ic+' '+mod.t,id:mod.id,effect:mod.effect}];
   if(hasUpgrade('extra_event')){const mod2=rollDayModifier();if(mod2.id!==mod.id)G.mods.push({t:mod2.ic+' '+mod2.t,id:mod2.id,effect:mod2.effect})}
+  const mut0=rollDayMutator();addEvt('info','🏷️ 今日变量 · '+mut0.ic+' '+mut0.n+' — '+mut0.d);
   saveMeta();
   document.getElementById('ba').textContent='▶ 自动运行';document.getElementById('ba').classList.remove('on');document.getElementById('upg-modal').classList.add('hidden');
   setStatus('🟢 新游戏 #'+G.run+' · '+seedAbbrev(G.seed),'起始$'+G.money+' · 库存🍺'+G.bs[0]+'🥃'+G.bs[1]+'🍷'+G.bs[2],'🎯 今日目标已生成 · ▶ 自动运行可跑完整局');

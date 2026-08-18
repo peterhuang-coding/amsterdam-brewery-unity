@@ -237,6 +237,96 @@ frame.addEventListener('load',async()=>{
   check('brew index.html 源含 digital thermometer readout + needle swing',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /digital thermometer|_dgtX|needle swing|temp.*digital/i.test(src)});
   check('brew index.html 源含 enhanced steam wisps 6 缕蒸汽',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /enhanced steam|_stN|steam wisps|6 wisps|enhanced steam wisps/i.test(src)});
 
+  // ═══ funify-v3 Round 13 (Phase D5+D6) — 火焰/蒸汽柱 + 跨游戏 link runtime tests ═══
+  check('R13: index.html 源含 wood fire / gas burner 火焰渲染',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /wood pile|heat source|gas burner|_flameH|flame tongues|_boilPct/i.test(src)});
+  check('R13: index.html 源含 rising steam column 上升蒸汽柱',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /rising column|_sw3|tall rising|上升蒸汽|rising steam/i.test(src)});
+  check('R13: index.html 源含 heat shimmer ellipse + spigot',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /heat shimmer|spigot|tap on right|_shimP/i.test(src)});
+  // D6 — cross-game link helpers exposed
+  check('R13: COFFEE_BEAN_FROM_SHROOM 暴露且 ≥2 个 key',()=>{const m=win.eval('COFFEE_BEAN_FROM_SHROOM');return m&&m.coffeebean_truffle==='amazonian'&&m.coffeebean_cordyceps==='cordyceps'});
+  check('R13: coffeebeanFromShroom 双向映射',()=>{const fn=win.eval('coffeebeanFromShroom');return fn('coffeebean_truffle')==='amazonian'&&fn('coffeebean_cordyceps')==='cordyceps'&&fn('notreal')===null});
+  check('R13: shroomProvidesCoffeebean 反向映射',()=>{const fn=win.eval('shroomProvidesCoffeebean');return fn('amazonian')==='coffeebean_truffle'&&fn('cordyceps')==='coffeebean_cordyceps'&&fn('philosopher')===null});
+  check('R13: SHROOM_RECIPES 含 2 NEW 跨游戏 蘑菇→咖啡豆 配方',()=>{
+    const rs=win.eval('SHROOM_RECIPES');
+    return rs.some(r=>r.id==='truffle_cappuccino'&&r.inputs.coffeebean==='coffeebean_truffle')&&
+           rs.some(r=>r.id==='cordyceps_latte'&&r.inputs.coffeebean==='coffeebean_cordyceps');
+  });
+  check('R13: shroomPickRecipe(cordyceps) 现在返回 cordyceps_latte 跨游戏配方',()=>{
+    const fn=win.eval('shroomPickRecipe');if(!fn)return false;
+    const r=fn('cordyceps');return r&&(r.id==='cordyceps_latte'||r.id==='cold_drip_tincture'||r.id==='cordyceps_jerky'||r.id==='tripel_cordyceps');
+  });
+  check('R13: shroomPickRecipe(amazonian) 现在返回 truffle_cappuccino 或 amazonian_chocolate (shroom 命中)',()=>{
+    const fn=win.eval('shroomPickRecipe');if(!fn)return false;
+    const r=fn('amazonian');return r&&(r.id==='truffle_cappuccino'||r.id==='amazonian_chocolate');
+  });
+  check('R13: surfUnlockedRecipes 0/1/2 浪点 → 空数组',()=>{
+    const fn=win.eval('surfUnlockedRecipes');if(!fn)return false;
+    const before=t.state.surfDiscovered.slice();
+    try{
+      for(const n of[0,1,2]){t.state.surfDiscovered=['p'+n];const out=fn();if(out.length!==0)return false}
+      return true;
+    }finally{t.state.surfDiscovered=before}
+  });
+  check('R13: surfUnlockedRecipes ≥3 → surf_stamina_gum',()=>{
+    const fn=win.eval('surfUnlockedRecipes');if(!fn)return false;
+    const before=t.state.surfDiscovered.slice();
+    try{
+      t.state.surfDiscovered=['a','b','c'];const out=fn();return out.length===1&&out[0]==='surf_stamina_gum';
+    }finally{t.state.surfDiscovered=before}
+  });
+  check('R13: surfUnlockedRecipes ≥4 → +cordyceps_jerky',()=>{
+    const fn=win.eval('surfUnlockedRecipes');if(!fn)return false;
+    const before=t.state.surfDiscovered.slice();
+    try{
+      t.state.surfDiscovered=['a','b','c','d'];const out=fn();return out.length===2&&out.includes('cordyceps_jerky');
+    }finally{t.state.surfDiscovered=before}
+  });
+  check('R13: surfUnlockedRecipes ≥5 → +seablue_serum (3 总)',()=>{
+    const fn=win.eval('surfUnlockedRecipes');if(!fn)return false;
+    const before=t.state.surfDiscovered.slice();
+    try{
+      t.state.surfDiscovered=['a','b','c','d','e'];const out=fn();return out.length===3&&out.includes('seablue_serum');
+    }finally{t.state.surfDiscovered=before}
+  });
+  check('R13: validateBarStockRefs 完整 barStock → ok=true missing=[]',()=>{
+    const fn=win.eval('validateBarStockRefs');if(!fn)return false;
+    const before=JSON.parse(JSON.stringify(t.state.barStock||{ipa:0,stout:0,lager:0}));
+    try{t.state.barStock={ipa:2,stout:1,lager:3};const v=fn();return v.ok===true&&v.missing.length===0}
+    finally{t.state.barStock=before}
+  });
+  check('R13: validateBarStockRefs 缺 ipa → missing=["ipa"]',()=>{
+    const fn=win.eval('validateBarStockRefs');if(!fn)return false;
+    const before=JSON.parse(JSON.stringify(t.state.barStock||{ipa:0,stout:0,lager:0}));
+    try{t.state.barStock={stout:1,lager:3};const v=fn();return v.ok===false&&v.missing.includes('ipa')}
+    finally{t.state.barStock=before}
+  });
+  check('R13: crossGameLinkTip <3 产业 → null',()=>{
+    const fn=win.eval('crossGameLinkTip');if(!fn)return false;
+    const beforeInd=JSON.parse(JSON.stringify(t.state.ind||{}));
+    try{t.state.ind={brewing:{lv:1},bar:{lv:0},coffee:{lv:0},shroom:{lv:0},surf:{lv:0}};return fn()===null}
+    finally{t.state.ind=beforeInd}
+  });
+  check('R13: crossGameLinkTip 三联 brewing+bar+coffee → 提示',()=>{
+    const fn=win.eval('crossGameLinkTip');if(!fn)return false;
+    const beforeInd=JSON.parse(JSON.stringify(t.state.ind||{}));
+    try{t.state.ind={brewing:{lv:1},bar:{lv:1},coffee:{lv:1},shroom:{lv:0},surf:{lv:0}};const out=fn();return typeof out==='string'&&out.includes('三联')}
+    finally{t.state.ind=beforeInd}
+  });
+  check('R13: crossGameLinkTip shroom+surf ≥3 → 浪人回血',()=>{
+    const fn=win.eval('crossGameLinkTip');if(!fn)return false;
+    const beforeInd=JSON.parse(JSON.stringify(t.state.ind||{}));
+    try{t.state.ind={brewing:{lv:0},bar:{lv:0},coffee:{lv:0},shroom:{lv:1},surf:{lv:1},academic:{lv:1}};const out=fn();return typeof out==='string'&&(out.includes('浪人回血')||out.includes('联动'))}
+    finally{t.state.ind=beforeInd}
+  });
+  check('R13: todayTip 在联动条件下返回 crossGameLinkTip 内容',()=>{
+    const beforeInd=JSON.parse(JSON.stringify(t.state.ind||{}));
+    const beforeFactions=JSON.parse(JSON.stringify(t.state.factions||{}));
+    try{
+      t.state.ind={brewing:{lv:1},bar:{lv:1},coffee:{lv:1},shroom:{lv:0},surf:{lv:0}};
+      t.state.factions={heineken:0,coffee:0,smartshop:0};
+      const tip=win.eval('todayTip()');return typeof tip==='string'&&tip.includes('三联');
+    }finally{t.state.ind=beforeInd;t.state.factions=beforeFactions}
+  });
+
   // ═══ funify-v3 Round 1 — coffee heat zone + fit hint (BACKLOG B3) ═══
   check('coffeeHeatZone(20)==安全/绿',()=>{const z=win.eval('coffeeHeatZone(20)');return z.col==='#78c878'&&z.label==='安全'&&z.danger===0});
   check('coffeeHeatZone(50)==警戒/黄',()=>{const z=win.eval('coffeeHeatZone(50)');return z.col==='#e8a020'&&z.label==='警戒'&&z.danger===1});

@@ -1182,7 +1182,22 @@ const SHROOM_RECIPES=[
   {id:'pilsner_goldenTeacher',n:'金色皮尔森', out:'瓶装',  basePrice:72,  inputs:{brewBarrel:'Pilsner',shroom:'goldenTeacher'},        cross:'brewery',desc:'金色入门'},
   {id:'sour_philosopher',     n:'酸哲学',     out:'瓶装',  basePrice:80,  inputs:{brewBarrel:'Sour',shroom:'philosopher'},            cross:'brewery',desc:'酸+沉思'},
   {id:'tripel_cordyceps',     n:'修道院补剂', out:'胶囊',  basePrice:88,  inputs:{brewBarrel:'BelgianTripel',shroom:'cordyceps'},     cross:'brewery',desc:'烈酒+虫草·耐力'},
+  // funify-v3 Round 13 (Phase D6): SmartShop 蘑菇 → 咖啡豆交换原料 — 2 NEW cross-game inputs (coffeebean_truffle + coffeebean_cordyceps)
+  {id:'truffle_cappuccino',   n:'松露卡布',   out:'咖啡',  basePrice:58,  inputs:{shroom:'amazonian',coffeebean:'coffeebean_truffle'},  cross:'coffee',desc:'🌰 菌香咖啡·入门'},
+  {id:'cordyceps_latte',     n:'虫草拿铁',   out:'咖啡',  basePrice:62,  inputs:{shroom:'cordyceps',coffeebean:'coffeebean_cordyceps'},cross:'coffee',desc:'☕ 高原活力·耐力'},
 ];
+// funify-v3 Round 13 (Phase D6): 跨游戏 link — SmartShop 蘑菇作为咖啡豆 exchange 原料
+// Returns shroom strain id when the requested coffeebean is a shroom-derivative synthetic key.
+// coffeebean_truffle ↔ amazonian (坚果香), coffeebean_cordyceps ↔ cordyceps (高原·耐力)
+const COFFEE_BEAN_FROM_SHROOM={coffeebean_truffle:'amazonian',coffeebean_cordyceps:'cordyceps'};
+function coffeebeanFromShroom(beanId){return COFFEE_BEAN_FROM_SHROOM[beanId]||null}
+function shroomProvidesCoffeebean(strainId){
+  if(!strainId)return null;
+  for(const k of Object.keys(COFFEE_BEAN_FROM_SHROOM)){
+    if(COFFEE_BEAN_FROM_SHROOM[k]===strainId)return k;
+  }
+  return null;
+}
 // 7 灵魂事件 — 每 run 一次性触发,根据培养参数 + 行业热度判定
 // kind: police_raid(已存在)/contamination_outbreak/new_strain/customer_undercover/power_outage/rival_strain/legendary_harvest
 const SHROOM_SOUL_EVENTS=[
@@ -1412,10 +1427,18 @@ function shroomQuality(s){
   return Math.max(1,Math.min(5,q));
 }
 // Pick recipe from current strain + cross-game inventory. Returns null if no recipe unlocks.
+// funify-v3 Round 13 (Phase D6): matches by direct shroom inputs OR by synthetic coffeebean_xxx derived from this strain.
 function shroomPickRecipe(strainId){
   if(!strainId)return null;
   const stock=G.shop||{};
-  const candidates=SHROOM_RECIPES.filter(r=>r.inputs.shroom===strainId);
+  // direct: r.inputs.shroom === strainId
+  const candidates=SHROOM_RECIPES.filter(r=>r.inputs&&r.inputs.shroom===strainId);
+  // synthetic coffeebean_xxx (shroom-as-coffee-bean exchange) — match if strain produces that bean
+  const syntheticBean=shroomProvidesCoffeebean(strainId);
+  if(syntheticBean){
+    const cross=SHROOM_RECIPES.filter(r=>r.inputs&&r.inputs.coffeebean===syntheticBean);
+    for(const c of cross)if(!candidates.includes(c))candidates.push(c);
+  }
   if(!candidates.length)return null;
   // simple: pick first matching — recipe system expands in later rounds
   return candidates[0];
@@ -1427,6 +1450,27 @@ function brewPickRecipe(beerType){
   const candidates=SHROOM_RECIPES.filter(r=>r.inputs&&r.inputs.brewBarrel===beerType);
   if(!candidates.length)return null;
   return candidates[0];
+}
+// funify-v3 Round 13 (Phase D6): 冲浪收藏 → 配方 unlock — 收集 ≥3 个浪点解锁 "贝壳/珍珠/古硬币" 系列配方
+// Pure function — no side effects. Returns array of unlocked recipe ids given current discovered count.
+function surfUnlockedRecipes(){
+  const out=[];
+  const n=(G.surfDiscovered||[]).length;
+  if(n>=3)out.push('surf_stamina_gum');     // 贝壳+菌 → 浪人口香糖
+  if(n>=4)out.push('cordyceps_jerky');      // 珍珠+菌 → 虫草肉干
+  if(n>=5)out.push('seablue_serum');        // 海星+菌 → 海蓝精华
+  return out;
+}
+// funify-v3 Round 13 (Phase D6): 运行时验证 — G.barStock 必须使用 BAR_DRINK_STOCK 三个 key
+// Returns {ok, missing, extra} — missing 是 G.barStock 缺少的 key, extra 是多出的 key
+function validateBarStockRefs(){
+  const expected=Object.values(BAR_DRINK_STOCK_BY_ID||{}).filter((v,i,a)=>a.indexOf(v)===i);  // 去重后的 stock 桶 id
+  const required=new Set(['ipa','stout','lager']); // core 3 桶是契约最小集
+  const stock=G.barStock||{};
+  const missing=[];
+  for(const k of required){if(typeof stock[k]!=='number')missing.push(k)}
+  const extra=Object.keys(stock).filter(k=>!required.has(k));
+  return {ok:missing.length===0,missing,extra,required:[...required],have:Object.keys(stock)};
 }
 // Apply purchased surf upgrade tracks to a surf session state. Pure function.
 function surfApplyUpgradeBoosts(s){
@@ -2067,6 +2111,9 @@ function todayTip(){
   if(!G||!G.factions)return PLOT_HOOK;
   const beat=dayBeat(G.day);
   if(!beat)return PLOT_HOOK;
+  // funify-v3 Round 13 (Phase D6): 跨游戏 联动 banner — 3+ 产业同时活跃时插一条短提示
+  const linkTip=crossGameLinkTip();
+  if(linkTip)return linkTip;
   // State-driven override: low money, low mood, or last-obj-pending
   const _money=G.money|0,_mood=G.mood|0;
   const _objsPending=(G.objs||[]).filter(o=>!o.done).length;
@@ -2076,6 +2123,29 @@ function todayTip(){
   // Beat-driven default
   return `${beat.ic} Day ${G.day} · ${beat.t} — ${beat.d}`;
 }
+// funify-v3 Round 13 (Phase D6): 跨游戏 联动 banner — 3+ 产业同时活跃时插一条短提示
+function crossGameLinkTip(){
+  if(!G)return null;
+  const ind=G.ind||{};
+  const active=[];
+  if((ind.brewing?.lv|0)>=1)active.push('brewing');
+  if((ind.bar?.lv|0)>=1)active.push('bar');
+  if((ind.coffee?.lv|0)>=1)active.push('coffee');
+  if((ind.shroom?.lv|0)>=1)active.push('shroom');
+  if((ind.surf?.lv|0)>=1)active.push('surf');
+  if((ind.academic?.lv|0)>=1)active.push('academic');
+  if(active.length<3)return null;
+  const has=(k)=>active.includes(k);
+  if(has('brewing')&&has('bar')&&has('coffee'))return '🍺☕ 三联:酿酒→酒吧供货,咖啡→酒吧提神特调,库存互转!';
+  if(has('shroom')&&has('coffee'))return '🍄☕ 咖啡×蘑菇双开 — 虫草拿铁/松露卡布可解锁';
+  if(has('shroom')&&has('brewing'))return '🍄🍺 菌酒合流 — 修道院补剂 / 狮鬃皮尔森等待配方';
+  if(has('surf')&&has('shroom'))return '🏄🍄 浪人回血 — 收集 ≥3 浪点解锁「浪人口香糖」配方';
+  if(has('surf')&&has('brewing'))return '🏄🍺 海风×陈酿 — 海蓝精华 / 虫草肉干等待配方';
+  if(has('academic')&&has('shroom'))return '📚🍄 学术+菌株 — 哲学家墨水/博物馆萃取可合成';
+  if(active.length>=4)return `🔗 ${active.length} 产业联动 — 跨游戏配方触发中,优先做 1 个组合`;
+  return null;
+}
+
 // Phase C — run alignment: dominant faction or 'none' (all factions non-positive)
 function runAlignment(){
   const f=G.factions||{};
@@ -5418,15 +5488,33 @@ function drawMG(){
       var liquidCol=s.order&&s.order.type==='Stout'?'#3a1a0a':s.order&&s.order.type==='IPA'?'#e0a020':s.order&&s.order.type==='Pilsner'?'#f0d870':s.order&&s.order.type==='Sour'?'#d0d850':s.order&&s.order.type==='BelgianTripel'?'#c89030':'#c08030';
       cx.fillStyle=liquidCol;cx.beginPath();cx.ellipse(400,325,82,8,0,0,Math.PI*2);cx.fill();
       cx.fillStyle='#ffffff60';cx.beginPath();cx.ellipse(400,323,72,3,0,0,Math.PI*2);cx.fill();
-      // bubbles
-      cx.fillStyle='#ffffff80';
-      for(var b=0;b<6;b++){cx.beginPath();cx.arc(360+b*15+Math.sin(tm*3+b)*5,322-Math.abs(Math.sin(tm*2+b))*8,3,0,Math.PI*2);cx.fill()}
+      // bubbles — Round 13 D5: bigger bubble + boil intensity by temperature
+      var _boilPct=Math.max(0,Math.min(1,(s.t-30)/50));
+      cx.fillStyle='#ffffff'+Math.round(60+_boilPct*40).toString(16).padStart(2,'0');
+      for(var b=0;b<8;b++){var _bRad=2+_boilPct*2;cx.beginPath();cx.arc(360+b*12+Math.sin(tm*3+b)*5,322-Math.abs(Math.sin(tm*2+b))*8,_bRad,0,Math.PI*2);cx.fill()}
+      // Round 13 D5: spigot/tap on right side of kettle
+      cx.fillStyle='#a8a8a8';cx.fillRect(490,350,10,5);  // spout
+      cx.fillStyle='#888';cx.fillRect(488,348,3,8);     // handle
+      cx.fillStyle='#404040';cx.fillRect(490,355,4,6);  // valve
+      // Round 13 D5: heat source — small wood fire / gas burner underneath kettle
+      // wood pile
+      cx.fillStyle='#3a2010';cx.fillRect(310,415,180,8);
+      cx.fillStyle='#5a3018';cx.fillRect(310,415,180,2);
+      // flame (3 wavy tongues, color shifts by temp)
+      var _flameH=8+_boilPct*6;
+      cx.fillStyle=_boilPct>0.7?'#ffa030':_boilPct>0.4?'#e8a020':'#d04020';
+      for(var fl=0;fl<3;fl++){var _fx=340+fl*60+Math.sin(tm*8+fl)*3;cx.beginPath();cx.arc(_fx,418-_flameH+Math.abs(Math.sin(tm*6+fl))*4,4+fl,0,Math.PI*2);cx.fill()}
+      cx.fillStyle='#fff8c080';
+      for(var fl2=0;fl2<3;fl2++){var _fx2=340+fl2*60+Math.cos(tm*7+fl2)*2;cx.beginPath();cx.arc(_fx2,415-_flameH/2+Math.abs(Math.sin(tm*5+fl2))*3,2,0,Math.PI*2);cx.fill()}
+      // heat shimmer (horizontal noise line above kettle rim)
+      cx.fillStyle='#ffffff20';
+      for(var hs=0;hs<4;hs++){cx.fillRect(310+hs*45+Math.sin(tm*4+hs)*3,316,40,1)}
       // ingredient emojis floating in
       if(s.m>=0)cx.font='20px sans-serif';cx.fillText('🌾',345+Math.sin(tm)*5,308);
       if(s.h>=0)cx.fillText('🌿',395+Math.cos(tm)*5,306);
       if(s.y>=0)cx.fillText('🔬',445+Math.sin(tm+1)*5,310);
       cx.font='13px sans-serif';
-      // steam wisps
+      // steam wisps (4 base wisps from kettle mouth)
       cx.fillStyle='#ffffff30';
       for(var sw=0;sw<4;sw++){cx.beginPath();cx.arc(385+sw*15+Math.sin(tm/2+sw)*8,285-Math.abs(Math.sin(tm*0.5+sw))*50,6,0,Math.PI*2);cx.fill()}
       // BIG THERMOMETER on left
@@ -5514,12 +5602,20 @@ function drawMG(){
       cx.fillStyle='#fff';cx.font='bold 9px sans-serif';cx.textAlign='center';cx.fillText(_curLabel,_ringCX,_ringCY+3);
       // small hint below
       cx.fillStyle='#888';cx.font='7px sans-serif';cx.fillText('3 段节奏',_ringCX,_ringCY+_ringR+8);
-      // (4) enhanced steam wisps — 6 wisps + breathing
+      // (4) enhanced steam wisps — 6 wisps + breathing + Round 13 D5 rising column
       var _stN=Date.now()/1000;
-      cx.fillStyle='#ffffff20';
+      // dense low layer (just above kettle rim)
+      cx.fillStyle='#ffffff28';
       for(var _sw=0;_sw<6;_sw++){var _sxp=375+_sw*10+Math.sin(_stN/1.5+_sw)*8,_syp=295-Math.abs(Math.sin(_stN*0.7+_sw*0.4))*70;cx.beginPath();cx.arc(_sxp,_syp,5+(_sw%2),0,Math.PI*2);cx.fill()}
+      // upper dissipating layer
       cx.fillStyle='#ffffff14';
       for(var _sw2=0;_sw2<4;_sw2++){var _sxp2=380+_sw2*15+Math.cos(_stN/1.2+_sw2)*6,_syp2=275-Math.abs(Math.sin(_stN*0.5+_sw2*0.3))*90;cx.beginPath();cx.arc(_sxp2,_syp2,7,0,Math.PI*2);cx.fill()}
+      // Round 13 D5: tall rising column from kettle center — 8 stacked wisps that drift upward + sine wobble
+      cx.fillStyle='#ffffff18';
+      for(var _sw3=0;_sw3<8;_sw3++){var _swY=300-_sw3*15-Math.abs(Math.sin(_stN*0.4+_sw3*0.5))*25;var _swX=400+Math.sin(_stN/2+_sw3*0.7)*12;cx.beginPath();cx.arc(_swX,_swY,3+(_sw3%3),0,Math.PI*2);cx.fill()}
+      // Round 13 D5: heat shimmer ring around kettle top
+      var _shimP=0.4+0.3*Math.sin(_stN*2);cx.strokeStyle='rgba(255,200,100,'+_shimP+')';cx.lineWidth=1;
+      cx.beginPath();cx.ellipse(400,313,82+Math.sin(_stN*3)*2,5,0,0,Math.PI*2);cx.stroke();
     }
   }else if(mg==='coffee'){
     // === Coffeeshop interior (Round 10 D2): 砖墙 + 咖啡馆窗户 + 黑板菜单 + 窗台绿植 + 磨豆机 + 萃取机 + 3 段工艺表盘 + 蒸汽粒子 ===
@@ -7243,6 +7339,8 @@ window.AB_TEST={
   brewRollSoulEvent,brewApplySoul,brewApplyUpgradeBoosts,brewPickRecipe,
   // Round 12: Phase D5 — brewery canvas palette + yeast mutation hook
   BREW_BOTTLE_COLORS,brewBottleColor,brewYeastMutationFlag,brewSetYeastMutation,
+  // Round 13: Phase D6 — 跨游戏 link 验证 (SmartShop↔CoffeeBean / Surf→recipe unlock / barStock runtime check / 联动 banner)
+  COFFEE_BEAN_FROM_SHROOM,coffeebeanFromShroom,shroomProvidesCoffeebean,surfUnlockedRecipes,validateBarStockRefs,crossGameLinkTip,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length,brewBeerCount:BEER_CATALOG.length===6,brewYeastCount:YEAST_CATALOG.length===4,brewSoulCount:BREW_SOUL_EVENTS.length===8,brewUpgradeCount:BREW_UPGRADES.length===15&&unique(BREW_UPGRADES),brewBottlePalette:Object.keys(BREW_BOTTLE_COLORS).length===6&&unique(Object.keys(BREW_BOTTLE_COLORS).map(id=>({id})))};

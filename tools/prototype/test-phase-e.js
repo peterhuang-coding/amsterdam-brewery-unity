@@ -395,10 +395,10 @@ const B4 = new Function('G', 'seeded', 'addEvt', 'bumpFaction', 'MG', '"use stri
 t('Round6: 6 strains in catalog', B4.SHROOM_STRAIN_CATALOG.length === 6);
 t('Round6: every strain has h/t/l/yieldBase', B4.SHROOM_STRAIN_CATALOG.every(s => Number.isFinite(s.h) && Number.isFinite(s.t) && Number.isFinite(s.l) && Number.isFinite(s.yieldBase)));
 t('Round6: unique strain ids', new Set(B4.SHROOM_STRAIN_CATALOG.map(s => s.id)).size === 6);
-t('Round6: 15 recipes (12 Round-6 + 3 Round-7 cross-game for new beers)', B4.SHROOM_RECIPES.length === 15);
+t('Round6: 17 recipes (12 R6 + 3 R7 beer + 2 R13 shroom→coffeeBean cross-game)', B4.SHROOM_RECIPES.length === 17);
 t('Round6: every recipe has inputs.shroom + basePrice + cross', B4.SHROOM_RECIPES.every(r => r.inputs && r.inputs.shroom && Number.isFinite(r.basePrice) && r.cross));
 t('Round6: every recipe references a real strain', B4.SHROOM_RECIPES.every(r => B4.SHROOM_STRAIN_CATALOG.some(s => s.id === r.inputs.shroom)));
-t('Round6: unique recipe ids (15 distinct)', new Set(B4.SHROOM_RECIPES.map(r => r.id)).size === 15);
+t('Round6: unique recipe ids (17 distinct)', new Set(B4.SHROOM_RECIPES.map(r => r.id)).size === 17);
 t('Round6: 7 soul events', B4.SHROOM_SOUL_EVENTS.length === 7);
 t('Round6: every soul event has effect.kind', B4.SHROOM_SOUL_EVENTS.every(e => e.effect && e.effect.kind));
 t('Round6: police_raid soul event present (matches existing 警察临检)', B4.SHROOM_SOUL_EVENTS.some(e => e.id === 'police_raid'));

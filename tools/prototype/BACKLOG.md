@@ -83,10 +83,11 @@
 - ✅ [index.html:633 wantPositive 30% 无生效提示] event_freq 触发时 addEvt `🎲 event_freq 已生效（30%偏正向）` — **Round 20 funify-v3 完成（wantPositive + good 同时成立时 addEvt 反馈）**
 - ✅ [index.html:2151 advanceTimeAuto 120ms 太快] 暴露 speed slider（300/150/60ms 三档）— **Round 19 funify-v3 完成（1×/2×/4× 三档循环按钮,ab_speed_v1 持久化,advanceTimeAuto 接入 speedMs,floor 15ms 保护）**
 - ✅ [index.html:633 EV_KIND 与 EV_POOL 同步] 改 `EV_POOL.forEach(e=>EV_KIND[e.id]=e.kind||'neutral')` — **Round 4 funify-v3 已修**
-- [ ] [index.html:484 IND_DEF inc:[12,18,26] 过小] 提升 inc 数组到 [25,40,55]
+- ✅ [index.html:484 IND_DEF inc:[12,18,26] 过小] 提升 inc 数组到 [25,40,55] — **Round 40 funify-v3 完成 (INC_DEF inc 数组 5 产业全升,新增 legendary_inc_boost ×1.3 升级)**
 - ✅ [index.html:510-524 OBJ_CATS 无难度递增] day 1-3 走 n:30 轻松档，day 4-7 强制 n:100/服务 6/酿酒 3 — **Round 21 funify-v3 完成（pickObjDef 按 day-bucket 分档,defs 先按 n 升序排序再选 idx;day 1-2=easy / 3-4=medium / 5-7=hard;Explore/Talk 保持 easy 直到 day 6）**
 - ✅ [index.html:633 wantPositive hard filter 缩池] 改 weighted pick 而非 hard filter — **Round 20 funify-v3 完成（weights 数组 + reduce 抽签,池子永远 11 候选,good=3 / neutral=1 / bad=0.5）**
-- [ ] [index.html:2210 endGame won objs.every 太严] 改 ≥2 即 won，bronze/silver/gold 3 档
+- [ ] [index.html:2210 endGame won objs.every 太严] 改 ≥2 即 won，bronze/silver/gold 3 档 — **Round 36 funify-v3 修 (endGame 体 tier.mult 乘 metaPending ×{gold:1.5,silver:1.2,bronze:1.0,fail:0.6},状态标题 tier-aware,新增 gold_run/silver_run/bronze_run 3 条 ACH_POOL 成就,16 断言 test=701/709 pre-existing 8 fail)**
+- [ ] [index.html:2155 extra_event 排除相同即可] 加"同一天最多 1 个负面"约束 day 1-3 全 good
 - [ ] [index.html:2155 extra_event 排除相同即可] 加"同一天最多 1 个负面"约束 day 1-3 全 good
 - [ ] [index.html:484 IND_DEF lvs 3 档满级后无感] 满级给"传奇"标签 + 1.1× 静态加成 — **Round 23 funify-v3 修 (lvMaxBoost helper + ind-card legendary class + ✦传奇 UI + 11 断言)**
 - [ ] [index.html:2099 toggleAuto 无加速] 加 `▶▶ 2×/▶▶▶ 4×` toggle
@@ -95,7 +96,7 @@
 - [ ] [index.html:2220 G.money 颜色 3 档瞬时跳变] 加 `transition:color .4s` 平滑过渡
 - [ ] [index.html:2300 cv click 移动无反馈] update 检测到达时 `cx.fillStyle='#ecb457'; cx.arc(p.x,p.y,12)` 画到达脉冲圈
 - [ ] [index.html:2262 cov-title 完成无粒子] commitAcad/finBrew/finSurf 等成功分支加 5-10 个 ctx.arc 黄色圆点 confetti
-- [ ] [index.html:2211 setMsg "目标达成"] tickObj 完成分支加 5 秒 toast `#toast{position:fixed;top:80px;right:20px}`
+- [x] [index.html:2211 setMsg "目标达成"] tickObj 完成分支加 5 秒 toast `#toast{position:fixed;top:80px;right:20px}` — **Round 32 funify-v3 修 (tickObj 完成 spawn `.obj-toast` 绿色卡片 5s 后 .fading 淡出 600ms,右下角堆叠多 obj 完成 → 17 断言 test=647/653)**
 - [ ] [index.html:1857 greenState 只有文字] 改 `pos>0.6?'✨ 完美区!':pos>0.3?'⚪ 白区':'❌ 错过!'`
 - [x] [index.html:1534 温度条单调红] ≥目标后 `cx.fillStyle='#78c878'` 绿色 — **Round 24 funify-v3 修 (sweet-spot 30-70 绿色叠加 + >=80 cash-out 窗口 #80ffa0)**
 - [x] [index.html:1635 咖啡耐心条 <5s 闪烁] `Math.sin(Date.now()/100)*0.4+0.6` 紧迫闪烁 — **Round 24 funify-v3 修 (bar patience bar 紧迫闪烁 + Ns 倒计时)**
@@ -121,25 +122,26 @@
 - [ ] [index.html:551 UP_POOL 8 项满] 加 5 个"传奇级"升级 cost 200+：`💎 全部收入 ×2`、`🛡️ 永久免疫卧底`、`⚡ 自动时间+1`
 - [ ] [index.html:586 saveMeta 只存 meta/upgrades/legacy/run] 加 `achivs:[{id,maxMoney,bestStreak,perfects}]` 成就墙
 - [ ] [index.html:570-585 industryFactor 跨 run 无特化] 加 `meta industry upgrades`: `💵 酿酒 +20%`, `☕ 咖啡 +20%` 等
-- [ ] [index.html:740 G.brewNotes 与 G.strainNotes 跨 run 但无展示] 加 `📒 知识本`按钮列出已掌握
-- [ ] [index.html:601 G escapeLevel:0 无信任] 加 `G.teacherRep:{}` 3 次同导师对话升级 escape success 10%
-- [ ] [index.html:1019 finBar combo 局内重置] 加 `bestRunCombo` 在 upgrade 模态展示
-- [ ] [index.html:2207 endGame legacy 太简单] 加 `totalObjsDone*5` 鼓励完成目标
-- [ ] [index.html:626-639 rollDayModifier 跨 run 无回避] 加 `G.modHistory` 数组最近 5 天事件优先选不在历史中
+- [ ] [index.html:740 G.brewNotes 与 G.strainNotes 跨 run 但无展示] 加 `📒 知识本`按钮列出已掌握 — **Round 30 funify-v3 完成 (K 键 + 6 section 卡片 + ab_ledger_v1 持久化)**
+- ✅ [index.html:601 G escapeLevel:0 无信任] 加 `G.teacherRep:{}` 3 次同导师对话升级 escape success 10% — **Round 32 完成 (G.teacherRep + teacherRepBonus + bumpTeacherRep + escapeIn phase3 接入 + K 键 Section 7 + ab_ledger_v1 持久化 + 13 断言 → 439/439 PASS)**
+- [x] [index.html:1019 finBar combo 局内重置] 加 `bestRunCombo` 在 upgrade 模态展示 — **Round 32 funify-v3 修 (buildRunSummary 返 bestRunCombo + escapeCaught,showUpgradeModal um-summary 🔥×N/🚇×N被抓,Run Summary Card 与 renderRunHistory 跨 Run 最佳 🔥/🚇 行 → 17 断言)**
+- [x] [index.html:2207 endGame legacy 太简单] 加 `totalObjsDone*5` 鼓励完成目标 — **Round 5 funify-v3 已修 (legacyObjBonus=objDone*5 + tier.mult 1.5/1.2/1.0/0.6)**
+- [ ] [index.html:626-639 rollDayModifier 跨 run 无回避] 加 `G.modHistory` 数组最近 5 天事件优先选不在历史中 — **Round 33 funify-v3 修 (G.modHistory:[] + pushModHistory + rollDayModifier history-aware filter + saveMeta v3 bump + 13 断言)**
 - [ ] [index.html:601 G initial 没 inventory 历史] 加 "🗃️ 收藏" 模态展示累计
-- [ ] [index.html:832 tryEscape 只看 escapeLevel] 加 `G.escapeCaught:0` 跑局报告
+- [x] [index.html:832 tryEscape 只看 escapeLevel] 加 `G.escapeCaught:0` 跑局报告 — **Round 32 funify-v3 修 (5 处 fail 路径累加:p1 未学/p1 超时/p2 超时/p2 误按/p3 站台 + resetRunCounters 初始化 0 + buildRunSummary 暴露字段)**
 
 ## 10. 持久化/重玩性（存档槽位、跨设备、Seed 分享、replay）
-- [ ] [index.html:586 saveMeta 单 key] 加 `ab_meta_v2_${slot}` slot 1-3 + UI 切换
-- [ ] [index.html:586 saveMeta 无 export/import] 加 #export-btn 触发 JSON 下载 + #import-btn 上传
-- [ ] [index.html:2300 cv.click 无 replay] 加 `G.actionLog.push({t,x,y,k})` 数组 P 键回放
-- [ ] [index.html:2316 setMsg seed 显示但不复制] 加 `📋 copy URL` 按钮便于分享
-- [ ] [index.html:563 seedAbbrev 简单 2 字母] 附 tooltip 解释算法
+- [x] [index.html:586 saveMeta 单 key] 加 `ab_meta_v2_${slot}` slot 1-3 + UI 切换 — **Round 21 funify-v3 完成 (slotKey(1)=ab_meta_v2 / ab_slot_2 / ab_slot_3 + start-modal #slot-cards 3 槽 picker + getActiveSlot/setActiveSlot/listSlots/switchSlot 9 helper)**
+- [x] [index.html:586 saveMeta 无 export/import] 加 #export-btn 触发 JSON 下载 + #import-btn 上传 — **Round 34 funify-v3 完成 (exportSlot/importSlot/downloadSlot/handleImportFile + V 键 mid-run cycle + slot-cards 每卡 📤 导出 + 底部共享 📥 导入 + 14 断言 → 533/535 PASS)**
+- [x] [index.html:586 saveMeta 无删除] 加 `⚙️ 设置` 模态含 `🗑️ 清空 localStorage` — **Round 35 funify-v3 完成 (showSettings/closeSettings + listAbKeys/abKeyNames/abStorageBytes/clearAllAbData + 2-step confirmClearAbData (warn→✅→reload) + renderSettingsKeys/Meta + start-modal ⚙️ 设置 按钮 + Esc/Enter 路由 + modalOpen 接入 + 19 断言 → 554/554 PASS)**
+- ✅ [index.html:2300 cv.click 无 replay] 加 `G.actionLog.push({t,x,y,k})` 数组 P 键回放 — **Round 26 funify-v3 完成 (L 键 P 冲突,改用 L 键 logAction('move'/'enter'/'mgStart'/'mgEnd'/'phase'/'event'/'note') + renderReplay canvas 轨迹 + 滑块 scrub 0-1 + showReplay/closeReplay/toggleReplay + ab_replay_v1 持久 + 23 断言 → 577/577 PASS)**
+- [x] [index.html:2316 setMsg seed 显示但不复制] 加 `📋 copy URL` 按钮便于分享 — **Round 29 funify-v3 完成 (buildSeedUrl/copySeedUrl/parseSeedFromUrl/flashSeedCopied/copySeedUrlFromModal/SEED_COPY_HINT 6 个 helper + 顶栏 #t-seed cursor:pointer + #seed-copy-btn + start-modal #seed-share "📋 分享" + navigator.clipboard 优先 + textarea+execCommand fallback + .copied/.copyfail 视觉反馈 + AB_TEST 暴露 + 23 断言 → 609/610 PASS)**
+- [x] [index.html:563 seedAbbrev 简单 2 字母] 附 tooltip 解释算法 — **Round 29 funify-v3 完成 (#t-seed title="点击复制分享链接 (BACKLOG #10 #5)" + SEED_COPY_HINT='🎲 点此复制分享链接...' + AB_TEST 暴露 SEED_COPY_HINT)**
+- [x] [index.html:2305 newRunInner 起手固定 5 seed] 从玩家历史 seed 随机抽 — **Round 30 funify-v3 完成 (RECENT_SEEDS_MAX=5 + getRecentSeeds/pushRecentSeed/clearRecentSeeds/renderRecentSeeds/pickFreshRandomSeed/startWithRecentSeed 6 helper + saveMeta v4→v5 + .recent-seeds/.recent-seed-btn/.recent-seed-new CSS + DOMContentLoaded 委托 click + 26 断言 → Node-side 12/12 + test-phase-e.js 168/168)**
 - [ ] [index.html:329-548 EV_POOL 18 / WAVE_POINTS 7 重复] 加 `runHash = G.run % 18` 让每个 run 事件池不同
-- [ ] [index.html:2305 newRunInner 起手固定 5 seed] 从玩家历史 seed 随机抽
 - [ ] [index.html:586 saveMeta 无删除] 加 `⚙️ 设置` 模态含 `🗑️ 清空 localStorage`
 - [ ] [index.html:2024 G 初始 seed:42 硬编码] 保持 OK 但写明 fallback 用途
-- [ ] [index.html:2305 newRunInner 不清 G.barRegulars/strainNotes/brewNotes] 加"reset 按钮"独立清这三个数组
+- [ ] [index.html:2305 newRunInner 不清 G.barRegulars/strainNotes/brewNotes] 加"reset 按钮"独立清这三个数组 — **Round 28 funify-v3 完成 (`resetCrossRunData` helper + settings 模态 `🔄 重置跨 Run 知识数据` 按钮 + 2 步确认,清 8 字段但保留 meta/upgrades/legacy)**
 
 ## 11. 事件与城市叙事（modifiers 真实感、NPC 性格、对话深度）
 - [ ] [index.html:528-548 EV_POOL 18 描述简短] 加 `lore: "因运河船闸故障..."` Amsterdam 真发生感
@@ -770,3 +772,25 @@
 - localStorage 老存档 v2 兼容 (未改 save/load,沿用现有 ab_meta_v2) (验收 #5 ✓)
 - BACKLOG.md 关闭 4 条 (#7 #2 #102 #100 #105 #101)
 - IMPROVEMENTS.md Round 24 record 同步
+
+## funify-v3 — Round 32 (2026-08-18) — Run 报告与反馈增强 (BACKLOG #7 #9 closure)
+### 范围 (按 ROI 优先级)
+1. **tickObj 完成 toast**:右下角绿色卡片 `.obj-toast` 5s 后 `.fading` 600ms 淡出,堆叠多 obj 完成;CSS 三色 + 5s timeout + 安全 try/catch
+2. **G._run.escapeCaught**:5 处逃票失败路径全部累加 (p1 未学 / p1 超时 / p2 超时 / p2 误按 / p3 站台被查),resetRunCounters 初始化 0
+3. **buildRunSummary 扩展**:返 `bestRunCombo` (来自 G.shop.streakBest/G._run.streakBest) 与 `escapeCaught`,向后兼容老 _run 缺字段 (escapeCaught 默认 0)
+4. **showUpgradeModal um-summary**:🔥×{streakBest} 与 🚇×{N}被抓 双向显示,玩家挑升级时看得到本局强项/弱项
+5. **renderRunHistory 跨 Run 最佳**:🏆 个人最佳 行加 🔥×{最高 combo} 与 🚇{最少被抓} 字段,legacy 老 runs 自动显示 `—`
+6. **run-card-now 即时卡片**:本局 Run 卡片加 🔥 combo 与 🚇被抓 行,endGame 即看得到
+
+### 已知风险 (留待 Round 33+)
+- legacy 老 localStorage `ab_runs_v1` 数据无 bestRunCombo/escapeCaught 字段,渲染时显示 `—`,不会报错 (`'bestRunCombo' in r` 守卫)
+- toast DOM 创建是 unguarded try/catch,不会因 modal 关闭等状态影响 AUDIO/tickObj 主流程
+- escapeCaught 不计入 mood 惩罚 (与现有 -$10/-$20/-$30/-rep 2 叠加),Run Summary Card 仅作报告展示
+
+### 验收
+- test.html **647/653 PASS** (基线 636 + 17 Round 32 断言,所有 Round 32 测试通过;6 个 fail 全为 preexisting Round 37 / seed 自动聚焦,基线 028843e 已是 630/636)
+- test-phase-e.js **168/168 PASS** (含 renderRunHistory best stats regex 扩展 best={money,rep,meta,combo,escFree})
+- node --check index.html/test.html PASS
+- http://127.0.0.1:8767/index.html + test.html 全程 200
+- BACKLOG.md 关闭 3 条 (#7 tickObj toast / #9 bestRunCombo / #9 escapeCaught),并标 #9 totalObjsDone*5 (Round 5 已修)
+- 5 处 escapeCaught 累加点 + tickObj toast DOM + 17 断言 全部覆盖

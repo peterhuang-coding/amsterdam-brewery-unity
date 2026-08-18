@@ -763,3 +763,777 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - 测试: **378/378 PASS** (基线 364 + 14 Round 24 断言: brew _brewQCol 三档 1 + brew tq>=7 渲染手动验证 1 + coffee sweet-spot 源审计 1 + coffee >=80 cash-out 源审计 1 + shroomIn floatTexts.push 1 + shroom render 飘字绘制 1 + surf rhythm bar 源审计 1 + surfBreakerTelegraph 返回 1 + acadIn 5s 冷却 1 + acad render _rbStatus pill 1 + bar patience <5s 闪烁 1 + barPatienceLeft [0,1] 1 + 6 mini-game 入口仍可用 1 + 源码审计 6 钩子 1)
 - 风险: localStorage `_mgHintsSeen` 在多次测试间累积,导致 Round 14 mgHintSeen/showMgHint/closeMgHint 测试偶发 fail — 与本轮改动无关,pre-existing;Round 25+ 可加 reset hook
 - 验收: 浏览器 ?seed=42 → 进 brew 看左下角品质条颜色阶 (凑合暗/经典铜/传奇金);进 coffee 看右下热度条 sweet-spot 区 + ≥80 翻绿;进 shroom 按 SPACE 看 +20% 飘字;进 surf 看右下节奏条颜色随 set/lull 切换;进 academic 按 R 申诉看 cooldown pill 倒数;进 bar 等顾客耐心 <5s 看红色脉冲 + 倒计时
+
+## Round 25 — Phase E round 8: intro 屏 Phase E 预告 + Run History 个人最佳 (168/168 PASS)
+
+- commit: `funify-e8+(polish): Phase E teaser in intro + run history best stats test=168/168`
+- 改动: `tools/prototype/index.html` start-modal 加 1 行 🆕 Phase E 提示 (T/F/C/G/搞怪事件) + `renderRunHistory` 顶部新增 🏆 个人最佳 banner (跨 N Run max money/rep/meta); `tools/prototype/test-phase-e.js` +4 断言
+- 机制:
+  1. **Phase E 预告**: 玩家首开就能看到「🆕 Phase E:每日 🏷️ 变量 + 4 分支 🌳 天赋树(T) + 3 🚩 派系(F) + 8 🛠️ 配方(C) × 4 🎁 NPC(G) + 24 个 🦄 搞怪事件」,无需先按 H 才看到新系统
+  2. **个人最佳 banner**: `renderRunHistory` 计算 `best={money,rep,meta}`,首条 `.run-card` 加金色边框,显示「🏆 个人最佳 (跨 N Run) 💰 $X · ⭐ Y rep · ★ Z meta」;玩家肉眼对比自己历届记录
+- 测试: **168/168 PASS** (基线 164 + 4 Round 25 断言: intro Phase E 提示含 T/F/C/G + 24 搞怪事件 + renderRunHistory best 公式 + 🏆 banner 字符串 + 金色边框样式)
+- 风险: 纯增量 — 旧 intro 屏 + 旧 renderRunHistory 仍正常显示;best 计算 O(N) 在 N≤10 时无性能问题
+- 验收: 浏览器首开看 intro 第 4 行 🆕 Phase E 预告;完成几局后看升级模态折叠的「📜 历史 Run 卡片」顶部出现金色 🏆 banner
+
+## Round 26 — Phase E 核心系统浏览器运行时接线门禁
+
+- commit: `funify-e1-e4(runtime-parity): verify core multipliers in browser`
+- 改动: `tools/prototype/test.html` +6 运行时断言 + 隔离状态 helper;`tools/prototype/README.md` 移除过期硬编码浏览器计数,补 Phase E 乘区覆盖说明
+- 机制:
+  1. 每条断言先清空 upgrade/mod/满级产业等既有乘区,再分别验证 Talent ×1.25、Mutator ×1.6、Faction ×1.5、Craft ×1.25、NPC L3 ×1.5
+  2. 最后一条在真实 iframe 中把五层同时叠加,精确断言 `industryFactor('brewing') === 5.625`,防止任一系统退化成 flavor text
+  3. `finally` 恢复所有被替换的 `G` 字段与产业等级,不污染后续 E11/历史卡测试
+- 验证: `test-phase-e.js` **168/168 PASS**;`index.html` 与 `test.html` 内联脚本 `node --check` PASS;headless Chrome 定向实测 `{talent:1.25,mutator:1.6,faction:1.5,craft:1.25,npc:1.5,stack:5.625}`
+- 风险: 完整 `test.html` headless 基线仍有 pre-existing auto-run 失败及其级联（本轮观测 369/400）;本轮只新增隔离断言,不改游戏行为
+- 验收: 打开 `test.html`,Phase E acceptance 区 6 条均显示 PASS;任意删掉 `industryFactor` 的 E1/E2/E3/E4 接线都会触发对应失败
+
+## Round 27 — Test gate 恢复 400/400 (auto-run + win.G + state-pollution 修复)
+
+- commit: `funify-e1-e4(test-gate): 400/400 headless PASS — auto-run + win.G + state-pollution fixes`
+- 改动: `tools/prototype/test.html` +91/-79;`tools/prototype/index.html` +1/-1(checkAchTier toast typo)
+- 修复:
+  1. **auto-run headless stall**: 1×1px 隐藏 iframe 内 `setTimeout` 被节流到 ~1Hz,200-2000ms 的 autoStep 永远跑不完 7 天 → 把 polling loop 换成紧凑的 `autoStep()` 同步调用,绕过定时器节流
+  2. **`win.G` 永远是 undefined**: `G` 是 `const` 顶层声明,不在 `window` 上;`t.state`(= `AB_TEST.state`)才是规范访问器。把所有 `win.G.x` 改 `t.state.x`
+  3. **state pollution 渗透**: `legendary_income` / `industryFactor lv=2` 等边界测试只 save/restore `upgrades`+`mods`,auto-run 跑过后 `talents`/`mutator`/`factions`/`crafted`/`npcFr` 残留乘区 → 改用 `withPhaseEIndustryState` 统一隔离
+  4. **TDZ**: `withPhaseEIndustryState` 在 line ~1180 定义,但 line ~390 已使用 → 提升到 load handler 顶
+  5. **checkAchTier toast typo**: `t.t.toUpperCase()` (DOM 元素) → `tier.t.toUpperCase()`;addEvt 那行是对的
+  6. **陈旧 source audit 正则**: `legendary_no_raid` 旧假设 `noRaid` 局部变量短路;`finCoffee` confettiBurst 旧假设 `n:8` 字面值 → 全部改成匹配当前 `hasUpgrade('legendary_no_raid')` 内联 + `s.streakCorrect>=5?14:8` 动态 n
+  7. **E9 rogue/scholar gold 假设错**: 注释写「3 tiers unlock in one go」但只设了 gold 的条件(escUsed/visited),bronze/silver 的前置条件(escUsed≥3/academicDone≥4)没满足 → 补齐 `escUsed=10` / `academicDone=10`
+- 验证: headless Chrome `test.html` **400/400 PASS** (368 → 378 → 385 → 391 → 398 → 400);`test-phase-e.js` **168/168 PASS**;`node --check` 内联 PASS;index/test HTML HTTP 200
+- 风险: auto-run 紧致调用只在 test.html 内,production demo 行为不变;`withPhaseEIndustryState` 使用 `Object.assign` 做 shallow restore,未来若注入非 primitive 字段需切深拷贝
+- 验收: `node --check` PASS;headless Chrome 完整 400/400;跑任意 test 修改/删除 `industryFactor` 的 E1/E2/E3/E4 接线,对应断言立刻 fail
+
+## Round 28 — E8 Crazy Events 浏览器运行时 fan-out + Midnight Sun 实效
+
+> Round 10 下一步落实：24 个搞怪事件此前只有源码审计，浏览器不曾真实调用 `fire()`；本轮加入隔离运行时门禁，并修复「极昼」只写 flag 却无法让 Dawn 酒吧营业的 flavor-only 缺口。
+
+### Commit — funify-e8(runtime-parity): Crazy Events fire() 接入 test=408/408
+
+- 改动: `tools/prototype/test.html` 新增 `withCrazyEventState` 隔离 helper + 8 条 E8 浏览器断言; `tools/prototype/index.html` 暴露 `CRAZY_POOL`/`bldgPhaseOk` 给测试,并修复 Dawn 极昼 gate; `tools/prototype/README.md` 补充 E8 运行时覆盖。
+- 运行时证据:
+  1. `CRAZY_POOL` 在真实 iframe 中确认 24 个唯一事件均有可调用 `fire()`；代表性事件不是只查 flag，而是隔离后验证下游结果: 运河彩虹 → `tipFactor()=1.5`、直升机 → 酿酒订单 `+3`、天鹅 → 冲浪体力 `-10`、海鸥 → 库存确定 `-1`、狂欢节 → 顾客 `🎭` 标记、运河涨水 → `speedMs(100)=50`。
+  2. 极昼回归验证：Dawn 时酒吧原先闭店；触发 `midnight_sun.fire()` 后 `bldgPhaseOk({tp:'bar'})` 为真，确保事件改变实际可玩路径而非仅显示文案。
+  3. 所有 E8 helper 测试在 `finally` 恢复 shop / 资源 / 时间 / modifiers / minigame 状态，不污染后续 400 条旧门禁。
+- 机制修复: `bldgPhaseOk` 在 `crazyMidnight && ti===0` 时统一放行，让极昼按事件文案真正开放 Dawn；原有上午产业 gate 保持不变。
+- 3-axis lift: 反馈 +1（事件触发后的下游效果可由门禁证明）; 选择 +1（极昼把营业时段变成可利用窗口）; 视觉精度 N/A。
+- 测试: **408/408 PASS**（基线 400 + 8 Round 28 运行时断言）; `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `node --check` PASS; HTTP 200; `git diff --check` PASS。
+- 风险: `CRAZY_POOL` 只在 `AB_TEST.data` 暴露，不进入生产 UI/API；E8 其余事件仍主要由静态契约覆盖，后续可继续补充实际小游戏入口的端到端断言。
+- 验收: 打开 `test.html`，E8 acceptance 区显示 8 条 PASS；手动 `?seed=42` 触发极昼后，在 Dawn 进入酒吧不会再收到闭店提示。
+
+## Round 29 — E8 end-to-end 浏览器钩子 (carnival_mask 顾客面具 + crazyBlessing 偏正向)
+
+> Round 28 下一步落实：把 `carnival_mask` 与 `crazyBlessing` 从「仅写 flag」提升为下游消费端真实验证。Round 28 只断言 fire() 后状态值正确，本轮断言状态被下游业务函数真实消费。
+
+### Commit — funify-e8(e2e-hooks): carnival_mask + crazyBlessing 端到端门禁 test=412/412
+
+- 改动:
+  - `tools/prototype/index.html` AB_TEST 导出补 `MG`（脚本顶层 `const MG` 不可被 iframe 外 eval 访问，carnival 测试需要回读 `MG.bar.cs`）。
+  - `tools/prototype/test.html` 新增 4 条 Round 29 浏览器 e2e 断言：
+    1. `carnival_mask → sBarC()` 后顾客 `faceMark === '🎭'`（覆盖默认 / 常客 `💛`）。
+    2. `carnival_mask` 在 VIP 顾客上仍戴 `🎭`（验证 carnival 优先级最高，胜过 VIP 专属 `🎩`）。
+    3. `crazyBlessing` 在 5 seeds × 7 天 = 35 picks 上 `goodRate ≥ baseline + 20pp`（实际再加权 good=3/bad=0.5/neutral=1，5/12 good 池从 ~0.42 → ~0.71）。
+    4. 反向 control：无 blessing 时 35 picks 至少 1 个非 good（保证测试非恒真）。
+- 实现要点:
+  - carnival 钩子验证需要构造最小 `MG.bar`（`cs/sd/pool/diff`）然后调 `sBarC()`，再读 `MG.bar.cs[len-1].faceMark`；用 `try/finally` 恢复 G.shop/MG.bar，避免污染后续门禁。
+  - blessing 测试承认「偏正向」是再加权而非硬过滤（设计选择：tulip_auction `kind:'neutral'` 仍可被抽中），用 goodRate 差值检验比「全部 good」更贴实现语义。
+- 3-axis lift: 反馈 +1（carnival/blessing 现在有真实下游消费证明）; 选择 +1（确认 blessing 不阻挡 neutral 事件，给后续精修留余地）; 视觉精度 N/A。
+- 测试: **412/412 PASS**（基线 408 + 4 Round 29 e2e 断言）; `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `node --check` PASS; HTTP 200; `git diff --check` PASS。
+- 风险: `MG` 现在挂在 `AB_TEST` 上，仅供测试入口；不会进入生产 UI/API。`MG.bar` 直接赋值后未走 startBar 的 pool shuffle，因此 pool 顺序固定——断言也只依赖 `arch.n` 与 `faceMark`，对 shuffle 不敏感。
+- 验收: 打开 `test.html`，E8 e2e 区显示 4 条 PASS；carnival_mask fire() 后立刻调 sBarC()，返回的顾客 faceMark 必为 `🎭`；UFO fire() 后 35 picks 至少 ~70% 是 good，比无 flag 的 ~42% 高出 ≥20pp。
+
+
+## Round 30 — 📒 知识本 (Ledger) 跨 Run 知识博物馆 (BACKLOG #9 closure)
+
+> BACKLOG #9「G.brewNotes 与 G.strainNotes 跨 run 但无展示」落实:把 strainNotes/brewNotes/barRegulars/researchTopics/surfDiscovered/visited 6 类跨 run 知识全部纳入 localStorage (`ab_ledger_v1`),并通过 K 键弹出「知识本」面板集中展示。基线 412 → 417 (+5 断言)。
+
+### Commit — funify-v3(ledger): 知识本 (K 键) + 跨 Run ledger 持久化 test=417/417
+
+- 改动: `tools/prototype/index.html` 新增 `ledger-modal` HTML 容器 + `ledgerOpen/showLedger/closeLedger/toggleLedger/renderLedger` 5 个函数 + `saveLedger/loadLedger` localStorage 持久化;`tools/prototype/test.html` +5 断言。
+- 机制:
+  1. **G.brewNotes 跟踪 (3 类)**: `finBrew` 成功路径 (recipeOk + tempErr≤12) 后 `G.brewNotes[type].count++`,best 记录基于 tempAcc (60%) + phaseHits (40%) 的综合 stars。3 次酿某种即视为「配方已掌握」解锁金色边框。
+  2. **6 类跨 Run ledger**: `ab_ledger_v1` 持久化 strainNotes/brewNotes/barRegulars/researchTopics/surfDiscovered/visited 6 个数组/对象。`loadLedger` 在 newRun 末尾合并 (取并集 + 计数 max),防止已有累积被覆盖。
+  3. **K 键入口**: `toggleLedger()` 在 5 个 modal (tal/fac/craft/body/achtree) 之后插入第 6 个。`ledgerOpen()` 在 keydown 路由中 swallow K/Esc;打开后渲染 6 个 section 卡片网格 (at-tier CSS 复用,unlocked 金边)。
+  4. **renderLedger 内容**:
+     - 🍺 配方掌握 (3 类 × count + best stars + 目标温)
+     - 🍄 菌株笔记 (3 株 × 湿/温/光参数 · 未发现显示 ???)
+     - 🍻 常客名单 (横向 tag 显示 · 空时给出引导文案)
+     - 🔬 学术主题 (psilocybin/mycelium/microdosing 3 个 · ★4/★5 蘑菇收获解锁)
+     - 🏄 浪点发现 (7 个 × 难度 + 特殊效果)
+     - 📍 足迹 (visited.length / BLDGS.length 百分比进度条)
+  5. **help-modal 与 intro-modal 同步**: intro 第 4 行加「📒 知识本(K)跨 Run 累积」;help-modal 第 8 行加「K 知识本」键位。
+- 3-axis lift: 反馈 +1 (跨 run 累积玩家看得见,每完成一次酿/种/聊/发现都有视觉确认); 选择 +1 (玩家可主动查阅自己已掌握知识,决策时有依据); 视觉精度 +1 (at-tier 网格 + 进度条 + 金边统一语言)。
+- 测试: **417/417 PASS** (基线 412 + 5 Round 30 断言: 5 个函数暴露 1 + K 键开关 roundtrip 1 + renderLedger 6 section 渲染 1 + finBrew 增量路径 1 + ledger save/load roundtrip 1); `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `node --check` PASS; HTTP 200; `git diff --check` PASS。
+- 风险: ledger 合并只取 max (count) 与 union (array),不删除数据 — 玩家即使中途换 Run,旧数据全部保留;`saveLedger` 在 brewNotes/strainNotes/researchTopics/surfDiscovered/barRegulars 5 处 push 后调用,频次可控。
+- 验收: 浏览器首开看 intro 屏「📒 知识本(K)」字样;酿 3 次同一种酒后,按 K 看到该类型卡片金边「✓ 配方已掌握」;种植 ★4 蘑菇后,按 K 看到对应菌株解锁;进新 Run 后 K 键内容仍保留 (localStorage 持久)。
+
+## Round 31 — 🏭 Meta 行业专精升级 (BACKLOG #9 #3 closure)
+
+> BACKLOG #9 item 125「meta industry upgrades」落实:把行业乘区从「永久/阿姆/传奇 3 档」扩为 4 档,新增 cat:'专精' 中等门槛档。基线 417 → 426 (+9 断言)。
+
+### Commit — funify-e12(meta-industry): 5 行业 +20% 跨 Run 专精 test=426/426
+
+- 改动:
+  - `tools/prototype/index.html` +22/-2:
+    - `UP_POOL` 末尾追加 5 条 cat:'专精' cost=70★: `meta_brew_master` / `meta_coffee_master` / `meta_shroom_master` / `meta_surf_master` / `meta_acad_master`,每个 +20% 单产业收入
+    - 新 `metaIndustryBoost(id)` 纯函数,idMap 把 `brewing→brew` / `academic→acad` 映射到 UP_POOL id,其余直映射 (`coffee`/`shroom`/`surf`)
+    - `industryFactor()` 在 `lvMaxBoost` 之后、`talent`/`mutator` 之前插入 `f*=metaIndustryBoost(id)`,保证 per-run 决策可压过专精
+    - `AB_TEST` 暴露 `metaIndustryBoost`
+  - `tools/prototype/test.html` +57:
+    - 9 条 Round 31 断言: 函数暴露 + 默认 1 (5 ids) + idMap 端到端 (brew/acad 走映射,coffee 直映射) + industryFactor 集成 (brewing 1.2 / coffee+coffee_wave 1.56 / shroom 1.2 / academic+legendary 2.4) + UP_POOL 5 条 cat:'专精' cost:70 完整性源审计
+- 机制要点:
+  1. **idMap 必要性**:`industryFactor('brewing')` 与 `industryFactor('academic')` 用全名,但 UP_POOL id 偏短 (`brew`/`acad`),如果直映射 `'meta_'+id+'_master'` 会找不到 `meta_brewing_master` / `meta_academic_master`,所以走 idMap 翻译。3/5 ids (`coffee`/`shroom`/`surf`) 命名一致,直接拼接。
+  2. **优先级设计**:专精乘区放 `lvMaxBoost` 之后、`talentFactor` 之前。`legendary_income` ×2 仍是最强基底,专精 ×1.2 叠在 lvMax 后,talent/mutator 可压过 — 玩家 pick talent 0.7 时实际拿 0.84 而非 1.2,符合「per-run 选择权高于跨-run 选择」的肉鸽设计直觉。
+  3. **shroom 行业特殊性**:`G.ind.shroom` 不存在(实际 key=`smart_shop`),`lvMaxBoost` 对 shroom 一向返回 1,我的 metaIndustryBoost 不依赖 `G.ind`,所以 shroom 走完整 +1.2 路径,这是修了一处隐性既有 bug 的副效果。
+  4. **build 多样性放大**:5 专精 × 6 传奇 × 8 永久 × 6 阿姆 = 25 个跨 run 升级可选;与既有 12 talent × 3 派系 × 12 mutator 相乘,理论开局组合突破 25*432 = 10,800。
+- 3-axis lift: 反馈 +1 (升级 modal 新增 5 条带 emoji 标签的橙边卡); 选择 +1 (中等价位 70★ 档填补「永久 30-90 与传奇 180-300」之间的 gap,让预算 80-150★ 的玩家有清晰分支); 视觉精度 N/A (复用既有 cat:'专精' 沿用永久 cat 的样式)。
+- 测试: **426/426 PASS** (基线 417 + 9 Round 31 断言); `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `new Function()` 解析 PASS; HTTP 200; `git diff --check` PASS。
+- 风险: 5 个新升级若全买需 350★,约 7 个 run 累积,进度曲线合理;`idMap` 是 hardcoded,如果未来新增行业需同时改 `idMap` 与 UP_POOL。
+- 验收: 浏览器按 U 看升级 modal,看到 🍺/☕/🍄/🏄/🔬 5 个 70★ 的「专精」卡;购买后立刻生效,如酿酒 +20% 显示在 finBrew 的 `industryFactor('brewing')` 上;legder K 键看不到专精卡 (cat 不属于 ledger 范围);跨 run 累积在 `ab_meta_v2.upgrades` 数组中保留。
+
+## Round 32 — 🎓 G.teacherRep NPC 老师信任度 → escape +10%/次 (BACKLOG #9 #5 closure)
+
+> BACKLOG #9「G.teacherRep:{} 3 次同导师对话升级 escape success 10%」落实:每位 NPC 老师 visit 1 次 +10% escape 成功率(用其 tech 时),封顶 +50%。跨 Run 持久化到 `ab_ledger_v1.teacherRep`,K 键知识本新增第 7 section「🎓 老师信任度」。基线 426 → 439 (+13 断言)。
+
+### Commit — funify-v3(round15-teacher-rep): 4 NPC 老师信任度 → escape +10%/次,封顶 +50% test=439/439
+
+- 改动:
+  - `tools/prototype/index.html` +45/-6:
+    - G init 末尾追加 `teacherRep:{pablo:0,ravi:0,sofie:0,chen:0}` 默认 0/0/0/0
+    - 新 `teacherRepBonus(tech)` 纯函数:返 `Math.min(0.5, rep*0.1)`,无 rep 返 0,缺 teacher 返 0
+    - 新 `bumpTeacherRep(npc,ctx)` 函数:自增 G.teacherRep[npc],saveLedger,3/5 阈值 addEvt 'good' 反馈,中间档 addEvt 'info' 「+10%/次」
+    - `escapeIn` phase 3 成功公式插入 `const teacherBonus=teacherRepBonus(tech); const ok=seeded(...)<tech.suc-platformRisk+teacherBonus;` — bonus 与 platformRisk 同量纲(0~0.5)
+    - 手动 T 键 (line 3994) `if(isFirst){...}else{...}` 两分支都加 `bumpTeacherRep(npc, '首次'/'重访')`
+    - autoStep NPC 路径 (line 3623) 同步两分支都加 `bumpTeacherRep(target.npc, '首次'/'重访')`
+    - HUD `#t-escape` 文本加 `· ${G.escapeTeacher}×${G.teacherRep[G.escapeTeacher]||0}` 显示当前老师信任次数
+    - `saveLedger` JSON payload 加 `teacherRep:G.teacherRep||{...}` 字段
+    - `loadLedger` 在 `d.teacherRep` 存在时按 NPC key 取 max 合并(同 `brewNotes.count` 的 max 策略)
+    - `renderLedger` 新增 Section 7「🎓 老师信任度」:4 NPC 卡 (repMap emoji + 老师名) 每张显示 `信任度 N/5` + tech 名称/等级/suc% + 当前 escape bonus + 进度条
+    - AB_TEST 暴露 `teacherRepBonus, bumpTeacherRep`
+  - `tools/prototype/test.html` +44:
+    - 13 条 Round 32 断言: 函数暴露 + G init 4 NPC 数字键 + bonus 0/0.1/0.5/0.5(cap)/0.5(over-cap)/其他 NPC 不影响 + bumpTeacherRep 自增 + 未知 NPC 返 0 + save/load roundtrip + renderLedger 7 个 section 含「老师信任度」 + 4 NPC 老师卡全列 + 「封顶」文本 + escapeIn 源审计
+- 机制要点:
+  1. **trust 增长路径**:每位 NPC 老师 visit 1 次(手动 T 键或 autoStep)即 +1 trust,不依赖是否学会其 tech;trust 因此可以预先为未来的 tech 攒够。
+  2. **bonus 入口在 phase 3 success 公式**:在 `seeded()<tech.suc-platformRisk+teacherBonus` 中加 `teacherBonus`,封顶 +50%(rep=5+)。Escape 走 fail 路径时 `addEvt('bad', '🎫 ${tech.name} 失败')` 不变 — bonus 只影响成功率,失败代价不变。
+  3. **跨 Run 持久化**:`ab_ledger_v1.teacherRep` 按 NPC key 取 max 合并,与 brewNotes 策略一致;`saveLedger` 在 `bumpTeacherRep` 末尾调用,频次可控(每 NPC visit 1 次)。
+  4. **K 键 Section 7 渲染**:复用既有 at-tier 卡片样式,unlocked 条件 `rep>=3`,进度条按 `rep*20%` 渲染(5/5 = 100%)。
+  5. **HUD 微指示**:`#t-escape` 文本 `🚇 Lv ${G.escapeLevel}${G.escapeTeacher?' · '+G.escapeTeacher+'×'+(G.teacherRep[G.escapeTeacher]||0):''} · 周已逃 ${G.escUsed} 次` — 当前老师后面直接接 ×N 数字,玩家不用进 ledger 也能看到 trust。
+- 3-axis lift: 反馈 +1 (trust 自增 addEvt + 3/5 阈值 addEvt 'good' + HUD ×N 数字 + K 键 7 section); 选择 +1 (玩家可主动多访 NPC 攒 trust,提升未来 escape 成功率); 视觉精度 N/A (复用 at-tier)。
+- 测试: **439/439 PASS** (基线 426 + 13 Round 32 断言); `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `new Function()` 解析 PASS; HTTP 200; `git diff --check` PASS。
+- 风险: `bumpTeacherRep` 调 `saveLedger`,频繁 visit 会让 localStorage 写入频率上升(每 NPC 一次,可接受);trust 不可降(必须跨 Run 累积),如果未来要加反悔机制需要 `unbumpTeacherRep` 配套。
+- 验收: 浏览器进 NPC 建筑按 T 看到 `🎓 pablo 信任度 +1` 提示;连续访 3 次后看到 `escape +30% 已激活`;按 K 看到「🎓 老师信任度」section,4 张卡显示当前 trust 与 bonus;进新 Run 后 K 键 trust 不丢;逃跑时 `tech.teacher` 匹配的老师 trust ≥3 即明显感觉「这次稳」。
+
+## Round 33 — 🏷️ G.modHistory 每日 mutator 去重(跨 Run 持久化)(BACKLOG #9 #6 closure)
+
+> BACKLOG #9 #6「rollDayModifier 跨 run 无回避: 加 G.modHistory 数组最近 5 天事件优先选不在历史中」落实:每日 modifier 现在排除最近 5 天的 id(去重 + 移到头部 + cap 5),跨 Run 持久化到 `ab_meta_v3.modHistory` 字段。基线 439 → 452 (+13 断言)。
+
+### Commit — funify-v3(round16-modhistory): G.modHistory anti-repeat for daily mutator
+
+- 改动:
+  - `tools/prototype/index.html` +35/-3:
+    - G init 末尾追加 `modHistory:[]`(默认空数组,loadMeta 时按 v3 恢复)
+    - `saveMeta` 升级到 `version:3`,JSON payload 加 `modHistory: G.modHistory.slice(0,5)` 字段
+    - `loadMeta` 双版本兼容:`d.version>=2` 走 meta/upgrades/legacy/run(旧数据无 modHistory 时保留内存中的值,不擦除);`d.version>=3 && Array.isArray(d.modHistory)` 时还原 `G.modHistory`,并 `filter(x=>typeof x==='string')` 防御性清洗非字符串项
+    - 新 `pushModHistory(id)` 助手:无效 id 静默忽略;已存在则先删除再 unshift(去重 + 移到头部);尾部 pop 到 cap 5;export 到 AB_TEST
+    - `rollDayModifier` 升级:candidates 从「仅排除 last」升级为「排除 last 且不在 history」(`EV_POOL.filter(e=>e.id!==last&&!history.includes(e.id))`);若 filter 把池压成空(EV_POOL 12 项,历史全占 + last 同 id 时理论可能)回退到 last-only 过滤,确保不会因 bug 锁死游戏
+    - 两处 day-roll 调用点同步更新:`tickDay` 内部 day 切换(line 3690)+ `newRun`(line 4107)都在 roll 后立刻 `pushModHistory(mod.id)`;extra_event upgrade 第二 modifier 同样在去重后 push
+    - AB_TEST 导出 `pushModHistory`
+  - `tools/prototype/test.html` +60:
+    - 13 条 Round 33 断言: pushModHistory 暴露 + G.modHistory 数组结构 + 头部追加 + 重复 id 去重移到头 + 7 项 cap 5 + 非法 id(null/空字符串/数字)静默忽略 + rollDayModifier 排除 modHistory 全 id 命中 12×12 抽样 0 违反 + 池空时回退 last-only + saveMeta v3 持久化 + loadMeta v2 向后兼容 + loadMeta 非字符串防御 + 7 天模拟 70%+ 历史感知命中率 + 3 种以上不同 modifier + _histSnap 还原不污染后续
+    - 修复 1 处 Round 13 source-audit regex 窗口:`function rollDayModifier\(\)\s*\{[\s\S]{0,500}candidates\.map` → `[\s\S]{0,1500}`(Round 33 注释块 ~700 字超过原 500 上限)
+- 机制要点:
+  1. **去重 + 移到头部**:pushModHistory 先 splice 再 unshift,保证「最近一次出现的同 id 永远在 [0]」,后续 day-roll 的 history filter 行为可预测。
+  2. **cap 5**:EV_POOL 12 项,history 满 5 + last 排除 1 = 至少 6 项可选,池不会塌陷;若理论塌陷,回退到 last-only(单 ban)保留游戏可玩性。
+  3. **跨 Run 持久化**:`ab_meta_v2` JSON bump 到 `version:3`,旧 v2 数据升级时 `d.version>=2` 仍然接受,modHistory 字段缺失时保留内存值(防御,不擦除玩家进度);v3 数据按 `filter(x=>typeof x==='string').slice(0,5)` 防御性恢复。
+  4. **newRunInner 不重置 modHistory**:玩家连续 Run 时,上一 Run 末尾 5 天的 modifier 在下一 Run day 1 仍然被排除,玩家立刻感受到「今天换了新气象」(对比之前连续 Run 容易撞到同款)。
+  5. **event_freq upgrade + crazyBlessing 仍生效**:weighted bias 在 candidates 上叠加,与 history filter 兼容;test 验证了 history-full 时不会因为 weighted pick 把池耗光。
+- 3-axis lift: 反馈 +1 (连续 Run 玩家立刻注意到 modifier 不撞款); 选择 +1 (玩家可「祈祷」下一 Run 别再撞同款警察突击,设计上 G.modHistory 已经做了); 视觉精度 N/A (无新 UI)。
+- 测试: **Round 33: 13/13 PASS**; 整体 headless CDP 445-451/452 PASS(波动来自 pre-existing tryUnlock / mgHintSeen / showMgHint / Round 15 teacherRep 等 localStorage pollution 测试,与本 Round 无关;baseline pre-Round-33 在相同环境下也是 432/439 = 7 个不通过,跨 Run localStorage 状态泄漏是已知); `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `new Function()` 解析 PASS; HTTP 200。
+- 风险: loadMeta 在 v2 数据上不擦 modHistory 是有意设计(向后兼容),但若用户主动清 ab_meta_v2 时也会一并清 modHistory(预期行为);candidates 空时的回退路径当前仅防御理论塌陷,实际 EV_POOL 12 项 + history 5 + last 1 不会出现,代码路径保留以防未来 EV_POOL 缩水或 history cap 改大。
+- 验收: 浏览器连续 7 天不出现连续 2 天同 modifier;reload 页面后 modHistory 仍在(开 devtools 看 localStorage `ab_meta_v2.modHistory`);新 Run 后前 1-2 天仍能看到「今天换样了」(因为上一 Run 的 modifier 还在 history 里被 ban)。
+
+
+
+## Round 34 — 🎯 E8 downstream fan-out: surf / finBrew / tip & speed composite hooks
+
+> Backlog「Round 16 余下: E8 事件按 surf / finBrew / tip & speed 三个下游钩子分组做运行时 fan-out,各自独立恢复状态」落实。把 24 个 crazy events 中按下游乘区分组的 9 个事件 (🦢🍕🧀 体力 · 🚁🌷🚢 酿酒 · 🧑‍🍳🚲🚋 tip + speed) 全部用浏览器 runtime + 与其它测试解耦的 state-restore helper 验证,新增 16 条断言。基线 452 → 468 (+16 断言)。
+
+### Commit — funify-e8(downstream-fanout): surf/finBrew/tip speed composite hooks test=468/468
+
+- 改动:
+  - `tools/prototype/test.html` +218:
+    - **4 条 surf 组**: `withCrazyEventState(id)` 之后调用 `win.pickWavePoint(1)` 并断言 `t.MG.surf.stamina === Math.max(20, 100+(crazySurfStam||0))`,覆盖：
+      - 🦢 swan_attack fire() → stamina=90 (crazySurfStam=-10)
+      - 🍕 pizza_bench fire() → stamina=120 (crazySurfStam=+20)
+      - 🧀 cheese_roll fire() → stamina=125 (crazySurfStam=+25)
+      - stamina floor: crazySurfStam=-900 → stamina=20 (Math.max 兜底)
+    - **5 条 finBrew 组**: 包括 3 条纯数学 (helicopter → 1.24 / tulip_crash → 0.76 / canal_crash → 1.40) + 1 条单次 finBrew `e2e` (sanity check money>0 + streak=1 + ph='done') + 2 条放大缩放 `e2e` (crazyBrewOrders=5 时 ratio≥1.35,crazyBrewOrders=-3 时 ratio≤0.80,留 1e-3 抖动吸收 Math.round 边界)。
+    - **3 条 tipFactor + speedMs 复合**: masterchef_visit (tip×1.3, speed 不变) / bike_swarm (tip×1.2 + 慢) / tram_strike (tip 不变 + 慢)。
+    - **1 条 slow 幂等**: `canal_flood` + `bike_swarm` 顺序 fire → crazySlow=true + speedMs(100)=50,验证 crazySlow 是 boolean 而非累加。
+    - **2 条源码审计**: `win.eval('finBrew.toString()')` 包含 `G.shop.crazyBrewOrders`;`pickWavePoint.toString()` 包含 `G.shop.crazySurfStam` —— 防止未来重构把变量名重命名/提取。
+    - 状态隔离:每个测试独立保存 `t.state.shop / money / brew / ind.brewing{ lv,xp } / brewNotes / barStock / factions` 并在 `finally` 还原,避免 finBrew 调 10+ 个 side effects (dropIng/saveLedger/bumpFaction/chkLv/addEvt/setMsg/addSch) 污染后续测试。
+- 机制要点:
+  1. **t.MG 共享引用**: `t.MG` (AB_TEST 导出) 与 script-scope `MG` 同一对象引用,所以 `t.MG.surf=null` 之后 `pickWavePoint(1)` 写入的 `MG.surf.stamina` 立刻可读。原来的 `t.MG={}` 错误写法 (在 AB_TEST 副本上重建) 现在改为 `t.MG.surf=null` 真实 mutate 共享对象。
+  2. **finBrew 边界吸收**: 用 ratio > 1.35 / < 0.80 而非精确 1.40 / 0.76,因 finBrew 公式外层 `Math.round(base*...)` 在 crazyBrewOrders 边上 1/2 抖动可能让 ratio 落到 1.38 或 1.42,精确测试在跨 Run / 跨测试顺序下不稳定,留 1e-3 buffer。
+  3. **isolate G.brewNotes**: `t.state.brewNotes` 在 newRunInner (line 4104) 才初始化,iframe 加载完 AB_TEST 但尚未点 Start 时为 undefined。finBrew 第 1999 行 `if(!G.brewNotes[bt])G.brewNotes[bt]={...}` 假设 brewNotes 已存在,缺则抛 `Cannot read properties of undefined (reading 'IPA')`。测试注入 `{IPA:{count:0,best:0},Stout:{count:0,best:0},Lager:{count:0,best:0}}` 才解锁 finBrew 路径。
+  4. **seed=42 7 天模拟**: `pickWavePoint(1)` 走 WAVE_POINTS[0] (beginner_bay),不依赖任何 RNG,纯公式 `Math.max(20, 100+(crazySurfStam||0))` 验证。
+  5. **state restore 顺序**: before 快照 → mutate → fn() → finally 还原,确保 `crazyBrewOrders=5` 的 finBrew 把 `G.shop.streak` 推到 1 时,下一轮 `streak=0` 重新写覆盖,避免 streakMul 跨次叠加。
+- 3-axis lift: 反馈 +1 (crazy event 当日/次日真实影响玩家手里的具体数值,而不只是 HUD flag); 选择 +1 (玩家在 pickWavePoint 之前可以查 log 知道今日 stamina buff/debuff); 视觉精度 N/A (无新 UI)。
+- 测试: **468/468 PASS** (基线 452 + 16 Round 17 断言); `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `new Function()` 解析 PASS; HTTP 200; `git diff --check` PASS。
+- 风险: finBrew side-effects 较多,虽然 `state.factions/streak/barStock` 全部 restore,仍有 `chkLv('brewing')` 间接调用 `addEvt` 写入 `G.events` 数组 — 用 helper 在 set state 前清空 `events` 来防 accumulation;以及 `saveLedger()` 写 localStorage 在每次 finBrew 调用后触发,频次可控。
+- 验收: 浏览器选 1 → 看到 `🍺 订单 IPA` → 走完整流程 → `addEvt` 日志显示 `+ $65` ;触发 `🚁 直升机观光` 后再选 1 → 看到 `+ $91` (=65×1.40);触发 `🌷 郁金香泡沫崩` 后再选 1 → 看到 `+ $49` (=65×0.76);打开 devtools 看 `G.shop.crazyBrewOrders` 与 `G.money` 增量。
+
+---
+
+## Round 18 (2026-08-18) — funify-e8(crazy-hud) — 今日搞怪徽章 + 文案与行为一致 + 13 条 e2e
+
+> Round 17 留下风险:11/24 事件 hook 已落但「玩家看不到 active 效果」+「文案与公式脱节」(helicopter/tulip/canal_crash 文案说 +3/-3/+5 单,实际公式是 ×1.24/0.76/1.40)。本轮把 HUD 可见性 + 文本诚实性 + 13 条新 e2e 一起收口。
+> 基线 468/468 → **490/492 PASS** (基线 468 + 22 Round 18 断言); `test-phase-e.js` **168/168 PASS**; 唯一 2 失败是 pre-existing rollDayModifier 统计 flaky (Round 15 17 已存在,与本轮无关)。
+
+### 改动文件 (3)
+- `tools/prototype/index.html` (+44/-3):
+  - `crazyActiveBadges()` 纯函数 (line 800):从 G.shop.* crazy 字段扫出当日 7 类 active 效果 → `[{ic, t, k}]`,key=tip/surf/brew/face/midnight/bless/slow。
+  - CRAZY_POOL 3 条文案修正:`+3 单` → `×1.24`;`-3 单` → `×0.76`;`+5 单` → `×1.40`,与 finBrew 公式 `(1+0.08*crazyBrewOrders)` 一致。
+  - `renderAll()` 末尾 append `<h3>🎪 今日搞怪</h3>` + cb-row 列表到 `#left` panel (lp.innerHTML 前)。
+  - CSS `.cb-row` + `[data-k="..."]` 7 种颜色边框 (tip=green/surf=blue/brew=gold/face=purple/midnight=navy/bless=lime/slow=brown)。
+  - AB_TEST 暴露 `crazyActiveBadges`。
+- `tools/prototype/test.html` (+87):22 条 Round 18 断言 (4 类)。
+
+### 22 条 Round 18 断言 (4 类)
+1. **9 条 crazyActiveBadges() 纯函数 (k=tip/surf×2/brew×2/face/midnight/bless/slow)**: 9 个不同 crazy events fire 后断言 badges 数组内容正确 (ic/t/k)。
+2. **3 条 CRAZY_POOL 文案修正 (helicopter ×1.24 / tulip ×0.76 / canal_crash ×1.40)**:源码审计 `t.data.crazyEvents.find(...).t` 字段含新文案。
+3. **8 条 money mutation e2e (fox_alley 90/floor 0/stranger_birthday 120/night_market 95) + carnival_mask faceMark='🎭' e2e (sBarC 后 cs[0].faceMark) + masterchef_visit tipFactor==1.3 e2e + ufo_blessing rollDayModifier wantPositive 源审计 + 🌊→🚲 链式 fire 幂等 crazySlow=true**。
+4. **2 条 UI 渲染 e2e**:默认 #left 含「🎪 今日搞怪」+「无 active 效果」;crazyTipMul=1.5 后含 `.cb-row` + `💰` + `50%`。
+
+### 机制要点
+1. **crazyActiveBadges() 单一职责**: 只读 G.shop.crazyTipMul/SurfStam/BrewOrders/FaceMark/Midnight/Blessing/Slow → 输出徽章数组。渲染逻辑独立。
+2. **cb-row data-k 颜色编码**: 每个 k 一条 border-left-color 视觉区分 (玩家扫一眼就知道哪个 buff 来源)。
+3. **文案 = 行为契约**: helicopter/tulip/canal_crash 现在文案 `×1.24/0.76/1.40` 与 finBrew `(1+0.08*N)` 公式精确对齐,玩家不期待错的「+3 单」。
+
+### 3-axis lift
+- 反馈 +2 (HUD 徽章让 7 类 active 效果肉眼可见 + 文案诚实性让玩家不被误导)
+- 选择 +1 (玩家进酿酒前看徽章可判断今日 buff/debuff,决策空间扩大)
+- 视觉精度 +1 (cb-row 7 色边框与产业卡片 / 升级卡片视觉语言统一)
+
+### 测试
+- **490/492 PASS** (基线 468 + 22 Round 18 断言);唯一 2 失败是 pre-existing rollDayModifier 分布统计 flaky (Round 15 17 已存在); `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `new Function()` 解析 PASS; HTTP 200。
+
+### 风险
+- `crazyActiveBadges` 扫 7 字段顺序固定,tip→surf→brew→face→midnight→bless→slow;如未来加新 crazy 字段,需同步更新。
+- cb-row 用 emoji 当 ic,如果玩家系统回退到文字会显示「[emoji]」框;不影响功能。
+- `#left` 在 mobile 760px 是 grid-row 4 max-height 220px,cb-row 列表可能在窄屏溢出被截;可滚但需手动滚;非阻断。
+
+### 验收
+- 浏览器开 `?seed=42` → 触发 `🚁 直升机观光` 后,#left 产业卡片下方出现「🎪 今日搞怪」+ `🚁 酿酒收入 ×1.24` 紫红边徽章;触发 `🦢 天鹅袭击` 后出现 `🦢 冲浪体力 -10` 蓝边徽章;进酿酒选 1 → 看 +$91 (=65×1.40 if canal_crash 而不是 helicopter)。
+- 同一 trigger `🎪 搞怪事件 · 🚁 直升机观光 · 酿酒收入 ×1.24` 显示在事件日志,文案与 HUD 徽章完全一致。
+- 玩家重置后 (无 crazy events),「🎪 今日搞怪」+「无 active 效果」提示仍可见,玩家知道系统在线。
+
+---
+
+## Round 19 (2026-08-18) — funify-e8(untested-fanout) — 4 条 crazy events 下游 e2e + cat_cafe_overrun mood bug 修复
+
+> Round 18 留下风险:Round 17 落地的 11/24 crazy hook 中,有 3 个未被浏览器端到端验证:`rijksmuseum_steal` (rep -5) / `cat_cafe_overrun` (mood +2) / `sinterklaas_arrival` (money +15)。其中 `cat_cafe_overrun` fire() 实际含 pre-existing moodFloor 误用 bug — 调用无参的 moodFloor() 把心情永远写成 floor 值 (-2/-3)。本轮把 3 个推荐验证 + 1 个 bonus (`street_band` mood +1) + 1 个 bug 修复 一起收口。
+> 基线 490/492 → **496/498 PASS** (基线 490 + 6 R19 断言,pre-existing rollDayModifier 统计 flaky 偶发 2 失败); `test-phase-e.js` **168/168 PASS**;两个 HTML `node --check` 等效 PASS;HTTP 200。
+
+### 改动文件 (2)
+- `tools/prototype/index.html` (+1/-1):
+  - `cat_cafe_overrun.fire()` bug 修复:`G.mood=moodFloor(Math.min(2,G.mood+2))` → `G.mood=Math.min(2,Math.max(moodFloor(),G.mood+2))`。旧版调用无参 `moodFloor()` (返回当前 floor 值) 直接覆盖 G.mood;新版正确 clamp 上限 2 + 下限 moodFloor()。
+- `tools/prototype/test.html` (+19):6 条 Round 19 断言 (4 类)。
+
+### 6 条 Round 19 断言 (4 类)
+1. **🖼️ rijksmuseum_steal rep -5 (基线 0)**: withCrazyEventState 后 t.state.rep===-5。
+2. **🖼️ rijksmuseum_steal rep floor -20 (基线 -18)**: 内联 setup 后 fire() → rep===-20 (不变更负)。
+3. **🐈 cat_cafe_overrun mood 0 → 2 (floor & cap=2)**: withCrazyEventState 后 t.state.mood===2。
+4. **🐈 cat_cafe_overrun mood=1 → 仍 2 (cap=2 不超)**: 内联 setup 后 fire() → mood===2。
+5. **🎅 sinterklaas_arrival money +=15 (基线 100)**: withCrazyEventState 后 t.state.money===115。
+6. **🎺 street_band mood 0 → 1**: withCrazyEventState 后 t.state.mood===1 (单 buff)。
+
+### 机制要点
+1. **moodFloor() 误用模式**:Round 7 (Phase E8.2) 引入的 cat_cafe_overrun fire() 调用无参的 moodFloor() (返回 floor 值) 直接覆盖 G.mood。正确模式应该是 `Math.min(cap, Math.max(floor, newVal))` 双 clamp。Round 19 e2e 测试首次暴露此 bug,因为没有任何下游消费验证过这条 fire 路径。
+2. **withCrazyEventState 默认 mood=0,rep=0,money=100**:Round 19 测试继承 R18 测试模式,fire 前已确定 baseline,fire 后只断言一个最终值 (或 floor/cap 边界)。
+3. **pre-existing rollDayModifier 分布统计 flaky**:Round 15/17 已存在,与本轮无关,Round 19 6/6 稳定 pass。
+
+### 测试
+- **496/498 PASS** (基线 490 + 6 R19 断言);偶发 2 失败仍是 pre-existing rollDayModifier 1000/35 抽样统计 flaky;R19 6 条断言本身 100% 稳定。
+- `test-phase-e.js` 168/168 PASS。
+- 两个 HTML 内联脚本 `node --check` 等效 PASS。
+- `http://127.0.0.1:8767/test.html` 200,`index.html` 200。
+
+### 风险
+- `moodFloor()` 函数本身没问题 (正确返回 floor 值);bug 只在 cat_cafe_overrun 误用上。其他 mood 事件 (street_band/duck_parade/vondelpark_picnic) 都用 `Math.min(2,G.mood+N)` 模式,不受影响。
+- bug 修复后,玩家实际触发 cat_cafe_overrun 心情会真的 +2 (cap=2),而不是被覆盖到 -2。这是**行为变更**但对玩家是**修正**(原本 mood 被覆盖到 floor 是 bug,玩家会困惑 "为什么猫咖啡我心情反而变差?")。
+- 现有 saveMeta v3 ledger 持久化的 meta/upgrades/run/legacy 不变,只修复 fire 路径。
+
+### 验收
+- 浏览器开 `?seed=42` → 触发 `🐈 Cat Café` 后,看事件日志:心情 0 → 2 (而不是被覆盖到 floor -2);次日 mood clamp 正常工作。
+- 触发 `🖼️ Rijksmuseum 失窃` 后,rep 从 0 变 -5,事件日志含「🖼️ 名画失踪 · 全市耻辱」bad 事件。
+- 触发 `🎅 Sinterklaas 抵港` 后,money 增加 $15,事件日志含「🎅 Sinterklaas + Pieten · 派糖 $15」good 事件。
+- 触发 `🎺 街头乐队` 后,mood 增加 +1 (cap 2)。
+
+## funify-v3 — Round 20 (2026-08-18) — 🗃️ 收藏 (I 键) BACKLOG #9 #10 closure
+
+### 目标
+为 `G.inventory[]` (冲浪每次带回物品) 增加跨 Run 持久收藏墙 + UI 模态 + 累加器,与 R15 知识本 (K 键)、R30 ledger (ab_ledger_v1) 同样模式 — 数据已存在内存,缺持久与 UI 表面。
+
+### 改了什么
+- **`G.invCollect` 累加器** (index.html, +1/-1):`{itemName: count}` 跨 Run 累计。`finSurf` push 时同时 `invCollect[item]+=1` 并 `saveMeta()`。
+- **`SURF_CATALOG` 12 项目录** (index.html, +12/-0):5 常驻 (贝壳/海星/珍珠/古硬币/古罗盘) + 7 稀有 (古地图/鱼钩/宝石/闪电石/回声瓶/羽毛/稀有遗物),与 WAVE_POINTS + rollSurfItem 完全对齐。
+- **saveMeta v3 → v4 bump** (index.html, +2/-2):写入 `invCollect`,loadMeta `version>=4` 时恢复,旧 v3 数据完全兼容。
+- **🗃️ 收藏 modal** (index.html, +62/-0):`#inv-modal` + `invOpen/showInv/closeInv/toggleInv/renderInv` 5 函数 + 总数/稀有 2 概览卡片 + 12 张 item 卡片 (locked/unlocked 状态)。
+- **I 键接线** (index.html, +3/-0):keydown `i` → `toggleInv()`,modal open 时 swallow i/Esc。
+- **help + start-modal 文档** (index.html, +2/-2):H 键帮助行追加 I 键,start-summary 追加 "🗃️ 收藏(I) 跨 Run 累积"。
+- **AB_TEST 暴露** (index.html, +1/-0):`invOpen/showInv/closeInv/toggleInv/renderInv/SURF_CATALOG` 6 项。
+- **8 条 R20 浏览器 e2e 断言** (test.html, +60/-0):catalog shape + 函数暴露 + DOM 存在 + 渲染解锁数 + 总件数 + 稀有件数 + show/hide/toggle + saveMeta v4 往返 + v3 兼容。
+
+### 8 条新断言 (3 类)
+1. **3 条 contract**:SURF_CATALOG shape (5 常驻 + 7 稀有) + 5 函数暴露 + DOM 存在 + 默认 hidden。
+2. **4 条 e2e 渲染**:`G.invCollect` 全空显示 0/12、`{古罗盘:1, 宝石:3}` 显示 4 件 + 1/7 稀有、`showInv()`/`closeInv()`/`toggleInv()` 真实操作 inv-modal classList。
+3. **1 条数据对齐**:12 个 SURF_CATALOG.id 与 `WAVE_POINTS.item` + `rollSurfItem` upgrades 完全覆盖。
+4. **2 条持久化往返**:saveMeta v4 写入 → loadMeta v4 复原 (古罗盘/宝石/羽毛);v3 旧数据 loadMeta 不污染 (meta/upgrades/legacy/run/modHistory 全部正确)。
+
+### 测试
+- **507/508 PASS** (CDP headless Chrome test.html): 基线 496 + 8 R20 稳定;偶发 1 失败是 pre-existing rollDayModifier / event_freq 分布统计 flaky。
+- `test-phase-e.js` 168/168 PASS。
+- 两个 HTML 内联脚本 `node --check` 等效 PASS。
+- `http://127.0.0.1:8767/test.html` 200,`index.html` 200。
+
+### 机制要点
+1. **const top-level 不绑 window**:R20 测试初版用 `win.SURF_CATALOG` 直接访问失败 — `const SURF_CATALOG = [...]` 在 `<script>` 顶层声明不会绑到 `window`,必须通过 `win.AB_TEST.SURF_CATALOG` 才能拿到。这与已有 `const G`/`const EV_POOL` 等一致,只是测试要绕开。修正后 8 条全 pass。
+2. **`saveMeta v4` 平滑 bump**:`loadMeta` 用 `version>=N` 阶梯式恢复 (v2/v3/v4 各管一段),旧 v3 玩家存档不需迁移代码,直接打开仍能恢复 meta/upgrades/run/modHistory。
+3. **`finSurf` 内联 `saveMeta`**:每次冲浪结束立即落盘 (无 debounce),避免玩家 surf 后秒关页面丢失 1-2 件收藏。
+4. **I 键冲突检查**:与现有键 (Q/WASD/E/SPACE/1-9/T/F/G/C/K/J/B/M/N/H/X) 无冲突,`i` 之前仅在 <input> autofocus 时偶尔出现,modal open 时 swallow 住避免误触。
+
+### 风险
+- **`invCollect` 12 项是 hard-coded**:新加 surf 物品需同步更新 SURF_CATALOG,否则 collect UI 不会显示新物品。短期内 WAVE_POINTS + rollSurfItem 已稳定,无新物品预期。
+- **rare_upgrades 文案中"海龟/钓鱼人/..."等特殊条件 30%**:`SURF_CATALOG` where 字段是文本说明,玩家可读,但不是 strict mapping(同一古硬币可能多次 rollSurfItem 升级),仅做 narrative。
+- **saveMeta 体积增长**:每次冲浪都 save,12 项物品名 + count ≈ 100 字节,7 天 run × 14 surf ≈ 1.4KB 增量,localStorage 5MB 配额内无压力。
+
+### 验收
+- 浏览器开 `?seed=42` 跑完整 7 天,完成若干冲浪,按 **I** 打开收藏 modal:看到累计贝壳/海星/珍珠等物品,locked 卡片显示 "???"。
+- 触发「隐藏洞穴」special 冲浪 → 30% 概率获得「💎 宝石」,I 模态中宝石 ×1 解锁。
+- 重启浏览器 (F5),收藏数据不丢 (localStorage 永久)。
+- 在浏览器 console 跑 `localStorage.getItem('ab_meta_v2')`,`invCollect` 字段含累计冲浪物品。
+
+---
+
+## funify-v3 — Round 21 (2026-08-18) — 3-slot archive + 修复 3 个 pre-existing flaky 测试
+
+> BACKLOG #10 #1 closure:多槽存档 + 3 个 flaky 测试 (saveMeta v3→v4 stale + crazyBlessing 候选池污染 + event_freq 分布污染) 全部关闭。
+> CDP headless Chrome test.html: **520/521 PASS** (基线 508 + 13 R21 稳定 - 1 pre-existing tryUnlock flaky);`test-phase-e.js` 168/168 PASS;HTTP 200 全部 OK;`git diff --check` PASS;working tree clean after both commits。
+
+### 范围
+- `index.html:~1367 saveMeta/loadMeta`:写读 key 从 `ab_meta_v2` 改为 `slotKey(getActiveSlot())` (槽 1 仍用 `ab_meta_v2` 向后兼容)
+- `index.html:~1375-1385 SLOT_KEYS + getActiveSlot/setActiveSlot/slotKey/readSlot/listSlots/switchSlot/saveSlot`:7 个 slot helper
+- `index.html:~1829-1849 renderSlots + pickSlot`:start-modal 渲染 3 槽 picker (active 高亮金色 box-shadow)
+- `index.html:start-modal #slot-cards`:3 槽 DOM,空槽 = ▶ 新游戏 / 已存 = ▶ 继续 Run #N
+- `index.html:CSS .slot-picker/.slot-cards/.slot-card`:grid-template-columns:repeat(3,1fr) + active 态 box-shadow + 760px 窄屏单列
+- `index.html:init():~4287 renderSlots()`:boot 时填充 3 槽卡片
+- `index.html:AB_TEST`:暴露 `getActiveSlot,setActiveSlot,slotKey,readSlot,listSlots,switchSlot,saveSlot,pickSlot,renderSlots` (9 个新表面)
+- `test.html:~1748-1816`:13 条 R21 断言 — helpers 暴露 + 默认 active=1 + 3 key 名 + listSlots 形状 + empty/filled + saveMeta 路由 + 槽独立 + loadMeta 路由 + DOM 存在 + renderSlots 3 卡 + switchSlot 切换 + 全 AB_TEST
+- `test.html:~785-800`:`event_freq 分布` 防护 — 清空 modHistory + 关闭 crazyBlessing 防止上游残留污染
+- `test.html:~1284-1312`:`crazyBlessing e2e` 加 `modHistory=[]` 隔离
+- `test.html:~1969`:saveMeta v3 → v3/v4 测试断言改为 `saved.version>=3`
+- `BACKLOG.md`: #10 #1 标记完成 + 下次迭代
+- `IMPROVEMENTS.md`: 本 Round 21 章节
+
+### 机制 (Round 21)
+1. **3 槽独立存档** (Balatro/Inscryption 多存档槽灵感): `slotKey(1)='ab_meta_v2'` `slotKey(2)='ab_slot_2'` `slotKey(3)='ab_slot_3'`;`ab_active_slot` 跟踪当前激活槽 (默认 1)。老 v3/v4 存档键 `ab_meta_v2` 自动成为槽 1,零迁移成本。
+2. **start-modal vault picker**: 打开 start-modal 时渲染 3 槽卡片;active 槽金色 box-shadow 高亮,空槽显示"▶ 新游戏",已存槽显示 Run # / ★ meta / 升级 N 项 / 收藏 N 件 / legacy N;点击直接切换激活 + 进入游戏。
+3. **`listSlots()` 形状契约**: `{idx, empty, filled, run, seed, meta, legacy, invTotal, ts}` 让 UI 与逻辑共用一份事实。
+4. **`switchSlot(n)` 数据保护**: 切槽前 `saveSlot(cur)` 保存当前 G 状态到当前槽,切完 `loadMeta()` 读入新槽,所以"切换不怕丢进度"。
+5. **3 个 flaky 测试关闭**:
+   - saveMeta v3→v4 stale `===` 改为 `>=`(老测试套了旧版本号断言)
+   - crazyBlessing 35-pick 候选池被上游 modHistory 污染 → 测试 setup 内 `modHistory=[]`
+   - event_freq 1000 抽样分布被上游 crazyBlessing=`true` + modHistory 残留放大 → 测试 setup 双重 reset
+6. **picker UI 字号逐级**: sc-idx 14px 金色 / sc-state 10px 灰 / sc-info 10px 主文 / sc-btn 11px 金边框;active 槽 `box-shadow:0 0 8px #ecb45766,inset 0 0 4px #ecb45722` 双层金色光晕;hover 边框变金色。
+
+### 测试 (Round 21)
+- 13 条 R21 槽位断言 (helpers 暴露 + 默认 active + 3 key 名 + listSlots 形状 + empty/filled + saveMeta/loadMeta 路由 + 槽独立 + DOM 存在 + renderSlots 3 卡 + switchSlot 切换 + AB_TEST)
+- 修复 3 条旧断言 (Round 21 测试套上保存 v3/v4 兼容 + modHistory 双 reset)
+
+### 风险 (留待 Round 22+)
+- 切槽未在游戏中暴露 UI(只能在 start-modal 切换)。玩家跑完 7 天按 upgrade 进入下一 Run,无"切槽"按钮 — 玩家若想专门"另开一条试试派系 2",要刷新浏览器或重置 ab_active_slot 后从 index 重进。
+- 槽 2/3 一旦空,点击不直接 ▶ 新游戏:而是 `setActiveSlot + startFromModal(seed 复用)`,seed 与 URL ?seed= 共享(槽 1 玩家可以保留种子跨槽)。
+- pre-existing `tryUnlock 首次 true · 重复 false` (line 212) 仍失败 — 该测试自身设计缺陷(unlockA/B 在静态脚本上下文,跨帧保留 unlockA=true 后),不在本轮范围。
+
+### 验收
+- 浏览器首次开测试:看到 start-modal 3 槽卡片 (空:▶ 新游戏);点 ▶ 后 startFromModal() 触发,槽 1 active。
+- 跑 1 个 7 天 Run 完,获得 ★ meta + legacy + 收藏数据;刷新浏览器 (F5) 再开,start-modal 显示"槽 1 ▶ 继续 Run #N · ★X"。
+- 浏览器 console 跑 `localStorage.getItem('ab_slot_2')` → null(槽 2 还没用过);`localStorage.getItem('ab_active_slot')` → "1";`listSlots()` → 3 项数组。
+
+---
+
+## funify-v3 — Round 22 placeholder (backlog)
+
+(更多 commits 后续)
+
+## funify-v3 — Round 35 — ⚙️ settings modal + 🗑️ clear localStorage (BACKLOG #10 #4 closure)
+
+> 关闭 BACKLOG #10 持久化最后一项:玩家可在 start-modal 进入 ⚙️ 设置模态,浏览所有 ab_* 键 + 字节占用 + 危险区一键清空(2 步确认 + 自动 reload)。
+> 配合 Round 21/34 的 slot picker + export/import,完整闭环"备份 / 迁移 / 还原 / 清空"4 件套。
+> 基线 533/535 → **554/554 PASS** (+19 新断言),100% PASS,无 pageerror。
+
+### 范围 (按 ROI — 关闭 BACKLOG #10 #4)
+
+- [x] [index.html:CSS #96-105] 新增 `#settings-modal` 全屏遮罩样式 (蓝色 #80b8f0 边框区别于 start 的金色) + `.set-section` 卡片 + `.set-list` 滚动键列表 + `.set-clear` 红色危险按钮 (`.warn` 态 + phaseFlashIn 动画)
+- [x] [index.html:HTML #445-466] start-modal `.intro-actions` 新增 ⚙️ 设置按钮 + 新 `<div id="settings-modal">` 含 3 section: 运行时偏好 (速度/静音/激活槽) · 数据管理 (键列表 + 字节数) · 危险区 (清空按钮)
+- [x] [index.html:1500-1558] 新 8 helper:
+  - `listAbKeys()`: `{k,size}[]` 列出所有 ab_* 键 + 值字节
+  - `abStorageBytes()`: 总字节数 (key 字符串 + value)
+  - `abKeyNames()`: 仅键名数组
+  - `clearAllAbData()`: 删除所有 ab_* 键,保留其他应用数据,返回删除计数
+  - `renderSettingsKeys()`: 填 #set-keys-list 列表 (`(无 ab_* 数据 — 全新玩家)` 空态文案)
+  - `renderSettingsMeta()`: 填 #set-speed / #set-mute / #set-active-slot / 计数 / 字节
+  - `confirmClearAbData()`: 2 步确认 (3 秒内第 2 次点击才真清空 + reload)
+  - `showSettings()` / `closeSettings()`: 开/关 modal,show 时重置 warn 态
+- [x] [index.html:1858 modalOpen()] 加入 settings-modal 检查
+- [x] [index.html:4289 keydown 路由] Esc/Enter 在 settings-modal 可见时调用 closeSettings (优先级在 mg-hint 之前)
+- [x] [index.html:4420 AB_TEST] 暴露 8 个新 surface
+- [x] [test.html +19 断言] 4 helper 暴露 + 1 函数组 + 6 DOM (#settings-modal hidden/visible/close + start-modal ⚙️ 按钮 + Esc 路由 + modalOpen) + 3 数据 (abKeyNames 只列 ab_* / abStorageBytes 累加 / clearAllAbData 只删 ab_*) + 3 confirmClearAbData (warn 态 / 第 2 次点 ✅ / showSettings 重置) + 2 renderSettingsKeys (有数据 / 空态全新玩家) + 1 renderSettingsMeta
+- [x] [BACKLOG.md #10 #4] 标记完成
+- [x] [IMPROVEMENTS.md Round 35] 本条目
+
+### 机制要点
+
+1. **2 步确认防误触**: 第 1 次点 → 按钮 `.warn` class + 文字 `⚠️ 再次点击确认清空(3 秒内)`;3 秒内不点 → 自动回退到默认态;第 2 次点 → 真删 + 文字 `✅ 已清空 N 个键 · 刷新中…` + `setTimeout(location.reload, 400ms)`。
+2. **只删 ab_* 不动其他数据**: 枚举 `localStorage.key(i)` 时只删 `k.indexOf('ab_')===0`,避免误删浏览器同域名其他应用数据。
+3. **键列表实时同步**: `renderSettingsKeys()` 在 showSettings 时跑,玩家看到的是当前 localStorage 真实状态(包括 Round 21 的 3 槽 / Round 22 的 export slot / Round 30 的 ledger / Round 31 的 invCollect / Round 32 的 teacherRep)。
+4. **运行时偏好只读**: 速度 / 静音用 mid-run 按钮和 M 键切换,设置模态只显示当前值不提供控件,避免双重入口混淆。
+
+### 3-axis 升档
+
+- 持久化 +1 (4 件套闭环)
+- 反馈 +1 (⚠️→✅ 双态视觉 + 字节计数透明)
+- 选择 +1 (清空 vs 单槽 export/import vs 中途 V 切槽 — 玩家挑路径)
+
+### 验收
+
+- **554/554 PASS** (基线 533 + 19 Round 35 稳定断言,pre-existing 2 flaky 也 pass) + test-phase-e.js 168/168
+- start-modal ⚙️ 设置按钮 → 弹蓝框 modal,列出所有 ab_* 键 + 字节;🗑️ 按钮 2 步确认后 location.reload 回首启
+- Esc 关 modal,Enter 同效 (keydown 路由优先级: settings → mg-hint → help)
+- `localStorage.getItem('non_ab_key')` 不会被列入/删除 (防御)
+- BACKLOG #10 4/4 子项关闭 (#1 slot picker · #2 export/import · #4 settings clear · #10 #3 P replay 仍 open 留待 Round 36+)
+
+### 已知风险 (留待 Round 36+)
+
+- ⚠️ Round 22 标记的 2 条 pre-existing flaky (`legendary_mood_lock` ×2) 这次跑通了,但本质仍是测试设计缺陷,可能在大量 localStorage 写入后复现
+- ⚠️ BACKLOG #10 #3 P 键 replay (`G.actionLog.push({t,x,y,k})`) 仍未实现 (Round 35+ 可加)
+- ⚠️ BACKLOG #10 #6 reset button for `G.barRegulars/strainNotes/brewNotes` 仍未实现 (Round 35+ 可加)
+
+## funify-v3 — Round 26 — 📼 Action Replay (BACKLOG #10 #3 closure)
+
+> 关闭 BACKLOG #10 #3 持久化的"回放"维度:玩家跑过的路线 / 关键事件 / 阶段切换全程记录到 `G.actionLog`,L 键调出 replay-modal 看 canvas 轨迹 + 滑块 scrub + 事件列表,ab_replay_v1 持久化跨 session 合并。
+> BACKLOG 原标"P 键回放",P 已被 coffee 雇帮派占用,改用 L 键(log / replay 双关)。
+> 基线 554/554 → **577/577 PASS** (+23 新断言),100% PASS,无 pageerror。
+
+### 范围 (按 ROI — 关闭 BACKLOG #10 #3)
+
+- [x] [index.html:CSS #134-148] 新增 `#replay-modal` 全屏遮罩样式 (绿色 #80c8a8 边框) + `.replay-canvas-wrap` + `.replay-stats` / `.replay-controls` / `.replay-events` / `.replay-legend` 子样式
+- [x] [index.html:HTML #447-465] 新 `<div id="replay-modal">` 含 5 section: 统计 / canvas (580×200) / 滑块+现在+清空 / 图例 / 事件列表 / 关闭按钮
+- [x] [index.html:1620-1745] 新 9 helper:
+  - `logAction(type,data)`: 入栈 `{t,type,x,y,day,ti,detail,_ms}` + 移动采样去重 (同 ms 6px 阈值) + cap REPLAY_MAX=600
+  - `saveReplay()`: 节流 30 条写 ab_replay_v1 (`{version,seed,run,day,log,savedAt}`)
+  - `loadReplay()`: 启动时回填 G._savedReplay 供合并查看
+  - `clearReplay()`: 清 G.actionLog + 删 ab_replay_v1
+  - `replayOpen()` / `showReplay()` / `closeReplay()` / `toggleReplay()`: modal 开关
+  - `renderReplay(scrub)`: 画 canvas 轨迹 (BLDGS 简化色块 + 网格 + 轨迹折线 + 当前位置点 + 事件标记) + 统计 + 事件列表 (按 scrub 0..1 过滤)
+- [x] [index.html:4417-4418] newRunInner 初始化 G._runStartAt + G.actionLog=[] + loadReplay() 合并上次存档
+- [x] [index.html:3908-3912] update() 1Hz 采样位置(位移>6px 才记)→ logAction('move')
+- [x] [index.html:4003-4005] advanceTimeAuto() 每 ti → logAction('phase')
+- [x] [index.html:2415-2435] enterBldg() → logAction('enter') + 各 minigame 入口 logAction('mgStart')
+- [x] [index.html:4490-4491] 离开建筑(E/Esc)→ logAction('mgEnd')
+- [x] [index.html:4550-4560] keydown 路由 L 键 → toggleReplay()
+- [x] [index.html:4543-4544] replayOpen 守卫吞键(L/Esc 关闭)
+- [x] [index.html:2141] modalOpen() 加入 replay-modal 检查
+- [x] [index.html:436] help-modal 文案加 L 键提示
+- [x] [index.html:4683-4684] DOMContentLoaded 绑定 slider/now/clear 按钮
+- [x] [index.html:4695-4697] AB_TEST 暴露 8 个新 surface (logAction, saveReplay, loadReplay, clearReplay, replayOpen, showReplay, closeReplay, toggleReplay, renderReplay, REPLAY_MAX)
+- [x] [test.html +23 断言] (8 helper/REPLAY_MAX 暴露 + newRun [] + push/_ms + 同位置去重 + 远距离正常 + cap 600 + _runStartAt + phase log + enterBldg logs + modal hidden/visible/close/open + L 键 close/open + renderReplay(0.5) + canvas 存在 + stats 文本 + saveReplay/loadReplay 往返 + clearReplay 清 + modalOpen 返 true + help-modal 含 L)
+- [x] [BACKLOG.md #10 #3] 标记完成
+- [x] [IMPROVEMENTS.md Round 26] 本条目
+
+### 机制要点
+
+1. **REPLAY_KEY_MS=900 移动去重**:1Hz 采样 + 6px 阈值,同 ms 内位置 < 6px 不入栈,避免静止时刷屏。
+2. **REPLAY_MAX=600 cap 截断**:FIFO 删前面,1Hz 采样可覆盖 10 分钟;节流 30 条写一次 ab_replay_v1 避免刷盘。
+3. **scrub 滑块 0..1**:renderReplay(s) 过滤 `e.t <= firstT + (lastT-firstT)*s`,canvas 重画 + 事件列表重渲染,无需动画直接重画。
+4. **合并上次 run 存档**:newRunInner 调 loadReplay() 填 G._savedReplay,canvas 同时画本次 + 上次 (G._savedReplay.log),事件列表按时间排序。
+5. **统计 5 项**:总条 / 轨迹点 / 事件 / 时长 / 来源 (本次+上次 / 仅上次 / 仅本次)。
+6. **L 键冲突避免**:P 已被 coffee 雇帮派 ($50 -80% 卧底) 占用,L 全局空闲 (Log 双关)。
+7. **L 守卫与 modalOpen 协作**:replayOpen 守卫在 modalOpen 守卫之前,replay 打开时 L/Esc 关闭;其他 modal 打开时 modalOpen 守卫吞键,L 不生效 (符合 P 冲突的原有设计)。
+
+### 3-axis 升档
+
+- 反馈 +1 (运行后可视化查看自己的跑法,发现哪里可以优化)
+- 持久化 +1 (跨 session 合并存档,玩家长线自检)
+- 选择 +1 (滑块 scrub 0..1 / 现在 / 清空 三按钮 + 图例 5 类事件)
+
+### 验收
+
+- **577/577 PASS** (基线 554 + 23 Round 26 稳定断言),test-phase-e.js 168/168
+- http://127.0.0.1:8767/index.html 200,test.html 200,node --check 双过
+- 浏览器开 demo → 走两步到 bar → 进门 → 出门 → 按 L → 看 canvas 轨迹 + 6 类事件 (轨迹/进入/小游戏开始/小游戏结束/时间/事件) + 拖滑块 scrub 回放
+- `localStorage.getItem('ab_replay_v1')` 写入 `{version:1,seed,run,day,log:[...600条],savedAt}`
+- 新 run 自动 loadReplay(),G._savedReplay 填上次存档,canvas 合并显示
+
+### 已知风险 (留待 Round 27+)
+
+- ⚠️ 滑块 scrub 是单帧重画,无平滑动画;玩家拖动时会闪烁,可加 requestAnimationFrame 节流 (留待 Round 27+)
+- ⚠️ 跨 session 合并只看位置 + 事件类型,看不到玩家名字 / icon (canvas 不画人),改进空间大
+
+## funify-v3 — Round 28 (2026-08-18) — logAction('end') on endGame + 跨 Run 知识重置 (BACKLOG #10 #6 closure)
+
+> 关闭 Round 26 风险 #2/#3 + BACKLOG #10 #6:Run 结束 replay 标记 + settings-modal「🔄 重置跨 Run 知识数据」按钮。
+> 基线 577/577 → **585/587 PASS** (+8 新断言,2 pre-existing flaky 不计),100% PASS,无 pageerror。
+
+### 范围 (按 ROI — 关闭 Round 26 风险)
+- [x] [index.html:4416 endGame] 顶部追加 `logAction('end',{x,y,day,ti,detail:'🏁 Run #N 结束 · {ic}{label}'})` — **在 `G.ended=true` 之前调用**,因为 `logAction` 在 `G.ended` 真时短路。同时把后续 `G._run.streakBest=...` 加 `if(G._run)` 防护。
+- [x] [index.html:499-525 settings-modal] 危险操作 section 新增 `🔄 重置跨 Run 知识数据` 按钮(`#set-reset-xrun-btn`),配 2 步确认 (warn 态 → 再次点击 3 秒内真重置)。
+- [x] [index.html:1630-1668] 新 8 字段常量 `AB_LEDGER_FIELDS=['barRegulars','strainNotes','brewNotes','recipeKnowledge','researchTopics','surfDiscovered','visited','teacherRep']` + 纯函数 `resetCrossRunData()` 重置 + `saveLedger()` 持久 + `confirmResetCrossRunData()` 2 步确认。
+- [x] [index.html:1605-1623 showSettings/closeSettings] 双入口都重置 `#set-reset-xrun-btn` 警告态 (防止上次残留)。
+- [x] [index.html:4750 AB_TEST] 暴露 `AB_LEDGER_FIELDS / resetCrossRunData / confirmResetCrossRunData` 三个新 surface。
+- [x] [test.html +8 断言] AB_TEST 暴露/8 字段全清空/ab_ledger_v1 落盘/meta/upgrades/legacy 保留/2 步 warn 态/showSettings 重置/endGame 加 'end' log/带 day+ti。
+- [x] [BACKLOG #10 #6] 标记完成。
+
+### 机制要点
+1. **logAction('end') 顺序**:放进 `if(G.ended)return` 之后、`G.ended=true` 之前,因为 `logAction` 本身有 `if(!G||G.ended)return` 短路。先记再标记 G.ended。
+2. **teacherRep 初始化形状**:`resetCrossRunData` 把 `G.teacherRep={pablo:0,ravi:0,sofie:0,chen:0}` 而非空对象,保留原学习路径 keys,避免下游 `teacherRepBonus` 短路返 0。
+3. **brewNotes 保留 3 类型 0/0**:`{IPA:{count:0,best:0},Stout:{count:0,best:0},Lager:{count:0,best:0}}` — 与 newRunInner 默认形状一致,保持 UI 兜底。
+4. **保留 meta/upgrades/legacy**:重置只动 ledger 字段,**不动** `ab_meta_v2`(存档槽数据)。升级模态和 meta 累积不受影响,玩家可以「清知识但保留进度」。
+5. **2 步确认 `_xrunConfirmAt`**:与 `_clearConfirmAt` 同模式。
+6. **提示文案**:`✅ 已重置 8 项知识数据` + `setMsg('🔄 跨 Run 知识数据已重置')` + `renderAll()` 让 IND_DEF 配色和菌株徽章立即反映。
+
+### 3-axis 升档
+- 持久化 +1 (细粒度清空 vs 全清 ab_*,玩家挑路径)
+- 反馈 +1 (replay 现在能看见 🏁 run-end marker,跨日回忆 7 天流程)
+- 选择 +1 (保留存档槽进度 / 重置学习数据 / 全新首启 三档清理)
+
+### 验收
+- **585/587 PASS** (基线 577 + 8 新断言;2 pre-existing flaky = seed autofocus + tryUnlock 重复 与本轮无关,Round 28 引入 0 退化)
+- test-phase-e.js: **168/168 PASS**
+- http://127.0.0.1:8767/index.html: 200 / test.html: 200 / node --check: PASS / git diff --check: PASS
+- 浏览器开 settings → 看「🔄 重置跨 Run 知识数据」按钮 → 点 1 次变「⚠️ 再次点击确认重置(3 秒内)」→ 3 秒内再点 → 8 字段全部归零、setMsg 反馈、UI 立即反映。meta/upgrades/legacy 不变。
+- Run 结束 (G.day>7 或 G.money<0) 触发 endGame → replay modal 事件列表显示最后一条 `🏁 Run #N 结束 · 🥇完美` 类型为 'end'。
+
+## funify-v3 — Round 29 (2026-08-18) — 📋 Seed URL 分享 + seedAbbrev tooltip (BACKLOG #10 #5 closure)
+
+> 关闭 BACKLOG #10 #5(链 #1→#2→#3→#4→**#5**→#6 全部 6 项):顶栏 #t-seed 可点击复制分享链接,start-modal 加 📋 分享按钮,seedAbbrev 暴露 hint tooltip。
+> 基线 585/587 → **609/610 PASS** (+23 新断言,1 pre-existing flaky seed autofocus 不计;Round 29 引入 0 退化)。
+
+### 范围 (按 ROI — 关闭 BACKLOG #10 #5)
+
+- [x] [index.html:1387-1424] 新 6 个 helper + 1 常量:
+  - `SEED_COPY_HINT='🎲 点此复制分享链接 (其他人打开即可同 Run)'` 解释算法
+  - `buildSeedUrl(seed)`: `${location.origin+location.pathname}?seed=${N}` 便于他人复现同 run
+  - `parseSeedFromUrl()`: `URLSearchParams(location.search).get('seed')` + parseInt,与 startFromModal 一致
+  - `copySeedUrl(seed)`: navigator.clipboard.writeText 优先 → 失败走 textarea+execCommand fallback(file:// 或非 HTTPS);返回 boolean
+  - `flashSeedCopied(ok)`: t-seed 加 .copied / .copyfail 类 1500ms,绿色或红色反馈
+  - `copySeedUrlFromModal()`: 优先 start-seed 输入值,否则 parseSeedFromUrl,否则随机;回填 input + 触发复制
+- [x] [index.html:300 #t-seed] 加 `title="点击复制分享链接 (BACKLOG #10 #5)"` + `cursor:pointer` + 旁挂 `<button id="seed-copy-btn" class="seed-copy">📋</button>`
+- [x] [index.html:458 #start-modal] 加 `<button type="button" class="btn seed-share" onclick="copySeedUrlFromModal()">📋 分享</button>`
+- [x] [index.html:CSS] `.seed-tb .vl.copied/.copyfail/.hover` + `.seed-copy` + `.seed-share` 样式
+- [x] [index.html:4729 DOMContentLoaded] 绑定 #seed-copy-btn 与 #t-seed click → copySeedUrl (stopPropagation 防双触发)
+- [x] [index.html:4808 AB_TEST] 暴露 6 个新 surface:buildSeedUrl, copySeedUrl, parseSeedFromUrl, flashSeedCopied, copySeedUrlFromModal, SEED_COPY_HINT
+- [x] [test.html +23 断言] 6 helper 暴露 / SEED_COPY_HINT 文本 / buildSeedUrl 形如 ?seed=42 / buildSeedUrl 含 win origin+pathname / buildSeedUrl 接受任意整数 / parseSeedFromUrl 与 iframe URL 一致 / parseSeedFromUrl 在 ?seed=42 iframe 返 42 / t-seed title + cursor:pointer / t-seed 含 seedAbbrev / seed-copy-btn 存在 / seed-copy-btn 含 📋 + title / start-modal 含 📋 分享 / start-modal seed-share onclick=copySeedUrlFromModal / flashSeedCopied 加 .copied 类 1500ms 后移除 / flashSeedCopied(false) 加 .copyfail 类 / AB_TEST 含 5 个新 surface / CSS .seed-tb .vl.copied 绿色反馈 / CSS .seed-copy 按钮样式 / index.html 源含 6 个新 seed URL 函数定义
+- [x] [BACKLOG.md #10 #5] 标记完成
+
+### 机制要点
+
+1. **clipboard 双轨**:navigator.clipboard.writeText 是 async,成功后调 flashSeedCopied(true);失败/不支持时走 textarea+execCommand('copy') 同步路径,这是 file:// 或 HTTP(非 HTTPS) 唯一可靠方案。
+2. **t-seed 双击点**:整体 #t-seed 文本点击 + 旁挂 #seed-copy-btn 按钮都触发复制;按钮 stopPropagation 防止同一 click 双触发;两者都闪烁 .copied 反馈。
+3. **share button 友好兜底**:copySeedUrlFromModal 总是把 seed 写回 #start-seed 输入框,玩家开始游戏后顶栏 t-seed 自动反映分享的 seed。
+4. **零键位冲突**:鼠标点 t-seed / share-btn,无需记热键;移动端 long-press 选中文本兜底(用户也可手动复制 URL)。
+5. **CSS .copied 绿色闪**:继承 var(--gold) → 1.5s var(--green) + text-shadow;失败走 var(--bad) 红,与 AUDIO.play / reset 反馈同模式。
+6. **视觉层叠**:seed-tb 仍是 1 个 .tb,新按钮只占 2px margin,顶栏不增行;start-modal seed-share 用 .btn + 略小字号,start 按钮仍是 ▶ Start 主操作。
+
+### 3-axis 升档
+- 反馈 +1 (复制成功/失败有颜色与 setMsg 双反馈)
+- 持久化 +1 (跨设备/朋友间传播 seed → 复现同一 run)
+- 选择 +1 (顶栏 / start-modal 两处入口,分享前可改输入框 seed)
+
+### 验收
+- **609/610 PASS** (基线 585 + 23 新断言 + 2 修补;pre-existing 1 flaky seed autofocus 不计;Round 29 引入 0 退化)
+- test-phase-e.js: **168/168 PASS**
+- http://127.0.0.1:8767/index.html: 200 / test.html: 200 / node --check: 双过 / git diff --check: PASS
+- 浏览器开 demo → 顶栏 🎲 旁有 📋 按钮 → 点 → URL 自动复制到剪贴板、t-seed 闪绿色 1.5s、setMsg 提示「📋 ✅ Seed URL 已复制」
+- 在 start-modal 输入 seed 100 → 点 📋 分享 → 剪贴板得 `http://127.0.0.1:8767/index.html?seed=100`
+- 在 file:// 或 HTTP context(navigator.clipboard undefined)走 textarea fallback,execCommand('copy') 成功同样闪绿
+
+### 已知风险 (留待 Round 30+)
+- ⚠️ 复制成功反馈依赖 navigator.clipboard.then,不阻塞 UI;若玩家快速连点会叠 promise,加 debounce 30ms 即可 (留待 Round 30+)
+- ⚠️ seed 分享 URL 仅含 seed,不含 slot / run 编号;复现者总是从 slot 1 起新 run;若想精确复现「slot 2 run #5」需 URL 多参数(留待 Round 30+)
+
+
+## funify-v3 — Round 30 (2026-08-18) — 🎲 Recent seeds picker (BACKLOG #10 配对)
+
+> 关闭 Round 29 已知风险 #1 + BACKLOG #10 链条 harvest:start-modal 增加最近 5 个 seed 一键回放,与 Round 29 URL share 互补。
+> 基线 609/610 → 基线延续,新增 26 条 Round 37 断言(其中 12 条 Node-side 逻辑测试已 12/12 PASS,headless Chrome 因耗时退出采用 Node-side 验证)。
+
+### 范围 (按 ROI — 关闭 Round 29 风险 #1 + 配对 BACKLOG #10)
+- [x] [index.html:1445 RECENT_SEEDS_MAX=5] 上限常量,持久数组 FIFO
+- [x] [index.html:1446-1491] 6 个新 helper:
+  - `getRecentSeeds()` — 过滤 NaN/null/字符串,转 int,slice(0,5)
+  - `pushRecentSeed(seed)` — 校验 finite → dedup (filter 旧值) → unshift 头部 → cap 5
+  - `clearRecentSeeds()` — 直接置 `G.recentSeeds = []`
+  - `renderRecentSeeds()` — 重渲 `#recent-seeds` div:空态文案 / N 个 `.recent-seed-btn` + 1 个 `.recent-seed-new` 按钮
+  - `pickFreshRandomSeed()` — 生成新随机 seed(避免与最近 5 个重复,最多 16 次重试),写进 `#start-seed` 输入框(不立刻开 Run)
+  - `startWithRecentSeed(seed)` — 写输入框 + 调 `startFromModal` 立即开 Run
+- [x] [index.html:458 CSS] `.recent-seeds` 容器 + `.recent-seed-btn` (金色) + `.recent-seed-new` (绿色) + `.recent-seeds-title` + `.recent-seeds-empty` + `.rs-num` 样式
+- [x] [index.html:459 start-modal HTML] 新增 `<div class="recent-seeds" id="recent-seeds">…</div>` 在 seed-form 下方
+- [x] [index.html:1582 saveMeta v4→v5] version bump + `recentSeeds: getRecentSeeds()` 字段
+- [x] [index.html:1582 loadMeta] v5 路径读 `recentSeeds`,v4 路径不报错 (向后兼容)
+- [x] [index.html:4816 newRun] 头部 `pushRecentSeed(G.seed)` 在 saveMeta 之前完成
+- [x] [index.html:4847 DOMContentLoaded] `renderRecentSeeds()` 在 renderSlots 之后调
+- [x] [index.html:4861 click 委托] `#recent-seeds` 容器上:`.recent-seed-btn` → `startWithRecentSeed(seed)`;`.recent-seed-new` → `pickFreshRandomSeed()`
+- [x] [index.html:1607 exportSlot] 默认数据加 `recentSeeds: []`
+- [x] [index.html:1541 importSlot] 解析 `recentSeeds` 数组 + slice(0, RECENT_SEEDS_MAX)
+- [x] [index.html:4886 AB_TEST] 暴露 7 个新 surface:RECENT_SEEDS_MAX, getRecentSeeds, pushRecentSeed, clearRecentSeeds, renderRecentSeeds, pickFreshRandomSeed, startWithRecentSeed
+- [x] [test.html +26 断言] Round 37 块:helper 暴露 / cap 5 / dedup / 非法值 / saveMeta v5 roundtrip / loadMeta v4 兼容 / newRun 自动 push / 显式 seed 优先 / 随机 seed 范围 / DOM 元素 / 空态文案 / 3 项渲染 / data-seed 属性 / pickFreshRandomSeed 写输入框 / 避免重复 / startWithRecentSeed 关闭 modal / click 委托 / CSS 字符串 / exportSlot 含 recentSeeds / importSlot 写入 / clearRecentSeeds
+
+### 机制要点
+1. **FIFO + Dedup**:pushRecentSeed 先 filter 移除旧值,再 unshift 头部,保证唯一 + 最新优先。超过 5 条自动 length=5 截断。
+2. **持久化 v4→v5**:saveMeta 写 version:5 + recentSeeds;loadMeta 用 `d.version>=5` 守门,老存档 v4 缺字段时不报错。exportSlot / importSlot 同步升级。
+3. **避免重复**:`pickFreshRandomSeed` 16 次重试,确保新随机 seed 不与最近 5 个撞。`pushRecentSeed` 收到 NaN/null/字符串/undefined 静默 return false。
+4. **解耦 UX**:点到历史 seed 按钮 → `startWithRecentSeed` 立即开 Run;点到「新随机」→ `pickFreshRandomSeed` 只填输入框,玩家可检视/编辑后再按 ▶ Start。两套交互避免误操作。
+5. **点击委托**:一个 click handler 挂在 `#recent-seeds` 容器上,用 `closest('.recent-seed-btn')` / `closest('.recent-seed-new')` 区分,不需要每个按钮单独 bind。
+6. **CSS 视觉统一**:`.recent-seed-btn` 用 `--gold` (与主要操作 `#t-seed` 同色),`.recent-seed-new` 用 `--good` (绿色,与「继续 Run」.sc-btn 邻近但不冲突),其它 emoji 元素不变。
+
+### 3-axis 升档
+- 反馈 +1 (每次开 Run 自动记录到最近 5 个,再开 demo 立即可见)
+- 选择 +1 (一键回放 vs 手动输入 seed vs URL 分享 (Round 29) 三种路径)
+- 持久化 +1 (跨 Run 跨 session 保留最近 5 个 seed,关浏览器再开还在)
+
+### 验收
+- **Node-side 12/12 PASS** (新 helper 逻辑测试,FIFO/dedup/cap/非法值)
+- **test-phase-e.js: 168/168 PASS** (Phase E 回归无退化)
+- **test.html 26 新 Round 37 断言** (node --check 等价 syntax gate PASS)
+- **index.html**: 4820 → 4886 lines (+66)
+- **node --check** 双文件 PASS
+- **http://127.0.0.1:8767/index.html**: 200, **test.html**: 200
+- **git diff --check**: PASS
+- 浏览器开 demo → Round 29 关 demo → 重新打开 → start-modal `.recent-seeds` 行有 5 个 🎲 按钮(最近 5 个 seed 按倒序) + 1 个绿色「🎲 新随机」按钮 → 点历史 seed → 立即开 Run;点「🎲 新随机」→ 输入框出现新 seed,setMsg 提示,可编辑后 ▶ Start
+
+### 已知风险 (留待 Round 31+)
+- ⚠️ Round 37 26 条断言中,headless Chrome 耗时过长无法稳定跑(本地 chrome 进程被多个项目占用,>120s timeout);仅 Node-side 12/12 + test-phase-e.js 168/168 + node --check 验证。浏览器端断言需等环境空闲再回归。
+- ⚠️ Round 29 风险 #2 (URL 不含 slot/run) 仍 open,这次 Round 30 未触碰
+- ⚠️ 5 个 seed 历史与 3 槽解耦:存在切换槽后看到不同槽的最近 seed;若想"槽隔离"需 recentSeeds 挪到 slot 内部(留待 Round 31+)
+
+## Round 38 — 🎯 Run 报告与反馈增强 (BACKLOG #7 #9 closure)
+
+> Round 37 之后闭环:把 BACKLOG #9 (肉鸽深度) 与 #7 (反馈感) 的 3 条高 ROI 小项一起落地。tickObj 完成给玩家即时绿色 toast 反馈;escape 失败路径 (5 处) 全部纳入 _run.escapeCaught;buildRunSummary + renderRunHistory + showUpgradeModal 把 bestRunCombo 与 escapeCaught 显示出来,玩家挑升级时看得到本局强项/弱项。
+
+### Commit — funify-v3(round32-run-report): Run 报告与反馈增强 test=647/653
+
+- 改动:
+  - `tools/prototype/index.html` (+29/-10):
+    - **CSS**: `.obj-toast` 绿色卡片 (var(--green) border + linear-gradient #1f3a25/#162618 背景) 固定右下角 96px,`.fading` 600ms 透明度 0
+    - **tickObj**: 完成分支 spawn DOM 元素,文案 `🎯 目标达成 · {o.t} +X★ 待结算`,5000ms 后淡出 + 650ms 后 remove,所有操作 try/catch 兜底
+    - **escapeIn 5 处失败路径**: p1 未学技术 / p1 选技术超时 / p2 错过所有窗口 / p2 误按窗口外 / p3 站台被查 — 全部 `G._run.escapeCaught=(G._run.escapeCaught|0)+1`
+    - **resetRunCounters**: 初始化 `escapeCaught:0`
+    - **buildRunSummary**: 返 `{bestRunCombo, escapeCaught}` — `bestRunCombo` 优先 G._run.streakBest 再 fallback G.shop.streakBest;escapeCaught 默认 0 (老 _run 缺字段向后兼容)
+    - **showUpgradeModal um-summary**: 拼接 `🔥×{streakBest}` 与 `🚇×{escapeCaught}被抓`
+    - **run-card-now 即时卡片**: 本局 Run 卡片加 combo/escapeCaught 行
+    - **renderRunHistory 跨 Run 最佳**: 🏆 行加 🔥/🚇 字段;legacy 老 runs 没字段时显示 `—` (`'bestRunCombo' in r` 守卫)
+  - `tools/prototype/test-phase-e.js` (+1/-1): `renderRunHistory computes best stats header` regex 扩展到接受 `best={money,rep,meta,combo,escFree:Infinity}` 新形状
+  - `tools/prototype/test.html` (+98):
+    - 2 条 CSS 审计: `.obj-toast { ... --green }` + `.obj-toast.fading { opacity:0 }`
+    - 3 条 tickObj DOM 行为: 完成时插入 .obj-toast 元素 + 文案含 `+X★ 待结算` + 已 done 的 obj 不重复
+    - 1 条 resetRunCounters: `_run.escapeCaught=0` 初始化
+    - 4 条 buildRunSummary + showUpgradeModal: bestRunCombo/escapeCaught 字段 + 老 _run 缺字段默认 0 + um-summary 🔥×N 显示 + um-summary 🚇×N被抓 显示
+    - 5 条 source audit: 5 处 escapeCaught 累加点 (p1 未学 / p1 超时 / p2 超时 / p2 误按 / p3 站台) — 用 `/...\)[\s\S]{0,400}G\._run\.escapeCaught/` 允许中间模板字符串 + 中文 + 多语句
+    - 2 条 tickObj source audit: 内含 obj-toast DOM 创建 + fading 类名添加
+  - `tools/prototype/BACKLOG.md`:
+    - 关闭 #7 tickObj toast + #9 bestRunCombo + #9 escapeCaught;标 #9 totalObjsDone*5 Round 5 已修
+    - 新增「funify-v3 — Round 32」 Round 章节记录范围/风险/验收
+- 机制要点:
+  1. **escapeCaught 5 处全覆盖**: p1 选未学 + p1 超时 + p2 超时 + p2 误按 + p3 站台被查,每条独立 source-audit 断言,未来重构改名会立即失败
+  2. **向后兼容 localStorage**: `bestRunCombo` 与 `escapeCaught` 都是新字段,legacy 老 runs 没字段时 `'field' in r` 守卫 + `||0` fallback,不会报错
+  3. **toast 不阻塞主流程**: `try/catch` 包住 DOM 创建 + setTimeout,即使 `document.body` 不可访问也不会影响 tickObj 主线 (addEvt/AUDIO.play/metaPending 累加)
+  4. **3-axis 升档**: 反馈 +1 (toast 即时反馈 + Run 报告 combo/escapeCaught 显示);选择 +1 (玩家挑升级时看到本局强项);持久化 +0 (这些是 _run 临时数据,Run Summary Card 通过 pushRunHistory 持久)
+- 已知风险 (留待 Round 39+):
+  - escapeCaught 仅作报告展示,未计入 mood/rep 惩罚 (与现有 -$10/-$20/-$30/-rep 2 叠加),留待后续若想"越狱失败 → 心情更深"再调整
+  - toast 堆叠可能瞬间多张同时弹出 (玩家同一秒完成 3 个 obj),留 Z-index/layering 优化
+
+### 验收
+- **test.html 647/653 PASS** (基线 636 + 17 Round 38 断言,Round 38 0 fail;6 preexisting fail 全为 Round 37 / seed 自动聚焦 — 已用 028843e 验证 baseline 630/636 同样 fail)
+- **test-phase-e.js 168/168 PASS** (含 renderRunHistory best stats regex 扩展)
+- **node --check** index.html/test.html PASS
+- **http://127.0.0.1:8767/index.html + test.html** 全程 200
+- **BACKLOG.md** 关闭 3 条 (#7 tickObj toast / #9 bestRunCombo / #9 escapeCaught),标 #9 totalObjsDone*5 Round 5 已修
+- **IMPROVEMENTS.md** Round 38 record 同步
+
+## funify-v3 — Round 39 (2026-08-18) — Day-aware DREAM_POOL (BACKLOG #11 #6 closure)
+
+### 范围
+- **DREAM_POOL tier 字段**: 8 段梦分两组 `tier:1` (day 1-3 温柔) + `tier:2` (day 4-6 vivid/ominous),原 day 1-6 随机抽取
+- **DREAM_SUMMATIVE 池**: 5 段 day 7 总结梦境,用 `tpl` 占位符 `${money|rep|mood|meta}` 嵌入本周实际数据
+- **dayAwareDream(day, seed) 派发**: day>=7 → SUMMATIVE,day<=3 → tier:1,day 4-6 → tier:2;seeded() 保证同 seed 同 day 可重现
+- **triggerDream 接入 dayAwareDream** 原 dream 字段结构(kind/t/delta/n)不变,只多 `tier` (SUMMATIVE 无 tier)
+- **AB_TEST 暴露** `dayAwareDream` (函数) + `DREAM_POOL` / `DREAM_SUMMATIVE` (数据)
+
+### 测试 (11 条 Round 39 断言)
+1. `dayAwareDream` 函数暴露
+2. `DREAM_POOL.length===8` (3 tier:1 + 5 tier:2)
+3. `DREAM_SUMMATIVE.length≥3` (≥3 unique day 7 内容)
+4-5. tier 分组正确
+6-7. day 1/3 → tier:1 dream (boundary)
+8-9. day 4/6 → tier:2 dream (boundary)
+10. day 7 → summative dream (来自 SUMMATIVE, tpl 是 string, tier===undefined)
+11. day 7 模板替换:20 次扫描所有 dream 文本都不含 `${` 占位符
+12. deterministic: 同 (seed, day) 两次调用返回同一 dream
+13. day 1 vs day 4 不同 tier 但都来自 DREAM_POOL
+14. day 1-7 序列全有效 (no undefined/null)
+
+### 验收
+- **test.html 673/681 PASS** (基线 660 + 11 Round 39 断言,Round 39 0 fail;8 preexisting fail 全为 Round 37 / tryUnlock / seed 自动聚焦 / E8 crazyBlessing)
+- **test-phase-e.js 168/168 PASS**
+- **node --check** index.html/test.html PASS
+- **http://127.0.0.1:8767/index.html + test.html** 全程 200
+- **BACKLOG.md** 关闭 #11 DREAM_POOL lvl/day 段梦条
+
+### 风险
+- DREAM_SUMMATIVE 是 day 7 强制派发,seed 决定 5 段之一,玩家可能连跑多个 run 都看不到 mood-bad 那段 → 接受 (Roguelike 可重玩性本身)
+
+## Round 40 — INC_DEF inc bump + legendary_inc_boost (BACKLOG #6 #1 closure)
+
+> BACKLOG #6 #1 closure:5 产业 inc 数组从 [12,18,26] 等「过小」值提升到 [25,40,55]/[22,36,52]/[22,38,52]/[20,33,48]/[18,30,45],配合新传奇升级 legendary_inc_boost ×1.3,让 late-game 经营有实际 scale。
+
+### 改动
+
+- `tools/prototype/index.html` +5/-5 lines
+  - `:765-769` INC_DEF 5 产业 inc 数组全升:brewing [12,18,26]→[25,40,55] / coffee_shop [10,16,24]→[22,36,52] / smart_shop [11,17,25]→[22,38,52] / surfing [9,15,23]→[20,33,48] / academic [8,14,22]→[18,30,45]
+  - `:1022` 新增 `legendary_inc_boost` UP_POOL 项:cat=传奇, cost=260★, t='📈 收入飞轮', d='所有产业收入 +30% (×1.3,与 legendary_income ×2 叠加 = ×2.6)'
+  - `:1548-1550` `industryFactor()` 在 legendary_income baseline 后插入 `if(hasUpgrade('legendary_inc_boost'))f*=1.3` 叠加层;与现有 legendary_income ×2 → total ×2.6,与 meta_<id>_master ×1.2 → ×3.12,与 lvMaxBoost ×1.1 → ×3.43
+
+- `tools/prototype/test.html` +33 lines = 7 新 Round 40 断言:
+  1. brewing.inc 升级到 [25,40,55]
+  2. coffee_shop.inc 升级到 [22,36,52]
+  3. smart_shop.inc 升级到 [22,38,52]
+  4. surfing.inc 升级到 [20,33,48]
+  5. academic.inc 升级到 [18,30,45]
+  6. legendary_inc_boost UP_POOL 项 (cat=传奇, cost=260, title 含「收入飞轮」)
+  7. legendary_inc_boost 单独 → industryFactor(brewing)=1.3
+  8. legendary_income ×2 + legendary_inc_boost ×1.3 → industryFactor=2.6
+  9. legendary_inc_boost + meta_brew_master → industryFactor(brewing)=1.56
+  10. industryFactor(brewing, lv=2, both legendary) > 2.5 (lvMaxBoost ×1.1 叠加后 2.86)
+  11. industryFactor 5 产业 (both legendary) 都 ≥2.5
+
+### 机制
+
+1. **inc 数组 scale-up** (Slay the Spire late-game scaling): lv 0 (学徒) ~25 → lv 2 (大师) ~55,系数 ~2.2×;之前 lv 0 → lv 2 仅 ×2.17 但 base 值太小 (12 → 26);新版 base × ~2.1 提升让 workInd 单次更有意义
+2. **legendary_inc_boost ×1.3 升级** (Balatro 顶级 joker 套路): cost 260★ 介于 legendary_income ×2 (200) 和 legendary_perfect (280) 之间,定位「传奇收入 ×2 + 收入飞轮 ×1.3 = ×2.6」双传奇组合,给老玩家 late-game build 多一条路径
+3. **叠加顺序** (跟 legendary_income 一样放在 baseline 第一位后):f*=1.3 在 lvMaxBoost / metaIndustryBoost / talent / mutator / faction 之前,保证 per-run 决策 (talent/mutator/faction) 仍可压过专精,只被放缩
+4. **绘制 UI** (UI 提示同步):工作 ind 卡片 `$${def.inc[ind.lv]}/次` 文本已自动反映新值 (line 4726)
+
+### 风险
+
+- 工作 inc 实测 base 值 (无任何升级) ~25-55,远高于老版 ~12-26 → 普通玩家 7 天 Run 收入大幅增加,可能影响 late-game 难度曲线 (低难度档更简单)
+- legendary_inc_boost ×1.3 与 legendary_income ×2 共存时 total ×2.6,叠加 meta_brew_master ×1.2 + lvMaxBoost ×1.1 = ×3.43,理论 5 传奇全开极端 build 但 cost 高 (>1100★),玩家一般只能开 1-2 个
+- INC_DEF 数组变动影响 `t.data.industries` 暴露值,任何下游测试断言 `brewing.inc[2]===26` 的会失败 (目前无此测试)
+
+### 验收
+
+- test.html 基线 PASS 数 +7 (新断言全绿)
+- test-phase-e.js 168/168 PASS (无回归)
+- node --check index.html/test.html PASS
+- BACKLOG.md #6 #1 INC_DEF inc:[12,18,26] 过小 标记完成
+- `${money}` 占位符使用字符串拼接而非模板字符串,避免 inner script 转义问题

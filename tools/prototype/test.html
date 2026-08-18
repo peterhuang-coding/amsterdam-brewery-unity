@@ -2856,6 +2856,108 @@ frame.addEventListener('load',async()=>{
     ()=>['brewing','coffee','shroom','surf','academic','bar'].every(id=>win.industryFactor(id)>=2.5)
   ));
 
+  // ═══ funify-v3 Round 41 — endGame tier-based reward + tier achievements (BACKLOG #6 #89 closure) ═══
+  // 1. ACH_POOL 新增 3 条 tier 评级成就 (gold_run / silver_run / bronze_run)
+  check('Round 41: ACH_POOL 含 gold_run (金牌 Run)',()=>{
+    return t.data.achievements.some(a=>a.id==='gold_run'&&a.ic==='🥇'&&a.n.includes('金牌'));
+  });
+  check('Round 41: ACH_POOL 含 silver_run (银牌 Run)',()=>{
+    return t.data.achievements.some(a=>a.id==='silver_run'&&a.ic==='🥈'&&a.n.includes('银牌'));
+  });
+  check('Round 41: ACH_POOL 含 bronze_run (铜牌 Run)',()=>{
+    return t.data.achievements.some(a=>a.id==='bronze_run'&&a.ic==='🥉'&&a.n.includes('铜牌'));
+  });
+  check('Round 41: ACH_POOL 共 20 条 (17 旧 + 3 新 tier 成就)',()=>t.data.achievements.length===20);
+
+  // 2. tier-based 奖励倍率公式:Math.round(metaPending × tier.mult)
+  check('Round 41: gold tier 100 metaPending → 150 (×1.5)',()=>{
+    const tt=win.endGameTier(3,3);return Math.round(100*tt.mult)===150;
+  });
+  check('Round 41: silver tier 100 metaPending → 120 (×1.2)',()=>{
+    const tt=win.endGameTier(2,3);return Math.round(100*tt.mult)===120;
+  });
+  check('Round 41: bronze tier 100 metaPending → 100 (×1.0)',()=>{
+    const tt=win.endGameTier(1,3);return Math.round(100*tt.mult)===100;
+  });
+  check('Round 41: fail tier 100 metaPending → 60 (×0.6)',()=>{
+    const tt=win.endGameTier(0,3);return Math.round(100*tt.mult)===60;
+  });
+  check('Round 41: 4 tier mult 从 fail→gold 严格递增',()=>{
+    const [fail,b,s,g]=[win.endGameTier(0,3),win.endGameTier(1,3),win.endGameTier(2,3),win.endGameTier(3,3)];
+    return fail.mult<b.mult&&b.mult<s.mult&&s.mult<g.mult;
+  });
+
+  // 3. tryUnlock 集成: 先确保 clean 状态 (前序 endGame 自动跑可能已部分解锁)
+  const _tier3Clean = (id) => {
+    const before = t.state.achievements.slice();
+    t.state.achievements = before.filter(x => x !== id);
+    win.saveAch();
+  };
+  const _tier3Restore = (id, before) => {
+    // 把 stale 状态恢复
+    t.state.achievements = before.filter(x => x !== id);
+    win.saveAch();
+  };
+  check('Round 41: tryUnlock(\'gold_run\') 首次 true + 加 state.achievements',()=>{
+    _tier3Clean('gold_run');
+    const before = t.state.achievements.slice();
+    const r = win.tryUnlock('gold_run');
+    const ok = r === true && t.state.achievements.includes('gold_run');
+    _tier3Restore('gold_run', before);
+    return ok;
+  });
+  check('Round 41: tryUnlock(\'gold_run\') 重复 false (去重)',()=>{
+    _tier3Clean('gold_run');
+    win.tryUnlock('gold_run');
+    const r2 = win.tryUnlock('gold_run');
+    return r2 === false;
+  });
+  check('Round 41: tryUnlock(\'silver_run\') 首次 true',()=>{
+    _tier3Clean('silver_run');
+    const r = win.tryUnlock('silver_run');
+    const ok = r === true;
+    t.state.achievements = t.state.achievements.filter(x => x !== 'silver_run');
+    win.saveAch();
+    return ok;
+  });
+  check('Round 41: tryUnlock(\'bronze_run\') 首次 true',()=>{
+    _tier3Clean('bronze_run');
+    const r = win.tryUnlock('bronze_run');
+    const ok = r === true;
+    t.state.achievements = t.state.achievements.filter(x => x !== 'bronze_run');
+    win.saveAch();
+    return ok;
+  });
+
+  // 4. 源代码层面验收:tier-aware 文案 + tier 成就解锁已接入 endGame
+  const _fetchIndexSrc = () => {
+    let src='';const x=new XMLHttpRequest();x.open('GET','index.html',false);try{x.send();src=x.responseText}catch(_){return ''}
+    return src;
+  };
+  check('Round 41: index.html endGame 体应用 tier.mult 乘 G.metaPending',()=>{
+    const src = _fetchIndexSrc();
+    return /objReward[\s\S]{0,200}=Math\.round\(objRewardRaw\*objRewardMult\)/.test(src);
+  });
+  check('Round 41: index.html endGame tier-aware gold/silver/bronze 状态标题',()=>{
+    const src = _fetchIndexSrc();
+    // Three independent literal substring checks (avoid regex surrogate-pair friction with _tierTitle=...)
+    return src.indexOf('_tierTitle=tier.tier===\'gold\'?\'🎉 完美通关！') !== -1
+      && src.indexOf('tier.tier===\'silver\'?\'✨ 优秀') !== -1
+      && src.indexOf('tier.tier===\'bronze\'?\'✅ 达标') !== -1;
+  });
+  check('Round 41: index.html endGame 体接入 3 条 tier 成就 tryUnlock',()=>{
+    const src = _fetchIndexSrc();
+    return src.indexOf("if(tier.tier==='gold')tryUnlock('gold_run')") !== -1
+      && src.indexOf("else if(tier.tier==='silver')tryUnlock('silver_run')") !== -1
+      && src.indexOf("else if(tier.tier==='bronze')tryUnlock('bronze_run')") !== -1;
+  });
+  check('Round 41: index.html ACH_POOL 含 3 条新 tier 成就',()=>{
+    const src = _fetchIndexSrc();
+    return src.indexOf("{id:'gold_run',ic:'🥇',n:'金牌 Run'") !== -1
+      && src.indexOf("{id:'silver_run',ic:'🥈',n:'银牌 Run'") !== -1
+      && src.indexOf("{id:'bronze_run',ic:'🥉',n:'铜牌 Run'") !== -1;
+  });
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

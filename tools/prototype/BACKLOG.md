@@ -86,7 +86,8 @@
 - ✅ [index.html:484 IND_DEF inc:[12,18,26] 过小] 提升 inc 数组到 [25,40,55] — **Round 40 funify-v3 完成 (INC_DEF inc 数组 5 产业全升,新增 legendary_inc_boost ×1.3 升级)**
 - ✅ [index.html:510-524 OBJ_CATS 无难度递增] day 1-3 走 n:30 轻松档，day 4-7 强制 n:100/服务 6/酿酒 3 — **Round 21 funify-v3 完成（pickObjDef 按 day-bucket 分档,defs 先按 n 升序排序再选 idx;day 1-2=easy / 3-4=medium / 5-7=hard;Explore/Talk 保持 easy 直到 day 6）**
 - ✅ [index.html:633 wantPositive hard filter 缩池] 改 weighted pick 而非 hard filter — **Round 20 funify-v3 完成（weights 数组 + reduce 抽签,池子永远 11 候选,good=3 / neutral=1 / bad=0.5）**
-- [ ] [index.html:2210 endGame won objs.every 太严] 改 ≥2 即 won，bronze/silver/gold 3 档
+- [ ] [index.html:2210 endGame won objs.every 太严] 改 ≥2 即 won，bronze/silver/gold 3 档 — **Round 36 funify-v3 修 (endGame 体 tier.mult 乘 metaPending ×{gold:1.5,silver:1.2,bronze:1.0,fail:0.6},状态标题 tier-aware,新增 gold_run/silver_run/bronze_run 3 条 ACH_POOL 成就,16 断言 test=701/709 pre-existing 8 fail)**
+- [ ] [index.html:2155 extra_event 排除相同即可] 加"同一天最多 1 个负面"约束 day 1-3 全 good
 - [ ] [index.html:2155 extra_event 排除相同即可] 加"同一天最多 1 个负面"约束 day 1-3 全 good
 - [ ] [index.html:484 IND_DEF lvs 3 档满级后无感] 满级给"传奇"标签 + 1.1× 静态加成 — **Round 23 funify-v3 修 (lvMaxBoost helper + ind-card legendary class + ✦传奇 UI + 11 断言)**
 - [ ] [index.html:2099 toggleAuto 无加速] 加 `▶▶ 2×/▶▶▶ 4×` toggle

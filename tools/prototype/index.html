@@ -1061,7 +1061,11 @@ const ACH_POOL=[
   {id:'soul_snatcher',ic:'👻',n:'灵魂收藏家',d:'单局累计拍摄 ≥ 3 个卧底灵魂'},
   // Phase E6 — 肉体交易 (Body Trade, Inscryption body-parts 致敬)
   {id:'body_trade_1',ic:'🩸',n:'第一次卖身',d:'第一次完成肉体交易 (心情 → meta)'},
-  {id:'body_trade_3',ic:'🩸🩸🩸',n:'廉价灵魂',d:'单局累计完成 ≥ 3 次肉体交易'}
+  {id:'body_trade_3',ic:'🩸🩸🩸',n:'廉价灵魂',d:'单局累计完成 ≥ 3 次肉体交易'},
+  // funify-v3 Round 36 — Run 评级三档成就 (tier-based endGame reward)
+  {id:'gold_run',ic:'🥇',n:'金牌 Run',d:'单局 7 天评级达到金牌（完美）'},
+  {id:'silver_run',ic:'🥈',n:'银牌 Run',d:'单局 7 天评级达到银牌（优秀）'},
+  {id:'bronze_run',ic:'🥉',n:'铜牌 Run',d:'单局 7 天评级达到铜牌（及格）'}
 ];
 const ACH_BY_ID=Object.fromEntries(ACH_POOL.map(a=>[a.id,a]));
 
@@ -4673,13 +4677,24 @@ function endGame(won){if(G.ended)return;
   // Phase E7 — Run Summary Card (本地历史 10 条,localStorage)
   G._run.summaryCard=buildRunSummary(objDone,objTotal,tier);
   pushRunHistory(G._run.summaryCard);
-  const objReward=G.metaPending;G.meta+=objReward;G.metaPending=0;saveMeta();
+  // funify-v3 Round 36 — tier-based reward multiplier (gold 1.5× / silver 1.2× / bronze 1.0× / fail 0.6×)
+  const objRewardRaw=G.metaPending;
+  const objRewardMult=tier.mult;
+  const objReward=Math.round(objRewardRaw*objRewardMult);
+  G.meta+=objReward;G.metaPending=0;saveMeta();
   document.getElementById('ba').textContent='▶ 自动运行';document.getElementById('ba').classList.remove('on');
-  setStatus(won?'🍺 胜利！':'📋 Run 结束',`${tier.ic} ${tier.label} · $${G.money} · 目标 ${objDone}/${objTotal}${G._run.streakBest>0?' · 🔥×'+G._run.streakBest:''}`,`+${objReward}★ meta · 遗产 ${G.legacy}`);
-  setMsg(won?`目标达成！${tier.ic} ${tier.label} · $${G.money} · +${objReward}★`:`7 天结束 · ${tier.ic} ${tier.label} · $${G.money} · +${objReward}★`);
+  // Tier-aware status title (was binary 胜利!/Run 结束)
+  const _tierTitle=tier.tier==='gold'?'🎉 完美通关！':tier.tier==='silver'?'✨ 优秀':tier.tier==='bronze'?'✅ 达标':'📋 Run 结束';
+  setStatus(_tierTitle,`${tier.ic} ${tier.label} · $${G.money} · 目标 ${objDone}/${objTotal}${G._run.streakBest>0?' · 🔥×'+G._run.streakBest:''}`,`+${objReward}★ meta (${objRewardMult}× tier) · 遗产 ${G.legacy}`);
+  // Tier-aware run-end messaging (different from start to keep variety)
+  setMsg(`${tier.ic} ${tier.label} · $${G.money} · +${objReward}★${objRewardMult!==1?' ('+objRewardMult+'×)':''}${tier.tier==='fail'?' · 下次重来':' 🎉'}`);
   // Evaluate end-of-run achievements
   tryUnlock('first_run');
   if(won&&objDone===G.objs.length)tryUnlock('perfect_week');
+  // funify-v3 Round 36 — tier-based achievement unlocks (BACKLOG #6 #89 closure)
+  if(tier.tier==='gold')tryUnlock('gold_run');
+  else if(tier.tier==='silver')tryUnlock('silver_run');
+  else if(tier.tier==='bronze')tryUnlock('bronze_run');
   if(Object.values(G.ind).every(i=>i.lv>=2))tryUnlock('all_industries_max');
   if(G.money>=1000)tryUnlock('mega_profit');
   if(!G._run.coffeeRaid&&!G.events.some(e=>e.tx&&e.tx.includes('突击')))tryUnlock('no_raid');

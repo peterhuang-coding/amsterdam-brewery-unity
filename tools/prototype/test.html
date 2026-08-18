@@ -1153,6 +1153,32 @@ frame.addEventListener('load',async()=>{
     return win.G.achTree.brew===0&&win.G._talentMax===4;
   });
 
+  // funify-e11 — Run Epitaph (幽默墓志铭) 4 分支覆盖
+  check('E11 epitaph 破产分支 (money<50)',()=>{
+    const c={money:30,rep:0,mood:0,tier:'bronze',sigArch:'🧑‍🎤',sigFact:'🍺',sigFactName:'Heineken'};
+    const e=win.buildRunEpitaph(c);return typeof e==='string'&&e.length>5&&/破产|残渣|码头/.test(e);
+  });
+  check('E11 epitaph 暴富分支 (money>=1500)',()=>{
+    const c={money:2000,rep:0,mood:0,tier:'gold',sigArch:'🧑‍🎤',sigFact:'🍺',sigFactName:'Heineken'};
+    const e=win.buildRunEpitaph(c);return/铜像|签名|运河新王/.test(e);
+  });
+  check('E11 epitaph 众望所归 (rep>=30)',()=>{
+    const c={money:500,rep:35,mood:5,tier:'silver',sigArch:'🧑‍🍳',sigFact:'☕',sigFactName:'Coffee'};
+    const e=win.buildRunEpitaph(c);return/众望所归|常客|咖啡/.test(e);
+  });
+  check('E11 epitaph 默认 fallback (平稳数据)',()=>{
+    const c={money:300,rep:5,mood:2,tier:'bronze',sigArch:'—',sigFact:'🚩',sigFactName:'路人'};
+    const e=win.buildRunEpitaph(c);return typeof e==='string'&&e.length>5;
+  });
+  check('E11 buildRunSummary 内嵌 epitaph 字段',()=>{
+    win.G.factions={heineken:0,coffee:5,smartshop:0};
+    win.G.barRegulars=['🧑‍🎤','🧑‍🎤','🧑‍🍳'];
+    win.G.talents=['🍺','☕'];win.G.mutator={ic:'🌈'};
+    win.G.money=500;win.G.rep=10;win.G.mood=5;win.G.meta=15;
+    const card=win.buildRunSummary(3,4,{tier:'silver',ic:'🥈',label:'优秀',mult:1.2});
+    return card.epitaph&&card.sigFactName==='Coffee Cartel'&&/Coffee Cartel|咖啡/.test(card.epitaph);
+  });
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

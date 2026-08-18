@@ -241,6 +241,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 .run-card{background:var(--card);border:1px solid var(--gold);border-radius:8px;padding:10px 14px;margin-bottom:6px;font-size:12px;line-height:1.7}
 .run-card b{color:var(--gold)}
 .run-card .big{font-size:18px;color:var(--green);font-weight:700}
+.run-card .run-epitaph{display:block;margin-top:6px;padding:6px 10px;background:#00000040;border-left:3px solid var(--gold);border-radius:4px;font-style:italic;color:var(--cream);font-size:12px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -1256,17 +1257,42 @@ function lvMaxBoost(id){const keyMap={coffee:'coffee_shop',surf:'surfing'};const
 function saveMeta(){try{localStorage.setItem('ab_meta_v2',JSON.stringify({version:2,meta:G.meta,upgrades:G.upgrades,legacy:G.legacy,run:G.run}))}catch(e){console.warn('ab_meta_v2 save failed',e)}}
 function loadMeta(){try{const d=JSON.parse(localStorage.getItem('ab_meta_v2'));if(d&&d.version===2){G.meta=Math.max(0,d.meta|0);G.upgrades=Array.isArray(d.upgrades)?[...new Set(d.upgrades)]:[];G.legacy=Math.max(0,d.legacy|0);G.run=Math.max(0,d.run|0)}}catch(e){console.warn('ab_meta_v2 load failed',e)}}
 // Phase E7 — Run Summary Card (本地历史 ≤10)
+// funify-e11 — Run Epitaph (幽默墓志铭):1-句 flavor text 由 run 统计驱动
+function buildRunEpitaph(card){
+  const m=card.money,r=card.rep,mood=card.mood;
+  const arch=card.sigArch||'—',fact=card.sigFact||'🚩';
+  // Money branch
+  if(m<50)return`破产边缘:${fact}把你的码头仓库抵押了,只剩 ${arch} 那点残渣`;
+  if(m>=1500)return`运河新王:${fact}为你立了铜像,${arch} 排队请你签名`;
+  if(m>=800)return`小有积蓄:你的${fact}伙计开始用€结算,${arch} 也愿意赊账`;
+  // Rep branch
+  if(r<=-15)return`臭名昭著:${fact}贴了你的告示,${arch} 见你就绕道`;
+  if(r>=30)return`众望所归:${fact}派代表请你喝咖啡,${arch} 已成为常客`;
+  if(r<=-5)return`恶名远扬:${fact}公开悬赏你的人头,${arch} 是唯一敢来的`;
+  // Mood branch
+  if(mood<=-10)return`精疲力竭:${fact}给你送了疗养院明信片,${arch} 在门外唱歌`;
+  if(mood>=15)return`精神焕发:${fact}说你"运气好得可疑",${arch} 想跟你合影`;
+  // Tier branch
+  if(card.tier==='gold')return`本周传说:${fact}把这段日子写进了运河博物馆,${arch} 当讲解员`;
+  if(card.tier==='fail')return`糟糕一周:${fact}已经忘了你的名字,${arch} 在等你重新证明自己`;
+  // Default
+  return`平平淡淡:${fact}递了杯咖啡说"下周继续",${arch} 点了点头`;
+}
 function buildRunSummary(objDone,objTotal,tier){
   const factRep={heineken:G.factions.heineken,coffee:G.factions.coffee,smartshop:G.factions.smartshop};
   const topFact=Object.entries(factRep).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1]))[0];
   const factIc={heineken:'🍺',coffee:'☕',smartshop:'🍄'}[topFact[0]]||'🚩';
+  const factName={heineken:'Heineken',coffee:'Coffee Cartel',smartshop:'Smart Shop'}[topFact[0]]||'路人';
   const archCount={};for(const s of G.barRegulars||[])archCount[s]=(archCount[s]||0)+1;
   const topArch=Object.entries(archCount).sort((a,b)=>b[1]-a[1])[0];
-  return {
+  const card={
     run:G.run,seed:G.seed,tier:tier.tier,tierIc:tier.ic,objDone,objTotal,
     money:G.money,rep:G.rep,mood:G.mood,meta:G.meta,
-    sigArch:topArch?topArch[0]:'—',sigFact:factIc,sigTalent:(G.talents&&G.talents[0])||'—',sigMutator:(G.mutator&&G.mutator.ic)||'🏷️'
+    sigArch:topArch?topArch[0]:'—',sigFact:factIc,sigFactName:factName,
+    sigTalent:(G.talents&&G.talents[0])||'—',sigMutator:(G.mutator&&G.mutator.ic)||'🏷️'
   };
+  card.epitaph=buildRunEpitaph(card);
+  return card;
 }
 function pushRunHistory(card){
   try{
@@ -1284,7 +1310,8 @@ function renderRunHistory(){
   el.innerHTML=runs.map(r=>`<div class="run-card">
     <b>#${r.run}</b> · seed ${r.seed} · ${r.tierIc} ${r.tier} · ${r.objDone}/${r.objTotal} 目标<br>
     <span class="big">$${r.money}</span> · <b>${r.rep} rep</b> · 心情 ${r.mood>=0?'+':''}${r.mood} · ${r.meta}★ meta<br>
-    <span style="font-size:14px">${r.sigArch}</span> 常客 · <span style="font-size:14px">${r.sigFact}</span> 派系 · <span style="font-size:14px">${r.sigTalent}</span> 天赋 · <span style="font-size:14px">${r.sigMutator}</span> 变量
+    <span style="font-size:14px">${r.sigArch}</span> 常客 · <span style="font-size:14px">${r.sigFact}</span> 派系 · <span style="font-size:14px">${r.sigTalent}</span> 天赋 · <span style="font-size:14px">${r.sigMutator}</span> 变量<br>
+    <em class="run-epitaph">${r.epitaph||'平平淡淡:这座城市悄悄记住了你的名字'}</em>
   </div>`).join('');
 }
 function saveAch(){try{localStorage.setItem('ab_ach_v1',JSON.stringify({version:1,unlocked:G.achievements}))}catch(e){console.warn('ab_ach_v1 save failed',e)}}
@@ -1664,7 +1691,8 @@ function showUpgradeModal(){
     if(rh)rh.innerHTML=`<div class="run-card">
       <b>本局 Run #${card.run}</b> · seed ${card.seed} · ${card.tierIc} ${card.tier} · 目标 ${card.objDone}/${card.objTotal}<br>
       <span class="big">$${card.money}</span> · <b>${card.rep} rep</b> · 心情 ${card.mood>=0?'+':''}${card.mood} · <b>${card.meta}★ meta</b><br>
-      <span style="font-size:14px">${card.sigArch}</span> 常客 · <span style="font-size:14px">${card.sigFact}</span> 派系 · <span style="font-size:14px">${card.sigTalent}</span> 天赋 · <span style="font-size:14px">${card.sigMutator}</span> 变量
+      <span style="font-size:14px">${card.sigArch}</span> 常客 · <span style="font-size:14px">${card.sigFact}</span> 派系 · <span style="font-size:14px">${card.sigTalent}</span> 天赋 · <span style="font-size:14px">${card.sigMutator}</span> 变量<br>
+      <em class="run-epitaph">${card.epitaph||'平平淡淡:这座城市悄悄记住了你的名字'}</em>
     </div>`;
   }
   renderRunHistory();
@@ -3938,7 +3966,7 @@ window.AB_TEST={
   seedAbbrev,seeded,rollDayObjectives,rollDayModifier,pickObjDef,tickObj,newRun,endGame,clampTargetToWalkable,
   industryFactor,tipFactor,tryUnlock,saveAch,loadAch,AUDIO,resetRunCounters,
   barTipPreview,barPatienceLeft,barDayDifficulty,coffeeHeatZone,coffeeFitHint,shroomQuality,brewStreakMul,brewNoteProgress,surfPerfectStreakMul,surfBreakerTelegraph,acadPartialCredit,acadRebuttalCost,acadRebuttalBoost,acadWriteMs,acadSubmitCooldownMs,VENUE_DEF,phaseNarr,showPhaseFlash,PHASE_NARR,confettiBurst,confettiClear,confettiUpdate,confettiDraw,CONFETTI_PALETTE,isLegendary,legendarySpeedMs,legendaryCost,legendaryMetaCap,rollUpgradeChoices,NPC_DIALOGUES,pickNpcDialog,NPC_TEACH_FLAVOR,NPC_BUILDING_FLAVOR,MG_HINT_KEYS,showMgHint,closeMgHint,mgHintSeen,getHoverBldg,speedMs,cycleSpeed,saveSpeed,loadSpeed,cancelAuto,renderAutoBtn,AUTO_CANCEL_GRACE_MS,showHelp,closeHelp,lvMaxBoost,
-  buildRunSummary,pushRunHistory,loadRunHistory,renderRunHistory,doBodyTrade,openBodyTrade,closeBodyTrade,bodyOpen,moodFloor,startBrew,startSurf,sBarC,endGame,
+  buildRunSummary,buildRunEpitaph,pushRunHistory,loadRunHistory,renderRunHistory,doBodyTrade,openBodyTrade,closeBodyTrade,bodyOpen,moodFloor,startBrew,startSurf,sBarC,endGame,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

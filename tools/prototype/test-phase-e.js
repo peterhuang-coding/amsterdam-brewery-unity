@@ -259,7 +259,7 @@ t('summary card has 4 numbers + 4 emoji', /\$\{card\.money\}[\s\S]{0,300}sigArch
 
 // ── 22. Phase E10 — Demo Telemetry & Polish ──
 t('intro screen shows Day 1 of 7 · 🌱', /Day 1 of 7 · 🌱/.test(h));
-t('help text includes T/F/C/G/B keys', /<b>T<\/b> 天赋树 · <b>F<\/b> 派系 · <b>C<\/b> 配方 · <b>G<\/b> 送礼 · <b>B<\/b> 肉体交易/.test(h));
+t('help text includes T/F/C/G/B keys (with optional J)', /<b>T<\/b> 天赋树 · <b>F<\/b> 派系(?: · <b>J<\/b> 成就树)? · <b>C<\/b> 配方 · <b>G<\/b> 送礼 · <b>B<\/b> 肉体交易/.test(h));
 t('day-bar CSS added', /#day-bar\s*\{/.test(h));
 t('day-bar-fill CSS added', /#day-bar-fill\s*\{/.test(h));
 t('day-dot CSS added', /\.day-dot\s*\{/.test(h));
@@ -269,7 +269,25 @@ t('top bar has day-dots element', /<span id="day-dots"><\/span>/.test(h));
 t('renderAll updates day-bar-fill width', /day-bar-fill[\s\S]{0,200}width=Math\.min/.test(h));
 t('renderAll renders 7 day-dots', /for\(let i=1;i<=7;i\+\+\)/.test(h));
 
-// ── 23. Final summary ──
+// ── 23. Phase E9 — Achievement Tree (4 branches × 3 tiers) ──
+t('ACH_TREE defined with 4 branches', /const ACH_TREE=\[[\s\S]{0,4000}?\];/.test(h) && (h.match(/ACH_TREE=\[/g) || []).length === 1);
+t('ACH_TREE has Brew Master / Coffee King / Rogue / Scholar branches',
+  /id:'brew',n:'Brew Master'/.test(h) && /id:'coffee',n:'Coffee King'/.test(h) && /id:'rogue',n:'Rogue'/.test(h) && /id:'scholar',n:'Scholar'/.test(h));
+t('each branch has bronze/silver/gold tiers',
+  /\{t:'bronze',ic:'🥉'/.test(h) && /\{t:'silver',ic:'🥈'/.test(h) && /\{t:'gold',ic:'🥇'/.test(h));
+t('G.achTree state field present (brew/coffee/rogue/scholar)', /G\.achTree=\{brew:0,coffee:0,rogue:0,scholar:0\}/.test(h));
+t('J key wired to achtOpen/showAchtree', /'j'[\s\S]{0,200}achtOpen/.test(h) || /showAchtree\(/.test(h));
+t('renderAchtree fills achtree-grid', /renderAchtree\([\s\S]{0,500}?achtree-grid/.test(h));
+t('tier unlock grants +5★ meta +1 talent slot', /\+5★ meta \+1 天赋槽|\+5\* meta \+1 talent/i.test(h));
+t('unlocked tier styling (gold highlight)', /\.at-tier\.unlocked/.test(h) || /at-tier unlocked/.test(h));
+t('G._run counters wired (brewsFinished/coffeeSales/escUsed/bodyTradeCount/academicDone)',
+  /G\._run\s*&&\s*G\._run\.brewsFinished/.test(h) && /G\._run\.coffeeSales/.test(h) && /G\._run\.bodyTradeCount/.test(h));
+t('achTreeProgress function returns pct + cur + next', /function achTreeProgress/.test(h) && /r\.push\(\{br:br\.id,cur,next:/.test(h));
+t('newRunInner resets achTree', /newRunInner[\s\S]{0,400}?G\.achTree=\{/.test(h) || /G\.achTree=\{brew:0,coffee:0,rogue:0,scholar:0\}/.test(h));
+t('achtree-modal HTML present', /id="achtree-modal"[\s\S]{0,200}id="achtree-grid"/.test(h));
+t('help text mentions J 成就树', /<b>J<\/b> 成就树/.test(h));
+
+// ── 24. Final summary ──
 t('all 10 sub-modules Phase E1-E10 covered (E1/E2/E3/E4/E5/E6/E7/E8 wired)',
   ['TALENT_POOL','FACTION_POOL','MUTATOR_POOL','CRAFT_RECIPES','CRAZY_POOL','doBodyTrade','buildRunSummary','day-bar-fill','ACH_POOL','industryFactor']
   .every(k => h.includes(k)));

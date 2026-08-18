@@ -3076,6 +3076,134 @@ frame.addEventListener('load',async()=>{
     return t.AUDIO.ambOsc===null && t.AUDIO.ambGain===null;
   });
 
+  // ── Round 3: Phase B1 · Bar Dave-depth (12 drinks / 4 mixers / hold-release pour / 4 soul events) ──
+  // 1. Data surface — catalog + mixers exposed via AB_TEST
+  check('R3: AB_TEST.BAR_DRINK_CATALOG 暴露且 12 个',()=>Array.isArray(t.BAR_DRINK_CATALOG) && t.BAR_DRINK_CATALOG.length === 12);
+  check('R3: BAR_DRINK_CATALOG 5 个 tier1 + 5 个 tier2 + 2 个 tier3',()=>{
+    const t1=t.BAR_DRINK_CATALOG.filter(d=>d.tier===1).length;
+    const t2=t.BAR_DRINK_CATALOG.filter(d=>d.tier===2).length;
+    const t3=t.BAR_DRINK_CATALOG.filter(d=>d.tier===3).length;
+    return t1===5 && t2===5 && t3===2;
+  });
+  check('R3: BAR_DRINK_CATALOG 12 个 id 唯一',()=>new Set(t.BAR_DRINK_CATALOG.map(d=>d.id)).size===12);
+  check('R3: tier 2/3 needsMixer=true, tier 1 needsMixer=false',()=>
+    t.BAR_DRINK_CATALOG.filter(d=>d.tier>=2).every(d=>d.needsMixer===true) &&
+    t.BAR_DRINK_CATALOG.filter(d=>d.tier===1).every(d=>d.needsMixer===false));
+  check('R3: 每个 drink 有 cost/mult/stockKey/pourZone/unlock/tier',()=>
+    t.BAR_DRINK_CATALOG.every(d=>typeof d.cost==='number'&&typeof d.mult==='number'&&typeof d.stockKey==='string'&&Array.isArray(d.pourZone)&&d.pourZone.length===2&&typeof d.unlock==='string'&&typeof d.tier==='number'));
+  check('R3: 高级酒绿区更窄 (tier2=[0.4,0.6] vs tier3=[0.45,0.55])',()=>{
+    const t2=t.BAR_DRINK_CATALOG.find(d=>d.tier===2);
+    const t3=t.BAR_DRINK_CATALOG.find(d=>d.tier===3);
+    return (t3.pourZone[1]-t3.pourZone[0]) < (t2.pourZone[1]-t2.pourZone[0]);
+  });
+  check('R3: AB_TEST.BAR_MIXERS 暴露 (含 none+lemon+ice+herb+honey)',()=>
+    Array.isArray(t.BAR_MIXERS) && t.BAR_MIXERS.length===5 &&
+    t.BAR_MIXERS.some(m=>m.id==='none') &&
+    t.BAR_MIXERS.some(m=>m.id==='lemon') &&
+    t.BAR_MIXERS.some(m=>m.id==='ice') &&
+    t.BAR_MIXERS.some(m=>m.id==='herb') &&
+    t.BAR_MIXERS.some(m=>m.id==='honey'));
+  check('R3: 4 个有效 mixer mult > 1 (除 none)',()=>{
+    const real=t.BAR_MIXERS.filter(m=>m.id!=='none');
+    return real.length===4 && real.every(m=>m.mult>1);
+  });
+  check('R3: BAR_LEGENDARY_DRINKS × 2 (lock behind legendary_only)',()=>
+    Array.isArray(t.BAR_LEGENDARY_DRINKS) && t.BAR_LEGENDARY_DRINKS.length===2 &&
+    t.BAR_LEGENDARY_DRINKS.every(d=>d.unlock==='legendary_only'&&d.legendary===true));
+  // 2. Helpers
+  check('R3: barGetDrink/lager 返 catalog 节点',()=>{
+    const d=t.barGetDrink('lager');
+    return d && d.id==='lager' && d.tier===1;
+  });
+  check('R3: barGetDrink/invalid 返 null',()=>t.barGetDrink('xxx_does_not_exist')===null);
+  check('R3: barGetMixer/lemon 返正确 mult',()=>{
+    const m=t.barGetMixer('lemon');
+    return m && m.id==='lemon' && m.mult===1.10;
+  });
+  check('R3: barGetMixer/invalid 返 none mixer (mult=1.0)',()=>{
+    const m=t.barGetMixer('xxx');
+    return m && m.id==='none' && m.mult===1.0;
+  });
+  check('R3: barAvailableDrinks() 默认 (rep=0) 含 5 个 tier1',()=>{
+    // baseline rep is 0 — only always-unlock drinks
+    const r=t.state.rep||0;const before=t.state.rep;t.state.rep=0;
+    const av=t.barAvailableDrinks();
+    t.state.rep=before;
+    return av.length===3 && av.every(d=>d.tier===1 && d.unlock==='always');
+  });
+  check('R3: barAvailableDrinks() rep>=15 含 spritz (rep>=15 unlock)',()=>{
+    const before=t.state.rep;t.state.rep=20;
+    const av=t.barAvailableDrinks();
+    t.state.rep=before;
+    return av.some(d=>d.id==='spritz') && av.length>=8;
+  });
+  check('R3: barAvailableMixers() rep<3 无 ice',()=>{
+    const before=t.state.rep;t.state.rep=0;
+    const av=t.barAvailableMixers();
+    t.state.rep=before;
+    return !av.some(m=>m.id==='ice');
+  });
+  check('R3: barPickRecoDrinkId() 总是返合法 id',()=>{
+    const before=t.state.rep;t.state.rep=20;
+    const id=t.barPickRecoDrinkId();
+    const ok=!!t.barGetDrink(id);
+    t.state.rep=before;
+    return ok;
+  });
+  // 3. Soul events pool
+  check('R3: BAR_SOUL_EVENTS × 4 (brawl/proposal/police/blackout)',()=>
+    Array.isArray(t.BAR_SOUL_EVENTS) && t.BAR_SOUL_EVENTS.length===4 &&
+    t.BAR_SOUL_EVENTS.some(e=>e.id==='brawl') &&
+    t.BAR_SOUL_EVENTS.some(e=>e.id==='proposal') &&
+    t.BAR_SOUL_EVENTS.some(e=>e.id==='police') &&
+    t.BAR_SOUL_EVENTS.some(e=>e.id==='blackout'));
+  check('R3: 每个 soul event 有 ic/n/desc/effect.kind',()=>
+    t.BAR_SOUL_EVENTS.every(e=>typeof e.ic==='string'&&typeof e.n==='string'&&typeof e.desc==='string'&&e.effect&&typeof e.effect.kind==='string'));
+  // 4. Source-level wiring (pour mechanic + new drink catalog hooked in)
+  const _fetchIndex3 = () => {
+    let src='';const x=new XMLHttpRequest();x.open('GET','index.html',false);try{x.send();src=x.responseText}catch(_){return ''}
+    return src;
+  };
+  check('R3: index.html 引入 BAR_DRINK_CATALOG (12 个 id)',()=>{
+    const src = _fetchIndex3();
+    return /const BAR_DRINK_CATALOG=\[[\s\S]*?\];/.test(src) &&
+      ['lager','stout','wine','cider','kombucha','sour','mojito','martini','spritz','julep','old_fash','negroni'].every(id=>src.indexOf("id:'"+id+"'") !== -1);
+  });
+  check('R3: index.html 引入 BAR_MIXERS (none + 4 配料)',()=>{
+    const src = _fetchIndex3();
+    return src.indexOf("const BAR_MIXERS=[") !== -1 &&
+      src.indexOf("id:'none'") !== -1 &&
+      src.indexOf("id:'lemon'") !== -1 &&
+      src.indexOf("id:'ice'") !== -1 &&
+      src.indexOf("id:'herb'") !== -1 &&
+      src.indexOf("id:'honey'") !== -1;
+  });
+  check("R3: index.html barIn 处理 'e' 倒酒键 (s.pour.startedAt)",()=>{
+    const src = _fetchIndex3();
+    return /if\(k==='e'\)/.test(src) && /s\.pour=\{active:true,drinkId:cur\.drinkId/.test(src);
+  });
+  check('R3: index.html barIn SPACE 应用 baseMult*mixMult*(1+pourBonus)',()=>{
+    const src = _fetchIndex3();
+    return /baseMult\*mixMult\*\(1\+pourBonus\)/.test(src);
+  });
+  check('R3: index.html barIn SPACE 应用 soul cocktailBonus/earnMul/tipBoost',()=>{
+    const src = _fetchIndex3();
+    return /soulCocktailBonus\*soulEarnMul\*tipBoost/.test(src);
+  });
+  check('R3: index.html 引入 4 个 soul event barRollSoulEvent + barApplySoul',()=>{
+    const src = _fetchIndex3();
+    return /function barRollSoulEvent/.test(src) && /function barApplySoul/.test(src);
+  });
+  check('R3: index.html render bar 显示倒酒计时条 (s.pour.cursor pourZone)',()=>{
+    const src = _fetchIndex3();
+    return /s\.pour\.cursor/.test(src) && /drinkObj\.pourZone/.test(src);
+  });
+  check('R3: index.html BAR_DRINK_STOCK_BY_ID 含 12 个 drinkId 映射',()=>{
+    const src = _fetchIndex3();
+    return /const BAR_DRINK_STOCK_BY_ID=/.test(src) &&
+      ['lager','stout','wine','cider','kombucha','sour','mojito','martini','spritz','julep','old_fash','negroni'].every(id=>src.indexOf("'"+id+"':") !== -1);
+  });
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

@@ -3613,7 +3613,125 @@ function acadIn(k){const s=MG.academic;if(!s)return;
 
 // === V-D 酒吧 · 黑市讨价 === 8 archetype + Q/W 调整 + SPACE 成交 + X 拒客
 const BAR_ARCH=[{n:'Normal',face:'🧑',floor:6,max:14},{n:'Regular',face:'🧔',floor:8,max:18},{n:'Picky',face:'🧐',floor:4,max:10},{n:'Drunk',face:'🥴',floor:5,max:22},{n:'Group',face:'👨‍👩‍👧',floor:12,max:30},{n:'Tourist',face:'🧳',floor:10,max:24},{n:'Local',face:'🧓',floor:7,max:15},{n:'VIP',face:'🎩',floor:25,max:60}];
-const BAR_DRINK=['🥃','🍺','🍷'];
+// === funify-v3 Round 3 (Phase B1 · Bar Dave-depth): 12 drinks + 4 mixers ===
+// id=stable id, ic=icon, n=name, cost=house cost, mult=tip mult, stockKey=brew stock consumed,
+// needsMixer=requires hold-and-release pour meter, pourZone=[lo,hi] green window (0..1),
+// unlock=rep gate (always | rep>=N | legendary_only), tier=1 basic / 2 cocktail / 3 signature
+const BAR_DRINK_CATALOG=[
+  // tier 1 — basic 5 (no pour timing, Q/W 议价就够)
+  {id:'lager',   ic:'🍺', n:'Lager',        cost:2, mult:1.0, stockKey:'ipa',   needsMixer:false, pourZone:[0,1],       unlock:'always',  tier:1},
+  {id:'stout',   ic:'🥃', n:'Stout',        cost:3, mult:1.1, stockKey:'stout', needsMixer:false, pourZone:[0,1],       unlock:'always',  tier:1},
+  {id:'wine',    ic:'🍷', n:'House Wine',   cost:4, mult:1.2, stockKey:'lager', needsMixer:false, pourZone:[0,1],       unlock:'always',  tier:1},
+  {id:'cider',   ic:'🍏', n:'Apple Cider',  cost:3, mult:1.0, stockKey:'ipa',   needsMixer:false, pourZone:[0,1],       unlock:'rep>=3',  tier:1},
+  {id:'kombucha',ic:'🫖', n:'Kombucha',     cost:4, mult:1.1, stockKey:'lager', needsMixer:false, pourZone:[0,1],       unlock:'rep>=5',  tier:1},
+  // tier 2 — cocktails 5 (needsMixer: hold-and-release pour, green zone ~20%)
+  {id:'sour',    ic:'🍋', n:'Whiskey Sour', cost:6, mult:1.5, stockKey:'stout', needsMixer:true,  pourZone:[0.4,0.6],  unlock:'rep>=8',  tier:2},
+  {id:'mojito',  ic:'🌿', n:'Mojito',       cost:7, mult:1.6, stockKey:'ipa',   needsMixer:true,  pourZone:[0.4,0.6],  unlock:'rep>=10', tier:2},
+  {id:'martini', ic:'🍸', n:'Martini',      cost:8, mult:1.7, stockKey:'stout', needsMixer:true,  pourZone:[0.4,0.6],  unlock:'rep>=12', tier:2},
+  {id:'spritz',  ic:'🍹', n:'Aperol Spritz',cost:7, mult:1.5, stockKey:'lager', needsMixer:true,  pourZone:[0.4,0.6],  unlock:'rep>=15', tier:2},
+  {id:'julep',   ic:'🥃', n:'Mint Julep',   cost:7, mult:1.55,stockKey:'stout', needsMixer:true,  pourZone:[0.4,0.6],  unlock:'rep>=18', tier:2},
+  // tier 3 — signature 2 (tight green zone ~10%, big mult)
+  {id:'old_fash',ic:'🥃', n:'Old Fashioned',cost:10,mult:2.0, stockKey:'stout', needsMixer:true,  pourZone:[0.45,0.55],unlock:'rep>=25', tier:3},
+  {id:'negroni', ic:'🍸', n:'Negroni',      cost:12,mult:2.3, stockKey:'ipa',   needsMixer:true,  pourZone:[0.45,0.55],unlock:'rep>=35', tier:3},
+];
+// Tier 4 — legendary 2 (locked behind meta completion; only spawned on VIP day if unlocked)
+const BAR_LEGENDARY_DRINKS=[
+  {id:'brewtanic',ic:'🧪', n:'Brewtanic',     cost:18,mult:3.0, stockKey:'ipa',   needsMixer:true,  pourZone:[0.48,0.52],unlock:'legendary_only',tier:4,legendary:true},
+  {id:'amster_sun',ic:'🌷', n:'Amsterdam Sun', cost:22,mult:3.5, stockKey:'stout', needsMixer:true,  pourZone:[0.48,0.52],unlock:'legendary_only',tier:4,legendary:true},
+];
+// 4 mixers — pure additive mult on cocktail mult
+const BAR_MIXERS=[
+  {id:'none',  ic:'🚫', n:'No Mixer',   mult:1.00, unlock:'always',  cost:0},
+  {id:'lemon', ic:'🍋', n:'Lemon',      mult:1.10, unlock:'always',  cost:1},
+  {id:'ice',   ic:'🧊', n:'Ice',        mult:1.05, unlock:'rep>=3',  cost:0},
+  {id:'herb',  ic:'🌿', n:'Herb',       mult:1.20, unlock:'rep>=10', cost:2},
+  {id:'honey', ic:'🍯', n:'Honey',      mult:1.30, unlock:'rep>=20', cost:3},
+];
+// === funify-v3 Round 3: 4 soul events for bar ===
+// Each fires once per run via cumulative triggers; picked via soulEventBar()
+// effect.kind ∈ {brawl, proposal, blackout, police} → see barApplySoul()
+const BAR_SOUL_EVENTS=[
+  {id:'brawl',     ic:'🥊', n:'醉酒打架',  desc:'两个 Drunk 顾客打起来,全场顾客耐心 -2s',
+   effect:{kind:'brawl',     patienceDelta:-2, moneyDelta:0}},
+  {id:'proposal',  ic:'💍', n:'求婚之夜',  desc:'VIP 求婚,鸡尾酒 +50% tip',
+   effect:{kind:'proposal',  cocktailMult:1.5, moneyDelta:0}},
+  {id:'police',    ic:'🚔', n:'警察临检',  desc:'便衣查酒牌,全场 -10% 当晚收入',
+   effect:{kind:'police',    earnMul:0.9, moneyDelta:0}},
+  {id:'blackout',  ic:'💡', n:'停电一刻',  desc:'全黑 1 轮,下 2 轮 tip ×1.3',
+   effect:{kind:'blackout',  blackoutRounds:1, tipBoostRounds:2, tipBoostMul:1.3}},
+];
+// Helper: pick available drink catalog by current rep + legendary meta
+function barAvailableDrinks(){
+  const rep=G.rep||0;const legendaryOn=(G.barMeta&&G.barMeta.legendary)||false;
+  return BAR_DRINK_CATALOG.filter(d=>{
+    if(d.unlock==='always')return true;
+    const m=d.unlock.match(/^rep>=(\d+)$/);if(m)return rep>=parseInt(m[1],10);
+    if(d.unlock==='legendary_only')return false; // not via rep
+    return false;
+  }).concat(legendaryOn?BAR_LEGENDARY_DRINKS:[]);
+}
+function barAvailableMixers(){
+  const rep=G.rep||0;
+  return BAR_MIXERS.filter(m=>{
+    if(m.unlock==='always')return true;
+    const mm=m.unlock.match(/^rep>=(\d+)$/);if(mm)return rep>=parseInt(mm[1],10);
+    return false;
+  });
+}
+// Pick today's recommended drink (was BAR_DRINK[recoIdx] in legacy)
+function barPickRecoDrinkId(){
+  const avail=barAvailableDrinks();
+  if(!avail.length)return'wine';
+  return avail[Math.floor(seeded(71)*avail.length)].id;
+}
+function barGetDrink(id){return BAR_DRINK_CATALOG.find(d=>d.id===id)||BAR_LEGENDARY_DRINKS.find(d=>d.id===id)||null}
+function barGetMixer(id){return BAR_MIXERS.find(m=>m.id===id)||BAR_MIXERS[0]}
+// === funify-v3 Round 3: hold-and-release pour meter state ===
+// s.pour = { active:bool, drinkId, mixId, startedAt, cursor (0..1 looping) }
+// press E (barIn('e')) starts pour; press E again releases — if cursor in green zone = +20%
+function barPourState(s){
+  if(!s)return null;if(!s.pour||!s.pour.active)return null;
+  const elapsed=Date.now()-s.pour.startedAt;
+  const speed=0.0014; // 0..1 per ms (~700ms round trip)
+  const phase=elapsed*speed;const cursor=phase-Math.floor(phase);
+  s.pour.cursor=cursor;
+  return s.pour;
+}
+// Pick a soul event for the run (one-shot per run, triggered by specific archetype/combo)
+function barRollSoulEvent(sd,combo){
+  if(!G._barSoul)G._barSoul={picked:null,fired:false};
+  if(G._barSoul.fired)return null;
+  // Trigger rules — see brief B1:
+  // brawl: Drunk served 3+ times in a session
+  // proposal: VIP served (VIP day)
+  // police: heat threshold
+  // blackout: night phase + served 8+ customers
+  const triggers=[
+    {id:'brawl',    ok:G._barSoul.drunkServed>=3},
+    {id:'proposal', ok:!!s.vipDay},
+    {id:'police',   ok:(G.coffeeEarnedToday||0)>=120},
+    {id:'blackout', ok:G.ti>=4&&sd>=5},
+  ];
+  for(const t of triggers){if(t.ok&&!G._barSoul.picked){
+    G._barSoul.picked=t.id;return BAR_SOUL_EVENTS.find(e=>e.id===t.id);
+  }}
+  return null;
+}
+function barApplySoul(evt){
+  if(!evt)return;
+  const e=evt.effect;
+  G._barSoul.fired=true;G._barSoul.picked=evt.id;
+  if(e.kind==='brawl'){const s=MG.bar;if(s&&s.cs)for(const c of s.cs)c.patience=Math.max(2,c.patience+(e.patienceDelta||0))}
+  if(e.kind==='proposal'){const s=MG.bar;if(s)s.cocktailBonus=e.cocktailMult||1.5}
+  if(e.kind==='police'){const s=MG.bar;if(s){s.earnMul=e.earnMul||0.9;s._souled=true};bumpFaction('coffee',-1,'警察临检')}
+  if(e.kind==='blackout'){const s=MG.bar;if(s){s.blackoutRounds=e.blackoutRounds||1;s.tipBoostRounds=e.tipBoostRounds||2;s.tipBoostMul=e.tipBoostMul||1.3};bumpFaction('heineken',1,'停电客流涌入')}
+  addEvt('good',evt.ic+' '+evt.n+' · '+evt.desc);
+  setMsg('✨ 灵魂事件: '+evt.n);
+  AUDIO.play('objective');
+}
+// compat: legacy BAR_DRINK array kept for HUD glyph references in render code
+// 旧 BAR_DRINK=['🥃','🍺','🍷'] 已被 BAR_DRINK_CATALOG 取代,但保留别名让旧渲染代码继续工作
+const BAR_DRINK=BAR_DRINK_CATALOG.map(d=>d.ic);
 
 // === funify-v3 Round 25 (coffee redesign): 8 customer archetypes ===
 // tier='budget/mid/high/undercover' — 决定 product preference + patience
@@ -3683,16 +3801,27 @@ function startBar(){
   const dayPick=Math.floor(seeded(70)*todays.length),special=todays.splice(dayPick,1)[0];
   const isVipDay=G.day===5||G.day===7;
   const pool=todays;if(isVipDay)pool.unshift(BAR_ARCH[7]);
-  const recoIdx=Math.floor(seeded(71)*BAR_DRINK.length);
+  // Phase B1 (Round 3): today's recommended drink picked from FULL available catalog (12+2)
+  const recoId=barPickRecoDrinkId();
+  const recoDrinkObj=barGetDrink(recoId);
   // Track regulars across this Run. Returning customers tip +20%.
   if(!G.barRegulars)G.barRegulars=[];
-  MG.bar={cs:[],sd:0,earn:0,combo:0,mx:6+diff.mxDelta,offer:null,reco:recoIdx,recoDrink:BAR_DRINK[recoIdx],pool,vipDay:isVipDay,diff};G.mg='bar';G._mgEnterAt=Date.now();sBarC();
+  // Reset soul-event tracker for this bar session
+  G._barSoul={picked:null,fired:false,drunkServed:0};
+  MG.bar={cs:[],sd:0,earn:0,combo:0,mx:6+diff.mxDelta,offer:null,recoId,recoDrink:recoId,recoIc:recoDrinkObj?recoDrinkObj.ic:'🍺',pool,vipDay:isVipDay,diff,pour:null,cocktailBonus:1,earnMul:1,blackoutRounds:0,tipBoostRounds:0,tipBoostMul:1};G.mg='bar';G._mgEnterAt=Date.now();sBarC();
   // Phase A B1: surface brew→bar inventory in HUD (empty stock = -50% pay for that drink)
   const _st=G.barStock||{ipa:0,stout:0,lager:0};
-  setStatus('🍻 黑市讨价',`今日推荐 ${BAR_DRINK[recoIdx]} (命中 +tip) · 库存 🍺${_st.ipa} 🥃${_st.stout} 🍷${_st.lager} · ${diff.label}`,'顾客开价 · Q/W 调整 · SPACE 成交 · X 拒客 · 库存空则 -50%')
+  // Round 3: count available drinks + recommend pour hint for needsMixer reco
+  const _avail=barAvailableDrinks();
+  const _availMix=barAvailableMixers();
+  const recoNeedsPour=recoDrinkObj&&recoDrinkObj.needsMixer;
+  const recoIc=recoDrinkObj?recoDrinkObj.ic:'🍺';
+  setStatus('🍻 黑市讨价',`今日推荐 ${recoIc} ${recoDrinkObj?recoDrinkObj.n:''} (命中 +tip${recoNeedsPour?' · E 倒酒完美 +20%':''}) · 库存 🍺${_st.ipa} 🥃${_st.stout} 🍷${_st.lager} · ${diff.label} · 可选 ${_avail.length} 酒 · ${_availMix.length} 配料`,'顾客开价 · Q/W 调整 · SPACE 成交'+(recoNeedsPour?' · E 倒酒计时':'')+' · X 拒客 · 库存空则 -50%')
 }
 // Phase A B1: bar drink → brew stock mapping (whiskey=stout, beer=IPA, wine=lager)
-const BAR_DRINK_STOCK={'🥃':'stout','🍺':'ipa','🍷':'lager'};
+const BAR_DRINK_STOCK={'🥃':'stout','🍺':'ipa','🍷':'lager','🍏':'ipa','🫖':'lager','🍋':'stout','🌿':'ipa','🍸':'stout','🍹':'lager'};
+// Phase B1 (Round 3): drinkId → stockKey direct lookup (replaces icon mapping)
+const BAR_DRINK_STOCK_BY_ID={'lager':'ipa','stout':'stout','wine':'lager','cider':'ipa','kombucha':'lager','sour':'stout','mojito':'ipa','martini':'stout','spritz':'lager','julep':'stout','old_fash':'stout','negroni':'ipa','brewtanic':'ipa','amster_sun':'stout'};
 function sBarC(){
   const s=MG.bar;if(!s)return;
   if(s.sd>=s.mx){finBar();return}
@@ -3711,9 +3840,17 @@ function sBarC(){
   }
   const floor=arch.floor,ceiling=arch.max;
   const offer=Math.max(floor+1,Math.min(ceiling-1,floor+Math.floor(seeded(73+s.sd)*(ceiling-floor)*0.6)));
-  // Tier-scaled: easy 25% / normal 35% / hard 50% customers ask for today's recommended drink
+  // Phase B1 (Round 3): pick from FULL available catalog (12+). VIPs prefer tier 2/3 cocktails.
+  const _availDrinks=barAvailableDrinks();
+  const _poolDrinks=arch.n==='VIP'?_availDrinks.filter(d=>d.tier>=2):_availDrinks;
   const wantReco=seeded(76+s.sd)<diff.wantRecoP;
-  const drink=wantReco?s.recoDrink:BAR_DRINK[Math.floor(seeded(75+s.sd)*BAR_DRINK.length)];
+  const drinkId=wantReco?s.recoId:(_poolDrinks.length?_poolDrinks[Math.floor(seeded(75+s.sd)*_poolDrinks.length)].id:'wine');
+  const drinkObj=barGetDrink(drinkId);
+  const drink=drinkObj?drinkObj.ic:'🍺';
+  // Pick a mixer too — cocktails get one, basics get 'none'. Bias toward 'none' for tier 1.
+  const _availMix=barAvailableMixers();
+  const _mixPool=drinkObj&&drinkObj.needsMixer?_availMix.filter(m=>m.id!=='none'):[{id:'none',mult:1.00}];
+  const mixId=_mixPool[Math.floor(seeded(79+s.sd)*_mixPool.length)].id;
   const isRegular=G.barRegulars.includes(arch.n);
   // Phase C: 顾客 mood
   const mood=((arch.tip||0)*0.6)+(seeded(78+s.sd)-0.5)*0.2;
@@ -3723,40 +3860,86 @@ function sBarC(){
   const basePatience=6+Math.floor(seeded(74+s.sd)*4);
   const patience=Math.max(3,Math.round(basePatience*diff.patienceMult));
   s.cs.push({arch,face:arch.face,faceMark:G.shop.crazyFaceMark||(arch.n==='VIP'?'🎩':custRelLv>=2?'💛':''),patience,
-    born:Date.now(),wantReco,isRegular,offer,floor,ceiling,drink,diffLabel:diff.label,mood,custRelLv});
+    born:Date.now(),wantReco,isRegular,offer,floor,ceiling,drink,drinkId,mixId,drinkObj,needsMixer:drinkObj&&drinkObj.needsMixer,
+    pourBonus:0,poured:false,
+    diffLabel:diff.label,mood,custRelLv});
   s.offer=s.cs[s.cs.length-1];
   renderAll();
 }
 function barIn(k){const s=MG.bar;if(!s)return;const cur=s.cs[s.cs.length-1];if(!cur)return;
   if(k==='q'){cur.offer=Math.max(cur.floor,cur.offer-1);AUDIO.play('bar_clink')}
   if(k==='w'){cur.offer=Math.min(cur.ceiling,cur.offer+1);AUDIO.play('bar_clink')}
+  // Phase B1 (Round 3): hold-and-release pour meter — only meaningful for cocktails (needsMixer)
+  if(k==='e'){
+    if(!cur.needsMixer){setMsg('🍺 这杯不需要倒酒');AUDIO.play('click');return}
+    if(s.pour&&s.pour.active&&s.pour.drinkId===cur.drinkId){
+      // RELEASE — check zone
+      const p=s.pour;
+      const z=p.drinkObj?p.drinkObj.pourZone:[0.4,0.6];
+      const inGreen=p.cursor>=z[0]&&p.cursor<=z[1];
+      cur.pourBonus=inGreen?0.20:0;
+      cur.poured=true;
+      const tag=inGreen?' 🎯完美倒酒 +20%':' 倒酒 miss';
+      setMsg((inGreen?'🎯':'⚠️')+tag);
+      s.pour=null;
+      AUDIO.play(inGreen?'bar_sale':'bar_clink');
+      renderAll();
+      return;
+    }
+    // START pour meter
+    const dObj=cur.drinkObj||barGetDrink(cur.drinkId);
+    s.pour={active:true,drinkId:cur.drinkId,mixId:cur.mixId,drinkObj:dObj,startedAt:Date.now(),cursor:0};
+    setMsg('🍸 倒酒计时中 · 再按 E 释放 '+dObj.ic);
+    AUDIO.play('bar_clink');
+    renderAll();
+    return;
+  }
   if(k===' '){if(cur.offer>=cur.ceiling){setMsg('😅 报太高，顾客走');cur.patience-=2;s.cs.pop();s.sd++;if(s.sd>=s.mx)finBar();else sBarC();renderAll();return}
-    // Drink match bonus: if you served what they wanted, +20% tip. Mismatch: -10%.
-    const drinkMatch=cur.drink===s.recoDrink;
+    // Phase B1 (Round 3): drink match uses drinkId (not icon — some drinks share icon)
+    const drinkMatch=cur.drinkId===s.recoId;
     const drinkMult=drinkMatch?1.2:0.9;
     const regularBonus=cur.isRegular?0.2:0;
-    // Phase A B1: stock check — empty = house brand (-50%); with stock consume 1 unit
-    const _sk=BAR_DRINK_STOCK[cur.drink];
+    // Phase B1 (Round 3): per-drink base mult from catalog (tier 1=1.0, tier 2=1.5, tier 3=2.0)
+    const baseMult=cur.drinkObj?cur.drinkObj.mult:1.0;
+    // Phase B1 (Round 3): mixer bonus
+    const mixObj=barGetMixer(cur.mixId);
+    const mixMult=mixObj?mixObj.mult:1.0;
+    // Phase B1 (Round 3): pour bonus (0 or 0.20 from green zone)
+    const pourBonus=cur.pourBonus||0;
+    // Phase A B1: stock check via drinkId (more robust than icon mapping)
+    const _sk=BAR_DRINK_STOCK_BY_ID[cur.drinkId]||'ipa';
     const _haveStock=G.barStock&&G.barStock[_sk]>0;
     if(_haveStock)G.barStock[_sk]--;
     const stockMult=_haveStock?1:0.5;
     const stockTag=_haveStock?'':' 🏷️house brand';
-    const final=Math.round(cur.offer*tipFactor()*drinkMult*stockMult*(1+regularBonus));
+    // Phase B1 (Round 3): cocktailBonus (proposal soul event), earnMul (police soul event), tipBoostMul (blackout)
+    const soulCocktailBonus=cur.drinkObj&&cur.drinkObj.tier>=2?(s.cocktailBonus||1):1;
+    const soulEarnMul=s.earnMul||1;
+    const tipBoost=s.tipBoostRounds>0?(s.tipBoostMul||1.3):1;
+    const final=Math.round(cur.offer*tipFactor()*drinkMult*baseMult*mixMult*(1+pourBonus)*stockMult*(1+regularBonus)*soulCocktailBonus*soulEarnMul*tipBoost);
     // Phase C: 关系升级 + mood 应用 (cur.mood ∈ [-0.1, 0.3] 范围)
     const moodMult=1+(cur.mood||0);
     const final2=Math.round(final*moodMult);
     const relLv=bumpCustRel(cur.arch.n,cur.arch.tier||'budget');
     cur.custRelLv=relLv;
     s.earn+=final2;s.combo++;s.sd++;
+    if(s.tipBoostRounds>0)s.tipBoostRounds--;
     const vipBonus=cur.arch.n==='VIP'&&s.vipDay?30:0;
     if(vipBonus){G.meta+=30;addEvt('good','🎩 VIP 顾客服务成功 +30★ meta')}
     if(!G.barRegulars.includes(cur.arch.n)){G.barRegulars.push(cur.arch.n);saveLedger()}
+    if(cur.arch.n==='Drunk'){if(G._barSoul)G._barSoul.drunkServed=(G._barSoul.drunkServed||0)+1}
     const tag=drinkMatch?' ✨命中推荐':cur.wantReco?' (拒绝想要的酒)':'';
     const reg=regularBonus?' 👤常客+20%':'';
-    addEvt('good',`🍻 ${cur.face}${cur.arch.n} 成交 +$${final2}${tag}${reg}${stockTag}${relLv>=2?' 💛L'+Math.floor(relLv):''}`);setMsg(`✅ ${cur.arch.n} +$${final2}${tag}${stockTag}`);AUDIO.play('bar_sale');
+    const cocktailTag=soulCocktailBonus>1?' 💍求婚加成':'';
+    const pourTag=pourBonus>0?' 🎯完美倒酒':'';
+    addEvt('good',`🍻 ${cur.face}${cur.arch.n} 成交 ${cur.drink}${cur.mixId!=='none'?'+'+mixObj.ic:''} +$${final2}${tag}${reg}${pourTag}${cocktailTag}${stockTag}${relLv>=2?' 💛L'+Math.floor(relLv):''}`);setMsg(`✅ ${cur.arch.n} +$${final2}${tag}${stockTag}`);AUDIO.play('bar_sale');
+    s.pour=null;
     s.cs.pop();
+    // Phase B1 (Round 3): soul event check
+    const soulEvt=barRollSoulEvent(s.sd,s.combo);
+    if(soulEvt)barApplySoul(soulEvt);
     if(s.sd>=s.mx)finBar();else sBarC();renderAll();return}
-  if(k==='x'){setMsg('🚶 顾客离店');s.cs.pop();s.sd++;if(s.sd>=s.mx)finBar();else sBarC();renderAll();return}
+  if(k==='x'){setMsg('🚶 顾客离店');s.pour=null;s.cs.pop();s.sd++;if(s.sd>=s.mx)finBar();else sBarC();renderAll();return}
   renderAll();
 }
 function updateBar(){
@@ -4629,8 +4812,22 @@ function drawMG(){
       cx.fillText('💸 预计到手 $'+_tipRaw+(_tipDelta?' ('+_tipSign+_tipDelta+')':''),568,432);
       cx.fillStyle='#aaa';cx.font='9px sans-serif';cx.textAlign='right';
       const _tipHints=(_tipHit?'命中 ':'')+(_tipReg?'常客 ':'');cx.fillText(_tipHints||'无加成',735,432);
+      // Phase B1 (Round 3): pour meter — shown only when hold-and-release pour is active
+      if(s.pour&&s.pour.active){
+        const _pz=s.pour.drinkObj?s.pour.drinkObj.pourZone:[0.4,0.6];
+        const _px=180,_pw=440,_py=452,_ph=10;
+        cx.fillStyle='#1a1a1acc';cx.fillRect(_px,_py,_pw,_ph);
+        cx.fillStyle='#78c878';cx.fillRect(_px+_pw*_pz[0],_py,_pw*(_pz[1]-_pz[0]),_ph);
+        const _cur=s.pour.cursor||0;
+        cx.fillStyle='#ffd700';cx.fillRect(_px+_pw*_cur-1,_py-2,3,_ph+4);
+        cx.fillStyle='#fff';cx.font='bold 10px sans-serif';cx.textAlign='center';
+        cx.fillText('🍸 倒酒 '+(s.pour.drinkObj?s.pour.drinkObj.ic:'')+' · 再按 E 释放 ('+Math.round(_cur*100)+'%)',400,_py+_ph+12);
+      } else if(cur.needsMixer&&!cur.poured) {
+        cx.fillStyle='#f0d060';cx.font='bold 10px sans-serif';cx.textAlign='center';
+        cx.fillText('🍸 按 E 开始倒酒计时 (绿区 +20%)',400,452);
+      }
     }
-    cx.fillStyle='#fff';cx.font='11px sans-serif';cx.fillText('库存 🍺'+G.bs[0]+' 🥃'+G.bs[1]+' 🍷'+G.bs[2],400,465);
+    cx.fillStyle='#fff';cx.font='11px sans-serif';cx.fillText('库存 🍺'+G.bs[0]+' 🥃'+G.bs[1]+' 🍷'+G.bs[2]+' · 灵魂: '+(G._barSoul&&G._barSoul.picked?(G._barSoul.fired?'已触发':'待触发'):'暂无'),400,475);
   }
   cx.textAlign='start';
 }
@@ -4691,7 +4888,7 @@ function autoStep(){
     if(G.mg==='surf'){const ss=s;if(ss.ended){G._at=setTimeout(autoStep,300);return}ss.wx-=80;const pos=(ss.wx-200)/500,green=pos>0.6&&pos<0.8,barrel=seeded(80+ss.at)<.08;let sc=green?Math.round((1-Math.abs(pos-0.7)/0.1)*30+10):pos>0.3&&pos<0.95?Math.round((1-Math.abs(pos-0.7)/0.3)*10+3):1;if(green){ss.combo++;ss.perfect++;ss.perfectStreak++}else{ss.combo=0;ss.perfectStreak=0}if(barrel)sc+=50;ss.sc+=sc;ss.at++;ss.stamina=Math.max(0,ss.stamina-15);if(ss.stamina<=0){finSurf(true);G._at=setTimeout(autoStep,300);return}if(Date.now()-ss.started>=5000){finSurf(false);G._at=setTimeout(autoStep,300);return}setStatus('🏄 自动冲浪',ss.sc+'分 体力'+ss.stamina+'%','');G._at=setTimeout(autoStep,300);renderAll();return}
     if(G.mg==='academic'){if(s.ph==='gather'){s.sel=[0,1];s.ph='write';s.ws=Date.now();s.speed=1;s.sc=30+s.ids[0].q*15+s.ids[1].q*15+Math.floor(seeded(180+G.day)*15);setStatus('📚 自动写论文',s.ids[0].t+'+'+s.ids[1].t,'预计'+s.sc+'分');G._at=setTimeout(autoStep,1000);renderAll();return}
       else{if(Date.now()-s.ws>acadWriteMs(s)*0.27){const pc=acadPartialCredit(s.sc,s.venue);const ok=pc.accepted;const venueMult=(VENUE_DEF[s.venue]||VENUE_DEF['本地研讨']).mult;const g=ok?Math.round(60*venueMult):Math.round(15*venueMult);G.money+=g;G.rep+=Math.round(s.sc/10);G.ind.academic.xp+=Math.round(s.sc*1.5);G._run.academicDone++;checkAchTier();addEvt(ok?'good':'info','📚 论文'+(ok?'接收':'被拒')+' '+s.sc+'分 '+(pc.label||'')+' +$'+g+(s.speed===2?' (⚡2×速)':''));addSch('📚','论文 +$'+g);G.mg=null;G.inside=null;chkLv('academic');setStatus(ok?'🎉 接收':'📋 被拒','+$'+g,'');G._at=setTimeout(autoStep,500);renderAll();return}else{G._at=setTimeout(autoStep,300);return}}}
-    if(G.mg==='bar'){const bs=s;if(bs.sd>=bs.mx){finBar();G._at=setTimeout(autoStep,300);renderAll();return}else if(!bs.cs.length){sBarC();G._at=setTimeout(autoStep,200);renderAll();return}else{const cur=bs.cs[bs.cs.length-1];const mid=Math.max(cur.floor+1,Math.min(cur.ceiling-1,Math.floor((cur.floor+cur.ceiling)/2)));cur.offer=mid;s.sd++;const final=Math.round(mid*tipFactor());s.earn+=final;addEvt('good','🍻 自动成交 '+cur.arch.n+' +$'+final);s.cs.pop();setStatus('🍻 自动酒吧','$'+s.earn+' '+s.sd+'/'+s.mx,'');G._at=setTimeout(autoStep,200);renderAll();return}}
+    if(G.mg==='bar'){const bs=s;if(bs.sd>=bs.mx){bs.pour=null;finBar();G._at=setTimeout(autoStep,300);renderAll();return}else if(!bs.cs.length){sBarC();G._at=setTimeout(autoStep,200);renderAll();return}else{const cur=bs.cs[bs.cs.length-1];const mid=Math.max(cur.floor+1,Math.min(cur.ceiling-1,Math.floor((cur.floor+cur.ceiling)/2)));cur.offer=mid;s.sd++;const final=Math.round(mid*tipFactor());s.earn+=final;addEvt('good','🍻 自动成交 '+cur.arch.n+' +$'+final);s.cs.pop();bs.pour=null;setStatus('🍻 自动酒吧','$'+s.earn+' '+s.sd+'/'+s.mx,'');G._at=setTimeout(autoStep,200);renderAll();return}}
     G.mg=null;G.inside=null;G._at=setTimeout(autoStep,400);renderAll();return;
   }
   // Outside: advance time first, then pick a target for the new phase. Each
@@ -5131,7 +5328,7 @@ function renderAll(){
     else if(G.mg==='shroom'){title.textContent='🍄 蘑菇种植';det.textContent='调参 SPACE推进';hint.textContent=''}
     else if(G.mg==='surf'){const s=MG.surf;const tg=surfBreakerTelegraph(s);const psM=s.perfectStreak>=2?` · 🔥×${s.perfectStreak}(${surfPerfectStreakMul(s.perfectStreak)}x)`:'';title.textContent='🏄 巨浪生存';det.textContent='体力'+s.stamina+'% · combo'+s.combo+' · 已抓'+s.at+(s.perfect>0?' · perfect +'+(s.perfect*50):'')+psM;hint.textContent='SPACE抓 · 30s持续 · 8% perfect barrel +50 · 浪组:'+(tg.phase==='set'?'进行中':`静默${tg.msLeftLabel}s`)+' · 体力'+(tg.staminaWarn==='low'?'⚠':tg.staminaWarn==='med'?'~':'✓')}
     else if(G.mg==='academic'){title.textContent='📚 学术';det.textContent='';hint.textContent=''}
-    else if(G.mg==='bar'){const s=MG.bar;const cur=s.cs[s.cs.length-1];const _tipH=cur&&cur.drink===s.recoDrink;const _tipR=cur&&cur.isRegular;const _tipEx=cur?barTipPreview(cur.offer,_tipH,_tipR,tipFactor()):null;title.textContent='🍻 酒吧 · 黑市讨价'+(s.diff?' ('+s.diff.label+')':'')+(cur?' · '+(_tipEx>=cur.offer?'💚':'💔')+'$'+_tipEx:'');det.textContent=cur?`${cur.face} ${cur.arch.n} 报价$${cur.offer} (底${cur.floor}/上${cur.ceiling})`:'暂无顾客';hint.textContent='Q/W ±1 报价 · SPACE成交 · X拒客 · 今日推荐 '+BAR_DRINK[s.reco]+(s.vipDay?' · VIP日':'')+(cur?' · 💸 实时tip':'')+(s.diff?' · '+s.diff.label:'')}
+    else if(G.mg==='bar'){const s=MG.bar;const cur=s.cs[s.cs.length-1];const _tipH=cur&&cur.drinkId===s.recoId;const _tipR=cur&&cur.isRegular;const _tipEx=cur?barTipPreview(cur.offer,_tipH,_tipR,tipFactor()):null;title.textContent='🍻 酒吧 · 黑市讨价'+(s.diff?' ('+s.diff.label+')':'')+(cur?' · '+(_tipEx>=cur.offer?'💚':'💔')+'$'+_tipEx:'');det.textContent=cur?`${cur.face} ${cur.arch.n} 报价$${cur.offer} (底${cur.floor}/上${cur.ceiling}) 想喝 ${cur.drink}${cur.mixId!=='none'?'+'+barGetMixer(cur.mixId).ic:''}`:'暂无顾客';hint.textContent='Q/W ±1 报价 · SPACE成交 · E 倒酒'+(cur&&cur.needsMixer?(s.pour&&s.pour.active?' (再按 E 释放':' (开始'):'(无)')+' · X拒客 · 今日推荐 '+(s.recoIc||'🍺')+(s.vipDay?' · VIP日':'')+(cur?' · 💸 实时tip':'')+(s.diff?' · '+s.diff.label:'')}
     else if(G.mg==='shoplift'){const s=MG.shop;const cur=SHOP_STALLS[s.stallIdx];const el=(Date.now()-s.cycleStarted)%4000;const phase=el<1500?'🟢 绿灯':el<2000?'🟡 黄灯':'🔴 红灯';title.textContent=`🥷 ${s.stallIdx+1}/3 · ${cur.ic} ${cur.n}`;det.textContent=`${phase} · ${s.loot.length} 件到手${s.caught?' · 🚓 被抓':''}`;hint.textContent='SPACE 抓 · 绿灯100% · 黄灯50% · 红灯=罚款$30+禁入1日'}
     else if(G.mg==='escape'){const s=MG.escape;if(s.ph==='p1'){title.textContent='🎫 Phase 1/3 · 选技术';det.textContent='按 1/2/3/4 (学过的) · 1s 内';hint.textContent='未学 = 罚款 $10'}else if(s.ph==='p2'){const el=Date.now()-s.p2Started;const win=el>=1500&&el<2300?1:el>=2700&&el<3500?2:el>=3900&&el<4700?3:0;title.textContent=`🎫 Phase 2/3 · 上车窗口 ${win?'🟢 '+(win)+'/3':'⏳'}`;det.textContent=`已用 ${(el/1000).toFixed(1)}s / 5s`;hint.textContent='窗口内按 SPACE'}}
   }else if(G.day===1&&G.ti===0&&!G.sch.length){title.textContent='🟢 Day 1 · 就绪';det.textContent='按 WASD 移动 · 按 E 进入建筑';hint.textContent='💡 走到公寓/酒吧/咖啡店 · 或按 ▶ 自动运行跑完整局'}
@@ -5334,6 +5531,10 @@ window.AB_TEST={
   initCity,tickCity,drawCity,NPC_ARCHETYPES,CITY_BOAT_ROUTES,CITY_TRAM_ROUTES,CITY_BIKE_PATHS,CITY_BOAT_IC,
   // Round 2: phase A3 visuals + ambient audio
   PHASE_VISUALS,phaseStars,drawSkyOverlay,drawAmbient,drawStreetLamps,drawPhaseTint,
+  // Round 3: Phase B1 · Bar Dave-depth (12 drinks / 4 mixers / pour / soul events)
+  BAR_DRINK_CATALOG,BAR_MIXERS,BAR_LEGENDARY_DRINKS,BAR_SOUL_EVENTS,BAR_DRINK_STOCK_BY_ID,
+  barAvailableDrinks,barAvailableMixers,barPickRecoDrinkId,barGetDrink,barGetMixer,
+  barRollSoulEvent,barApplySoul,barPourState,startBar,barIn,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

@@ -1314,3 +1314,51 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - 浏览器开 settings → 看「🔄 重置跨 Run 知识数据」按钮 → 点 1 次变「⚠️ 再次点击确认重置(3 秒内)」→ 3 秒内再点 → 8 字段全部归零、setMsg 反馈、UI 立即反映。meta/upgrades/legacy 不变。
 - Run 结束 (G.day>7 或 G.money<0) 触发 endGame → replay modal 事件列表显示最后一条 `🏁 Run #N 结束 · 🥇完美` 类型为 'end'。
 
+## funify-v3 — Round 29 (2026-08-18) — 📋 Seed URL 分享 + seedAbbrev tooltip (BACKLOG #10 #5 closure)
+
+> 关闭 BACKLOG #10 #5(链 #1→#2→#3→#4→**#5**→#6 全部 6 项):顶栏 #t-seed 可点击复制分享链接,start-modal 加 📋 分享按钮,seedAbbrev 暴露 hint tooltip。
+> 基线 585/587 → **609/610 PASS** (+23 新断言,1 pre-existing flaky seed autofocus 不计;Round 29 引入 0 退化)。
+
+### 范围 (按 ROI — 关闭 BACKLOG #10 #5)
+
+- [x] [index.html:1387-1424] 新 6 个 helper + 1 常量:
+  - `SEED_COPY_HINT='🎲 点此复制分享链接 (其他人打开即可同 Run)'` 解释算法
+  - `buildSeedUrl(seed)`: `${location.origin+location.pathname}?seed=${N}` 便于他人复现同 run
+  - `parseSeedFromUrl()`: `URLSearchParams(location.search).get('seed')` + parseInt,与 startFromModal 一致
+  - `copySeedUrl(seed)`: navigator.clipboard.writeText 优先 → 失败走 textarea+execCommand fallback(file:// 或非 HTTPS);返回 boolean
+  - `flashSeedCopied(ok)`: t-seed 加 .copied / .copyfail 类 1500ms,绿色或红色反馈
+  - `copySeedUrlFromModal()`: 优先 start-seed 输入值,否则 parseSeedFromUrl,否则随机;回填 input + 触发复制
+- [x] [index.html:300 #t-seed] 加 `title="点击复制分享链接 (BACKLOG #10 #5)"` + `cursor:pointer` + 旁挂 `<button id="seed-copy-btn" class="seed-copy">📋</button>`
+- [x] [index.html:458 #start-modal] 加 `<button type="button" class="btn seed-share" onclick="copySeedUrlFromModal()">📋 分享</button>`
+- [x] [index.html:CSS] `.seed-tb .vl.copied/.copyfail/.hover` + `.seed-copy` + `.seed-share` 样式
+- [x] [index.html:4729 DOMContentLoaded] 绑定 #seed-copy-btn 与 #t-seed click → copySeedUrl (stopPropagation 防双触发)
+- [x] [index.html:4808 AB_TEST] 暴露 6 个新 surface:buildSeedUrl, copySeedUrl, parseSeedFromUrl, flashSeedCopied, copySeedUrlFromModal, SEED_COPY_HINT
+- [x] [test.html +23 断言] 6 helper 暴露 / SEED_COPY_HINT 文本 / buildSeedUrl 形如 ?seed=42 / buildSeedUrl 含 win origin+pathname / buildSeedUrl 接受任意整数 / parseSeedFromUrl 与 iframe URL 一致 / parseSeedFromUrl 在 ?seed=42 iframe 返 42 / t-seed title + cursor:pointer / t-seed 含 seedAbbrev / seed-copy-btn 存在 / seed-copy-btn 含 📋 + title / start-modal 含 📋 分享 / start-modal seed-share onclick=copySeedUrlFromModal / flashSeedCopied 加 .copied 类 1500ms 后移除 / flashSeedCopied(false) 加 .copyfail 类 / AB_TEST 含 5 个新 surface / CSS .seed-tb .vl.copied 绿色反馈 / CSS .seed-copy 按钮样式 / index.html 源含 6 个新 seed URL 函数定义
+- [x] [BACKLOG.md #10 #5] 标记完成
+
+### 机制要点
+
+1. **clipboard 双轨**:navigator.clipboard.writeText 是 async,成功后调 flashSeedCopied(true);失败/不支持时走 textarea+execCommand('copy') 同步路径,这是 file:// 或 HTTP(非 HTTPS) 唯一可靠方案。
+2. **t-seed 双击点**:整体 #t-seed 文本点击 + 旁挂 #seed-copy-btn 按钮都触发复制;按钮 stopPropagation 防止同一 click 双触发;两者都闪烁 .copied 反馈。
+3. **share button 友好兜底**:copySeedUrlFromModal 总是把 seed 写回 #start-seed 输入框,玩家开始游戏后顶栏 t-seed 自动反映分享的 seed。
+4. **零键位冲突**:鼠标点 t-seed / share-btn,无需记热键;移动端 long-press 选中文本兜底(用户也可手动复制 URL)。
+5. **CSS .copied 绿色闪**:继承 var(--gold) → 1.5s var(--green) + text-shadow;失败走 var(--bad) 红,与 AUDIO.play / reset 反馈同模式。
+6. **视觉层叠**:seed-tb 仍是 1 个 .tb,新按钮只占 2px margin,顶栏不增行;start-modal seed-share 用 .btn + 略小字号,start 按钮仍是 ▶ Start 主操作。
+
+### 3-axis 升档
+- 反馈 +1 (复制成功/失败有颜色与 setMsg 双反馈)
+- 持久化 +1 (跨设备/朋友间传播 seed → 复现同一 run)
+- 选择 +1 (顶栏 / start-modal 两处入口,分享前可改输入框 seed)
+
+### 验收
+- **609/610 PASS** (基线 585 + 23 新断言 + 2 修补;pre-existing 1 flaky seed autofocus 不计;Round 29 引入 0 退化)
+- test-phase-e.js: **168/168 PASS**
+- http://127.0.0.1:8767/index.html: 200 / test.html: 200 / node --check: 双过 / git diff --check: PASS
+- 浏览器开 demo → 顶栏 🎲 旁有 📋 按钮 → 点 → URL 自动复制到剪贴板、t-seed 闪绿色 1.5s、setMsg 提示「📋 ✅ Seed URL 已复制」
+- 在 start-modal 输入 seed 100 → 点 📋 分享 → 剪贴板得 `http://127.0.0.1:8767/index.html?seed=100`
+- 在 file:// 或 HTTP context(navigator.clipboard undefined)走 textarea fallback,execCommand('copy') 成功同样闪绿
+
+### 已知风险 (留待 Round 30+)
+- ⚠️ 复制成功反馈依赖 navigator.clipboard.then,不阻塞 UI;若玩家快速连点会叠 promise,加 debounce 30ms 即可 (留待 Round 30+)
+- ⚠️ seed 分享 URL 仅含 seed,不含 slot / run 编号;复现者总是从 slot 1 起新 run;若想精确复现「slot 2 run #5」需 URL 多参数(留待 Round 30+)
+

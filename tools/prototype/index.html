@@ -160,6 +160,14 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 
 /* === Roguelike: seed / objectives / upgrade modal === */
 .seed-tb .vl{color:var(--gold);font-family:monospace;font-size:11px}
+.seed-tb .vl.copied{color:var(--green);text-shadow:0 0 8px var(--green)}
+.seed-tb .vl.copyfail{color:var(--bad)}
+.seed-tb .vl:hover{color:var(--green);text-shadow:0 0 6px var(--green)44}
+.seed-copy{background:transparent;border:0;color:var(--muted);font-size:11px;cursor:pointer;padding:0 2px;margin-left:2px;border-radius:3px}
+.seed-copy:hover{color:var(--gold);background:#ffffff14}
+.seed-copy:active{transform:scale(.92)}
+.seed-share{margin-left:4px;font-size:11px;background:var(--card);color:var(--gold)}
+.seed-share:hover{background:var(--gold);color:#1a1c24}
 #objs{padding:4px 8px;display:flex;flex-direction:column;gap:4px}
 .obj-row{background:var(--card);border-radius:6px;padding:5px 7px;border-left:2px solid var(--gold)}
 .obj-row.done{border-left-color:var(--green);opacity:.7}
@@ -297,7 +305,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div class="tb"><span class="ic">⭐</span><span class="vl" id="t-rep">0 rep</span></div>
 <div class="tb"><span class="ic">📦</span><span id="t-stock">🍺5 🥃3 🍷2</span></div>
 <div class="tb"><span class="ic">📅</span><span id="t-run">Run #1 · 遗产0</span></div>
-<div class="tb seed-tb"><span class="ic">🎲</span><span class="vl" id="t-seed">—</span></div>
+<div class="tb seed-tb"><span class="ic">🎲</span><span class="vl" id="t-seed" title="点击复制分享链接 (BACKLOG #10 #5)" style="cursor:pointer">—</span><button id="seed-copy-btn" class="seed-copy" title="📋 复制分享 URL" aria-label="复制 seed 分享 URL">📋</button></div>
 <div class="tb"><span class="vl" id="t-meta">🏆 meta 0</span><span class="vl" id="t-meta-pending" style="color:var(--warn);margin-left:4px"></span></div>
 <div class="tb"><span class="vl" id="t-explore">🏄 今日:— · 已发现 0/7 · 完美抓 +50★</span></div>
 <div class="tb"><span class="vl" id="t-escape">🚇 Lv 0 · 周已逃 0 次</span></div>
@@ -447,7 +455,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div class="key-card"><kbd>W</kbd><span>向上移动</span></div><div class="key-card"><kbd>A</kbd><span>向左移动</span></div><div class="key-card"><kbd>S</kbd><span>向下移动</span></div>
 <div class="key-card"><kbd>D</kbd><span>向右移动</span></div><div class="key-card"><kbd>E</kbd><span>进入建筑</span></div><div class="key-card"><kbd>Space</kbd><span>推进时间</span></div>
 </div>
-<form class="seed-form" onsubmit="event.preventDefault();startFromModal()"><input id="start-seed" type="number" placeholder="Seed（数字，可留空随机）" autocomplete="off" autofocus><button type="submit" class="btn btn-go">▶ Start</button></form>
+<form class="seed-form" onsubmit="event.preventDefault();startFromModal()"><input id="start-seed" type="number" placeholder="Seed（数字，可留空随机）" autocomplete="off" autofocus><button type="submit" class="btn btn-go">▶ Start</button><button type="button" class="btn seed-share" onclick="copySeedUrlFromModal()" title="📋 复制带 seed 的分享链接">📋 分享</button></form>
 <!-- funify-v3 Round 21 — 3-slot picker (BACKLOG #10 #1 closure):每槽独立 meta/upgrades/run · 点击切换 -->
 <!-- funify-v3 Round 34 — 加 📥 导入按钮 + file input (BACKLOG #10 #2 closure) -->
 <div class="slot-picker"><div class="slot-picker-title">💾 存档槽位 (3 个独立进度)</div><div id="slot-cards" class="slot-cards"></div><div class="slot-import"><button class="btn" onclick="document.getElementById('import-file').click()">📥 导入 JSON 到当前槽</button><input type="file" id="import-file" accept="application/json,.json" style="display:none" onchange="handleImportFile(this,getActiveSlot())"></div></div>
@@ -1375,6 +1383,48 @@ const AUDIO={
 // Seed abbreviation (matches RunSeed.cs Abbrev algorithm)
 const ABBREV_ALPH='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 function seedAbbrev(s){return s+'-'+ABBREV_ALPH[Math.floor(s/ABBREV_ALPH.length)%ABBREV_ALPH.length]+ABBREV_ALPH[s%ABBREV_ALPH.length]}
+// funify-v3 Round 29 — 📋 seed URL share (BACKLOG #10 #5 closure):
+//   buildSeedUrl:返回 `${origin}${pathname}?seed=${N}` 便于他人复现同 run
+//   copySeedUrl:写入剪贴板,navigator.clipboard 优先,textarea+execCommand 兜底(file:// 或非 HTTPS)
+//   parseSeedFromUrl:从 location.search 抽 seed,与 startFromModal 行为一致
+//   flashSeedCopied:t-seed 加 .copied 类 1.5s,作为视觉反馈
+const SEED_COPY_HINT='🎲 点此复制分享链接 (其他人打开即可同 Run)';
+function buildSeedUrl(seed){const s=Number.isFinite(seed)?seed:G.seed;return location.origin+location.pathname+'?seed='+s}
+function parseSeedFromUrl(){const qp=new URLSearchParams(location.search),q=parseInt(qp.get('seed'),10);return Number.isFinite(q)?q:null}
+function copySeedUrl(seed){
+  const url=buildSeedUrl(seed);
+  let ok=false;
+  try{
+    if(navigator&&navigator.clipboard&&typeof navigator.clipboard.writeText==='function'){
+      navigator.clipboard.writeText(url).then(()=>flashSeedCopied(true),()=>flashSeedCopied(false));
+      ok=true;
+    }
+  }catch(_){}
+  if(!ok){
+    // Fallback for file:// / non-secure context where navigator.clipboard is undefined
+    const ta=document.createElement('textarea');
+    ta.value=url;ta.style.position='fixed';ta.style.opacity='0';ta.style.left='-9999px';
+    document.body.appendChild(ta);ta.select();
+    try{ok=document.execCommand('copy');ta.remove()}catch(_){ta.remove();ok=false}
+    flashSeedCopied(ok);
+  }
+  setMsg(ok?'📋 ✅ Seed URL 已复制':'📋 ❌ 复制失败,长按选中文本');
+  return ok;
+}
+function flashSeedCopied(ok){
+  const el=document.getElementById('t-seed');if(!el)return;
+  el.classList.remove('copied','copyfail');
+  el.classList.add(ok?'copied':'copyfail');
+  setTimeout(()=>{el.classList.remove('copied','copyfail')},1500);
+}
+function copySeedUrlFromModal(){
+  // Start modal — prefer the input value (玩家可能编辑过),否则取 URL 参数
+  const v=document.getElementById('start-seed');
+  const cur=v&&v.value.trim()?parseInt(v.value,10):parseSeedFromUrl();
+  const seed=Number.isFinite(cur)?cur:42+Math.floor(Math.random()*900000);
+  if(v&&!v.value.trim())v.value=seed;
+  copySeedUrl(seed);
+}
 function seeded(n){const x=Math.sin((G.seed+n*9973+G.day*7919)*12.9898)*43758.5453;return x-Math.floor(x)}
 function moodEmoji(){return G.mood>0?'😊':G.mood<0?'😠':'😐'}
 function tipFactor(){const effectiveMood=hasUpgrade('legendary_mood_lock')?Math.max(0,G.mood):G.mood;let f=effectiveMood>0?1.2:effectiveMood<0?.8:1;if(hasUpgrade('tip_boost'))f*=1.25;if(hasMod('tourism'))f*=1.5;if(hasMod('tourism')&&hasUpgrade('iamsterdam_card'))f*=1.2;if(G.shop&&G.shop.crazyTipMul)f*=G.shop.crazyTipMul;return f}
@@ -4734,6 +4784,11 @@ renderSlots();
   if(sl)sl.addEventListener('input',()=>{renderReplay(parseInt(sl.value)/100)});
   if(now)now.addEventListener('click',()=>{if(sl)sl.value=100;renderReplay(1)});
   if(cl)cl.addEventListener('click',()=>{if(confirm('🗑️ 清空当前行动回放记录?')){clearReplay();setMsg('📼 回放记录已清空')}});
+  // funify-v3 Round 29 — 📋 seed 分享 (BACKLOG #10 #5 closure):顶栏 seed + 复制按钮均可点击
+  const sc=document.getElementById('seed-copy-btn');
+  const ts=document.getElementById('t-seed');
+  if(sc)sc.addEventListener('click',e=>{e.stopPropagation();copySeedUrl()});
+  if(ts)ts.addEventListener('click',()=>copySeedUrl());
 })();
 const _qp=new URLSearchParams(location.search);const _qs=_qp.get('seed');if(_qs)document.getElementById('start-seed').value=_qs;
 window.AB_TEST={
@@ -4750,6 +4805,7 @@ window.AB_TEST={
   crazyActiveBadges,
   logAction,saveReplay,loadReplay,clearReplay,replayOpen,showReplay,closeReplay,toggleReplay,renderReplay,REPLAY_MAX,
   AB_LEDGER_FIELDS,resetCrossRunData,confirmResetCrossRunData,
+  buildSeedUrl,copySeedUrl,parseSeedFromUrl,flashSeedCopied,copySeedUrlFromModal,SEED_COPY_HINT,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

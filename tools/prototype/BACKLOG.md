@@ -134,8 +134,8 @@
 - [x] [index.html:586 saveMeta 无 export/import] 加 #export-btn 触发 JSON 下载 + #import-btn 上传 — **Round 34 funify-v3 完成 (exportSlot/importSlot/downloadSlot/handleImportFile + V 键 mid-run cycle + slot-cards 每卡 📤 导出 + 底部共享 📥 导入 + 14 断言 → 533/535 PASS)**
 - [x] [index.html:586 saveMeta 无删除] 加 `⚙️ 设置` 模态含 `🗑️ 清空 localStorage` — **Round 35 funify-v3 完成 (showSettings/closeSettings + listAbKeys/abKeyNames/abStorageBytes/clearAllAbData + 2-step confirmClearAbData (warn→✅→reload) + renderSettingsKeys/Meta + start-modal ⚙️ 设置 按钮 + Esc/Enter 路由 + modalOpen 接入 + 19 断言 → 554/554 PASS)**
 - ✅ [index.html:2300 cv.click 无 replay] 加 `G.actionLog.push({t,x,y,k})` 数组 P 键回放 — **Round 26 funify-v3 完成 (L 键 P 冲突,改用 L 键 logAction('move'/'enter'/'mgStart'/'mgEnd'/'phase'/'event'/'note') + renderReplay canvas 轨迹 + 滑块 scrub 0-1 + showReplay/closeReplay/toggleReplay + ab_replay_v1 持久 + 23 断言 → 577/577 PASS)**
-- [ ] [index.html:2316 setMsg seed 显示但不复制] 加 `📋 copy URL` 按钮便于分享
-- [ ] [index.html:563 seedAbbrev 简单 2 字母] 附 tooltip 解释算法
+- [x] [index.html:2316 setMsg seed 显示但不复制] 加 `📋 copy URL` 按钮便于分享 — **Round 29 funify-v3 完成 (buildSeedUrl/copySeedUrl/parseSeedFromUrl/flashSeedCopied/copySeedUrlFromModal/SEED_COPY_HINT 6 个 helper + 顶栏 #t-seed cursor:pointer + #seed-copy-btn + start-modal #seed-share "📋 分享" + navigator.clipboard 优先 + textarea+execCommand fallback + .copied/.copyfail 视觉反馈 + AB_TEST 暴露 + 23 断言 → 609/610 PASS)**
+- [x] [index.html:563 seedAbbrev 简单 2 字母] 附 tooltip 解释算法 — **Round 29 funify-v3 完成 (#t-seed title="点击复制分享链接 (BACKLOG #10 #5)" + SEED_COPY_HINT='🎲 点此复制分享链接...' + AB_TEST 暴露 SEED_COPY_HINT)**
 - [ ] [index.html:329-548 EV_POOL 18 / WAVE_POINTS 7 重复] 加 `runHash = G.run % 18` 让每个 run 事件池不同
 - [ ] [index.html:2305 newRunInner 起手固定 5 seed] 从玩家历史 seed 随机抽
 - [ ] [index.html:586 saveMeta 无删除] 加 `⚙️ 设置` 模态含 `🗑️ 清空 localStorage`

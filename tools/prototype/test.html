@@ -77,6 +77,50 @@ frame.addEventListener('load',async()=>{
   check('coffee_passport 咖啡因子=1.2',()=>{const had=t.state.upgrades.slice();t.state.upgrades=['coffee_passport'];const f=win.industryFactor('coffee');t.state.upgrades=had;return Math.abs(f-1.2)<1e-6});
   check('museumkaart 叠加 museum_night=1.875',()=>{const had=t.state.upgrades.slice(),hadMods=t.state.mods.slice();t.state.upgrades=['museumkaart'];t.state.mods=[{id:'museum_night'}];const f=win.industryFactor('academic');t.state.upgrades=had;t.state.mods=hadMods;return Math.abs(f-1.875)<1e-6});
   check('Seed 缩写稳定',()=>t.seedAbbrev(42)===t.seedAbbrev(42));
+  // ═══ funify-v3 Round 29 — 📋 seed URL share (BACKLOG #10 #5 closure) ═══
+  check('buildSeedUrl 暴露',()=>typeof win.buildSeedUrl==='function');
+  check('copySeedUrl 暴露',()=>typeof win.copySeedUrl==='function');
+  check('parseSeedFromUrl 暴露',()=>typeof win.parseSeedFromUrl==='function');
+  check('flashSeedCopied 暴露',()=>typeof win.flashSeedCopied==='function');
+  check('copySeedUrlFromModal 暴露',()=>typeof win.copySeedUrlFromModal==='function');
+  check('SEED_COPY_HINT 含 🎲 与 "分享"',()=>typeof t.SEED_COPY_HINT==='string'&&/🎲/.test(t.SEED_COPY_HINT)&&/分享/.test(t.SEED_COPY_HINT));
+  check('buildSeedUrl(42) 形如 ?seed=42',()=>/[?&]seed=42$/.test(win.buildSeedUrl(42)));
+  check('buildSeedUrl 含 origin+pathname',()=>{const u=win.buildSeedUrl(7);return u.startsWith(win.location.origin+win.location.pathname)});
+  check('buildSeedUrl 接受任意整数',()=>[0,1,42,99999].every(s=>/seed=/.test(win.buildSeedUrl(s))));
+  // parseSeedFromUrl reads the iframe's location.search (loaded with ?seed=42);
+  // verify it returns 42, matching a manual URLSearchParams parse on win.location.
+  check('parseSeedFromUrl 与 iframe URL 一致',()=>{const w=win;const qp=new w.URLSearchParams(w.location.search),q=parseInt(qp.get('seed'),10);return Number.isFinite(q)&&w.parseSeedFromUrl()===q});
+  check('parseSeedFromUrl 在 ?seed=42 iframe 返 42',()=>win.parseSeedFromUrl()===42);
+  check('t-seed 含 title 提示且 cursor=pointer',()=>{const el=doc.getElementById('t-seed');return el&&el.title&&/复制/.test(el.title)&&getComputedStyle(el).cursor==='pointer'});
+  check('t-seed 含 seedAbbrev 文本',()=>{const el=doc.getElementById('t-seed');return el&&/-/.test(el.textContent)});
+  check('seed-copy-btn 存在',()=>{const el=doc.getElementById('seed-copy-btn');return el&&el.tagName==='BUTTON'});
+  check('seed-copy-btn 含 📋 与 title',()=>{const el=doc.getElementById('seed-copy-btn');return el&&/📋/.test(el.textContent)&&/URL/.test(el.title)});
+  check('start-modal 含 📋 分享按钮',()=>{const sm=doc.getElementById('start-modal');return sm&&/📋 分享/.test(sm.textContent)});
+  check('start-modal seed-share 按钮 onclick=copySeedUrlFromModal',()=>{const btns=doc.querySelectorAll('#start-modal .seed-share');return btns.length>=1&&/copySeedUrlFromModal/.test(btns[0].getAttribute('onclick')||'')});
+  check('flashSeedCopied 加 .copied 类 1500ms 后移除',()=>{const el=doc.getElementById('t-seed');const had=el.className;win.flashSeedCopied(true);const c1=el.classList.contains('copied');return new Promise(r=>setTimeout(()=>{r(c1&&!el.classList.contains('copied'))},1550))});
+  check('flashSeedCopied(false) 加 .copyfail 类',()=>{const el=doc.getElementById('t-seed');win.flashSeedCopied(false);return el.classList.contains('copyfail')});
+  check('AB_TEST 含 5 个新 seed URL surface',()=>['buildSeedUrl','copySeedUrl','parseSeedFromUrl','flashSeedCopied','copySeedUrlFromModal'].every(k=>typeof t[k]==='function'));
+  check('CSS 含 .seed-tb .vl.copied 绿色反馈',()=>{
+    for(const s of doc.styleSheets){
+      let rules;try{rules=s.cssRules}catch(e){continue}
+      for(const r of rules){
+        if(r.type===1&&r.selectorText&&r.selectorText.includes('.seed-tb')&&r.selectorText.includes('.vl')&&r.selectorText.includes('copied'))return true
+      }
+    }return false
+  });
+  check('CSS 含 .seed-copy 按钮样式',()=>{
+    for(const s of doc.styleSheets){
+      let rules;try{rules=s.cssRules}catch(e){continue}
+      for(const r of rules){
+        if(r.type===1&&r.selectorText==='.seed-copy')return true
+      }
+    }return false
+  });
+  check('index.html 源含 6 个新 seed URL 函数定义',()=>{
+    const ifr=frame;
+    const src=ifr.contentDocument.documentElement.outerHTML;
+    return ['buildSeedUrl(','copySeedUrl(','parseSeedFromUrl(','flashSeedCopied(','copySeedUrlFromModal(','SEED_COPY_HINT'].every(s=>src.includes(s));
+  });
   check('相同 Seed 的每日事件稳定',()=>{const a=t.rollDayModifier().id,b=t.rollDayModifier().id;return a===b});
   check('Run 状态范围合法',()=>t.state.day>=1&&t.state.day<=7&&t.state.run>=0);
   check('目标生成固定为 3 条',()=>{t.rollDayObjectives();return t.state.objs.length===3});

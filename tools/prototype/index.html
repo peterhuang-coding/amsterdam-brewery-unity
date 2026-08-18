@@ -4440,18 +4440,41 @@ function advanceTimeAuto(){
   G._at=setTimeout(autoStep,speedMs((G.auto?120:250))*(hasUpgrade('legendary_speed')?0.667:1));renderAll();
 }
 
+// funify-v3 Round 34 — Day-aware DREAM_POOL (BACKLOG #11 8 段梦 closure)
+// tier:1 = early days (1-3, gentle/short), tier:2 = mid days (4-6, vivid/ominous)
+// Day 7 fires SUMMATIVE_DREAMS which substitute ${money|rep|mood|meta}
+// placeholders with actual run stats for a climactic narrative moment.
 const DREAM_POOL=[
-  {n:'金色麦田',kind:'good',t:'🌾 梦里金色麦田,醒来嘴角上扬',delta:{m:1}},
-  {n:'老朋友',kind:'good',t:'🌟 梦见老朋友相聚,心情大好',delta:{m:1}},
-  {n:'警察追逐',kind:'bad',t:'👮 梦里被警察追,惊醒一身冷汗',delta:{m:-1,rep:3}},
-  {n:'洪水淹没',kind:'bad',t:'🌊 梦中洪水,城市消失,心情-1',delta:{m:-1}},
-  {n:'故人离去',kind:'bad',t:'💔 旧友道别,清醒后久久难忘',delta:{m:-1}},
-  {n:'飞翔之城',kind:'good',t:'🦅 漂浮在运河之上,轻飘飘',delta:{m:1,rep:1}},
-  {n:'彩虹订单',kind:'omen',t:'🌈 明日将有 VIP 顾客来访',delta:{vip:1}},
-  {n:'酿出神酒',kind:'omen',t:'🍺 梦里酿出完美 IPA,明天订单顺利',delta:{tip:1}}
+  {n:'金色麦田',tier:1,kind:'good',t:'🌾 梦里金色麦田,醒来嘴角上扬',delta:{m:1}},
+  {n:'老朋友',tier:1,kind:'good',t:'🌟 梦见老朋友相聚,心情大好',delta:{m:1}},
+  {n:'彩虹订单',tier:1,kind:'omen',t:'🌈 明日将有 VIP 顾客来访',delta:{vip:1}},
+  {n:'飞翔之城',tier:2,kind:'good',t:'🦅 漂浮在运河之上,轻飘飘',delta:{m:1,rep:1}},
+  {n:'警察追逐',tier:2,kind:'bad',t:'👮 梦里被警察追,惊醒一身冷汗',delta:{m:-1,rep:3}},
+  {n:'洪水淹没',tier:2,kind:'bad',t:'🌊 梦中洪水,城市消失,心情-1',delta:{m:-1}},
+  {n:'故人离去',tier:2,kind:'bad',t:'💔 旧友道别,清醒后久久难忘',delta:{m:-1}},
+  {n:'酿出神酒',tier:2,kind:'omen',t:'🍺 梦里酿出完美 IPA,明天订单顺利',delta:{tip:1}}
 ];
+// Day 7 summative dreams — refer to run stats. ${money}/${rep}/${mood}/${meta}
+// placeholders are substituted via simple regex; missing keys default to 0.
+const DREAM_SUMMATIVE=[
+  {kind:'good',tpl:'💸 梦里运河流水变成金币,$${money} 张张飘向远方...',delta:{m:1}},
+  {kind:'good',tpl:'👑 站在 Dam Square 顶端俯瞰全城,rep ${rep} 旗帜飘扬',delta:{m:1,rep:1}},
+  {kind:'bad',tpl:'💔 梦里所有顾客逃单,只剩 €0 在运河飘着',delta:{m:-1}},
+  {kind:'good',tpl:'✨ 满城 ✨ 飘过 ${meta}★,像极光一样',delta:{m:1}},
+  {kind:'bad',tpl:'😱 梦里 mood 跌到 ${mood},连运河都不愿流动',delta:{m:-1}}
+];
+function dayAwareDream(){
+  if(G.day>=7){
+    const dream=DREAM_SUMMATIVE[Math.floor(seeded(91+G.day)*DREAM_SUMMATIVE.length)];
+    const t=dream.tpl.replace(/\$\{(\w+)\}/g,(_,k)=>(G[k]|0));
+    return Object.assign({},dream,{t:t});
+  }
+  const tier=G.day<=3?1:2;
+  const pool=DREAM_POOL.filter(d=>d.tier===tier);
+  return pool[Math.floor(seeded(90+G.day)*pool.length)];
+}
 function triggerDream(){
-  const dream=DREAM_POOL[Math.floor(seeded(90+G.day)*DREAM_POOL.length)];
+  const dream=dayAwareDream();
   G.shop.dream=dream;G.shop.dreamDay=G.day;
   if(dream.kind==='good'){G.mood=Math.min(2,G.mood+1);if(dream.delta&&dream.delta.rep)G.rep+=dream.delta.rep;addEvt('good','💤 '+dream.t)}
   else if(dream.kind==='bad'){G.mood=Math.max(moodFloor(),G.mood-1);G.rep+=(dream.delta&&dream.delta.rep)||0;addEvt('bad','💤 '+dream.t)}
@@ -4934,7 +4957,7 @@ window.AB_TEST={
   AB_LEDGER_FIELDS,resetCrossRunData,confirmResetCrossRunData,
   buildSeedUrl,copySeedUrl,parseSeedFromUrl,flashSeedCopied,copySeedUrlFromModal,SEED_COPY_HINT,
   RECENT_SEEDS_MAX,getRecentSeeds,pushRecentSeed,clearRecentSeeds,renderRecentSeeds,pickFreshRandomSeed,startWithRecentSeed,
-  runHashPool,
+  runHashPool,dayAwareDream,DREAM_SUMMATIVE,DREAM_POOL,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

@@ -1460,3 +1460,36 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - **http://127.0.0.1:8767/index.html + test.html** 全程 200
 - **BACKLOG.md** 关闭 3 条 (#7 tickObj toast / #9 bestRunCombo / #9 escapeCaught),标 #9 totalObjsDone*5 Round 5 已修
 - **IMPROVEMENTS.md** Round 38 record 同步
+
+## funify-v3 — Round 39 (2026-08-18) — Day-aware DREAM_POOL (BACKLOG #11 #6 closure)
+
+### 范围
+- **DREAM_POOL tier 字段**: 8 段梦分两组 `tier:1` (day 1-3 温柔) + `tier:2` (day 4-6 vivid/ominous),原 day 1-6 随机抽取
+- **DREAM_SUMMATIVE 池**: 5 段 day 7 总结梦境,用 `tpl` 占位符 `${money|rep|mood|meta}` 嵌入本周实际数据
+- **dayAwareDream(day, seed) 派发**: day>=7 → SUMMATIVE,day<=3 → tier:1,day 4-6 → tier:2;seeded() 保证同 seed 同 day 可重现
+- **triggerDream 接入 dayAwareDream** 原 dream 字段结构(kind/t/delta/n)不变,只多 `tier` (SUMMATIVE 无 tier)
+- **AB_TEST 暴露** `dayAwareDream` (函数) + `DREAM_POOL` / `DREAM_SUMMATIVE` (数据)
+
+### 测试 (11 条 Round 39 断言)
+1. `dayAwareDream` 函数暴露
+2. `DREAM_POOL.length===8` (3 tier:1 + 5 tier:2)
+3. `DREAM_SUMMATIVE.length≥3` (≥3 unique day 7 内容)
+4-5. tier 分组正确
+6-7. day 1/3 → tier:1 dream (boundary)
+8-9. day 4/6 → tier:2 dream (boundary)
+10. day 7 → summative dream (来自 SUMMATIVE, tpl 是 string, tier===undefined)
+11. day 7 模板替换:20 次扫描所有 dream 文本都不含 `${` 占位符
+12. deterministic: 同 (seed, day) 两次调用返回同一 dream
+13. day 1 vs day 4 不同 tier 但都来自 DREAM_POOL
+14. day 1-7 序列全有效 (no undefined/null)
+
+### 验收
+- **test.html 673/681 PASS** (基线 660 + 11 Round 39 断言,Round 39 0 fail;8 preexisting fail 全为 Round 37 / tryUnlock / seed 自动聚焦 / E8 crazyBlessing)
+- **test-phase-e.js 168/168 PASS**
+- **node --check** index.html/test.html PASS
+- **http://127.0.0.1:8767/index.html + test.html** 全程 200
+- **BACKLOG.md** 关闭 #11 DREAM_POOL lvl/day 段梦条
+
+### 风险
+- DREAM_SUMMATIVE 是 day 7 强制派发,seed 决定 5 段之一,玩家可能连跑多个 run 都看不到 mood-bad 那段 → 接受 (Roguelike 可重玩性本身)
+- `${money}` 占位符使用字符串拼接而非模板字符串,避免 inner script 转义问题

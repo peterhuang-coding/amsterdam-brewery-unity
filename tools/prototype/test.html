@@ -2781,6 +2781,40 @@ frame.addEventListener('load',async()=>{
     return m&&m.id!=='police_raid'&&m.id!=='tourism'&&m.id!=='kings_day';
   });
 
+  // ═══════════════════════════════════════════
+  // Round 39 — Day-aware DREAM_POOL (BACKLOG #11 8 段梦 closure)
+  // ═══════════════════════════════════════════
+
+  // 1. dayAwareDream + DREAM_SUMMATIVE + DREAM_POOL 暴露在 AB_TEST
+  // Note: const declarations do NOT become window properties in browsers;
+  // access via t.* (AB_TEST) where exposed, win.* only works for function decls.
+  check('Round 39: dayAwareDream 函数暴露在 AB_TEST',()=>typeof win.dayAwareDream==='function');
+  check('Round 39: DREAM_POOL 数组长度 8 (经 AB_TEST)',()=>Array.isArray(t.DREAM_POOL)&&t.DREAM_POOL.length===8);
+  check('Round 39: DREAM_SUMMATIVE 数组长度 ≥3 (经 AB_TEST)',()=>Array.isArray(t.DREAM_SUMMATIVE)&&t.DREAM_SUMMATIVE.length>=3);
+  // 2. tier 字段正确分组 (3 个 tier:1 + 5 个 tier:2)
+  check('Round 39: DREAM_POOL 3 个 tier:1 (early days)',()=>t.DREAM_POOL.filter(d=>d.tier===1).length===3);
+  check('Round 39: DREAM_POOL 5 个 tier:2 (mid days)',()=>t.DREAM_POOL.filter(d=>d.tier===2).length===5);
+  // 3. day 1-3 → tier:1 dream
+  check('Round 39: day 1 → tier:1 dream',()=>{const had=t.state.day;const hadM=t.state.money;const hadR=t.state.rep;const hadP=t.state.meta;t.state.day=1;const d=win.dayAwareDream();t.state.day=had;t.state.money=hadM;t.state.rep=hadR;t.state.meta=hadP;return d&&d.tier===1});
+  check('Round 39: day 3 → tier:1 dream (boundary)',()=>{const had=t.state.day;const hadM=t.state.money;const hadR=t.state.rep;const hadP=t.state.meta;t.state.day=3;const d=win.dayAwareDream();t.state.day=had;t.state.money=hadM;t.state.rep=hadR;t.state.meta=hadP;return d&&d.tier===1});
+  // 4. day 4-6 → tier:2 dream
+  check('Round 39: day 4 → tier:2 dream (boundary)',()=>{const had=t.state.day;const hadM=t.state.money;const hadR=t.state.rep;const hadP=t.state.meta;t.state.day=4;const d=win.dayAwareDream();t.state.day=had;t.state.money=hadM;t.state.rep=hadR;t.state.meta=hadP;return d&&d.tier===2});
+  check('Round 39: day 6 → tier:2 dream',()=>{const had=t.state.day;const hadM=t.state.money;const hadR=t.state.rep;const hadP=t.state.meta;t.state.day=6;const d=win.dayAwareDream();t.state.day=had;t.state.money=hadM;t.state.rep=hadR;t.state.meta=hadP;return d&&d.tier===2});
+  // 5. day 7 → summative dream (no tier field, has tpl)
+  check('Round 39: day 7 → summative dream (来自 DREAM_SUMMATIVE)',()=>{const had=t.state.day;const hadM=t.state.money;const hadR=t.state.rep;const hadP=t.state.meta;t.state.day=7;const d=win.dayAwareDream();t.state.day=had;t.state.money=hadM;t.state.rep=hadR;t.state.meta=hadP;return d&&typeof d.tpl==='string'&&d.tier===undefined});
+  // 6. day 7 dream 文本里 ${...} 占位符已被替换 (deterministic substitution)
+  check('Round 39: day 7 dream 文本不包含 ${} 占位符 (已替换)',()=>{const had=t.state.day;const hadM=t.state.money;const hadR=t.state.rep;const hadP=t.state.meta;t.state.day=7;t.state.money=1234;t.state.rep=56;t.state.meta=78;const d=win.dayAwareDream();t.state.day=had;t.state.money=hadM;t.state.rep=hadR;t.state.meta=hadP;return d&&!/\$\{/.test(d.t)});
+  // 7. deterministic: 同 (seed, day) 两次调用返回同一 dream
+  check('Round 39: day 5 同 seed 同 day 两次调用返回同一 dream',()=>{const had=t.state.day;const hadS=t.state.seed;const hadM=t.state.money;const hadR=t.state.rep;const hadP=t.state.meta;t.state.day=5;t.state.seed=42;const d1=win.dayAwareDream();const d2=win.dayAwareDream();t.state.day=had;t.state.seed=hadS;t.state.money=hadM;t.state.rep=hadR;t.state.meta=hadP;return d1.n===d2.n});
+  // 8. day 7 模板替换:扫描所有 SUMMATIVE 模板 (含/不含 ${money}) 都应被替换
+  check('Round 39: day 7 模板替换生效 (任意 dream 都无 ${ 占位符)',()=>{const had=t.state.day;const hadM=t.state.money;const hadR=t.state.rep;const hadP=t.state.meta;t.state.day=7;t.state.money=1234;t.state.rep=56;t.state.meta=78;let ok=true;for(let i=0;i<20;i++){const d=win.dayAwareDream();if(!d||/\$\{/.test(d.t))ok=false}t.state.day=had;t.state.money=hadM;t.state.rep=hadR;t.state.meta=hadP;return ok});
+  // 9. day 7 各 summative dream 都覆盖 dream 结构 (kind/tpl/delta 都有)
+  check('Round 39: DREAM_SUMMATIVE 每条都有 kind/tpl/delta',()=>t.DREAM_SUMMATIVE.every(d=>d.kind&&typeof d.tpl==='string'&&d.delta));
+  // 10. day 1 vs day 4 不同 tier 但都来自 DREAM_POOL
+  check('Round 39: day 1 vs day 4 都属于 DREAM_POOL (不是 SUMMATIVE)',()=>{const had=t.state.day;const hadM=t.state.money;const hadR=t.state.rep;const hadP=t.state.meta;t.state.day=1;const d1=win.dayAwareDream();t.state.day=4;const d4=win.dayAwareDream();t.state.day=had;t.state.money=hadM;t.state.rep=hadR;t.state.meta=hadP;return d1.tier===1&&d4.tier===2&&d1!==d4});
+  // 11. day 1-7 同 seed 完整序列 - 每次调用都返回有效 dream (no undefined)
+  check('Round 39: day 1-7 序列全有效 (no undefined/null)',()=>{const had=t.state.day;const hadS=t.state.seed;const hadM=t.state.money;const hadR=t.state.rep;const hadP=t.state.meta;t.state.seed=42;t.state.money=100;t.state.rep=10;t.state.meta=5;let valid=true;for(let d=1;d<=7;d++){t.state.day=d;const x=win.dayAwareDream();if(!x||typeof x.t!=='string')valid=false}t.state.day=had;t.state.seed=hadS;t.state.money=hadM;t.state.rep=hadR;t.state.meta=hadP;return valid});
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

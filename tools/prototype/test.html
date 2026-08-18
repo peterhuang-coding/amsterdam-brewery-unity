@@ -2375,6 +2375,77 @@ frame.addEventListener('load',async()=>{
   check('Round 26: modalOpen() 在 replay-modal 可见时返 true',()=>{win.showReplay();const r=win.modalOpen();win.closeReplay();return r===true});
   check('Round 26: help-modal 文案含 L 键提示',()=>{const h=doc.getElementById('help-modal');return h&&h.textContent.includes('L')&&h.textContent.includes('回放')});
 
+  // ═══ funify-v3 Round 28 — logAction('end') on endGame + 跨 Run 知识数据重置 + settings UI (BACKLOG #10 #6 closure) ═══
+  check('Round 28: AB_LEDGER_FIELDS 通过 AB_TEST 暴露 + 8 项全在',()=>{
+    const f=t.AB_LEDGER_FIELDS;
+    return Array.isArray(f)&&f.length===8&&f.includes('barRegulars')&&f.includes('strainNotes')&&f.includes('brewNotes')&&f.includes('recipeKnowledge')&&f.includes('researchTopics')&&f.includes('surfDiscovered')&&f.includes('visited')&&f.includes('teacherRep');
+  });
+  check('Round 28: resetCrossRunData / confirmResetCrossRunData 函数暴露',()=>typeof win.resetCrossRunData==='function'&&typeof win.confirmResetCrossRunData==='function');
+  check('Round 28: 重置前先注入测试数据再 resetCrossRunData 清空',()=>{
+    const had={barRegulars:t.state.barRegulars,strainNotes:t.state.strainNotes,brewNotes:t.state.brewNotes,recipeKnowledge:t.state._recipeKnowledge,researchTopics:t.state.researchTopics,surfDiscovered:t.state.surfDiscovered,visited:t.state.visited,teacherRep:t.state.teacherRep};
+    t.state.barRegulars=['a','b'];t.state.strainNotes={'🍄 Test':{h:50,t:22,l:12}};t.state.brewNotes={IPA:{count:9,best:7}};
+    t.state.researchTopics=['math','ai'];t.state.surfDiscovered=['w1'];t.state.visited=['brew','bar'];t.state.teacherRep={pablo:3,ravi:2,sofie:1,chen:4};
+    const r=win.resetCrossRunData();
+    const ok=r&&r.ok===true&&Array.isArray(r.fields)&&r.fields.length===8;
+    const ok1=t.state.barRegulars.length===0;
+    const ok2=t.state.brewNotes.IPA.count===0&&t.state.brewNotes.IPA.best===0;
+    const ok3=t.state.teacherRep.pablo===0&&t.state.teacherRep.ravi===0&&t.state.teacherRep.sofie===0&&t.state.teacherRep.chen===0;
+    t.state.barRegulars=had.barRegulars;t.state.strainNotes=had.strainNotes;t.state.brewNotes=had.brewNotes;t.state._recipeKnowledge=had.recipeKnowledge;t.state.researchTopics=had.researchTopics;t.state.surfDiscovered=had.surfDiscovered;t.state.visited=had.visited;t.state.teacherRep=had.teacherRep;
+    return ok&&ok1&&ok2&&ok3;
+  });
+  check('Round 28: resetCrossRunData 调 saveLedger (ab_ledger_v1 落盘)',()=>{
+    const had=t.state.barRegulars;t.state.barRegulars=['x'];
+    win.resetCrossRunData();
+    const v=localStorage.getItem('ab_ledger_v1');
+    t.state.barRegulars=had;
+    if(!v)return false;
+    const parsed=JSON.parse(v);
+    return parsed&&Array.isArray(parsed.barRegulars)&&parsed.barRegulars.length===0;
+  });
+  check('Round 28: 重置保留 meta / upgrades / legacy (不变槽数据)',()=>{
+    const had={meta:t.state.meta,upgrades:t.state.upgrades,legacy:t.state.legacy};
+    t.state.meta=99;t.state.upgrades=['legendary_income'];t.state.legacy=42;
+    win.resetCrossRunData();
+    const ok=t.state.meta===99&&Array.isArray(t.state.upgrades)&&t.state.upgrades.includes('legendary_income')&&t.state.legacy===42;
+    t.state.meta=had.meta;t.state.upgrades=had.upgrades;t.state.legacy=had.legacy;
+    return ok;
+  });
+  check('Round 28: #set-reset-xrun-btn 存在且初始未 warn',()=>{
+    const b=doc.getElementById('set-reset-xrun-btn');
+    return!!b&&!b.classList.contains('warn')&&b.textContent.includes('重置');
+  });
+  check('Round 28: confirmResetCrossRunData 第 1 次点 → warn 态',()=>{
+    const b=doc.getElementById('set-reset-xrun-btn');if(b)b.classList.remove('warn');
+    win.confirmResetCrossRunData();
+    return b.classList.contains('warn')&&b.textContent.includes('再次点击');
+  });
+  check('Round 28: showSettings 重置按钮态 (取消残留 warn)',()=>{
+    const b=doc.getElementById('set-reset-xrun-btn');if(b){b.classList.add('warn');b.textContent='⚠️ 测试残留';}
+    win.showSettings();
+    const ok2=b&&!b.classList.contains('warn')&&b.textContent.includes('重置');
+    win.closeSettings();
+    return ok2;
+  });
+  check('Round 28: endGame 在 win 触发后会 logAction("end")',()=>{
+    const had=t.state.actionLog.slice();
+    // 兜底 G._run (新 fresh state 没 newRun 时)
+    const hadRun=t.state._run;
+    t.newRun(99);t.state.ended=false;t.state.run=99;t.state.day=7;t.state.ti=5;t.state.objs=[{done:true}];
+    try{win.endGame(true)}catch(e){}
+    const has=t.state.actionLog.some(e=>e.type==='end'&&String(e.detail||'').includes('Run #'));
+    t.state.actionLog=had;t.state.ended=false;t.state._run=hadRun;
+    return has;
+  });
+  check('Round 28: endGame 生成的 "end" log 带 day + ti',()=>{
+    const had=t.state.actionLog.slice();
+    const hadRun=t.state._run;
+    t.newRun(99);t.state.ended=false;t.state.day=5;t.state.ti=4;t.state.objs=[{done:false}];
+    try{win.endGame(false)}catch(e){}
+    const e=t.state.actionLog.find(x=>x.type==='end');
+    t.state.actionLog=had;t.state.ended=false;t.state._run=hadRun;
+    return!!e&&e.day===5&&e.ti===4&&String(e.detail||'').includes('💔');
+  });
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

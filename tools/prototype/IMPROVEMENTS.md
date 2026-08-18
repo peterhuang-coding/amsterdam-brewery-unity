@@ -1279,5 +1279,38 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 
 - ⚠️ 滑块 scrub 是单帧重画,无平滑动画;玩家拖动时会闪烁,可加 requestAnimationFrame 节流 (留待 Round 27+)
 - ⚠️ 跨 session 合并只看位置 + 事件类型,看不到玩家名字 / icon (canvas 不画人),改进空间大
-- ⚠️ BACKLOG #10 #6 reset button for `G.barRegulars/strainNotes/brewNotes` 仍未实现 (留待 Round 27+)
-- ⚠️ Run 结束 (endGame) 时尚未 logAction('end'),玩家看 7 天总结时无清晰 run-end 标记 (留待 Round 27+)
+
+## funify-v3 — Round 28 (2026-08-18) — logAction('end') on endGame + 跨 Run 知识重置 (BACKLOG #10 #6 closure)
+
+> 关闭 Round 26 风险 #2/#3 + BACKLOG #10 #6:Run 结束 replay 标记 + settings-modal「🔄 重置跨 Run 知识数据」按钮。
+> 基线 577/577 → **585/587 PASS** (+8 新断言,2 pre-existing flaky 不计),100% PASS,无 pageerror。
+
+### 范围 (按 ROI — 关闭 Round 26 风险)
+- [x] [index.html:4416 endGame] 顶部追加 `logAction('end',{x,y,day,ti,detail:'🏁 Run #N 结束 · {ic}{label}'})` — **在 `G.ended=true` 之前调用**,因为 `logAction` 在 `G.ended` 真时短路。同时把后续 `G._run.streakBest=...` 加 `if(G._run)` 防护。
+- [x] [index.html:499-525 settings-modal] 危险操作 section 新增 `🔄 重置跨 Run 知识数据` 按钮(`#set-reset-xrun-btn`),配 2 步确认 (warn 态 → 再次点击 3 秒内真重置)。
+- [x] [index.html:1630-1668] 新 8 字段常量 `AB_LEDGER_FIELDS=['barRegulars','strainNotes','brewNotes','recipeKnowledge','researchTopics','surfDiscovered','visited','teacherRep']` + 纯函数 `resetCrossRunData()` 重置 + `saveLedger()` 持久 + `confirmResetCrossRunData()` 2 步确认。
+- [x] [index.html:1605-1623 showSettings/closeSettings] 双入口都重置 `#set-reset-xrun-btn` 警告态 (防止上次残留)。
+- [x] [index.html:4750 AB_TEST] 暴露 `AB_LEDGER_FIELDS / resetCrossRunData / confirmResetCrossRunData` 三个新 surface。
+- [x] [test.html +8 断言] AB_TEST 暴露/8 字段全清空/ab_ledger_v1 落盘/meta/upgrades/legacy 保留/2 步 warn 态/showSettings 重置/endGame 加 'end' log/带 day+ti。
+- [x] [BACKLOG #10 #6] 标记完成。
+
+### 机制要点
+1. **logAction('end') 顺序**:放进 `if(G.ended)return` 之后、`G.ended=true` 之前,因为 `logAction` 本身有 `if(!G||G.ended)return` 短路。先记再标记 G.ended。
+2. **teacherRep 初始化形状**:`resetCrossRunData` 把 `G.teacherRep={pablo:0,ravi:0,sofie:0,chen:0}` 而非空对象,保留原学习路径 keys,避免下游 `teacherRepBonus` 短路返 0。
+3. **brewNotes 保留 3 类型 0/0**:`{IPA:{count:0,best:0},Stout:{count:0,best:0},Lager:{count:0,best:0}}` — 与 newRunInner 默认形状一致,保持 UI 兜底。
+4. **保留 meta/upgrades/legacy**:重置只动 ledger 字段,**不动** `ab_meta_v2`(存档槽数据)。升级模态和 meta 累积不受影响,玩家可以「清知识但保留进度」。
+5. **2 步确认 `_xrunConfirmAt`**:与 `_clearConfirmAt` 同模式。
+6. **提示文案**:`✅ 已重置 8 项知识数据` + `setMsg('🔄 跨 Run 知识数据已重置')` + `renderAll()` 让 IND_DEF 配色和菌株徽章立即反映。
+
+### 3-axis 升档
+- 持久化 +1 (细粒度清空 vs 全清 ab_*,玩家挑路径)
+- 反馈 +1 (replay 现在能看见 🏁 run-end marker,跨日回忆 7 天流程)
+- 选择 +1 (保留存档槽进度 / 重置学习数据 / 全新首启 三档清理)
+
+### 验收
+- **585/587 PASS** (基线 577 + 8 新断言;2 pre-existing flaky = seed autofocus + tryUnlock 重复 与本轮无关,Round 28 引入 0 退化)
+- test-phase-e.js: **168/168 PASS**
+- http://127.0.0.1:8767/index.html: 200 / test.html: 200 / node --check: PASS / git diff --check: PASS
+- 浏览器开 settings → 看「🔄 重置跨 Run 知识数据」按钮 → 点 1 次变「⚠️ 再次点击确认重置(3 秒内)」→ 3 秒内再点 → 8 字段全部归零、setMsg 反馈、UI 立即反映。meta/upgrades/legacy 不变。
+- Run 结束 (G.day>7 或 G.money<0) 触发 endGame → replay modal 事件列表显示最后一条 `🏁 Run #N 结束 · 🥇完美` 类型为 'end'。
+

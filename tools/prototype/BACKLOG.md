@@ -140,7 +140,7 @@
 - [ ] [index.html:2305 newRunInner 起手固定 5 seed] 从玩家历史 seed 随机抽
 - [ ] [index.html:586 saveMeta 无删除] 加 `⚙️ 设置` 模态含 `🗑️ 清空 localStorage`
 - [ ] [index.html:2024 G 初始 seed:42 硬编码] 保持 OK 但写明 fallback 用途
-- [ ] [index.html:2305 newRunInner 不清 G.barRegulars/strainNotes/brewNotes] 加"reset 按钮"独立清这三个数组
+- [ ] [index.html:2305 newRunInner 不清 G.barRegulars/strainNotes/brewNotes] 加"reset 按钮"独立清这三个数组 — **Round 28 funify-v3 完成 (`resetCrossRunData` helper + settings 模态 `🔄 重置跨 Run 知识数据` 按钮 + 2 步确认,清 8 字段但保留 meta/upgrades/legacy)**
 
 ## 11. 事件与城市叙事（modifiers 真实感、NPC 性格、对话深度）
 - [ ] [index.html:528-548 EV_POOL 18 描述简短] 加 `lore: "因运河船闸故障..."` Amsterdam 真发生感

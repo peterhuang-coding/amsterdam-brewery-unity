@@ -519,6 +519,10 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div style="text-align:center;margin-top:8px">
 <button class="set-clear" id="set-clear-btn" onclick="confirmClearAbData()">🗑️ 清空所有 ab_* 数据</button>
 </div>
+<p style="color:#d0c080;margin-top:14px">单独清空「跨 Run 知识数据」：保留存档槽 / meta / 升级 / legacy,但重置已发现菌株、已掌握配方、常客名单、老师信任度等。立即生效，无需刷新。</p>
+<div style="text-align:center;margin-top:6px">
+<button class="set-clear" id="set-reset-xrun-btn" onclick="confirmResetCrossRunData()">🔄 重置跨 Run 知识数据</button>
+</div>
 </div>
 <button class="btn help-close" onclick="closeSettings()">关闭 (Esc)</button>
 </div>
@@ -1609,6 +1613,8 @@ function showSettings(){
   _clearConfirmAt=0;
   const btn=document.getElementById('set-clear-btn');
   if(btn){btn.classList.remove('warn');btn.textContent='🗑️ 清空所有 ab_* 数据'}
+  const xr=document.getElementById('set-reset-xrun-btn');
+  if(xr){xr.classList.remove('warn');xr.textContent='🔄 重置跨 Run 知识数据'}
 }
 function closeSettings(){
   const m=document.getElementById('settings-modal');if(!m)return;
@@ -1616,6 +1622,54 @@ function closeSettings(){
   _clearConfirmAt=0;
   const btn=document.getElementById('set-clear-btn');
   if(btn){btn.classList.remove('warn');btn.textContent='🗑️ 清空所有 ab_* 数据'}
+  const xr=document.getElementById('set-reset-xrun-btn');
+  if(xr){xr.classList.remove('warn');xr.textContent='🔄 重置跨 Run 知识数据'}
+}
+// ═══════════════════════════════════════════
+// funify-v3 Round 28 — 🔄 跨 Run 知识数据重置 (BACKLOG #10 #6 closure)
+// 只清空「跨 Run 累积知识」(barRegulars / strainNotes / brewNotes / recipeKnowledge /
+// researchTopics / surfDiscovered / visited / teacherRep),保留 meta / upgrades / legacy。
+// 走 ab_ledger_v1 而不是 ab_meta_v2,所以存档槽与玩家进度不受影响。
+// ═══════════════════════════════════════════
+const AB_LEDGER_FIELDS=['barRegulars','strainNotes','brewNotes','recipeKnowledge','researchTopics','surfDiscovered','visited','teacherRep'];
+function resetCrossRunData(opts){
+  const before={};
+  if(!G||typeof G!=='object')return{ok:false,fields:[],before};
+  for(const f of AB_LEDGER_FIELDS){
+    before[f]=G[f];
+    if(f==='teacherRep'){
+      G.teacherRep={pablo:0,ravi:0,sofie:0,chen:0};
+    }else if(f==='brewNotes'){
+      G.brewNotes={IPA:{count:0,best:0},Stout:{count:0,best:0},Lager:{count:0,best:0}};
+    }else if(Array.isArray(G[f])){
+      G[f]=[];
+    }else if(G[f]&&typeof G[f]==='object'){
+      G[f]={};
+    }else{
+      G[f]=undefined;
+    }
+  }
+  try{saveLedger()}catch(e){console.warn('saveLedger after reset failed',e)}
+  return{ok:true,fields:AB_LEDGER_FIELDS.slice(),before};
+}
+let _xrunConfirmAt=0;
+function confirmResetCrossRunData(){
+  const btn=document.getElementById('set-reset-xrun-btn');if(!btn)return;
+  const now=Date.now();
+  if(_xrunConfirmAt&&(now-_xrunConfirmAt)<3000&&btn.classList.contains('warn')){
+    // 第二次确认:真的重置
+    const r=resetCrossRunData();
+    btn.classList.remove('warn');
+    btn.textContent='✅ 已重置 ' + r.fields.length + ' 项知识数据';
+    setMsg('🔄 跨 Run 知识数据已重置');
+    if(typeof renderAll==='function')renderAll();
+    return;
+  }
+  // 第一次点:进入 warn 态
+  _xrunConfirmAt=now;
+  btn.classList.add('warn');
+  btn.textContent='⚠️ 再次点击确认重置(3 秒内)';
+  setTimeout(()=>{if(Date.now()-_xrunConfirmAt>=3000&&btn.classList.contains('warn')){btn.classList.remove('warn');btn.textContent='🔄 重置跨 Run 知识数据';_xrunConfirmAt=0}},3100);
 }
 
 // ═══════════════════════════════════════════
@@ -4413,13 +4467,17 @@ function workInd(){if(G.inside||G.mg)return;const map={tweede_kans:'brewing',noo
 G.advanceTime=advanceTimeAuto;
 // 3-tier end-of-run rating (pure fn, testable)
 function endGameTier(objDone,total){total=Math.max(1,total|0);if(objDone>=total)return{tier:'gold',ic:'🥇',label:'完美',col:'#f0c850',mult:1.5};if(objDone>=Math.ceil(total*0.66))return{tier:'silver',ic:'🥈',label:'优秀',col:'#c8c8d0',mult:1.2};if(objDone>=Math.ceil(total*0.33))return{tier:'bronze',ic:'🥉',label:'及格',col:'#cd7f32',mult:1.0};return{tier:'fail',ic:'💔',label:'未达',col:'#a04040',mult:0.6}}
-function endGame(won){if(G.ended)return;G.ended=true;G.auto=false;clearTimeout(G._at);
+function endGame(won){if(G.ended)return;
+  // funify-v3 Round 28 — record run-end marker BEFORE G.ended=true (logAction 短路 G.ended)
+  const _tierAtStart=endGameTier((G.objs||[]).filter(o=>o&&o.done).length,(G.objs||[]).length);
+  if(typeof logAction==='function')logAction('end',{x:G.p?G.p.x:0,y:G.p?G.p.y:0,day:G.day,ti:G.ti,detail:`🏁 Run #${G.run} 结束 · ${_tierAtStart.ic}${_tierAtStart.label}`});
+  G.ended=true;G.auto=false;clearTimeout(G._at);
   const objDone=G.objs.filter(o=>o.done).length,objTotal=G.objs.length,tier=endGameTier(objDone,objTotal);
   // Legacy: money/300 + active industries + objDone×5 bonus (encourage finishing)
   const legacyBase=Math.floor(G.money/300)+Object.values(G.ind).filter(i=>i.lv>0).length;
   const legacyObjBonus=objDone*5;G.legacy+=Math.round((legacyBase+legacyObjBonus)*tier.mult);
   // Store run record for upgrade modal summary
-  G._run.streakBest=G.shop.streakBest||0;G._run.lastObjDone=objDone;G._run.lastObjTotal=objTotal;G._run.lastTier=tier.tier;
+  if(G._run){G._run.streakBest=G.shop.streakBest||0;G._run.lastObjDone=objDone;G._run.lastObjTotal=objTotal;G._run.lastTier=tier.tier;}
   // Phase E7 — Run Summary Card (本地历史 10 条,localStorage)
   G._run.summaryCard=buildRunSummary(objDone,objTotal,tier);
   pushRunHistory(G._run.summaryCard);
@@ -4691,6 +4749,7 @@ window.AB_TEST={
   pushModHistory,
   crazyActiveBadges,
   logAction,saveReplay,loadReplay,clearReplay,replayOpen,showReplay,closeReplay,toggleReplay,renderReplay,REPLAY_MAX,
+  AB_LEDGER_FIELDS,resetCrossRunData,confirmResetCrossRunData,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

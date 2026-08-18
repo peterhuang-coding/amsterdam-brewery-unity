@@ -1218,3 +1218,66 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - ⚠️ Round 22 标记的 2 条 pre-existing flaky (`legendary_mood_lock` ×2) 这次跑通了,但本质仍是测试设计缺陷,可能在大量 localStorage 写入后复现
 - ⚠️ BACKLOG #10 #3 P 键 replay (`G.actionLog.push({t,x,y,k})`) 仍未实现 (Round 35+ 可加)
 - ⚠️ BACKLOG #10 #6 reset button for `G.barRegulars/strainNotes/brewNotes` 仍未实现 (Round 35+ 可加)
+
+## funify-v3 — Round 26 — 📼 Action Replay (BACKLOG #10 #3 closure)
+
+> 关闭 BACKLOG #10 #3 持久化的"回放"维度:玩家跑过的路线 / 关键事件 / 阶段切换全程记录到 `G.actionLog`,L 键调出 replay-modal 看 canvas 轨迹 + 滑块 scrub + 事件列表,ab_replay_v1 持久化跨 session 合并。
+> BACKLOG 原标"P 键回放",P 已被 coffee 雇帮派占用,改用 L 键(log / replay 双关)。
+> 基线 554/554 → **577/577 PASS** (+23 新断言),100% PASS,无 pageerror。
+
+### 范围 (按 ROI — 关闭 BACKLOG #10 #3)
+
+- [x] [index.html:CSS #134-148] 新增 `#replay-modal` 全屏遮罩样式 (绿色 #80c8a8 边框) + `.replay-canvas-wrap` + `.replay-stats` / `.replay-controls` / `.replay-events` / `.replay-legend` 子样式
+- [x] [index.html:HTML #447-465] 新 `<div id="replay-modal">` 含 5 section: 统计 / canvas (580×200) / 滑块+现在+清空 / 图例 / 事件列表 / 关闭按钮
+- [x] [index.html:1620-1745] 新 9 helper:
+  - `logAction(type,data)`: 入栈 `{t,type,x,y,day,ti,detail,_ms}` + 移动采样去重 (同 ms 6px 阈值) + cap REPLAY_MAX=600
+  - `saveReplay()`: 节流 30 条写 ab_replay_v1 (`{version,seed,run,day,log,savedAt}`)
+  - `loadReplay()`: 启动时回填 G._savedReplay 供合并查看
+  - `clearReplay()`: 清 G.actionLog + 删 ab_replay_v1
+  - `replayOpen()` / `showReplay()` / `closeReplay()` / `toggleReplay()`: modal 开关
+  - `renderReplay(scrub)`: 画 canvas 轨迹 (BLDGS 简化色块 + 网格 + 轨迹折线 + 当前位置点 + 事件标记) + 统计 + 事件列表 (按 scrub 0..1 过滤)
+- [x] [index.html:4417-4418] newRunInner 初始化 G._runStartAt + G.actionLog=[] + loadReplay() 合并上次存档
+- [x] [index.html:3908-3912] update() 1Hz 采样位置(位移>6px 才记)→ logAction('move')
+- [x] [index.html:4003-4005] advanceTimeAuto() 每 ti → logAction('phase')
+- [x] [index.html:2415-2435] enterBldg() → logAction('enter') + 各 minigame 入口 logAction('mgStart')
+- [x] [index.html:4490-4491] 离开建筑(E/Esc)→ logAction('mgEnd')
+- [x] [index.html:4550-4560] keydown 路由 L 键 → toggleReplay()
+- [x] [index.html:4543-4544] replayOpen 守卫吞键(L/Esc 关闭)
+- [x] [index.html:2141] modalOpen() 加入 replay-modal 检查
+- [x] [index.html:436] help-modal 文案加 L 键提示
+- [x] [index.html:4683-4684] DOMContentLoaded 绑定 slider/now/clear 按钮
+- [x] [index.html:4695-4697] AB_TEST 暴露 8 个新 surface (logAction, saveReplay, loadReplay, clearReplay, replayOpen, showReplay, closeReplay, toggleReplay, renderReplay, REPLAY_MAX)
+- [x] [test.html +23 断言] (8 helper/REPLAY_MAX 暴露 + newRun [] + push/_ms + 同位置去重 + 远距离正常 + cap 600 + _runStartAt + phase log + enterBldg logs + modal hidden/visible/close/open + L 键 close/open + renderReplay(0.5) + canvas 存在 + stats 文本 + saveReplay/loadReplay 往返 + clearReplay 清 + modalOpen 返 true + help-modal 含 L)
+- [x] [BACKLOG.md #10 #3] 标记完成
+- [x] [IMPROVEMENTS.md Round 26] 本条目
+
+### 机制要点
+
+1. **REPLAY_KEY_MS=900 移动去重**:1Hz 采样 + 6px 阈值,同 ms 内位置 < 6px 不入栈,避免静止时刷屏。
+2. **REPLAY_MAX=600 cap 截断**:FIFO 删前面,1Hz 采样可覆盖 10 分钟;节流 30 条写一次 ab_replay_v1 避免刷盘。
+3. **scrub 滑块 0..1**:renderReplay(s) 过滤 `e.t <= firstT + (lastT-firstT)*s`,canvas 重画 + 事件列表重渲染,无需动画直接重画。
+4. **合并上次 run 存档**:newRunInner 调 loadReplay() 填 G._savedReplay,canvas 同时画本次 + 上次 (G._savedReplay.log),事件列表按时间排序。
+5. **统计 5 项**:总条 / 轨迹点 / 事件 / 时长 / 来源 (本次+上次 / 仅上次 / 仅本次)。
+6. **L 键冲突避免**:P 已被 coffee 雇帮派 ($50 -80% 卧底) 占用,L 全局空闲 (Log 双关)。
+7. **L 守卫与 modalOpen 协作**:replayOpen 守卫在 modalOpen 守卫之前,replay 打开时 L/Esc 关闭;其他 modal 打开时 modalOpen 守卫吞键,L 不生效 (符合 P 冲突的原有设计)。
+
+### 3-axis 升档
+
+- 反馈 +1 (运行后可视化查看自己的跑法,发现哪里可以优化)
+- 持久化 +1 (跨 session 合并存档,玩家长线自检)
+- 选择 +1 (滑块 scrub 0..1 / 现在 / 清空 三按钮 + 图例 5 类事件)
+
+### 验收
+
+- **577/577 PASS** (基线 554 + 23 Round 26 稳定断言),test-phase-e.js 168/168
+- http://127.0.0.1:8767/index.html 200,test.html 200,node --check 双过
+- 浏览器开 demo → 走两步到 bar → 进门 → 出门 → 按 L → 看 canvas 轨迹 + 6 类事件 (轨迹/进入/小游戏开始/小游戏结束/时间/事件) + 拖滑块 scrub 回放
+- `localStorage.getItem('ab_replay_v1')` 写入 `{version:1,seed,run,day,log:[...600条],savedAt}`
+- 新 run 自动 loadReplay(),G._savedReplay 填上次存档,canvas 合并显示
+
+### 已知风险 (留待 Round 27+)
+
+- ⚠️ 滑块 scrub 是单帧重画,无平滑动画;玩家拖动时会闪烁,可加 requestAnimationFrame 节流 (留待 Round 27+)
+- ⚠️ 跨 session 合并只看位置 + 事件类型,看不到玩家名字 / icon (canvas 不画人),改进空间大
+- ⚠️ BACKLOG #10 #6 reset button for `G.barRegulars/strainNotes/brewNotes` 仍未实现 (留待 Round 27+)
+- ⚠️ Run 结束 (endGame) 时尚未 logAction('end'),玩家看 7 天总结时无清晰 run-end 标记 (留待 Round 27+)

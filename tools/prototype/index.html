@@ -131,6 +131,27 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 #mh-keys kbd{display:inline-block;min-width:24px;padding:2px 6px;border:1px solid var(--gold);border-radius:4px;color:var(--gold);font:bold 11px monospace;background:#0006;margin-right:8px}
 #mh-tip{color:var(--muted);font-size:11px;margin-top:8px;font-style:italic}
 @media(max-width:760px){#mg-hint-modal .intro-box{padding:14px;max-width:94vw}#mh-ic{font-size:36px}}
+/* funify-v3 Round 26 — 📼 Action Replay modal (BACKLOG #10 #3 closure) */
+#replay-modal,#replay-modal.hidden{position:fixed;inset:0;background:#000000a0;display:flex;align-items:center;justify-content:center;z-index:120;backdrop-filter:blur(5px)}
+#replay-modal.hidden{display:none}
+#replay-modal .intro-box{max-width:620px;border-color:#80c8a8}
+#replay-modal h1{color:#80c8a8;font-size:18px}
+.replay-canvas-wrap{position:relative;margin:10px 0;background:#0a0c14;border:1px solid #ffffff20;border-radius:8px;padding:6px}
+#replay-canvas{display:block;width:100%;height:200px;background:#1a2030;border-radius:4px}
+.replay-stats{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin:6px 0;font-family:monospace}
+.replay-stats b{color:#80c8a8;font-weight:600}
+.replay-controls{display:flex;gap:6px;align-items:center;margin:8px 0}
+.replay-controls input[type=range]{flex:1;accent-color:#80c8a8}
+.replay-controls .btn{padding:5px 10px;font-size:11px;min-width:auto}
+.replay-events{max-height:120px;overflow-y:auto;background:#00000030;border-radius:6px;padding:6px 10px;font:10px monospace;color:var(--text);margin:6px 0}
+.replay-events .ev-row{padding:2px 0;border-bottom:1px solid #ffffff08}
+.replay-events .ev-row:last-child{border-bottom:none}
+.replay-events .ev-row .ev-t{color:#80c8a8;margin-right:6px}
+.replay-events .ev-row .ev-ic{margin-right:4px}
+.replay-events .empty{color:var(--muted);font-style:italic;font-family:inherit}
+.replay-legend{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0;font-size:9px;color:var(--muted)}
+.replay-legend span{display:inline-flex;align-items:center;gap:3px}
+.replay-legend span::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%}
 .seed-form .btn-go{padding:10px 22px;font-size:13px;font-weight:800;background:var(--gold);color:#0a0c14;border:none;letter-spacing:1px}
 .seed-form .btn-go:hover{filter:brightness(1.1);color:#0a0c14}
 .start-summary{font-size:11px;color:var(--muted);text-align:center;margin-top:8px;line-height:1.6}
@@ -436,8 +457,33 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div id="help-modal" class="hidden">
 <div class="intro-box">
 <h1>操作帮助</h1>
-<div class="help-grid"><div><b>W/A/S/D</b> 移动小人（方向键也可）</div><div><b>E</b> 进入附近建筑</div><div><b>Space</b> 推进时间 / 小游戏确认</div><div><b>Q/W</b> 变体中调价或调节参数</div><div><b>X</b> 拒绝咖啡卧底或酒吧顾客</div><div><b>H</b> 打开本帮助，<b>Esc</b> 退出当前界面</div><div><b>T</b> 天赋树 · <b>F</b> 派系 · <b>J</b> 成就树 · <b>C</b> 配方 · <b>G</b> 送礼 · <b>B</b> 肉体交易 · <b>K</b> 知识本 · <b>I</b> 收藏 · <b>V</b> 切换存档槽</div><div><b>1-9</b> 选关 · <b>▶▶</b> 切换速度 1×/2×/4× · <b>M</b> 静音</div></div>
+<div class="help-grid"><div><b>W/A/S/D</b> 移动小人（方向键也可）</div><div><b>E</b> 进入附近建筑</div><div><b>Space</b> 推进时间 / 小游戏确认</div><div><b>Q/W</b> 变体中调价或调节参数</div><div><b>X</b> 拒绝咖啡卧底或酒吧顾客</div><div><b>H</b> 打开本帮助，<b>Esc</b> 退出当前界面</div><div><b>T</b> 天赋树 · <b>F</b> 派系 · <b>J</b> 成就树 · <b>C</b> 配方 · <b>G</b> 送礼 · <b>B</b> 肉体交易 · <b>K</b> 知识本 · <b>I</b> 收藏 · <b>V</b> 切换存档槽 · <b>L</b> 📼 回放</div><div><b>1-9</b> 选关 · <b>▶▶</b> 切换速度 1×/2×/4× · <b>M</b> 静音</div></div>
 <button class="btn help-close" onclick="closeHelp()">关闭</button>
+</div>
+</div>
+
+<!-- funify-v3 Round 26 — 📼 Action Replay (BACKLOG #10 #3 closure) -->
+<div id="replay-modal" class="hidden">
+<div class="intro-box">
+<h1>📼 行动回放</h1>
+<div class="replay-stats" id="replay-stats">— 无记录 —</div>
+<div class="replay-canvas-wrap">
+<canvas id="replay-canvas" width="580" height="200" aria-label="行动轨迹回放"></canvas>
+</div>
+<div class="replay-controls">
+<button class="btn" id="replay-now">现在</button>
+<input type="range" id="replay-slider" min="0" max="100" value="100" aria-label="回放时间轴">
+<button class="btn" id="replay-clear">🗑️ 清</button>
+</div>
+<div class="replay-legend">
+<span style="--c:#80c8a8">轨迹</span>
+<span style="--c:#ecb457">小游戏</span>
+<span style="--c:#78c878">事件</span>
+<span style="--c:#f05050">⚠️ 失败</span>
+<span style="--c:#80b8f0">🎁 meta</span>
+</div>
+<div class="replay-events" id="replay-events"><div class="empty">（尚无记录 — 走两步 / 开个小游戏再回来）</div></div>
+<button class="btn help-close" onclick="closeReplay()">关闭 (L / Esc)</button>
 </div>
 </div>
 
@@ -1571,6 +1617,130 @@ function closeSettings(){
   const btn=document.getElementById('set-clear-btn');
   if(btn){btn.classList.remove('warn');btn.textContent='🗑️ 清空所有 ab_* 数据'}
 }
+
+// ═══════════════════════════════════════════
+// funify-v3 Round 26 — 📼 Action Replay (BACKLOG #10 #3 closure)
+// 记录位置 + 关键事件到 G.actionLog,L 键回放
+// ═══════════════════════════════════════════
+const REPLAY_MAX=600;       // 上限 600 条,1Hz 采样可覆盖 10 分钟
+const REPLAY_KEY_MS=900;   // 同一 ms 不重复 push move
+function logAction(type,data){
+  if(!G||G.ended)return;
+  if(!Array.isArray(G.actionLog))G.actionLog=[];
+  const t=Date.now()-(G._runStartAt||(G._runStartAt=Date.now()));
+  const entry={t,type};
+  if(data&&typeof data==='object')Object.assign(entry,data);
+  // 移动采样去重:同位置同 ms 不 push
+  if(type==='move'&&G.actionLog.length){
+    const last=G.actionLog[G.actionLog.length-1];
+    if(last&&last.type==='move'&&Date.now()-last._ms<REPLAY_KEY_MS&&Math.abs((last.x|0)-(entry.x|0))<4&&Math.abs((last.y|0)-(entry.y|0))<4)return;
+  }
+  entry._ms=Date.now();
+  G.actionLog.push(entry);
+  if(G.actionLog.length>REPLAY_MAX)G.actionLog.splice(0,G.actionLog.length-REPLAY_MAX);
+  // 节流持久化:每 30 条写一次
+  if(G.actionLog.length%30===0)saveReplay();
+}
+function saveReplay(){try{localStorage.setItem('ab_replay_v1',JSON.stringify({version:1,seed:G.seed,run:G.run,day:G.day,log:(G.actionLog||[]).slice(-REPLAY_MAX),savedAt:Date.now()}))}catch(e){}}
+function loadReplay(){try{const d=JSON.parse(localStorage.getItem('ab_replay_v1'));if(d&&d.version===1&&Array.isArray(d.log)){G._savedReplay=d;return true}}catch(e){return false}return false}
+function clearReplay(){G.actionLog=[];try{localStorage.removeItem('ab_replay_v1')}catch(e){}if(replayOpen())renderReplay()}
+function replayOpen(){const m=document.getElementById('replay-modal');return m&&!m.classList.contains('hidden')}
+function showReplay(){
+  const m=document.getElementById('replay-modal');if(!m)return;
+  const sl=document.getElementById('replay-slider');if(sl)sl.value=100;
+  renderReplay(1);
+  m.classList.remove('hidden');
+}
+function closeReplay(){const m=document.getElementById('replay-modal');if(!m)return;m.classList.add('hidden')}
+function toggleReplay(){replayOpen()?closeReplay():showReplay()}
+const REPLAY_TYPE_LABEL={move:'轨迹',enter:'进入',mgStart:'小游戏',mgEnd:'结束',phase:'时间',event:'事件',note:'meta'};
+const REPLAY_TYPE_COLOR={move:'#80c8a8',enter:'#ecb457',mgStart:'#ecb457',mgEnd:'#80c8a8',phase:'#80b8f0',event:'#78c878',note:'#80b8f0'};
+const REPLAY_TYPE_IC={enter:'🚪',mgStart:'🎮',mgEnd:'🏁',phase:'⏰',event:'✨',note:'📒'};
+function renderReplay(scrub){
+  const cv=document.getElementById('replay-canvas');if(!cv)return;
+  const cx=cv.getContext('2d');
+  const W=cv.width,H=cv.height;
+  cx.fillStyle='#1a2030';cx.fillRect(0,0,W,H);
+  // 地图底色(从 BLDGS 画简化色块)
+  if(typeof BLDGS!=='undefined'){
+    for(const b of BLDGS){
+      if(!b||b.hp===0)continue;
+      cx.fillStyle='#2a3040';
+      cx.fillRect((b.x/760)*W,(b.y/520)*H,Math.max(8,(b.w/760)*W),Math.max(8,(b.h/520)*H));
+    }
+  }
+  // 网格
+  cx.strokeStyle='#ffffff08';cx.lineWidth=1;
+  for(let i=0;i<=760;i+=80){const x=(i/760)*W;cx.beginPath();cx.moveTo(x,0);cx.lineTo(x,H);cx.stroke()}
+  for(let i=0;i<=520;i+=80){const y=(i/520)*H;cx.beginPath();cx.moveTo(0,y);cx.lineTo(W,y);cx.stroke()}
+  // 合并日志:本次 + 上次存档
+  const cur=(G.actionLog||[]).slice();
+  const saved=(G._savedReplay&&G._savedReplay.log)||[];
+  const all=cur.length?saved.concat(cur):saved;
+  if(!all.length){
+    cx.fillStyle='#5a6478';cx.font='11px monospace';cx.textAlign='center';
+    cx.fillText('无轨迹数据',W/2,H/2);
+    const stats=document.getElementById('replay-stats');
+    if(stats)stats.innerHTML='— 无记录 —';
+    const ev=document.getElementById('replay-events');
+    if(ev)ev.innerHTML='<div class="empty">（尚无记录 — 走两步 / 开个小游戏再回来）</div>';
+    return;
+  }
+  // 按 scrub 过滤 (0..1)
+  const s=scrub==null?1:Math.max(0,Math.min(1,scrub));
+  const firstT=all[0].t,lastT=all[all.length-1].t;
+  const cutoff=firstT+(lastT-firstT)*s;
+  const visible=all.filter(e=>e.t<=cutoff);
+  if(!visible.length){
+    cx.fillStyle='#5a6478';cx.font='11px monospace';cx.textAlign='center';
+    cx.fillText('该时间点尚无数据',W/2,H/2);
+    return;
+  }
+  // 画轨迹
+  cx.strokeStyle='#80c8a8';cx.lineWidth=1.5;cx.beginPath();
+  let started=false;
+  for(const e of visible){
+    if(e.type!=='move'||typeof e.x!=='number')continue;
+    const x=(e.x/760)*W,y=(e.y/520)*H;
+    if(!started){cx.moveTo(x,y);started=true}else cx.lineTo(x,y);
+  }
+  cx.stroke();
+  // 当前 scrub 位置
+  const lastMove=[...visible].reverse().find(e=>e.type==='move'&&typeof e.x==='number');
+  if(lastMove){
+    cx.fillStyle='#80c8a8';cx.beginPath();cx.arc((lastMove.x/760)*W,(lastMove.y/520)*H,5,0,Math.PI*2);cx.fill();
+    cx.strokeStyle='#fff';cx.lineWidth=1.5;cx.stroke();
+  }
+  // 事件标记
+  for(const e of visible){
+    if(e.type==='move'||typeof e.x!=='number')continue;
+    const x=(e.x/760)*W,y=(e.y/520)*H;
+    const col=REPLAY_TYPE_COLOR[e.type]||'#ecb457';
+    cx.fillStyle=col;
+    if(e.type==='mgStart'){cx.fillRect(x-3,y-3,6,6)}
+    else if(e.type==='event'){cx.beginPath();cx.arc(x,y,4,0,Math.PI*2);cx.fill()}
+    else{cx.beginPath();cx.arc(x,y,3,0,Math.PI*2);cx.fill()}
+  }
+  // 统计
+  const moves=visible.filter(e=>e.type==='move').length;
+  const events=visible.filter(e=>e.type!=='move').length;
+  const dur=Math.round((cutoff-firstT)/1000);
+  const stats=document.getElementById('replay-stats');
+  if(stats)stats.innerHTML=`<span><b>${visible.length}</b>/${all.length} 条</span><span><b>${moves}</b> 轨迹</span><span><b>${events}</b> 事件</span><span><b>${dur}s</b> / ${Math.round((lastT-firstT)/1000)}s</span><span>${cur.length?'本次 + ':''}${(G._savedReplay?'+上次存档':'')}</span>`;
+  // 事件列表(最近 50 条,按 scrub 截止)
+  const evList=visible.filter(e=>e.type!=='move').slice(-50).reverse();
+  const ev=document.getElementById('replay-events');
+  if(ev){
+    if(!evList.length){ev.innerHTML='<div class="empty">（该时间点无事件）</div>'}
+    else ev.innerHTML=evList.map(e=>{
+      const lab=REPLAY_TYPE_LABEL[e.type]||e.type;
+      const ic=REPLAY_TYPE_IC[e.type]||'';
+      const det=e.detail||(e.day!=null?`Day ${e.day} ti=${e.ti}`:'');
+      const sec=Math.round((e.t-firstT)/1000);
+      return `<div class="ev-row"><span class="ev-t">${sec}s</span><span class="ev-ic">${ic}</span>${lab}${det?' · '+det:''}</div>`;
+    }).join('');
+  }
+}
 // funify-v3 Round 30 — Cross-run Ledger (📒 知识本): strainNotes + brewNotes + barRegulars + researchTopics + surfDiscovered + visited persist ab_ledger_v1
 function saveLedger(){try{localStorage.setItem('ab_ledger_v1',JSON.stringify({version:1,strainNotes:G.strainNotes||{},brewNotes:G.brewNotes||{},barRegulars:G.barRegulars||[],researchTopics:G.researchTopics||[],surfDiscovered:G.surfDiscovered||[],visited:G.visited||[],recipeKnowledge:G._recipeKnowledge||{},teacherRep:G.teacherRep||{pablo:0,ravi:0,sofie:0,chen:0}}))}catch(e){console.warn('ab_ledger_v1 save failed',e)}}
 function loadLedger(){try{const d=JSON.parse(localStorage.getItem('ab_ledger_v1'));if(d&&d.version===1){if(d.strainNotes&&typeof d.strainNotes==='object')G.strainNotes=d.strainNotes;if(d.brewNotes&&typeof d.brewNotes==='object'){for(const t of ['IPA','Stout','Lager']){if(d.brewNotes[t]&&typeof d.brewNotes[t]==='object'){G.brewNotes[t].count=Math.max(G.brewNotes[t].count|0,d.brewNotes[t].count|0);G.brewNotes[t].best=Math.max(G.brewNotes[t].best|0,d.brewNotes[t].best|0)}}}if(Array.isArray(d.barRegulars))G.barRegulars=Array.from(new Set([...(G.barRegulars||[]),...d.barRegulars]));if(Array.isArray(d.researchTopics))G.researchTopics=Array.from(new Set([...(G.researchTopics||[]),...d.researchTopics]));if(Array.isArray(d.surfDiscovered))G.surfDiscovered=Array.from(new Set([...(G.surfDiscovered||[]),...d.surfDiscovered]));if(Array.isArray(d.visited))G.visited=Array.from(new Set([...(G.visited||[]),...d.visited]));if(d.recipeKnowledge&&typeof d.recipeKnowledge==='object')G._recipeKnowledge=d.recipeKnowledge;if(d.teacherRep&&typeof d.teacherRep==='object'){if(!G.teacherRep)G.teacherRep={pablo:0,ravi:0,sofie:0,chen:0};for(const n of ['pablo','ravi','sofie','chen']){const v=d.teacherRep[n]|0;if(v>(G.teacherRep[n]|0))G.teacherRep[n]=v}}}}catch(e){console.warn('ab_ledger_v1 load failed',e)}}
@@ -1976,7 +2146,7 @@ function renderGifts(){
   }).join('');
   document.getElementById('craft-pane-gift').innerHTML=html;
 }
-function modalOpen(){const s=document.getElementById('start-modal'),h=document.getElementById('help-modal'),m=document.getElementById('mg-hint-modal'),t=document.getElementById('tal-modal'),f=document.getElementById('fac-modal'),c=document.getElementById('craft-modal'),st=document.getElementById('settings-modal');return(s&&!s.classList.contains('hidden'))||(h&&!h.classList.contains('hidden'))||(m&&!m.classList.contains('hidden'))||(t&&!t.classList.contains('hidden'))||(f&&!f.classList.contains('hidden'))||(c&&!c.classList.contains('hidden'))||(st&&!st.classList.contains('hidden'))}
+function modalOpen(){const s=document.getElementById('start-modal'),h=document.getElementById('help-modal'),m=document.getElementById('mg-hint-modal'),t=document.getElementById('tal-modal'),f=document.getElementById('fac-modal'),c=document.getElementById('craft-modal'),st=document.getElementById('settings-modal'),r=document.getElementById('replay-modal');return(s&&!s.classList.contains('hidden'))||(h&&!h.classList.contains('hidden'))||(m&&!m.classList.contains('hidden'))||(t&&!t.classList.contains('hidden'))||(f&&!f.classList.contains('hidden'))||(c&&!c.classList.contains('hidden'))||(st&&!st.classList.contains('hidden'))||(r&&!r.classList.contains('hidden'))}
 // funify-v3 Round 14 — first-time mini-game key overlay (BACKLOG #3 close)
 const MG_HINT_KEYS={
   brew:{ic:'🍺',name:'酿酒厂（啤酒订单）',keys:[['<kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd>','原料:麦芽/啤酒花/酵母各选 0/1/2'],['<kbd>SPACE</kbd>','开始酿造 (订单 180s 内完成)'],['<kbd>⬆</kbd>/<kbd>⬇</kbd>','控温 ±3°C（IPA=55°·Stout=68°·Lager=48°）'],['<kbd>ESC</kbd>','离开不收尾']],tip:'配方顺序 + 目标温度是订单的两大隐藏轴；温度误差 ≤±5°C 触发完美品。'},
@@ -2258,9 +2428,11 @@ function enterBldg(){
   if(!G.visited.includes(b.id))G.visited.push(b.id);
   if(!G.visitedToday.length)G.visitedToday=[];
   if(!G.visitedToday.includes(b.id)){G.visitedToday.push(b.id);tickObj('Explore',1)}
-  if(b.tp==='bar')startBar();else if(b.tp==='brew')startBrew();else if(b.tp==='coffee')startCoffee();
-  else if(b.tp==='shroom')startShroom();else if(b.tp==='surf')startSurf();else if(b.tp==='academic')startAcad();else if(b.tp==='station')startStation();
-  else if(b.tp==='market')startShoplift();
+  // funify-v3 Round 26 — 📼 记录进入建筑
+  logAction('enter',{x:G.p.x,y:G.p.y,day:G.day,ti:G.ti,detail:b.n+' ('+b.tp+')'});
+  if(b.tp==='bar'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'🍸 酒吧'});startBar()}else if(b.tp==='brew'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'🍺 酿酒'});startBrew()}else if(b.tp==='coffee'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'☕ 咖啡'});startCoffee()}
+  else if(b.tp==='shroom'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'🍄 蘑菇'});startShroom()}else if(b.tp==='surf'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'🏄 冲浪'});startSurf()}else if(b.tp==='academic'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'📚 学术'});startAcad()}else if(b.tp==='station'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'🚉 车站'});startStation()}
+  else if(b.tp==='market'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'🏪 偷窃'});startShoplift()}
   else{setStatus('🏠 '+b.n,'按 T 对话 / 收益 +$10~24','按 E / Esc 离开');addSch(b.ic,b.n)}
 }
 
@@ -3904,6 +4076,12 @@ function update(){
   const opx=p.x,opy=p.y,nx=p.x+dx/d*sp,ny=p.y+dy/d*sp;
   if(!inCanal(nx,p.y)||onBridge(nx,p.y))p.x=nx;if(!inCanal(p.x,ny)||onBridge(p.x,ny))p.y=ny;
   p.x=Math.max(6,Math.min(W-6,p.x));p.y=Math.max(6,Math.min(H-6,p.y));
+  // funify-v3 Round 26 — 📼 轨迹采样(1Hz,位移阈值 6px 才记录)
+  if(Math.abs(p.x-opx)>0.5||Math.abs(p.y-opy)>0.5){
+    G._replayLastSample=G._replayLastSample||0;
+    const now=Date.now();
+    if(now-G._replayLastSample>1000&&(Math.abs(p.x-opx)>6||Math.abs(p.y-opy)>6)){logAction('move',{x:p.x,y:p.y,day:G.day,ti:G.ti});G._replayLastSample=now}
+  }
   if(Math.abs(p.x-opx)<0.5&&Math.abs(p.y-opy)<0.5&&inCanal(nx,ny)&&!onBridge(nx,ny)){G._st++;if(G._st>15){G._st=0;const br=nnBridge(p.x,p.y);if(br){G._wp=br;G._otx=p.tx;G._oty=p.ty;const bInfo=BRIDGES.find(b=>Math.abs(b.x+b.w/2-br.x)<1&&Math.abs(b.y+b.h/2-br.y)<1);setMsg('🚶 运河挡路 → 改道 '+(bInfo?bInfo.n:'桥'))}}}
   else G._st=0;
   if(G._wp){const wx=G._wp.x,wy=G._wp.y;if(Math.abs(p.x-wx)<12&&Math.abs(p.y-wy)<12){G._wp=null;p.tx=G._otx||p.x;p.ty=G._oty||p.y;G._otx=null;G._oty=null}else{if(!G._otx){G._otx=p.tx;G._oty=p.ty}p.tx=wx;p.ty=wy}}
@@ -4001,6 +4179,8 @@ function autoStep(){
 }
 function advanceTimeAuto(){
   if(G.ended)return;G.ti++;
+  // funify-v3 Round 26 — 📼 时间推进打点(每 ti)
+  logAction('phase',{x:G.p.x,y:G.p.y,day:G.day,ti:G.ti,detail:`Day ${G.day} ti=${G.ti}`});
   // Phase E8 — 4% per tick 随机触发搞怪事件
   tickCrazyEvent();
   if(G.ti>=6){G.ti=0;G.day++;
@@ -4360,6 +4540,8 @@ document.addEventListener('keydown',e=>{
   if(ledgerOpen()){const tk=e.key.toLowerCase();if(tk==='k'||tk==='escape'){e.preventDefault();closeLedger()}return}
   // funify-v3 Round 20 — 🗃️ 收藏 (I key) swallows keys while open
   if(invOpen()){const tk=e.key.toLowerCase();if(tk==='i'||tk==='escape'){e.preventDefault();closeInv()}return}
+  // funify-v3 Round 26 — 📼 Action Replay (L key) swallows keys while open
+  if(replayOpen()){const tk=e.key.toLowerCase();if(tk==='l'||tk==='escape'){e.preventDefault();closeReplay()}return}
   if(modalOpen()){if(e.key==='Enter'&&document.activeElement&&document.activeElement.id==='start-seed'){e.preventDefault();startFromModal();return}if(e.key==='Escape'||e.key==='Enter'){const st=document.getElementById('settings-modal');if(st&&!st.classList.contains('hidden')){closeSettings();return}const hm=document.getElementById('mg-hint-modal');if(hm&&!hm.classList.contains('hidden')){closeMgHint();return}const hp=document.getElementById('help-modal');if(hp&&!hp.classList.contains('hidden')&&e.key==='Escape'){closeHelp();return}}if(e.key.toLowerCase()==='m'){AUDIO.toggleMute();return}return}
   // funify-v3 Round 6 — M key toggles audio mute (works even when ended/modal)
   if(e.key==='M'||e.key==='m'){AUDIO.toggleMute();setMsg(AUDIO.muted?'🔇 音频已静音':'🔊 音频开启');return}
@@ -4374,7 +4556,7 @@ document.addEventListener('keydown',e=>{
     else if(G.mg==='station'){if(k==='1'||k==='2'||k==='3')commuteChoice(k);return}
     renderAll();return;
   }
-  if(G.inside){if(k==='escape'||k==='e'){G.inside=null;setStatus('🟢 就绪','','');renderAll();return}
+  if(G.inside){if(k==='escape'||k==='e'){logAction('mgEnd',{x:G.p.x,y:G.p.y,detail:'离开'});G.inside=null;setStatus('🟢 就绪','','');renderAll();return}
     if(k==='t'&&G.inside.tp==='npc'){const npc=G.inside.npc;if(!G.greetedToday)G.greetedToday=[];const isFirst=!G.greetedToday.includes(npc);if(isFirst){G.greetedToday.push(npc);G._run.greetedAll[npc]=1;const dlg=pickNpcDialog(npc);const r=dlg?dlg.r:10+Math.floor(seeded(180+G.day)*15);G.money+=r;const line=dlg?dlg.q:`${npc}: +$${r} (今日首次)`;setMsg(line);addEvt('good',`💬 ${npc} +$${r}`);addSch('💬',`${npc} +$${r}`);if(dlg)addEvt('info',dlg.q);
       // funify-v3 Round 13 — 建筑风味短句 (T 键首次入栈)
       const bf=NPC_BUILDING_FLAVOR[npc];if(bf)addEvt('info',bf);
@@ -4385,6 +4567,8 @@ document.addEventListener('keydown',e=>{
   if(k==='e')enterBldg();if(k===' ')advanceTimeAuto();if(k==='n')newRun();if(k==='h')showHelp();
   // funify-v3 Round 34 — V 键 mid-run cycle slot (BACKLOG #10 #2 closure)
   if(k==='v'){cycleSlot();const n=getActiveSlot();setMsg(`📂 切到槽 ${n} · 当前进度已存`);return}
+  // funify-v3 Round 26 — L 键 📼 行动回放(非 mini-game 时)
+  if(k==='l'){toggleReplay();return}
   if(k==='t'){toggleTalents();return}
   if(k==='f'){toggleFactions();return}
   if(k==='j'){toggleAchtree();return}
@@ -4415,6 +4599,8 @@ cv.addEventListener('mouseleave',()=>{if(G._hoverBldg){G._hoverBldg=null;renderA
 
 function newRunInner(){
   G.day=1;G.ti=0;G.ended=false;G.metaPending=0;G.visited=[];G.visitedToday=[];G.greetedToday=[];G.keys={};resetRunCounters();
+  // funify-v3 Round 26 — 📼 Action Replay (新 run 重置日志,保留上次的 ab_replay_v1 供合并查看)
+  G._runStartAt=Date.now();G.actionLog=[];loadReplay();
   const seeds=[200,220,250,280,300];G.money=seeds[Math.floor(seeded(501)*seeds.length)]+G.legacy*10+(hasUpgrade('extra_cash')?50:0);
   G.rep=0;G.bs=[3+Math.floor(seeded(502)*4)+(hasUpgrade('extra_brew')?2:0),2+Math.floor(seeded(503)*3),1+Math.floor(seeded(504)*3)];G.brewI=-1;G.brewT=0;G.events=[];G.mods=[];G.auto=false;G.inside=null;G.mg=null;G.sch=[];G.ts=0;G.tr=0;G.loc='de_pijp';G.p={x:100,y:400,tx:100,ty:400};G._wp=null;G._st=0;G.objs=[];G._objDay=0;G.todayWave=null;
   // Phase A: per-run state for C1/C2/B1
@@ -4482,6 +4668,15 @@ renderAll();
 try{if(localStorage.getItem('ab_skip_tutorial')==='1'){startFromModal()}}catch(e){}
 // funify-v3 Round 21 — start-modal 打开时渲染 3 槽卡片 (vault picker)
 renderSlots();
+// funify-v3 Round 26 — 📼 Replay 滑块 / 按钮 事件绑定
+(function(){
+  const sl=document.getElementById('replay-slider');
+  const now=document.getElementById('replay-now');
+  const cl=document.getElementById('replay-clear');
+  if(sl)sl.addEventListener('input',()=>{renderReplay(parseInt(sl.value)/100)});
+  if(now)now.addEventListener('click',()=>{if(sl)sl.value=100;renderReplay(1)});
+  if(cl)cl.addEventListener('click',()=>{if(confirm('🗑️ 清空当前行动回放记录?')){clearReplay();setMsg('📼 回放记录已清空')}});
+})();
 const _qp=new URLSearchParams(location.search);const _qs=_qp.get('seed');if(_qs)document.getElementById('start-seed').value=_qs;
 window.AB_TEST={
   data:{industries:IND_DEF,events:EV_POOL,upgrades:UP_POOL,objectives:OBJ_CATS,achievements:ACH_POOL,achTree:ACH_TREE,crazyEvents:CRAZY_POOL},state:G,
@@ -4495,6 +4690,7 @@ window.AB_TEST={
   teacherRepBonus,bumpTeacherRep,
   pushModHistory,
   crazyActiveBadges,
+  logAction,saveReplay,loadReplay,clearReplay,replayOpen,showReplay,closeReplay,toggleReplay,renderReplay,REPLAY_MAX,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

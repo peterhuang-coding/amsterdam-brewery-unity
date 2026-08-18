@@ -2275,6 +2275,106 @@ frame.addEventListener('load',async()=>{
     return win.modalOpen&&win.modalOpen();
   });
 
+  // ═══ funify-v3 Round 26 — 📼 Action Replay (BACKLOG #10 #3 closure) ═══
+  check('Round 26: logAction / saveReplay / loadReplay / clearReplay / showReplay / closeReplay / toggleReplay / renderReplay 暴露',()=>typeof win.logAction==='function'&&typeof win.saveReplay==='function'&&typeof win.loadReplay==='function'&&typeof win.clearReplay==='function'&&typeof win.showReplay==='function'&&typeof win.closeReplay==='function'&&typeof win.toggleReplay==='function'&&typeof win.renderReplay==='function');
+  check('Round 26: REPLAY_MAX=600 上限常量',()=>t.REPLAY_MAX===600);
+  check('Round 26: G.actionLog 在 newRun 后为 []',()=>{t.newRun(42);return Array.isArray(t.state.actionLog)&&t.state.actionLog.length===0});
+  check('Round 26: logAction(type,data) push 一条记录并带 _ms',()=>{
+    const before=t.state.actionLog.length;
+    win.logAction('move',{x:200,y:300});
+    return t.state.actionLog.length===before+1&&t.state.actionLog[before].type==='move'&&t.state.actionLog[before].x===200&&typeof t.state.actionLog[before]._ms==='number';
+  });
+  check('Round 26: 同位置移动采样去重(同 ms 内 6px 阈值)',()=>{
+    const before=t.state.actionLog.length;
+    win.logAction('move',{x:201,y:301});
+    return t.state.actionLog.length===before;
+  });
+  check('Round 26: 远距离移动正常 push',()=>{
+    const before=t.state.actionLog.length;
+    win.logAction('move',{x:400,y:200});
+    return t.state.actionLog.length===before+1;
+  });
+  check('Round 26: REPLAY_MAX cap 截断(超过 600 删前面)',()=>{
+    const had=t.state.actionLog.slice();
+    for(let i=0;i<605;i++)win.logAction('phase',{x:50,y:50,detail:'t'+i});
+    const cap=Array.isArray(t.state.actionLog)&&t.state.actionLog.length<=600;
+    t.state.actionLog=had;return cap;
+  });
+  check('Round 26: G._runStartAt 在 newRunInner 设置',()=>typeof t.state._runStartAt==='number'&&t.state._runStartAt>0);
+  check('Round 26: phase 类型 logAction 写入 x/y/detail',()=>{
+    const before=t.state.actionLog.length;
+    win.logAction('phase',{x:t.state.p.x,y:t.state.p.y,day:t.state.day,ti:t.state.ti,detail:'Day '+t.state.day+' ti='+t.state.ti});
+    const e=t.state.actionLog[t.state.actionLog.length-1];
+    return e.type==='phase'&&e.detail&&e.day!=null;
+  });
+  check('Round 26: enterBldg 自动 log enter + mgStart',()=>{
+    const had=t.state.actionLog.slice();
+    const hadTi=t.state.ti;
+    t.state.p.x=310;t.state.p.y=145;t.state.p.tx=310;t.state.p.ty=145;
+    t.state.inside=null;t.state.mg=null;t.state.ti=0;
+    // De Pijl 酿酒(brew: tp=brew, ti<=2)
+    const before=t.state.actionLog.length;
+    win.enterBldg();
+    const after=t.state.actionLog;
+    const ok=after.length>=before+1&&after.some(e=>e.type==='enter')&&after.some(e=>e.type==='mgStart');
+    t.state.actionLog=had;t.state.inside=null;t.state.mg=null;t.state.ti=hadTi;return ok;
+  });
+  check('Round 26: #replay-modal 存在且初始 hidden',()=>{const m=doc.getElementById('replay-modal');return!!m&&m.classList.contains('hidden')});
+  check('Round 26: showReplay 移除 hidden 类',()=>{win.showReplay();const m=doc.getElementById('replay-modal');return m&&!m.classList.contains('hidden')});
+  check('Round 26: closeReplay 恢复 hidden 类',()=>{win.closeReplay();const m=doc.getElementById('replay-modal');return m&&m.classList.contains('hidden')});
+  check('Round 26: replayOpen() 在 showReplay 后返 true',()=>{win.showReplay();const r=win.replayOpen();win.closeReplay();return r===true});
+  check('Round 26: L 键 keydown 在 showReplay 之后调用 closeReplay',()=>{
+    win.showReplay();
+    const before=!doc.getElementById('replay-modal').classList.contains('hidden');
+    const ev=new KeyboardEvent('keydown',{key:'l',bubbles:true});
+    doc.dispatchEvent(ev);
+    const after=doc.getElementById('replay-modal').classList.contains('hidden');
+    return before&&after;
+  });
+  check('Round 26: L 键 keydown 关闭状态下打开 replay modal',()=>{
+    win.closeReplay();
+    // 关所有 modal 避免守卫吞掉 L 键
+    for(const id of ['start-modal','help-modal','mg-hint-modal','tal-modal','fac-modal','craft-modal','settings-modal','replay-modal','body-modal','achtree-modal','ledger-modal','inv-modal']){
+      const e=doc.getElementById(id);if(e)e.classList.add('hidden');
+    }
+    // 确保 G.ended=false 让 keydown 走到 L 路由
+    t.state.ended=false;
+    const ev=new KeyboardEvent('keydown',{key:'L',bubbles:true});
+    doc.dispatchEvent(ev);
+    const m=doc.getElementById('replay-modal');
+    return m&&!m.classList.contains('hidden');
+  });
+  check('Round 26: renderReplay(0.5) 接受 scrub 0..1 不报错',()=>{
+    win.showReplay();
+    try{win.renderReplay(0.5);win.renderReplay(0);win.renderReplay(1);win.closeReplay();return true}catch(e){return false}
+  });
+  check('Round 26: #replay-canvas 存在且为 canvas',()=>{const c=doc.getElementById('replay-canvas');return c&&c.tagName==='CANVAS'&&c.width>0&&c.height>0});
+  check('Round 26: #replay-stats 文本内容非空(渲染后)',()=>{win.showReplay();const s=doc.getElementById('replay-stats');const ok=s&&s.textContent&&s.textContent.length>0;win.closeReplay();return ok});
+  check('Round 26: saveReplay + loadReplay 往返(ab_replay_v1 写入 localStorage)',()=>{
+    win.logAction('event',{x:300,y:200,detail:'🎯 测试事件'});
+    win.saveReplay();
+    const v=localStorage.getItem('ab_replay_v1');
+    const parsed=v?JSON.parse(v):null;
+    if(!parsed||!Array.isArray(parsed.log))return false;
+    // 新 G 后 loadReplay 应能填 G._savedReplay
+    const had=t.state._savedReplay;
+    t.state._savedReplay=null;
+    const ok=win.loadReplay();
+    const back=!!t.state._savedReplay;
+    t.state._savedReplay=had;return ok&&back;
+  });
+  check('Round 26: clearReplay 清空 G.actionLog + 删除 ab_replay_v1',()=>{
+    win.logAction('move',{x:500,y:300});
+    win.saveReplay();
+    const before=t.state.actionLog.length;
+    win.clearReplay();
+    const afterEmpty=t.state.actionLog.length===0;
+    const lsGone=localStorage.getItem('ab_replay_v1')===null;
+    return before>0&&afterEmpty&&lsGone;
+  });
+  check('Round 26: modalOpen() 在 replay-modal 可见时返 true',()=>{win.showReplay();const r=win.modalOpen();win.closeReplay();return r===true});
+  check('Round 26: help-modal 文案含 L 键提示',()=>{const h=doc.getElementById('help-modal');return h&&h.textContent.includes('L')&&h.textContent.includes('回放')});
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

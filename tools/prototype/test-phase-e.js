@@ -283,7 +283,7 @@ t('renderAll renders 7 day-dots', /for\(let i=1;i<=7;i\+\+\)/.test(h));
 
 // ── 22b. Phase E round 8 — Phase E teaser + Run History best stats ──
 t('intro screen mentions Phase E teaser (T/F/C/G + 搞怪事件)', /🆕 Phase E/.test(h) && /<b>T<\/b>/.test(h) && /<b>F<\/b>/.test(h) && /<b>C<\/b>/.test(h) && /<b>G<\/b>/.test(h) && /24 个 <b>🦄 搞怪事件<\/b>/.test(h));
-t('renderRunHistory computes best stats header (best money/rep/meta)', /renderRunHistory[\s\S]{0,500}best=\{money:0,rep:-Infinity,meta:0\}/.test(h));
+t('renderRunHistory computes best stats header (best money/rep/meta)', /renderRunHistory[\s\S]{0,500}best=\{money:0,rep:-Infinity,meta:0\}/.test(h) || /renderRunHistory[\s\S]{0,500}best=\{money:0,rep:-Infinity,meta:0,combo:0,escFree:Infinity\}/.test(h));
 t('renderRunHistory shows 🏆 个人最佳 banner', /🏆 个人最佳 \(跨 \$\{runs\.length\} Run\)/.test(h) || /🏆 个人最佳 \(跨 '\+runs\.length\+'\s*Run\)/.test(h));
 t('renderRunHistory best uses border-color:var(--gold)', /bestRow=.*border-color:var\(--gold\)/.test(h));
 

@@ -95,7 +95,7 @@
 - [ ] [index.html:2220 G.money 颜色 3 档瞬时跳变] 加 `transition:color .4s` 平滑过渡
 - [ ] [index.html:2300 cv click 移动无反馈] update 检测到达时 `cx.fillStyle='#ecb457'; cx.arc(p.x,p.y,12)` 画到达脉冲圈
 - [ ] [index.html:2262 cov-title 完成无粒子] commitAcad/finBrew/finSurf 等成功分支加 5-10 个 ctx.arc 黄色圆点 confetti
-- [ ] [index.html:2211 setMsg "目标达成"] tickObj 完成分支加 5 秒 toast `#toast{position:fixed;top:80px;right:20px}`
+- [x] [index.html:2211 setMsg "目标达成"] tickObj 完成分支加 5 秒 toast `#toast{position:fixed;top:80px;right:20px}` — **Round 32 funify-v3 修 (tickObj 完成 spawn `.obj-toast` 绿色卡片 5s 后 .fading 淡出 600ms,右下角堆叠多 obj 完成 → 17 断言 test=647/653)**
 - [ ] [index.html:1857 greenState 只有文字] 改 `pos>0.6?'✨ 完美区!':pos>0.3?'⚪ 白区':'❌ 错过!'`
 - [x] [index.html:1534 温度条单调红] ≥目标后 `cx.fillStyle='#78c878'` 绿色 — **Round 24 funify-v3 修 (sweet-spot 30-70 绿色叠加 + >=80 cash-out 窗口 #80ffa0)**
 - [x] [index.html:1635 咖啡耐心条 <5s 闪烁] `Math.sin(Date.now()/100)*0.4+0.6` 紧迫闪烁 — **Round 24 funify-v3 修 (bar patience bar 紧迫闪烁 + Ns 倒计时)**
@@ -123,11 +123,11 @@
 - [ ] [index.html:570-585 industryFactor 跨 run 无特化] 加 `meta industry upgrades`: `💵 酿酒 +20%`, `☕ 咖啡 +20%` 等
 - [ ] [index.html:740 G.brewNotes 与 G.strainNotes 跨 run 但无展示] 加 `📒 知识本`按钮列出已掌握 — **Round 30 funify-v3 完成 (K 键 + 6 section 卡片 + ab_ledger_v1 持久化)**
 - ✅ [index.html:601 G escapeLevel:0 无信任] 加 `G.teacherRep:{}` 3 次同导师对话升级 escape success 10% — **Round 32 完成 (G.teacherRep + teacherRepBonus + bumpTeacherRep + escapeIn phase3 接入 + K 键 Section 7 + ab_ledger_v1 持久化 + 13 断言 → 439/439 PASS)**
-- [ ] [index.html:1019 finBar combo 局内重置] 加 `bestRunCombo` 在 upgrade 模态展示
-- [ ] [index.html:2207 endGame legacy 太简单] 加 `totalObjsDone*5` 鼓励完成目标
+- [x] [index.html:1019 finBar combo 局内重置] 加 `bestRunCombo` 在 upgrade 模态展示 — **Round 32 funify-v3 修 (buildRunSummary 返 bestRunCombo + escapeCaught,showUpgradeModal um-summary 🔥×N/🚇×N被抓,Run Summary Card 与 renderRunHistory 跨 Run 最佳 🔥/🚇 行 → 17 断言)**
+- [x] [index.html:2207 endGame legacy 太简单] 加 `totalObjsDone*5` 鼓励完成目标 — **Round 5 funify-v3 已修 (legacyObjBonus=objDone*5 + tier.mult 1.5/1.2/1.0/0.6)**
 - [ ] [index.html:626-639 rollDayModifier 跨 run 无回避] 加 `G.modHistory` 数组最近 5 天事件优先选不在历史中 — **Round 33 funify-v3 修 (G.modHistory:[] + pushModHistory + rollDayModifier history-aware filter + saveMeta v3 bump + 13 断言)**
 - [ ] [index.html:601 G initial 没 inventory 历史] 加 "🗃️ 收藏" 模态展示累计
-- [ ] [index.html:832 tryEscape 只看 escapeLevel] 加 `G.escapeCaught:0` 跑局报告
+- [x] [index.html:832 tryEscape 只看 escapeLevel] 加 `G.escapeCaught:0` 跑局报告 — **Round 32 funify-v3 修 (5 处 fail 路径累加:p1 未学/p1 超时/p2 超时/p2 误按/p3 站台 + resetRunCounters 初始化 0 + buildRunSummary 暴露字段)**
 
 ## 10. 持久化/重玩性（存档槽位、跨设备、Seed 分享、replay）
 - [x] [index.html:586 saveMeta 单 key] 加 `ab_meta_v2_${slot}` slot 1-3 + UI 切换 — **Round 21 funify-v3 完成 (slotKey(1)=ab_meta_v2 / ab_slot_2 / ab_slot_3 + start-modal #slot-cards 3 槽 picker + getActiveSlot/setActiveSlot/listSlots/switchSlot 9 helper)**
@@ -771,3 +771,25 @@
 - localStorage 老存档 v2 兼容 (未改 save/load,沿用现有 ab_meta_v2) (验收 #5 ✓)
 - BACKLOG.md 关闭 4 条 (#7 #2 #102 #100 #105 #101)
 - IMPROVEMENTS.md Round 24 record 同步
+
+## funify-v3 — Round 32 (2026-08-18) — Run 报告与反馈增强 (BACKLOG #7 #9 closure)
+### 范围 (按 ROI 优先级)
+1. **tickObj 完成 toast**:右下角绿色卡片 `.obj-toast` 5s 后 `.fading` 600ms 淡出,堆叠多 obj 完成;CSS 三色 + 5s timeout + 安全 try/catch
+2. **G._run.escapeCaught**:5 处逃票失败路径全部累加 (p1 未学 / p1 超时 / p2 超时 / p2 误按 / p3 站台被查),resetRunCounters 初始化 0
+3. **buildRunSummary 扩展**:返 `bestRunCombo` (来自 G.shop.streakBest/G._run.streakBest) 与 `escapeCaught`,向后兼容老 _run 缺字段 (escapeCaught 默认 0)
+4. **showUpgradeModal um-summary**:🔥×{streakBest} 与 🚇×{N}被抓 双向显示,玩家挑升级时看得到本局强项/弱项
+5. **renderRunHistory 跨 Run 最佳**:🏆 个人最佳 行加 🔥×{最高 combo} 与 🚇{最少被抓} 字段,legacy 老 runs 自动显示 `—`
+6. **run-card-now 即时卡片**:本局 Run 卡片加 🔥 combo 与 🚇被抓 行,endGame 即看得到
+
+### 已知风险 (留待 Round 33+)
+- legacy 老 localStorage `ab_runs_v1` 数据无 bestRunCombo/escapeCaught 字段,渲染时显示 `—`,不会报错 (`'bestRunCombo' in r` 守卫)
+- toast DOM 创建是 unguarded try/catch,不会因 modal 关闭等状态影响 AUDIO/tickObj 主流程
+- escapeCaught 不计入 mood 惩罚 (与现有 -$10/-$20/-$30/-rep 2 叠加),Run Summary Card 仅作报告展示
+
+### 验收
+- test.html **647/653 PASS** (基线 636 + 17 Round 32 断言,所有 Round 32 测试通过;6 个 fail 全为 preexisting Round 37 / seed 自动聚焦,基线 028843e 已是 630/636)
+- test-phase-e.js **168/168 PASS** (含 renderRunHistory best stats regex 扩展 best={money,rep,meta,combo,escFree})
+- node --check index.html/test.html PASS
+- http://127.0.0.1:8767/index.html + test.html 全程 200
+- BACKLOG.md 关闭 3 条 (#7 tickObj toast / #9 bestRunCombo / #9 escapeCaught),并标 #9 totalObjsDone*5 (Round 5 已修)
+- 5 处 escapeCaught 累加点 + tickObj toast DOM + 17 断言 全部覆盖

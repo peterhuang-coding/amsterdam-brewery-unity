@@ -294,6 +294,10 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 .ach-row .ad{display:block;color:var(--muted);font-size:9px;margin-top:1px;line-height:1.3}
 .ach-toast{position:fixed;top:64px;right:24px;background:var(--panel);border:1px solid var(--gold);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--gold);box-shadow:0 6px 30px #000c;z-index:130;animation:slideIn .35s;max-width:280px}
 .ach-toast em{display:block;color:var(--muted);font-style:normal;font-size:10px;margin-top:2px}
+/* funify-v3 Round 32 — 目标完成 toast (BACKLOG #7 反馈感) — 固定右下角 5s 后淡出,堆叠多 obj 完成 */
+.obj-toast{position:fixed;bottom:96px;right:24px;background:linear-gradient(135deg,#1f3a25,#162618);border:1px solid var(--green);border-radius:10px;padding:8px 14px;font-size:12px;color:var(--green);box-shadow:0 4px 20px #000a;z-index:130;animation:slideIn .35s;max-width:260px;font-weight:600}
+.obj-toast em{display:block;color:var(--muted);font-style:normal;font-size:10px;margin-top:2px;font-weight:400}
+.obj-toast.fading{transition:opacity .6s;opacity:0}
 /* Phase E10 — 7-day timeline progress bar + run summary */
 #day-bar{position:relative;width:84px;height:6px;background:#ffffff14;border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:5px}
 #day-bar-fill{position:absolute;top:0;left:0;bottom:0;background:linear-gradient(90deg,var(--green),var(--gold));transition:width .4s}
@@ -1946,7 +1950,10 @@ function buildRunSummary(objDone,objTotal,tier){
     run:G.run,seed:G.seed,tier:tier.tier,tierIc:tier.ic,objDone,objTotal,
     money:G.money,rep:G.rep,mood:G.mood,meta:G.meta,
     sigArch:topArch?topArch[0]:'—',sigFact:factIc,sigFactName:factName,
-    sigTalent:(G.talents&&G.talents[0])||'—',sigMutator:(G.mutator&&G.mutator.ic)||'🏷️'
+    sigTalent:(G.talents&&G.talents[0])||'—',sigMutator:(G.mutator&&G.mutator.ic)||'🏷️',
+    // funify-v3 Round 32 — Run 报告新增 bestRunCombo (酒吧最高连击) 与 escapeCaught (逃票失败次数)
+    bestRunCombo:(G._run&&G._run.streakBest)||(G.shop&&G.shop.streakBest)||0,
+    escapeCaught:(G._run&&G._run.escapeCaught)|0
   };
   card.epitaph=buildRunEpitaph(card);
   return card;
@@ -1965,16 +1972,24 @@ function renderRunHistory(){
   const runs=loadRunHistory();
   if(!runs.length){el.innerHTML='<div class="run-card">尚无历史 · 完成首局 Run 后,这里会显示 Run 卡片</div>';return}
   // Phase E round 8 — best stats header (跨 Run 个人纪录)
-  const best={money:0,rep:-Infinity,meta:0};
+  const best={money:0,rep:-Infinity,meta:0,combo:0,escFree:Infinity};
   for(const r of runs){
     if(r.money>best.money)best.money=r.money;
     if(r.rep>best.rep)best.rep=r.rep;
     if(r.meta>best.meta)best.meta=r.meta;
+    // funify-v3 Round 32 — 跨 Run 个人最佳:最高 combo 与最少逃票失败
+    if((r.bestRunCombo|0)>best.combo)best.combo=r.bestRunCombo|0;
+    const ec=r.escapeCaught|0;
+    if(ec<best.escFree)best.escFree=ec;
   }
-  const bestRow='<div class="run-card" style="border-color:var(--gold);background:#00000050"><b>🏆 个人最佳 (跨 '+runs.length+' Run)</b><br><span class="big">💰 $'+best.money+'</span> · <b>⭐ '+best.rep+' rep</b> · <span style="color:var(--gold)">★ '+best.meta+' meta</span></div>';
+  // legacy 老 runs 没字段时给默认值
+  if(!runs.some(r=>'bestRunCombo' in r))best.combo='—';
+  if(!runs.some(r=>'escapeCaught' in r))best.escFree='—';
+  else if(best.escFree===Infinity)best.escFree='—';
+  const bestRow='<div class="run-card" style="border-color:var(--gold);background:#00000050"><b>🏆 个人最佳 (跨 '+runs.length+' Run)</b><br><span class="big">💰 $'+best.money+'</span> · <b>⭐ '+best.rep+' rep</b> · <span style="color:var(--gold)">★ '+best.meta+' meta</span>'+(best.combo!=='—'?' · <b>🔥×'+best.combo+'</b> combo':'')+(best.escFree!=='—'?' · 🚇 '+best.escFree+' 次被抓':'')+'</div>';
   el.innerHTML=bestRow+runs.map(r=>`<div class="run-card">
     <b>#${r.run}</b> · seed ${r.seed} · ${r.tierIc} ${r.tier} · ${r.objDone}/${r.objTotal} 目标<br>
-    <span class="big">$${r.money}</span> · <b>${r.rep} rep</b> · 心情 ${r.mood>=0?'+':''}${r.mood} · ${r.meta}★ meta<br>
+    <span class="big">$${r.money}</span> · <b>${r.rep} rep</b> · 心情 ${r.mood>=0?'+':''}${r.mood} · ${r.meta}★ meta${('bestRunCombo' in r)?' · 🔥×'+(r.bestRunCombo|0):''}${('escapeCaught' in r)?' · 🚇被抓 '+(r.escapeCaught|0):''}<br>
     <span style="font-size:14px">${r.sigArch}</span> 常客 · <span style="font-size:14px">${r.sigFact}</span> 派系 · <span style="font-size:14px">${r.sigTalent}</span> 天赋 · <span style="font-size:14px">${r.sigMutator}</span> 变量<br>
     <em class="run-epitaph">${r.epitaph||'平平淡淡:这座城市悄悄记住了你的名字'}</em>
   </div>`).join('');
@@ -1993,7 +2008,7 @@ function tryUnlock(id){
 }
 // Per-run scratch counters (reset each newRun)
 function resetRunCounters(){
-  G._run={orders:0,coffeeRaid:false,coffeeNoUndercover:true,perfectWaves:0,policeHits:0,brewsFinished:0,coffeeSales:0,academicDone:0,sawUndercover:false,greetedAll:{},factionBonus:{brewing:1,coffee:1,shroom:1,bar:1},factionTriggered:{},bodyTradeCount:0};
+  G._run={orders:0,coffeeRaid:false,coffeeNoUndercover:true,perfectWaves:0,policeHits:0,brewsFinished:0,coffeeSales:0,academicDone:0,sawUndercover:false,greetedAll:{},factionBonus:{brewing:1,coffee:1,shroom:1,bar:1},factionTriggered:{},bodyTradeCount:0,escapeCaught:0};
   G.achTree={brew:0,coffee:0,rogue:0,scholar:0};
   // reset talent cap to base 4; E9 tiers will dynamically extend it
   G._talentMax=TALENT_MAX;
@@ -2519,13 +2534,13 @@ function showUpgradeModal(){
   const m=document.getElementById('upg-modal');if(!m)return;
   document.getElementById('um-meta-v').textContent=G.meta;
   // Round 5: show run summary (tier + streakBest + objDone) so player picks upgrade with context
-  const sum=document.getElementById('um-summary');if(sum){const r=G._run||{},t=endGameTier(r.lastObjDone||0,r.lastObjTotal||3);sum.textContent=` · ${t.ic}${t.label} 目标 ${r.lastObjDone||0}/${r.lastObjTotal||3}${r.streakBest>0?' 🔥×'+r.streakBest:''}`}
+  const sum=document.getElementById('um-summary');if(sum){const r=G._run||{},t=endGameTier(r.lastObjDone||0,r.lastObjTotal||3);const ec=(r.escapeCaught|0);sum.textContent=` · ${t.ic}${t.label} 目标 ${r.lastObjDone||0}/${r.lastObjTotal||3}${r.streakBest>0?' 🔥×'+r.streakBest:''}${ec>0?' 🚇×'+ec+'被抓':''}`}
   // Phase E7 — 渲染本局 Run Summary Card + 历史 10 条
   const card=G._run.summaryCard;if(card){
     const rh=document.getElementById('run-card-now');
     if(rh)rh.innerHTML=`<div class="run-card">
       <b>本局 Run #${card.run}</b> · seed ${card.seed} · ${card.tierIc} ${card.tier} · 目标 ${card.objDone}/${card.objTotal}<br>
-      <span class="big">$${card.money}</span> · <b>${card.rep} rep</b> · 心情 ${card.mood>=0?'+':''}${card.mood} · <b>${card.meta}★ meta</b><br>
+      <span class="big">$${card.money}</span> · <b>${card.rep} rep</b> · 心情 ${card.mood>=0?'+':''}${card.mood} · <b>${card.meta}★ meta</b>${card.bestRunCombo?' · 🔥×'+card.bestRunCombo+' combo':''}${(card.escapeCaught|0)>0?' · 🚇被抓 '+card.escapeCaught+' 次':''}<br>
       <span style="font-size:14px">${card.sigArch}</span> 常客 · <span style="font-size:14px">${card.sigFact}</span> 派系 · <span style="font-size:14px">${card.sigTalent}</span> 天赋 · <span style="font-size:14px">${card.sigMutator}</span> 变量<br>
       <em class="run-epitaph">${card.epitaph||'平平淡淡:这座城市悄悄记住了你的名字'}</em>
     </div>`;
@@ -3011,6 +3026,7 @@ function startEscapeMinigame(){
     if(MG.escape&&MG.escape.ph==='p1'){
       addEvt('bad','🎫 选技术超时 · -$10 · 心情 -1');
       G.money=Math.max(0,G.money-10);G.mood=Math.max(moodFloor(),G.mood-1);
+      if(G._run)G._run.escapeCaught=(G._run.escapeCaught|0)+1;
       finEscape(false);
     }
   },1000);
@@ -3023,6 +3039,7 @@ function escapeIn(k){
     if(idx>=G.escapeLevel){
       addEvt('bad','🎫 选未学技术 · -$10 · 心情 -1');
       G.money=Math.max(0,G.money-10);G.mood=Math.max(moodFloor(),G.mood-1);
+      if(G._run)G._run.escapeCaught=(G._run.escapeCaught|0)+1;
       clearTimeout(G._escTimer);finEscape(false);return;
     }
     s.techIdx=idx;s.ph='p2';s.p2Started=Date.now();
@@ -3032,6 +3049,7 @@ function escapeIn(k){
       if(MG.escape&&MG.escape.ph==='p2'){
         addEvt('bad','🎫 错过所有窗口 · -$20 · 心情 -1');
         G.money=Math.max(0,G.money-20);G.mood=Math.max(moodFloor(),G.mood-1);
+        if(G._run)G._run.escapeCaught=(G._run.escapeCaught|0)+1;
         finEscape(false);
       }
     },5000);
@@ -3040,7 +3058,7 @@ function escapeIn(k){
   if(s.ph==='p2'&&k===' '){
     const elapsed=Date.now()-s.p2Started;
     const inWindow=elapsed>=1500&&elapsed<2300||elapsed>=2700&&elapsed<3500||elapsed>=3900&&elapsed<4700;
-    if(!inWindow){addEvt('bad','🎫 误按窗口外 · -$20 · 心情 -1');G.money=Math.max(0,G.money-20);G.mood=Math.max(moodFloor(),G.mood-1);clearTimeout(G._escTimer);finEscape(false);return}
+    if(!inWindow){addEvt('bad','🎫 误按窗口外 · -$20 · 心情 -1');G.money=Math.max(0,G.money-20);G.mood=Math.max(moodFloor(),G.mood-1);if(G._run)G._run.escapeCaught=(G._run.escapeCaught|0)+1;clearTimeout(G._escTimer);finEscape(false);return}
     // Phase 3: random platform pick
     const platform=1+Math.floor(seeded(240+G.day*3+s.techIdx)*4);
     const tech=ESCAPE_TECHS[s.techIdx];
@@ -3053,6 +3071,7 @@ function escapeIn(k){
     if(!ok){
       addEvt('bad',`🎫 ${platform}号站台被查 · ${tech.name}失败 · -$30 · rep -2`);
       G.money=Math.max(0,G.money-30);G.rep=Math.max(-30,G.rep-2);
+      if(G._run)G._run.escapeCaught=(G._run.escapeCaught|0)+1;
       AUDIO.play('brew_fail');
       finEscape(false);return;
     }
@@ -4575,7 +4594,9 @@ function tickObj(cat,n=1){
     if(o.cur>=o.need){o.done=true;let reward=o.sc;if(cat==='Earn'&&hasMod('tulip_auction'))reward+=5;if(hasUpgrade('meta_cap'))reward=Math.ceil(reward*1.5);if(hasUpgrade('legendary_meta_x2'))reward*=2;
       // funify-v3 Round 11: meta 黑洞封顶 30/obj — meta_cap(×1.5) + legendary_meta_x2(×2) 叠加 = ×3,封顶避免 meta 累积过冲
       if(hasUpgrade('legendary_meta_x2'))reward=Math.min(30,reward);
-      G.metaPending+=reward;addEvt('good','🎯 目标完成:'+o.t+' +'+reward+'★（结算时到账）');AUDIO.play('objective')}
+      G.metaPending+=reward;addEvt('good','🎯 目标完成:'+o.t+' +'+reward+'★（结算时到账）');AUDIO.play('objective');
+      // funify-v3 Round 32 — 目标完成 toast (BACKLOG #7 反馈感) — 固定右下角 5s 后淡出,堆叠多 obj 完成
+      try{const t=document.createElement('div');t.className='obj-toast';t.innerHTML=`🎯 目标达成 · ${o.t}<em>+${reward}★ 待结算</em>`;document.body.appendChild(t);setTimeout(()=>{t.classList.add('fading');setTimeout(()=>t.remove(),650)},5000)}catch(_){}}
   });
 }
 function workInd(){if(G.inside||G.mg)return;const map={tweede_kans:'brewing',noord:'surfing',bloemenmarkt:'smart_shop',science_park:'academic',de_pijp:'brewing'};const id=map[G.loc];if(!id)return;const def=IND_DEF[id],ind=G.ind[id];const inc=Math.round((def.inc[ind.lv]+Math.floor(seeded(200+G.events.length)*5))*industryFactor(id==='surfing'?'surf':id));G.money+=inc;ind.xp+=Math.round(inc*2*(hasUpgrade('legacy_xp')?1.25:1));chkLv(id);setMsg(`${def.n} +$${inc}`);addEvt('good',`${def.n} +$${inc}`);addSch(def.n.substring(0,2),`经营 +$${inc}`);tickObj('Earn',inc);renderAll()}

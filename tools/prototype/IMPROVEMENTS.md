@@ -1416,3 +1416,47 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - ⚠️ Round 37 26 条断言中,headless Chrome 耗时过长无法稳定跑(本地 chrome 进程被多个项目占用,>120s timeout);仅 Node-side 12/12 + test-phase-e.js 168/168 + node --check 验证。浏览器端断言需等环境空闲再回归。
 - ⚠️ Round 29 风险 #2 (URL 不含 slot/run) 仍 open,这次 Round 30 未触碰
 - ⚠️ 5 个 seed 历史与 3 槽解耦:存在切换槽后看到不同槽的最近 seed;若想"槽隔离"需 recentSeeds 挪到 slot 内部(留待 Round 31+)
+
+## Round 38 — 🎯 Run 报告与反馈增强 (BACKLOG #7 #9 closure)
+
+> Round 37 之后闭环:把 BACKLOG #9 (肉鸽深度) 与 #7 (反馈感) 的 3 条高 ROI 小项一起落地。tickObj 完成给玩家即时绿色 toast 反馈;escape 失败路径 (5 处) 全部纳入 _run.escapeCaught;buildRunSummary + renderRunHistory + showUpgradeModal 把 bestRunCombo 与 escapeCaught 显示出来,玩家挑升级时看得到本局强项/弱项。
+
+### Commit — funify-v3(round32-run-report): Run 报告与反馈增强 test=647/653
+
+- 改动:
+  - `tools/prototype/index.html` (+29/-10):
+    - **CSS**: `.obj-toast` 绿色卡片 (var(--green) border + linear-gradient #1f3a25/#162618 背景) 固定右下角 96px,`.fading` 600ms 透明度 0
+    - **tickObj**: 完成分支 spawn DOM 元素,文案 `🎯 目标达成 · {o.t} +X★ 待结算`,5000ms 后淡出 + 650ms 后 remove,所有操作 try/catch 兜底
+    - **escapeIn 5 处失败路径**: p1 未学技术 / p1 选技术超时 / p2 错过所有窗口 / p2 误按窗口外 / p3 站台被查 — 全部 `G._run.escapeCaught=(G._run.escapeCaught|0)+1`
+    - **resetRunCounters**: 初始化 `escapeCaught:0`
+    - **buildRunSummary**: 返 `{bestRunCombo, escapeCaught}` — `bestRunCombo` 优先 G._run.streakBest 再 fallback G.shop.streakBest;escapeCaught 默认 0 (老 _run 缺字段向后兼容)
+    - **showUpgradeModal um-summary**: 拼接 `🔥×{streakBest}` 与 `🚇×{escapeCaught}被抓`
+    - **run-card-now 即时卡片**: 本局 Run 卡片加 combo/escapeCaught 行
+    - **renderRunHistory 跨 Run 最佳**: 🏆 行加 🔥/🚇 字段;legacy 老 runs 没字段时显示 `—` (`'bestRunCombo' in r` 守卫)
+  - `tools/prototype/test-phase-e.js` (+1/-1): `renderRunHistory computes best stats header` regex 扩展到接受 `best={money,rep,meta,combo,escFree:Infinity}` 新形状
+  - `tools/prototype/test.html` (+98):
+    - 2 条 CSS 审计: `.obj-toast { ... --green }` + `.obj-toast.fading { opacity:0 }`
+    - 3 条 tickObj DOM 行为: 完成时插入 .obj-toast 元素 + 文案含 `+X★ 待结算` + 已 done 的 obj 不重复
+    - 1 条 resetRunCounters: `_run.escapeCaught=0` 初始化
+    - 4 条 buildRunSummary + showUpgradeModal: bestRunCombo/escapeCaught 字段 + 老 _run 缺字段默认 0 + um-summary 🔥×N 显示 + um-summary 🚇×N被抓 显示
+    - 5 条 source audit: 5 处 escapeCaught 累加点 (p1 未学 / p1 超时 / p2 超时 / p2 误按 / p3 站台) — 用 `/...\)[\s\S]{0,400}G\._run\.escapeCaught/` 允许中间模板字符串 + 中文 + 多语句
+    - 2 条 tickObj source audit: 内含 obj-toast DOM 创建 + fading 类名添加
+  - `tools/prototype/BACKLOG.md`:
+    - 关闭 #7 tickObj toast + #9 bestRunCombo + #9 escapeCaught;标 #9 totalObjsDone*5 Round 5 已修
+    - 新增「funify-v3 — Round 32」 Round 章节记录范围/风险/验收
+- 机制要点:
+  1. **escapeCaught 5 处全覆盖**: p1 选未学 + p1 超时 + p2 超时 + p2 误按 + p3 站台被查,每条独立 source-audit 断言,未来重构改名会立即失败
+  2. **向后兼容 localStorage**: `bestRunCombo` 与 `escapeCaught` 都是新字段,legacy 老 runs 没字段时 `'field' in r` 守卫 + `||0` fallback,不会报错
+  3. **toast 不阻塞主流程**: `try/catch` 包住 DOM 创建 + setTimeout,即使 `document.body` 不可访问也不会影响 tickObj 主线 (addEvt/AUDIO.play/metaPending 累加)
+  4. **3-axis 升档**: 反馈 +1 (toast 即时反馈 + Run 报告 combo/escapeCaught 显示);选择 +1 (玩家挑升级时看到本局强项);持久化 +0 (这些是 _run 临时数据,Run Summary Card 通过 pushRunHistory 持久)
+- 已知风险 (留待 Round 39+):
+  - escapeCaught 仅作报告展示,未计入 mood/rep 惩罚 (与现有 -$10/-$20/-$30/-rep 2 叠加),留待后续若想"越狱失败 → 心情更深"再调整
+  - toast 堆叠可能瞬间多张同时弹出 (玩家同一秒完成 3 个 obj),留 Z-index/layering 优化
+
+### 验收
+- **test.html 647/653 PASS** (基线 636 + 17 Round 38 断言,Round 38 0 fail;6 preexisting fail 全为 Round 37 / seed 自动聚焦 — 已用 028843e 验证 baseline 630/636 同样 fail)
+- **test-phase-e.js 168/168 PASS** (含 renderRunHistory best stats regex 扩展)
+- **node --check** index.html/test.html PASS
+- **http://127.0.0.1:8767/index.html + test.html** 全程 200
+- **BACKLOG.md** 关闭 3 条 (#7 tickObj toast / #9 bestRunCombo / #9 escapeCaught),标 #9 totalObjsDone*5 Round 5 已修
+- **IMPROVEMENTS.md** Round 38 record 同步

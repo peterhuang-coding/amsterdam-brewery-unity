@@ -2603,6 +2603,104 @@ frame.addEventListener('load',async()=>{
     return!!e&&e.day===5&&e.ti===4&&String(e.detail||'').includes('💔');
   });
 
+  // ═══ funify-v3 Round 32 — Run 报告与反馈增强 (BACKLOG #9 #7 closure) ═══
+  // 1. CSS: .obj-toast 样式存在
+  check('CSS .obj-toast 样式存在',()=>/\.obj-toast\{[^}]*border:1px solid var\(--green\)/.test(_r6src));
+  check('CSS .obj-toast 含 fading transition',()=>/\.obj-toast\.fading\{[^}]*opacity:0/.test(_r6src));
+  // 2. tickObj 真实产生 obj-toast DOM
+  check('tickObj 完成时插入 .obj-toast 元素',()=>{
+    const had=t.state.objs;const hadPending=t.state.metaPending;
+    t.state.objs=[{cat:'Earn',cur:0,need:10,done:false,sc:5,t:'测试 obj'}];
+    t.state.metaPending=0;
+    const beforeCount=doc.querySelectorAll('.obj-toast').length;
+    win.tickObj('Earn',10);
+    const afterCount=doc.querySelectorAll('.obj-toast').length;
+    const newToast=Array.from(doc.querySelectorAll('.obj-toast')).find(el=>el.textContent.includes('测试 obj'));
+    // 清理
+    doc.querySelectorAll('.obj-toast').forEach(el=>el.remove());
+    t.state.objs=had;t.state.metaPending=hadPending;
+    return afterCount===beforeCount+1&&!!newToast;
+  });
+  check('tickObj 完成时 toast 含 "+X★ 待结算"',()=>{
+    const had=t.state.objs;const hadPending=t.state.metaPending;
+    t.state.objs=[{cat:'Brew',cur:0,need:3,done:false,sc:7,t:'酿酒测试'}];
+    t.state.metaPending=0;
+    win.tickObj('Brew',3);
+    const toast=Array.from(doc.querySelectorAll('.obj-toast')).find(el=>el.textContent.includes('酿酒测试'));
+    const ok=!!toast&&/\+\d+★\s*待结算/.test(toast.textContent);
+    doc.querySelectorAll('.obj-toast').forEach(el=>el.remove());
+    t.state.objs=had;t.state.metaPending=hadPending;
+    return ok;
+  });
+  // 3. tickObj 不会重复触发 (再次 tick 同一 obj 不应再插入 toast)
+  check('tickObj 已 done 的 obj 不再插入 toast',()=>{
+    const had=t.state.objs;const hadPending=t.state.metaPending;
+    t.state.objs=[{cat:'Earn',cur:10,need:10,done:true,sc:5,t:'已完成'}];
+    t.state.metaPending=0;
+    const beforeCount=doc.querySelectorAll('.obj-toast').length;
+    win.tickObj('Earn',1);
+    const afterCount=doc.querySelectorAll('.obj-toast').length;
+    doc.querySelectorAll('.obj-toast').forEach(el=>el.remove());
+    t.state.objs=had;t.state.metaPending=hadPending;
+    return afterCount===beforeCount;
+  });
+  // 4. resetRunCounters 初始化 escapeCaught:0
+  check('resetRunCounters 初始化 _run.escapeCaught=0',()=>{
+    const hadRun=t.state._run;
+    t.state._run.escapeCaught=5;
+    win.resetRunCounters();
+    const ok=t.state._run.escapeCaught===0;
+    t.state._run=hadRun;
+    return ok;
+  });
+  // 5. buildRunSummary 含 bestRunCombo + escapeCaught 字段
+  check('buildRunSummary 返回 bestRunCombo 字段',()=>{
+    const had=t.state._run;const hadShop=t.state.shop;
+    t.state._run.streakBest=7;t.state.shop.streakBest=7;t.state._run.escapeCaught=2;
+    const card=win.buildRunSummary(2,3,{tier:'silver',ic:'🥈',label:'优秀',col:'#c8c8d0',mult:1.2});
+    t.state._run=had;t.state.shop=hadShop;
+    return card.bestRunCombo===7&&card.escapeCaught===2;
+  });
+  check('buildRunSummary escapeCaught 默认 0 (老 _run 缺字段)',()=>{
+    const had=t.state._run;
+    t.state._run={streakBest:3};delete t.state._run.escapeCaught;
+    const card=win.buildRunSummary(1,3,{tier:'bronze',ic:'🥉',label:'及格',col:'#cd7f32',mult:1.0});
+    t.state._run=had;
+    return card.bestRunCombo===3&&card.escapeCaught===0;
+  });
+  // 6. showUpgradeModal um-summary 包含 combo/escapeCaught 字段
+  check('showUpgradeModal um-summary 含 combo 显示',()=>{
+    const had=t.state._run;const hadEnd=t.state.ended;
+    t.state._run.streakBest=5;t.state._run.lastObjDone=2;t.state._run.lastObjTotal=3;t.state._run.lastTier='silver';t.state._run.escapeCaught=0;
+    t.state.ended=true;t.state.meta=99;
+    try{win.showUpgradeModal()}catch(e){}
+    const sum=doc.getElementById('um-summary');
+    const ok=sum&&/🔥×5/.test(sum.textContent);
+    doc.getElementById('upg-modal').classList.add('hidden');
+    t.state._run=had;t.state.ended=hadEnd;
+    return ok;
+  });
+  check('showUpgradeModal um-summary 包含 escapeCaught 显示 (有逃票失败)',()=>{
+    const had=t.state._run;const hadEnd=t.state.ended;
+    t.state._run.streakBest=0;t.state._run.lastObjDone=1;t.state._run.lastObjTotal=3;t.state._run.lastTier='bronze';t.state._run.escapeCaught=3;
+    t.state.ended=true;t.state.meta=99;
+    try{win.showUpgradeModal()}catch(e){}
+    const sum=doc.getElementById('um-summary');
+    const ok=sum&&/🚇×3被抓/.test(sum.textContent);
+    doc.getElementById('upg-modal').classList.add('hidden');
+    t.state._run=had;t.state.ended=hadEnd;
+    return ok;
+  });
+  // 7. 源审计: 5 处 escapeCaught 累加点全部到位 (窗口放宽到 400 容下模板字符串与中文;语法 `!ok`/`!inWindow` 后是 `){` 不是 `{`)
+  check('escapeCaught 累加源 1: 选未学技术',()=>/idx>=G\.escapeLevel[\s\S]{0,400}G\._run\.escapeCaught/.test(_r6src));
+  check('escapeCaught 累加源 2: 选技术超时 (p1 timeout)',()=>/MG\.escape\&\&MG\.escape\.ph==='p1'\)[\s\S]{0,400}G\._run\.escapeCaught/.test(_r6src));
+  check('escapeCaught 累加源 3: 错过所有窗口 (p2 timeout)',()=>/MG\.escape\.ph==='p2'\)[\s\S]{0,400}G\._run\.escapeCaught/.test(_r6src));
+  check('escapeCaught 累加源 4: 误按窗口外 (inWindow=false)',()=>/!inWindow\)\{[\s\S]{0,400}G\._run\.escapeCaught/.test(_r6src));
+  check('escapeCaught 累加源 5: 站台被查 (ok=false)',()=>/!ok\)\{[\s\S]{0,400}G\._run\.escapeCaught/.test(_r6src));
+  // 8. tickObj 源审计: toast DOM 创建在 tickObj 内
+  check('tickObj 源: 包含 obj-toast 创建',()=>/tickObj\([^)]*\)[\s\S]{0,1500}obj-toast/.test(_r6src));
+  check('tickObj 源: 包含 fading 类名',()=>/tickObj\([^)]*\)[\s\S]{0,1800}fading/.test(_r6src));
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

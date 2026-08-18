@@ -1589,3 +1589,46 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - Round 3: A4 WASD 玩家移动有脚步节奏 + 地形速度差 (桥快 / 砖路标准 / 草地慢 / 水挡)
 - Round 4+: B1 酒吧 Dave 级深度 (8 灵魂事件 + 6 升级树)
 - 后续: 把 ambient 音频套用到 5 个 mini-game 各自的背景 (酿酒铜锅低鸣 / 咖啡店 espresso hiss / 冲浪白噪声 / 蘑菇房滴水)
+
+## Round 4 — Phase B2 咖啡店 Dave 级深度
+
+### 目标
+
+把咖啡店从 4 product + 1 步成交升级到 Dave 级:5 种豆 + 7 天保质 + 3 段工艺 + 4 灵魂事件。
+
+### 已完成改动与文件
+
+- `tools/prototype/index.html`:
+  - 新增 `COFFEE_BEANS` 5 种咖啡豆(yirgacheffe/geisha/sumatra/cerrado/mandheling)+ `coffeeBeanMult(beanId)` 保质 mult 逻辑
+  - 新增 `coffeeAgeBeans()` — 每天老化所有豆库存 +1 天;集成到 `newRunInner`
+  - 新增 `coffeeBeanQualityMult()` — 库存加权 mult,空库存 0.85
+  - 新增 `coffeePourState(s)` — 3 段工艺计时(grind/extract/latte),每位新客重置
+  - 新增 `COFFEE_SOUL_EVENTS` × 4:inspector(卫生临检)+ creative(常客创意)+ blackout(停电)+ vip(VIP 大单)
+  - 新增 `coffeeRollSoulEvent` / `coffeeApplySoul` / `coffeeInspectorHide`
+  - `startCoffee` 初始化 beanQuality / dailyBeanMult / stage / 灵魂事件 flags
+  - `sCoffeeC` 末尾 roll soul event + 重置 stage
+  - `coffeeIn` SPACE:inspector 藏豆分支 + 3 段完成 bonus +20% tip + beanQ × specialMult × vipMult × tipBoost 多维加成
+  - `finCoffee` bonusTags 显示 ☕ 豆 mult
+  - AB_TEST 暴露 8 个新函数
+- `tools/prototype/test.html`:新增 21 条 R4 断言(豆/保质/灵魂/工艺/集成)
+
+### 验证结果
+
+- `node --check`(extract inline script):index.html + test.html SCRIPT_OK
+- `node tools/prototype/test-phase-e.js`:197/197 PASS
+- headless Chrome CDP `test.html`:**778/785 PASS**(R4 21 条全过,7 个 Round 37 旧失败无关)
+- `http.server 8767`:200 OK
+- `git diff --check`:PASS;工作树 clean(待 commit)
+
+### 风险
+
+- **3 段工艺当前只检查 progress>=0.8**:未要求玩家按键,纯被动计时,体感弱于 bar 倒酒。后续 Round 可加 SPACE 触发段完成 + 完美窗口
+- **inspector 藏豆 QTE 概率(60%)固定**:未与 rep / faction / 道具挂钩
+- **豆库存只有 3 种(随机)+ 默认 3 个**:首局无豆 → beanQuality 0.85 略低
+- **24h 周期跨度假设 run ≤ 7 天**:豆 fresh 不会超期,老化仅在 newRunInner 触发 1 次
+
+### 新 Idea
+
+- B2 增强:把 3 段工艺改成 SPACE 主动触发,每段有完美窗口,完成全部 3 段 = perfect pour
+- B2 跨游戏 link:豆库存可销售给酒吧(bar 解锁精品咖啡鸡尾酒)
+- B3 冲浪 Dave 级:浪预报 + stamina + 3 trick 窗口

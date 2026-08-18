@@ -1861,6 +1861,89 @@ function coffeeFitHint(price,budget){
   if(gap>=-3)return{col:'#e8a020',label:'!偏高',ok:false,gap};
   return{col:'#f05050',label:'✗拒',ok:false,gap};
 }
+// funify-v3 Round 4 (Phase B2): 4 灵魂事件 — 触发时机见 coffeeRollSoulEvent
+// effect.kind ∈ {inspector, creative, blackout, vip} → see coffeeApplySoul()
+const COFFEE_SOUL_EVENTS=[
+  {id:'inspector',ic:'🕵️',n:'卫生临检',  desc:'便衣查咖啡豆来源 · heat +25 · SPACE 藏豆免突击',
+   effect:{kind:'inspector',heatSpike:25,hideWindow:3,hideCorrect:0.6,hideWrong:1.3}},
+  {id:'creative', ic:'🎨',n:'常客创意',  desc:'Creative 客人点创意特调 · 解锁 special 菜单临时提价 +30%',
+   effect:{kind:'creative',specialMult:1.3,unlockSpecial:1}},
+  {id:'blackout', ic:'🕯️',n:'咖啡店停电',desc:'全黑 1 轮 · 下 3 客 tip ×1.25',
+   effect:{kind:'blackout',blackoutRounds:1,tipBoostRounds:3,tipBoostMul:1.25}},
+  {id:'vip',      ic:'⭐',n:'VIP 大单',  desc:'Celebrity 要 5 杯 · 加速 3 段工艺 · 大 tip ×2',
+   effect:{kind:'vip',stagesRequired:3,stageMsMul:0.5,vipMult:2}},
+];
+// Roll one-shot soul event for the run. Triggers:
+//   inspector: heat >= 65  → 警察临检
+//   creative:  high tier (Foodie/Celebrity) served 2+ times in a session
+//   blackout:  evening phase + 4+ customers served
+//   vip:       Celebrity served (seeded rare roll)
+function coffeeRollSoulEvent(s,sd){
+  if(!G._coffeeSoul)G._coffeeSoul={picked:null,fired:false,inspectorHits:0};
+  if(G._coffeeSoul.fired)return null;
+  const highServed=(s.history||[]).filter(h=>h.tier==='high').length;
+  const triggers=[
+    {id:'inspector',ok:s.ht>=65},
+    {id:'creative', ok:highServed>=2},
+    {id:'blackout', ok:coffeeDayPhase()==='evening'&&sd>=4},
+    {id:'vip',      ok:sd===2 &&seeded(99)<0.18},
+  ];
+  for(const t of triggers){
+    if(t.ok&&!G._coffeeSoul.picked){
+      G._coffeeSoul.picked=t.id;
+      return COFFEE_SOUL_EVENTS.find(e=>e.id===t.id);
+    }
+  }
+  return null;
+}
+// Apply soul event — sets MG.coffee flags + adds HUD event log
+function coffeeApplySoul(evt){
+  if(!evt)return;
+  const e=evt.effect;
+  const s=MG.coffee;
+  G._coffeeSoul.fired=true;G._coffeeSoul.picked=evt.id;
+  if(e.kind==='inspector'){
+    if(s){s.inspectorActive=true;s.inspectorRounds=e.hideWindow||3;s.ht=Math.min(100,s.ht+(e.heatSpike||25))}
+    bumpFaction('coffee',-1,'卫生临检');
+  }
+  if(e.kind==='creative'){
+    if(s){s.specialMult=e.specialMult||1.3;s.creativeUnlocked=e.unlockSpecial||1}
+    bumpFaction('coffee',1,'常客创意认可');
+  }
+  if(e.kind==='blackout'){
+    if(s){s.blackoutRounds=e.blackoutRounds||1;s.tipBoostRounds=e.tipBoostRounds||3;s.tipBoostMul=e.tipBoostMul||1.25}
+    bumpFaction('heineken',1,'停电客流涌入');
+  }
+  if(e.kind==='vip'){
+    if(s){s.vipMode=true;s.stageMsMul=e.stageMsMul||0.5;s.vipMult=e.vipMult||2;s.stagesRequired=e.stagesRequired||3}
+    bumpFaction('coffee',2,'VIP 大单');
+  }
+  addEvt('good',evt.ic+' '+evt.n+' · '+evt.desc);
+  setMsg('✨ 灵魂事件: '+evt.n);
+  AUDIO.play('objective');
+}
+// 3 段工艺 — grind/extract/latte。SPACE 触发当前段完成,3 段全成 = 完美泡制 +20% tip
+// s.stage = { idx:0..2, startedAt, msPerStage, done }
+function coffeePourState(s){
+  if(!s||!s.stage||s.stage.done)return null;
+  const elapsed=Date.now()-s.stage.startedAt;
+  const baseMs=(s.stage.msPerStage||2200)*(s.stageMsMul||1);
+  const prog=Math.min(1,elapsed/baseMs);
+  s.stage.progress=prog;
+  return s.stage;
+}
+// Inspector hide mechanic: SPACE during inspector rounds → hide beans → reduce heat spike
+function coffeeInspectorHide(s){
+  if(!s||!s.inspectorActive)return false;
+  G._coffeeSoul.inspectorHits=(G._coffeeSoul.inspectorHits||0)+1;
+  const e=COFFEE_SOUL_EVENTS.find(x=>x.id==='inspector').effect;
+  const ok=seeded(103)<(e.hideCorrect||0.6);
+  s.ht=Math.max(0,s.ht-(ok?(e.heatSpike||25):Math.round((e.heatSpike||25)*0.3)));
+  s.inspectorRounds=Math.max(0,s.inspectorRounds-1);
+  if(s.inspectorRounds<=0){s.inspectorActive=false;s._souled=true}
+  addEvt(ok?'good':'bad',ok?`🕵️ 藏豆成功 · heat -${e.heatSpike||25}`:`🕵️ 藏豆失败 · heat 仅 -${Math.round((e.heatSpike||25)*0.3)}`);
+  return ok;
+}
 // funify-v3 (B2 shroom): real-time quality mapping from error magnitude → ★1-5
 function shroomQuality(err){
   if(err<0.1)return 5;
@@ -3081,6 +3164,18 @@ function startCoffee(){
   });
   const defaultPrice={espresso:15,drip:8,cold_brew:22,special:35};
   const defaultProdKey=availableProducts[0];
+  // Round 4 (Phase B2): seed 豆库存 (3 种随机 · fresh=0) — 每次开店轮换
+  if(!G.shop.coffeeBeans)G.shop.coffeeBeans={};
+  const seedPool=[...COFFEE_BEANS].sort(()=>seeded(80)-0.5).slice(0,3);
+  for(const b of seedPool){
+    if(!G.shop.coffeeBeans[b.id])G.shop.coffeeBeans[b.id]={qty:3,fresh:0};
+    else G.shop.coffeeBeans[b.id].qty=Math.min(8,(G.shop.coffeeBeans[b.id].qty||0)+1);
+  }
+  // Reset soul-event tracker for this coffee session
+  G._coffeeSoul=G._coffeeSoul||{picked:null,fired:false,inspectorHits:0};
+  G._coffeeSoul.fired=false;G._coffeeSoul.picked=null;
+  const dailyBean=coffeePickDailyBean();
+  const beanQuality=coffeeBeanQualityMult();
   dropIng('bean');MG.coffee={
     st:0, pr:defaultPrice[defaultProdKey], ht:0, sd:0, earn:0, raid:false, c:null,
     target, warn:0, lastT:Date.now(),
@@ -3089,13 +3184,18 @@ function startCoffee(){
     gang:false, gangPaid:false, nightTradeActive:false, undercoversSpotted:0,
     revenueBoost:1.0, streakCorrect:0, lastRaidTick:0,
     // Phase C B3: surf→coffee — first 3 customers get 🌊 boost (×1.15 revenue, 0 heat)
-    surfBoost:G.surfedToday===G.day?3:0,surfBoosted:0
+    surfBoost:G.surfedToday===G.day?3:0,surfBoosted:0,
+    // Round 4 (Phase B2): 今日推荐豆 + 库存品质 mult + 3 段工艺 + 灵魂事件状态
+    dailyBean,dailyBeanMult:coffeeBeanMult(dailyBean.id),beanQuality,specialMult:1,vipMode:false,stageMsMul:1,vipMult:1,stagesRequired:0,
+    inspectorActive:false,inspectorRounds:0,creativeUnlocked:0,blackoutRounds:0,tipBoostRounds:0,tipBoostMul:1,
+    stage:{idx:0,startedAt:Date.now(),msPerStage:2400,progress:0,done:false}
   };
   G.mg='coffee';G._mgEnterAt=Date.now();sCoffeeC();
   const phaseIcon=phase==='morning'?'☀️早':phase==='afternoon'?'🌤️午':'🌃夜';
   const surfTag=MG.coffee.surfBoost>0?' · 🌊海风x3':' ';
-  setStatus('🌿 咖啡店',`${phaseIcon} · 目标 ${target}人 · 客群随时间段 · 卧底率 ${Math.round(coffeeUndercoverProb(MG.coffee)*100)}% · 热度 0%${surfTag}`,
-    `1-4选品 · Q/W调价 · SPACE成交 · X拒客 · E${phase==='evening'?'🌃地下':'🔒'} · P🛡️雇帮$50`);
+  const beanTag=` · 今日豆${dailyBean.ic}${dailyBean.n}×${beanQuality.toFixed(2)}`;
+  setStatus('🌿 咖啡店',`${phaseIcon} · 目标 ${target}人 · 客群随时间段 · 卧底率 ${Math.round(coffeeUndercoverProb(MG.coffee)*100)}% · 热度 0%${surfTag}${beanTag}`,
+    `1-4选品 · Q/W调价 · SPACE成交(完美3段+20%) · X拒客 · E${phase==='evening'?'🌃地下':'🔒'} · P🛡️雇帮$50`);
 }
 function sCoffeeC(){
   const s=MG.coffee;if(!s)return;
@@ -3128,6 +3228,11 @@ function sCoffeeC(){
   s.warn=isUndercover?2:0;s.lastT=Date.now();
   // 重置 WoM (一次性 boost 已用)
   s.womMood=0;
+  // Round 4 (Phase B2): roll soul event at customer N (one-shot per session)
+  const soulEvt=coffeeRollSoulEvent(s,s.sd);
+  if(soulEvt)coffeeApplySoul(soulEvt);
+  // Reset 3 段工艺计时 — 每位新客开始新的 grind/extract/latte 流程
+  if(s.stage)s.stage={idx:0,startedAt:Date.now(),msPerStage:2400,progress:0,done:false};
 }
 // Heat decays between customers (gang protection 2× faster). Night trade accumulates heat.
 function updateCoffee(){
@@ -3179,6 +3284,12 @@ function coffeeIn(k){const s=MG.coffee;if(!s||s.raid)return;s.lastT=Date.now();
   // SPACE 成交
   if(k===' '){
     if(!s.c||s.sd>=s.target){finCoffee();return}
+    // Round 4 (Phase B2): inspector active → SPACE hides beans (QTE) instead of selling
+    if(s.inspectorActive&&s.inspectorRounds>0){
+      const ok=coffeeInspectorHide(s);
+      setMsg(ok?'🕵️ 藏豆成功 · heat -25':'🕵️ 藏豆失败 · heat 仅 -8');
+      return;
+    }
     if(s.pr<=s.c.max){
       if(s.c.undercover){
         // Phase E5 — Death Cards: 卧底成交 → 该 archetype 灵魂被拍,7 天内不出现
@@ -3201,6 +3312,12 @@ function coffeeIn(k){const s=MG.coffee;if(!s||s.raid)return;s.lastT=Date.now();
           setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},1200);return}
         setMsg('🛡️ 卧底交易（传奇免突击已豁免）');
       }else{
+        // Round 4 (Phase B2): 3 段工艺进度 — 检查 stage 完成度
+        let stageBonus=0;
+        if(s.stage&&!s.stage.done){
+          const st=coffeePourState(s);
+          if(st&&st.progress>=0.8){stageBonus=Math.round(s.pr*0.2);s.stage.done=true}
+        }
         // 合法成交 — 算奖金
         let base=s.pr;
         const matchBonus=(s.c.product===s.st)?Math.round(base*0.25):0;  // 匹配产品 +25%
@@ -3213,14 +3330,23 @@ function coffeeIn(k){const s=MG.coffee;if(!s||s.raid)return;s.lastT=Date.now();
         const surfMult=s.surfBoost>0?1.15:1;
         if(s.surfBoost>0){s.surfBoost--;s.surfBoosted=(s.surfBoosted||0)+1}
         const relMult=custRelTipMult(s.c.arch.n);
-        const total=Math.round((base+matchBonus+repBonus+streakBonus+highTierBonus)*s.productMult*tipMult*nightMult*surfMult*relMult);
+        // Round 4 (Phase B2): 豆库存品质 mult + 创意特调 mult + VIP mult + 停电 tip boost
+        const beanQ=(s.beanQuality||1);
+        const specialMult=s.specialMult||1;
+        const vipMult=s.vipMult||1;
+        const tipBoost=(s.tipBoostRounds>0)?(s.tipBoostMul||1):1;
+        if(s.tipBoostRounds>0)s.tipBoostRounds=Math.max(0,s.tipBoostRounds-1);
+        const total=Math.round((base+matchBonus+repBonus+streakBonus+highTierBonus+stageBonus)*s.productMult*tipMult*nightMult*surfMult*relMult*beanQ*specialMult*vipMult*tipBoost);
         s.earn+=total;
         // Phase C: heat 从海风 boost 客 0 增加,普通按价格增长
         if(surfMult===1)s.ht+=Math.round(s.pr/12*8);
         if(s.c.product===s.st)s.streakCorrect++;else s.streakCorrect=0;
+        // Round 4 (Phase B2): 记录成交历史,触发 creative 灵魂事件(高 tier 2 次)
+        if(!Array.isArray(s.history))s.history=[];
+        s.history.push({arch:s.c.arch.n,tier:s.c.arch.tier,match:s.c.product===s.st,bean:s.dailyBean&&s.dailyBean.id});
         // Phase C: 常客关系升级
         bumpCustRel(s.c.arch.n,s.c.arch.tier);
-        const tag=`${matchBonus?' ✓匹配+'+matchBonus:''}${streakBonus?' 🔥连击+'+streakBonus:''}${highTierBonus?' ✨VIP+'+highTierBonus:''}${nightMult>1?' 🌃×1.5':''}${surfMult>1?' 🌊海风+15%':''}${s.c.mood!==0?' 💬'+Math.round(s.c.mood*100)+'%':''}`;
+        const tag=`${matchBonus?' ✓匹配+'+matchBonus:''}${streakBonus?' 🔥连击+'+streakBonus:''}${highTierBonus?' ✨VIP+'+highTierBonus:''}${stageBonus?' ☕3段+'+stageBonus:''}${nightMult>1?' 🌃×1.5':''}${surfMult>1?' 🌊海风+15%':''}${beanQ!==1?' 🌱豆×'+beanQ.toFixed(2):''}${specialMult>1?' 🎨特调+'+Math.round((specialMult-1)*100)+'%':''}${vipMult>1?' ⭐VIP×'+vipMult:''}${tipBoost>1?' 💡tip+'+Math.round((tipBoost-1)*100)+'%':''}${s.c.mood!==0?' 💬'+Math.round(s.c.mood*100)+'%':''}`;
         setMsg(`✅ ${s.c.face} +$${total}${tag}`);
         AUDIO.play('coffee_sale');
         // 高 tier 正确服务 bonus rep
@@ -3273,7 +3399,7 @@ function finCoffee(){const s=MG.coffee;if(!s)return;
   G.ind.coffee_shop.xp+=Math.round(totalEarned*1.5);
   G.workedToday=G.workedToday||{brew:0,coffee:0,bar:0};G.workedToday.coffee=1;
   G.coffeeEarnedToday=totalEarned;  // Phase A B4 read-side: bar first customer reacts
-  const bonusTags=[streakBonus?`🔥连击+$${streakBonus}`:'',nightBonus?`🌃地下+$${nightBonus}`:'',s.gangPaid?' 🛡️帮派':'',s.streakCorrect>=5?' · coffee_streak_master':''].filter(Boolean).join('');
+  const bonusTags=[streakBonus?`🔥连击+$${streakBonus}`:'',nightBonus?`🌃地下+$${nightBonus}`:'',s.gangPaid?' 🛡️帮派':'',s.streakCorrect>=5?' · coffee_streak_master':'',s.dailyBean?` · ☕${s.dailyBean.ic}${(s.beanQuality||1).toFixed(2)}×`:''].filter(Boolean).join('');
   addEvt(s.raid?'bad':'good',`🌿 咖啡店 +$${totalEarned}${bonusTags}`);
   addSch('🌿',`咖啡店 +$${totalEarned}`);
   // 高 tier 服务 bonus rep
@@ -3756,6 +3882,50 @@ const COFFEE_PRODUCTS={
   special:   {n:'🌿 Special',     cost:8,  mult:2.2, prep:3, hot:false, unlock:'rep>=30'}
 };
 const COFFEE_PROD_LIST=['espresso','drip','cold_brew','special'];
+// funify-v3 Round 4 (Phase B2): 5 种咖啡豆 + 7 天保质 + freshness 倍率
+// 每种豆有 origin/ic/mult/freshDays。stale(>5天) → 0.7 mult · spoiled(>7天) → 0.4 mult
+const COFFEE_BEANS=[
+  {id:'yirgacheffe',  ic:'🌱', n:'耶加雪菲',  origin:'埃塞俄比亚',mult:1.30,freshDays:7,notes:'花香 · 柑橘'},
+  {id:'geisha',       ic:'🌸', n:'瑰夏',      origin:'巴拿马',    mult:1.60,freshDays:5,notes:'茉莉 · 热带水果'},
+  {id:'sumatra',      ic:'🌰', n:'苏门答腊',  origin:'印尼',      mult:1.10,freshDays:8,notes:'泥土 · 雪松'},
+  {id:'cerrado',      ic:'🌻', n:'巴西喜拉多',origin:'巴西',      mult:1.00,freshDays:9,notes:'巧克力 · 坚果'},
+  {id:'mandheling',   ic:'🟤', n:'曼特宁',    origin:'苏门答腊',  mult:1.20,freshDays:6,notes:'草药 · 焦糖'},
+];
+const COFFEE_BEAN_LIST=COFFEE_BEANS.map(b=>b.id);
+// 7 天保质 — 根据 bean.fresh 字段(开店日龄)返回 mult 倍率
+// fresh<=bean.freshDays → 1.0; <=freshDays+2 → 0.7; 否则 0.4
+function coffeeBeanMult(beanId){
+  const b=COFFEE_BEANS.find(x=>x.id===beanId);
+  if(!b)return 0.4;
+  const fresh=(G.shop.coffeeBeans&&G.shop.coffeeBeans[beanId]&&G.shop.coffeeBeans[beanId].fresh)||0;
+  if(fresh<=b.freshDays)return b.mult;
+  if(fresh<=b.freshDays+2)return Math.round(b.mult*0.7*100)/100;
+  return Math.round(b.mult*0.4*100)/100;
+}
+// funify-v3 Round 4 (Phase B2): 今日推荐豆 — 每次开咖啡店轮换 1 种
+function coffeePickDailyBean(){
+  const idx=Math.floor(seeded(91)*COFFEE_BEANS.length);
+  return COFFEE_BEANS[idx];
+}
+// funify-v3 Round 4 (Phase B2): 每新一天老化所有豆库存(保质倒计时)
+function coffeeAgeBeans(){
+  if(!G.shop.coffeeBeans)return;
+  for(const k of Object.keys(G.shop.coffeeBeans)){
+    const e=G.shop.coffeeBeans[k];
+    if(e&&typeof e.fresh==='number')e.fresh++;
+  }
+}
+// funify-v3 Round 4 (Phase B2): 库存中豆的 mult × qty 决定今日售价上界加成
+function coffeeBeanQualityMult(){
+  const stock=G.shop.coffeeBeans||{};
+  let weighted=0,qty=0;
+  for(const b of COFFEE_BEANS){
+    const e=stock[b.id];
+    if(e&&e.qty>0){weighted+=coffeeBeanMult(b.id)*e.qty;qty+=e.qty}
+  }
+  if(!qty)return 0.85;  // 无库存 = 通用商业豆,mult 较低
+  return Math.round((weighted/qty)*100)/100;
+}
 // funify-v3 Round 25: day phase based on ti (time of day) — morning/afternoon/evening
 function coffeeDayPhase(){
   if(G.ti===0||G.ti===1)return'morning';
@@ -5424,6 +5594,8 @@ function newRunInner(){
   // Phase C: customer relationship + surf/coffee cross-game state
   G.custRels={};G.surfedToday=0;G.surfBoardLife=15;G.researchTopics=[];
   G.coffeeEarnedToday=0;G.barStock={ipa:0,stout:0,lager:0};
+  // Round 4 (Phase B2): 新一天老化所有豆库存 (fresh+1)
+  coffeeAgeBeans();
   // funify-v3 Round 3: brew streak counter — resets on each new run, persists for the whole run
   G.shop.streak=0;G.shop.streakBest=0;
   // funify-v3 Round 30: cross-run ledger (brewNotes loaded from ab_ledger_v1, see loadLedger)
@@ -5535,6 +5707,10 @@ window.AB_TEST={
   BAR_DRINK_CATALOG,BAR_MIXERS,BAR_LEGENDARY_DRINKS,BAR_SOUL_EVENTS,BAR_DRINK_STOCK_BY_ID,
   barAvailableDrinks,barAvailableMixers,barPickRecoDrinkId,barGetDrink,barGetMixer,
   barRollSoulEvent,barApplySoul,barPourState,startBar,barIn,
+  // Round 4: Phase B2 · Coffee Dave-depth (5 beans / 7-day freshness / 3-stage process / 4 soul events)
+  COFFEE_BEANS,COFFEE_BEAN_LIST,COFFEE_SOUL_EVENTS,
+  coffeeBeanMult,coffeePickDailyBean,coffeeAgeBeans,coffeeBeanQualityMult,
+  coffeeRollSoulEvent,coffeeApplySoul,coffeePourState,coffeeInspectorHide,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

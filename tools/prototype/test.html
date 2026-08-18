@@ -3204,6 +3204,91 @@ frame.addEventListener('load',async()=>{
       ['lager','stout','wine','cider','kombucha','sour','mojito','martini','spritz','julep','old_fash','negroni'].every(id=>src.indexOf("'"+id+"':") !== -1);
   });
 
+  // === funify-v3 Round 4: Phase B2 coffee Dave-depth ===
+  // 5 beans + 7-day freshness + 3-stage process + 4 soul events
+  check('R4: AB_TEST.COFFEE_BEANS 暴露且 5 个豆',()=>Array.isArray(t.COFFEE_BEANS)&&t.COFFEE_BEANS.length===5);
+  check('R4: COFFEE_BEANS 5 id 唯一',()=>new Set(t.COFFEE_BEANS.map(b=>b.id)).size===5);
+  check('R4: COFFEE_BEANS 含 origin/mult/freshDays/ic/n 字段',()=>{
+    return t.COFFEE_BEANS.every(b=>b.origin&&typeof b.mult==='number'&&typeof b.freshDays==='number'&&b.ic&&b.n);
+  });
+  check('R4: AB_TEST.COFFEE_BEAN_LIST 与 COFFEE_BEANS id 一致',()=>{
+    return Array.isArray(t.COFFEE_BEAN_LIST)&&t.COFFEE_BEAN_LIST.length===5&&
+      t.COFFEE_BEANS.every(b=>t.COFFEE_BEAN_LIST.includes(b.id));
+  });
+  check('R4: coffeeBeanMult(yirgacheffe) fresh=0 返回 b.mult',()=>{
+    const before=t.state.shop;t.state.shop={coffeeBeans:{yirgacheffe:{qty:3,fresh:0}}};
+    const m=t.coffeeBeanMult('yirgacheffe');
+    t.state.shop=before;return Math.abs(m-1.30)<0.001;
+  });
+  check('R4: coffeeBeanMult yirgacheffe fresh=8 (超 7) 返回 0.7×',()=>{
+    const before=t.state.shop;t.state.shop={coffeeBeans:{yirgacheffe:{qty:3,fresh:8}}};
+    const m=t.coffeeBeanMult('yirgacheffe');
+    t.state.shop=before;return Math.abs(m-Math.round(1.30*0.7*100)/100)<0.01;
+  });
+  check('R4: coffeeBeanMult 未知 id 返回 0.4',()=>{
+    return t.coffeeBeanMult('nope_xx')===0.4;
+  });
+  check('R4: coffeeBeanQualityMult 空库存 → 0.85',()=>{
+    const before=t.state.shop;t.state.shop={coffeeBeans:{}};
+    const m=t.coffeeBeanQualityMult();
+    t.state.shop=before;return Math.abs(m-0.85)<0.001;
+  });
+  check('R4: coffeeBeanQualityMult 有库存 → 加权 mult',()=>{
+    const before=t.state.shop;t.state.shop={coffeeBeans:{yirgacheffe:{qty:3,fresh:0},cerrado:{qty:2,fresh:0}}};
+    const m=t.coffeeBeanQualityMult();
+    t.state.shop=before;return Math.abs(m-(1.30*3+1.00*2)/5)<0.01;
+  });
+  check('R4: AB_TEST.COFFEE_SOUL_EVENTS × 4',()=>
+    Array.isArray(t.COFFEE_SOUL_EVENTS)&&t.COFFEE_SOUL_EVENTS.length===4&&
+    t.COFFEE_SOUL_EVENTS.map(e=>e.id).sort().join(',')==='blackout,creative,inspector,vip');
+  check('R4: COFFEE_SOUL_EVENTS 4 个 effect.kind 互不相同',()=>
+    new Set(t.COFFEE_SOUL_EVENTS.map(e=>e.effect.kind)).size===4);
+  check('R4: coffeeRollSoulEvent ht>=65 → inspector',()=>{
+    const before=t.state.shop;t.state.shop={};t.state._coffeeSoul={picked:null,fired:false,inspectorHits:0};
+    const fakeS={ht:65,history:[],sd:0};
+    const e=t.coffeeRollSoulEvent(fakeS,0);
+    t.state.shop=before;
+    return e&&e.id==='inspector'&&e.effect.kind==='inspector';
+  });
+  check('R4: coffeeRollSoulEvent fired 后返回 null',()=>{
+    const before=t.state.shop;t.state.shop={};t.state._coffeeSoul={picked:'inspector',fired:true,inspectorHits:0};
+    const e=t.coffeeRollSoulEvent({ht:99,history:[],sd:0},0);
+    t.state.shop=before;
+    return e===null;
+  });
+  check('R4: coffeePourState 无 stage → null',()=>{
+    return t.coffeePourState(null)===null&&t.coffeePourState({})===null;
+  });
+  check('R4: coffeePourState 有 stage 返回 {idx,progress}',()=>{
+    const s={stage:{idx:0,startedAt:Date.now()-1000,msPerStage:2400,progress:0,done:false}};
+    const st=t.coffeePourState(s);
+    return st&&typeof st.progress==='number'&&st.progress>0;
+  });
+  check('R4: index.html startCoffee 初始化 beanQuality+dailyBeanMult+stage',()=>{
+    const src=_fetchIndex3();
+    return /coffeeBeanQualityMult/.test(src)&&/dailyBeanMult:coffeeBeanMult\(dailyBean\.id\)/.test(src)&&/beanQuality/.test(src)&&/stage:\{idx:0/.test(src);
+  });
+  check('R4: index.html coffeeIn SPACE 应用 beanQ*specialMult*vipMult*tipBoost',()=>{
+    const src=_fetchIndex3();
+    return /beanQ\*specialMult\*vipMult\*tipBoost/.test(src);
+  });
+  check('R4: index.html coffeeIn SPACE 检查 inspector 隐藏分支',()=>{
+    const src=_fetchIndex3();
+    return /inspectorActive&&s\.inspectorRounds>0/.test(src)&&/coffeeInspectorHide/.test(src);
+  });
+  check('R4: index.html sCoffeeC 末尾调用 coffeeRollSoulEvent + 重置 stage',()=>{
+    const src=_fetchIndex3();
+    return /coffeeRollSoulEvent\(s,s\.sd\)/.test(src)&&/stage=\{idx:0,startedAt:Date\.now\(\)/.test(src);
+  });
+  check('R4: index.html newRunInner 调用 coffeeAgeBeans',()=>{
+    const src=_fetchIndex3();
+    return /coffeeAgeBeans\(\)/.test(src);
+  });
+  check('R4: index.html 暴露 coffeeBeanMult/coffeeBeanQualityMult/coffeeRollSoulEvent/coffeeApplySoul/coffeePourState/coffeeInspectorHide',()=>{
+    const src=_fetchIndex3();
+    return ['coffeeBeanMult','coffeePickDailyBean','coffeeAgeBeans','coffeeBeanQualityMult','coffeeRollSoulEvent','coffeeApplySoul','coffeePourState','coffeeInspectorHide'].every(fn=>new RegExp('\\b'+fn+'\\b').test(src));
+  });
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

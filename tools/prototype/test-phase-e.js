@@ -192,7 +192,7 @@ for (const marker of ['workedToday', 'shoplift', 'escapeIn', 'custRels', 'barSto
   t(`Phase A/B/C marker intact: ${marker}`, h.includes(marker));
 
 // ── 16. Phase E5 — Death Cards (灵魂相机) ──
-t('CRAZY_POOL defined (12 entries)', /CRAZY_POOL=\[[\s\S]{20,3000}\]/.test(h) && (h.match(/id:'[a-z_]+',weight:1,ic:/g)||[]).length >= 12);
+t('CRAZY_POOL defined (18 entries)', /CRAZY_POOL=\[[\s\S]{20,3000}\]/.test(h) && (h.match(/id:'[a-z_]+',weight:1,ic:/g)||[]).length >= 18);
 t('tickCrazyEvent wired into advanceTimeAuto', /tickCrazyEvent\(\);/.test(h));
 t('undercover sold captures death card', /_dcArch=s\.c\.arch/.test(h) && /G\.deathCards\.push/.test(h));
 t('death card blocks 7 days', /G\.shop\.deathBlocked\[[^\]]+\]=G\.day\+7/.test(h));
@@ -203,7 +203,7 @@ t('deathCards reset in newRun', /G\.deathCards=\[\];G\.shop\.deathBlocked=\{\}/.
 t('ufo_blessing hooked into rollDayModifier', /crazyBlessing/.test(h) && /wantPositive=[\s\S]{0,80}crazyBlessing/.test(h));
 
 // ── 17. Phase E8 — Crazy Events shape ──
-t('12 crazy event entries', (h.match(/weight:1,ic:'/g)||[]).length >= 12);
+t('18 crazy event entries', (h.match(/weight:1,ic:'/g)||[]).length >= 18);
 t('crazyTipMul wired for tip stacking', /crazyTipMul/.test(h));
 t('crazyBrewOrders wired', /crazyBrewOrders/.test(h));
 t('crazySurfStam wired', /crazySurfStam/.test(h));
@@ -213,6 +213,12 @@ t('crazySlow wired (canal flood)', /crazySlow/.test(h));
 t('crazyBlessing wired (UFO)', /crazyBlessing/.test(h));
 t('daily crazy reset on day change', /crazyTipMul=1;[\s\S]{0,200}crazySlow=false/.test(h));
 t('newRun resets crazy effects', /G\.shop\.crazyTipMul=1;[\s\S]{0,200}crazySlow=false/.test(h));
+t('E8.2 — tulip_crash event present', /id:'tulip_crash',weight:1,ic:'🌷'/.test(h));
+t('E8.2 — rijksmuseum_steal clamps rep', /id:'rijksmuseum_steal'/.test(h) && /Math\.max\(-20/.test(h));
+t('E8.2 — cat_cafe_overrun bumps mood via moodFloor', /id:'cat_cafe_overrun'/.test(h) && /moodFloor\(Math\.min\(2/.test(h));
+t('E8.2 — pizza_bench adds crazySurfStam', /id:'pizza_bench'/.test(h) && /crazySurfStam=\(G\.shop\.crazySurfStam\|\|0\)\+20/.test(h));
+t('E8.2 — night_market fines $5', /id:'night_market'/.test(h) && /G\.money=Math\.max\(0,G\.money-5\)/.test(h));
+t('E8.2 — tram_strike sets crazySlow', /id:'tram_strike'/.test(h) && /G\.shop\.crazySlow=true/.test(h));
 
 // ── 18. Phase E8 — 4% per tick probability (statistical sanity) ──
 // Re-parse tickCrazyEvent body to confirm threshold

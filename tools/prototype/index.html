@@ -731,7 +731,7 @@ const EV_KIND={};
 EV_POOL.forEach(e=>{EV_KIND[e.id]=e.kind||'neutral'});
 
 // ═══════════════════════════════════════════
-// Phase E8 — Crazy Events (搞怪事件池,12 个 weird 事件)
+// Phase E8 — Crazy Events (搞怪事件池,18 个 weird 事件 · Round 5 +6)
 // 每 tick 有 4% 概率随机触发 1 个。效果多为临时 buff/debuff,贯穿当日或即时生效。
 // 哲学:Balatro 的荒诞加分 + Inscryption 的怪诞设定 + 阿姆斯特丹在地梗。
 // ═══════════════════════════════════════════
@@ -751,7 +751,14 @@ const CRAZY_POOL=[
   {id:'fox_alley',weight:1,ic:'🦊',t:'狐狸钻巷 · 罚款 $10',fire(){G.money=Math.max(0,G.money-10)}},
   {id:'ufo_blessing',weight:1,ic:'🛸',t:'UFO 目击 · 明日事件全 positive',fire(){G.shop.crazyBlessing=true}},
   {id:'stranger_birthday',weight:1,ic:'🎂',t:'陌生人庆生 · 意外红包 +$20',fire(){G.money+=20}},
-  {id:'canal_flood',weight:1,ic:'🌊',t:'运河涨水 · 移动速度 -50% (本日)',fire(){G.shop.crazySlow=true}}
+  {id:'canal_flood',weight:1,ic:'🌊',t:'运河涨水 · 移动速度 -50% (本日)',fire(){G.shop.crazySlow=true}},
+  // ── Phase E8.2 (Round 5) — Pack v2 · 6 Amsterdam-themed 搞怪事件 ──
+  {id:'tulip_crash',weight:1,ic:'🌷',t:'郁金香泡沫崩 · 酿酒订单 -3',fire(){G.shop.crazyBrewOrders=(G.shop.crazyBrewOrders||0)-3}},
+  {id:'rijksmuseum_steal',weight:1,ic:'🖼️',t:'Rijksmuseum 失窃 · rep -5',fire(){G.rep=Math.max(-20,(G.rep||0)-5);addEvt('bad','🖼️ 名画失踪 · 全市耻辱')}},
+  {id:'cat_cafe_overrun',weight:1,ic:'🐈',t:'Cat Café 占领街角 · 心情 +2',fire(){const before=G.mood;G.mood=moodFloor(Math.min(2,G.mood+2));addEvt('good',`🐈 Cat Café · 心情 ${before}→${G.mood}`)}},
+  {id:'pizza_bench',weight:1,ic:'🍕',t:'Pizza Bench 接力 · 冲浪体力 +20',fire(){G.shop.crazySurfStam=(G.shop.crazySurfStam||0)+20}},
+  {id:'night_market',weight:1,ic:'🎑',t:'夜市突袭 · 罚款 $5',fire(){G.money=Math.max(0,G.money-5);addEvt('bad','🎑 城管来夜市 · $5')}},
+  {id:'tram_strike',weight:1,ic:'🚋',t:'电车大罢工 · 街口堵死 (本日慢速)',fire(){G.shop.crazySlow=true;addEvt('info','🚋 GVB 工会罢工 · 改走路')}}
 ];
 
 function tickCrazyEvent(){

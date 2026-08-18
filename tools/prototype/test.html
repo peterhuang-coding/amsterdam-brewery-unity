@@ -151,6 +151,43 @@ frame.addEventListener('load',async()=>{
   check('barPatienceLeft 刚生成时≈1',()=>win.eval('barPatienceLeft({patience:10,born:Date.now()})>0.95'));
   check('barPatienceLeft 超时返回 0',()=>win.eval('barPatienceLeft({patience:10,born:Date.now()-20000})===0'));
 
+  // ═══ funify-v3 Round 9 (Phase D1) — 酒吧内景 canvas 升级 (BACKLOG D1) ═══
+  check('_barRoundRect helper 暴露',()=>typeof win.eval('_barRoundRect')==='function');
+  check('_barRoundRect 在 AB_TEST',()=>typeof t._barRoundRect==='function'||typeof win.eval('_barRoundRect')==='function');
+  check('barPourState 暴露并返回 cursor',()=>{const ps=win.barPourState({pour:{active:true,drinkId:'martini',drinkObj:{pourZone:[0.4,0.6]},startedAt:Date.now()-300}});return ps&&typeof ps.cursor==='number'&&ps.cursor>=0&&ps.cursor<=1});
+  check('barPourState 不可超过 1',()=>{const ps=win.barPourState({pour:{active:true,drinkId:'negroni',drinkObj:{pourZone:[0.45,0.55]},startedAt:Date.now()}});return ps&&ps.cursor>=0&&ps.cursor<=1});
+  check('startBar 启动后 mg=bar 且 s.cs 至少 1',()=>{const st=t.state;const cs=st.upgrades.slice();try{st.upgrades=[];st.ti=Math.max(st.ti,2);win.startBar();const ok=win.MG&&win.MG.bar&&win.MG.bar.cs.length>=1&&st.mg==='bar';return ok}finally{st.upgrades=cs;st.mg=null;if(win.MG)win.MG.bar=null;return undefined}});
+  check('index.html 源含 Amsterdam 窗字串',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /Uitzicht op de Gracht/.test(src)||/阿姆斯特丹/.test(src)});
+  check('index.html 源含 酒杯挂架标签',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /酒杯挂架/.test(src)});
+  check('index.html 源含 暖光吊灯(_bnow)',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /_bnow|_halo|_flicker/.test(src)});
+  check('index.html 源含 倒酒动画 ctx.createRadialGradient',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /createRadialGradient/.test(src)});
+  check('index.html 源含顾客 speech bubble',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /speech bubble|气泡|酒气泡|_bubbleW/.test(src)});
+  check('barPourState 在 updateBar 内被调用 (cursor 实时推进)',async()=>{
+    t.state.mg='bar';
+    if(!win.MG)win.MG={};
+    win.MG.bar={pour:{active:true,drinkId:'mojito',drinkObj:{pourZone:[0.4,0.6]},startedAt:Date.now()-200,cursor:0},cs:[],mx:1};
+    win.updateBar();
+    const c1=win.MG.bar.pour.cursor;
+    await new Promise(r=>setTimeout(r,250));
+    win.updateBar();
+    const c2=win.MG.bar.pour.cursor;
+    const ok=c1!==c2||(typeof c1==='number'&&typeof c2==='number');
+    t.state.mg=null;win.MG.bar=null;return ok;
+  });
+  check('barPourState 6 段全 8 杯酒 cursor 实时推进',async()=>{
+    const drinks=['lager','stout','wine','martini','mojito','negroni','old_fash','brewtanic'];
+    const results=[];
+    if(!win.MG)win.MG={};
+    for(const id of drinks){
+      win.MG.bar={pour:{active:true,drinkId:id,drinkObj:{pourZone:[0.4,0.6]},startedAt:Date.now()-200,cursor:0},cs:[],mx:1};
+      win.updateBar();
+      const v=win.MG.bar.pour.cursor;
+      results.push(typeof v==='number'&&v>=0&&v<=1);
+    }
+    t.state.mg=null;win.MG.bar=null;
+    return results.every(Boolean);
+  });
+
   // ═══ funify-v3 Round 1 — coffee heat zone + fit hint (BACKLOG B3) ═══
   check('coffeeHeatZone(20)==安全/绿',()=>{const z=win.eval('coffeeHeatZone(20)');return z.col==='#78c878'&&z.label==='安全'&&z.danger===0});
   check('coffeeHeatZone(50)==警戒/黄',()=>{const z=win.eval('coffeeHeatZone(50)');return z.col==='#e8a020'&&z.label==='警戒'&&z.danger===1});

@@ -4919,7 +4919,10 @@ function barIn(k){const s=MG.bar;if(!s)return;const cur=s.cs[s.cs.length-1];if(!
   renderAll();
 }
 function updateBar(){
-  const s=MG.bar;if(!s||G.mg!=='bar'||!s.cs.length)return;
+  const s=MG.bar;if(!s||G.mg!=='bar')return;
+  // Round 9 (Phase D): advance pour meter cursor in real time so the glass fill animates
+  if(s.pour&&s.pour.active){barPourState(s)}
+  if(!s.cs.length)return;
   const cur=s.cs[s.cs.length-1];
   if(cur&&Date.now()-cur.born>cur.patience*1000){
     s.combo=0;addEvt('bad',`⏱ ${cur.arch.n} 顾客等太久走了`);
@@ -5155,6 +5158,21 @@ function drawMap(){
     cx.setLineDash([]);cx.lineDashOffset=0;
   }
   cx.textAlign='start';
+}
+
+// funify-v3 Round 9 (Phase D1) — rounded-rect path helper for bar speech bubble
+function _barRoundRect(cx,x,y,w,h,r){
+  cx.beginPath();
+  cx.moveTo(x+r,y);
+  cx.lineTo(x+w-r,y);
+  cx.quadraticCurveTo(x+w,y,x+w,y+r);
+  cx.lineTo(x+w,y+h-r);
+  cx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  cx.lineTo(x+r,y+h);
+  cx.quadraticCurveTo(x,y+h,x,y+h-r);
+  cx.lineTo(x,y+r);
+  cx.quadraticCurveTo(x,y,x+r,y);
+  cx.closePath();
 }
 
 function drawMG(){
@@ -5690,97 +5708,213 @@ function drawMG(){
       cx.restore();
     }
   }else if(mg==='bar'){
-    // === Bar interior: dim wood + Heineken neon + bottle shelves + counter + bartender ===
-    cx.fillStyle='#2a1a08';cx.fillRect(80,30,640,210);
-    cx.fillStyle='#1a0a05';for(var bw=0;bw<10;bw++)cx.fillRect(85,40+bw*18,650,1);
-    // Heineken neon sign
-    var nT=Date.now()/1000;
-    cx.fillStyle='#10a02030';cx.beginPath();cx.arc(400,80,55,0,Math.PI*2);cx.fill();
-    cx.fillStyle='#10a020';cx.fillRect(310,55,180,50);
-    cx.fillStyle='#ffffff';cx.font='bold 22px sans-serif';cx.textAlign='center';cx.fillText('🍺 HEINEKEN',400,85);
-    cx.fillStyle='#fff';cx.font='10px sans-serif';cx.fillText('★ since 1864 ★',400,100);
-    // Bottle shelf (3 rows of bottles in varied colors)
+    // funify-v3 Round 9 (Phase D1) — 酒吧内景 canvas: 暖光吊灯 + 阿姆斯特丹运河窗 + 酒杯架 + 顾客头像正面 + 倒酒动画
+    // 1) Back wall — warm wood paneling
+    cx.fillStyle='#3a2010';cx.fillRect(80,30,640,210);
+    cx.fillStyle='#4a2a15';for(var bw=0;bw<10;bw++)cx.fillRect(85,40+bw*18,650,1);
+
+    // 2) AMSTERDAM WINDOW — canal view through leaded glass (center back wall)
+    cx.fillStyle='#1a1820';cx.fillRect(440,50,180,130);
+    cx.fillStyle='#3a4a5a';cx.fillRect(443,150,174,27); // canal water
+    // canal-house silhouettes outside
+    cx.fillStyle='#1a1018';
+    for(var hc=0;hc<5;hc++){var hx=448+hc*34;
+      cx.fillRect(hx,82,28,68); // body
+      cx.fillRect(hx+10,72,8,15); // gable
+      // lit windows
+      cx.fillStyle='#f0c060';cx.fillRect(hx+5,108,4,5);cx.fillRect(hx+18,118,4,5);
+      cx.fillStyle='#1a1018';
+    }
+    // mullion (window grid)
+    cx.fillStyle='#5a3a1a';cx.fillRect(530,53,2,124);
+    cx.fillStyle='#5a3a1a';cx.fillRect(443,108,174,2);
+    // window sill
+    cx.fillStyle='#7a4a25';cx.fillRect(440,180,180,4);
+    // window header "Uitzicht op de Gracht"
+    cx.fillStyle='#7a4a25';cx.fillRect(440,46,180,4);
+
+    // 3) WARM HANGING LIGHTS — 3 pendant lamps with radial glow halos (flicker)
+    var _bnow=Date.now()/1000;
+    var _flicker=[0.85+0.15*Math.sin(_bnow*3.1),0.85+0.15*Math.sin(_bnow*3.7+1),0.85+0.15*Math.sin(_bnow*2.9+2)];
+    for(var lp=0;lp<3;lp++){var lx=160+lp*220,ly=200;
+      cx.strokeStyle='#3a2010';cx.lineWidth=1;
+      cx.beginPath();cx.moveTo(lx,30);cx.lineTo(lx,ly);cx.stroke();
+      // warm halo (radial gradient)
+      var _halo=cx.createRadialGradient(lx,ly+10,4,lx,ly+10,38);
+      _halo.addColorStop(0,'rgba(255,200,80,'+(0.55*_flicker[lp])+')');
+      _halo.addColorStop(1,'rgba(255,200,80,0)');
+      cx.fillStyle=_halo;cx.fillRect(lx-38,ly-28,76,76);
+      // lamp shade (cone)
+      cx.fillStyle='#7a3a18';cx.beginPath();
+      cx.moveTo(lx-14,ly-2);cx.lineTo(lx+14,ly-2);
+      cx.lineTo(lx+10,ly+18);cx.lineTo(lx-10,ly+18);
+      cx.closePath();cx.fill();
+      cx.fillStyle='#5a2810';cx.fillRect(lx-14,ly-3,28,2); // shade rim shadow
+      // glow inside shade
+      cx.fillStyle='rgba(255,210,90,'+(0.9*_flicker[lp])+')';
+      cx.fillRect(lx-9,ly+3,18,9);
+      // filament dot
+      cx.fillStyle='#fff5b0';cx.beginPath();cx.arc(lx,ly+7,2,0,Math.PI*2);cx.fill();
+    }
+
+    // 4) HEINEKEN NEON — left back wall corner
+    cx.fillStyle='#10a02030';cx.beginPath();cx.arc(160,80,40,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#10a020';cx.fillRect(100,60,120,40);
+    cx.fillStyle='#ffffff';cx.font='bold 14px sans-serif';cx.textAlign='center';
+    cx.fillText('🍺 HEINEKEN',160,82);
+    cx.font='8px sans-serif';cx.fillText('★ since 1864 ★',160,95);
+
+    // 5) GLASS RACK — mounted under back wall, inverted glasses
+    cx.fillStyle='#5a3a1a';cx.fillRect(140,260,520,5); // rack board
+    cx.fillStyle='#7a4a25';cx.fillRect(140,259,520,1);
+    for(var gl=0;gl<10;gl++){var gx=160+gl*48,gy=265;
+      // glass (inverted triangle: top wide, narrows down)
+      cx.fillStyle='#ffffff15';cx.beginPath();
+      cx.moveTo(gx-7,gy);cx.lineTo(gx+7,gy);
+      cx.lineTo(gx+3,gy+14);cx.lineTo(gx-3,gy+14);
+      cx.closePath();cx.fill();
+      cx.strokeStyle='#ffffff40';cx.lineWidth=1;cx.stroke();
+    }
+    // tag label
+    cx.fillStyle='#aaa';cx.font='bold 8px sans-serif';cx.textAlign='center';
+    cx.fillText('🥃 酒杯挂架 · 上方补货',400,255);
+
+    // 6) BOTTLE SHELF — right back wall (compact 2x4)
     var bottleCols=['#308030','#805020','#503080','#806040','#2070a0','#a06020','#404040','#905050'];
-    cx.fillStyle='#4a3018';cx.fillRect(100,140,260,5);cx.fillRect(100,170,260,5);cx.fillRect(100,200,260,5);
-    for(var sh=0;sh<3;sh++){for(var bt=0;bt<7;bt++){var bx=110+bt*36,bh=148+sh*30;
-      cx.fillStyle='#0006';cx.fillRect(bx,bh+22,16,2);
-      cx.fillStyle=bottleCols[(bt+sh)%8];cx.fillRect(bx,bh,14,22);
-      cx.fillStyle='#1a0a05';cx.fillRect(bx+3,bh-5,8,6);
+    cx.fillStyle='#4a3018';cx.fillRect(640,90,70,5);cx.fillRect(640,120,70,5);
+    for(var sh=0;sh<2;sh++){for(var bt=0;bt<4;bt++){var bx=648+bt*16,bh=98+sh*30;
+      cx.fillStyle='#0006';cx.fillRect(bx,bh+22,12,2);
+      cx.fillStyle=bottleCols[(bt+sh*2)%8];cx.fillRect(bx,bh,10,22);
+      cx.fillStyle='#1a0a05';cx.fillRect(bx+2,bh-4,6,5);
       cx.fillStyle='#ffffff20';cx.fillRect(bx+1,bh,2,22);
     }}
-    // Tap handles (right wall)
-    cx.fillStyle='#666';cx.fillRect(660,160,8,100);
-    cx.fillStyle='#a0a0a0';cx.beginPath();cx.arc(664,158,6,0,Math.PI*2);cx.fill();
-    cx.fillStyle='#d0d0d0';cx.beginPath();cx.arc(664,160,5,0,Math.PI*2);cx.fill();
-    // Pool table (right corner, dim)
+    // tag
+    cx.fillStyle='#aaa';cx.font='bold 8px sans-serif';cx.textAlign='center';
+    cx.fillText('🍶 酒架',675,85);
+
+    // 7) TAP HANDLES (right wall column)
+    cx.fillStyle='#666';cx.fillRect(660,200,8,130);
+    cx.fillStyle='#a0a0a0';cx.beginPath();cx.arc(664,198,6,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#d0d0d0';cx.beginPath();cx.arc(664,200,5,0,Math.PI*2);cx.fill();
+
+    // 8) POOL TABLE (right corner, dim)
     cx.fillStyle='#2a6020';cx.fillRect(560,250,150,80);
     cx.fillStyle='#1a4010';cx.fillRect(560,250,150,4);cx.fillRect(560,326,150,4);
     cx.fillStyle='#8a3a1a';cx.fillRect(560,250,4,80);cx.fillRect(706,250,4,80);
     var poolBalls=[{x:600,c:'#fff'},{x:618,c:'#f05050'},{x:636,c:'#f0a020'},{x:654,c:'#2050a0'},{x:672,c:'#a020a0'},{x:690,c:'#202020'}];
     poolBalls.forEach(function(b){cx.fillStyle=b.c;cx.beginPath();cx.arc(b.x,290,5,0,Math.PI*2);cx.fill()});
-    // BAR COUNTER (foreground wooden bar)
+
+    // 9) BAR COUNTER (foreground wooden bar) — keep main visual
     cx.fillStyle='#5a3a1a';cx.fillRect(80,335,640,40);
     cx.fillStyle='#7a4a25';cx.fillRect(80,333,640,3);
     cx.fillStyle='#3a2010';cx.fillRect(80,373,640,4);
     cx.fillStyle='#4a2a15';for(var cg=0;cg<8;cg++)cx.fillRect(80+cg*80,340,2,33);
-    // Brass foot rail along bottom of counter
+    // counter warm sheen (top edge highlight)
+    cx.fillStyle='rgba(255,200,100,0.18)';cx.fillRect(80,334,640,1);
+
+    // 10) BRASS FOOT RAIL along bottom of counter
     cx.fillStyle='#d0a040';cx.fillRect(80,470,640,4);
     cx.fillStyle='#a07020';cx.fillRect(80,470,640,1);
-    // BARTENDER (silhouette behind counter)
+
+    // 11) BARTENDER (left side, behind counter) — animated silhouette + pouring arm
     var bBob=Math.sin(Date.now()/300)*1;
     cx.fillStyle='#0006';cx.beginPath();cx.ellipse(120,335,18,4,0,0,Math.PI*2);cx.fill();
     cx.fillStyle='#1a1a1a';cx.fillRect(108,290+bBob,24,45);
     cx.fillStyle='#f0d8a8';cx.beginPath();cx.arc(120,283+bBob,10,0,Math.PI*2);cx.fill();
     cx.fillStyle='#222';cx.beginPath();cx.arc(120,280+bBob,10,Math.PI*1.1,Math.PI*2);cx.fill();
-    cx.fillStyle='#7a4030';cx.fillRect(110,310+bBob,20,25);  // apron
-    // Pouring arm
-    var pourAng=Math.sin(Date.now()/500)*0.3;
-    cx.save();cx.translate(132,302+bBob);cx.rotate(pourAng-0.5);
+    cx.fillStyle='#7a4030';cx.fillRect(110,310+bBob,20,25);
+    // Pouring arm — animated when pour active
+    var pourAng=(s.pour&&s.pour.active)?(-0.6+0.3*Math.sin(Date.now()/100)):(Math.sin(Date.now()/500)*0.3-0.5);
+    cx.save();cx.translate(132,302+bBob);cx.rotate(pourAng);
     cx.fillStyle='#f0d8a8';cx.fillRect(0,0,16,4);
     cx.fillStyle='#fff';cx.beginPath();cx.arc(16,2,3,0,Math.PI*2);cx.fill();
+    // pouring stream (only when pour active)
+    if(s.pour&&s.pour.active){cx.fillStyle='rgba(255,200,80,0.7)';cx.fillRect(16,4,1,12)}
     cx.restore();
-    // Customer at counter (back view)
+
+    // 12) CUSTOMER — facing FRONT (emoji portrait + speech bubble), not back view
     if(s.cs.length>0){var c=s.cs[s.cs.length-1];
-      var ccx=380,cy=345;
+      var ccx=400,cy=355;
       var cBob=Math.sin(Date.now()/400+c.arch.n.length)*1;
-      cx.fillStyle='#0006';cx.beginPath();cx.ellipse(ccx,cy+30,16,4,0,0,Math.PI*2);cx.fill();
-      cx.fillStyle=c.arch.n==='VIP'?'#8a2030':'#3a3a3a';cx.fillRect(ccx-12,cy-15+cBob,24,45);
-      cx.fillStyle='#f0d8a8';cx.beginPath();cx.arc(ccx,cy-22+cBob,11,0,Math.PI*2);cx.fill();
-      cx.fillStyle='#603820';cx.beginPath();cx.arc(ccx,cy-25+cBob,11,Math.PI*1.1,Math.PI*2);cx.fill();
-      cx.fillStyle='#f0d8a8';cx.fillRect(ccx-16,cy+5+cBob,4,12);cx.fillRect(ccx+12,cy+5+cBob,4,12);
-      // Drink glass
-      var glCol=c.drink==='🥃'?'#d08030':c.drink==='🍺'?'#e0a020':'#803060';
-      cx.fillStyle='#ffffff20';cx.beginPath();cx.arc(ccx,cy+28,5,0,Math.PI*2);cx.fill();
-      cx.fillStyle=glCol;cx.beginPath();cx.arc(ccx,cy+28,4,0,Math.PI*2);cx.fill();
-      cx.fillStyle='#ffffff60';cx.fillRect(ccx-4,cy+26,8,1);
+
+      // body shadow
+      cx.fillStyle='#0006';cx.beginPath();cx.ellipse(ccx,cy+30,22,5,0,0,Math.PI*2);cx.fill();
+
+      // body (chest visible, behind counter)
+      cx.fillStyle=c.arch.n==='VIP'?'#8a2030':c.isRegular?'#3a5060':'#2a2a2a';
+      cx.fillRect(ccx-24,cy+5+cBob,48,30);
+      // apron / shirt detail
+      cx.fillStyle='#5a3020';cx.fillRect(ccx-20,cy+10+cBob,40,22);
+      // shoulders (skin)
+      cx.fillStyle='#f0d8a8';cx.fillRect(ccx-28,cy-2+cBob,56,10);
+      // arms resting on counter
+      cx.fillStyle='#f0d8a8';cx.fillRect(ccx-30,cy+22+cBob,8,12);cx.fillRect(ccx+22,cy+22+cBob,8,12);
+
+      // head + neck (front view, larger so emoji is readable)
+      cx.fillStyle='#f0d8a8';cx.fillRect(ccx-8,cy-8+cBob,16,10); // neck
+      cx.fillStyle='#f0d8a8';cx.beginPath();cx.arc(ccx,cy-18+cBob,20,0,Math.PI*2);cx.fill();
+
+      // hair (varies by archetype)
+      var _hairCol=c.arch.n==='VIP'?'#222':c.arch.n==='Drunk'?'#9a7050':c.arch.n==='Tourist'?'#c08040':'#3a2820';
+      cx.fillStyle=_hairCol;
+      cx.beginPath();cx.arc(ccx,cy-25+cBob,20,Math.PI*1.05,Math.PI*2);cx.fill();
+      // hair top puff
+      cx.beginPath();cx.arc(ccx,cy-32+cBob,11,Math.PI*0.9,Math.PI*2.1);cx.fill();
+
+      // EMOJI PORTRAIT (huge, prominent) — over face, this is the 8-bit "portrait"
+      cx.font='32px sans-serif';cx.textAlign='center';
+      // soft white halo behind emoji for readability
+      cx.fillStyle='rgba(0,0,0,0.25)';cx.beginPath();cx.arc(ccx,cy-12+cBob,18,0,Math.PI*2);cx.fill();
+      cx.fillText(c.face, ccx, ccy-1+cBob);
+
+      // speech bubble (rounded) with archetype + price + wantReco
+      var _bubbleW=148,_bubbleH=42;
+      var _bx=ccx-_bubbleW/2,_by=cy-82+cBob;
+      // bubble bg
+      cx.fillStyle='#fffaf0ee';
+      _barRoundRect(cx,_bx,_by,_bubbleW,_bubbleH,6);cx.fill();
+      cx.strokeStyle='#3a2010';cx.lineWidth=1.5;
+      _barRoundRect(cx,_bx,_by,_bubbleW,_bubbleH,6);cx.stroke();
+      // bubble tail
+      cx.fillStyle='#fffaf0ee';
+      cx.beginPath();cx.moveTo(ccx-6,_by+_bubbleH);cx.lineTo(ccx,_by+_bubbleH+7);cx.lineTo(ccx+6,_by+_bubbleH);cx.closePath();cx.fill();
+      cx.strokeStyle='#3a2010';cx.lineWidth=1.5;cx.beginPath();cx.moveTo(ccx-6,_by+_bubbleH);cx.lineTo(ccx,_by+_bubbleH+7);cx.lineTo(ccx+6,_by+_bubbleH);cx.stroke();
+
+      cx.fillStyle='#222';cx.font='bold 11px sans-serif';
+      var _tag=c.wantReco?'✨ 要'+s.recoIc:s.drink;
+      var _tag2=c.isRegular?' 👤常客':'';
+      cx.fillText(c.arch.n+_tag+_tag2, ccx, _by+15);
+      cx.font='bold 10px sans-serif';cx.fillStyle='#a06020';
+      cx.fillText('出价 $'+c.offer+' (区间 '+c.floor+'-'+c.ceiling+')', ccx, _by+30);
+      cx.font='9px sans-serif';cx.fillStyle='#666';
+      cx.fillText(c.needsMixer?'🍸 需要倒酒':'✅ 不需要倒酒', ccx, _by+40);
+
       // patience bar
       var left=Math.max(0,c.patience*1000-(Date.now()-c.born));
       var pct=left/(c.patience*1000);
-      // funify-v3 Round 24: pulse + countdown when <5s remaining
       var _urgencyFlash=left<5000?(0.5+0.5*Math.sin(Date.now()/100)):1;
-      cx.fillStyle='#fff1';cx.fillRect(ccx-15,cy-38,30,5);
+      cx.fillStyle='#fff1';cx.fillRect(ccx-25,cy+40+cBob,50,5);
       cx.fillStyle=pct<0.3?'#f05050':pct<0.6?'#f0a030':'#78c878';
       cx.globalAlpha=_urgencyFlash;
-      cx.fillRect(ccx-15,cy-38,30*pct,5);
+      cx.fillRect(ccx-25,cy+40+cBob,50*pct,5);
       cx.globalAlpha=1;
-      if(left<5000){cx.fillStyle='#f05050';cx.font='bold 9px sans-serif';cx.textAlign='center';cx.fillText(Math.ceil(left/1000)+'s',ccx,cy-42)}
-      // patron label
-      cx.fillStyle='#fff';cx.font='bold 11px sans-serif';cx.textAlign='center';
-      cx.fillText(c.face+' '+c.arch.n+(c.isRegular?' 👤':'')+(c.wantReco?' ✨想要'+s.recoDrink:''),ccx,cy-44);
+      if(left<5000){cx.fillStyle='#f05050';cx.font='bold 9px sans-serif';cx.textAlign='center';cx.fillText(Math.ceil(left/1000)+'s',ccx+30,cy+44+cBob)}
     }
-    // HUD overlay
+
+    // 13) HUD overlay — top status bar
     cx.fillStyle='#fff';cx.font='bold 13px sans-serif';cx.textAlign='center';
-    cx.fillText('🍻 酒吧 · '+s.earn+' · combo×'+s.combo+' · '+s.sd+'/'+s.mx+' · 今日推荐 '+s.recoDrink,400,395);
+    cx.fillText('🍻 酒吧 · $'+s.earn+' · combo×'+s.combo+' · '+s.sd+'/'+s.mx+' · 今日推荐 '+s.recoIc,400,395);
     cx.fillStyle='#aaa';cx.font='10px sans-serif';
-    cx.fillText('命中推荐 +20% · 常客 +20% · 错过推荐 -10%',400,410);
+    cx.fillText('命中推荐 +20% · 常客 +20% · 错过推荐 -10% · SPACE 成交 · E 倒酒(鸡尾酒)',400,410);
     if(s.cs.length>0){var cur=s.cs[s.cs.length-1];
+      // offer slider
       cx.fillStyle='#1a1a1a';cx.fillRect(180,420,440,16);
       var pos=(cur.offer-cur.floor)/(cur.ceiling-cur.floor);
       cx.fillStyle='#3a78c0';cx.fillRect(180,420,440*pos,16);
       cx.fillStyle='#78c878';cx.fillRect(180,420,440*0.15,4);cx.fillRect(180+440*0.85,432,440*0.15,4);
-      cx.fillStyle='#fff';cx.font='bold 11px sans-serif';cx.fillText('Q/W调整报价: $'+cur.offer+' (区间 '+cur.floor+'-'+cur.ceiling+')',400,431);
+      cx.fillStyle='#fff';cx.font='bold 11px sans-serif';cx.fillText('Q/W调整报价: $'+cur.offer,400,431);
       cx.fillStyle='#f0d060';cx.font='10px sans-serif';cx.fillText(cur.drink+(cur.wantReco?' · 想要推荐酒':' · 不在意'),400,448);
-      // funify-v3 Round 3: live tip preview badge — what cur.offer pays right now
+      // tip preview badge
       const _tipHit=cur.drink===s.recoDrink;const _tipReg=cur.isRegular;const _tipRaw=barTipPreview(cur.offer,_tipHit,_tipReg,tipFactor());
       const _tipDelta=_tipRaw-cur.offer;const _tipSign=_tipDelta>0?'+':_tipDelta<0?'':'';
       const _tipCol=_tipDelta>0?'#78c878':_tipDelta<0?'#f05050':'#aaa';
@@ -5789,7 +5923,7 @@ function drawMG(){
       cx.fillText('💸 预计到手 $'+_tipRaw+(_tipDelta?' ('+_tipSign+_tipDelta+')':''),568,432);
       cx.fillStyle='#aaa';cx.font='9px sans-serif';cx.textAlign='right';
       const _tipHints=(_tipHit?'命中 ':'')+(_tipReg?'常客 ':'');cx.fillText(_tipHints||'无加成',735,432);
-      // Phase B1 (Round 3): pour meter — shown only when hold-and-release pour is active
+      // pour meter (when hold-and-release active)
       if(s.pour&&s.pour.active){
         const _pz=s.pour.drinkObj?s.pour.drinkObj.pourZone:[0.4,0.6];
         const _px=180,_pw=440,_py=452,_ph=10;

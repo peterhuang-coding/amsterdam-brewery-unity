@@ -1632,3 +1632,48 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - B2 增强:把 3 段工艺改成 SPACE 主动触发,每段有完美窗口,完成全部 3 段 = perfect pour
 - B2 跨游戏 link:豆库存可销售给酒吧(bar 解锁精品咖啡鸡尾酒)
 - B3 冲浪 Dave 级:浪预报 + stamina + 3 trick 窗口
+
+## Round 6 (funify-v3) — Phase B4 SmartShop Dave 级深度 (PM-LOOP 20260819-011654)
+
+### 目标
+
+把 SmartShop 从 3 株 + 4 回合单一阶段升级到 Dave 级:6 株 + 3 段培养 + 12 配方 + 7 灵魂事件 + 5 升级树。
+
+### 已完成改动与文件
+
+- `tools/prototype/index.html`:
+  - 新增 `SHROOM_STRAIN_CATALOG` 6 株(金色导师/亚马逊/哲学家 + 狮子鬃毛/冬虫夏草/海蓝)
+  - 新增 `SHROOM_RECIPES` 12 配方,每条记录 inputs.shroom + cross(咖啡/酒/冲浪/学术/酒吧) → 跨游戏 link
+  - 新增 `SHROOM_SOUL_EVENTS` 7 灵魂事件:police_raid(已存在)/contamination_outbreak/new_strain/customer_undercover/power_outage/rival_strain/legendary_harvest
+  - 新增 `SHROOM_UPGRADES` 5 升级树 × 3 tier = 15 项:substrate(抗污染)/thermo(温度容差)/lamp(光照容差)/jar(培养皿容量)/research(配方解锁门槛)
+  - 新增 `shroomApplyUpgradeBoosts(s)` — 把 G.shroomUpgrades 应用到会话状态(_tempTol/_lightTol/_contamReduce/_jarCap/_recipeStarMin)
+  - 新增 `shroomRollSoulEvent` / `shroomApplySoul` / `shroomQuality` / `shroomPickRecipe` / `finShroom`
+  - 重写 `startShroom`:从 6 株目录随机选株,初始化 stageMx=[1,3,2] + stageLabels=[接种,蔓延,出菇] + 3 段进度模型,首次重置 G._shroomSoul flag
+  - 重写 `shroomIn`:3 段进度推进(SPACE)→ 阶段结束自动进入下一阶段 → 第 3 段完成触发收获;新灵魂事件 gate(警察临检 30% 罚款 + 笔记扣押 / 全面污染 50% 部分收获 + 学到菌株 / 神秘买家 +$40 rep-3 / 全城停电 2 回合参数偏移 / 对面开张 当日 ×0.8 / 传说收获 +★ +$50 + 学术主题);升级树容差(温度/光照)叠加计算
+  - 新增 `finShroom(s, earnedGr, learnStrain)` — 警察临检/污染爆发/早退共用清理路径,部分收获 + 学到菌株
+  - `newRunInner`:重置 G._shroomSoul.fired/picked + 初始化 G.shroomUpgrades=[]
+  - AB_TEST 暴露 `SHROOM_STRAIN_CATALOG` `SHROOM_RECIPES` `SHROOM_SOUL_EVENTS` `SHROOM_UPGRADES` + 5 helper
+- `tools/prototype/test-phase-e.js`:新增 47 条 R6 断言 — 形状/唯一性/行为/接线,全部 PASS
+
+### 验证结果
+
+- `node --check`(extract inline script):index.html JS OK
+- `node tools/prototype/test-phase-e.js`:**244/244 PASS**(R6 +47;基线 197)
+- headless Chrome CDP `test.html`:**798/807 PASS**(R6 不引入新失败,9 个 Round 37/E8 pre-existing 失败无关)
+- `http://127.0.0.1:8767/index.html`:200;`test.html`:200
+- `git diff --check`:PASS
+- LOC:`index.html` 5928 → 6139 (+211),`test-phase-e.js` 372 → 467 (+95)
+
+### 风险
+
+- **3 段培养相对 4 回合更长**:每回合按键节奏不变,但总时长从 4 → 6 回合,首次体验者可能误以为卡死。下轮可加阶段切换时的视觉反馈
+- **12 配方目前仅展示,未触发实际交易**:shroomPickRecipe 返回 recipe 但未实现「售卖」按钮,仅作文案提示。后续 round 可加 G.shopRecipes 持久化 + 选配方出售
+- **7 灵魂事件 7 trigger 概率重叠**:同一 run 可能多个 trigger 同时命中,目前只用第一个。需后续 round 加 trigger 互斥
+- **5 升级树 cost 8/14/20 与 surf 不一致**:surf 是 8/14/20,b4 也是;但 B4 树未接入升级模态(endGame 显示),只在 shroom session 生效。后续 round 把 shroomUpgrades 接入升级模态
+
+### 新 Idea
+
+- B5 酿酒 Dave 级:6 啤酒 + 3 段工艺 + 8 灵魂事件 + 5 升级树
+- B4 增强:12 配方接入实际售卖,玩家在 SmartShop 选配方 + 卖给咖啡店/酒吧
+- Phase C 主线 + 派系:1 句话主线 + Heineken/Coffee Cartel/SmartShop 站队
+- 升级模态 endGame 加 shroomUpgrades 入口(per-run 升级 vs 永久 meta 升级)

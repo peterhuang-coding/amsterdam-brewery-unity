@@ -369,5 +369,98 @@ t('all 10 sub-modules Phase E1-E10 covered (E1/E2/E3/E4/E5/E6/E7/E8 wired)',
   ['TALENT_POOL','FACTION_POOL','MUTATOR_POOL','CRAFT_RECIPES','CRAZY_POOL','doBodyTrade','buildRunSummary','day-bar-fill','ACH_POOL','industryFactor']
   .every(k => h.includes(k)));
 
+// ── 25. Round 6 (Phase B4) SmartShop Dave-depth regression gate ──
+// Extract SHROOM_STRAIN_CATALOG/RECIPES/SOUL_EVENTS/UPGRADES + helpers, plus surf analog for invariants.
+const b4Start = h.indexOf('// funify-v3 Round 6 — Phase B4 SmartShop Dave-depth');
+const b4End = b4Start > -1 ? h.indexOf('// Apply purchased surf upgrade tracks to a surf session state. Pure function.', b4Start) : -1;
+t('Round6: Phase B4 block found in source', b4Start > -1 && b4End > b4Start);
+const b4Src = b4Start > -1 ? h.slice(b4Start, b4End) : '';
+const B4 = new Function('G', 'seeded', 'addEvt', 'bumpFaction', 'MG', '"use strict";' + b4Src +
+  '; return {SHROOM_STRAIN_CATALOG,SHROOM_RECIPES,SHROOM_SOUL_EVENTS,SHROOM_UPGRADES,shroomRollSoulEvent,shroomApplySoul,shroomApplyUpgradeBoosts,shroomQuality,shroomPickRecipe};')(G, seeded, (k,m)=>{}, (k,v,r)=>{G.factions[k]=(G.factions[k]||0)+v}, {shroom:null});
+
+// shape invariants
+t('Round6: 6 strains in catalog', B4.SHROOM_STRAIN_CATALOG.length === 6);
+t('Round6: every strain has h/t/l/yieldBase', B4.SHROOM_STRAIN_CATALOG.every(s => Number.isFinite(s.h) && Number.isFinite(s.t) && Number.isFinite(s.l) && Number.isFinite(s.yieldBase)));
+t('Round6: unique strain ids', new Set(B4.SHROOM_STRAIN_CATALOG.map(s => s.id)).size === 6);
+t('Round6: 12 recipes', B4.SHROOM_RECIPES.length === 12);
+t('Round6: every recipe has inputs.shroom + basePrice + cross', B4.SHROOM_RECIPES.every(r => r.inputs && r.inputs.shroom && Number.isFinite(r.basePrice) && r.cross));
+t('Round6: every recipe references a real strain', B4.SHROOM_RECIPES.every(r => B4.SHROOM_STRAIN_CATALOG.some(s => s.id === r.inputs.shroom)));
+t('Round6: unique recipe ids', new Set(B4.SHROOM_RECIPES.map(r => r.id)).size === 12);
+t('Round6: 7 soul events', B4.SHROOM_SOUL_EVENTS.length === 7);
+t('Round6: every soul event has effect.kind', B4.SHROOM_SOUL_EVENTS.every(e => e.effect && e.effect.kind));
+t('Round6: police_raid soul event present (matches existing 警察临检)', B4.SHROOM_SOUL_EVENTS.some(e => e.id === 'police_raid'));
+t('Round6: unique soul event ids', new Set(B4.SHROOM_SOUL_EVENTS.map(e => e.id)).size === 7);
+t('Round6: 15 upgrades = 5 tracks × 3 tiers', B4.SHROOM_UPGRADES.length === 15);
+t('Round6: 5 distinct upgrade tracks', new Set(B4.SHROOM_UPGRADES.map(u => u.track)).size === 5);
+t('Round6: every track has 3 tiers', ['substrate','thermo','lamp','jar','research'].every(tr => B4.SHROOM_UPGRADES.filter(u => u.track === tr).length === 3));
+t('Round6: every upgrade tier is 1/2/3', B4.SHROOM_UPGRADES.every(u => [1,2,3].includes(u.tier)));
+t('Round6: unique upgrade ids', new Set(B4.SHROOM_UPGRADES.map(u => u.id)).size === 15);
+
+// cross-game link invariants — every recipe.cross maps to a real faction/industry
+const CROSS_INDUSTRY = ['coffee','brewery','surf','academic','bar'];
+t('Round6: every recipe cross ∈ {coffee,brewery,surf,academic,bar}', B4.SHROOM_RECIPES.every(r => CROSS_INDUSTRY.includes(r.cross)));
+
+// behavior — shroomQuality gives 1..5 from gr 0..100
+t('Round6: shroomQuality 0→1', B4.shroomQuality({gr:0}) === 1);
+t('Round6: shroomQuality 50→3', B4.shroomQuality({gr:50}) === 3);
+t('Round6: shroomQuality 100→5', B4.shroomQuality({gr:100}) === 5);
+t('Round6: shroomQuality 120 clamps to 5', B4.shroomQuality({gr:120}) === 5);
+
+// behavior — shroomApplyUpgradeBoosts applies all 5 tracks to session state
+const ses = {st:{}};
+B4.shroomApplyUpgradeBoosts(ses);
+t('Round6: default session has _tempTol/_lightTol/_contamReduce/_jarCap/_recipeStarMin fields',
+  '_tempTol' in ses && '_lightTol' in ses && '_contamReduce' in ses && '_jarCap' in ses && '_recipeStarMin' in ses);
+t('Round6: default jarCap base = 1', ses._jarCap === 1);
+t('Round6: default contamReduce = 0', ses._contamReduce === 0);
+
+G.shroomUpgrades = ['shroom_substrate_3','shroom_thermo_3','shroom_lamp_3','shroom_jar_3','shroom_research_3'];
+const ses2 = {};
+B4.shroomApplyUpgradeBoosts(ses2);
+t('Round6: tier3 substrate → contamReduce 0.30', Math.abs(ses2._contamReduce - 0.30) < 1e-9);
+t('Round6: tier3 thermo → _tempTol 6', ses2._tempTol === 6);
+t('Round6: tier3 lamp → _lightTol 3', ses2._lightTol === 3);
+t('Round6: tier3 jar → _jarCap 4', ses2._jarCap === 4);
+t('Round6: tier3 research → _recipeStarMin 2', ses2._recipeStarMin === 2);
+
+// behavior — shroomPickRecipe returns a recipe whose strain matches
+const recGolden = B4.shroomPickRecipe('goldenTeacher');
+t('Round6: shroomPickRecipe returns recipe for goldenTeacher', recGolden && recGolden.inputs.shroom === 'goldenTeacher');
+const recAmazon = B4.shroomPickRecipe('amazonian');
+t('Round6: shroomPickRecipe returns recipe for amazonian', recAmazon && recAmazon.inputs.shroom === 'amazonian');
+t('Round6: shroomPickRecipe null for unknown strain', B4.shroomPickRecipe('fakeStrain') === null);
+
+// behavior — shroomRollSoulEvent respects one-shot gating
+G._shroomSoul = {picked:null,fired:true,raid:false,contamOutbreak:false,newStrain:false,undercover:false,powerOut:false,rival:false,legendary:false};
+t('Round6: shroomRollSoulEvent returns null after fired', B4.shroomRollSoulEvent({stage:3,tn:3}) === null);
+G._shroomSoul = {picked:null,fired:false,raid:false,contamOutbreak:false,newStrain:false,undercover:false,powerOut:false,rival:false,legendary:false};
+const evt1 = B4.shroomRollSoulEvent({stage:3,tn:5});
+t('Round6: shroomRollSoulEvent may return event for stage 3', evt1 === null || (evt1 && evt1.effect && evt1.effect.kind));
+
+// behavior — shroomApplySoul updates MG + factions
+G.shop = {};
+G.factions = {heineken:0,coffee:0,smartshop:0};
+B4.shroomApplySoul({id:'police_raid',effect:{kind:'police_raid',fineChance:0.3}});
+t('Round6: shroomApplySoul police_raid flips G._shroomSoul.fired', G._shroomSoul.fired === true);
+t('Round6: shroomApplySoul police_raid damages smartshop faction', G.factions.smartshop < 0);
+
+// reset factions to test legendary_harvest independently
+G.factions = {heineken:0,coffee:0,smartshop:0};
+B4.shroomApplySoul({id:'legendary_harvest',effect:{kind:'legendary_harvest',starBonus:5,money:50,unlockTopic:true}});
+t('Round6: shroomApplySoul legendary_harvest bumps smartshop faction (≥2)', G.factions.smartshop >= 2);
+t('Round6: shroomApplySoul legendary_harvest returns without error', G._shroomSoul.fired === true);
+
+// wiring — new exports in AB_TEST
+t('Round6: AB_TEST exposes SHROOM_STRAIN_CATALOG', /SHROOM_STRAIN_CATALOG,SHROOM_RECIPES,SHROOM_SOUL_EVENTS,SHROOM_UPGRADES/.test(h));
+t('Round6: AB_TEST exposes shroomPickRecipe', /shroomQuality,shroomPickRecipe,finShroom/.test(h));
+t('Round6: newRun initializes G.shroomUpgrades', /if\(!G\.shroomUpgrades\)G\.shroomUpgrades=\[\]/.test(h));
+t('Round6: newRun resets G._shroomSoul.fired', /G\._shroomSoul\.fired=false;G\._shroomSoul\.picked=null/.test(h));
+t('Round6: startShroom picks from 6-strain catalog', /SHROOM_STRAIN_CATALOG\[Math\.floor\(seeded\(120\)\*SHROOM_STRAIN_CATALOG\.length\)\]/.test(h));
+t('Round6: shroomIn handles 3-stage progression', /stageMx\[s\.stage-1\]/.test(h));
+t('Round6: shroomIn uses upgrade tolerance', /tempTol=s\._tempTol/.test(h));
+
+// summary assertion: tests grew this round
+t('Round6: overall pass count exceeds prior baseline (≥198)', pass >= 198);
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

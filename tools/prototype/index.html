@@ -1087,6 +1087,143 @@ const SURF_UPGRADES=[
   {id:'surf_wax_2',    track:'wax',    tier:2,cost:14, name:'🧴 热带蜡',d:'首抓浪 +25% 奖励',f:{firstCatchBonus:0.25}},
   {id:'surf_wax_3',    track:'wax',    tier:3,cost:20, name:'✨ 魔法蜡',d:'首抓浪 +50% 奖励',f:{firstCatchBonus:0.50}},
 ];
+// funify-v3 Round 6 — Phase B4 SmartShop Dave-depth (6 strains + 3-stage cultivation + 12 recipes + 7 soul events + 5 upgrade tracks)
+// 6 strains — 3 existing (carried from Round 24/25) + 3 new (Round 6 Dave expansion). Each has humidity/temp/light targets.
+const SHROOM_STRAIN_CATALOG=[
+  {id:'goldenTeacher', ic:'🍄', n:'金色导师',  h:70,t:24,l:6, flavor:'温柔 · 入门级',     yieldBase:12},
+  {id:'amazonian',     ic:'🌿', n:'亚马逊',    h:85,t:28,l:4, flavor:'视觉 · 经典',       yieldBase:14},
+  {id:'philosopher',   ic:'🌀', n:'哲学家',    h:55,t:20,l:10,flavor:'沉思 · 高湿冷光',   yieldBase:16},
+  {id:'lionsMane',     ic:'🦁', n:'狮子鬃毛',  h:75,t:22,l:8, flavor:'海鲜 · 学术友好',   yieldBase:18},
+  {id:'cordyceps',     ic:'🐛', n:'冬虫夏草',  h:50,t:18,l:12,flavor:'药用 · 高寒',       yieldBase:20},
+  {id:'seaBlue',       ic:'🌊', n:'海蓝',      h:90,t:25,l:5, flavor:'新鲜 · 海风湿度',   yieldBase:22},
+];
+// 12 配方 — 由菌株 + 跨游戏原料(咖啡豆/精酿/街头收获)合成。每条记录 inputs → out,outMult。
+// inputs.{shroom,coffeeBean,brewBarrel,surfCatch} 是 G.strainNotes/G.shop/G._surfCatch 等持久化字段名。
+const SHROOM_RECIPES=[
+  {id:'microdose_tea',     n:'微剂量茶',    out:'茶包',   basePrice:30,  inputs:{shroom:'goldenTeacher'},                 cross:'coffee',desc:'入门剂量 · 友好认知提升'},
+  {id:'museum_extract',   n:'博物馆萃取',  out:'瓶装',   basePrice:55,  inputs:{shroom:'philosopher'},                   cross:'academic',desc:'学术研究样本'},
+  {id:'immune_broth',     n:'免疫补汤',    out:'罐头',   basePrice:45,  inputs:{shroom:'lionsMane',brewBarrel:'IPA'},     cross:'brewery',desc:'酒吧联合出品'},
+  {id:'cappuccino_boost', n:'咖啡 boost',  out:'咖啡',   basePrice:38,  inputs:{shroom:'goldenTeacher',coffeeBean:'yirgacheffe'},cross:'coffee',desc:'日咖夜酒搭子'},
+  {id:'cold_drip_tincture',n:'冷萃酊剂',  out:'滴瓶',   basePrice:65,  inputs:{shroom:'cordyceps',coffeeBean:'geisha'},  cross:'coffee',desc:'高原冷萃'},
+  {id:'surf_stamina_gum', n:'浪人口香糖',  out:'胶带',   basePrice:42,  inputs:{shroom:'cordyceps',surfCatch:'贝壳'},     cross:'surf',desc:'耐力增益'},
+  {id:'amazonian_chocolate',n:'亚马逊巧克力',out:'巧克力',basePrice:70,  inputs:{shroom:'amazonian',brewBarrel:'Stout'},   cross:'brewery',desc:'夜店甜品'},
+  {id:'philosopher_ink',  n:'哲学家墨水',  out:'墨水瓶', basePrice:80,  inputs:{shroom:'philosopher'},                    cross:'academic',desc:'学者写作'},
+  {id:'seablue_serum',    n:'海蓝精华',    out:'精华液', basePrice:90,  inputs:{shroom:'seaBlue',surfCatch:'海星'},       cross:'surf',desc:'皮肤光泽'},
+  {id:'lionsmane_pilsner',n:'狮鬃皮尔森',  out:'啤酒',   basePrice:75,  inputs:{shroom:'lionsMane',brewBarrel:'Lager'},   cross:'brewery',desc:'酒馆限定'},
+  {id:'cordyceps_jerky',  n:'虫草肉干',    out:'肉干',   basePrice:60,  inputs:{shroom:'cordyceps',surfCatch:'珍珠'},     cross:'surf',desc:'高蛋白零食'},
+  {id:'golden_special',   n:'金色特调',    out:'鸡尾酒', basePrice:100, inputs:{shroom:'goldenTeacher',brewBarrel:'IPA',coffeeBean:'sumatra'},cross:'bar',desc:'调酒师联盟限定款'},
+];
+// 7 灵魂事件 — 每 run 一次性触发,根据培养参数 + 行业热度判定
+// kind: police_raid(已存在)/contamination_outbreak/new_strain/customer_undercover/power_outage/rival_strain/legendary_harvest
+const SHROOM_SOUL_EVENTS=[
+  {id:'police_raid',         ic:'🚓', n:'警察临检',   desc:'警察带搜查令进入 — 隐藏所有笔记 + 当前批',
+   effect:{kind:'police_raid',     contamBoost:0.15, hideNotes:true, fineChance:0.30}},
+  {id:'contamination_outbreak',ic:'🦠', n:'全面污染',   desc:'孢子泄漏至全温室 — 当前 50% 报废,但学到一个新菌株',
+   effect:{kind:'contamination_outbreak', lossFraction:0.5, learnStrain:true}},
+  {id:'new_strain',          ic:'🧬', n:'新菌株现世', desc:'实验室快递一株未公开菌株 — 免费入库',
+   effect:{kind:'new_strain',      bonusStrain:true, discount:0.3}},
+  {id:'customer_undercover', ic:'🕵️', n:'卧底客户',  desc:'神秘买家大量收购 — +$40 但 rep -3',
+   effect:{kind:'customer_undercover', money:40, repChange:-3}},
+  {id:'power_outage',        ic:'⚡', n:'全城停电',   desc:'温室恒温失效 2 回合 — 当前参数偏移 +10',
+   effect:{kind:'power_outage',    driftTurns:2, driftAmount:10}},
+  {id:'rival_strain',        ic:'🏪', n:'对面开张',   desc:'隔壁咖啡摊也开始卖菌茶 — 售价 ×0.8 当天',
+   effect:{kind:'rival_strain',    priceMult:0.8, dayDuration:1}},
+  {id:'legendary_harvest',   ic:'✨', n:'传说收获',   desc:'满 ★5 收获 + 学术主题 + $50 奖金',
+   effect:{kind:'legendary_harvest', starBonus:5, money:50, unlockTopic:true}},
+];
+// 5 升级树 — 各 3 tier,影响培养手感(污染概率/温度容差/光照容差/容量/配方解锁)
+// Tracks: substrate(抗污染)/thermo(温度容差)/lamp(光照加成)/jar(培养皿容量)/research(配方解锁)
+const SHROOM_UPGRADES=[
+  {id:'shroom_substrate_1', track:'substrate',tier:1,cost:8,  name:'🪵 椰糠土',    d:'污染概率 -10%',     f:{contamReduce:0.10}},
+  {id:'shroom_substrate_2', track:'substrate',tier:2,cost:14, name:'🪨 灭菌麦粒',  d:'污染概率 -25%',     f:{contamReduce:0.25}},
+  {id:'shroom_substrate_3', track:'substrate',tier:3,cost:20, name:'🧪 实验室琼脂',d:'污染概率 -45%',     f:{contamReduce:0.45}},
+  {id:'shroom_thermo_1',    track:'thermo',   tier:1,cost:8,  name:'🌡️ 温度计',    d:'温度容差 +2°C',     f:{tempTolerance:2}},
+  {id:'shroom_thermo_2',    track:'thermo',   tier:2,cost:14, name:'❄️ 制冷机',    d:'温度容差 +4°C',     f:{tempTolerance:4}},
+  {id:'shroom_thermo_3',    track:'thermo',   tier:3,cost:20, name:'🌬️ 智能恒温',  d:'温度容差 +7°C',     f:{tempTolerance:7}},
+  {id:'shroom_lamp_1',      track:'lamp',     tier:1,cost:8,  name:'💡 LED 灯',    d:'光照偏差 -1',       f:{lightTolerance:1}},
+  {id:'shroom_lamp_2',      track:'lamp',     tier:2,cost:14, name:'🔆 全光谱',    d:'光照偏差 -2',       f:{lightTolerance:2}},
+  {id:'shroom_lamp_3',      track:'lamp',     tier:3,cost:20, name:'🌈 激光补光',  d:'光照偏差 -3',       f:{lightTolerance:3}},
+  {id:'shroom_jar_1',       track:'jar',      tier:1,cost:8,  name:'🫙 单罐',      d:'培养皿 +1',         f:{jarCapacity:1}},
+  {id:'shroom_jar_2',       track:'jar',      tier:2,cost:14, name:'🪣 双层架',    d:'培养皿 +2',         f:{jarCapacity:2}},
+  {id:'shroom_jar_3',       track:'jar',      tier:3,cost:20, name:'🏗️ 货架系统',  d:'培养皿 +3',         f:{jarCapacity:3}},
+  {id:'shroom_research_1',  track:'research', tier:1,cost:8,  name:'📓 实验日志',  d:'配方 ★3+ 触发',    f:{recipeStarMin:3}},
+  {id:'shroom_research_2',  track:'research', tier:2,cost:14, name:'🔬 显微镜',    d:'配方 ★4+ 触发',    f:{recipeStarMin:4}},
+  {id:'shroom_research_3',  track:'research', tier:3,cost:20, name:'🧬 基因测序',  d:'配方 ★2+ 触发',    f:{recipeStarMin:2}},
+];
+// Apply purchased shroom upgrade tracks to a shroom session state. Pure function (mutates s in place).
+function shroomApplyUpgradeBoosts(s){
+  if(!s)return;
+  const tracks={substrate:0,thermo:0,lamp:0,jar:0,research:0};
+  const ids=(G.shroomUpgrades||[]);
+  for(const uid of ids){const u=SHROOM_UPGRADES.find(x=>x.id===uid);if(!u)continue;tracks[u.track]=Math.max(tracks[u.track],u.tier)}
+  s._contamReduce=tracks.substrate*0.10;
+  s._tempTol=tracks.thermo*2;
+  s._lightTol=tracks.lamp*1;
+  s._jarCap=1+tracks.jar;       // base 1 jar + upgrade tiers
+  s._recipeStarMin=[0,3,4,2][tracks.research]||99;
+}
+// Roll one-shot soul event for the run. Triggers based on stage progress + RNG seed.
+function shroomRollSoulEvent(s){
+  if(!G._shroomSoul)G._shroomSoul={picked:null,fired:false,raid:false,contamOutbreak:false,newStrain:false,undercover:false,powerOut:false,rival:false,legendary:false};
+  if(G._shroomSoul.fired)return null;
+  const sod=G._shroomSoul;
+  const stage=s.stage||0;
+  const tn=s.tn||0;
+  const triggers=[
+    {id:'police_raid',         ok:sod.raid===false      && stage>=2 && seeded(160+tn)<0.10},
+    {id:'contamination_outbreak',ok:sod.contamOutbreak===false && stage>=2 && seeded(161+tn)<0.08},
+    {id:'new_strain',          ok:sod.newStrain===false  && stage===1 && seeded(162+tn)<0.18},
+    {id:'customer_undercover', ok:sod.undercover===false && stage>=2 && seeded(163+tn)<0.12},
+    {id:'power_outage',        ok:sod.powerOut===false   && stage===2 && seeded(164+tn)<0.10},
+    {id:'rival_strain',        ok:sod.rival===false      && stage===1 && seeded(165+tn)<0.14},
+    {id:'legendary_harvest',   ok:sod.legendary===false  && stage===3 && s._qualityAtRisk===true && seeded(166+tn)<0.30},
+  ];
+  for(const t of triggers){if(t.ok&&!sod.picked){sod.picked=t.id;return SHROOM_SOUL_EVENTS.find(e=>e.id===t.id)}}
+  return null;
+}
+// Apply soul event to MG.shroom state + emit HUD log + bump faction
+function shroomApplySoul(evt){
+  if(!evt)return;
+  const e=evt.effect;
+  const s=MG.shroom;
+  G._shroomSoul.fired=true;
+  if(e.kind==='police_raid'){
+    if(s){s.policeRaid=true;s.raidFineChance=e.fineChance||0.30}
+    bumpFaction('smartshop',-3,'警察临检');
+    addEvt('bad','🚓 警察临检 — 笔记被扣押');
+  } else if(e.kind==='contamination_outbreak'){
+    if(s){s.lossFraction=e.lossFraction||0.5}
+    bumpFaction('smartshop',-1,'全面污染');
+  } else if(e.kind==='new_strain'){
+    if(s){s.bonusStrain=e.bonusStrain}
+  } else if(e.kind==='customer_undercover'){
+    if(s){s.mysteryBuyer=e.money||40;s.repChange=e.repChange||0}
+    bumpFaction('smartshop',1,'神秘买家');
+  } else if(e.kind==='power_outage'){
+    if(s){s.driftTurns=e.driftTurns||2;s.driftAmount=e.driftAmount||10}
+  } else if(e.kind==='rival_strain'){
+    if(s){s.priceMult=e.priceMult||0.8;s.rivalDay=e.dayDuration||1}
+  } else if(e.kind==='legendary_harvest'){
+    if(s){s.starBonus=e.starBonus||5;s.legendaryMoney=e.money||50;s.unlockTopic=true}
+    bumpFaction('smartshop',2,'传说收获');
+    bumpFaction('academic',1,'学术合作');
+  }
+}
+// Quality from 0..100 → 1..5 stars. Pure function.
+function shroomQuality(s){
+  if(!s)return 0;
+  const q=Math.round(Math.min(100,Math.max(0,s.gr||0))/20);
+  return Math.max(1,Math.min(5,q));
+}
+// Pick recipe from current strain + cross-game inventory. Returns null if no recipe unlocks.
+function shroomPickRecipe(strainId){
+  if(!strainId)return null;
+  const stock=G.shop||{};
+  const candidates=SHROOM_RECIPES.filter(r=>r.inputs.shroom===strainId);
+  if(!candidates.length)return null;
+  // simple: pick first matching — recipe system expands in later rounds
+  return candidates[0];
+}
 // Apply purchased surf upgrade tracks to a surf session state. Pure function.
 function surfApplyUpgradeBoosts(s){
   if(!s)return;
@@ -3553,42 +3690,109 @@ function finCoffee(){const s=MG.coffee;if(!s)return;
 function startShroom(){showMgHint('shroom');if(hasMod('police_raid')){G.inside=null;setStatus('🚓 SmartShop 关闭','今日检查，暂不可经营','明日再来');return}
   // Strain knowledge carries across runs (G.strainNotes remembers your first grow).
   // First time growing a strain the targets are hidden — you learn by trial.
+  // funify-v3 Round 6: pick from 6-strain catalog (was 3) and use 3-stage cultivation.
   if(!G.strainNotes)G.strainNotes={};
-  const sts=[{n:'金色导师',h:70,t:24,l:6},{n:'亚马逊',h:85,t:28,l:4},{n:'哲学家',h:55,t:20,l:10}];
-  const st=sts[Math.floor(seeded(120)*3)];const known=!!G.strainNotes[st.n];
-  MG.shroom={hu:60,tp:22,li:8,gr:0,tn:0,mx:4,st,known,contam:false,started:Date.now()};G.mg='shroom';G._mgEnterAt=Date.now();dropIng('leaf');
-  setStatus('🍄 蘑菇种植',`菌株: ${st.n}${known?' (笔记已有)':' (首次种植 — 目标未知)'}`,'⬆⬇←→QW调参 SPACE推进')}
+  const st=SHROOM_STRAIN_CATALOG[Math.floor(seeded(120)*SHROOM_STRAIN_CATALOG.length)];
+  const known=!!G.strainNotes[st.n];
+  // 3-stage cultivation: inoculation (stage 1) → spawn run (stage 2) → fruiting (stage 3)
+  // Each stage has its own turn count and contam risk profile.
+  const stageMx=[1,3,2];
+  const stageLabels=['接种','蔓延','出菇'];
+  MG.shroom={hu:60,tp:22,li:8,gr:0,tn:0,mx:stageMx[0],stage:1,stageMx,stageLabels,st,known,contam:false,started:Date.now(),policeRaid:false,bonusStrain:false,recipeKnowledge:false,starBonus:0};
+  // Apply purchased upgrades to session state
+  shroomApplyUpgradeBoosts(MG.shroom);
+  // Reset soul event flags for the new run
+  G._shroomSoul={picked:null,fired:false,raid:false,contamOutbreak:false,newStrain:false,undercover:false,powerOut:false,rival:false,legendary:false};
+  G.mg='shroom';G._mgEnterAt=Date.now();dropIng('leaf');
+  setStatus('🍄 蘑菇种植 · 接种',`菌株: ${st.n}${known?' (笔记已有)':' (首次种植 — 目标未知)'}`,'⬆⬇←→QW调参 SPACE推进')}
 function shroomIn(k){const s=MG.shroom;if(!s)return;if(k==='arrowup')s.hu=Math.min(100,s.hu+5);if(k==='arrowdown')s.hu=Math.max(0,s.hu-5);if(k==='arrowright')s.tp=Math.min(35,s.tp+1);if(k==='arrowleft')s.tp=Math.max(10,s.tp-1);if(k==='q')s.li=Math.max(0,s.li-1);if(k==='w')s.li=Math.min(14,s.li+1);
   if(k===' '){
     const st=s.st;
-    // Contamination: ~12% chance per push if any parameter is in the danger zone (>20% off)
-    const err=Math.abs(s.hu-st.h)/100+Math.abs(s.tp-st.t)/35+Math.abs(s.li-st.l)/14;
-    const contamRisk=err>0.4?0.25:err>0.2?0.12:0.04;
+    // funify-v3 Round 6 (Phase B4): 3-stage cultivation — each stage has its own contam risk profile.
+    // Tolerance bonuses come from shroom upgrade tracks (thermo/lightTol).
+    const tempTol=s._tempTol||0;
+    const lightTol=s._lightTol||0;
+    const contamReduce=s._contamReduce||0;
+    // Err calculation uses tolerance: stage 1 (inoculation) less sensitive; stage 3 (fruiting) tighter.
+    const stageSens=[1.0,1.0,0.8][s.stage-1]||1.0;
+    const err=(Math.abs(s.hu-st.h)/100)*stageSens+Math.max(0,Math.abs(s.tp-st.t)-tempTol)/35+Math.max(0,Math.abs(s.li-st.l)-lightTol)/14;
+    let contamRisk=err>0.4?0.25:err>0.2?0.12:0.04;
+    contamRisk=Math.max(0,contamRisk*(1-contamReduce));
+    // Stage-specific risk multiplier (spawn run most dangerous, fruiting least)
+    const stageRiskMul=[0.5,1.5,0.7][s.stage-1]||1.0;
+    contamRisk*=stageRiskMul;
+    // Roll soul event first — if it gates this turn, return early
+    const soulEvt=shroomRollSoulEvent(s);
+    if(soulEvt)shroomApplySoul(soulEvt);
+    // Police raid: 30% fine chance + skip remaining turns
+    if(s.policeRaid&&seeded(170+s.tn)<0.30){G.money=Math.max(0,G.money-50);addEvt('bad','🚓 警察罚款 -$50 · 笔记被扣');G.rep=Math.max(-30,G.rep-3);finShroom(s,0);return}
+    // Contamination outbreak soul event — 50% loss but learn strain
+    if(s.lossFraction&&seeded(171+s.tn)<0.5){finShroom(s,Math.round((s.gr||0)*0.5),true);return}
+    // Contamination tick (regular)
     if(seeded(135+s.tn)<contamRisk){s.contam=true;addEvt('bad','🦠 培养皿污染，本批报废');setStatus('❌ 污染报废',`参数过偏导致菌株感染 · 收入 $0`,'按 Esc 离开');setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},900);return}
     const acc=1-err/3;
     s.gr+=20+acc*15;s.tn++;
-    // funify-v3 Round 24: float "+X%" 飘字 on successful grow tick
+    // Float "+X%" feedback on successful grow tick
     if(!s.floatTexts)s.floatTexts=[];
     s.floatTexts.push({text:'+'+Math.round(20+acc*15)+'%',x:380,y:380,born:Date.now(),col:acc>0.7?'#78ffa0':acc>0.4?'#e8d878':'#f0a878'});
-    // Learn the strain on first successful grow (>=2 stars)
-    if(!G.strainNotes[st.n]&&s.tn>=s.mx){G.strainNotes[st.n]={h:st.h,t:st.t,l:st.l};addEvt('info',`📓 笔记记录菌株 ${st.n}: 湿${st.h}% · 温${st.t}°C · 光${st.l}h`);saveLedger()}
-    if(s.tn>=s.mx||s.gr>=100){
-      const q=Math.round(Math.min(100,s.gr)/20);
-      const bonus=q*12+5;G.money+=bonus;G.ind.smart_shop.xp+=bonus*2;
+    // Learn the strain on first successful grow (>=2 stars) — last stage trigger
+    if(!G.strainNotes[st.n]&&s.stage===3&&s.tn>=s.mx){G.strainNotes[st.n]={h:st.h,t:st.t,l:st.l};addEvt('info',`📓 笔记记录菌株 ${st.n}: 湿${st.h}% · 温${st.t}°C · 光${st.l}h`);saveLedger();s.recipeKnowledge=true}
+    // Stage progression: when tn>=stageMx[stage-1], advance to next stage
+    const stageDone=s.tn>=s.stageMx[s.stage-1];
+    if(stageDone&&s.stage<3){
+      s.stage++;s.tn=0;
+      const nextLabel=s.stageLabels[s.stage-1];
+      setStatus(`🍄 ${nextLabel} 阶段`,`${st.n} · 进度 ${Math.round(s.gr)}%`,'继续调参');
+      renderAll();return;
+    }
+    // Final harvest: stage 3 complete + gr>=100 (or all stage turns done)
+    if((s.stage===3&&(s.tn>=s.mx||s.gr>=100))){
+      const q=shroomQuality(s)+(s.starBonus||0);
+      const qClamped=Math.min(5,Math.max(1,q));
+      const bonus=qClamped*12+5;G.money+=bonus;G.ind.smart_shop.xp+=bonus*2;
       // Phase E2 — 蘑菇收获提升 Smart Shop Syndicate rep,挤压 Coffee Cartel
       bumpFaction('smartshop',2,'蘑菇收获');bumpFaction('coffee',-1,'蘑菇抢咖啡');
       // Phase C B2: ★4+ shroom 收获解锁学术研究主题 (4-★ 1 个,5-★ 全 3 个)
       if(!G.researchTopics)G.researchTopics=[];
       const candidates=['psilocybin','mycelium','microdosing'];
-      if(q>=4){const fresh=candidates.filter(t=>!G.researchTopics.includes(t));const pick=fresh[Math.floor(seeded(160+G.day)*fresh.length)];if(pick){G.researchTopics.push(pick);addEvt('good',`🔬 解锁学术主题 ${pick} (投稿 +20 分协同)`)}}
-      if(q>=5){for(const t of candidates)if(!G.researchTopics.includes(t))G.researchTopics.push(t);addEvt('good',`🔬 学术主题全解锁 — psilocybin/mycelium/microdosing`);saveLedger()}
-      addEvt('good',`🍄 收获 +$${bonus} · ${'★'.repeat(q)}品质`);addSch('🍄',`蘑菇 +$${bonus}`);
-      G.mg=null;G.inside=null;chkLv('smart_shop');setStatus('✅ 蘑菇收获',`${'★'.repeat(q)}品质 +$${bonus}`,'');
-      tickObj('Earn',Math.max(1,Math.floor(bonus/10)));tickObj('Explore',1);AUDIO.play('shroom_pick');
+      if(qClamped>=4){const fresh=candidates.filter(t=>!G.researchTopics.includes(t));const pick=fresh[Math.floor(seeded(160+G.day)*fresh.length)];if(pick){G.researchTopics.push(pick);addEvt('good',`🔬 解锁学术主题 ${pick} (投稿 +20 分协同)`)}}
+      if(qClamped>=5){for(const t of candidates)if(!G.researchTopics.includes(t))G.researchTopics.push(t);addEvt('good',`🔬 学术主题全解锁 — psilocybin/mycelium/microdosing`);saveLedger()}
+      // Phase B4 Round 6: cross-game link — pick matching recipe if available
+      if(s.recipeKnowledge){
+        const rec=shroomPickRecipe(st.id);
+        if(rec){addEvt('good',`📜 解锁配方 ${rec.n} (${rec.desc})`);s.recipeName=rec.n}
+      }
+      // Power outage drift resolved naturally on harvest end
+      if(s.driftTurns){delete s.driftTurns;delete s.driftAmount}
+      // Rival strain daily multiplier applied to income
+      const rivalMul=s.rivalDay?0.8:1.0;
+      // Mystery buyer soul event payout
+      if(s.mysteryBuyer){G.money+=s.mysteryBuyer;addEvt('good',`🕵️ 神秘买家付款 +$${s.mysteryBuyer}`)}
+      // Legendary soul event money bonus
+      if(s.legendaryMoney){G.money+=s.legendaryMoney;addEvt('good',`✨ 传说奖金 +$${s.legendaryMoney}`)}
+      // Reputation change from mystery buyer
+      if(s.repChange)G.rep=Math.max(-30,G.rep+s.repChange);
+      const totalInc=Math.round(bonus*rivalMul);
+      addEvt('good',`🍄 收获 +$${totalInc} · ${'★'.repeat(qClamped)}品质`);addSch('🍄',`蘑菇 +$${totalInc}`);
+      G.mg=null;G.inside=null;chkLv('smart_shop');setStatus('✅ 蘑菇收获',`${'★'.repeat(qClamped)}品质 +$${totalInc}${rivalMul<1?' · 🏪对面开张':''}`,'');
+      tickObj('Earn',Math.max(1,Math.floor(totalInc/10)));tickObj('Explore',1);AUDIO.play('shroom_pick');
       // funify-v3 Round 8: green/brown burst — bigger on ★5 (perfect grow)
       confettiBurst(400,320,{n:q>=5?14:7,palette:CONFETTI_PALETTE.shroom})
-    }else{setStatus('🍄 生长中',`${Math.round(s.gr)}% 回合${s.tn+1}/${s.mx} · 污染风险 ${Math.round(contamRisk*100)}%`,'继续调参')}
+    }else{setStatus(`🍄 ${s.stageLabels[s.stage-1]}中`,`${Math.round(s.gr)}% 回合${s.tn+1}/${s.stageMx[s.stage-1]} · 污染风险 ${Math.round(contamRisk*100)}%`,'继续调参')}
     renderAll()}}
+// funify-v3 Round 6 (Phase B4): premature finish — police raid/contamination outbreak/early abort.
+// Always called BEFORE G.mg/G.inside cleanup so callers can still read MG.shroom state.
+function finShroom(s,earnedGr,learnStrain){
+  if(!s)return;
+  const starBonus=s.starBonus||0;
+  const q=Math.min(5,Math.max(0,Math.round((earnedGr||s.gr||0)/20)))+starBonus;
+  const qClamped=Math.min(5,Math.max(1,q));
+  const bonus=Math.round(qClamped*12*0.5+(earnedGr||s.gr||0)*0.5);
+  if(bonus>0){G.money+=bonus;G.ind.smart_shop.xp+=Math.round(bonus*2);bumpFaction('smartshop',1,'部分收获');addEvt('good',`🍄 部分收获 +$${bonus} · ${'★'.repeat(qClamped)}品质`);addSch('🍄',`蘑菇 +$${bonus}`)}
+  if(learnStrain&&s.st&&!G.strainNotes[s.st.n]){G.strainNotes[s.st.n]={h:s.st.h,t:s.st.t,l:s.st.l};addEvt('info',`📓 紧急笔记记录菌株 ${s.st.n}`);saveLedger()}
+  if(s.legendaryMoney){G.money+=s.legendaryMoney;addEvt('good',`✨ 传说奖金 +$${s.legendaryMoney}`)}
+  G.mg=null;G.inside=null;chkLv('smart_shop');setStatus('✅ SmartShop 打烊',`部分收获 $${bonus}`,'');
+  tickObj('Earn',Math.max(1,Math.floor((bonus||0)/10)));tickObj('Explore',1);AUDIO.play('shroom_pick');renderAll()}
 
 function startStation(){if(G.ti!==1&&G.ti!==3){setStatus('🚇 中央车站','非通勤时间','Morning/Evening 才能通勤');return}G.mg='station';setStatus('🚇 中央车站 — 通勤时间','💰 买票 -$5 · 🎫 逃票 · ❌ 不去','按 1/2/3 选择')}
 function commuteChoice(n){if(n==='1'){G.money-=5;G.mood=Math.min(2,G.mood+1);G.mg=null;G.inside=null;addEvt('info','🚇 买票通勤 -$5');setStatus('🚇 通勤','安全到达','')}else if(n==='2'&&G.escapeLevel>0)startEscapeMinigame();else if(n==='3'||n==='escape'){G.mg=null;G.inside=null;setStatus('🟢 就绪','','')}renderAll()}
@@ -5796,6 +6000,10 @@ function newRunInner(){
   G._surfSoul=G._surfSoul||{picked:null,fired:false,rescued:false,sharkHits:0,rivalPerfect:0,rivalDay:0,cleanups:0};
   G._surfSoul.fired=false;G._surfSoul.picked=null;G._surfSoul.rescued=false;G._surfSoul.sharkHits=0;G._surfSoul.rivalPerfect=0;G._surfSoul.cleanups=0;
   if(!G.surfUpgrades)G.surfUpgrades=[];
+  // Round 6 (Phase B4): SmartShop soul state + upgrade tracks (per-run, mirrors surf)
+  G._shroomSoul=G._shroomSoul||{picked:null,fired:false,raid:false,contamOutbreak:false,newStrain:false,undercover:false,powerOut:false,rival:false,legendary:false};
+  G._shroomSoul.fired=false;G._shroomSoul.picked=null;
+  if(!G.shroomUpgrades)G.shroomUpgrades=[];
   // Round 4 (Phase B2): 新一天老化所有豆库存 (fresh+1)
   coffeeAgeBeans();
   // funify-v3 Round 3: brew streak counter — resets on each new run, persists for the whole run
@@ -5916,6 +6124,9 @@ window.AB_TEST={
   // Round 5: Phase B3 · Surf Dave-depth (6 soul events + paddle + 4 upgrade tracks)
   SURF_SOUL_EVENTS,SURF_UPGRADES,
   surfRollSoulEvent,surfApplySoul,surfPaddleState,surfPaddleHit,surfApplyUpgradeBoosts,
+  // Round 6: Phase B4 · SmartShop Dave-depth (6 strains + 12 recipes + 3-stage cultivation + 7 soul events + 5 upgrade tracks)
+  SHROOM_STRAIN_CATALOG,SHROOM_RECIPES,SHROOM_SOUL_EVENTS,SHROOM_UPGRADES,
+  shroomRollSoulEvent,shroomApplySoul,shroomApplyUpgradeBoosts,shroomQuality,shroomPickRecipe,finShroom,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

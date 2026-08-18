@@ -136,8 +136,8 @@
 - ✅ [index.html:2300 cv.click 无 replay] 加 `G.actionLog.push({t,x,y,k})` 数组 P 键回放 — **Round 26 funify-v3 完成 (L 键 P 冲突,改用 L 键 logAction('move'/'enter'/'mgStart'/'mgEnd'/'phase'/'event'/'note') + renderReplay canvas 轨迹 + 滑块 scrub 0-1 + showReplay/closeReplay/toggleReplay + ab_replay_v1 持久 + 23 断言 → 577/577 PASS)**
 - [x] [index.html:2316 setMsg seed 显示但不复制] 加 `📋 copy URL` 按钮便于分享 — **Round 29 funify-v3 完成 (buildSeedUrl/copySeedUrl/parseSeedFromUrl/flashSeedCopied/copySeedUrlFromModal/SEED_COPY_HINT 6 个 helper + 顶栏 #t-seed cursor:pointer + #seed-copy-btn + start-modal #seed-share "📋 分享" + navigator.clipboard 优先 + textarea+execCommand fallback + .copied/.copyfail 视觉反馈 + AB_TEST 暴露 + 23 断言 → 609/610 PASS)**
 - [x] [index.html:563 seedAbbrev 简单 2 字母] 附 tooltip 解释算法 — **Round 29 funify-v3 完成 (#t-seed title="点击复制分享链接 (BACKLOG #10 #5)" + SEED_COPY_HINT='🎲 点此复制分享链接...' + AB_TEST 暴露 SEED_COPY_HINT)**
+- [x] [index.html:2305 newRunInner 起手固定 5 seed] 从玩家历史 seed 随机抽 — **Round 30 funify-v3 完成 (RECENT_SEEDS_MAX=5 + getRecentSeeds/pushRecentSeed/clearRecentSeeds/renderRecentSeeds/pickFreshRandomSeed/startWithRecentSeed 6 helper + saveMeta v4→v5 + .recent-seeds/.recent-seed-btn/.recent-seed-new CSS + DOMContentLoaded 委托 click + 26 断言 → Node-side 12/12 + test-phase-e.js 168/168)**
 - [ ] [index.html:329-548 EV_POOL 18 / WAVE_POINTS 7 重复] 加 `runHash = G.run % 18` 让每个 run 事件池不同
-- [ ] [index.html:2305 newRunInner 起手固定 5 seed] 从玩家历史 seed 随机抽
 - [ ] [index.html:586 saveMeta 无删除] 加 `⚙️ 设置` 模态含 `🗑️ 清空 localStorage`
 - [ ] [index.html:2024 G 初始 seed:42 硬编码] 保持 OK 但写明 fallback 用途
 - [ ] [index.html:2305 newRunInner 不清 G.barRegulars/strainNotes/brewNotes] 加"reset 按钮"独立清这三个数组 — **Round 28 funify-v3 完成 (`resetCrossRunData` helper + settings 模态 `🔄 重置跨 Run 知识数据` 按钮 + 2 步确认,清 8 字段但保留 meta/upgrades/legacy)**

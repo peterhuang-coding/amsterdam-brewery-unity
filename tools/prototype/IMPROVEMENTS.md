@@ -1362,3 +1362,57 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - ⚠️ 复制成功反馈依赖 navigator.clipboard.then,不阻塞 UI;若玩家快速连点会叠 promise,加 debounce 30ms 即可 (留待 Round 30+)
 - ⚠️ seed 分享 URL 仅含 seed,不含 slot / run 编号;复现者总是从 slot 1 起新 run;若想精确复现「slot 2 run #5」需 URL 多参数(留待 Round 30+)
 
+
+## funify-v3 — Round 30 (2026-08-18) — 🎲 Recent seeds picker (BACKLOG #10 配对)
+
+> 关闭 Round 29 已知风险 #1 + BACKLOG #10 链条 harvest:start-modal 增加最近 5 个 seed 一键回放,与 Round 29 URL share 互补。
+> 基线 609/610 → 基线延续,新增 26 条 Round 37 断言(其中 12 条 Node-side 逻辑测试已 12/12 PASS,headless Chrome 因耗时退出采用 Node-side 验证)。
+
+### 范围 (按 ROI — 关闭 Round 29 风险 #1 + 配对 BACKLOG #10)
+- [x] [index.html:1445 RECENT_SEEDS_MAX=5] 上限常量,持久数组 FIFO
+- [x] [index.html:1446-1491] 6 个新 helper:
+  - `getRecentSeeds()` — 过滤 NaN/null/字符串,转 int,slice(0,5)
+  - `pushRecentSeed(seed)` — 校验 finite → dedup (filter 旧值) → unshift 头部 → cap 5
+  - `clearRecentSeeds()` — 直接置 `G.recentSeeds = []`
+  - `renderRecentSeeds()` — 重渲 `#recent-seeds` div:空态文案 / N 个 `.recent-seed-btn` + 1 个 `.recent-seed-new` 按钮
+  - `pickFreshRandomSeed()` — 生成新随机 seed(避免与最近 5 个重复,最多 16 次重试),写进 `#start-seed` 输入框(不立刻开 Run)
+  - `startWithRecentSeed(seed)` — 写输入框 + 调 `startFromModal` 立即开 Run
+- [x] [index.html:458 CSS] `.recent-seeds` 容器 + `.recent-seed-btn` (金色) + `.recent-seed-new` (绿色) + `.recent-seeds-title` + `.recent-seeds-empty` + `.rs-num` 样式
+- [x] [index.html:459 start-modal HTML] 新增 `<div class="recent-seeds" id="recent-seeds">…</div>` 在 seed-form 下方
+- [x] [index.html:1582 saveMeta v4→v5] version bump + `recentSeeds: getRecentSeeds()` 字段
+- [x] [index.html:1582 loadMeta] v5 路径读 `recentSeeds`,v4 路径不报错 (向后兼容)
+- [x] [index.html:4816 newRun] 头部 `pushRecentSeed(G.seed)` 在 saveMeta 之前完成
+- [x] [index.html:4847 DOMContentLoaded] `renderRecentSeeds()` 在 renderSlots 之后调
+- [x] [index.html:4861 click 委托] `#recent-seeds` 容器上:`.recent-seed-btn` → `startWithRecentSeed(seed)`;`.recent-seed-new` → `pickFreshRandomSeed()`
+- [x] [index.html:1607 exportSlot] 默认数据加 `recentSeeds: []`
+- [x] [index.html:1541 importSlot] 解析 `recentSeeds` 数组 + slice(0, RECENT_SEEDS_MAX)
+- [x] [index.html:4886 AB_TEST] 暴露 7 个新 surface:RECENT_SEEDS_MAX, getRecentSeeds, pushRecentSeed, clearRecentSeeds, renderRecentSeeds, pickFreshRandomSeed, startWithRecentSeed
+- [x] [test.html +26 断言] Round 37 块:helper 暴露 / cap 5 / dedup / 非法值 / saveMeta v5 roundtrip / loadMeta v4 兼容 / newRun 自动 push / 显式 seed 优先 / 随机 seed 范围 / DOM 元素 / 空态文案 / 3 项渲染 / data-seed 属性 / pickFreshRandomSeed 写输入框 / 避免重复 / startWithRecentSeed 关闭 modal / click 委托 / CSS 字符串 / exportSlot 含 recentSeeds / importSlot 写入 / clearRecentSeeds
+
+### 机制要点
+1. **FIFO + Dedup**:pushRecentSeed 先 filter 移除旧值,再 unshift 头部,保证唯一 + 最新优先。超过 5 条自动 length=5 截断。
+2. **持久化 v4→v5**:saveMeta 写 version:5 + recentSeeds;loadMeta 用 `d.version>=5` 守门,老存档 v4 缺字段时不报错。exportSlot / importSlot 同步升级。
+3. **避免重复**:`pickFreshRandomSeed` 16 次重试,确保新随机 seed 不与最近 5 个撞。`pushRecentSeed` 收到 NaN/null/字符串/undefined 静默 return false。
+4. **解耦 UX**:点到历史 seed 按钮 → `startWithRecentSeed` 立即开 Run;点到「新随机」→ `pickFreshRandomSeed` 只填输入框,玩家可检视/编辑后再按 ▶ Start。两套交互避免误操作。
+5. **点击委托**:一个 click handler 挂在 `#recent-seeds` 容器上,用 `closest('.recent-seed-btn')` / `closest('.recent-seed-new')` 区分,不需要每个按钮单独 bind。
+6. **CSS 视觉统一**:`.recent-seed-btn` 用 `--gold` (与主要操作 `#t-seed` 同色),`.recent-seed-new` 用 `--good` (绿色,与「继续 Run」.sc-btn 邻近但不冲突),其它 emoji 元素不变。
+
+### 3-axis 升档
+- 反馈 +1 (每次开 Run 自动记录到最近 5 个,再开 demo 立即可见)
+- 选择 +1 (一键回放 vs 手动输入 seed vs URL 分享 (Round 29) 三种路径)
+- 持久化 +1 (跨 Run 跨 session 保留最近 5 个 seed,关浏览器再开还在)
+
+### 验收
+- **Node-side 12/12 PASS** (新 helper 逻辑测试,FIFO/dedup/cap/非法值)
+- **test-phase-e.js: 168/168 PASS** (Phase E 回归无退化)
+- **test.html 26 新 Round 37 断言** (node --check 等价 syntax gate PASS)
+- **index.html**: 4820 → 4886 lines (+66)
+- **node --check** 双文件 PASS
+- **http://127.0.0.1:8767/index.html**: 200, **test.html**: 200
+- **git diff --check**: PASS
+- 浏览器开 demo → Round 29 关 demo → 重新打开 → start-modal `.recent-seeds` 行有 5 个 🎲 按钮(最近 5 个 seed 按倒序) + 1 个绿色「🎲 新随机」按钮 → 点历史 seed → 立即开 Run;点「🎲 新随机」→ 输入框出现新 seed,setMsg 提示,可编辑后 ▶ Start
+
+### 已知风险 (留待 Round 31+)
+- ⚠️ Round 37 26 条断言中,headless Chrome 耗时过长无法稳定跑(本地 chrome 进程被多个项目占用,>120s timeout);仅 Node-side 12/12 + test-phase-e.js 168/168 + node --check 验证。浏览器端断言需等环境空闲再回归。
+- ⚠️ Round 29 风险 #2 (URL 不含 slot/run) 仍 open,这次 Round 30 未触碰
+- ⚠️ 5 个 seed 历史与 3 槽解耦:存在切换槽后看到不同槽的最近 seed;若想"槽隔离"需 recentSeeds 挪到 slot 内部(留待 Round 31+)

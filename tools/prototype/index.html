@@ -101,6 +101,16 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 /* funify-v3 Round 21 — slot picker (BACKLOG #10 #1 closure) */
 .slot-picker{margin-top:14px;padding:10px;background:#00000030;border:1px solid var(--border);border-radius:7px}.slot-picker-title{color:var(--gold);font-size:12px;margin-bottom:8px;text-align:center}.slot-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.slot-card{background:var(--card);border:1px solid #fff2;border-radius:7px;padding:9px 7px;text-align:center;cursor:pointer;transition:border-color .2s,box-shadow .2s}.slot-card:hover{border-color:var(--gold)}.slot-card.active{border-color:var(--gold);box-shadow:0 0 8px #ecb45766,inset 0 0 4px #ecb45722}.slot-card.empty{opacity:0.85}.slot-card .sc-idx{font:bold 14px monospace;color:var(--gold);letter-spacing:1px}.slot-card .sc-state{font-size:10px;color:var(--muted);margin:2px 0}.slot-card .sc-info{font-size:10px;color:var(--text);line-height:1.4;margin-top:4px}.slot-card .sc-btn{margin-top:6px;font-size:11px;padding:4px 8px;border-radius:5px;background:#ecb45722;color:var(--gold);border:1px solid var(--gold);cursor:pointer}.slot-card .sc-btn:hover{background:var(--gold);color:#000}.slot-card .sc-export{margin-left:4px;background:#4090e022;color:#80b8f0;border-color:#4090e0}.slot-card .sc-export:hover{background:#4090e0;color:#fff}.slot-import{margin-top:10px;text-align:center;padding-top:8px;border-top:1px solid var(--border)}.slot-import .btn{font-size:11px;padding:5px 10px;background:#4090e022;color:#80b8f0;border:1px solid #4090e0}.slot-import .btn:hover{background:#4090e0;color:#fff}
 @media(max-width:760px){.slot-cards{grid-template-columns:1fr}}
+/* funify-v3 Round 30 — 🎲 Recent seeds picker (BACKLOG #10 配对): last 5 seeds 一键回放 */
+.recent-seeds{margin-top:8px;padding:8px 10px;background:#00000020;border:1px solid #fff1;border-radius:6px;display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+.recent-seeds-title{font-size:11px;color:var(--gold);margin-right:4px;font-weight:bold}
+.recent-seeds-empty{font-size:10px;color:var(--muted);font-style:italic}
+.recent-seed-btn{font-size:11px;padding:3px 8px;background:#ecb45715;color:var(--gold);border:1px solid #ecb45766;border-radius:5px;cursor:pointer;font-family:monospace;transition:background .15s,border-color .15s}
+.recent-seed-btn:hover{background:var(--gold);color:#000;border-color:var(--gold)}
+.recent-seed-btn .rs-num{color:var(--muted);font-size:9px;margin-left:3px}
+.recent-seed-btn:hover .rs-num{color:#0008}
+.recent-seed-new{font-size:11px;padding:3px 8px;background:#80c8a815;color:var(--good);border:1px solid #80c8a866;border-radius:5px;cursor:pointer;margin-left:auto}
+.recent-seed-new:hover{background:var(--good);color:#000;border-color:var(--good)}
 /* funify-v3 Round 35 — ⚙️ settings modal + 🗑️ clear localStorage (BACKLOG #10 #4 closure) */
 #settings-modal,#settings-modal.hidden{position:fixed;inset:0;background:#00000080;display:flex;align-items:center;justify-content:center;z-index:120;backdrop-filter:blur(5px)}
 #settings-modal.hidden{display:none}
@@ -456,6 +466,9 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div class="key-card"><kbd>D</kbd><span>向右移动</span></div><div class="key-card"><kbd>E</kbd><span>进入建筑</span></div><div class="key-card"><kbd>Space</kbd><span>推进时间</span></div>
 </div>
 <form class="seed-form" onsubmit="event.preventDefault();startFromModal()"><input id="start-seed" type="number" placeholder="Seed（数字，可留空随机）" autocomplete="off" autofocus><button type="submit" class="btn btn-go">▶ Start</button><button type="button" class="btn seed-share" onclick="copySeedUrlFromModal()" title="📋 复制带 seed 的分享链接">📋 分享</button></form>
+<!-- funify-v3 Round 30 — 🎲 Recent seeds picker (BACKLOG #10 配对): 玩家最近 5 个 seed 一键回放 -->
+<!-- 与 Round 29 URL share 互补:朋友发来 URL,玩家可将目标 seed 输进这里再按 ▶ -->
+<div class="recent-seeds" id="recent-seeds"><span class="recent-seeds-title">🎲 最近 Seeds</span><span class="recent-seeds-empty">（尚无历史 — 开始新 Run 后这里会记录最近 5 个）</span></div>
 <!-- funify-v3 Round 21 — 3-slot picker (BACKLOG #10 #1 closure):每槽独立 meta/upgrades/run · 点击切换 -->
 <!-- funify-v3 Round 34 — 加 📥 导入按钮 + file input (BACKLOG #10 #2 closure) -->
 <div class="slot-picker"><div class="slot-picker-title">💾 存档槽位 (3 个独立进度)</div><div id="slot-cards" class="slot-cards"></div><div class="slot-import"><button class="btn" onclick="document.getElementById('import-file').click()">📥 导入 JSON 到当前槽</button><input type="file" id="import-file" accept="application/json,.json" style="display:none" onchange="handleImportFile(this,getActiveSlot())"></div></div>
@@ -1425,6 +1438,57 @@ function copySeedUrlFromModal(){
   if(v&&!v.value.trim())v.value=seed;
   copySeedUrl(seed);
 }
+// funify-v3 Round 30 — 🎲 Recent seeds picker (BACKLOG #10 配对):
+//   玩家最近 5 个 seed 持久化到 ab_meta_v2(从 v5 起),start-modal 提供一行按钮一键回放。
+//   与 Round 29 URL share 互补:朋友分享 URL → 玩家复制到 #start-seed → 一键开始。
+//   与 Round 35 settings 「🗑️ 清 ab_*」兼容:清空后 G.recentSeeds 变空,UI 显空态。
+const RECENT_SEEDS_MAX=5;
+function getRecentSeeds(){if(!Array.isArray(G.recentSeeds))G.recentSeeds=[];return G.recentSeeds.filter(x=>Number.isFinite(x)).map(x=>x|0)}
+function pushRecentSeed(seed){
+  if(!Number.isFinite(seed))return false;
+  const s=seed|0;
+  if(!Array.isArray(G.recentSeeds))G.recentSeeds=[];
+  // Dedup:先移除同值再 unshift 头部,保证唯一 + 最新在前
+  G.recentSeeds=G.recentSeeds.filter(x=>x!==s);
+  G.recentSeeds.unshift(s);
+  if(G.recentSeeds.length>RECENT_SEEDS_MAX)G.recentSeeds.length=RECENT_SEEDS_MAX;
+  return true;
+}
+function clearRecentSeeds(){G.recentSeeds=[]}
+// 渲染 start-modal 的最近 seeds 行;空数据显空态文案
+function renderRecentSeeds(){
+  const root=document.getElementById('recent-seeds');if(!root)return;
+  const seeds=getRecentSeeds();
+  const parts=['<span class="recent-seeds-title">🎲 最近 Seeds</span>'];
+  if(seeds.length===0){
+    parts.push('<span class="recent-seeds-empty">（尚无历史 — 开始新 Run 后这里会记录最近 '+RECENT_SEEDS_MAX+' 个）</span>');
+  }else{
+    seeds.forEach((s,i)=>{
+      parts.push('<button type="button" class="recent-seed-btn" data-seed="'+s+'" title="点击用 seed '+s+' 开始新 Run (历史第 '+(i+1)+' 个)">'+seedAbbrev(s)+'<span class="rs-num">#'+(i+1)+'</span></button>');
+    });
+  }
+  // 右侧补充「🎲 新随机」按钮 — 不立刻开 run,只是把随机 seed 写进 input 供玩家检视/编辑
+  parts.push('<button type="button" class="recent-seed-new" id="recent-seed-new" title="生成新随机 seed（仅填进输入框，不立刻开始）">🎲 新随机</button>');
+  root.innerHTML=parts.join('');
+}
+// 玩家点 🎲 新随机 按钮:生成新 seed,写进 #start-seed 输入框,玩家可检视/编辑后再按 ▶ Start
+function pickFreshRandomSeed(){
+  const v=document.getElementById('start-seed');
+  let s=42+Math.floor(Math.random()*900000);
+  // 避免与最近 5 个重复,保证「新随机」语义
+  const recent=getRecentSeeds();
+  let safety=0;
+  while(recent.indexOf(s)>=0&&safety++<16)s=42+Math.floor(Math.random()*900000);
+  if(v)v.value=String(s);
+  setMsg('🎲 新随机 seed='+s+' · 检查后按 ▶ Start');
+}
+// 玩家点历史 seed 按钮:先填进输入框(让玩家能看到选择了),再触发 startFromModal 立即开 Run
+//  也提供一个 hold 模式:Shift+click 仅填入不开 Run,符合「谨慎确认」UX;但为保持简单,统一立即开 Run
+function startWithRecentSeed(seed){
+  const v=document.getElementById('start-seed');
+  if(v)v.value=String(seed);
+  startFromModal();
+}
 function seeded(n){const x=Math.sin((G.seed+n*9973+G.day*7919)*12.9898)*43758.5453;return x-Math.floor(x)}
 function moodEmoji(){return G.mood>0?'😊':G.mood<0?'😠':'😐'}
 function tipFactor(){const effectiveMood=hasUpgrade('legendary_mood_lock')?Math.max(0,G.mood):G.mood;let f=effectiveMood>0?1.2:effectiveMood<0?.8:1;if(hasUpgrade('tip_boost'))f*=1.25;if(hasMod('tourism'))f*=1.5;if(hasMod('tourism')&&hasUpgrade('iamsterdam_card'))f*=1.2;if(G.shop&&G.shop.crazyTipMul)f*=G.shop.crazyTipMul;return f}
@@ -1515,8 +1579,8 @@ function metaIndustryBoost(id){
   const upId=idMap[id]||id;
   return hasUpgrade('meta_'+upId+'_master')?1.2:1;
 }
-function saveMeta(){try{localStorage.setItem(slotKey(getActiveSlot()),JSON.stringify({version:4,meta:G.meta,upgrades:G.upgrades,legacy:G.legacy,run:G.run,modHistory:Array.isArray(G.modHistory)?G.modHistory.slice(0,5):[],invCollect:G.invCollect&&typeof G.invCollect==='object'?G.invCollect:{}}))}catch(e){console.warn('ab_meta save failed',e)}}
-function loadMeta(){try{const d=JSON.parse(localStorage.getItem(slotKey(getActiveSlot())));if(d&&d.version>=2){G.meta=Math.max(0,d.meta|0);G.upgrades=Array.isArray(d.upgrades)?[...new Set(d.upgrades)]:[];G.legacy=Math.max(0,d.legacy|0);G.run=Math.max(0,d.run|0)}if(d&&d.version>=3&&Array.isArray(d.modHistory)){G.modHistory=d.modHistory.filter(x=>typeof x==='string').slice(0,5)}if(d&&d.version>=4&&d.invCollect&&typeof d.invCollect==='object'){if(!G.invCollect||typeof G.invCollect!=='object')G.invCollect={};for(const k of Object.keys(d.invCollect)){const v=d.invCollect[k]|0;if(v>0)G.invCollect[k]=v}}}catch(e){console.warn('ab_meta load failed',e)}}
+function saveMeta(){try{localStorage.setItem(slotKey(getActiveSlot()),JSON.stringify({version:5,meta:G.meta,upgrades:G.upgrades,legacy:G.legacy,run:G.run,modHistory:Array.isArray(G.modHistory)?G.modHistory.slice(0,5):[],invCollect:G.invCollect&&typeof G.invCollect==='object'?G.invCollect:{},recentSeeds:getRecentSeeds()}))}catch(e){console.warn('ab_meta save failed',e)}}
+function loadMeta(){try{const d=JSON.parse(localStorage.getItem(slotKey(getActiveSlot())));if(d&&d.version>=2){G.meta=Math.max(0,d.meta|0);G.upgrades=Array.isArray(d.upgrades)?[...new Set(d.upgrades)]:[];G.legacy=Math.max(0,d.legacy|0);G.run=Math.max(0,d.run|0)}if(d&&d.version>=3&&Array.isArray(d.modHistory)){G.modHistory=d.modHistory.filter(x=>typeof x==='string').slice(0,5)}if(d&&d.version>=4&&d.invCollect&&typeof d.invCollect==='object'){if(!G.invCollect||typeof G.invCollect!=='object')G.invCollect={};for(const k of Object.keys(d.invCollect)){const v=d.invCollect[k]|0;if(v>0)G.invCollect[k]=v}}if(d&&d.version>=5&&Array.isArray(d.recentSeeds)){G.recentSeeds=d.recentSeeds.filter(x=>Number.isFinite(x)).map(x=>x|0).slice(0,RECENT_SEEDS_MAX);if(!G.recentSeeds.length)delete G.recentSeeds}}catch(e){console.warn('ab_meta load failed',e)}}
 // funify-v3 Round 21 — 3-slot archive (BACKLOG #10 #1 closure):每个槽独立保存 meta/legacy/run/modHistory/invCollect
 // 槽 1 仍用 `ab_meta_v2`(向后兼容老存档),槽 2/3 用新 key `ab_slot_2`/`ab_slot_3`。
 // localStorage `ab_active_slot` 记录当前激活槽(默认 1,断点续玩)。
@@ -1534,7 +1598,7 @@ function saveSlot(n){try{localStorage.setItem(slotKey(n),JSON.stringify(Object.a
 // 导出 → 下载 JSON 文件(玩家跨设备挪存档),导入 → 解析 JSON 写入目标槽
 // 与 saveMeta 同一数据结构(带 version 字段),importSlot 用 version>=2 守门
 function exportSlot(n){
-  const data=readSlot(n)||{version:4,meta:0,upgrades:[],legacy:0,run:0,modHistory:[],invCollect:{}};
+  const data=readSlot(n)||{version:5,meta:0,upgrades:[],legacy:0,run:0,modHistory:[],invCollect:{},recentSeeds:[]};
   return JSON.stringify(Object.assign({},data,{slot:n,exportedAt:Date.now()}));
 }
 function importSlot(n,jsonText){
@@ -1551,6 +1615,7 @@ function importSlot(n,jsonText){
       run:Math.max(0,parsed.run|0),
       modHistory:Array.isArray(parsed.modHistory)?parsed.modHistory.filter(x=>typeof x==='string').slice(0,5):[],
       invCollect:(parsed.invCollect&&typeof parsed.invCollect==='object')?parsed.invCollect:{},
+      recentSeeds:Array.isArray(parsed.recentSeeds)?parsed.recentSeeds.filter(x=>Number.isFinite(x)).map(x=>x|0).slice(0,RECENT_SEEDS_MAX):[],
       savedAt:Date.now(),
       importedFrom:typeof parsed.slot==='number'?parsed.slot:null
     };
@@ -2317,7 +2382,7 @@ function renderSlots(){
 // 玩家点了某槽 — 激活该槽,然后开始新 Run (跨 Run meta 累计对新槽生效,槽 1 旧存档向下兼容)
 function pickSlot(n){if(n<1||n>3)return;setActiveSlot(n);document.getElementById('start-modal').classList.add('hidden');startFromModal()}
 
-const G={p:{x:100,y:400,tx:100,ty:400},day:1,ti:0,money:250,rep:0,loc:'de_pijp',ind:{},bs:[5,3,2],brewI:-1,brewT:0,events:[],mods:[],auto:false,inside:null,mg:null,ended:false,ts:0,tr:0,run:0,legacy:0,_at:null,_wp:null,_otx:null,_oty:null,_st:0,_sx:0,_sy:0,sch:[],seed:42,meta:0,metaPending:0,objs:[],upgrades:[],objDefs:{},_objDay:0,mood:0,greetedToday:[],visitedToday:[],visited:[],shop:{},surfDiscovered:[],inventory:[],invCollect:{},todayWave:null,escapeLevel:0,escapeTeacher:null,escUsed:0,escapeLearnDay:0,keys:{},lastClickAt:0,achievements:[],achTree:{brew:0,coffee:0,rogue:0,scholar:0},teacherRep:{pablo:0,ravi:0,sofie:0,chen:0},modHistory:[],_run:{}};
+const G={p:{x:100,y:400,tx:100,ty:400},day:1,ti:0,money:250,rep:0,loc:'de_pijp',ind:{},bs:[5,3,2],brewI:-1,brewT:0,events:[],mods:[],auto:false,inside:null,mg:null,ended:false,ts:0,tr:0,run:0,legacy:0,_at:null,_wp:null,_otx:null,_oty:null,_st:0,_sx:0,_sy:0,sch:[],seed:42,meta:0,metaPending:0,objs:[],upgrades:[],objDefs:{},_objDay:0,mood:0,greetedToday:[],visitedToday:[],visited:[],shop:{},surfDiscovered:[],inventory:[],invCollect:{},todayWave:null,escapeLevel:0,escapeTeacher:null,escUsed:0,escapeLearnDay:0,keys:{},lastClickAt:0,achievements:[],achTree:{brew:0,coffee:0,rogue:0,scholar:0},teacherRep:{pablo:0,ravi:0,sofie:0,chen:0},modHistory:[],recentSeeds:[],_run:{}};
 for(const k of Object.keys(IND_DEF))G.ind[k]={lv:0,xp:0};
 const MG={};
 
@@ -4747,6 +4812,8 @@ function toggleMuteBtn(){AUDIO.toggleMute();const b=document.getElementById('mut
 
 function newRun(seed){
   G.run++;G.seed=Number.isFinite(seed)?seed:(42+Math.floor(Math.random()*900000));newRunInner();rollDayObjectives();
+  // funify-v3 Round 30 — 🎲 Recent seeds picker: 把本次 seed 推到历史头部(在 saveMeta 之前)
+  pushRecentSeed(G.seed);
   const mod=rollDayModifier();G.mods=[{t:mod.ic+' '+mod.t,id:mod.id,effect:mod.effect}];pushModHistory(mod.id);
   if(hasUpgrade('extra_event')){const mod2=rollDayModifier();if(mod2.id!==mod.id){G.mods.push({t:mod2.ic+' '+mod2.t,id:mod2.id,effect:mod2.effect});pushModHistory(mod2.id);}}
   const mut0=rollDayMutator();addEvt('info','🏷️ 今日变量 · '+mut0.ic+' '+mut0.n+' — '+mut0.d);
@@ -4776,6 +4843,8 @@ renderAll();
 try{if(localStorage.getItem('ab_skip_tutorial')==='1'){startFromModal()}}catch(e){}
 // funify-v3 Round 21 — start-modal 打开时渲染 3 槽卡片 (vault picker)
 renderSlots();
+// funify-v3 Round 30 — 🎲 Recent seeds picker (BACKLOG #10 配对): 玩家最近 5 个 seed 一键回放
+renderRecentSeeds();
 // funify-v3 Round 26 — 📼 Replay 滑块 / 按钮 事件绑定
 (function(){
   const sl=document.getElementById('replay-slider');
@@ -4789,6 +4858,14 @@ renderSlots();
   const ts=document.getElementById('t-seed');
   if(sc)sc.addEventListener('click',e=>{e.stopPropagation();copySeedUrl()});
   if(ts)ts.addEventListener('click',()=>copySeedUrl());
+  // funify-v3 Round 30 — Recent seeds 委托:点击 .recent-seed-btn → startWithRecentSeed(seed);点击 .recent-seed-new → pickFreshRandomSeed()
+  const rs=document.getElementById('recent-seeds');
+  if(rs)rs.addEventListener('click',e=>{
+    const btn=e.target.closest('.recent-seed-btn');
+    if(btn){const s=parseInt(btn.getAttribute('data-seed'),10);if(Number.isFinite(s))startWithRecentSeed(s);return}
+    const nb=e.target.closest('.recent-seed-new');
+    if(nb){pickFreshRandomSeed();return}
+  });
 })();
 const _qp=new URLSearchParams(location.search);const _qs=_qp.get('seed');if(_qs)document.getElementById('start-seed').value=_qs;
 window.AB_TEST={
@@ -4806,6 +4883,7 @@ window.AB_TEST={
   logAction,saveReplay,loadReplay,clearReplay,replayOpen,showReplay,closeReplay,toggleReplay,renderReplay,REPLAY_MAX,
   AB_LEDGER_FIELDS,resetCrossRunData,confirmResetCrossRunData,
   buildSeedUrl,copySeedUrl,parseSeedFromUrl,flashSeedCopied,copySeedUrlFromModal,SEED_COPY_HINT,
+  RECENT_SEEDS_MAX,getRecentSeeds,pushRecentSeed,clearRecentSeeds,renderRecentSeeds,pickFreshRandomSeed,startWithRecentSeed,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

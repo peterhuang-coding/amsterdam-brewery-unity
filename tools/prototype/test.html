@@ -2319,6 +2319,119 @@ frame.addEventListener('load',async()=>{
     return win.modalOpen&&win.modalOpen();
   });
 
+  // ═══ funify-v3 Round 37 — 🎲 Recent seeds picker (BACKLOG #10 配对) ═══
+  check('Round 37: RECENT_SEEDS_MAX=5 上限常量',()=>t.RECENT_SEEDS_MAX===5);
+  check('Round 37: getRecentSeeds / pushRecentSeed / clearRecentSeeds / renderRecentSeeds / pickFreshRandomSeed / startWithRecentSeed 暴露',()=>typeof win.getRecentSeeds==='function'&&typeof win.pushRecentSeed==='function'&&typeof win.clearRecentSeeds==='function'&&typeof win.renderRecentSeeds==='function'&&typeof win.pickFreshRandomSeed==='function'&&typeof win.startWithRecentSeed==='function');
+  check('Round 37: getRecentSeeds 初始空数组',()=>{win.clearRecentSeeds();return Array.isArray(win.getRecentSeeds())&&win.getRecentSeeds().length===0});
+  check('Round 37: pushRecentSeed(seed) 加到头部',()=>{win.clearRecentSeeds();win.pushRecentSeed(42);win.pushRecentSeed(100);const r=win.getRecentSeeds();return r.length===2&&r[0]===100&&r[1]===42});
+  check('Round 37: pushRecentSeed 重复 id 去重 + 移到头部',()=>{win.clearRecentSeeds();win.pushRecentSeed(42);win.pushRecentSeed(100);win.pushRecentSeed(42);const r=win.getRecentSeeds();return r.length===2&&r[0]===42&&r[1]===100});
+  check('Round 37: pushRecentSeed 超过 RECENT_SEEDS_MAX 自动 cap (FIFO 删最小)',()=>{win.clearRecentSeeds();win.pushRecentSeed(1);win.pushRecentSeed(2);win.pushRecentSeed(3);win.pushRecentSeed(4);win.pushRecentSeed(5);win.pushRecentSeed(6);win.pushRecentSeed(7);const r=win.getRecentSeeds();return r.length===5&&r[0]===7&&r[4]===3});
+  check('Round 37: pushRecentSeed 非法值 (NaN/null/undefined/字符串) 静默忽略',()=>{win.clearRecentSeeds();win.pushRecentSeed(42);win.pushRecentSeed(NaN);win.pushRecentSeed(null);win.pushRecentSeed('abc');const r=win.getRecentSeeds();return r.length===1&&r[0]===42});
+  check('Round 37: saveMeta v5 写入 recentSeeds → loadMeta 恢复',()=>{
+    win.clearRecentSeeds();win.pushRecentSeed(100);win.pushRecentSeed(200);win.pushRecentSeed(300);
+    win.saveMeta();const sk=win.slotKey(win.getActiveSlot());const raw=localStorage.getItem(sk);const parsed=JSON.parse(raw);
+    return parsed&&parsed.version===5&&Array.isArray(parsed.recentSeeds)&&parsed.recentSeeds.length===3&&parsed.recentSeeds[0]===300;
+  });
+  check('Round 37: loadMeta v4 数据无 recentSeeds 时不报错 (向后兼容)',()=>{
+    const sk=win.slotKey(win.getActiveSlot());
+    const had=localStorage.getItem(sk);
+    localStorage.setItem(sk,JSON.stringify({version:4,meta:0,upgrades:[],legacy:0,run:0,modHistory:[],invCollect:{}}));
+    win.loadMeta();const r=win.getRecentSeeds();
+    if(had)localStorage.setItem(sk,had);else localStorage.removeItem(sk);
+    return Array.isArray(r);
+  });
+  check('Round 37: newRun(seed) 自动 pushRecentSeed(G.seed) 到历史头部',()=>{
+    win.clearRecentSeeds();win.newRun(777);const r=win.getRecentSeeds();return r.length>=1&&r[0]===777;
+  });
+  check('Round 37: newRun 显式 seed 比 G.seed 优先级高',()=>{
+    win.clearRecentSeeds();win.newRun(555);win.newRun(888);const r=win.getRecentSeeds();return r[0]===888&&r[1]===555;
+  });
+  check('Round 37: newRun 无 seed 参数 → 随机生成并入历史',()=>{
+    win.clearRecentSeeds();win.newRun();const r=win.getRecentSeeds();return r.length===1&&Number.isFinite(r[0])&&r[0]>=42&&r[0]<900042;
+  });
+  check('Round 37: #recent-seeds 元素存在',()=>!!doc.getElementById('recent-seeds'));
+  check('Round 37: start-modal 含 .recent-seeds 容器',()=>{
+    const sm=doc.getElementById('start-modal');return sm&&sm.querySelector('#recent-seeds')!==null;
+  });
+  check('Round 37: renderRecentSeeds 空数据 → 显示空态文案',()=>{
+    win.clearRecentSeeds();win.renderRecentSeeds();
+    const root=doc.getElementById('recent-seeds');
+    return root&&root.querySelector('.recent-seeds-empty')!==null&&root.querySelectorAll('.recent-seed-btn').length===0;
+  });
+  check('Round 37: renderRecentSeeds 3 项 → 3 个 .recent-seed-btn + 新随机按钮',()=>{
+    win.clearRecentSeeds();win.pushRecentSeed(42);win.pushRecentSeed(100);win.pushRecentSeed(200);win.renderRecentSeeds();
+    const root=doc.getElementById('recent-seeds');
+    const btns=root.querySelectorAll('.recent-seed-btn');
+    const newBtn=root.querySelector('.recent-seed-new');
+    return btns.length===3&&newBtn&&newBtn.textContent.indexOf('新随机')>=0;
+  });
+  check('Round 37: .recent-seed-btn 含 data-seed 属性 + 含 seedAbbrev 文本',()=>{
+    win.clearRecentSeeds();win.pushRecentSeed(42);win.renderRecentSeeds();
+    const btn=doc.querySelector('#recent-seeds .recent-seed-btn');
+    const abbrev=win.seedAbbrev(42);
+    return btn&&btn.getAttribute('data-seed')==='42'&&btn.textContent.indexOf(abbrev)>=0;
+  });
+  check('Round 37: pickFreshRandomSeed 写 #start-seed 输入框 (不立刻开始 Run)',()=>{
+    win.clearRecentSeeds();win.pushRecentSeed(42);win.pushRecentSeed(100);
+    const input=doc.getElementById('start-seed');input.value='';
+    const beforeRun=win.state.run;win.pickFreshRandomSeed();
+    const v=input.value.trim();const s=parseInt(v,10);
+    return s>0&&Number.isFinite(s)&&win.state.run===beforeRun;
+  });
+  check('Round 37: pickFreshRandomSeed 避免与最近 5 个重复',()=>{
+    // Force 5 specific seeds then call pickFreshRandomSeed 8 times — none should equal those 5
+    win.clearRecentSeeds();win.pushRecentSeed(50);win.pushRecentSeed(60);win.pushRecentSeed(70);win.pushRecentSeed(80);win.pushRecentSeed(90);
+    const recentSet=new Set([50,60,70,80,90]);
+    for(let i=0;i<8;i++){
+      win.pickFreshRandomSeed();
+      const v=parseInt(doc.getElementById('start-seed').value,10);
+      if(recentSet.has(v))return false;
+    }
+    return true;
+  });
+  check('Round 37: startWithRecentSeed 调 startFromModal → 关闭 modal + 新 Run',()=>{
+    win.clearRecentSeeds();win.pushRecentSeed(123);win.pushRecentSeed(456);
+    const modal=doc.getElementById('start-modal');modal.classList.remove('hidden');
+    win.startWithRecentSeed(456);
+    return modal.classList.contains('hidden')&&win.state.seed===456;
+  });
+  check('Round 37: click .recent-seed-btn → startWithRecentSeed 委派 (dispatch click)',()=>{
+    win.clearRecentSeeds();win.pushRecentSeed(321);win.renderRecentSeeds();
+    const modal=doc.getElementById('start-modal');modal.classList.remove('hidden');
+    const btn=doc.querySelector('#recent-seeds .recent-seed-btn[data-seed="321"]');
+    btn.click();
+    return modal.classList.contains('hidden')&&win.state.seed===321;
+  });
+  check('Round 37: click .recent-seed-new → pickFreshRandomSeed 委派 (dispatch click)',()=>{
+    win.clearRecentSeeds();win.pushRecentSeed(99);win.renderRecentSeeds();
+    const beforeRun=win.state.run;
+    const input=doc.getElementById('start-seed');input.value='';
+    const nb=doc.getElementById('recent-seed-new');
+    nb.click();
+    const v=parseInt(input.value,10);
+    return v>0&&Number.isFinite(v)&&win.state.run===beforeRun;
+  });
+  check('Round 37: CSS .recent-seeds + .recent-seed-btn + .recent-seed-new 样式存在',()=>{
+    const css=doc.querySelector('style').textContent;
+    return css.indexOf('.recent-seeds{')>=0&&css.indexOf('.recent-seed-btn{')>=0&&css.indexOf('.recent-seed-new{')>=0;
+  });
+  check('Round 37: exportSlot 包含 recentSeeds 字段',()=>{
+    win.clearRecentSeeds();win.pushRecentSeed(11);win.pushRecentSeed(22);
+    const exp=win.exportSlot(1);const parsed=JSON.parse(exp);
+    return Array.isArray(parsed.recentSeeds)&&parsed.recentSeeds.length===2&&parsed.recentSeeds[0]===22;
+  });
+  check('Round 37: importSlot 写入 recentSeeds + loadMeta 恢复',()=>{
+    win.clearRecentSeeds();
+    const ok=win.importSlot(2,JSON.stringify({version:5,meta:0,upgrades:[],legacy:0,run:0,modHistory:[],invCollect:{},recentSeeds:[444,555,666]}));
+    if(!ok)return false;
+    const sk=win.slotKey(2);const parsed=JSON.parse(localStorage.getItem(sk));
+    return Array.isArray(parsed.recentSeeds)&&parsed.recentSeeds.length===3&&parsed.recentSeeds[0]===444;
+  });
+  check('Round 37: clearRecentSeeds 清空 G.recentSeeds 数组',()=>{
+    win.pushRecentSeed(1);win.pushRecentSeed(2);win.clearRecentSeeds();
+    return win.getRecentSeeds().length===0;
+  });
+
   // ═══ funify-v3 Round 26 — 📼 Action Replay (BACKLOG #10 #3 closure) ═══
   check('Round 26: logAction / saveReplay / loadReplay / clearReplay / showReplay / closeReplay / toggleReplay / renderReplay 暴露',()=>typeof win.logAction==='function'&&typeof win.saveReplay==='function'&&typeof win.loadReplay==='function'&&typeof win.clearReplay==='function'&&typeof win.showReplay==='function'&&typeof win.closeReplay==='function'&&typeof win.toggleReplay==='function'&&typeof win.renderReplay==='function');
   check('Round 26: REPLAY_MAX=600 上限常量',()=>t.REPLAY_MAX===600);

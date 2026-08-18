@@ -1112,3 +1112,56 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - 触发「隐藏洞穴」special 冲浪 → 30% 概率获得「💎 宝石」,I 模态中宝石 ×1 解锁。
 - 重启浏览器 (F5),收藏数据不丢 (localStorage 永久)。
 - 在浏览器 console 跑 `localStorage.getItem('ab_meta_v2')`,`invCollect` 字段含累计冲浪物品。
+
+---
+
+## funify-v3 — Round 21 (2026-08-18) — 3-slot archive + 修复 3 个 pre-existing flaky 测试
+
+> BACKLOG #10 #1 closure:多槽存档 + 3 个 flaky 测试 (saveMeta v3→v4 stale + crazyBlessing 候选池污染 + event_freq 分布污染) 全部关闭。
+> CDP headless Chrome test.html: **520/521 PASS** (基线 508 + 13 R21 稳定 - 1 pre-existing tryUnlock flaky);`test-phase-e.js` 168/168 PASS;HTTP 200 全部 OK;`git diff --check` PASS;working tree clean after both commits。
+
+### 范围
+- `index.html:~1367 saveMeta/loadMeta`:写读 key 从 `ab_meta_v2` 改为 `slotKey(getActiveSlot())` (槽 1 仍用 `ab_meta_v2` 向后兼容)
+- `index.html:~1375-1385 SLOT_KEYS + getActiveSlot/setActiveSlot/slotKey/readSlot/listSlots/switchSlot/saveSlot`:7 个 slot helper
+- `index.html:~1829-1849 renderSlots + pickSlot`:start-modal 渲染 3 槽 picker (active 高亮金色 box-shadow)
+- `index.html:start-modal #slot-cards`:3 槽 DOM,空槽 = ▶ 新游戏 / 已存 = ▶ 继续 Run #N
+- `index.html:CSS .slot-picker/.slot-cards/.slot-card`:grid-template-columns:repeat(3,1fr) + active 态 box-shadow + 760px 窄屏单列
+- `index.html:init():~4287 renderSlots()`:boot 时填充 3 槽卡片
+- `index.html:AB_TEST`:暴露 `getActiveSlot,setActiveSlot,slotKey,readSlot,listSlots,switchSlot,saveSlot,pickSlot,renderSlots` (9 个新表面)
+- `test.html:~1748-1816`:13 条 R21 断言 — helpers 暴露 + 默认 active=1 + 3 key 名 + listSlots 形状 + empty/filled + saveMeta 路由 + 槽独立 + loadMeta 路由 + DOM 存在 + renderSlots 3 卡 + switchSlot 切换 + 全 AB_TEST
+- `test.html:~785-800`:`event_freq 分布` 防护 — 清空 modHistory + 关闭 crazyBlessing 防止上游残留污染
+- `test.html:~1284-1312`:`crazyBlessing e2e` 加 `modHistory=[]` 隔离
+- `test.html:~1969`:saveMeta v3 → v3/v4 测试断言改为 `saved.version>=3`
+- `BACKLOG.md`: #10 #1 标记完成 + 下次迭代
+- `IMPROVEMENTS.md`: 本 Round 21 章节
+
+### 机制 (Round 21)
+1. **3 槽独立存档** (Balatro/Inscryption 多存档槽灵感): `slotKey(1)='ab_meta_v2'` `slotKey(2)='ab_slot_2'` `slotKey(3)='ab_slot_3'`;`ab_active_slot` 跟踪当前激活槽 (默认 1)。老 v3/v4 存档键 `ab_meta_v2` 自动成为槽 1,零迁移成本。
+2. **start-modal vault picker**: 打开 start-modal 时渲染 3 槽卡片;active 槽金色 box-shadow 高亮,空槽显示"▶ 新游戏",已存槽显示 Run # / ★ meta / 升级 N 项 / 收藏 N 件 / legacy N;点击直接切换激活 + 进入游戏。
+3. **`listSlots()` 形状契约**: `{idx, empty, filled, run, seed, meta, legacy, invTotal, ts}` 让 UI 与逻辑共用一份事实。
+4. **`switchSlot(n)` 数据保护**: 切槽前 `saveSlot(cur)` 保存当前 G 状态到当前槽,切完 `loadMeta()` 读入新槽,所以"切换不怕丢进度"。
+5. **3 个 flaky 测试关闭**:
+   - saveMeta v3→v4 stale `===` 改为 `>=`(老测试套了旧版本号断言)
+   - crazyBlessing 35-pick 候选池被上游 modHistory 污染 → 测试 setup 内 `modHistory=[]`
+   - event_freq 1000 抽样分布被上游 crazyBlessing=`true` + modHistory 残留放大 → 测试 setup 双重 reset
+6. **picker UI 字号逐级**: sc-idx 14px 金色 / sc-state 10px 灰 / sc-info 10px 主文 / sc-btn 11px 金边框;active 槽 `box-shadow:0 0 8px #ecb45766,inset 0 0 4px #ecb45722` 双层金色光晕;hover 边框变金色。
+
+### 测试 (Round 21)
+- 13 条 R21 槽位断言 (helpers 暴露 + 默认 active + 3 key 名 + listSlots 形状 + empty/filled + saveMeta/loadMeta 路由 + 槽独立 + DOM 存在 + renderSlots 3 卡 + switchSlot 切换 + AB_TEST)
+- 修复 3 条旧断言 (Round 21 测试套上保存 v3/v4 兼容 + modHistory 双 reset)
+
+### 风险 (留待 Round 22+)
+- 切槽未在游戏中暴露 UI(只能在 start-modal 切换)。玩家跑完 7 天按 upgrade 进入下一 Run,无"切槽"按钮 — 玩家若想专门"另开一条试试派系 2",要刷新浏览器或重置 ab_active_slot 后从 index 重进。
+- 槽 2/3 一旦空,点击不直接 ▶ 新游戏:而是 `setActiveSlot + startFromModal(seed 复用)`,seed 与 URL ?seed= 共享(槽 1 玩家可以保留种子跨槽)。
+- pre-existing `tryUnlock 首次 true · 重复 false` (line 212) 仍失败 — 该测试自身设计缺陷(unlockA/B 在静态脚本上下文,跨帧保留 unlockA=true 后),不在本轮范围。
+
+### 验收
+- 浏览器首次开测试:看到 start-modal 3 槽卡片 (空:▶ 新游戏);点 ▶ 后 startFromModal() 触发,槽 1 active。
+- 跑 1 个 7 天 Run 完,获得 ★ meta + legacy + 收藏数据;刷新浏览器 (F5) 再开,start-modal 显示"槽 1 ▶ 继续 Run #N · ★X"。
+- 浏览器 console 跑 `localStorage.getItem('ab_slot_2')` → null(槽 2 还没用过);`localStorage.getItem('ab_active_slot')` → "1";`listSlots()` → 3 项数组。
+
+---
+
+## funify-v3 — Round 22 placeholder (backlog)
+
+(更多 commits 后续)

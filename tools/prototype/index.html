@@ -98,6 +98,9 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 #start-modal::before{content:"";position:absolute;inset:0;background:rgba(236,180,87,.04);pointer-events:none}
 .intro-box{background:var(--panel);border:1px solid var(--gold);border-radius:14px;padding:22px;max-width:700px;width:92%;box-shadow:0 12px 50px #000c;position:relative;z-index:1}
 .intro-box h1{color:var(--gold);font-size:21px;text-align:center;margin-bottom:6px}.intro-box h2{color:var(--gold);font-size:15px;margin:12px 0 6px}.intro-sub{text-align:center;color:var(--muted);font-size:11px}.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}.key-card{background:var(--card);border-radius:7px;padding:7px;font-size:11px;display:flex;align-items:center;gap:8px}.key-card kbd{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:28px;border:1px solid var(--gold);border-radius:5px;color:var(--gold);font:bold 14px monospace;background:#0004}.seed-form{display:flex;gap:8px;margin-top:13px}.seed-form input{flex:1;background:var(--card);border:1px solid #fff3;color:var(--text);border-radius:7px;padding:8px;font:12px monospace}.seed-form button{padding:8px 16px}.intro-actions{display:flex;justify-content:center;gap:8px;margin-top:12px}.intro-actions .btn{justify-content:center}.help-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;color:var(--text);font-size:11px}.help-grid div{background:var(--card);border-radius:6px;padding:7px}.help-close{display:block;margin:14px auto 0}
+/* funify-v3 Round 21 — slot picker (BACKLOG #10 #1 closure) */
+.slot-picker{margin-top:14px;padding:10px;background:#00000030;border:1px solid var(--border);border-radius:7px}.slot-picker-title{color:var(--gold);font-size:12px;margin-bottom:8px;text-align:center}.slot-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.slot-card{background:var(--card);border:1px solid #fff2;border-radius:7px;padding:9px 7px;text-align:center;cursor:pointer;transition:border-color .2s,box-shadow .2s}.slot-card:hover{border-color:var(--gold)}.slot-card.active{border-color:var(--gold);box-shadow:0 0 8px #ecb45766,inset 0 0 4px #ecb45722}.slot-card.empty{opacity:0.85}.slot-card .sc-idx{font:bold 14px monospace;color:var(--gold);letter-spacing:1px}.slot-card .sc-state{font-size:10px;color:var(--muted);margin:2px 0}.slot-card .sc-info{font-size:10px;color:var(--text);line-height:1.4;margin-top:4px}.slot-card .sc-btn{margin-top:6px;font-size:11px;padding:4px 8px;border-radius:5px;background:#ecb45722;color:var(--gold);border:1px solid var(--gold);cursor:pointer}.slot-card .sc-btn:hover{background:var(--gold);color:#000}
+@media(max-width:760px){.slot-cards{grid-template-columns:1fr}}
 /* funify-v3 Round 14 — first-time mini-game key overlay */
 #mg-hint-modal .intro-box{max-width:520px;border-color:var(--green)}
 #mg-hint-modal h1{color:var(--green)}
@@ -405,6 +408,8 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div class="key-card"><kbd>D</kbd><span>向右移动</span></div><div class="key-card"><kbd>E</kbd><span>进入建筑</span></div><div class="key-card"><kbd>Space</kbd><span>推进时间</span></div>
 </div>
 <form class="seed-form" onsubmit="event.preventDefault();startFromModal()"><input id="start-seed" type="number" placeholder="Seed（数字，可留空随机）" autocomplete="off" autofocus><button type="submit" class="btn btn-go">▶ Start</button></form>
+<!-- funify-v3 Round 21 — 3-slot picker (BACKLOG #10 #1 closure):每槽独立 meta/upgrades/run · 点击切换 -->
+<div class="slot-picker"><div class="slot-picker-title">💾 存档槽位 (3 个独立进度)</div><div id="slot-cards" class="slot-cards"></div></div>
 <div class="intro-actions"><button class="btn" onclick="skipTutorial()">Skip 教程（下次直接进入）</button><button class="btn" onclick="showHelp()">? 查看帮助</button></div>
 </div>
 </div>
@@ -1362,8 +1367,21 @@ function metaIndustryBoost(id){
   const upId=idMap[id]||id;
   return hasUpgrade('meta_'+upId+'_master')?1.2:1;
 }
-function saveMeta(){try{localStorage.setItem('ab_meta_v2',JSON.stringify({version:4,meta:G.meta,upgrades:G.upgrades,legacy:G.legacy,run:G.run,modHistory:Array.isArray(G.modHistory)?G.modHistory.slice(0,5):[],invCollect:G.invCollect&&typeof G.invCollect==='object'?G.invCollect:{}}))}catch(e){console.warn('ab_meta_v2 save failed',e)}}
-function loadMeta(){try{const d=JSON.parse(localStorage.getItem('ab_meta_v2'));if(d&&d.version>=2){G.meta=Math.max(0,d.meta|0);G.upgrades=Array.isArray(d.upgrades)?[...new Set(d.upgrades)]:[];G.legacy=Math.max(0,d.legacy|0);G.run=Math.max(0,d.run|0)}if(d&&d.version>=3&&Array.isArray(d.modHistory)){G.modHistory=d.modHistory.filter(x=>typeof x==='string').slice(0,5)}if(d&&d.version>=4&&d.invCollect&&typeof d.invCollect==='object'){if(!G.invCollect||typeof G.invCollect!=='object')G.invCollect={};for(const k of Object.keys(d.invCollect)){const v=d.invCollect[k]|0;if(v>0)G.invCollect[k]=v}}}catch(e){console.warn('ab_meta_v2 load failed',e)}}
+function saveMeta(){try{localStorage.setItem(slotKey(getActiveSlot()),JSON.stringify({version:4,meta:G.meta,upgrades:G.upgrades,legacy:G.legacy,run:G.run,modHistory:Array.isArray(G.modHistory)?G.modHistory.slice(0,5):[],invCollect:G.invCollect&&typeof G.invCollect==='object'?G.invCollect:{}}))}catch(e){console.warn('ab_meta save failed',e)}}
+function loadMeta(){try{const d=JSON.parse(localStorage.getItem(slotKey(getActiveSlot())));if(d&&d.version>=2){G.meta=Math.max(0,d.meta|0);G.upgrades=Array.isArray(d.upgrades)?[...new Set(d.upgrades)]:[];G.legacy=Math.max(0,d.legacy|0);G.run=Math.max(0,d.run|0)}if(d&&d.version>=3&&Array.isArray(d.modHistory)){G.modHistory=d.modHistory.filter(x=>typeof x==='string').slice(0,5)}if(d&&d.version>=4&&d.invCollect&&typeof d.invCollect==='object'){if(!G.invCollect||typeof G.invCollect!=='object')G.invCollect={};for(const k of Object.keys(d.invCollect)){const v=d.invCollect[k]|0;if(v>0)G.invCollect[k]=v}}}catch(e){console.warn('ab_meta load failed',e)}}
+// funify-v3 Round 21 — 3-slot archive (BACKLOG #10 #1 closure):每个槽独立保存 meta/legacy/run/modHistory/invCollect
+// 槽 1 仍用 `ab_meta_v2`(向后兼容老存档),槽 2/3 用新 key `ab_slot_2`/`ab_slot_3`。
+// localStorage `ab_active_slot` 记录当前激活槽(默认 1,断点续玩)。
+const SLOT_KEYS=['ab_meta_v2','ab_slot_2','ab_slot_3'];
+function getActiveSlot(){try{const n=parseInt(localStorage.getItem('ab_active_slot')||'1',10);return (n>=1&&n<=3)?n:1}catch(e){return 1}}
+function setActiveSlot(n){try{if(n>=1&&n<=3)localStorage.setItem('ab_active_slot',String(n))}catch(e){}}
+function slotKey(n){return SLOT_KEYS[Math.max(0,Math.min(2,n-1))]}
+function readSlot(n){try{const d=JSON.parse(localStorage.getItem(slotKey(n)));return (d&&typeof d==='object')?d:null}catch(e){return null}}
+// 列出 3 槽摘要 — 空槽返 {filled:false};非空槽返 {filled,run,seed,meta,legacy,ts}
+function listSlots(){const out=[];for(let i=1;i<=3;i++){const d=readSlot(i);if(!d){out.push({idx:i,filled:false,empty:true})}else{out.push({idx:i,filled:true,empty:false,run:d.run|0,seed:Number.isFinite(d.seed)?d.seed:42,meta:d.meta|0,legacy:d.legacy|0,invTotal:d.invCollect?Object.keys(d.invCollect).length:0,ts:d.savedAt|0})}}return out}
+// 切换到槽 n,并把当前 G 状态保存到旧槽、装载新槽的存档;返回 true 表示切换成功(槽 n 有数据)
+function switchSlot(n){if(n<1||n>3)return false;const cur=getActiveSlot();if(cur!==n)saveSlot(cur);const data=readSlot(n);setActiveSlot(n);loadMeta();return !!data}
+function saveSlot(n){try{localStorage.setItem(slotKey(n),JSON.stringify(Object.assign({},readSlot(n),{savedAt:Date.now()})));saveMeta()}catch(e){console.warn('slot save failed',e)}}
 // funify-v3 Round 30 — Cross-run Ledger (📒 知识本): strainNotes + brewNotes + barRegulars + researchTopics + surfDiscovered + visited persist ab_ledger_v1
 function saveLedger(){try{localStorage.setItem('ab_ledger_v1',JSON.stringify({version:1,strainNotes:G.strainNotes||{},brewNotes:G.brewNotes||{},barRegulars:G.barRegulars||[],researchTopics:G.researchTopics||[],surfDiscovered:G.surfDiscovered||[],visited:G.visited||[],recipeKnowledge:G._recipeKnowledge||{},teacherRep:G.teacherRep||{pablo:0,ravi:0,sofie:0,chen:0}}))}catch(e){console.warn('ab_ledger_v1 save failed',e)}}
 function loadLedger(){try{const d=JSON.parse(localStorage.getItem('ab_ledger_v1'));if(d&&d.version===1){if(d.strainNotes&&typeof d.strainNotes==='object')G.strainNotes=d.strainNotes;if(d.brewNotes&&typeof d.brewNotes==='object'){for(const t of ['IPA','Stout','Lager']){if(d.brewNotes[t]&&typeof d.brewNotes[t]==='object'){G.brewNotes[t].count=Math.max(G.brewNotes[t].count|0,d.brewNotes[t].count|0);G.brewNotes[t].best=Math.max(G.brewNotes[t].best|0,d.brewNotes[t].best|0)}}}if(Array.isArray(d.barRegulars))G.barRegulars=Array.from(new Set([...(G.barRegulars||[]),...d.barRegulars]));if(Array.isArray(d.researchTopics))G.researchTopics=Array.from(new Set([...(G.researchTopics||[]),...d.researchTopics]));if(Array.isArray(d.surfDiscovered))G.surfDiscovered=Array.from(new Set([...(G.surfDiscovered||[]),...d.surfDiscovered]));if(Array.isArray(d.visited))G.visited=Array.from(new Set([...(G.visited||[]),...d.visited]));if(d.recipeKnowledge&&typeof d.recipeKnowledge==='object')G._recipeKnowledge=d.recipeKnowledge;if(d.teacherRep&&typeof d.teacherRep==='object'){if(!G.teacherRep)G.teacherRep={pablo:0,ravi:0,sofie:0,chen:0};for(const n of ['pablo','ravi','sofie','chen']){const v=d.teacherRep[n]|0;if(v>(G.teacherRep[n]|0))G.teacherRep[n]=v}}}}catch(e){console.warn('ab_ledger_v1 load failed',e)}}
@@ -1809,6 +1827,26 @@ function startFromModal(){
   document.getElementById('start-modal').classList.add('hidden');newRun(seed);
 }
 function skipTutorial(){try{localStorage.setItem('ab_skip_tutorial','1')}catch(e){console.warn('ab_skip_tutorial save failed',e)};document.getElementById('start-modal').classList.add('hidden');startFromModal()}
+// funify-v3 Round 21 — slot picker UI (BACKLOG #10 #1 closure):渲染 3 槽摘要,点击切换或开始新 Run
+function renderSlots(){
+  const root=document.getElementById('slot-cards');if(!root)return;
+  const cards=listSlots();const active=getActiveSlot();
+  root.innerHTML='';
+  cards.forEach(c=>{
+    const card=document.createElement('div');
+    card.className='slot-card'+(c.idx===active?' active':'')+(c.empty?' empty':'');
+    const state=c.empty?'空槽位':'Run #'+(c.run||'?')+' · ★'+(c.meta||0);
+    const info=c.empty?'点击开始新游戏':'升级 '+(c.upgrades?c.upgrades.length:0)+' 项 · 收藏 '+(c.invTotal||0)+' 件 · legacy '+(c.legacy||0);
+    card.innerHTML='<div class="sc-idx">📍 槽 '+c.idx+'</div><div class="sc-state">'+(c.idx===active?'⭐ 当前激活':'')+state+'</div><div class="sc-info">'+info+'</div>';
+    const btn=document.createElement('button');
+    btn.className='sc-btn';btn.textContent=c.empty?'▶ 新游戏':'▶ 继续 Run #'+(c.run||'?');
+    btn.onclick=()=>{pickSlot(c.idx)};
+    card.appendChild(btn);
+    root.appendChild(card);
+  });
+}
+// 玩家点了某槽 — 激活该槽,然后开始新 Run (跨 Run meta 累计对新槽生效,槽 1 旧存档向下兼容)
+function pickSlot(n){if(n<1||n>3)return;setActiveSlot(n);document.getElementById('start-modal').classList.add('hidden');startFromModal()}
 
 const G={p:{x:100,y:400,tx:100,ty:400},day:1,ti:0,money:250,rep:0,loc:'de_pijp',ind:{},bs:[5,3,2],brewI:-1,brewT:0,events:[],mods:[],auto:false,inside:null,mg:null,ended:false,ts:0,tr:0,run:0,legacy:0,_at:null,_wp:null,_otx:null,_oty:null,_st:0,_sx:0,_sy:0,sch:[],seed:42,meta:0,metaPending:0,objs:[],upgrades:[],objDefs:{},_objDay:0,mood:0,greetedToday:[],visitedToday:[],visited:[],shop:{},surfDiscovered:[],inventory:[],invCollect:{},todayWave:null,escapeLevel:0,escapeTeacher:null,escUsed:0,escapeLearnDay:0,keys:{},lastClickAt:0,achievements:[],achTree:{brew:0,coffee:0,rogue:0,scholar:0},teacherRep:{pablo:0,ravi:0,sofie:0,chen:0},modHistory:[],_run:{}};
 for(const k of Object.keys(IND_DEF))G.ind[k]={lv:0,xp:0};
@@ -4245,6 +4283,8 @@ const _mb=document.getElementById('mute-btn');if(_mb)_mb.textContent=AUDIO.muted
 renderAll();
 // Populate seed input from URL, or auto-skip if previously dismissed
 try{if(localStorage.getItem('ab_skip_tutorial')==='1'){startFromModal()}}catch(e){}
+// funify-v3 Round 21 — start-modal 打开时渲染 3 槽卡片 (vault picker)
+renderSlots();
 const _qp=new URLSearchParams(location.search);const _qs=_qp.get('seed');if(_qs)document.getElementById('start-seed').value=_qs;
 window.AB_TEST={
   data:{industries:IND_DEF,events:EV_POOL,upgrades:UP_POOL,objectives:OBJ_CATS,achievements:ACH_POOL,achTree:ACH_TREE,crazyEvents:CRAZY_POOL},state:G,
@@ -4254,6 +4294,7 @@ window.AB_TEST={
   buildRunSummary,buildRunEpitaph,pushRunHistory,loadRunHistory,renderRunHistory,doBodyTrade,openBodyTrade,closeBodyTrade,bodyOpen,moodFloor,startBrew,startSurf,sBarC,endGame,MG,
   ledgerOpen,showLedger,closeLedger,toggleLedger,renderLedger,saveLedger,loadLedger,
   invOpen,showInv,closeInv,toggleInv,renderInv,SURF_CATALOG,
+  getActiveSlot,setActiveSlot,slotKey,readSlot,listSlots,switchSlot,saveSlot,pickSlot,renderSlots,
   teacherRepBonus,bumpTeacherRep,
   pushModHistory,
   crazyActiveBadges,

@@ -130,7 +130,7 @@
 - [ ] [index.html:832 tryEscape 只看 escapeLevel] 加 `G.escapeCaught:0` 跑局报告
 
 ## 10. 持久化/重玩性（存档槽位、跨设备、Seed 分享、replay）
-- [ ] [index.html:586 saveMeta 单 key] 加 `ab_meta_v2_${slot}` slot 1-3 + UI 切换
+- [x] [index.html:586 saveMeta 单 key] 加 `ab_meta_v2_${slot}` slot 1-3 + UI 切换 — **Round 21 funify-v3 完成 (slotKey(1)=ab_meta_v2 / ab_slot_2 / ab_slot_3 + start-modal #slot-cards 3 槽 picker + getActiveSlot/setActiveSlot/listSlots/switchSlot 9 helper)**
 - [ ] [index.html:586 saveMeta 无 export/import] 加 #export-btn 触发 JSON 下载 + #import-btn 上传
 - [ ] [index.html:2300 cv.click 无 replay] 加 `G.actionLog.push({t,x,y,k})` 数组 P 键回放
 - [ ] [index.html:2316 setMsg seed 显示但不复制] 加 `📋 copy URL` 按钮便于分享

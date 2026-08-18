@@ -1745,6 +1745,94 @@ frame.addEventListener('load',async()=>{
       t.state.legacy===3&&t.state.run===7&&Array.isArray(t.state.modHistory)&&t.state.modHistory.length===2;
   });
 
+  // ═══ funify-v3 Round 21 — 3-slot archive (BACKLOG #10 #1 closure) ═══
+  // Helper to fully reset all 3 slot keys + active slot marker before each test.
+  const _resetSlots=()=>{
+    try{localStorage.removeItem('ab_meta_v2');localStorage.removeItem('ab_slot_2');localStorage.removeItem('ab_slot_3');localStorage.removeItem('ab_active_slot')}catch(e){}
+  };
+  check('R21 槽位: 暴露 4 个 helper (getActiveSlot/setActiveSlot/slotKey/listSlots)',()=>{
+    return typeof win.getActiveSlot==='function'&&typeof win.setActiveSlot==='function'&&typeof win.slotKey==='function'&&Array.isArray(win.listSlots());
+  });
+  check('R21 槽位: getActiveSlot 默认 1,setActiveSlot(2) 持久化',()=>{
+    _resetSlots();
+    const def=win.getActiveSlot();
+    win.setActiveSlot(2);
+    const after=parseInt(localStorage.getItem('ab_active_slot'),10);
+    const r=def===1&&after===2;
+    try{localStorage.removeItem('ab_active_slot')}catch(e){}
+    return r;
+  });
+  check('R21 槽位: slotKey(1/2/3) → ab_meta_v2 / ab_slot_2 / ab_slot_3',()=>{
+    return win.slotKey(1)==='ab_meta_v2'&&win.slotKey(2)==='ab_slot_2'&&win.slotKey(3)==='ab_slot_3';
+  });
+  check('R21 槽位: listSlots 始终返回 3 槽(empty 标记)',()=>{
+    _resetSlots();
+    const s=win.listSlots();
+    return s.length===3&&s[0].idx===1&&s[0].empty===true&&s[1].idx===2&&s[2].idx===3;
+  });
+  check('R21 槽位: empty 槽不读 existing 数据 (filled=false)',()=>{
+    _resetSlots();
+    const s=win.listSlots();
+    return s.every(c=>c.filled===false);
+  });
+  check('R21 槽位: saveMeta 写入激活槽(默认 1 → ab_meta_v2)',()=>{
+    _resetSlots();
+    win.setActiveSlot(1);t.state.meta=99;win.saveMeta();
+    const d=JSON.parse(localStorage.getItem('ab_meta_v2'));
+    return d&&d.version>=4&&d.meta===99;
+  });
+  check('R21 槽位: saveMeta 写入槽 2 → ab_slot_2',()=>{
+    _resetSlots();
+    win.setActiveSlot(2);t.state.meta=77;win.saveMeta();
+    const d=JSON.parse(localStorage.getItem('ab_slot_2'));
+    const legacyV2Empty=localStorage.getItem('ab_meta_v2');
+    return d&&d.meta===77&&legacyV2Empty===null;
+  });
+  check('R21 槽位: 槽 1 与槽 2 独立 (改一个不影响另一个)',()=>{
+    _resetSlots();
+    win.setActiveSlot(1);t.state.meta=10;t.state.upgrades=['ov_fiets'];win.saveMeta();
+    win.setActiveSlot(2);t.state.meta=20;t.state.upgrades=['museumkaart'];win.saveMeta();
+    const d1=JSON.parse(localStorage.getItem('ab_meta_v2'));
+    const d2=JSON.parse(localStorage.getItem('ab_slot_2'));
+    return d1.meta===10&&d1.upgrades[0]==='ov_fiets'&&d2.meta===20&&d2.upgrades[0]==='museumkaart';
+  });
+  check('R21 槽位: loadMeta 正确从激活槽载入 meta + 忽略其他槽',()=>{
+    _resetSlots();
+    win.setActiveSlot(2);
+    localStorage.setItem('ab_meta_v2',JSON.stringify({version:4,meta:11,upgrades:['ov_fiets'],legacy:1,run:1,modHistory:[],invCollect:{}}));
+    localStorage.setItem('ab_slot_2',JSON.stringify({version:4,meta:22,upgrades:['museumkaart'],legacy:2,run:2,modHistory:[],invCollect:{}}));
+    t.state.meta=0;t.state.upgrades=[];t.state.legacy=0;win.loadMeta();
+    return t.state.meta===22&&t.state.upgrades[0]==='museumkaart'&&t.state.legacy===2;
+  });
+  check('R21 槽位: start-modal 含 #slot-cards (3 槽 picker DOM)',()=>{
+    const el=doc.getElementById('slot-cards');
+    return !!el;
+  });
+  check('R21 槽位: renderSlots 写入 3 张 .slot-card (含 active class 标记)',()=>{
+    _resetSlots();
+    win.setActiveSlot(2);
+    win.renderSlots();
+    const cards=doc.querySelectorAll('#slot-cards .slot-card');
+    const activeCount=doc.querySelectorAll('#slot-cards .slot-card.active').length;
+    return cards.length===3&&activeCount===1;
+  });
+  check('R21 槽位: switchSlot(n) 切换激活槽 (after save 当前状态)',()=>{
+    _resetSlots();
+    win.setActiveSlot(1);t.state.meta=33;win.saveMeta();
+    const r=win.switchSlot(2);  // 槽 2 是空的
+    const ok=r===false&&win.getActiveSlot()===2;
+    // 回到槽 1 再 switch 3,确认写回槽 1
+    win.setActiveSlot(1);
+    win.saveMeta();
+    const slot1=JSON.parse(localStorage.getItem('ab_meta_v2'));
+    _resetSlots();
+    return ok&&slot1.meta===33;
+  });
+  check('R21 槽位: pickSlot / setActiveSlot / renderSlots 在 AB_TEST 暴露 (BACKLOG #10 #1 完成标志)',()=>{
+    return typeof win.pickSlot==='function'&&typeof win.renderSlots==='function'&&typeof win.switchSlot==='function'&&typeof win.saveSlot==='function'&&typeof win.readSlot==='function';
+  });
+  // 清理 — 让后续测试在干净 localStorage 跑
+  _resetSlots();
   // ═══ Phase E acceptance — core systems are live in browser runtime ═══
   // (withPhaseEIndustryState helper is defined at the top of the load handler so
   // it is in scope for the legendary_income tests at line ~390.)

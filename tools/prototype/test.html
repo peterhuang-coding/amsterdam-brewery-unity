@@ -783,14 +783,16 @@ frame.addEventListener('load',async()=>{
     return counts.good>=500;
   });
   check('无 event_freq 时:good/neutral/bad 分布近似均匀 (1000 次抽样, 跨 day)',()=>{
-    const had=t.state.upgrades.slice();const hadDay=t.state.day;
+    const had=t.state.upgrades.slice();const hadDay=t.state.day;const hadHist=Array.isArray(t.state.modHistory)?t.state.modHistory.slice():null;const hadBless=!!(t.state.shop&&t.state.shop.crazyBlessing);
     t.state.upgrades=[];
+    // Round 21 — 清空 modHistory + 关闭 crazyBlessing,避免上游 crazy event 测试残留污染概率分布
+    t.state.modHistory=[];if(t.state.shop)t.state.shop.crazyBlessing=false;
     const counts={good:0,neutral:0,bad:0};
     for(let i=0;i<1000;i++){
       t.state.day=i+1;const e=t.rollDayModifier();
       counts[e.kind||'neutral']++;
     }
-    t.state.upgrades=had;t.state.day=hadDay;
+    t.state.upgrades=had;t.state.day=hadDay;t.state.modHistory=hadHist;if(t.state.shop)t.state.shop.crazyBlessing=hadBless;
     // 8 good + 1 neutral + 3 bad = 12 events
     // weighted uniform: ~67% good, ~8% neutral, ~25% bad
     return counts.good>500&&counts.bad>150;
@@ -1282,7 +1284,7 @@ frame.addEventListener('load',async()=>{
   // assert blessing-armed goodRate strictly exceeds unflagged goodRate by a
   // margin that survives deterministic seeds (≥ +20 pp).
   check('E8 e2e: 🛸 crazyBlessing → 35 picks goodRate ≥ unflagged goodRate + 20pp',()=>{
-    const keys=['shop','seed','mods','day','upgrades'];
+    const keys=['shop','seed','mods','day','upgrades','modHistory'];
     const before={};for(const k of keys)before[k]=t.state[k];
     const EVK=win.eval('EV_KIND');
     const sample=(armed)=>{
@@ -1300,7 +1302,10 @@ frame.addEventListener('load',async()=>{
       return {good,total,rate:good/total};
     };
     try{
+      // Round 21: 清空 modHistory 防止上游 crazy event 残留污染候选池,保证 goodRate 对比公平
+      t.state.modHistory=[];
       const withBlessing=sample(true);
+      t.state.modHistory=[];
       const noBlessing=sample(false);
       // need +20pp or better; with reweight good=3 vs neutral=1 (and bad=0.5)
       // across 12-mod pool (~5 good / 4 neutral / 3 bad) the expected goodRate
@@ -1966,7 +1971,8 @@ frame.addEventListener('load',async()=>{
     t.state.modHistory=['a','b','c'];win.saveMeta();
     const saved=JSON.parse(localStorage.getItem('ab_meta_v2'));
     t.state.modHistory=[];win.loadMeta();
-    return saved.version===3&&Array.isArray(saved.modHistory)&&saved.modHistory.length===3&&saved.modHistory[0]==='a'&&t.state.modHistory.length===3;
+    // Round 21: 接受 v3 / v4 (Round 20 invCollect bump);核心断言是 modHistory 字段被写入并恢复
+    return saved.version>=3&&Array.isArray(saved.modHistory)&&saved.modHistory.length===3&&saved.modHistory[0]==='a'&&t.state.modHistory.length===3;
   });
   check('Round 33: loadMeta v2 数据无 modHistory 字段也安全 (向后兼容)',()=>{
     localStorage.setItem('ab_meta_v2',JSON.stringify({version:2,meta:50,upgrades:[],legacy:0,run:1}));

@@ -1471,6 +1471,50 @@ frame.addEventListener('load',async()=>{
     return true;
   });
 
+  // ═══ funify-v3 Round 15 — NPC 老师信任度 G.teacherRep (BACKLOG #9 #5) ═══
+  // Note: bumpTeacherRep calls saveLedger → localStorage persists teacherRep across runs.
+  //   Each teacherRep-mutating test snapshots + restores to keep later tests stable.
+  const _repSnap={pablo:t.state.teacherRep.pablo,ravi:t.state.teacherRep.ravi,sofie:t.state.teacherRep.sofie,chen:t.state.teacherRep.chen};
+  function _restoreRep(){for(const k of Object.keys(_repSnap))t.state.teacherRep[k]=_repSnap[k];win.saveLedger();}
+  check('Round 15: teacherRepBonus / bumpTeacherRep 暴露在 AB_TEST',()=>typeof win.teacherRepBonus==='function'&&typeof win.bumpTeacherRep==='function');
+  check('Round 15: G.teacherRep 含 4 NPC 全为数字键',()=>{const r=t.state.teacherRep;return r&&typeof r.pablo==='number'&&typeof r.ravi==='number'&&typeof r.sofie==='number'&&typeof r.chen==='number'});
+  check('Round 15: teacherRepBonus(tech) 0 rep = 0 bonus',()=>{const tech=win.eval('ESCAPE_TECHS[0]');const b=t.state.teacherRep.pablo;t.state.teacherRep.pablo=0;const r=win.teacherRepBonus(tech);t.state.teacherRep.pablo=b;_restoreRep();return Math.abs(r-0)<1e-6});
+  check('Round 15: teacherRepBonus(tech) 1 rep = 0.1 bonus (pablo→lv1 tech)',()=>{const tech=win.eval('ESCAPE_TECHS[0]');const b=t.state.teacherRep.pablo;t.state.teacherRep.pablo=1;const r=win.teacherRepBonus(tech);t.state.teacherRep.pablo=b;_restoreRep();return Math.abs(r-0.1)<1e-6});
+  check('Round 15: teacherRepBonus(tech) 5 rep = 0.5 bonus (cap)',()=>{const tech=win.eval('ESCAPE_TECHS[0]');const b=t.state.teacherRep.pablo;t.state.teacherRep.pablo=5;const r=win.teacherRepBonus(tech);t.state.teacherRep.pablo=b;_restoreRep();return Math.abs(r-0.5)<1e-6});
+  check('Round 15: teacherRepBonus(tech) 6 rep 仍 0.5 (over-cap)',()=>{const tech=win.eval('ESCAPE_TECHS[0]');const b=t.state.teacherRep.pablo;t.state.teacherRep.pablo=6;const r=win.teacherRepBonus(tech);t.state.teacherRep.pablo=b;_restoreRep();return Math.abs(r-0.5)<1e-6});
+  check('Round 15: teacherRepBonus(tech) 其他 NPC rep 不影响 pablo tech',()=>{const tech=win.eval('ESCAPE_TECHS[0]');const br=t.state.teacherRep.ravi;const bp=t.state.teacherRep.pablo;t.state.teacherRep.pablo=0;t.state.teacherRep.ravi=5;const r=win.teacherRepBonus(tech);t.state.teacherRep.ravi=br;t.state.teacherRep.pablo=bp;return Math.abs(r-0)<1e-6});
+  check('Round 15: bumpTeacherRep(pablo) 自增并落回 G.teacherRep.pablo',()=>{const before=t.state.teacherRep.pablo;const r=win.bumpTeacherRep('pablo','测试');const after=t.state.teacherRep.pablo;_restoreRep();return after===before+1&&r===after});
+  check('Round 15: bumpTeacherRep(未知 NPC) 返回 0 不报错',()=>{const before=t.state.teacherRep.sofie;const r=win.bumpTeacherRep('xxx','测试');const after=t.state.teacherRep.sofie;_restoreRep();return r===0&&after===before});
+  check('Round 15: saveLedger/loadLedger roundtrip 持久化 teacherRep (pablo=4)',()=>{
+    const before=t.state.teacherRep.pablo;
+    t.state.teacherRep.pablo=4;
+    win.saveLedger();
+    const saved=JSON.parse(localStorage.getItem('ab_ledger_v1'));
+    t.state.teacherRep.pablo=before;
+    win.loadLedger();
+    const r=t.state.teacherRep.pablo;
+    _restoreRep();
+    return saved.teacherRep&&saved.teacherRep.pablo===4&&r===4;
+  });
+  check('Round 15: renderLedger 包含 🎓 老师信任度 section',()=>{
+    const grid=doc.getElementById('ledger-grid');
+    win.showLedger();
+    const html=grid?grid.innerHTML:'';
+    win.closeLedger();
+    return !!html&&html.indexOf('老师信任度')>=0&&html.indexOf('escape +10%/次')>=0;
+  });
+  check('Round 15: 4 NPC 老师卡都列出 + cap 文本',()=>{
+    const grid=doc.getElementById('ledger-grid');
+    win.showLedger();
+    const html=grid?grid.innerHTML:'';
+    win.closeLedger();
+    return !!html&&html.indexOf('Pablo')>=0&&html.indexOf('Ravi')>=0&&html.indexOf('Sofie')>=0&&html.indexOf('Chen')>=0&&html.indexOf('封顶')>=0;
+  });
+  check('Round 15: escapeIn phase 3 成功公式含 teacherBonus (源审计)',()=>{
+    const src=win.eval('escapeIn.toString()');
+    return src.indexOf('teacherBonus')>=0&&src.indexOf('teacherRepBonus(tech)')>=0;
+  });
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

@@ -889,3 +889,37 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - 测试: **426/426 PASS** (基线 417 + 9 Round 31 断言); `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `new Function()` 解析 PASS; HTTP 200; `git diff --check` PASS。
 - 风险: 5 个新升级若全买需 350★,约 7 个 run 累积,进度曲线合理;`idMap` 是 hardcoded,如果未来新增行业需同时改 `idMap` 与 UP_POOL。
 - 验收: 浏览器按 U 看升级 modal,看到 🍺/☕/🍄/🏄/🔬 5 个 70★ 的「专精」卡;购买后立刻生效,如酿酒 +20% 显示在 finBrew 的 `industryFactor('brewing')` 上;legder K 键看不到专精卡 (cat 不属于 ledger 范围);跨 run 累积在 `ab_meta_v2.upgrades` 数组中保留。
+
+## Round 32 — 🎓 G.teacherRep NPC 老师信任度 → escape +10%/次 (BACKLOG #9 #5 closure)
+
+> BACKLOG #9「G.teacherRep:{} 3 次同导师对话升级 escape success 10%」落实:每位 NPC 老师 visit 1 次 +10% escape 成功率(用其 tech 时),封顶 +50%。跨 Run 持久化到 `ab_ledger_v1.teacherRep`,K 键知识本新增第 7 section「🎓 老师信任度」。基线 426 → 439 (+13 断言)。
+
+### Commit — funify-v3(round15-teacher-rep): 4 NPC 老师信任度 → escape +10%/次,封顶 +50% test=439/439
+
+- 改动:
+  - `tools/prototype/index.html` +45/-6:
+    - G init 末尾追加 `teacherRep:{pablo:0,ravi:0,sofie:0,chen:0}` 默认 0/0/0/0
+    - 新 `teacherRepBonus(tech)` 纯函数:返 `Math.min(0.5, rep*0.1)`,无 rep 返 0,缺 teacher 返 0
+    - 新 `bumpTeacherRep(npc,ctx)` 函数:自增 G.teacherRep[npc],saveLedger,3/5 阈值 addEvt 'good' 反馈,中间档 addEvt 'info' 「+10%/次」
+    - `escapeIn` phase 3 成功公式插入 `const teacherBonus=teacherRepBonus(tech); const ok=seeded(...)<tech.suc-platformRisk+teacherBonus;` — bonus 与 platformRisk 同量纲(0~0.5)
+    - 手动 T 键 (line 3994) `if(isFirst){...}else{...}` 两分支都加 `bumpTeacherRep(npc, '首次'/'重访')`
+    - autoStep NPC 路径 (line 3623) 同步两分支都加 `bumpTeacherRep(target.npc, '首次'/'重访')`
+    - HUD `#t-escape` 文本加 `· ${G.escapeTeacher}×${G.teacherRep[G.escapeTeacher]||0}` 显示当前老师信任次数
+    - `saveLedger` JSON payload 加 `teacherRep:G.teacherRep||{...}` 字段
+    - `loadLedger` 在 `d.teacherRep` 存在时按 NPC key 取 max 合并(同 `brewNotes.count` 的 max 策略)
+    - `renderLedger` 新增 Section 7「🎓 老师信任度」:4 NPC 卡 (repMap emoji + 老师名) 每张显示 `信任度 N/5` + tech 名称/等级/suc% + 当前 escape bonus + 进度条
+    - AB_TEST 暴露 `teacherRepBonus, bumpTeacherRep`
+  - `tools/prototype/test.html` +44:
+    - 13 条 Round 32 断言: 函数暴露 + G init 4 NPC 数字键 + bonus 0/0.1/0.5/0.5(cap)/0.5(over-cap)/其他 NPC 不影响 + bumpTeacherRep 自增 + 未知 NPC 返 0 + save/load roundtrip + renderLedger 7 个 section 含「老师信任度」 + 4 NPC 老师卡全列 + 「封顶」文本 + escapeIn 源审计
+- 机制要点:
+  1. **trust 增长路径**:每位 NPC 老师 visit 1 次(手动 T 键或 autoStep)即 +1 trust,不依赖是否学会其 tech;trust 因此可以预先为未来的 tech 攒够。
+  2. **bonus 入口在 phase 3 success 公式**:在 `seeded()<tech.suc-platformRisk+teacherBonus` 中加 `teacherBonus`,封顶 +50%(rep=5+)。Escape 走 fail 路径时 `addEvt('bad', '🎫 ${tech.name} 失败')` 不变 — bonus 只影响成功率,失败代价不变。
+  3. **跨 Run 持久化**:`ab_ledger_v1.teacherRep` 按 NPC key 取 max 合并,与 brewNotes 策略一致;`saveLedger` 在 `bumpTeacherRep` 末尾调用,频次可控(每 NPC visit 1 次)。
+  4. **K 键 Section 7 渲染**:复用既有 at-tier 卡片样式,unlocked 条件 `rep>=3`,进度条按 `rep*20%` 渲染(5/5 = 100%)。
+  5. **HUD 微指示**:`#t-escape` 文本 `🚇 Lv ${G.escapeLevel}${G.escapeTeacher?' · '+G.escapeTeacher+'×'+(G.teacherRep[G.escapeTeacher]||0):''} · 周已逃 ${G.escUsed} 次` — 当前老师后面直接接 ×N 数字,玩家不用进 ledger 也能看到 trust。
+- 3-axis lift: 反馈 +1 (trust 自增 addEvt + 3/5 阈值 addEvt 'good' + HUD ×N 数字 + K 键 7 section); 选择 +1 (玩家可主动多访 NPC 攒 trust,提升未来 escape 成功率); 视觉精度 N/A (复用 at-tier)。
+- 测试: **439/439 PASS** (基线 426 + 13 Round 32 断言); `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `new Function()` 解析 PASS; HTTP 200; `git diff --check` PASS。
+- 风险: `bumpTeacherRep` 调 `saveLedger`,频繁 visit 会让 localStorage 写入频率上升(每 NPC 一次,可接受);trust 不可降(必须跨 Run 累积),如果未来要加反悔机制需要 `unbumpTeacherRep` 配套。
+- 验收: 浏览器进 NPC 建筑按 T 看到 `🎓 pablo 信任度 +1` 提示;连续访 3 次后看到 `escape +30% 已激活`;按 K 看到「🎓 老师信任度」section,4 张卡显示当前 trust 与 bonus;进新 Run 后 K 键 trust 不丢;逃跑时 `tech.teacher` 匹配的老师 trust ≥3 即明显感觉「这次稳」。
+
+

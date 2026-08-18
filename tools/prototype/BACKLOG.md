@@ -122,7 +122,7 @@
 - [ ] [index.html:586 saveMeta 只存 meta/upgrades/legacy/run] 加 `achivs:[{id,maxMoney,bestStreak,perfects}]` 成就墙
 - [ ] [index.html:570-585 industryFactor 跨 run 无特化] 加 `meta industry upgrades`: `💵 酿酒 +20%`, `☕ 咖啡 +20%` 等
 - [ ] [index.html:740 G.brewNotes 与 G.strainNotes 跨 run 但无展示] 加 `📒 知识本`按钮列出已掌握 — **Round 30 funify-v3 完成 (K 键 + 6 section 卡片 + ab_ledger_v1 持久化)**
-- [ ] [index.html:601 G escapeLevel:0 无信任] 加 `G.teacherRep:{}` 3 次同导师对话升级 escape success 10%
+- ✅ [index.html:601 G escapeLevel:0 无信任] 加 `G.teacherRep:{}` 3 次同导师对话升级 escape success 10% — **Round 32 完成 (G.teacherRep + teacherRepBonus + bumpTeacherRep + escapeIn phase3 接入 + K 键 Section 7 + ab_ledger_v1 持久化 + 13 断言 → 439/439 PASS)**
 - [ ] [index.html:1019 finBar combo 局内重置] 加 `bestRunCombo` 在 upgrade 模态展示
 - [ ] [index.html:2207 endGame legacy 太简单] 加 `totalObjsDone*5` 鼓励完成目标
 - [ ] [index.html:626-639 rollDayModifier 跨 run 无回避] 加 `G.modHistory` 数组最近 5 天事件优先选不在历史中

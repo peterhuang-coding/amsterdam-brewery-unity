@@ -695,6 +695,24 @@ const NPC_TEACH_FLAVOR={
   sofie:'装作游客最安全——掏出手机拍 canal house 一秒入境',
   chen:'别装作残疾人,代价太高——教你 NS app check-in 漏检就行'
 };
+// funify-v3 Round 32 — NPC 老师信任度 → escape bonus (BACKLOG #9 #5)
+// 每位 NPC 老师 visit 1 次 +10% escape 成功率(用其 tech 时),cap +50%。
+// 跨 Run 持久化到 ab_ledger_v1.teacherRep(BACKLOG #9 跨 run 元进度)。
+function teacherRepBonus(tech){
+  if(!tech||!tech.teacher)return 0;
+  const rep=G.teacherRep&&G.teacherRep[tech.teacher]|0;
+  return Math.min(0.5,rep*0.1);
+}
+function bumpTeacherRep(npc,ctx){
+  if(!npc||!G.teacherRep||G.teacherRep[npc]===undefined)return 0;
+  G.teacherRep[npc]=(G.teacherRep[npc]|0)+1;
+  const rep=G.teacherRep[npc];
+  if(rep===3)addEvt('good',`🎓 ${npc} 信任度 +1 · 累计 ${rep} 次 · escape +30% 已激活`);
+  else if(rep===5)addEvt('good',`🎓 ${npc} 信任度封顶 ${rep}/5 · escape +50% 已达顶`);
+  else addEvt('info',`🎓 ${npc} 信任度 +1 (累计 ${rep} 次 · escape ${ctx||''} +${Math.min(50,rep*10)}%)`);
+  saveLedger();
+  return rep;
+}
 const NPC_BUILDING_FLAVOR={
   pablo:'📚 UvA 文学教授办公室,二手书堆到天花板',
   ravi:'💻 Science Park CS PhD 工位,三块显示器永久开机',
@@ -1288,8 +1306,8 @@ function metaIndustryBoost(id){
 function saveMeta(){try{localStorage.setItem('ab_meta_v2',JSON.stringify({version:2,meta:G.meta,upgrades:G.upgrades,legacy:G.legacy,run:G.run}))}catch(e){console.warn('ab_meta_v2 save failed',e)}}
 function loadMeta(){try{const d=JSON.parse(localStorage.getItem('ab_meta_v2'));if(d&&d.version===2){G.meta=Math.max(0,d.meta|0);G.upgrades=Array.isArray(d.upgrades)?[...new Set(d.upgrades)]:[];G.legacy=Math.max(0,d.legacy|0);G.run=Math.max(0,d.run|0)}}catch(e){console.warn('ab_meta_v2 load failed',e)}}
 // funify-v3 Round 30 — Cross-run Ledger (📒 知识本): strainNotes + brewNotes + barRegulars + researchTopics + surfDiscovered + visited persist ab_ledger_v1
-function saveLedger(){try{localStorage.setItem('ab_ledger_v1',JSON.stringify({version:1,strainNotes:G.strainNotes||{},brewNotes:G.brewNotes||{},barRegulars:G.barRegulars||[],researchTopics:G.researchTopics||[],surfDiscovered:G.surfDiscovered||[],visited:G.visited||[],recipeKnowledge:G._recipeKnowledge||{}}))}catch(e){console.warn('ab_ledger_v1 save failed',e)}}
-function loadLedger(){try{const d=JSON.parse(localStorage.getItem('ab_ledger_v1'));if(d&&d.version===1){if(d.strainNotes&&typeof d.strainNotes==='object')G.strainNotes=d.strainNotes;if(d.brewNotes&&typeof d.brewNotes==='object'){for(const t of ['IPA','Stout','Lager']){if(d.brewNotes[t]&&typeof d.brewNotes[t]==='object'){G.brewNotes[t].count=Math.max(G.brewNotes[t].count|0,d.brewNotes[t].count|0);G.brewNotes[t].best=Math.max(G.brewNotes[t].best|0,d.brewNotes[t].best|0)}}}if(Array.isArray(d.barRegulars))G.barRegulars=Array.from(new Set([...(G.barRegulars||[]),...d.barRegulars]));if(Array.isArray(d.researchTopics))G.researchTopics=Array.from(new Set([...(G.researchTopics||[]),...d.researchTopics]));if(Array.isArray(d.surfDiscovered))G.surfDiscovered=Array.from(new Set([...(G.surfDiscovered||[]),...d.surfDiscovered]));if(Array.isArray(d.visited))G.visited=Array.from(new Set([...(G.visited||[]),...d.visited]));if(d.recipeKnowledge&&typeof d.recipeKnowledge==='object')G._recipeKnowledge=d.recipeKnowledge}}catch(e){console.warn('ab_ledger_v1 load failed',e)}}
+function saveLedger(){try{localStorage.setItem('ab_ledger_v1',JSON.stringify({version:1,strainNotes:G.strainNotes||{},brewNotes:G.brewNotes||{},barRegulars:G.barRegulars||[],researchTopics:G.researchTopics||[],surfDiscovered:G.surfDiscovered||[],visited:G.visited||[],recipeKnowledge:G._recipeKnowledge||{},teacherRep:G.teacherRep||{pablo:0,ravi:0,sofie:0,chen:0}}))}catch(e){console.warn('ab_ledger_v1 save failed',e)}}
+function loadLedger(){try{const d=JSON.parse(localStorage.getItem('ab_ledger_v1'));if(d&&d.version===1){if(d.strainNotes&&typeof d.strainNotes==='object')G.strainNotes=d.strainNotes;if(d.brewNotes&&typeof d.brewNotes==='object'){for(const t of ['IPA','Stout','Lager']){if(d.brewNotes[t]&&typeof d.brewNotes[t]==='object'){G.brewNotes[t].count=Math.max(G.brewNotes[t].count|0,d.brewNotes[t].count|0);G.brewNotes[t].best=Math.max(G.brewNotes[t].best|0,d.brewNotes[t].best|0)}}}if(Array.isArray(d.barRegulars))G.barRegulars=Array.from(new Set([...(G.barRegulars||[]),...d.barRegulars]));if(Array.isArray(d.researchTopics))G.researchTopics=Array.from(new Set([...(G.researchTopics||[]),...d.researchTopics]));if(Array.isArray(d.surfDiscovered))G.surfDiscovered=Array.from(new Set([...(G.surfDiscovered||[]),...d.surfDiscovered]));if(Array.isArray(d.visited))G.visited=Array.from(new Set([...(G.visited||[]),...d.visited]));if(d.recipeKnowledge&&typeof d.recipeKnowledge==='object')G._recipeKnowledge=d.recipeKnowledge;if(d.teacherRep&&typeof d.teacherRep==='object'){if(!G.teacherRep)G.teacherRep={pablo:0,ravi:0,sofie:0,chen:0};for(const n of ['pablo','ravi','sofie','chen']){const v=d.teacherRep[n]|0;if(v>(G.teacherRep[n]|0))G.teacherRep[n]=v}}}}catch(e){console.warn('ab_ledger_v1 load failed',e)}}
 // Phase E7 — Run Summary Card (本地历史 ≤10)
 // funify-e11 — Run Epitaph (幽默墓志铭):1-句 flavor text 由 run 统计驱动
 function buildRunEpitaph(card){
@@ -1572,6 +1590,20 @@ function renderLedger(){
     <div class="at-prog">${visitedPct}% · 探索度进度</div>
     <div class="at-bar"><div style="width:${visitedPct}%"></div></div>
   </div>`;
+  // funify-v3 Round 32 — Section 7: NPC teacher rep (BACKLOG #9 #5)
+  const repMap={pablo:'📚 Pablo · UvA 文学',ravi:'💻 Ravi · Science Park CS',sofie:'🌷 Sofie · De Pijp 花店',chen:'🔬 Chen · Science Park 实验'};
+  const teacherCards=['pablo','ravi','sofie','chen'].map(n=>{
+    const rep=G.teacherRep&&G.teacherRep[n]|0;
+    const bonus=Math.min(50,rep*10);
+    const tier=ESCAPE_TECHS.find(t=>t.teacher===n);
+    return `<div class="at-tier${rep>=3?' unlocked':''}">
+      <div class="at-ic">🎓</div>
+      <div class="at-name">${repMap[n]} · 信任度 ${rep}/5</div>
+      <div class="at-desc">教 tech: ${tier?tier.name:'?'} (Lv${tier?tier.lv:'?'} ${Math.round((tier?tier.suc:0)*100)}%) · 用其 tech 时 escape ${bonus>=0?'+':''}${bonus}%</div>
+      <div class="at-prog">${rep>=5?'✓ 封顶':rep>=3?'✓ +30% 已激活 · 再访 +10%/次到 50%':rep>=1?'+10%/次 · 累计中':'未访问 · T 键对话自动 +1'}</div>
+      <div class="at-bar"><div style="width:${Math.min(100,rep*20)}%"></div></div>
+    </div>`;
+  }).join('');
   grid.innerHTML=`
     <div style="margin-bottom:12px"><b style="color:var(--gold)">🍺 配方掌握 (3 类)</b><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">${brewCards}</div></div>
     <div style="margin-bottom:12px"><b style="color:var(--gold)">🍄 蘑菇菌株笔记 (3 株)</b><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">${strainCards}</div></div>
@@ -1579,6 +1611,7 @@ function renderLedger(){
     <div style="margin-bottom:12px"><b style="color:var(--gold)">🔬 学术研究主题 (3 类)</b><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">${topicsCards}</div></div>
     <div style="margin-bottom:12px"><b style="color:var(--gold)">🏄 浪点发现 (7 个)</b><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">${surfCards}</div></div>
     <div style="margin-bottom:12px"><b style="color:var(--gold)">📍 足迹</b><div style="margin-top:6px">${visitedCard}</div></div>
+    <div style="margin-bottom:12px"><b style="color:var(--gold)">🎓 老师信任度 (4 位 NPC · escape +10%/次,封顶 +50%)</b><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">${teacherCards}</div></div>
   `;
 }
 // Phase E6 — Body Trade: mood → meta exchange (Inscryption body-parts 致敬)
@@ -1691,7 +1724,7 @@ function startFromModal(){
 }
 function skipTutorial(){try{localStorage.setItem('ab_skip_tutorial','1')}catch(e){console.warn('ab_skip_tutorial save failed',e)};document.getElementById('start-modal').classList.add('hidden');startFromModal()}
 
-const G={p:{x:100,y:400,tx:100,ty:400},day:1,ti:0,money:250,rep:0,loc:'de_pijp',ind:{},bs:[5,3,2],brewI:-1,brewT:0,events:[],mods:[],auto:false,inside:null,mg:null,ended:false,ts:0,tr:0,run:0,legacy:0,_at:null,_wp:null,_otx:null,_oty:null,_st:0,_sx:0,_sy:0,sch:[],seed:42,meta:0,metaPending:0,objs:[],upgrades:[],objDefs:{},_objDay:0,mood:0,greetedToday:[],visitedToday:[],visited:[],shop:{},surfDiscovered:[],inventory:[],todayWave:null,escapeLevel:0,escapeTeacher:null,escUsed:0,escapeLearnDay:0,keys:{},lastClickAt:0,achievements:[],achTree:{brew:0,coffee:0,rogue:0,scholar:0},_run:{}};
+const G={p:{x:100,y:400,tx:100,ty:400},day:1,ti:0,money:250,rep:0,loc:'de_pijp',ind:{},bs:[5,3,2],brewI:-1,brewT:0,events:[],mods:[],auto:false,inside:null,mg:null,ended:false,ts:0,tr:0,run:0,legacy:0,_at:null,_wp:null,_otx:null,_oty:null,_st:0,_sx:0,_sy:0,sch:[],seed:42,meta:0,metaPending:0,objs:[],upgrades:[],objDefs:{},_objDay:0,mood:0,greetedToday:[],visitedToday:[],visited:[],shop:{},surfDiscovered:[],inventory:[],todayWave:null,escapeLevel:0,escapeTeacher:null,escUsed:0,escapeLearnDay:0,keys:{},lastClickAt:0,achievements:[],achTree:{brew:0,coffee:0,rogue:0,scholar:0},teacherRep:{pablo:0,ravi:0,sofie:0,chen:0},_run:{}};
 for(const k of Object.keys(IND_DEF))G.ind[k]={lv:0,xp:0};
 const MG={};
 
@@ -2333,7 +2366,9 @@ function escapeIn(k){
     const tech=ESCAPE_TECHS[s.techIdx];
     // higher tech = better, but pick a high platform reduces risk (4 platforms → opposite end of station)
     const platformRisk=platform===1?0.15:platform===2?0.05:platform===3?-0.05:-0.15;
-    const ok=seeded(241+G.day*7)<tech.suc-platformRisk;
+    // funify-v3 Round 32 — teacherRep bonus (per-teacher visit count)
+    const teacherBonus=teacherRepBonus(tech);
+    const ok=seeded(241+G.day*7)<tech.suc-platformRisk+teacherBonus;
     clearTimeout(G._escTimer);
     if(!ok){
       addEvt('bad',`🎫 ${platform}号站台被查 · ${tech.name}失败 · -$30 · rep -2`);
@@ -3612,6 +3647,9 @@ function autoStep(){
         const bf=NPC_BUILDING_FLAVOR[target.npc];if(bf)addEvt('info',bf);
         tickObj('Talk',1);tickObj('Earn',r);
         learnEscape(target.npc);
+        bumpTeacherRep(target.npc,'首次');
+      }else{
+        bumpTeacherRep(target.npc,'重访');
       }
       if(!G.visitedToday.includes(target.id)){G.visitedToday.push(target.id);tickObj('Explore',1)}
       G.inside=null;
@@ -3904,7 +3942,7 @@ function renderAll(){
   document.getElementById('t-meta').textContent='🏆 meta '+G.meta;
   document.getElementById('t-meta-pending').textContent=G.metaPending?' (待结算 +'+G.metaPending+'★)':'';
   document.getElementById('t-explore').textContent=`🏄 今日:${G.todayWave?G.todayWave.n:'—'} · 已发现 ${getDiscoveredCount()}/7 · 完美抓 +50★`;
-  document.getElementById('t-escape').textContent=`🚇 Lv ${G.escapeLevel} · 周已逃 ${G.escUsed} 次`;
+  document.getElementById('t-escape').textContent=`🚇 Lv ${G.escapeLevel}${G.escapeTeacher?' · '+G.escapeTeacher+'×'+(G.teacherRep[G.escapeTeacher]||0):''} · 周已逃 ${G.escUsed} 次`;
   document.getElementById('t-mood').textContent=moodEmoji();
   document.getElementById('t-ach').textContent=`${G.achievements.length}/${ACH_POOL.length}`;
   document.getElementById('ach-count').textContent=`${G.achievements.length}/${ACH_POOL.length}`;
@@ -3994,7 +4032,7 @@ document.addEventListener('keydown',e=>{
     if(k==='t'&&G.inside.tp==='npc'){const npc=G.inside.npc;if(!G.greetedToday)G.greetedToday=[];const isFirst=!G.greetedToday.includes(npc);if(isFirst){G.greetedToday.push(npc);G._run.greetedAll[npc]=1;const dlg=pickNpcDialog(npc);const r=dlg?dlg.r:10+Math.floor(seeded(180+G.day)*15);G.money+=r;const line=dlg?dlg.q:`${npc}: +$${r} (今日首次)`;setMsg(line);addEvt('good',`💬 ${npc} +$${r}`);addSch('💬',`${npc} +$${r}`);if(dlg)addEvt('info',dlg.q);
       // funify-v3 Round 13 — 建筑风味短句 (T 键首次入栈)
       const bf=NPC_BUILDING_FLAVOR[npc];if(bf)addEvt('info',bf);
-      tickObj('Talk',1);tickObj('Earn',r);if(G.escapeLevel<4)learnEscape(npc);renderAll()}else{setMsg(`${npc} 今日已聊过（再来不再奖励）`);addEvt('info',`💬 ${npc} 今日已聊过`);renderAll()}}
+      tickObj('Talk',1);tickObj('Earn',r);if(G.escapeLevel<4)learnEscape(npc);bumpTeacherRep(npc,'首次');renderAll()}else{setMsg(`${npc} 今日已聊过（再来不再奖励）`);addEvt('info',`💬 ${npc} 今日已聊过`);bumpTeacherRep(npc,'重访');renderAll()}}
     if(k==='r'&&G.inside.tp==='home'){advanceTimeAuto();renderAll()}return}
   // Track held keys for continuous movement
   if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)){G.keys[k]=true;G._wp=null;setMoveMsg()}
@@ -4101,6 +4139,7 @@ window.AB_TEST={
   barTipPreview,barPatienceLeft,barDayDifficulty,coffeeHeatZone,coffeeFitHint,shroomQuality,brewStreakMul,brewNoteProgress,surfPerfectStreakMul,surfBreakerTelegraph,acadPartialCredit,acadRebuttalCost,acadRebuttalBoost,acadWriteMs,acadSubmitCooldownMs,VENUE_DEF,phaseNarr,showPhaseFlash,PHASE_NARR,confettiBurst,confettiClear,confettiUpdate,confettiDraw,CONFETTI_PALETTE,isLegendary,legendarySpeedMs,legendaryCost,legendaryMetaCap,rollUpgradeChoices,NPC_DIALOGUES,pickNpcDialog,NPC_TEACH_FLAVOR,NPC_BUILDING_FLAVOR,MG_HINT_KEYS,showMgHint,closeMgHint,mgHintSeen,getHoverBldg,speedMs,cycleSpeed,saveSpeed,loadSpeed,cancelAuto,renderAutoBtn,AUTO_CANCEL_GRACE_MS,showHelp,closeHelp,lvMaxBoost,metaIndustryBoost,
   buildRunSummary,buildRunEpitaph,pushRunHistory,loadRunHistory,renderRunHistory,doBodyTrade,openBodyTrade,closeBodyTrade,bodyOpen,moodFloor,startBrew,startSurf,sBarC,endGame,MG,
   ledgerOpen,showLedger,closeLedger,toggleLedger,renderLedger,saveLedger,loadLedger,
+  teacherRepBonus,bumpTeacherRep,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

@@ -763,3 +763,14 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - 测试: **378/378 PASS** (基线 364 + 14 Round 24 断言: brew _brewQCol 三档 1 + brew tq>=7 渲染手动验证 1 + coffee sweet-spot 源审计 1 + coffee >=80 cash-out 源审计 1 + shroomIn floatTexts.push 1 + shroom render 飘字绘制 1 + surf rhythm bar 源审计 1 + surfBreakerTelegraph 返回 1 + acadIn 5s 冷却 1 + acad render _rbStatus pill 1 + bar patience <5s 闪烁 1 + barPatienceLeft [0,1] 1 + 6 mini-game 入口仍可用 1 + 源码审计 6 钩子 1)
 - 风险: localStorage `_mgHintsSeen` 在多次测试间累积,导致 Round 14 mgHintSeen/showMgHint/closeMgHint 测试偶发 fail — 与本轮改动无关,pre-existing;Round 25+ 可加 reset hook
 - 验收: 浏览器 ?seed=42 → 进 brew 看左下角品质条颜色阶 (凑合暗/经典铜/传奇金);进 coffee 看右下热度条 sweet-spot 区 + ≥80 翻绿;进 shroom 按 SPACE 看 +20% 飘字;进 surf 看右下节奏条颜色随 set/lull 切换;进 academic 按 R 申诉看 cooldown pill 倒数;进 bar 等顾客耐心 <5s 看红色脉冲 + 倒计时
+
+## Round 25 — Phase E round 8: intro 屏 Phase E 预告 + Run History 个人最佳 (168/168 PASS)
+
+- commit: `funify-e8+(polish): Phase E teaser in intro + run history best stats test=168/168`
+- 改动: `tools/prototype/index.html` start-modal 加 1 行 🆕 Phase E 提示 (T/F/C/G/搞怪事件) + `renderRunHistory` 顶部新增 🏆 个人最佳 banner (跨 N Run max money/rep/meta); `tools/prototype/test-phase-e.js` +4 断言
+- 机制:
+  1. **Phase E 预告**: 玩家首开就能看到「🆕 Phase E:每日 🏷️ 变量 + 4 分支 🌳 天赋树(T) + 3 🚩 派系(F) + 8 🛠️ 配方(C) × 4 🎁 NPC(G) + 24 个 🦄 搞怪事件」,无需先按 H 才看到新系统
+  2. **个人最佳 banner**: `renderRunHistory` 计算 `best={money,rep,meta}`,首条 `.run-card` 加金色边框,显示「🏆 个人最佳 (跨 N Run) 💰 $X · ⭐ Y rep · ★ Z meta」;玩家肉眼对比自己历届记录
+- 测试: **168/168 PASS** (基线 164 + 4 Round 25 断言: intro Phase E 提示含 T/F/C/G + 24 搞怪事件 + renderRunHistory best 公式 + 🏆 banner 字符串 + 金色边框样式)
+- 风险: 纯增量 — 旧 intro 屏 + 旧 renderRunHistory 仍正常显示;best 计算 O(N) 在 N≤10 时无性能问题
+- 验收: 浏览器首开看 intro 第 4 行 🆕 Phase E 预告;完成几局后看升级模态折叠的「📜 历史 Run 卡片」顶部出现金色 🏆 banner

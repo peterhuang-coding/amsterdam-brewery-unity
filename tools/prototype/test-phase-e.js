@@ -281,6 +281,12 @@ t('top bar has day-dots element', /<span id="day-dots"><\/span>/.test(h));
 t('renderAll updates day-bar-fill width', /day-bar-fill[\s\S]{0,200}width=Math\.min/.test(h));
 t('renderAll renders 7 day-dots', /for\(let i=1;i<=7;i\+\+\)/.test(h));
 
+// ── 22b. Phase E round 8 — Phase E teaser + Run History best stats ──
+t('intro screen mentions Phase E teaser (T/F/C/G + 搞怪事件)', /🆕 Phase E/.test(h) && /<b>T<\/b>/.test(h) && /<b>F<\/b>/.test(h) && /<b>C<\/b>/.test(h) && /<b>G<\/b>/.test(h) && /24 个 <b>🦄 搞怪事件<\/b>/.test(h));
+t('renderRunHistory computes best stats header (best money/rep/meta)', /renderRunHistory[\s\S]{0,500}best=\{money:0,rep:-Infinity,meta:0\}/.test(h));
+t('renderRunHistory shows 🏆 个人最佳 banner', /🏆 个人最佳 \(跨 \$\{runs\.length\} Run\)/.test(h) || /🏆 个人最佳 \(跨 '\+runs\.length\+'\s*Run\)/.test(h));
+t('renderRunHistory best uses border-color:var(--gold)', /bestRow=.*border-color:var\(--gold\)/.test(h));
+
 // ── 23. Phase E9 — Achievement Tree (4 branches × 3 tiers) ──
 t('ACH_TREE defined with 4 branches', /const ACH_TREE=\[[\s\S]{0,4000}?\];/.test(h) && (h.match(/ACH_TREE=\[/g) || []).length === 1);
 t('ACH_TREE has Brew Master / Coffee King / Rogue / Scholar branches',

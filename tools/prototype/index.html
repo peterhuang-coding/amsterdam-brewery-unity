@@ -376,7 +376,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <h1 id="start-modal-title">Amsterdam Brewery — 肉鸽中台</h1>
 <div class="intro-sub">Day 1 of 7 · 🌱 一周城市经营 roguelike · 输入 Seed 开始本 Run</div>
 <h2>玩法目标</h2>
-<div class="start-summary">🎯 7 天内每天完成 <b>3 个目标</b>，应对每日 <b>随机事件</b><br>🏭 5 个产业（酿酒/酒吧/咖啡/蘑菇/冲浪/学术）会真实改变收益<br>🏆 跑完获得 <b>★ meta</b>，在 3 选 1 升级中囤积下一局起跑线</div>
+<div class="start-summary">🎯 7 天内每天完成 <b>3 个目标</b>，应对每日 <b>随机事件</b><br>🏭 5 个产业（酿酒/酒吧/咖啡/蘑菇/冲浪/学术）会真实改变收益<br>🏆 跑完获得 <b>★ meta</b>，在 3 选 1 升级中囤积下一局起跑线<br>🆕 Phase E:每日 <b>🏷️ 变量</b> + 4 分支 <b>🌳 天赋树</b>(T) + 3 <b>🚩 派系</b>(F) + 8 <b>🛠️ 配方</b>(C) × 4 <b>🎁 NPC</b>(G) + 24 个 <b>🦄 搞怪事件</b></div>
 <h2>操作图</h2>
 <div class="keys">
 <div class="key-card"><kbd>W</kbd><span>向上移动</span></div><div class="key-card"><kbd>A</kbd><span>向左移动</span></div><div class="key-card"><kbd>S</kbd><span>向下移动</span></div>
@@ -1307,7 +1307,15 @@ function renderRunHistory(){
   const el=document.getElementById('run-history');if(!el)return;
   const runs=loadRunHistory();
   if(!runs.length){el.innerHTML='<div class="run-card">尚无历史 · 完成首局 Run 后,这里会显示 Run 卡片</div>';return}
-  el.innerHTML=runs.map(r=>`<div class="run-card">
+  // Phase E round 8 — best stats header (跨 Run 个人纪录)
+  const best={money:0,rep:-Infinity,meta:0};
+  for(const r of runs){
+    if(r.money>best.money)best.money=r.money;
+    if(r.rep>best.rep)best.rep=r.rep;
+    if(r.meta>best.meta)best.meta=r.meta;
+  }
+  const bestRow='<div class="run-card" style="border-color:var(--gold);background:#00000050"><b>🏆 个人最佳 (跨 '+runs.length+' Run)</b><br><span class="big">💰 $'+best.money+'</span> · <b>⭐ '+best.rep+' rep</b> · <span style="color:var(--gold)">★ '+best.meta+' meta</span></div>';
+  el.innerHTML=bestRow+runs.map(r=>`<div class="run-card">
     <b>#${r.run}</b> · seed ${r.seed} · ${r.tierIc} ${r.tier} · ${r.objDone}/${r.objTotal} 目标<br>
     <span class="big">$${r.money}</span> · <b>${r.rep} rep</b> · 心情 ${r.mood>=0?'+':''}${r.mood} · ${r.meta}★ meta<br>
     <span style="font-size:14px">${r.sigArch}</span> 常客 · <span style="font-size:14px">${r.sigFact}</span> 派系 · <span style="font-size:14px">${r.sigTalent}</span> 天赋 · <span style="font-size:14px">${r.sigMutator}</span> 变量<br>

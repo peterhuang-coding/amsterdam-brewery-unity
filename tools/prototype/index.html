@@ -1384,7 +1384,7 @@ function shroomApplySoul(evt){
   const s=MG.shroom;
   G._shroomSoul.fired=true;
   if(e.kind==='police_raid'){
-    if(s){s.policeRaid=true;s.raidFineChance=e.fineChance||0.30}
+    if(s){s.policeRaid=true;s.raidFineChance=e.fineChance||0.30;s._policeAlertAt=Date.now()}
     bumpFaction('smartshop',-3,'警察临检');
     addEvt('bad','🚓 警察临检 — 笔记被扣押');
   } else if(e.kind==='contamination_outbreak'){
@@ -4102,7 +4102,9 @@ function startShroom(){showMgHint('shroom');if(hasMod('police_raid')){G.inside=n
   // Each stage has its own turn count and contam risk profile.
   const stageMx=[1,3,2];
   const stageLabels=['接种','蔓延','出菇'];
-  MG.shroom={hu:60,tp:22,li:8,gr:0,tn:0,mx:stageMx[0],stage:1,stageMx,stageLabels,st,known,contam:false,started:Date.now(),policeRaid:false,bonusStrain:false,recipeKnowledge:false,starBonus:0};
+  MG.shroom={hu:60,tp:22,li:8,gr:0,tn:0,mx:stageMx[0],stage:1,stageMx,stageLabels,st,known,contam:false,started:Date.now(),policeRaid:false,bonusStrain:false,recipeKnowledge:false,starBonus:0,
+    // Round 11 D4: visual effects state (UV glow + police siren + smoke)
+    _uvPulseAt:Date.now(), _smokeStartAt:0, _policeAlertAt:0};
   // Apply purchased upgrades to session state
   shroomApplyUpgradeBoosts(MG.shroom);
   // Reset soul event flags for the new run
@@ -4133,7 +4135,7 @@ function shroomIn(k){const s=MG.shroom;if(!s)return;if(k==='arrowup')s.hu=Math.m
     // Contamination outbreak soul event — 50% loss but learn strain
     if(s.lossFraction&&seeded(171+s.tn)<0.5){finShroom(s,Math.round((s.gr||0)*0.5),true);return}
     // Contamination tick (regular)
-    if(seeded(135+s.tn)<contamRisk){s.contam=true;addEvt('bad','🦠 培养皿污染，本批报废');setStatus('❌ 污染报废',`参数过偏导致菌株感染 · 收入 $0`,'按 Esc 离开');setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},900);return}
+    if(seeded(135+s.tn)<contamRisk){s.contam=true;s._smokeStartAt=Date.now();addEvt('bad','🦠 培养皿污染，本批报废');setStatus('❌ 污染报废',`参数过偏导致菌株感染 · 收入 $0`,'按 Esc 离开');setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},900);return}
     const acc=1-err/3;
     s.gr+=20+acc*15;s.tn++;
     // Float "+X%" feedback on successful grow tick
@@ -4351,12 +4353,32 @@ function pickWavePoint(n){const w=WAVE_POINTS[n-1];if(!w)return;G.todayWave=w;
   // funify-v3 Round 5: B3 surf depth — paddle + soul events + upgrade tracks
   if(G.surfBoardLife===undefined)G.surfBoardLife=15;
   const boardWorn=G.surfBoardLife<=0;
+  // funify-v3 Round 11 (Phase D3): wave forecast (4 upcoming blocks) + weather + shark fin warn
+  // Size: bigger waves give more score but drain more stamina. Diff 1-2 = small, 3-4 = medium, 5 = big.
+  const _weatherPick=(id)=>{
+    if(id==='storm_pier')return'rain';
+    if(id==='canal_wave')return'fog';
+    if(id==='lighthouse')return'sunset';
+    if(id==='beginner_bay')return'sunny';
+    return Math.random()<0.5?'cloudy':'sunny';
+  };
+  const _mkWave=()=>{
+    const big=Math.random()<(w.diff>=4?0.45:w.diff>=3?0.25:0.10);
+    return {size:big?(2+Math.random()|0):(1), perfect:big&&Math.random()<0.3, msLeft:1800+Math.random()*2200};
+  };
   const session={wave:w,wx:400,sc:0,at:0,stamina:Math.max(20,100+(G.shop.crazySurfStam||0)),combo:0,perfect:0,perfectStreak:0,started:Date.now(),
     lastCatch:0,drowned:false,ended:false,setPhase:true,nextLull:Date.now()+3500,wipeouts:0,
     boardWorn,windowWidth:boardWorn?0.075:0.1,staminaDrainMult:boardWorn?0.5:1,
     paddle:{active:true,startedAt:Date.now(),cursor:0.5,msPerCycle:1200,_hits:0},
     rescueActive:false,sharkActive:false,rivalActive:false,pollutionActive:false,tidalActive:false,
-    _waxUsed:false};
+    _waxUsed:false,
+    // Round 11 D3: forecast/weather/shark fin fields
+    _forecast:[_mkWave(),_mkWave(),_mkWave(),_mkWave()],
+    _forecastLastRefill:Date.now(),
+    _weather:_weatherPick(w.id),
+    _weatherIntensity:Math.min(1,w.diff/5+0.2),
+    _sharkFinX:-30, _sharkFinActive:false, _sharkFinAt:0,
+    _areaTint:({beginner_bay:'#a0d8b0',pier_break:'#80b8d0',reef_left:'#60a0c8',canal_wave:'#7090a0',sand_bar:'#90c0a8',storm_pier:'#506878',lighthouse:'#c0a080'})[w.id]||'#80b8d0'};
   // Apply per-run upgrade tracks (round 5 B3)
   surfApplyUpgradeBoosts(session);
   G.mg='surf';G._mgEnterAt=Date.now();dropIng('shell');MG.surf=session;
@@ -4467,7 +4489,27 @@ function updateSurf(){const s=MG.surf;if(!s||G.mg!=='surf'||s.ended)return;
     if(s.wx<100){s.wx=500+Math.random()*200}
     if(now>=s.nextLull){s.setPhase=false;s.nextLull=now+1200+Math.random()*600}
   }else{
-    if(now>=s.nextLull){s.setPhase=true;s.nextLull=now+2500+Math.random()*1200}
+    if(now>=s.nextLull){
+      s.setPhase=true;s.nextLull=now+2500+Math.random()*1200;
+      // Round 11 D3: shift forecast — consume front block, push new one (4 blocks ahead)
+      if(s._forecast){
+        s._forecast.shift();
+        const big=Math.random()<((s.wave&&s.wave.diff>=4)?0.45:(s.wave&&s.wave.diff>=3)?0.25:0.10);
+        s._forecast.push({size:big?(2+Math.random()|0):(1),perfect:big&&Math.random()<0.3,msLeft:1800+Math.random()*2200});
+      }
+    }
+  }
+  // Round 11 D3: shark fin sprite — when sharkActive, slide fin across canvas
+  if(s.sharkActive){
+    if(!s._sharkFinActive){
+      s._sharkFinActive=true;
+      s._sharkFinAt=now;
+      s._sharkFinX=-30;
+    }
+    s._sharkFinX=Math.min(820,(-30)+(now-s._sharkFinAt)/30);
+    if(now-s._sharkFinAt>25000){s._sharkFinActive=false}
+  }else{
+    s._sharkFinActive=false;s._sharkFinX=-30;
   }
   if(now-s.started>=30000)finSurf(false)}
 // Synergy map: certain AI research topic pairs combine well. Real conferences reward
@@ -5543,52 +5585,124 @@ function drawMG(){
     var _heatStatus=s.ht>=80&&s.ht<95?'💰 最佳成交窗口':_hz.label;
     cx.fillStyle='#aaa';cx.font='9px sans-serif';cx.fillText(_heatStatus+' · 热度自然下降 -1.5%/s',400,460);
   }else if(mg==='shroom'){
-    // === SmartShop grow room: warm dark walls + grow lamp + shelves with monotub jars ===
-    cx.fillStyle='#1a1810';cx.fillRect(80,30,640,260);
-    cx.fillStyle='#0a0805';cx.fillRect(80,30,640,2);
-    cx.fillStyle='#ffffff08';for(var mi=0;mi<6;mi++){cx.beginPath();cx.arc(150+mi*100+Math.sin(Date.now()/2000+mi)*20,80+Math.cos(Date.now()/1500+mi)*10,40,0,Math.PI*2);cx.fill()}
-    // grow light (hanging pendant lamp)
-    cx.fillStyle='#666';cx.fillRect(390,30,20,8);
-    cx.fillStyle='#ffffaa';cx.beginPath();cx.arc(400,55,16,0,Math.PI*2);cx.fill();
-    cx.fillStyle='#ffffff40';cx.beginPath();cx.arc(400,55,28,0,Math.PI*2);cx.fill();
-    var lightAlpha=s.li/14*0.18;
-    cx.fillStyle='rgba(255,255,170,'+lightAlpha+')';
-    cx.beginPath();cx.moveTo(380,65);cx.lineTo(420,65);cx.lineTo(460,200);cx.lineTo(340,200);cx.closePath();cx.fill();
-    // Shelves + 3 backup monotub jars (top shelf)
+    // === funify-v3 Round 11 (Phase D4) — SmartShop grow room: UV purple lab + 3 glass incubators ===
+    // Mycelium particles rising + microscope silhouette + petri dishes + police siren + smoke alarm
+    var _snt=Date.now()/1000;
+    // 0) Back wall — dark lab with subtle UV wash
+    cx.fillStyle='#0a0612';cx.fillRect(80,30,640,260);
+    cx.fillStyle='#0a0408';cx.fillRect(80,30,640,2);
+    // 1) UV GLOW HALO — purple radial from ceiling lamp, breathing
+    var _uvPulse=0.7+0.3*Math.sin(_snt*1.5);
+    var _uvG=cx.createRadialGradient(400,55,8,400,55,260);
+    _uvG.addColorStop(0,'rgba(180,80,220,'+(0.55*_uvPulse)+')');
+    _uvG.addColorStop(0.4,'rgba(120,60,180,'+(0.25*_uvPulse)+')');
+    _uvG.addColorStop(1,'rgba(80,40,140,0)');
+    cx.fillStyle=_uvG;cx.fillRect(140,30,520,260);
+    // 2) UV lamp fixture (small, dangling)
+    cx.fillStyle='#1a1a25';cx.fillRect(390,30,20,8);
+    cx.fillStyle='#d080ff';cx.beginPath();cx.arc(400,42,10,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#ffffff80';cx.beginPath();cx.arc(400,42,4,0,Math.PI*2);cx.fill();
+    cx.fillStyle='rgba(255,200,255,0.4)';cx.beginPath();cx.arc(400,42,18,0,Math.PI*2);cx.fill();
+    // 3) Shelves
     cx.fillStyle='#3a2a18';cx.fillRect(120,290,560,8);
     cx.fillStyle='#2a1a08';cx.fillRect(80,480,640,10);
+    // 4) 3 GLASS INCUBATORS (top shelf) — transparent cabinets with mycelium rising inside
     var strainLabels=['金色导师','亚马逊','哲学家'];
     for(var mt=0;mt<3;mt++){var mx=170+mt*180;
+      // glass cabinet back-shadow
       cx.fillStyle='#0006';cx.beginPath();cx.ellipse(mx+30,290,32,4,0,0,Math.PI*2);cx.fill();
-      cx.fillStyle='#cfd8d840';cx.fillRect(mx,220,60,70);
+      // glass cabinet body
+      cx.fillStyle='rgba(200,160,220,0.10)';cx.fillRect(mx,220,60,70);
+      cx.strokeStyle='rgba(220,180,240,0.5)';cx.lineWidth=1;cx.strokeRect(mx,220,60,70);
+      // top highlight
+      cx.fillStyle='rgba(255,255,255,0.15)';cx.fillRect(mx,220,60,2);
+      // wood base
       cx.fillStyle='#3a2a18';cx.fillRect(mx,265,60,25);
       cx.fillStyle='#1a0a05';cx.fillRect(mx,265,60,2);
-      cx.fillStyle='#f0f0e8';cx.fillRect(mx-2,212,64,10);
-      cx.fillStyle='#d0d0c8';cx.fillRect(mx-2,220,64,2);
-      cx.fillStyle='#f0e8a0';cx.fillRect(mx+5,250,50,12);
-      cx.fillStyle='#222';cx.font='7px sans-serif';cx.textAlign='center';
-      cx.fillText(strainLabels[mt]||'菌株',mx+30,259);
+      // substrate layer (grain)
+      cx.fillStyle='#e8d8a0';cx.fillRect(mx+5,250,50,12);
+      cx.fillStyle='#a08030';for(var gn=0;gn<6;gn++){cx.fillRect(mx+8+gn*8,253+gn%2,4,1)}
+      // mycelium particles rising inside the cabinet
+      var _stageLv=s.gr/100;
+      for(var mp=0;mp<5;mp++){var mpy=(mp*15+_snt*20)%70;var mpx=mx+10+mp*10;
+        var mpY=290-mpy;
+        if(mpY>252&&mpY<290){
+          cx.fillStyle='rgba(220,180,255,'+(0.4+_stageLv*0.4)+')';
+          cx.beginPath();cx.arc(mpx,mpY,0.8+_stageLv*0.6,0,Math.PI*2);cx.fill();
+        }
+      }
+      // label tag
+      cx.fillStyle='rgba(0,0,0,0.6)';cx.fillRect(mx+10,278,40,8);
+      cx.fillStyle='#e0d8ff';cx.font='6px sans-serif';cx.textAlign='center';
+      cx.fillText(strainLabels[mt]||'菌株',mx+30,284);
     }
-    // === MAIN GROW TUB (center stage) ===
+    // 5) MAIN GROW TUB (center stage) — kept from before, slight recolor for UV theme
     var mainMx=320;
     cx.fillStyle='#0006';cx.beginPath();cx.ellipse(mainMx+60,400,70,5,0,0,Math.PI*2);cx.fill();
-    cx.fillStyle='#cfd8d840';cx.fillRect(mainMx,330,120,70);
+    cx.fillStyle='rgba(200,160,220,0.12)';cx.fillRect(mainMx,330,120,70);
+    cx.strokeStyle='rgba(220,180,240,0.45)';cx.lineWidth=1;cx.strokeRect(mainMx,330,120,70);
     cx.fillStyle='#3a2a18';cx.fillRect(mainMx,375,120,25);
     cx.fillStyle='#1a0a05';cx.fillRect(mainMx,375,120,2);
     cx.fillStyle='#e8d8a0';for(var pe=0;pe<8;pe++){cx.beginPath();cx.arc(mainMx+15+pe*14,383+Math.sin(pe*3)*3,1,0,Math.PI*2);cx.fill()}
     cx.fillStyle='#f0f0e8';cx.fillRect(mainMx-2,320,124,12);
     cx.fillStyle='#d0d0c8';cx.fillRect(mainMx-2,330,124,2);
-    // Mushrooms emerging
-    var gh=Math.min(1,s.gr/100);
-    for(var i=0;i<6;i++){var sx=mainMx+15+i*18,sy=375;
-      var capH=22+gh*42+Math.sin(Date.now()/500+i)*2;
-      var capW=8+gh*8;
-      var capColor=s.contam?'#7a5a2a':i%2?'#d8b8d8':'#e8d0b0';
-      cx.fillStyle=s.contam?'#5a4020':'#f5e8d0';cx.fillRect(sx-2,sy-capH,4,capH);
-      cx.fillStyle=capColor;cx.beginPath();cx.ellipse(sx,sy-capH,capW,capW*0.6,0,Math.PI,0);cx.fill();
-      cx.fillStyle=s.contam?'#3a2010':'#8a5a40';cx.beginPath();cx.ellipse(sx,sy-capH,capW-1,capW*0.4,0,0,Math.PI);cx.fill();
-      if(!s.contam&&i%3===0){cx.fillStyle='#fff';cx.beginPath();cx.arc(sx-2,sy-capH+1,1.2,0,Math.PI*2);cx.fill()}
-      if(!s.contam&&gh>0.5){cx.fillStyle='#f5e8d060';cx.beginPath();cx.arc(sx,sy-capH+3,3,0,Math.PI);cx.fill()}
+    // main tub mycelium rising particles (denser when stage >= 2)
+    var _mainStage=s.stage||1;
+    var _mpN=_mainStage>=3?10:_mainStage>=2?6:3;
+    for(var mmp=0;mmp<_mpN;mmp++){var mmpy=(mmp*9+_snt*28)%70;var mmpx=mainMx+12+mmp*11;
+      var mmpY=375-mmpy;
+      if(mmpY>330){
+        cx.fillStyle='rgba(220,180,255,'+(0.3+(_mainStage-1)*0.15)+')';
+        cx.beginPath();cx.arc(mmpx,mmpY,0.7+_mainStage*0.2,0,Math.PI*2);cx.fill();
+      }
+    }
+    // 6) PETRI DISHES (foreground, left) — 2 circles with culture dots
+    for(var pd=0;pd<2;pd++){var pdx=110+pd*55,pdy=455+pd*8;
+      cx.fillStyle='#0a0a0a';cx.beginPath();cx.ellipse(pdx,pdy,22,8,0,0,Math.PI*2);cx.fill();
+      cx.fillStyle='#d8c8a0';cx.beginPath();cx.ellipse(pdx,pdy-1,20,7,0,0,Math.PI*2);cx.fill();
+      // culture spots
+      for(var cs=0;cs<4+pd*2;cs++){var ang=cs*1.4+pd;var rr=4+cs%3;
+        cx.fillStyle=pd?'#a060c0':'#c0a080';
+        cx.beginPath();cx.arc(pdx+Math.cos(ang)*rr,pdy-1+Math.sin(ang)*rr*0.4,1+pd*0.5,0,Math.PI*2);cx.fill();
+      }
+    }
+    // 7) MICROSCOPE SILHOUETTE (right side) — classic lab scope
+    var _msX=620,_msY=420;
+    cx.fillStyle='#1a1825';
+    cx.fillRect(_msX-12,_msY+8,24,30); // base
+    cx.fillStyle='#252033';
+    cx.fillRect(_msX-8,_msY,16,12); // arm
+    cx.fillRect(_msX-10,_msY-12,20,6); // body
+    // eyepiece
+    cx.fillRect(_msX-3,_msY-22,6,12);
+    cx.beginPath();cx.arc(_msX,_msY-24,4,Math.PI,0);cx.fill();
+    // objective lens
+    cx.fillRect(_msX-4,_msY+10,8,4);
+    // light beam onto stage (small purple cone)
+    cx.fillStyle='rgba(180,120,220,0.25)';
+    cx.beginPath();cx.moveTo(_msX-6,_msY+14);cx.lineTo(_msX+6,_msY+14);cx.lineTo(_msX+12,_msY+30);cx.lineTo(_msX-12,_msY+30);cx.closePath();cx.fill();
+    // slide on stage
+    cx.fillStyle='#d8e8d8';cx.fillRect(_msX-9,_msY+24,18,4);
+    // 8) SMOKE ALARM PARTICLES — when contam=true, yellow smoke rises from main tub
+    if(s.contam||(s._smokeStartAt&&Date.now()-s._smokeStartAt<6000)){
+      for(var sm=0;sm<14;sm++){var smx=mainMx+30+Math.sin(_snt*1.5+sm)*40+sm%5*4;var smy=330-((_snt*30+sm*12)%120);
+        cx.fillStyle='rgba(255,200,80,'+(0.35-Math.abs(smy-270)/200)+')';
+        cx.beginPath();cx.arc(smx,smy,4+sm%3,0,Math.PI*2);cx.fill();
+      }
+      // alarm badge
+      cx.fillStyle='#f0a020';cx.fillRect(mainMx+125,310,40,14);
+      cx.fillStyle='#fff';cx.font='bold 8px sans-serif';cx.textAlign='center';
+      cx.fillText('⚠ 烟雾',mainMx+145,320);
+    }
+    // 9) POLICE SIREN STATUS BAR (top) — red/blue flashing when policeRaid=true
+    if(s.policeRaid){
+      var _phaseR=Math.floor(_snt*4)%2;
+      cx.fillStyle=_phaseR?'#e03030':'#3030e0';cx.fillRect(80,20,640,8);
+      cx.fillStyle='#ffffff';cx.font='bold 9px sans-serif';cx.textAlign='center';
+      cx.fillText('🚓 警察临检 · 笔记扣押 · 罚款概率 '+(Math.round((s.raidFineChance||0.30)*100))+'%',400,26);
+      // alternating strobes on edges
+      cx.fillStyle=_phaseR?'#ff808080':'#8080ff80';
+      cx.fillRect(80,30,8,260);cx.fillRect(712,30,8,260);
     }
     // HUD overlay
     cx.fillStyle='#fff';cx.font='bold 13px sans-serif';cx.textAlign='center';
@@ -5605,7 +5719,7 @@ function drawMG(){
         cx.globalAlpha=1;
       });
     }
-    // 3 parameter dial widgets
+    // 3 parameter dial widgets (kept from before)
     var tgts=s.known?[{l:'💧湿度',v:s.hu,t:s.st.h,u:'%',col:'#4090e0'},{l:'🌡温度',v:s.tp,t:s.st.t,u:'°C',col:'#e85040'},{l:'💡光照',v:s.li,t:s.st.l,u:'h',col:'#f0c040'}]:[{l:'💧湿度',v:s.hu,t:null,u:'%',col:'#4090e0'},{l:'🌡温度',v:s.tp,t:null,u:'°C',col:'#e85040'},{l:'💡光照',v:s.li,t:null,u:'h',col:'#f0c040'}];
     tgts.forEach(function(g,i){
       var x=180+i*160,cy=455;
@@ -5666,57 +5780,163 @@ function drawMG(){
       cx.fillStyle='#888';cx.fillText('3 个 0.8s 窗口: 1.5s / 2.7s / 3.9s',400,300);
     }
   }else if(mg==='surf'){
-    // === Surf POV: inside the wave tube looking out toward horizon ===
-    // Sky gradient
-    var sg=cx.createLinearGradient(0,30,0,260);
-    sg.addColorStop(0,'#6090b0');sg.addColorStop(0.5,'#a8c8d8');sg.addColorStop(1,'#d8e8e8');
-    cx.fillStyle=sg;cx.fillRect(80,30,640,230);
-    // Distant horizon (pier + lighthouse)
-    cx.fillStyle='#40688060';cx.fillRect(80,220,640,8);
-    cx.fillStyle='#406080';for(var pi=0;pi<6;pi++)cx.fillRect(150+pi*30,225,4,15);
-    cx.fillStyle='#3a5060';cx.fillRect(150,210,180,10);
-    cx.fillStyle='#ffffff';cx.fillRect(640,180,10,40);
-    cx.fillStyle='#a02020';cx.fillRect(640,175,10,5);cx.fillRect(640,193,10,5);
-    cx.fillStyle='#ffff80';cx.beginPath();cx.arc(645,177,4,0,Math.PI*2);cx.fill();
-    // Wave tube walls (left + right arching forward)
-    var tubeT=Date.now()/1000;
-    cx.fillStyle='#4090c0';
+    // === funify-v3 Round 11 (Phase D3) — Surf side-view scene ===
+    // Horizon + sin-wave rolling ocean + surfer side-standing + 5 area variants + weather
+    // + stamina bar + wave forecast timeline (4 upcoming) + shark fin warning
+    var _sn=Date.now()/1000;
+    var _wt=s._weather||'sunny';
+    var _wi=s._weatherIntensity||0.5;
+    var _at=s._areaTint||'#80b8d0';
+    // Sky gradient — varies with weather
+    var _skyTop=_wt==='rain'?'#3a4858':_wt==='fog'?'#90989a':_wt==='sunset'?'#d88060':'#6ea0c8';
+    var _skyMid=_wt==='rain'?'#587080':_wt==='fog'?'#b0b8b8':_wt==='sunset'?'#e8b070':'#a8d0e0';
+    var _skyBot=_wt==='rain'?'#7888a0':_wt==='fog'?'#c8d0d0':_wt==='sunset'?'#f0c890':'#d8ecec';
+    var skyG=cx.createLinearGradient(0,30,0,210);
+    skyG.addColorStop(0,_skyTop);skyG.addColorStop(0.6,_skyMid);skyG.addColorStop(1,_skyBot);
+    cx.fillStyle=skyG;cx.fillRect(80,30,640,180);
+    // Distant horizon line + sky reflection on water
+    cx.fillStyle='#40608060';cx.fillRect(80,208,640,3);
+    cx.fillStyle='#5a7890';cx.fillRect(80,211,640,1);
+    // Background distant ships / windsurfers silhouette
+    for(var ds=0;ds<3;ds++){var dx=160+ds*220+Math.sin(_sn*0.3+ds)*8;
+      cx.fillStyle='#3a5060';cx.fillRect(dx,200,4,2);
+      cx.fillRect(dx+1,196,2,5);
+      cx.fillStyle='#ffffff40';cx.fillRect(dx+1,196,2,2);
+    }
+    // 3-layer parallax ocean with sin-wave rolling — amplitude scaled by wave.diff
+    var _diff=s.wave.diff||1;
+    var _amp=[6,12,18,28,38][Math.min(4,_diff-1)]||10;
+    function _waveY(x,t,amp,freq,off){return 240+amp*Math.sin((x*freq)+t+off)}
+    // Far ocean (subtle, no foam)
+    cx.fillStyle=_at+'60';
+    cx.beginPath();cx.moveTo(80,240);
+    for(var wf=80;wf<=720;wf+=8){cx.lineTo(wf,_waveY(wf,_sn*0.5,_amp*0.35,0.012,0))}
+    cx.lineTo(720,290);cx.lineTo(80,290);cx.closePath();cx.fill();
+    // Mid ocean (main rolling band)
+    cx.fillStyle=_at;
+    cx.beginPath();cx.moveTo(80,260);
+    for(var wm=80;wm<=720;wm+=6){cx.lineTo(wm,_waveY(wm,_sn*1.0,_amp*0.6,0.018,1.5))}
+    cx.lineTo(720,300);cx.lineTo(80,300);cx.closePath();cx.fill();
+    // Near ocean (foreground, with foam crests)
+    cx.fillStyle=_at+'e0';
+    cx.beginPath();cx.moveTo(80,285);
+    for(var wn=80;wn<=720;wn+=4){cx.lineTo(wn,_waveY(wn,_sn*1.4,_amp*0.85,0.025,3.0))}
+    cx.lineTo(720,330);cx.lineTo(80,330);cx.closePath();cx.fill();
+    // Foam crests on near waves
+    cx.fillStyle='#ffffff';
+    for(var fc=0;fc<5;fc++){var fx=120+fc*130+_sn*30%130;var fy=_waveY(fx,_sn*1.4,_amp*0.85,0.025,3.0);
+      cx.beginPath();cx.ellipse(fx,fy-1,8,2,0,0,Math.PI*2);cx.fill();
+    }
+    // === WEATHER OVERLAY ===
+    if(_wt==='rain'){
+      cx.strokeStyle='#c0d0e060';cx.lineWidth=1;
+      for(var rd=0;rd<28*_wi;rd++){var rx=(rd*37+_sn*60)%640+80;var ry=(rd*53+_sn*180)%180+30;
+        cx.beginPath();cx.moveTo(rx,ry);cx.lineTo(rx-2,ry+8);cx.stroke();
+      }
+    }else if(_wt==='fog'){
+      cx.fillStyle='#ffffff40';
+      for(var fg=0;fg<8;fg++){var fx=120+fg*70+Math.sin(_sn*0.4+fg)*20;var fy=80+Math.cos(_sn*0.3+fg)*30;
+        cx.beginPath();cx.ellipse(fx,fy,28+fg%3*8,10,0,0,Math.PI*2);cx.fill();
+      }
+    }else if(_wt==='sunset'){
+      // Sun on horizon
+      cx.fillStyle='#ffd060';
+      cx.beginPath();cx.arc(640,205,16,0,Math.PI*2);cx.fill();
+      cx.fillStyle='#ff904040';
+      cx.beginPath();cx.arc(640,205,28,0,Math.PI*2);cx.fill();
+    }else if(_wt==='sunny'){
+      // Subtle sun glow upper-left
+      cx.fillStyle='#fff0a030';
+      cx.beginPath();cx.arc(150,70,30,0,Math.PI*2);cx.fill();
+    }
+    // === SHARK FIN WARNING (when sharkActive) — dark triangle sliding across ===
+    if(s._sharkFinActive){
+      var sfx=s._sharkFinX||0;
+      var sfy=_waveY(sfx,_sn*1.4,_amp*0.85,0.025,3.0)-4;
+      cx.fillStyle='#1a1820';
+      cx.beginPath();cx.moveTo(sfx,sfy-12);cx.lineTo(sfx+14,sfy);cx.lineTo(sfx-2,sfy);cx.closePath();cx.fill();
+      cx.fillStyle='#2a3040';cx.beginPath();cx.moveTo(sfx,sfy-9);cx.lineTo(sfx+8,sfy-1);cx.lineTo(sfx-1,sfy-1);cx.closePath();cx.fill();
+      // splash
+      cx.fillStyle='#ffffff60';cx.beginPath();cx.arc(sfx+10,sfy+1,2,0,Math.PI*2);cx.fill();
+    }
+    // === SURFER SIDE-VIEW (centered, standing on board) ===
+    var _pStance=s.setPhase?Math.sin(_sn*3)*2:0; // sway during set
+    var _playerX=380,_playerY=275+_pStance;
+    // Surfboard (under feet)
+    cx.fillStyle='#3a78c0';
     cx.beginPath();
-    cx.moveTo(80,260);cx.lineTo(80,30);
-    cx.bezierCurveTo(80+Math.sin(tubeT)*8,30,200,80,300,180);
-    cx.bezierCurveTo(340,210,360,240,400,255);
-    cx.bezierCurveTo(440,240,460,210,500,180);
-    cx.bezierCurveTo(600,80,720+Math.sin(tubeT)*8,30,720,30);
-    cx.lineTo(720,260);cx.closePath();cx.fill();
-    // Wave foam (lighter inside)
-    cx.fillStyle='#80c0e0';
-    cx.beginPath();
-    cx.moveTo(95,260);cx.bezierCurveTo(95,40,210,90,305,185);cx.bezierCurveTo(345,215,360,240,400,250);cx.bezierCurveTo(440,240,455,215,495,185);cx.bezierCurveTo(590,90,705,40,705,260);cx.closePath();cx.fill();
-    // Foam streaks
-    cx.strokeStyle='#ffffff80';cx.lineWidth=2;
-    for(var fs=0;fs<8;fs++){var fx=120+fs*70,fy=120+Math.sin(tubeT*2+fs)*30;cx.beginPath();cx.arc(fx,fy,4+fs%3,0,Math.PI*2);cx.stroke()}
-    // Open mouth of tube (wave breaking)
-    var pos=(s.wx-200)/500;
-    var mouthX=160+pos*480,mouthY=140;
-    cx.fillStyle='#ffffff';cx.beginPath();cx.ellipse(mouthX,mouthY,55,40,0,0,Math.PI*2);cx.fill();
-    cx.fillStyle='#d8e8f0';cx.beginPath();cx.ellipse(mouthX,mouthY,50,35,0,0,Math.PI*2);cx.fill();
-    if(pos>0.6&&pos<0.8){cx.fillStyle='#78c87860';cx.beginPath();cx.ellipse(mouthX,mouthY,65,50,0,0,Math.PI*2);cx.fill()}
-    // Surfboard tip at bottom (POV)
-    cx.fillStyle='#3a78c0';cx.beginPath();cx.moveTo(380,460);cx.lineTo(420,460);cx.lineTo(440,440);cx.lineTo(360,440);cx.closePath();cx.fill();
-    cx.fillStyle='#5a98e0';cx.fillRect(380,455,40,3);
-    cx.fillStyle='#1a3050';cx.fillRect(378,440,44,3);
-    // Surfer hands
-    cx.fillStyle='#f0d8a8';cx.beginPath();cx.arc(395,445,3,0,Math.PI*2);cx.fill();cx.beginPath();cx.arc(415,445,3,0,Math.PI*2);cx.fill();
-    // Spray particles
-    cx.fillStyle='#ffffff90';
-    for(var sp=0;sp<12;sp++){var spx=100+Math.sin(tubeT*3+sp)*40+sp*55,spy=350+Math.cos(tubeT*4+sp)*20;cx.beginPath();cx.arc(spx,spy,2+sp%3,0,Math.PI*2);cx.fill()}
-    // bottom HUD
+    cx.moveTo(_playerX-30,_playerY+8);
+    cx.lineTo(_playerX+30,_playerY+8);
+    cx.lineTo(_playerX+34,_playerY+12);
+    cx.lineTo(_playerX-34,_playerY+12);
+    cx.closePath();cx.fill();
+    // Board stripe
+    cx.fillStyle='#5a98e0';cx.fillRect(_playerX-26,_playerY+9,52,2);
+    // Board fin
+    cx.fillStyle='#1a3050';
+    cx.beginPath();cx.moveTo(_playerX-22,_playerY+12);cx.lineTo(_playerX-18,_playerY+18);cx.lineTo(_playerX-14,_playerY+12);cx.closePath();cx.fill();
+    // Player body (silhouette)
+    cx.fillStyle='#1a2030';
+    // legs
+    cx.fillRect(_playerX-5,_playerY+1,3,7);
+    cx.fillRect(_playerX+2,_playerY+1,3,7);
+    // torso
+    cx.fillRect(_playerX-7,_playerY-8,14,10);
+    // head
+    cx.fillStyle='#f0d8a8';
+    cx.beginPath();cx.arc(_playerX,_playerY-13,5,0,Math.PI*2);cx.fill();
+    // hair / cap
+    cx.fillStyle='#202020';
+    cx.beginPath();cx.arc(_playerX,_playerY-15,5,Math.PI,0);cx.fill();
+    // arms (out for balance)
+    cx.fillStyle='#1a2030';
+    cx.fillRect(_playerX-12,_playerY-7,4,2);
+    cx.fillRect(_playerX+8,_playerY-7,4,2);
+    // spray near board
+    cx.fillStyle='#ffffff80';
+    for(var sb=0;sb<6;sb++){var sx=_playerX+(_sn*40+sb*12)%60-30;var sy=_playerY+12+Math.sin(_sn*3+sb)*2;
+      cx.beginPath();cx.arc(sx,sy,1+sb%2,0,Math.PI*2);cx.fill();
+    }
+    // === TOP WAVE FORECAST TIMELINE — 4 upcoming blocks (left→right: soon→later) ===
+    var _fcX=110,_fcY=40,_fcW=560,_fcH=24,_fcBlock=_fcW/4;
+    // track
+    cx.fillStyle='#1a305080';cx.fillRect(_fcX-2,_fcY-2,_fcW+4,_fcH+4);
+    cx.fillStyle='#0a1828';cx.fillRect(_fcX,_fcY,_fcW,_fcH);
+    // "now" pointer
+    cx.fillStyle='#ecb457';cx.fillRect(_fcX,_fcY-3,2,_fcH+6);
+    if(s._forecast&&s._forecast.length){
+      var _waveNames=['·','≈','≋','🌊'];
+      s._forecast.forEach(function(f,i){
+        var bx=_fcX+i*_fcBlock+3,bw=_fcBlock-6;
+        var bh=4+f.size*5;
+        var bcol=f.size>=3?'#e85040':f.size>=2?'#e8a020':'#80c0e0';
+        var by=_fcY+_fcH-bh;
+        cx.fillStyle=bcol+'50';cx.fillRect(bx,by,bw,bh);
+        cx.fillStyle=bcol;cx.fillRect(bx,by,bw,2);
+        cx.fillStyle='#fff';cx.font='bold 8px sans-serif';cx.textAlign='center';
+        cx.fillText(f.size===1?'·':f.size===2?'≈':'≋',bx+bw/2,_fcY+10);
+        cx.fillStyle='#aaa';cx.font='7px sans-serif';
+        cx.fillText(((f.msLeft||0)/1000).toFixed(1)+'s',bx+bw/2,_fcY+_fcH-2);
+        if(f.perfect){cx.fillStyle='#78ffa0';cx.fillText('★',bx+bw-5,_fcY+10)}
+      });
+    }
+    // forecast label
+    cx.fillStyle='#fff';cx.font='bold 8px sans-serif';cx.textAlign='left';
+    cx.fillText('浪预报',_fcX-58,_fcY+_fcH-2);
+    // === AREA BADGE (top right) ===
+    cx.fillStyle='#00000080';cx.fillRect(640,38,80,32);
+    cx.fillStyle='#fff';cx.font='bold 9px sans-serif';cx.textAlign='center';
+    cx.fillText(s.wave.n,680,52);
+    cx.fillStyle=_at;cx.font='8px sans-serif';
+    cx.fillText('Lv'+_diff+' · '+({sunny:'☀️',cloudy:'⛅',rain:'🌧️',fog:'🌫️',sunset:'🌅'})[_wt],680,64);
+    // === BOTTOM HUD — stamina + score + rhythm telegraph (preserved from round 24) ===
     cx.fillStyle='#1a305080';cx.fillRect(120,440,560,40);
     cx.fillStyle='#fff';cx.font='bold 12px sans-serif';cx.textAlign='left';cx.fillText('🏄 '+s.wave.n,135,455);
     cx.fillStyle='#fff';cx.textAlign='right';cx.fillText(s.sc+'分 · '+s.at+'次抓'+(s.perfect>0?' · perfect×'+s.perfect:''),665,455);
     cx.fillStyle='#1a1a1a';cx.fillRect(135,463,250,10);
     cx.fillStyle=s.stamina>60?'#78c878':s.stamina>30?'#f0a030':'#f05050';cx.fillRect(135,463,250*(s.stamina/100),10);
     cx.fillStyle='#aaa';cx.font='9px sans-serif';cx.textAlign='left';cx.fillText('体力 '+s.stamina+'%',390,471);
+    var pos=(s.wx-200)/500;
     var greenState=pos>0.6&&pos<0.8?'完美区!':pos>0.3&&pos<0.95?'白区':'错过!';
     cx.fillStyle='#ecb457';cx.font='bold 11px sans-serif';cx.textAlign='center';cx.fillText(greenState,400,455);
     // funify-v3 Round 24: 浪组节奏 indicator — set (blue, pulsing) vs lull (gold) + ms countdown
@@ -5729,7 +5949,7 @@ function drawMG(){
       var _phaseCol=_rhythm.phase==='set'?'#4090c0':'#e8a020';
       cx.fillStyle=_phaseCol;cx.fillRect(rbX,rbY,rbW*_phasePct,rbH);
       cx.fillStyle='#fff';cx.font='9px sans-serif';cx.textAlign='left';
-      cx.fillText(_rhythm.phase==='set'?'🌊 浪组推进':(_rhythm.msLeftLabel&&_rhythm.msLeftLabel!=='·'?'� 静默 '+_rhythm.msLeftLabel+' 后下一组':'⏸ 静默'),rbX,rbY-3);
+      cx.fillText(_rhythm.phase==='set'?'🌊 浪组推进':(_rhythm.msLeftLabel&&_rhythm.msLeftLabel!=='·'?'· 静默 '+_rhythm.msLeftLabel+' 后下一组':'⏸ 静默'),rbX,rbY-3);
     }
   }else if(mg==='academic'){
     // === Professor's office: warm wood wall + bookshelf + desk + laptop + coffee mug ===

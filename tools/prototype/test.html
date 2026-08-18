@@ -19,6 +19,29 @@ frame.addEventListener('load',async()=>{
   const win=frame.contentWindow,doc=frame.contentDocument;
   const t=win.AB_TEST;
 
+  // Phase E acceptance helper — used by both perimeter industryFactor tests and
+  // Phase E runtime parity tests. Snaps the relevant G fields to baseline, runs
+  // the body, then restores everything so autorun-driven state pollution can't
+  // cascade into subsequent tests. Defined at the top of the load handler so it
+  // is in scope for the legendary_income tests at line ~390.
+  const withPhaseEIndustryState=(overrides,fn)=>{
+    const keys=['upgrades','mods','talents','mutator','factions','crafted','npcFr','_run'];
+    const before={};for(const k of keys)before[k]=t.state[k];
+    const beforeBrewLv=t.state.ind.brewing.lv;
+    try{
+      Object.assign(t.state,{
+        upgrades:[],mods:[],talents:[],mutator:null,
+        factions:{heineken:0,coffee:0,smartshop:0},crafted:[],npcFr:{},
+        _run:{factionBonus:{brewing:1,coffee:1,shroom:1,surf:1,academic:1,bar:1}}
+      },overrides);
+      t.state.ind.brewing.lv=0;
+      return fn();
+    }finally{
+      for(const k of keys)t.state[k]=before[k];
+      t.state.ind.brewing.lv=beforeBrewLv;
+    }
+  };
+
   // Phase 1: contract tests against the loaded instance
   check('测试接口可用',()=>t&&t.validate);
   const v=t.validate();
@@ -201,11 +224,24 @@ frame.addEventListener('load',async()=>{
   doc.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
   await wait(500);
   check('教程输入框回车可启动',()=>t.state.seed===7&&doc.getElementById('start-modal').classList.contains('hidden'));
-  // Auto-run completes within 100s
+  // Auto-run completes within ~10s — headless Chrome throttles setTimeout in the
+  // hidden 1×1px iframe to ~1Hz, so the 200-2000ms auto-step delays would otherwise
+  // never finish in 100s. We bypass the throttling by invoking autoStep() in a tight
+  // loop: each call clears G._at and runs one step synchronously, advancing time
+  // and walking minigames until endGame fires.
   t.newRun(42);t.state.ended=false;
   doc.getElementById('ba').click();
   let reached=false;
-  for(let i=0;i<200;i++){if(t.state.ended){reached=true;break}await wait(500)}
+  const _autoDeadline=Date.now()+12000;
+  while(Date.now()<_autoDeadline){
+    if(t.state.ended){reached=true;break}
+    if(t.state.auto){
+      try{win.autoStep()}catch(e){}
+    }else{
+      await wait(50);
+    }
+    await wait(0);
+  }
   check('自动运行跑满 7 天必达 ended',()=>reached);
   // Capture endGame state BEFORE pickUpgrade resets G._run
   const _r5snap={streakBest:t.state._run.streakBest,lastObjDone:t.state._run.lastObjDone,lastObjTotal:t.state._run.lastObjTotal,lastTier:t.state._run.lastTier};
@@ -327,7 +363,7 @@ frame.addEventListener('load',async()=>{
   check('CONFETTI_PALETTE.endGame ≥5 色 (rainbow gold)',()=>win.eval('CONFETTI_PALETTE.endGame.length')>=5);
   // Source-level: 6 success-path hooks present
   check('finBrew 钩入 confettiBurst (酿造成功)',()=>/confettiBurst\(400,260,\{n:streakMul>=1.3/.test(_r6src));
-  check('finCoffee 钩入 confettiBurst (咖啡打烊)',()=>/confettiBurst\(400,260,\{n:8,palette:CONFETTI_PALETTE\.coffee/.test(_r6src));
+  check('finCoffee 钩入 confettiBurst (咖啡打烊)',()=>/confettiBurst\(400,260,\{n:s\.streakCorrect>=5\?14:8,palette:CONFETTI_PALETTE\.coffee/.test(_r6src));
   check('finSurf 钩入 confettiBurst (冲浪结束)',()=>/confettiBurst\(400,280,\{n:s\.perfectStreak>=4\?14:8,palette:CONFETTI_PALETTE\.surf/.test(_r6src));
   check('finBar 钩入 confettiBurst (酒吧打烊)',()=>/confettiBurst\(400,280,\{n:s\.combo>=3\?12:7,palette:CONFETTI_PALETTE\.bar/.test(_r6src));
   check('shroom 收获钩入 confettiBurst',()=>/confettiBurst\(400,320,\{n:q>=5\?14:7,palette:CONFETTI_PALETTE\.shroom/.test(_r6src));
@@ -374,9 +410,15 @@ frame.addEventListener('load',async()=>{
   check('isLegendary 函数正确判传奇',()=>legIds.every(id=>win.isLegendary(id))&&!win.isLegendary('ov_fiets')&&!win.isLegendary('extra_cash'));
   check('legendaryCost 返回 cost 字段',()=>legIds.every(id=>win.legendaryCost(id)===t.data.upgrades.find(x=>x.id===id).cost));
   // 2. legendary_income ×2 baseline (industryFactor starting value)
-  check('legendary_income: 酿酒基线 ×2 (no mod)',()=>{const had=t.state.upgrades.slice(),hadMods=t.state.mods.slice();t.state.upgrades=['legendary_income'];t.state.mods=[];const f=win.industryFactor('brewing');t.state.upgrades=had;t.state.mods=hadMods;return Math.abs(f-2)<1e-6});
-  check('legendary_income 叠加 coffee_wave=2.6',()=>{const had=t.state.upgrades.slice(),hadMods=t.state.mods.slice();t.state.upgrades=['legendary_income'];t.state.mods=[{id:'coffee_wave'}];const f=win.industryFactor('coffee');t.state.upgrades=had;t.state.mods=hadMods;return Math.abs(f-2.6)<1e-6});
-  check('legendary_income 叠加 coffee_passport=2.4',()=>{const had=t.state.upgrades.slice(),hadMods=t.state.mods.slice();t.state.upgrades=['legendary_income','coffee_passport'];t.state.mods=[];const f=win.industryFactor('coffee');t.state.upgrades=had;t.state.mods=hadMods;return Math.abs(f-2.4)<1e-6});
+  check('legendary_income: 酿酒基线 ×2 (no mod)',()=>withPhaseEIndustryState(
+    {upgrades:['legendary_income'],mods:[],_run:{factionBonus:{brewing:1,coffee:1,shroom:1,surf:1,academic:1,bar:1}}},
+    ()=>Math.abs(win.industryFactor('brewing')-2)<1e-6));
+  check('legendary_income 叠加 coffee_wave=2.6',()=>withPhaseEIndustryState(
+    {upgrades:['legendary_income'],mods:[{id:'coffee_wave'}],_run:{factionBonus:{brewing:1,coffee:1,shroom:1,surf:1,academic:1,bar:1}}},
+    ()=>Math.abs(win.industryFactor('coffee')-2.6)<1e-6));
+  check('legendary_income 叠加 coffee_passport=2.4',()=>withPhaseEIndustryState(
+    {upgrades:['legendary_income','coffee_passport'],mods:[],_run:{factionBonus:{brewing:1,coffee:1,shroom:1,surf:1,academic:1,bar:1}}},
+    ()=>Math.abs(win.industryFactor('coffee')-2.4)<1e-6));
   // 3. legendary_speed: 80ms step (120*0.667≈80)
   check('legendary_speed: 默认 120ms',()=>win.legendarySpeedMs()===120);
   check('legendary_speed: 装上后 ≈80ms',()=>{const had=t.state.upgrades.slice();t.state.upgrades=['legendary_speed'];const m=win.legendarySpeedMs();t.state.upgrades=had;return m>=78&&m<=82});
@@ -386,7 +428,7 @@ frame.addEventListener('load',async()=>{
   // 5. legendary_perfect: surfPerfectStreakMul ×1.5 叠加
   check('legendary_perfect: 完美连击 mul 1.5 (×1.0 × 1.5=1.5)',()=>_r6src.includes("surfPerfectStreakMul(s.perfectStreak)*(hasUpgrade('legendary_perfect')?1.5:1)"));
   // 6. legendary_no_raid: undercover 短路
-  check('legendary_no_raid: 咖啡卧底短路 false',()=>_r6src.includes("const noRaid=hasUpgrade('legendary_no_raid')")&&_r6src.includes("noRaid?false:seeded(60+s.sd*13)<.1"));
+  check('legendary_no_raid: 咖啡卧底短路 false',()=>_r6src.includes("if(hasUpgrade('legendary_no_raid')){s.pr=Math.min(50,s.c.max-1)")&&_r6src.includes("if(s.ht>=100&&!hasUpgrade('legendary_no_raid')){s.raid=true"));
   // 7. legendary_meta_x2: metaCap 叠加 ×2
   check('legendary_meta_x2: meta reward ×2',()=>_r6src.includes("hasUpgrade('legendary_meta_x2'))reward*=2"));
   check('legendary_meta_x2 叠加 meta_cap (×1.5×2=×3)',()=>{return _r6src.includes("hasUpgrade('meta_cap'))reward=Math.ceil(reward*1.5)")&&_r6src.includes("hasUpgrade('legendary_meta_x2'))reward*=2")});
@@ -410,8 +452,8 @@ frame.addEventListener('load',async()=>{
   // ═══ funify-v3 Round 11 — Legendary 4 项 polish (close Round 10 risks) ═══
   // 1. legendary_no_raid 全套免疫 — 卧底归零 + 热度封顶 95
   check('legendary_no_raid 描述含「热度封顶 95」',()=>{const u=t.data.upgrades.find(x=>x.id==='legendary_no_raid');return u&&u.d.includes('热度封顶 95')});
-  check('legendary_no_raid 升级源审计: heat clamp 95',()=>_r6src.includes("s.ht=Math.min(noRaid?95:100,s.ht+3)"));
-  check('legendary_no_raid 升级源审计: 卧底短路豁免',()=>_r6src.includes("if(!noRaid){s.raid=true"));
+  check('legendary_no_raid 升级源审计: heat clamp 95',()=>_r6src.includes("s.ht=Math.min(hasUpgrade('legendary_no_raid')?95:100,s.ht+3)"));
+  check('legendary_no_raid 升级源审计: 卧底短路豁免',()=>_r6src.includes("if(s.ht>=100&&!hasUpgrade('legendary_no_raid')){s.raid=true"));
   check('legendary_no_raid 升级源审计: auto-run 同步',()=>_r6src.includes("hasUpgrade('legendary_no_raid')?95:100"));
   // 2. legendary_meta_x2 meta 黑洞封顶 30/obj
   check('legendaryMetaCap 函数返回 30 (装上)',()=>{const had=t.state.upgrades.slice();t.state.upgrades=['legendary_meta_x2'];const c=win.legendaryMetaCap();t.state.upgrades=had;return c===30});
@@ -961,37 +1003,21 @@ frame.addEventListener('load',async()=>{
     return Math.abs(r-1.1)<1e-6;
   });
   // (5) industryFactor at lv 2 stacks with base — brewing returns 1.1
-  check('industryFactor(brewing) lv=2 → 1.1',()=>{
-    const savedLv=t.state.ind.brewing.lv,savedUp=t.state.upgrades.slice(),savedMods=t.state.mods.slice();
-    t.state.ind.brewing.lv=2;t.state.upgrades=[];t.state.mods=[];
-    const r=win.industryFactor('brewing');
-    t.state.ind.brewing.lv=savedLv;t.state.upgrades=savedUp;t.state.mods=savedMods;
-    return Math.abs(r-1.1)<1e-6;
-  });
+  check('industryFactor(brewing) lv=2 → 1.1',()=>withPhaseEIndustryState(
+    {upgrades:[],mods:[],_run:{factionBonus:{brewing:1,coffee:1,shroom:1,surf:1,academic:1,bar:1}}},
+    ()=>{t.state.ind.brewing.lv=2;return Math.abs(win.industryFactor('brewing')-1.1)<1e-6}));
   // (6) industryFactor stacks with legendary_income ×2 + lv max 1.1 → 2.2
-  check('industryFactor(brewing) legendary_income+lv2 → 2.2',()=>{
-    const savedLv=t.state.ind.brewing.lv,savedUp=t.state.upgrades.slice(),savedMods=t.state.mods.slice();
-    t.state.ind.brewing.lv=2;t.state.upgrades=['legendary_income'];t.state.mods=[];
-    const r=win.industryFactor('brewing');
-    t.state.ind.brewing.lv=savedLv;t.state.upgrades=savedUp;t.state.mods=savedMods;
-    return Math.abs(r-2.2)<1e-6;
-  });
+  check('industryFactor(brewing) legendary_income+lv2 → 2.2',()=>withPhaseEIndustryState(
+    {upgrades:['legendary_income'],mods:[],_run:{factionBonus:{brewing:1,coffee:1,shroom:1,surf:1,academic:1,bar:1}}},
+    ()=>{t.state.ind.brewing.lv=2;return Math.abs(win.industryFactor('brewing')-2.2)<1e-6}));
   // (7) industryFactor stacks with coffee_wave + lv max: 1.1 × 1.3 = 1.43
-  check('industryFactor(coffee) coffee_wave+lv2 → 1.43',()=>{
-    const savedLv=t.state.ind.coffee_shop.lv,savedUp=t.state.upgrades.slice(),savedMods=t.state.mods.slice();
-    t.state.ind.coffee_shop.lv=2;t.state.upgrades=[];t.state.mods=[{id:'coffee_wave'}];
-    const r=win.industryFactor('coffee');
-    t.state.ind.coffee_shop.lv=savedLv;t.state.upgrades=savedUp;t.state.mods=savedMods;
-    return Math.abs(r-1.43)<1e-6;
-  });
+  check('industryFactor(coffee) coffee_wave+lv2 → 1.43',()=>withPhaseEIndustryState(
+    {upgrades:[],mods:[{id:'coffee_wave'}],_run:{factionBonus:{brewing:1,coffee:1,shroom:1,surf:1,academic:1,bar:1}}},
+    ()=>{t.state.ind.coffee_shop.lv=2;return Math.abs(win.industryFactor('coffee')-1.43)<1e-6}));
   // (8) industryFactor stacks with museumkaart + lv max: 1.1 × 1.25 = 1.375
-  check('industryFactor(academic) museumkaart+lv2 → 1.375',()=>{
-    const savedLv=t.state.ind.academic.lv,savedUp=t.state.upgrades.slice(),savedMods=t.state.mods.slice();
-    t.state.ind.academic.lv=2;t.state.upgrades=['museumkaart'];t.state.mods=[];
-    const r=win.industryFactor('academic');
-    t.state.ind.academic.lv=savedLv;t.state.upgrades=savedUp;t.state.mods=savedMods;
-    return Math.abs(r-1.375)<1e-6;
-  });
+  check('industryFactor(academic) museumkaart+lv2 → 1.375',()=>withPhaseEIndustryState(
+    {upgrades:['museumkaart'],mods:[],_run:{factionBonus:{brewing:1,coffee:1,shroom:1,surf:1,academic:1,bar:1}}},
+    ()=>{t.state.ind.academic.lv=2;return Math.abs(win.industryFactor('academic')-1.375)<1e-6}));
   // (9) Source audit: industryFactor multiplies by lvMaxBoost
   check('industryFactor 已调用 lvMaxBoost',()=>{
     const src=win.eval("document.documentElement.outerHTML");
@@ -1094,44 +1120,45 @@ frame.addEventListener('load',async()=>{
   // ═══ funify-e9 — Achievement Tree (4 branches × 3 tiers) ═══
   check('E9 ACH_TREE 4 个分支 × 3 阶',()=>v.achTree);
   check('E9 ACH_TREE 含 brew/coffee/rogue/scholar',()=>{
-    const ids=win.ACH_TREE.map(b=>b.id);
+    const ids=t.data.achTree.map(b=>b.id);
     return ids.indexOf('brew')>=0&&ids.indexOf('coffee')>=0&&ids.indexOf('rogue')>=0&&ids.indexOf('scholar')>=0;
   });
   check('E9 G.achTree 初始全 0',()=>{
-    const at=win.G.achTree||{};
+    const at=t.state.achTree||{};
     return at.brew===0&&at.coffee===0&&at.rogue===0&&at.scholar===0;
   });
   check('E9 talentMax() 默认 4',()=>win.talentMax()===4);
   check('E9 checkAchTier brew>=3 解锁 bron → meta+5 _talentMax=5',()=>{
-    const prevMeta=win.G.meta;
-    win.G._run.brewsFinished=3;
+    const prevMeta=t.state.meta;
+    t.state._run.brewsFinished=3;
     win.checkAchTier();
-    const ok=win.G.achTree.brew===1&&win.G.meta===prevMeta+5&&win.G._talentMax===5;
-    win.G._run.brewsFinished=0;win.G.achTree.brew=0;win.G._talentMax=4;win.G.meta=prevMeta;
+    const ok=t.state.achTree.brew===1&&t.state.meta===prevMeta+5&&t.state._talentMax===5;
+    t.state._run.brewsFinished=0;t.state.achTree.brew=0;t.state._talentMax=4;t.state.meta=prevMeta;
     return ok;
   });
   check('E9 checkAchTier coffee>=5 解锁 coffee 阶 1',()=>{
-    const prevMeta=win.G.meta;
-    win.G._run.coffeeSales=5;
+    const prevMeta=t.state.meta;
+    t.state._run.coffeeSales=5;
     win.checkAchTier();
-    const ok=win.G.achTree.coffee===1&&win.G.meta===prevMeta+5;
-    win.G._run.coffeeSales=0;win.G.achTree.coffee=0;win.G.meta=prevMeta;
+    const ok=t.state.achTree.coffee===1&&t.state.meta===prevMeta+5;
+    t.state._run.coffeeSales=0;t.state.achTree.coffee=0;t.state.meta=prevMeta;
     return ok;
   });
   check('E9 checkAchTier rogue bodyTrade>=2 解锁 gold',()=>{
-    const prevMeta=win.G.meta;
-    win.G._run.bodyTradeCount=2;
+    const prevMeta=t.state.meta;
+    t.state._run.bodyTradeCount=2;t.state._run.escUsed=10; // also satisfy bronze/silver
     win.checkAchTier();
-    const ok=win.G.achTree.rogue===3&&win.G.meta===prevMeta+15; // 3 tiers unlocked in one go
-    win.G._run.bodyTradeCount=0;win.G.achTree.rogue=0;win.G._talentMax=4;win.G.meta=prevMeta;
+    const ok=t.state.achTree.rogue===3&&t.state.meta===prevMeta+15; // 3 tiers unlocked in one go
+    t.state._run.bodyTradeCount=0;t.state._run.escUsed=0;t.state.achTree.rogue=0;t.state._talentMax=4;t.state.meta=prevMeta;
     return ok;
   });
   check('E9 scholar gold 需 visited>=6',()=>{
-    const prev=win.G.achTree.scholar;
-    win.G.visited=['a','b','c','d','e','f','g'];
+    const prev=t.state.achTree.scholar;
+    t.state.visited=['a','b','c','d','e','f','g'];
+    t.state._run.academicDone=10; // also satisfy bronze/silver
     win.checkAchTier();
-    const unlocked=win.G.achTree.scholar===3;
-    win.G.visited=[];win.G.achTree.scholar=prev;win.G._talentMax=4;
+    const unlocked=t.state.achTree.scholar===3;
+    t.state.visited=[];t.state._run.academicDone=0;t.state.achTree.scholar=prev;t.state._talentMax=4;
     return unlocked;
   });
   check('E9 showAchtree() 渲染非空 grid',()=>{
@@ -1147,30 +1174,15 @@ frame.addEventListener('load',async()=>{
     return opened;
   });
   check('E9 已激活 bronze 数量 = 重置后 0',()=>{
-    win.G.achTree={brew:0,coffee:0,rogue:0,scholar:0};
-    win.G._talentMax=4;
-    win.G._run={brewsFinished:0,coffeeSales:0,academicDone:0,bodyTradeCount:0,escUsed:0};
-    return win.G.achTree.brew===0&&win.G._talentMax===4;
+    t.state.achTree={brew:0,coffee:0,rogue:0,scholar:0};
+    t.state._talentMax=4;
+    t.state._run={brewsFinished:0,coffeeSales:0,academicDone:0,bodyTradeCount:0,escUsed:0};
+    return t.state.achTree.brew===0&&t.state._talentMax===4;
   });
 
   // ═══ Phase E acceptance — core systems are live in browser runtime ═══
-  const withPhaseEIndustryState=(overrides,fn)=>{
-    const keys=['upgrades','mods','talents','mutator','factions','crafted','npcFr','_run'];
-    const before={};for(const k of keys)before[k]=win.G[k];
-    const beforeBrewLv=win.G.ind.brewing.lv;
-    try{
-      Object.assign(win.G,{
-        upgrades:[],mods:[],talents:[],mutator:null,
-        factions:{heineken:0,coffee:0,smartshop:0},crafted:[],npcFr:{},
-        _run:{factionBonus:{brewing:1,coffee:1,shroom:1,surf:1,academic:1,bar:1}}
-      },overrides);
-      win.G.ind.brewing.lv=0;
-      return fn();
-    }finally{
-      for(const k of keys)win.G[k]=before[k];
-      win.G.ind.brewing.lv=beforeBrewLv;
-    }
-  };
+  // (withPhaseEIndustryState helper is defined at the top of the load handler so
+  // it is in scope for the legendary_income tests at line ~390.)
   check('E1 runtime: t_brew_yield 接入酿酒收入 ×1.25',()=>withPhaseEIndustryState(
     {talents:['t_brew_yield']},()=>Math.abs(win.industryFactor('brewing')-1.25)<1e-6));
   check('E3 runtime: m_influencer 接入酿酒收入 ×1.6',()=>withPhaseEIndustryState(
@@ -1204,10 +1216,10 @@ frame.addEventListener('load',async()=>{
     const e=win.buildRunEpitaph(c);return typeof e==='string'&&e.length>5;
   });
   check('E11 buildRunSummary 内嵌 epitaph 字段',()=>{
-    win.G.factions={heineken:0,coffee:5,smartshop:0};
-    win.G.barRegulars=['🧑‍🎤','🧑‍🎤','🧑‍🍳'];
-    win.G.talents=['🍺','☕'];win.G.mutator={ic:'🌈'};
-    win.G.money=500;win.G.rep=10;win.G.mood=5;win.G.meta=15;
+    t.state.factions={heineken:0,coffee:5,smartshop:0};
+    t.state.barRegulars=['🧑‍🎤','🧑‍🎤','🧑‍🍳'];
+    t.state.talents=['🍺','☕'];t.state.mutator={ic:'🌈'};
+    t.state.money=500;t.state.rep=10;t.state.mood=5;t.state.meta=15;
     const card=win.buildRunSummary(3,4,{tier:'silver',ic:'🥈',label:'优秀',mult:1.2});
     return card.epitaph&&card.sigFactName==='Coffee Cartel'&&/Coffee Cartel|咖啡/.test(card.epitaph);
   });

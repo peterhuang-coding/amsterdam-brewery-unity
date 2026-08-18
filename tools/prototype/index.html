@@ -911,7 +911,7 @@ function checkAchTier(){
       addEvt('good',`🏆 成就树 ${br.ic} ${br.n} 解锁 ${tier.ic} ${tier.t.toUpperCase()} +5★ +1 天赋槽`);
       // Toast
       const t=document.createElement('div');t.className='ach-toast';
-      t.innerHTML=`🏆 ${br.ic} ${br.n} ${tier.ic} ${t.t.toUpperCase()}<em>${tier.desc} · +5★ +1 天赋槽</em>`;
+      t.innerHTML=`🏆 ${br.ic} ${br.n} ${tier.ic} ${tier.t.toUpperCase()}<em>${tier.desc} · +5★ +1 天赋槽</em>`;
       document.body.appendChild(t);setTimeout(()=>t.remove(),3500);
     }
   }

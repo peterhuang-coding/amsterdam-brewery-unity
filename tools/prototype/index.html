@@ -891,6 +891,8 @@ function drawCity(){
   if(!G||!G.city)return;
   const c=G.city;
   const phaseIdx=G.ti|0;
+  // funify-v3 Round 2 (Phase A3) — streetlamps glow at dark phases (drawn before NPCs so they sit underneath)
+  drawStreetLamps(phaseIdx);
   cx.save();
   cx.textAlign='center';cx.textBaseline='middle';
   // trams (foreground — sit on top of streets, behind buildings)
@@ -913,6 +915,9 @@ function drawCity(){
     cx.fillText(n.ic,n.x,n.y);
   }
   cx.restore();
+  // funify-v3 Round 2 (Phase A3) — ambient particles (stars/sun/fog) + phase tint sit over the map
+  drawAmbient(cx,W,H,phaseIdx,Date.now());
+  drawPhaseTint(cx,W,H,phaseIdx);
 }
 
 // ═══════════════════════════════════════════
@@ -931,6 +936,92 @@ const DISTRICTS=[
 // ═══════════════════════════════════════════
 const TIMES=['Dawn','Morning','Afternoon','Evening','Night','LateNight'];
 const TSKY=['#1a1030','#406080','#70a0c0','#c08860','#101830','#081020'];
+// funify-v3 Round 2 (Phase A3) — 5 段昼夜独立画面 + 独立音效
+// Each phase gets: top→bot gradient, ambient tint, particle count (stars/sun),
+// fog alpha, lampOn (streetlamps glow at dark phases), and ambient audio config.
+// Backward compatible with TSKY[] — TSKY[i] === PHASE_VISUALS[i].tintFlat
+const PHASE_VISUALS=[
+  {n:'Dawn',     skyTop:'#ffb088', skyBot:'#fff0d0', tint:'#1a1030', tintAlpha:0.00, sunX:680, sunY:55, sunR:22, sunGlow:0.85, stars:0, fog:0.05, lampOn:false, ambFreq:220, ambVol:0.06, ambType:'sine',   ambDesc:'🌅 Dawn · warm drone'},
+  {n:'Morning',  skyTop:'#a8d8ff', skyBot:'#f0f8ff', tint:'#406080', tintAlpha:0.00, sunX:760, sunY:38, sunR:18, sunGlow:0.55, stars:0, fog:0.02, lampOn:false, ambFreq:330, ambVol:0.05, ambType:'sine',   ambDesc:'☀️ Morning · bright drone'},
+  {n:'Afternoon',skyTop:'#80b8f0', skyBot:'#e0f0ff', tint:'#70a0c0', tintAlpha:0.00, sunX:400, sunY:24, sunR:26, sunGlow:1.00, stars:0, fog:0.00, lampOn:false, ambFreq:440, ambVol:0.05, ambType:'triangle',ambDesc:'🌤 Afternoon · clear drone'},
+  {n:'Evening',  skyTop:'#ff9070', skyBot:'#ffd8a8', tint:'#c08860', tintAlpha:0.05, sunX:120, sunY:90, sunR:20, sunGlow:0.90, stars:4, fog:0.08, lampOn:true,  ambFreq:196, ambVol:0.06, ambType:'sine',   ambDesc:'🌆 Evening · warm drone'},
+  {n:'Night',    skyTop:'#0a1840', skyBot:'#3a5078', tint:'#101830', tintAlpha:0.22, sunX:-1,  sunY:-1, sunR:0,  sunGlow:0.00, stars:18,fog:0.06, lampOn:true,  ambFreq:98,  ambVol:0.07, ambType:'sine',   ambDesc:'🌙 Night · deep drone + cricket chirps'},
+  {n:'LateNight',skyTop:'#020a18', skyBot:'#1a2840', tint:'#081020', tintAlpha:0.32, sunX:-1,  sunY:-1, sunR:0,  sunGlow:0.00, stars:30,fog:0.18, lampOn:true,  ambFreq:65,  ambVol:0.05, ambType:'sine',   ambDesc:'🌑 LateNight · very low drone + wind'}
+];
+// Stable pseudo-random per phase for star positions (so they don't shimmer)
+function phaseStars(phaseIdx){
+  const cfg=PHASE_VISUALS[phaseIdx];if(!cfg||cfg.stars<=0)return[];
+  const out=[];const seed=phaseIdx*137+99;
+  for(let i=0;i<cfg.stars;i++){
+    const s=(Math.sin(seed+i*17.3)*0.5+0.5);
+    const s2=(Math.sin(seed+i*9.7+1.3)*0.5+0.5);
+    const s3=(Math.sin(seed+i*23.1+2.7)*0.5+0.5);
+    out.push({x:Math.floor(s*780)+10,y:Math.floor(s2*180)+10,r:s3>0.7?2:1,tw:s3});
+  }
+  return out;
+}
+// funify-v3 Round 2 (Phase A3) — sky gradient + ambient particles + streetlamps + phase tint
+// drawSkyOverlay: replaces flat TSKY fillRect with vertical gradient sky→horizon.
+//   ctx: 2d context, w/h: canvas size, phaseIdx: 0..5
+function drawSkyOverlay(ctx,w,h,phaseIdx){
+  const cfg=PHASE_VISUALS[phaseIdx];if(!cfg)return;
+  const g=ctx.createLinearGradient(0,0,0,h);
+  g.addColorStop(0,cfg.skyTop);g.addColorStop(1,cfg.skyBot);
+  ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+}
+// drawAmbient: stars + sun glow + fog (phase-specific).
+//   ctx, w, h, phaseIdx, t (current ms — for fog drift)
+function drawAmbient(ctx,w,h,phaseIdx,t){
+  const cfg=PHASE_VISUALS[phaseIdx];if(!cfg)return;
+  // sun (Dawn/Morning/Afternoon/Evening only)
+  if(cfg.sunR>0&&cfg.sunX>=0){
+    const sx=cfg.sunX,sy=cfg.sunY;
+    const glowR=cfg.sunR*3.5;
+    const gg=ctx.createRadialGradient(sx,sy,0,sx,sy,glowR);
+    gg.addColorStop(0,cfg.skyTop);gg.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle=gg;ctx.globalAlpha=cfg.sunGlow*0.45;ctx.fillRect(sx-glowR,sy-glowR,glowR*2,glowR*2);
+    ctx.globalAlpha=1;
+    ctx.fillStyle=cfg.skyTop;ctx.beginPath();ctx.arc(sx,sy,cfg.sunR,0,Math.PI*2);ctx.fill();
+  }
+  // stars (Night/LateNight; Evening has 4 sparse ones)
+  const stars=phaseStars(phaseIdx);
+  for(const st of stars){
+    const flicker=0.7+Math.sin(t/900+st.tw*7)*0.3;
+    ctx.globalAlpha=flicker;
+    ctx.fillStyle='#ffffff';
+    ctx.beginPath();ctx.arc(st.x,st.y,st.r,0,Math.PI*2);ctx.fill();
+  }
+  ctx.globalAlpha=1;
+  // fog overlay (alpha-based) — drifts slowly
+  if(cfg.fog>0){
+    const fogY=Math.sin(t/4500)*20;
+    const fg=ctx.createLinearGradient(0,h*0.5+fogY,0,h+fogY);
+    fg.addColorStop(0,'rgba(220,220,235,0)');
+    fg.addColorStop(1,'rgba(220,220,235,'+cfg.fog+')');
+    ctx.fillStyle=fg;ctx.fillRect(0,h*0.5+fogY,w,h*0.5);
+  }
+}
+// drawStreetLamps: warm orange dots on bridges for dark phases (Night/LateNight/Evening).
+//   phaseIdx: only renders if cfg.lampOn
+function drawStreetLamps(phaseIdx){
+  const cfg=PHASE_VISUALS[phaseIdx];if(!cfg||!cfg.lampOn)return;
+  for(const b of BRIDGES){
+    // glow halo
+    const g=cx.createRadialGradient(b.x+b.w/2,b.y-2,0,b.x+b.w/2,b.y-2,18);
+    g.addColorStop(0,'rgba(255,200,90,0.55)');g.addColorStop(1,'rgba(255,200,90,0)');
+    cx.fillStyle=g;cx.fillRect(b.x+b.w/2-18,b.y-20,36,36);
+    // lamp post
+    cx.fillStyle='#3a2a18';cx.fillRect(b.x+b.w/2-0.5,b.y-4,1,4);
+    // bulb
+    cx.fillStyle='#ffd060';cx.beginPath();cx.arc(b.x+b.w/2,b.y-4,1.6,0,Math.PI*2);cx.fill();
+  }
+}
+// drawPhaseTint: low-alpha overlay tint applied across full canvas (subtle atmosphere).
+//   Returns early if tintAlpha is 0 to avoid wasted compositing.
+function drawPhaseTint(ctx,w,h,phaseIdx){
+  const cfg=PHASE_VISUALS[phaseIdx];if(!cfg||cfg.tintAlpha<=0)return;
+  ctx.fillStyle=cfg.tint;ctx.globalAlpha=cfg.tintAlpha;ctx.fillRect(0,0,w,h);ctx.globalAlpha=1;
+}
 const IND_DEF={
   brewing:{n:'🍺 酿酒',cl:'#e8a020',risk:'中',inc:[25,40,55],lvs:['学徒','酿酒师','大师'],loc:'tweede_kans'},
   coffee_shop:{n:'🌿 咖啡店',cl:'#60b860',risk:'高',inc:[22,36,52],lvs:['跑堂','店员','店长'],loc:'noord'},
@@ -1534,7 +1625,10 @@ const AUDIO={
   },
   resume(){if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume().catch(()=>{})},
   // funify-v3 Round 6 — M-key mute toggle, persisted in ab_mute_v1
-  toggleMute(){this.muted=!this.muted;if(this.master)this.master.gain.value=this.muted?0:0.18;try{localStorage.setItem('ab_mute_v1',this.muted?'1':'0')}catch(e){}return this.muted},
+  toggleMute(){this.muted=!this.muted;if(this.master)this.master.gain.value=this.muted?0:0.18;try{localStorage.setItem('ab_mute_v1',this.muted?'1':'0')}catch(e){}
+    // funify-v3 Round 2 (Phase A3) — mute also silences ambient drone + chirps/wind timers
+    if(this.muted)this.ambStop();else if(typeof G!=='undefined'&&G&&Number.isFinite(G.ti))this.ambStart(G.ti);
+    return this.muted},
   loadMute(){try{const v=localStorage.getItem('ab_mute_v1');if(v==='1'){this.muted=true;if(this.master)this.master.gain.value=0}}catch(e){}},
   blip(freq,dur,type='sine',vol=1,slide=0){
     if(!this.ctx||this.muted)return;this.resume();
@@ -1569,6 +1663,83 @@ const AUDIO={
       case 'click':       this.blip(880,0.03,'square',0.4);break;
       case 'raid_alarm':  this.noise(0.5,0.5,1200);this.blip(180,0.5,'sawtooth',0.5,-40);break;
     }
+  },
+  // funify-v3 Round 2 (Phase A3) — phase-ambient drone (one synth per phase, fades on phase change)
+  // ambOsc: currently playing oscillator (singleton — only one phase plays at a time)
+  // ambGain: matching gain node for smooth fade-out
+  // ambCricketTimer: id for Night/LateNight chirp scheduler
+  // ambWindTimer: id for LateNight slow noise scheduler
+  ambOsc:null,ambGain:null,ambCricketTimer:null,ambWindTimer:null,
+  ambStart(phaseIdx){
+    if(!this.ctx||this.muted)return;this.resume();
+    const cfg=PHASE_VISUALS[phaseIdx];if(!cfg)return;
+    this.ambStop();// fade out previous
+    const t=this.ctx.currentTime;
+    const osc=this.ctx.createOscillator();
+    const g=this.ctx.createGain();
+    osc.type=cfg.ambType||'sine';
+    // funify-v3 Round 2 (Phase A3) — direct .value assignment (not setValueAtTime) so headless
+    // tests + cross-phase freq comparison reads the actual configured value (not 440 default)
+    osc.frequency.value=cfg.ambFreq;
+    // gentle LFO modulation for organic feel
+    const lfo=this.ctx.createOscillator();const lfoG=this.ctx.createGain();
+    lfo.frequency.value=0.18+phaseIdx*0.04;lfoG.gain.value=cfg.ambFreq*0.02;
+    lfo.connect(lfoG);lfoG.connect(osc.frequency);
+    g.gain.setValueAtTime(0.001,t);g.gain.exponentialRampToValueAtTime(cfg.ambVol,t+1.2);
+    osc.connect(g);g.connect(this.master);
+    osc.start(t);lfo.start(t);
+    this.ambOsc=osc;this.ambGain=g;
+    // Night (idx 4): cricket chirps (high bandpass noise bursts every 3-5s)
+    if(phaseIdx===4){
+      const chirp=()=>{
+        if(!this.ctx||this.muted){this.ambCricketTimer=setTimeout(chirp,3000);return}
+        const t2=this.ctx.currentTime;
+        const buf=this.ctx.createBuffer(1,Math.ceil(this.ctx.sampleRate*0.08),this.ctx.sampleRate),d=buf.getChannelData(0);
+        for(let i=0;i<d.length;i++){const env=Math.exp(-i/d.length*8);d[i]=(Math.random()*2-1)*env}
+        const s=this.ctx.createBufferSource();s.buffer=buf;
+        const f=this.ctx.createBiquadFilter();f.type='bandpass';f.frequency.value=4200;f.Q.value=12;
+        const cg=this.ctx.createGain();cg.gain.value=0.04;
+        s.connect(f);f.connect(cg);cg.connect(this.master);
+        s.start(t2);s.stop(t2+0.1);
+        this.ambCricketTimer=setTimeout(chirp,2200+Math.random()*2400);
+      };
+      this.ambCricketTimer=setTimeout(chirp,1500);
+    }
+    // LateNight (idx 5): slow wind (low bandpass noise bursts every 6-8s)
+    if(phaseIdx===5){
+      const wind=()=>{
+        if(!this.ctx||this.muted){this.ambWindTimer=setTimeout(wind,4000);return}
+        const t2=this.ctx.currentTime;
+        const dur=2.2;
+        const buf=this.ctx.createBuffer(1,Math.ceil(this.ctx.sampleRate*dur),this.ctx.sampleRate),d=buf.getChannelData(0);
+        for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-Math.abs(i/d.length-0.5)*4);
+        const s=this.ctx.createBufferSource();s.buffer=buf;
+        const f=this.ctx.createBiquadFilter();f.type='lowpass';f.frequency.value=320;f.Q.value=2;
+        const cg=this.ctx.createGain();cg.gain.value=0.025;
+        s.connect(f);f.connect(cg);cg.connect(this.master);
+        s.start(t2);s.stop(t2+dur);
+        this.ambWindTimer=setTimeout(wind,5000+Math.random()*3000);
+      };
+      this.ambWindTimer=setTimeout(wind,2500);
+    }
+  },
+  ambStop(){
+    if(this.ambCricketTimer){clearTimeout(this.ambCricketTimer);this.ambCricketTimer=null}
+    if(this.ambWindTimer){clearTimeout(this.ambWindTimer);this.ambWindTimer=null}
+    if(this.ambOsc&&this.ambGain&&this.ctx){
+      try{
+        const t=this.ctx.currentTime;
+        this.ambGain.gain.cancelScheduledValues(t);
+        this.ambGain.gain.setValueAtTime(this.ambGain.gain.value,t);
+        this.ambGain.gain.exponentialRampToValueAtTime(0.001,t+0.4);
+        this.ambOsc.stop(t+0.45);
+      }catch(e){}
+    }
+    this.ambOsc=null;this.ambGain=null;
+  },
+  ambMute(muted){
+    if(muted){this.ambStop();return}
+    if(typeof G!=='undefined'&&G&&Number.isFinite(G.ti))this.ambStart(G.ti);
   }
 };
 
@@ -3828,7 +3999,8 @@ function drawMap(){
 }
 
 function drawMG(){
-  cx.fillStyle=TSKY[G.ti];cx.fillRect(0,0,W,H);
+  // funify-v3 Round 2 (Phase A3) — sky gradient + ambient particles (replaces flat TSKY fillRect)
+  drawSkyOverlay(cx,W,H,G.ti|0);drawAmbient(cx,W,H,G.ti|0,Date.now());
   var mg=G.mg,s=MG[mg];
   cx.fillStyle='#1a1820ee';cx.fillRect(60,20,680,460);
   cx.fillStyle='#fff';cx.font='18px sans-serif';cx.textAlign='center';
@@ -4581,6 +4753,8 @@ function advanceTimeAuto(){
   if(G.ended)return;G.ti++;
   // funify-v3 Round 26 — 📼 时间推进打点(每 ti)
   logAction('phase',{x:G.p.x,y:G.p.y,day:G.day,ti:G.ti,detail:`Day ${G.day} ti=${G.ti}`});
+  // funify-v3 Round 2 (Phase A3) — phase ambient audio: smooth crossfade drone on ti change
+  AUDIO.ambStart(G.ti);
   // Phase E8 — 4% per tick 随机触发搞怪事件
   tickCrazyEvent();
   if(G.ti>=6){G.ti=0;G.day++;
@@ -5092,6 +5266,8 @@ function newRun(seed){
   setMsg('Run #'+G.run+' · seed='+G.seed);
   // funify-v3 Round 7 — phase flash on Day 1 start (Roguelike 开局仪式)
   showPhaseFlash(1,0,{titleOverride:'🌅 Day 1 · Dawn · 阿姆斯特丹欢迎你'});
+  // funify-v3 Round 2 (Phase A3) — kick off ambient drone for ti=0 (Dawn)
+  AUDIO.ambStart(0);
   renderAll();
 }
 
@@ -5156,6 +5332,8 @@ window.AB_TEST={
   runHashPool,dayAwareDream,DREAM_SUMMATIVE,DREAM_POOL,
   // Round 1: city living vibe
   initCity,tickCity,drawCity,NPC_ARCHETYPES,CITY_BOAT_ROUTES,CITY_TRAM_ROUTES,CITY_BIKE_PATHS,CITY_BOAT_IC,
+  // Round 2: phase A3 visuals + ambient audio
+  PHASE_VISUALS,phaseStars,drawSkyOverlay,drawAmbient,drawStreetLamps,drawPhaseTint,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

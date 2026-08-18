@@ -1537,3 +1537,55 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - node --check index.html/test.html PASS
 - BACKLOG.md #6 #1 INC_DEF inc:[12,18,26] 过小 标记完成
 - `${money}` 占位符使用字符串拼接而非模板字符串,避免 inner script 转义问题
+
+## Round 2 — Phase A3 · 5 段昼夜独立画面 + 独立音效 (BACKLOG A3 closure)
+
+### 目标
+
+把单段白天画面的 web demo 升级为 5 段昼夜循环的视觉+听觉氛围,作为 Dave the Diver 模式 Phase A 收尾。Round 1 已加 NPC/船/电车/单车流动 (A1+A2),本轮加独立画面 (A3 视觉) + 独立音效 (A3 音频)。
+
+### 改动
+
+1. **PHASE_VISUALS** (index.html +934 起):6 段配置 — 每段 skyTop/skyBot 渐变色、tint、sunX/Y/R、sunGlow、stars count、fog alpha、lampOn 街灯开关、ambFreq/ambVol/ambType 音频参数
+2. **drawSkyOverlay(ctx,w,h,phaseIdx)** — 渐变填充 (替代原 flat TSKY fillRect)。drawMG 顶部画布用这个。
+3. **drawAmbient(ctx,w,h,phaseIdx,t)** — sun + 星 + fog:
+   - Dawn/Morning/Afternoon/Evening: 太阳 + glow 径向渐变
+   - Night: 18 颗稳定闪烁星 (phaseStars deterministic)
+   - LateNight: 30 颗稳定星 + 厚雾
+   - Evening: 4 颗稀疏星
+4. **drawStreetLamps(phaseIdx)** — Evening/Night/LateNight 在 11 座桥两侧画暖色街灯 (橙黄光晕 + 灯柱 + 灯泡)
+5. **drawPhaseTint(ctx,w,h,phaseIdx)** — 全画布低 alpha tint (Night 22%, LateNight 32%),营造夜色
+6. **AUDIO.ambStart(phaseIdx)** — 每段独享 ambient drone:sine/triangle + LFO 调制 + 1.2s fade-in
+   - Night (4): 高 bandpass 噪声 chirp 2-5s 间隔 (蛐蛀)
+   - LateNight (5): 低通噪声 wind 5-8s 间隔
+   - Dawn/Morning/Afternoon/Evening: 仅 drone
+7. **AUDIO.ambStop()** — 0.4s fade-out,清 osc + chirp/wind timer
+8. **AUDIO.ambMute(muted)** / **toggleMute** — 静音同时停 ambient,解除静音自动按 G.ti 重启
+9. **advanceTimeAuto** — 每次 G.ti++ 触发 AUDIO.ambStart(G.ti) (crossfade)
+10. **newRun** — 开局 AUDIO.ambStart(0) (Dawn 仪式)
+11. **drawCity** — 末尾调 drawAmbient + drawPhaseTint;drawStreetLamps 在 NPC 前
+12. **drawMG** — flat TSKY 替换为 drawSkyOverlay + drawAmbient
+13. **AB_TEST 导出** — PHASE_VISUALS, phaseStars, drawSkyOverlay, drawAmbient, drawStreetLamps, drawPhaseTint
+14. **test.html +23 R2 断言**:PHASE_VISUALS 形状、6 段互不相同、sun/stars/lamp 配置正确、phaseStars 稳定性、音频频率差异、cricket/wind timer 调度、toggleMute 同步 ambStart
+
+### 验证
+
+- `node tools/prototype/test-phase-e.js`: **197/197 PASS** (无回归,Round 40 后基线)
+- CDP headless Chrome `test.html` with `--autoplay-policy=no-user-gesture-required`: **728/737 PASS** (+37 来自 Round 1, +23 来自 Round 2)
+- 9 失败全部为 pre-existing Round 37 + 早期 E8 + a11y baseline (与 R2 无关)
+- `node --check` 抽出内联脚本: PASS
+- `git diff --check`: PASS
+- `http://127.0.0.1:8767/index.html` + `test.html`: 200
+
+### 风险
+
+- **Ambient 音频在 muted=true 时不启动**:headless 测试如果从先前 session 继承 ab_mute_v1=1,AUDIO.muted=true,所有 ambStart 直接 return。已修复:测试套件在每次测试前 toggleMute 解除
+- **osc.frequency.value 默认 440**:改用直接 .value 赋值 (而非 setValueAtTime) 让测试可读取,不影响听感 (后续 LFO modulation 自然 ramp)
+- **AudioContext 在 headless 默认禁用**:CDP 启动加 `--autoplay-policy=no-user-gesture-required` 才可构造 ctx
+- **街灯在迷你地图层级会与 NPC 偶发重叠**:已把 drawStreetLamps 放在 NPC 之前 (sky → streetlamps → boats/bikes/trams → NPCs),肉眼可接受
+
+### 新 Idea
+
+- Round 3: A4 WASD 玩家移动有脚步节奏 + 地形速度差 (桥快 / 砖路标准 / 草地慢 / 水挡)
+- Round 4+: B1 酒吧 Dave 级深度 (8 灵魂事件 + 6 升级树)
+- 后续: 把 ambient 音频套用到 5 个 mini-game 各自的背景 (酿酒铜锅低鸣 / 咖啡店 espresso hiss / 冲浪白噪声 / 蘑菇房滴水)

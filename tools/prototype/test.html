@@ -3002,6 +3002,80 @@ frame.addEventListener('load',async()=>{
       && v5.has('Barfly') && !v0.has('Barfly');
   });
 
+  // ═══════════════════════════════════════════
+  // Round 2 — Phase A3 (5 段昼夜独立画面 + 独立音效)
+  // ═══════════════════════════════════════════
+  check('R2: AB_TEST.PHASE_VISUALS 暴露且 6 段',()=>Array.isArray(t.PHASE_VISUALS) && t.PHASE_VISUALS.length === 6);
+  check('R2: PHASE_VISUALS 每段都有 skyTop/skyBot/tint/sunR/stars/lampOn',()=>t.PHASE_VISUALS.every(p=>typeof p.skyTop==='string'&&typeof p.skyBot==='string'&&typeof p.tint==='string'&&typeof p.sunR==='number'&&typeof p.stars==='number'&&typeof p.lampOn==='boolean'));
+  check('R2: 6 段 skyTop 互不相同 (5 段画面独立)',()=>new Set(t.PHASE_VISUALS.map(p=>p.skyTop)).size === 6);
+  check('R2: 6 段 skyBot 互不相同',()=>new Set(t.PHASE_VISUALS.map(p=>p.skyBot)).size === 6);
+  check('R2: Dawn/Morning/Afternoon/Evening 有 sun, Night/LateNight 无 sun',()=>t.PHASE_VISUALS.slice(0,4).every(p=>p.sunR>0&&p.sunX>=0) && t.PHASE_VISUALS.slice(4).every(p=>p.sunR===0&&p.sunX<0));
+  check('R2: Night/LateNight stars>0 (15+ 颗), Morning/Afternoon stars=0',()=>t.PHASE_VISUALS[4].stars>=15 && t.PHASE_VISUALS[5].stars>=15 && t.PHASE_VISUALS[1].stars===0 && t.PHASE_VISUALS[2].stars===0);
+  check('R2: Evening/Night/LateNight lampOn=true (街灯亮), 白天=false',()=>t.PHASE_VISUALS[3].lampOn===true && t.PHASE_VISUALS[4].lampOn===true && t.PHASE_VISUALS[5].lampOn===true && t.PHASE_VISUALS[0].lampOn===false && t.PHASE_VISUALS[1].lampOn===false);
+  check('R2: Night/LateNight tintAlpha > 白天 (夜晚更暗 tint)',()=>t.PHASE_VISUALS[4].tintAlpha>t.PHASE_VISUALS[2].tintAlpha && t.PHASE_VISUALS[5].tintAlpha>t.PHASE_VISUALS[4].tintAlpha);
+  check('R2: phaseStars(4) 返回 ≥15 颗稳定星 (Night)',()=>{
+    const s1=t.phaseStars(4);const s2=t.phaseStars(4);
+    return Array.isArray(s1) && s1.length>=15 && s1.every(x=>typeof x.x==='number'&&typeof x.y==='number'&&typeof x.r==='number')
+      && s1[0].x===s2[0].x && s1[0].y===s2[0].y;// stable per-phase
+  });
+  check('R2: phaseStars(2) 返回 0 颗 (Afternoon 无星)',()=>t.phaseStars(2).length===0);
+  check('R2: phaseStars(5) > phaseStars(4) (LateNight 比 Night 星更多)',()=>t.phaseStars(5).length>t.phaseStars(4).length);
+  check('R2: drawSkyOverlay/drawAmbient/drawStreetLamps/drawPhaseTint 函数暴露',()=>typeof t.drawSkyOverlay==='function'&&typeof t.drawAmbient==='function'&&typeof t.drawStreetLamps==='function'&&typeof t.drawPhaseTint==='function');
+  check('R2: AUDIO.ambStart/ambStop/ambMute 函数暴露',()=>typeof t.AUDIO.ambStart==='function'&&typeof t.AUDIO.ambStop==='function'&&typeof t.AUDIO.ambMute==='function');
+  check('R2: AUDIO.ambStart 后 ambOsc/ambGain 非空 (Dawn)',()=>{
+    if(!t.AUDIO.ctx)t.AUDIO.init();// headless Chrome lacks user gesture, force init
+    if(t.AUDIO.muted)t.AUDIO.toggleMute();// persisted mute from prior session would short-circuit
+    t.AUDIO.ambStop();
+    t.AUDIO.ambStart(0);
+    const ok=t.AUDIO.ambOsc!==null && t.AUDIO.ambGain!==null;
+    t.AUDIO.ambStop();
+    return ok;
+  });
+  check('R2: AUDIO.ambStart 不同 phase idx → 不同 frequency',()=>{
+    if(!t.AUDIO.ctx)t.AUDIO.init();
+    if(t.AUDIO.muted)t.AUDIO.toggleMute();
+    t.AUDIO.ambStop();
+    t.AUDIO.ambStart(4);// Night — 98Hz
+    const f4=t.AUDIO.ambOsc?t.AUDIO.ambOsc.frequency.value:0;
+    t.AUDIO.ambStop();
+    t.AUDIO.ambStart(5);// LateNight — 65Hz
+    const f5=t.AUDIO.ambOsc?t.AUDIO.ambOsc.frequency.value:0;
+    t.AUDIO.ambStop();
+    return f4>0 && f5>0 && f4!==f5;
+  });
+  check('R2: AUDIO.ambStart(4) Night → cricket timer 排入 (非 null)',()=>{
+    if(!t.AUDIO.ctx)t.AUDIO.init();
+    if(t.AUDIO.muted)t.AUDIO.toggleMute();
+    t.AUDIO.ambStop();
+    t.AUDIO.ambStart(4);
+    const ok=t.AUDIO.ambCricketTimer!==null;
+    t.AUDIO.ambStop();
+    return ok;
+  });
+  check('R2: AUDIO.ambStart(5) LateNight → wind timer 排入 (非 null)',()=>{
+    if(!t.AUDIO.ctx)t.AUDIO.init();
+    if(t.AUDIO.muted)t.AUDIO.toggleMute();
+    t.AUDIO.ambStop();
+    t.AUDIO.ambStart(5);
+    const ok=t.AUDIO.ambWindTimer!==null;
+    t.AUDIO.ambStop();
+    return ok;
+  });
+  check('R2: AUDIO.ambStart(0) Dawn → cricket/wind timer 都 null (无特殊音)',()=>{
+    if(!t.AUDIO.ctx)t.AUDIO.init();
+    if(t.AUDIO.muted)t.AUDIO.toggleMute();
+    t.AUDIO.ambStop();
+    t.AUDIO.ambStart(0);
+    const ok=t.AUDIO.ambCricketTimer===null && t.AUDIO.ambWindTimer===null;
+    t.AUDIO.ambStop();
+    return ok;
+  });
+  check('R2: AUDIO.ambStop 后 ambOsc/ambGain 清空',()=>{
+    t.AUDIO.ambStart(2);
+    t.AUDIO.ambStop();
+    return t.AUDIO.ambOsc===null && t.AUDIO.ambGain===null;
+  });
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

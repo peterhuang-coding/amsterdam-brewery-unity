@@ -1026,3 +1026,45 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - 浏览器开 `?seed=42` → 触发 `🚁 直升机观光` 后,#left 产业卡片下方出现「🎪 今日搞怪」+ `🚁 酿酒收入 ×1.24` 紫红边徽章;触发 `🦢 天鹅袭击` 后出现 `🦢 冲浪体力 -10` 蓝边徽章;进酿酒选 1 → 看 +$91 (=65×1.40 if canal_crash 而不是 helicopter)。
 - 同一 trigger `🎪 搞怪事件 · 🚁 直升机观光 · 酿酒收入 ×1.24` 显示在事件日志,文案与 HUD 徽章完全一致。
 - 玩家重置后 (无 crazy events),「🎪 今日搞怪」+「无 active 效果」提示仍可见,玩家知道系统在线。
+
+---
+
+## Round 19 (2026-08-18) — funify-e8(untested-fanout) — 4 条 crazy events 下游 e2e + cat_cafe_overrun mood bug 修复
+
+> Round 18 留下风险:Round 17 落地的 11/24 crazy hook 中,有 3 个未被浏览器端到端验证:`rijksmuseum_steal` (rep -5) / `cat_cafe_overrun` (mood +2) / `sinterklaas_arrival` (money +15)。其中 `cat_cafe_overrun` fire() 实际含 pre-existing moodFloor 误用 bug — 调用无参的 moodFloor() 把心情永远写成 floor 值 (-2/-3)。本轮把 3 个推荐验证 + 1 个 bonus (`street_band` mood +1) + 1 个 bug 修复 一起收口。
+> 基线 490/492 → **496/498 PASS** (基线 490 + 6 R19 断言,pre-existing rollDayModifier 统计 flaky 偶发 2 失败); `test-phase-e.js` **168/168 PASS**;两个 HTML `node --check` 等效 PASS;HTTP 200。
+
+### 改动文件 (2)
+- `tools/prototype/index.html` (+1/-1):
+  - `cat_cafe_overrun.fire()` bug 修复:`G.mood=moodFloor(Math.min(2,G.mood+2))` → `G.mood=Math.min(2,Math.max(moodFloor(),G.mood+2))`。旧版调用无参 `moodFloor()` (返回当前 floor 值) 直接覆盖 G.mood;新版正确 clamp 上限 2 + 下限 moodFloor()。
+- `tools/prototype/test.html` (+19):6 条 Round 19 断言 (4 类)。
+
+### 6 条 Round 19 断言 (4 类)
+1. **🖼️ rijksmuseum_steal rep -5 (基线 0)**: withCrazyEventState 后 t.state.rep===-5。
+2. **🖼️ rijksmuseum_steal rep floor -20 (基线 -18)**: 内联 setup 后 fire() → rep===-20 (不变更负)。
+3. **🐈 cat_cafe_overrun mood 0 → 2 (floor & cap=2)**: withCrazyEventState 后 t.state.mood===2。
+4. **🐈 cat_cafe_overrun mood=1 → 仍 2 (cap=2 不超)**: 内联 setup 后 fire() → mood===2。
+5. **🎅 sinterklaas_arrival money +=15 (基线 100)**: withCrazyEventState 后 t.state.money===115。
+6. **🎺 street_band mood 0 → 1**: withCrazyEventState 后 t.state.mood===1 (单 buff)。
+
+### 机制要点
+1. **moodFloor() 误用模式**:Round 7 (Phase E8.2) 引入的 cat_cafe_overrun fire() 调用无参的 moodFloor() (返回 floor 值) 直接覆盖 G.mood。正确模式应该是 `Math.min(cap, Math.max(floor, newVal))` 双 clamp。Round 19 e2e 测试首次暴露此 bug,因为没有任何下游消费验证过这条 fire 路径。
+2. **withCrazyEventState 默认 mood=0,rep=0,money=100**:Round 19 测试继承 R18 测试模式,fire 前已确定 baseline,fire 后只断言一个最终值 (或 floor/cap 边界)。
+3. **pre-existing rollDayModifier 分布统计 flaky**:Round 15/17 已存在,与本轮无关,Round 19 6/6 稳定 pass。
+
+### 测试
+- **496/498 PASS** (基线 490 + 6 R19 断言);偶发 2 失败仍是 pre-existing rollDayModifier 1000/35 抽样统计 flaky;R19 6 条断言本身 100% 稳定。
+- `test-phase-e.js` 168/168 PASS。
+- 两个 HTML 内联脚本 `node --check` 等效 PASS。
+- `http://127.0.0.1:8767/test.html` 200,`index.html` 200。
+
+### 风险
+- `moodFloor()` 函数本身没问题 (正确返回 floor 值);bug 只在 cat_cafe_overrun 误用上。其他 mood 事件 (street_band/duck_parade/vondelpark_picnic) 都用 `Math.min(2,G.mood+N)` 模式,不受影响。
+- bug 修复后,玩家实际触发 cat_cafe_overrun 心情会真的 +2 (cap=2),而不是被覆盖到 -2。这是**行为变更**但对玩家是**修正**(原本 mood 被覆盖到 floor 是 bug,玩家会困惑 "为什么猫咖啡我心情反而变差?")。
+- 现有 saveMeta v3 ledger 持久化的 meta/upgrades/run/legacy 不变,只修复 fire 路径。
+
+### 验收
+- 浏览器开 `?seed=42` → 触发 `🐈 Cat Café` 后,看事件日志:心情 0 → 2 (而不是被覆盖到 floor -2);次日 mood clamp 正常工作。
+- 触发 `🖼️ Rijksmuseum 失窃` 后,rep 从 0 变 -5,事件日志含「🖼️ 名画失踪 · 全市耻辱」bad 事件。
+- 触发 `🎅 Sinterklaas 抵港` 后,money 增加 $15,事件日志含「🎅 Sinterklaas + Pieten · 派糖 $15」good 事件。
+- 触发 `🎺 街头乐队` 后,mood 增加 +1 (cap 2)。

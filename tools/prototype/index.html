@@ -787,7 +787,7 @@ const CRAZY_POOL=[
   // ── Phase E8.2 (Round 5) — Pack v2 · 6 Amsterdam-themed 搞怪事件 ──
   {id:'tulip_crash',weight:1,ic:'🌷',t:'郁金香泡沫崩 · 酿酒收入 ×0.76',fire(){G.shop.crazyBrewOrders=(G.shop.crazyBrewOrders||0)-3}},
   {id:'rijksmuseum_steal',weight:1,ic:'🖼️',t:'Rijksmuseum 失窃 · rep -5',fire(){G.rep=Math.max(-20,(G.rep||0)-5);addEvt('bad','🖼️ 名画失踪 · 全市耻辱')}},
-  {id:'cat_cafe_overrun',weight:1,ic:'🐈',t:'Cat Café 占领街角 · 心情 +2',fire(){const before=G.mood;G.mood=moodFloor(Math.min(2,G.mood+2));addEvt('good',`🐈 Cat Café · 心情 ${before}→${G.mood}`)}},
+  {id:'cat_cafe_overrun',weight:1,ic:'🐈',t:'Cat Café 占领街角 · 心情 +2',fire(){const before=G.mood;G.mood=Math.min(2,Math.max(moodFloor(),G.mood+2));addEvt('good',`🐈 Cat Café · 心情 ${before}→${G.mood}`)}},
   {id:'pizza_bench',weight:1,ic:'🍕',t:'Pizza Bench 接力 · 冲浪体力 +20',fire(){G.shop.crazySurfStam=(G.shop.crazySurfStam||0)+20}},
   {id:'night_market',weight:1,ic:'🎑',t:'夜市突袭 · 罚款 $5',fire(){G.money=Math.max(0,G.money-5);addEvt('bad','🎑 城管来夜市 · $5')}},
   {id:'tram_strike',weight:1,ic:'🚋',t:'电车大罢工 · 街口堵死 (本日慢速)',fire(){G.shop.crazySlow=true;addEvt('info','🚋 GVB 工会罢工 · 改走路')}},

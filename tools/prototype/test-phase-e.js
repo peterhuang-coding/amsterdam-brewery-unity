@@ -215,7 +215,7 @@ t('daily crazy reset on day change', /crazyTipMul=1;[\s\S]{0,200}crazySlow=false
 t('newRun resets crazy effects', /G\.shop\.crazyTipMul=1;[\s\S]{0,200}crazySlow=false/.test(h));
 t('E8.2 — tulip_crash event present', /id:'tulip_crash',weight:1,ic:'🌷'/.test(h));
 t('E8.2 — rijksmuseum_steal clamps rep', /id:'rijksmuseum_steal'/.test(h) && /Math\.max\(-20/.test(h));
-t('E8.2 — cat_cafe_overrun bumps mood via moodFloor', /id:'cat_cafe_overrun'/.test(h) && /moodFloor\(Math\.min\(2/.test(h));
+t('E8.2 — cat_cafe_overrun clamps mood floor & cap=2', /id:'cat_cafe_overrun'/.test(h) && /Math\.min\(2,Math\.max\(moodFloor\(\),G\.mood\+2\)\)/.test(h));
 t('E8.2 — pizza_bench adds crazySurfStam', /id:'pizza_bench'/.test(h) && /crazySurfStam=\(G\.shop\.crazySurfStam\|\|0\)\+20/.test(h));
 t('E8.2 — night_market fines $5', /id:'night_market'/.test(h) && /G\.money=Math\.max\(0,G\.money-5\)/.test(h));
 t('E8.2 — tram_strike sets crazySlow', /id:'tram_strike'/.test(h) && /G\.shop\.crazySlow=true/.test(h));

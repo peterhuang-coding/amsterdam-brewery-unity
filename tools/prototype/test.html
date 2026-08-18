@@ -1641,6 +1641,30 @@ frame.addEventListener('load',async()=>{
     finally{t.state.shop=before;win.renderAll();}
   });
 
+  // ═══ Round 19 — Crazy Events e2e fan-out (untested downstream mutations) ═══
+  // Per Round 18 handoff recommendation: cover events whose fire() mutates
+  // G.rep / G.mood / G.money directly (the 3 explicitly called out:
+  // rijksmuseum_steal → rep, cat_cafe_overrun → mood, sinterklaas_arrival → money,
+  // plus street_band → mood as bonus 4th).
+  check('R19 e2e: 🖼️ rijksmuseum_steal fire() → rep -= 5 (初始 0 → -5)',()=>withCrazyEventState(
+    'rijksmuseum_steal',()=>t.state.rep===-5));
+  check('R19 e2e: 🖼️ rijksmuseum_steal rep 已 -18 → floor -20 (不变更负)',()=>{
+    const before=t.state.shop,beforeR=t.state.rep;
+    try{t.state.shop={crazyTipMul:1,crazyBrewOrders:0,crazySurfStam:0,crazyFaceMark:'',crazyMidnight:false,crazyBlessing:false,crazySlow:false};t.state.rep=-18;t.data.crazyEvents.find(e=>e.id==='rijksmuseum_steal').fire();return t.state.rep===-20;}
+    finally{t.state.shop=before;t.state.rep=beforeR;}
+  });
+  check('R19 e2e: 🐈 cat_cafe_overrun fire() → mood 0 → 2 (floor & cap=2)',()=>withCrazyEventState(
+    'cat_cafe_overrun',()=>t.state.mood===2));
+  check('R19 e2e: 🐈 cat_cafe_overrun mood=1 → 仍 2 (cap=2 不超)',()=>{
+    const before=t.state.shop,beforeM=t.state.mood;
+    try{t.state.shop={crazyTipMul:1,crazyBrewOrders:0,crazySurfStam:0,crazyFaceMark:'',crazyMidnight:false,crazyBlessing:false,crazySlow:false};t.state.mood=1;t.data.crazyEvents.find(e=>e.id==='cat_cafe_overrun').fire();return t.state.mood===2;}
+    finally{t.state.shop=before;t.state.mood=beforeM;}
+  });
+  check('R19 e2e: 🎅 sinterklaas_arrival fire() → money += 15 (初始 $100 → $115)',()=>withCrazyEventState(
+    'sinterklaas_arrival',()=>t.state.money===115));
+  check('R19 e2e: 🎺 street_band fire() → mood 0 → 1 (单 buff)',()=>withCrazyEventState(
+    'street_band',()=>t.state.mood===1));
+
   // ═══ Phase E acceptance — core systems are live in browser runtime ═══
   // (withPhaseEIndustryState helper is defined at the top of the load handler so
   // it is in scope for the legendary_income tests at line ~390.)

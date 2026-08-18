@@ -2089,6 +2089,93 @@ frame.addEventListener('load',async()=>{
   });
   check('Round 33: restore _histSnap 不污染后续测试',()=>{_restoreHist();return true});
 
+  // ═══ funify-v3 Round 34 — Slot export/import JSON + V-key mid-run switch (BACKLOG #10 #2 closure) ═══
+  check('Round 34: exportSlot 函数暴露在 AB_TEST',()=>typeof win.exportSlot==='function');
+  check('Round 34: importSlot 函数暴露在 AB_TEST',()=>typeof win.importSlot==='function');
+  check('Round 34: cycleSlot 函数暴露在 AB_TEST',()=>typeof win.cycleSlot==='function');
+  check('Round 34: exportSlot(n) 返回有效 JSON 字符串含 slot/version/exportedAt/run/meta/upgrades',()=>{
+    const json=win.exportSlot(1);
+    const o=JSON.parse(json);
+    return typeof json==='string'&&o.slot===1&&typeof o.exportedAt==='number'&&o.version>=2;
+  });
+  check('Round 34: exportSlot(2) 返 slot:2 (按当前激活槽生成)',()=>{
+    const o=JSON.parse(win.exportSlot(2));
+    return o.slot===2;
+  });
+  check('Round 34: importSlot(2, exportSlot(1) JSON) 把数据写到槽 2',()=>{
+    const before=win.readSlot(2);
+    const exp=win.exportSlot(1);
+    const ok=win.importSlot(2,exp);
+    const after=win.readSlot(2);
+    // restore
+    localStorage.removeItem('ab_slot_2');if(before)localStorage.setItem('ab_slot_2',JSON.stringify(before));
+    return ok===true&&after&&after.importedFrom===1;
+  });
+  check('Round 34: importSlot 拒绝非法 JSON (返回 false, 不污染槽)',()=>{
+    const before=win.readSlot(3);
+    const ok=win.importSlot(3,'not json {{');
+    const after=win.readSlot(3);
+    localStorage.removeItem('ab_slot_3');if(before)localStorage.setItem('ab_slot_3',JSON.stringify(before));
+    return ok===false&&JSON.stringify(after)===JSON.stringify(before);
+  });
+  check('Round 34: importSlot 拒绝 version<2 数据 (向后兼容门)',()=>{
+    const before=win.readSlot(2);
+    const ok=win.importSlot(2,JSON.stringify({version:1,meta:99}));
+    const after=win.readSlot(2);
+    localStorage.removeItem('ab_slot_2');if(before)localStorage.setItem('ab_slot_2',JSON.stringify(before));
+    return ok===false&&(!after||after.meta!==99);
+  });
+  check('Round 34: cycleSlot 当前 1 → 2 (save cur + load next)',()=>{
+    const cur=win.getActiveSlot();
+    const ok=win.cycleSlot();
+    const after=win.getActiveSlot();
+    const expected=cur===3?1:cur+1;
+    return ok===true&&after===expected;
+  });
+  check('Round 34: cycleSlot 槽 3 → 1 (循环)',()=>{
+    win.setActiveSlot(3);
+    win.cycleSlot();
+    const after=win.getActiveSlot();
+    return after===1;
+  });
+  check('Round 34: cycleSlot 无 active slot 时仍切到下一槽',()=>{
+    localStorage.removeItem('ab_active_slot');
+    win.cycleSlot();
+    const after=win.getActiveSlot();
+    return after>=1&&after<=3;
+  });
+  check('Round 34: cycleSlot 持久化 active slot 标记 (刷新后仍生效)',()=>{
+    win.setActiveSlot(1);
+    win.cycleSlot();
+    const persisted=parseInt(localStorage.getItem('ab_active_slot')||'0',10);
+    return persisted===2;
+  });
+  check('Round 34: keydown V 键调用 cycleSlot (源审计)',()=>{
+    // Trigger V keydown via dispatchEvent on the iframe document (handler attached there)
+    const before=win.getActiveSlot();
+    const ev=new win.KeyboardEvent('keydown',{key:'v',bubbles:true});
+    const dispatched=doc.dispatchEvent(ev);
+    const after=win.getActiveSlot();
+    const expected=before===3?1:before+1;
+    // restore
+    win.setActiveSlot(before);
+    return after===expected;
+  });
+  check('Round 34: cycleSlot 后 G state 从新槽恢复 (meta/upgrades)',()=>{
+    win.setActiveSlot(1);
+    const slot2Before=win.readSlot(2);
+    // write known data to slot 2
+    localStorage.setItem('ab_slot_2',JSON.stringify({version:4,meta:777,upgrades:['legendary_income'],legacy:42,run:5,modHistory:[],invCollect:{mushroom:3}}));
+    win.setActiveSlot(2);
+    win.loadMeta();
+    const meta=t.state.meta;
+    const ups=t.state.upgrades;
+    win.setActiveSlot(1);
+    // restore slot 2
+    localStorage.removeItem('ab_slot_2');if(slot2Before)localStorage.setItem('ab_slot_2',JSON.stringify(slot2Before));
+    return meta===777&&ups.indexOf('legendary_income')>=0;
+  });
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

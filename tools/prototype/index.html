@@ -99,7 +99,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 .intro-box{background:var(--panel);border:1px solid var(--gold);border-radius:14px;padding:22px;max-width:700px;width:92%;box-shadow:0 12px 50px #000c;position:relative;z-index:1}
 .intro-box h1{color:var(--gold);font-size:21px;text-align:center;margin-bottom:6px}.intro-box h2{color:var(--gold);font-size:15px;margin:12px 0 6px}.intro-sub{text-align:center;color:var(--muted);font-size:11px}.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}.key-card{background:var(--card);border-radius:7px;padding:7px;font-size:11px;display:flex;align-items:center;gap:8px}.key-card kbd{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:28px;border:1px solid var(--gold);border-radius:5px;color:var(--gold);font:bold 14px monospace;background:#0004}.seed-form{display:flex;gap:8px;margin-top:13px}.seed-form input{flex:1;background:var(--card);border:1px solid #fff3;color:var(--text);border-radius:7px;padding:8px;font:12px monospace}.seed-form button{padding:8px 16px}.intro-actions{display:flex;justify-content:center;gap:8px;margin-top:12px}.intro-actions .btn{justify-content:center}.help-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;color:var(--text);font-size:11px}.help-grid div{background:var(--card);border-radius:6px;padding:7px}.help-close{display:block;margin:14px auto 0}
 /* funify-v3 Round 21 — slot picker (BACKLOG #10 #1 closure) */
-.slot-picker{margin-top:14px;padding:10px;background:#00000030;border:1px solid var(--border);border-radius:7px}.slot-picker-title{color:var(--gold);font-size:12px;margin-bottom:8px;text-align:center}.slot-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.slot-card{background:var(--card);border:1px solid #fff2;border-radius:7px;padding:9px 7px;text-align:center;cursor:pointer;transition:border-color .2s,box-shadow .2s}.slot-card:hover{border-color:var(--gold)}.slot-card.active{border-color:var(--gold);box-shadow:0 0 8px #ecb45766,inset 0 0 4px #ecb45722}.slot-card.empty{opacity:0.85}.slot-card .sc-idx{font:bold 14px monospace;color:var(--gold);letter-spacing:1px}.slot-card .sc-state{font-size:10px;color:var(--muted);margin:2px 0}.slot-card .sc-info{font-size:10px;color:var(--text);line-height:1.4;margin-top:4px}.slot-card .sc-btn{margin-top:6px;font-size:11px;padding:4px 8px;border-radius:5px;background:#ecb45722;color:var(--gold);border:1px solid var(--gold);cursor:pointer}.slot-card .sc-btn:hover{background:var(--gold);color:#000}
+.slot-picker{margin-top:14px;padding:10px;background:#00000030;border:1px solid var(--border);border-radius:7px}.slot-picker-title{color:var(--gold);font-size:12px;margin-bottom:8px;text-align:center}.slot-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.slot-card{background:var(--card);border:1px solid #fff2;border-radius:7px;padding:9px 7px;text-align:center;cursor:pointer;transition:border-color .2s,box-shadow .2s}.slot-card:hover{border-color:var(--gold)}.slot-card.active{border-color:var(--gold);box-shadow:0 0 8px #ecb45766,inset 0 0 4px #ecb45722}.slot-card.empty{opacity:0.85}.slot-card .sc-idx{font:bold 14px monospace;color:var(--gold);letter-spacing:1px}.slot-card .sc-state{font-size:10px;color:var(--muted);margin:2px 0}.slot-card .sc-info{font-size:10px;color:var(--text);line-height:1.4;margin-top:4px}.slot-card .sc-btn{margin-top:6px;font-size:11px;padding:4px 8px;border-radius:5px;background:#ecb45722;color:var(--gold);border:1px solid var(--gold);cursor:pointer}.slot-card .sc-btn:hover{background:var(--gold);color:#000}.slot-card .sc-export{margin-left:4px;background:#4090e022;color:#80b8f0;border-color:#4090e0}.slot-card .sc-export:hover{background:#4090e0;color:#fff}.slot-import{margin-top:10px;text-align:center;padding-top:8px;border-top:1px solid var(--border)}.slot-import .btn{font-size:11px;padding:5px 10px;background:#4090e022;color:#80b8f0;border:1px solid #4090e0}.slot-import .btn:hover{background:#4090e0;color:#fff}
 @media(max-width:760px){.slot-cards{grid-template-columns:1fr}}
 /* funify-v3 Round 14 — first-time mini-game key overlay */
 #mg-hint-modal .intro-box{max-width:520px;border-color:var(--green)}
@@ -409,14 +409,15 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 </div>
 <form class="seed-form" onsubmit="event.preventDefault();startFromModal()"><input id="start-seed" type="number" placeholder="Seed（数字，可留空随机）" autocomplete="off" autofocus><button type="submit" class="btn btn-go">▶ Start</button></form>
 <!-- funify-v3 Round 21 — 3-slot picker (BACKLOG #10 #1 closure):每槽独立 meta/upgrades/run · 点击切换 -->
-<div class="slot-picker"><div class="slot-picker-title">💾 存档槽位 (3 个独立进度)</div><div id="slot-cards" class="slot-cards"></div></div>
+<!-- funify-v3 Round 34 — 加 📥 导入按钮 + file input (BACKLOG #10 #2 closure) -->
+<div class="slot-picker"><div class="slot-picker-title">💾 存档槽位 (3 个独立进度)</div><div id="slot-cards" class="slot-cards"></div><div class="slot-import"><button class="btn" onclick="document.getElementById('import-file').click()">📥 导入 JSON 到当前槽</button><input type="file" id="import-file" accept="application/json,.json" style="display:none" onchange="handleImportFile(this,getActiveSlot())"></div></div>
 <div class="intro-actions"><button class="btn" onclick="skipTutorial()">Skip 教程（下次直接进入）</button><button class="btn" onclick="showHelp()">? 查看帮助</button></div>
 </div>
 </div>
 <div id="help-modal" class="hidden">
 <div class="intro-box">
 <h1>操作帮助</h1>
-<div class="help-grid"><div><b>W/A/S/D</b> 移动小人（方向键也可）</div><div><b>E</b> 进入附近建筑</div><div><b>Space</b> 推进时间 / 小游戏确认</div><div><b>Q/W</b> 变体中调价或调节参数</div><div><b>X</b> 拒绝咖啡卧底或酒吧顾客</div><div><b>H</b> 打开本帮助，<b>Esc</b> 退出当前界面</div><div><b>T</b> 天赋树 · <b>F</b> 派系 · <b>J</b> 成就树 · <b>C</b> 配方 · <b>G</b> 送礼 · <b>B</b> 肉体交易 · <b>K</b> 知识本 · <b>I</b> 收藏</div><div><b>1-9</b> 选关 · <b>▶▶</b> 切换速度 1×/2×/4× · <b>M</b> 静音</div></div>
+<div class="help-grid"><div><b>W/A/S/D</b> 移动小人（方向键也可）</div><div><b>E</b> 进入附近建筑</div><div><b>Space</b> 推进时间 / 小游戏确认</div><div><b>Q/W</b> 变体中调价或调节参数</div><div><b>X</b> 拒绝咖啡卧底或酒吧顾客</div><div><b>H</b> 打开本帮助，<b>Esc</b> 退出当前界面</div><div><b>T</b> 天赋树 · <b>F</b> 派系 · <b>J</b> 成就树 · <b>C</b> 配方 · <b>G</b> 送礼 · <b>B</b> 肉体交易 · <b>K</b> 知识本 · <b>I</b> 收藏 · <b>V</b> 切换存档槽</div><div><b>1-9</b> 选关 · <b>▶▶</b> 切换速度 1×/2×/4× · <b>M</b> 静音</div></div>
 <button class="btn help-close" onclick="closeHelp()">关闭</button>
 </div>
 </div>
@@ -1382,6 +1383,73 @@ function listSlots(){const out=[];for(let i=1;i<=3;i++){const d=readSlot(i);if(!
 // 切换到槽 n,并把当前 G 状态保存到旧槽、装载新槽的存档;返回 true 表示切换成功(槽 n 有数据)
 function switchSlot(n){if(n<1||n>3)return false;const cur=getActiveSlot();if(cur!==n)saveSlot(cur);const data=readSlot(n);setActiveSlot(n);loadMeta();return !!data}
 function saveSlot(n){try{localStorage.setItem(slotKey(n),JSON.stringify(Object.assign({},readSlot(n),{savedAt:Date.now()})));saveMeta()}catch(e){console.warn('slot save failed',e)}}
+// funify-v3 Round 34 — slot vault export/import JSON (BACKLOG #10 #2 closure)
+// 导出 → 下载 JSON 文件(玩家跨设备挪存档),导入 → 解析 JSON 写入目标槽
+// 与 saveMeta 同一数据结构(带 version 字段),importSlot 用 version>=2 守门
+function exportSlot(n){
+  const data=readSlot(n)||{version:4,meta:0,upgrades:[],legacy:0,run:0,modHistory:[],invCollect:{}};
+  return JSON.stringify(Object.assign({},data,{slot:n,exportedAt:Date.now()}));
+}
+function importSlot(n,jsonText){
+  if(n<1||n>3)return false;
+  let parsed=null;
+  try{parsed=JSON.parse(jsonText)}catch(e){return false}
+  if(!parsed||typeof parsed!=='object'||!parsed.version||parsed.version<2)return false;
+  try{
+    const clean={
+      version:Math.max(2,parsed.version|0),
+      meta:Math.max(0,parsed.meta|0),
+      upgrades:Array.isArray(parsed.upgrades)?[...new Set(parsed.upgrades)]:[],
+      legacy:Math.max(0,parsed.legacy|0),
+      run:Math.max(0,parsed.run|0),
+      modHistory:Array.isArray(parsed.modHistory)?parsed.modHistory.filter(x=>typeof x==='string').slice(0,5):[],
+      invCollect:(parsed.invCollect&&typeof parsed.invCollect==='object')?parsed.invCollect:{},
+      savedAt:Date.now(),
+      importedFrom:typeof parsed.slot==='number'?parsed.slot:null
+    };
+    localStorage.setItem(slotKey(n),JSON.stringify(clean));
+    return true;
+  }catch(e){console.warn('slot import failed',e);return false}
+}
+// 触发浏览器下载当前槽的 JSON 文件;供 UI 按钮 onclick 调用
+function downloadSlot(n){
+  if(n<1||n>3)return false;
+  try{
+    const json=exportSlot(n);
+    const blob=new Blob([json],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const d=new Date();
+    const ymd=d.getFullYear().toString()+(d.getMonth()+1).toString().padStart(2,'0')+(d.getDate()).toString().padStart(2,'0');
+    a.href=url;a.download=`ab_slot_${n}_${ymd}.json`;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),1500);
+    return true;
+  }catch(e){console.warn('slot download failed',e);return false}
+}
+// 文件 input change handler → 读文件 → 导入到目标槽;导入成功 setMsg 反馈
+function handleImportFile(input,n){
+  if(!input||!input.files||!input.files[0])return false;
+  const file=input.files[0];
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const ok=importSlot(n,String(reader.result||''));
+    if(ok){setMsg(`📥 已导入槽 ${n}`);renderSlots()}
+    else setMsg(`❌ 导入失败:JSON 无效或版本过低`);
+    input.value='';
+  };
+  reader.onerror=()=>{setMsg(`❌ 读取文件失败`);input.value=''};
+  reader.readAsText(file);
+  return true;
+}
+// funify-v3 Round 34 — V 键 mid-run 切槽 (cycle 1→2→3→1),先 saveSlot 当前再 loadMeta 目标槽
+// 玩家可在 7 天中任意时刻切到另一个独立进度的存档槽,无需返回 start-modal
+function cycleSlot(){
+  const cur=getActiveSlot();
+  const next=cur===3?1:cur+1;
+  saveSlot(cur);setActiveSlot(next);loadMeta();
+  return true;
+}
 // funify-v3 Round 30 — Cross-run Ledger (📒 知识本): strainNotes + brewNotes + barRegulars + researchTopics + surfDiscovered + visited persist ab_ledger_v1
 function saveLedger(){try{localStorage.setItem('ab_ledger_v1',JSON.stringify({version:1,strainNotes:G.strainNotes||{},brewNotes:G.brewNotes||{},barRegulars:G.barRegulars||[],researchTopics:G.researchTopics||[],surfDiscovered:G.surfDiscovered||[],visited:G.visited||[],recipeKnowledge:G._recipeKnowledge||{},teacherRep:G.teacherRep||{pablo:0,ravi:0,sofie:0,chen:0}}))}catch(e){console.warn('ab_ledger_v1 save failed',e)}}
 function loadLedger(){try{const d=JSON.parse(localStorage.getItem('ab_ledger_v1'));if(d&&d.version===1){if(d.strainNotes&&typeof d.strainNotes==='object')G.strainNotes=d.strainNotes;if(d.brewNotes&&typeof d.brewNotes==='object'){for(const t of ['IPA','Stout','Lager']){if(d.brewNotes[t]&&typeof d.brewNotes[t]==='object'){G.brewNotes[t].count=Math.max(G.brewNotes[t].count|0,d.brewNotes[t].count|0);G.brewNotes[t].best=Math.max(G.brewNotes[t].best|0,d.brewNotes[t].best|0)}}}if(Array.isArray(d.barRegulars))G.barRegulars=Array.from(new Set([...(G.barRegulars||[]),...d.barRegulars]));if(Array.isArray(d.researchTopics))G.researchTopics=Array.from(new Set([...(G.researchTopics||[]),...d.researchTopics]));if(Array.isArray(d.surfDiscovered))G.surfDiscovered=Array.from(new Set([...(G.surfDiscovered||[]),...d.surfDiscovered]));if(Array.isArray(d.visited))G.visited=Array.from(new Set([...(G.visited||[]),...d.visited]));if(d.recipeKnowledge&&typeof d.recipeKnowledge==='object')G._recipeKnowledge=d.recipeKnowledge;if(d.teacherRep&&typeof d.teacherRep==='object'){if(!G.teacherRep)G.teacherRep={pablo:0,ravi:0,sofie:0,chen:0};for(const n of ['pablo','ravi','sofie','chen']){const v=d.teacherRep[n]|0;if(v>(G.teacherRep[n]|0))G.teacherRep[n]=v}}}}catch(e){console.warn('ab_ledger_v1 load failed',e)}}
@@ -1828,6 +1896,7 @@ function startFromModal(){
 }
 function skipTutorial(){try{localStorage.setItem('ab_skip_tutorial','1')}catch(e){console.warn('ab_skip_tutorial save failed',e)};document.getElementById('start-modal').classList.add('hidden');startFromModal()}
 // funify-v3 Round 21 — slot picker UI (BACKLOG #10 #1 closure):渲染 3 槽摘要,点击切换或开始新 Run
+// funify-v3 Round 34 — 每卡新增 📤 导出 JSON 按钮 (BACKLOG #10 #2 closure);导入通过 slot-picker 底部共享 file input
 function renderSlots(){
   const root=document.getElementById('slot-cards');if(!root)return;
   const cards=listSlots();const active=getActiveSlot();
@@ -1842,6 +1911,11 @@ function renderSlots(){
     btn.className='sc-btn';btn.textContent=c.empty?'▶ 新游戏':'▶ 继续 Run #'+(c.run||'?');
     btn.onclick=()=>{pickSlot(c.idx)};
     card.appendChild(btn);
+    // funify-v3 Round 34 — 每槽 📤 导出按钮 (空槽也允许导出空模板,玩家用于备份槽位结构)
+    const exp=document.createElement('button');
+    exp.className='sc-btn sc-export';exp.textContent='📤 导出';
+    exp.onclick=(ev)=>{ev.stopPropagation();downloadSlot(c.idx)};
+    card.appendChild(exp);
     root.appendChild(card);
   });
 }
@@ -4188,6 +4262,8 @@ document.addEventListener('keydown',e=>{
   // Track held keys for continuous movement
   if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)){G.keys[k]=true;G._wp=null;setMoveMsg()}
   if(k==='e')enterBldg();if(k===' ')advanceTimeAuto();if(k==='n')newRun();if(k==='h')showHelp();
+  // funify-v3 Round 34 — V 键 mid-run cycle slot (BACKLOG #10 #2 closure)
+  if(k==='v'){cycleSlot();const n=getActiveSlot();setMsg(`📂 切到槽 ${n} · 当前进度已存`);return}
   if(k==='t'){toggleTalents();return}
   if(k==='f'){toggleFactions();return}
   if(k==='j'){toggleAchtree();return}
@@ -4294,7 +4370,7 @@ window.AB_TEST={
   buildRunSummary,buildRunEpitaph,pushRunHistory,loadRunHistory,renderRunHistory,doBodyTrade,openBodyTrade,closeBodyTrade,bodyOpen,moodFloor,startBrew,startSurf,sBarC,endGame,MG,
   ledgerOpen,showLedger,closeLedger,toggleLedger,renderLedger,saveLedger,loadLedger,
   invOpen,showInv,closeInv,toggleInv,renderInv,SURF_CATALOG,
-  getActiveSlot,setActiveSlot,slotKey,readSlot,listSlots,switchSlot,saveSlot,pickSlot,renderSlots,
+  getActiveSlot,setActiveSlot,slotKey,readSlot,listSlots,switchSlot,saveSlot,pickSlot,renderSlots,exportSlot,importSlot,downloadSlot,handleImportFile,cycleSlot,
   teacherRepBonus,bumpTeacherRep,
   pushModHistory,
   crazyActiveBadges,

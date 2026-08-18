@@ -131,7 +131,7 @@
 
 ## 10. 持久化/重玩性（存档槽位、跨设备、Seed 分享、replay）
 - [x] [index.html:586 saveMeta 单 key] 加 `ab_meta_v2_${slot}` slot 1-3 + UI 切换 — **Round 21 funify-v3 完成 (slotKey(1)=ab_meta_v2 / ab_slot_2 / ab_slot_3 + start-modal #slot-cards 3 槽 picker + getActiveSlot/setActiveSlot/listSlots/switchSlot 9 helper)**
-- [ ] [index.html:586 saveMeta 无 export/import] 加 #export-btn 触发 JSON 下载 + #import-btn 上传
+- [x] [index.html:586 saveMeta 无 export/import] 加 #export-btn 触发 JSON 下载 + #import-btn 上传 — **Round 34 funify-v3 完成 (exportSlot/importSlot/downloadSlot/handleImportFile + V 键 mid-run cycle + slot-cards 每卡 📤 导出 + 底部共享 📥 导入 + 14 断言 → 533/535 PASS)**
 - [ ] [index.html:2300 cv.click 无 replay] 加 `G.actionLog.push({t,x,y,k})` 数组 P 键回放
 - [ ] [index.html:2316 setMsg seed 显示但不复制] 加 `📋 copy URL` 按钮便于分享
 - [ ] [index.html:563 seedAbbrev 简单 2 字母] 附 tooltip 解释算法

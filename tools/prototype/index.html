@@ -1054,6 +1054,141 @@ const SURF_CATALOG=[
   {id:'羽毛',    ic:'🪶', where:'海鸥群 30% 概率升级',     rare:true},
   {id:'稀有遗物',ic:'✨', where:'其他浪点 30% 概率升级',   rare:true}
 ];
+
+// funify-v3 Round 5 — Phase B3 Surf Dave-depth (6 soul events + paddle/ride + 4 upgrade tracks)
+// 6 灵魂事件: 救生/鲨鱼/神秘对手/灯塔/污染/巨浪 (per-run one-shot, triggered by surf conditions)
+const SURF_SOUL_EVENTS=[
+  {id:'rescue',    ic:'🆘', n:'救生时刻',  desc:'海上有人挥手求救 · SPACE 转向救人 → +$30 +5★ meta,弃浪丢 combo',
+   effect:{kind:'rescue',    reward:30, metaReward:5, forfeitCombo:true}},
+  {id:'shark',     ic:'🦈', n:'鲨鱼尾随',  desc:'鲨鱼鳍渐近 · SPACE 急停闪避,失败扣 30% 体力',
+   effect:{kind:'shark',     dodgeCorrect:0.55, dodgeFailStamina:0.3, telemetryRounds:3}},
+  {id:'rival',     ic:'🏄‍♂️', n:'神秘对手',  desc:'挑战者并排抓浪 · 3 浪内累计 perfect ≥ 2 = 击败 +$25',
+   effect:{kind:'rival',     perfectRequired:2, roundsLimit:3, reward:25}},
+  {id:'lighthouse',ic:'🗼', n:'灯塔回声',  desc:'灯塔光束扫描 → 解锁 1 个未发现浪点 (灯塔优先)',
+   effect:{kind:'lighthouse', discover:1, prefer:'lighthouse'}},
+  {id:'pollution', ic:'🛢️', n:'海洋污染',  desc:'原油泄漏 · 抓浪扣 5 分,SPACE 清理塑料 +10 分 +2★ meta',
+   effect:{kind:'pollution', catchPenalty:5, cleanupScore:10, cleanupMeta:2}},
+  {id:'tidal',     ic:'🌊', n:'巨浪来袭',  desc:'巨浪周期 5s · 完美抓浪奖励 ×3,错过扣 20 体力',
+   effect:{kind:'tidal',      perfectMul:3, missStaminaPenalty:20, setPeriodMs:5000}},
+];
+// Surf upgrade tree — 4 tracks, each 3 tiers. Persisted in G (per-run) via UP_POOL-style effect hooks.
+// Tracks: wetsuit (stamina cold resist) / board (catch window) / spotter (stamina drain) / wax (first catch)
+const SURF_UPGRADES=[
+  {id:'surf_wetsuit_1',track:'wetsuit',tier:1,cost:8,  name:'🩱 保暖泳衣',d:'冷水浪点体力流失 -10%',f:{staminaDrain:-0.10}},
+  {id:'surf_wetsuit_2',track:'wetsuit',tier:2,cost:14, name:'🧥 干式潜水服',d:'冷水浪点体力流失 -25%',f:{staminaDrain:-0.25}},
+  {id:'surf_wetsuit_3',track:'wetsuit',tier:3,cost:20, name:'🧣 极地抗寒服',d:'冷水浪点体力流失 -45%',f:{staminaDrain:-0.45}},
+  {id:'surf_board_1',  track:'board',  tier:1,cost:8,  name:'🏄 软板',d:'抓浪窗口 +15%',f:{windowWidth:0.15}},
+  {id:'surf_board_2',  track:'board',  tier:2,cost:14, name:'🏄‍♂️ 短板',d:'抓浪窗口 +30%',f:{windowWidth:0.30}},
+  {id:'surf_board_3',  track:'board',  tier:3,cost:20, name:'🏄‍♀️ 碳纤短板',d:'抓浪窗口 +50%',f:{windowWidth:0.50}},
+  {id:'surf_spotter_1',track:'spotter',tier:1,cost:8,  name:'👀 岸上观察',d:'体力流失 -10%',f:{staminaDrain:-0.10}},
+  {id:'surf_spotter_2',track:'spotter',tier:2,cost:14, name:'📡 浪预报',d:'体力流失 -20%',f:{staminaDrain:-0.20}},
+  {id:'surf_spotter_3',track:'spotter',tier:3,cost:20, name:'🛰️ 卫星预报',d:'体力流失 -35%',f:{staminaDrain:-0.35}},
+  {id:'surf_wax_1',    track:'wax',    tier:1,cost:8,  name:'🧴 普通蜡',d:'首抓浪 +10% 奖励',f:{firstCatchBonus:0.10}},
+  {id:'surf_wax_2',    track:'wax',    tier:2,cost:14, name:'🧴 热带蜡',d:'首抓浪 +25% 奖励',f:{firstCatchBonus:0.25}},
+  {id:'surf_wax_3',    track:'wax',    tier:3,cost:20, name:'✨ 魔法蜡',d:'首抓浪 +50% 奖励',f:{firstCatchBonus:0.50}},
+];
+// Apply purchased surf upgrade tracks to a surf session state. Pure function.
+function surfApplyUpgradeBoosts(s){
+  if(!s)return;
+  const tracks={wetsuit:0,board:0,spotter:0,wax:0};
+  // upIds is G.surfUpgrades (purchase from shop between runs OR in-run via meta)
+  const ids=(G.surfUpgrades||[]);
+  for(const uid of ids){const u=SURF_UPGRADES.find(x=>x.id===uid);if(!u)continue;tracks[u.track]=Math.max(tracks[u.track],u.tier)}
+  // defaults: each track base 0 (no boost)
+  s.windowBase=s.windowWidth||0.1;
+  const boardBoost=0.05*tracks.board; // tier 1→+5%, tier 2→+10%, tier 3→+15%
+  const spotterBoost=0.05*(tracks.spotter||0);
+  const wetsuitBoost=0.05*(tracks.wetsuit||0);
+  s._waxBonus=(tracks.wax>=3?0.5:tracks.wax>=2?0.25:tracks.wax>=1?0.10:0);
+  s._waxUsed=!!s._waxUsed;
+  // combined window width: base + board boost + worn penalty
+  const worn=s.boardWorn?-0.025:0;
+  s.windowWidth=Math.max(0.04,s.windowBase+boardBoost+worn);
+  // combined stamina drain multiplier: base 1.0 - spotter - wetsuit (capped ≥0.5)
+  s.staminaDrainMult=Math.max(0.5,1-spotterBoost-wetsuitBoost)*(s.boardWorn?0.5:1);
+}
+// Roll one-shot soul event for the run. Each event has its own trigger conditions.
+function surfRollSoulEvent(s,wave){
+  if(!G._surfSoul)G._surfSoul={picked:null,fired:false,rescued:false,sharkHits:0,rivalPerfect:0,rivalDay:0,cleanups:0};
+  if(G._surfSoul.fired)return null;
+  const sod=G._surfSoul;
+  const diff=wave&&wave.diff||1;
+  const triggers=[
+    {id:'rescue',     ok:sod.rescued===false && s.at>=4 && seeded(50+s.at)<0.18},
+    {id:'shark',      ok:diff>=3 && s.at>=3 && s.stamina<=70 && seeded(51+s.at)<0.15},
+    {id:'rival',      ok:s.at>=2 && sod.rivalPerfect===0 && seeded(52+s.at)<0.20},
+    {id:'lighthouse', ok:wave&&wave.id==='lighthouse' && s.at>=3 && seeded(53+s.at)<0.25},
+    {id:'pollution',  ok:diff>=3 && s.at>=2 && seeded(54+s.at)<0.22},
+    {id:'tidal',      ok:diff>=4 && s.at>=5 && seeded(55+s.at)<0.18},
+  ];
+  for(const t of triggers){
+    if(t.ok&&!sod.picked){
+      sod.picked=t.id;
+      return SURF_SOUL_EVENTS.find(e=>e.id===t.id);
+    }
+  }
+  return null;
+}
+// Apply soul event — sets MG.surf flags + adds HUD event log + bumps faction
+function surfApplySoul(evt){
+  if(!evt)return;
+  const e=evt.effect;
+  const s=MG.surf;
+  G._surfSoul.fired=true;G._surfSoul.picked=evt.id;
+  if(e.kind==='rescue'){
+    if(s){s.rescueActive=true;s.rescueRounds=2}
+    bumpFaction('coffee',-1,'救生善行');
+  }
+  if(e.kind==='shark'){
+    if(s){s.sharkActive=true;s.sharkRounds=e.telemetryRounds||3}
+  }
+  if(e.kind==='rival'){
+    if(s){s.rivalActive=true;s.rivalPerfectRequired=e.perfectRequired||2;s.rivalRoundsLimit=e.roundsLimit||3;s.rivalReward=e.reward||25}
+    bumpFaction('heineken',1,'神秘对手登场');
+  }
+  if(e.kind==='lighthouse'){
+    // discover next undiscovered wave point. Prefer lighthouse.
+    const known=new Set(G.surfDiscovered||[]);
+    const pool=WAVE_POINTS.filter(w=>!known.has(w.id));
+    let pick=pool.find(w=>w.id===e.prefer)||pool[0];
+    if(pick){
+      if(!G.surfDiscovered)G.surfDiscovered=[];
+      if(!G.surfDiscovered.includes(pick.id)){G.surfDiscovered.push(pick.id);G.meta+=5;saveLedger();addEvt('good',`🗼 灯塔揭示未知浪点 ${pick.n} +5★ meta`)}
+    }
+  }
+  if(e.kind==='pollution'){
+    if(s){s.pollutionActive=true;s.pollutionPenalty=e.catchPenalty||5;s.pollutionCleanupScore=e.cleanupScore||10;s.pollutionCleanupMeta=e.cleanupMeta||2}
+  }
+  if(e.kind==='tidal'){
+    if(s){s.tidalActive=true;s.tidalPerfectMul=e.perfectMul||3;s.tidalMissPenalty=e.missStaminaPenalty||20;s.tidalSetPeriodMs=e.setPeriodMs||5000}
+    bumpFaction('acad',1,'巨浪学术奇观');
+  }
+  addEvt('good',evt.ic+' '+evt.n+' · '+evt.desc);
+  setMsg('✨ 灵魂事件: '+evt.n);
+  AUDIO.play('objective');
+}
+// Paddle mechanic — auto-advancing paddle rhythm bar. SPACE in green = +5 stamina.
+// s.paddle = { active:bool, startedAt, cursor (0..1 looping), msPerCycle (≈1200) }
+function surfPaddleState(s){
+  if(!s)return null;
+  if(!s.paddle)return null;
+  if(!s.paddle.active)return null;
+  const elapsed=Date.now()-s.paddle.startedAt;
+  const speed=1/(s.paddle.msPerCycle||1200); // 0..1 per ms
+  const phase=elapsed*speed;const cursor=phase-Math.floor(phase);
+  s.paddle.cursor=cursor;
+  return s.paddle;
+}
+// Roll and (if hit) advance paddle. Returns '+' if connected, '0' if missed.
+function surfPaddleHit(s){
+  if(!s||!s.paddle||!s.paddle.active)return '0';
+  const cur=s.paddle.cursor!=null?s.paddle.cursor:0.5;
+  // green window: 0.40..0.55 (15% of cycle)
+  const hit=cur>=0.40 && cur<=0.55;
+  if(hit){s.stamina=Math.min(100,s.stamina+5);s.paddle._hits++;return '+'}
+  return '0';
+}
+
 const ESCAPE_TECHS=[
 {lv:1,teacher:'pablo',name:'装作学生',suc:.5,desc:'靠书包藏手机,装作赶论文'},
 {lv:2,teacher:'ravi',name:'装作打电话',suc:.7,desc:'耳机+讲代码,沉浸'},
@@ -3605,18 +3740,58 @@ function pickWavePoint(n){const w=WAVE_POINTS[n-1];if(!w)return;G.todayWave=w;
   // Real surf: waves come in SETS — between sets there's a lull with no waves.
   // wx position auto-advances only during "set" phase. Aim for the green zone on the wave.
   // Phase C A3a: surf board life — 0 = 窗口 -25% & 体力 -50%
+  // funify-v3 Round 5: B3 surf depth — paddle + soul events + upgrade tracks
   if(G.surfBoardLife===undefined)G.surfBoardLife=15;
   const boardWorn=G.surfBoardLife<=0;
-  G.mg='surf';G._mgEnterAt=Date.now();dropIng('shell');MG.surf={wave:w,wx:400,sc:0,at:0,stamina:Math.max(20,100+(G.shop.crazySurfStam||0)),combo:0,perfect:0,perfectStreak:0,started:Date.now(),
+  const session={wave:w,wx:400,sc:0,at:0,stamina:Math.max(20,100+(G.shop.crazySurfStam||0)),combo:0,perfect:0,perfectStreak:0,started:Date.now(),
     lastCatch:0,drowned:false,ended:false,setPhase:true,nextLull:Date.now()+3500,wipeouts:0,
-    boardWorn,windowWidth:boardWorn?0.075:0.1,staminaDrainMult:boardWorn?0.5:1};
+    boardWorn,windowWidth:boardWorn?0.075:0.1,staminaDrainMult:boardWorn?0.5:1,
+    paddle:{active:true,startedAt:Date.now(),cursor:0.5,msPerCycle:1200,_hits:0},
+    rescueActive:false,sharkActive:false,rivalActive:false,pollutionActive:false,tidalActive:false,
+    _waxUsed:false};
+  // Apply per-run upgrade tracks (round 5 B3)
+  surfApplyUpgradeBoosts(session);
+  G.mg='surf';G._mgEnterAt=Date.now();dropIng('shell');MG.surf=session;
   if(!G.surfDiscovered.includes(w.id)){G.surfDiscovered.push(w.id);G.meta+=5;addEvt('good',`🗺️ 首次发现 ${w.n} +5★ meta`);saveLedger()}
-  setStatus('🏄 '+w.n,`难度${w.diff} · 特殊:${w.special} · 板磨损 ${G.surfBoardLife}/15${boardWorn?' ⚠需修':''}`,'SPACE抓浪 · R 修板$20 · N 换新$50 · 绿区=perfect · 错过=翻船');renderAll()}
+  setStatus('🏄 '+w.n,`难度${w.diff} · 特殊:${w.special} · 板磨损 ${G.surfBoardLife}/15${boardWorn?' ⚠需修':''}`,'SPACE抓浪 · P 划水回体 · R 修板$20 · N 换新$50 · 绿区=perfect · 错过=翻船');renderAll()}
 function rollSurfItem(wave){let item=wave.item;if(seeded(140+G.inventory.length)<.3){const upgrades={'海龟':'古地图','钓鱼人':'鱼钩','隐藏洞穴':'宝石','雷暴':'闪电石','灯塔回声':'回声瓶','海鸥群':'羽毛'};item=upgrades[wave.special]||'稀有遗物'}return item}
 function surfIn(k){const s=MG.surf;if(!s||s.ended)return;
   // Phase C A3a: 修板/换新选项
   if(k==='r'||k==='R'){if(G.money>=20){G.money-=20;G.surfBoardLife=Math.min(15,G.surfBoardLife+10);s.boardWorn=G.surfBoardLife<=0;s.windowWidth=s.boardWorn?0.075:0.1;s.staminaDrainMult=s.boardWorn?0.5:1;setMsg(`🛠️ 修板 +10 寿命 · 剩余 ${G.surfBoardLife}/15 -$20`);renderAll();return}else{setMsg('💸 修板 $20,余额不足');return}}
   if(k==='n'||k==='N'){if(G.money>=50){G.money-=50;G.surfBoardLife=15;s.boardWorn=false;s.windowWidth=0.1;s.staminaDrainMult=1;setMsg('🆕 换新板 满寿命 -$50');renderAll();return}else{setMsg('💸 换新 $50,余额不足');return}}
+  // Round 5 B3: P = paddle rhythm hit (回体 +5 / miss +0). Optional shortcut.
+  if(k==='p'||k==='P'){
+    surfPaddleState(s);const r=surfPaddleHit(s);
+    if(r==='+'){s.paddle.startedAt=Date.now();setMsg(`🏊 划水命中 +5 体力(${s.stamina}%)`);renderAll();return}
+    else{setMsg('🏊 划水落空');renderAll();return}
+  }
+  // Round 5 B3: rescue active — SPACE 在 2 轮内转向救人
+  if(s.rescueActive&&!s.rescueResolved&&(k===' '||k==='return')){
+    if(G._surfSoul.rescued===false){
+      G._surfSoul.rescued=true;G.money+=30;G.meta+=5;
+      setMsg('🆘 救人成功 +$30 +5★ meta · 弃浪丢 combo');
+      addEvt('good','🆘 救生成功 +$30 +5★ meta');
+      s.rescueResolved=true;s.combo=0;
+      renderAll();return;
+    }
+  }
+  // Round 5 B3: shark dodge — SPACE 每 round 触发一次,失败扣 30% 体力
+  if(s.sharkActive&&(s.sharkRounds||0)>0){
+    const ok=seeded(110+s.at)<0.55;
+    if(!ok){s.stamina=Math.max(0,Math.floor(s.stamina*(1-0.30)));setMsg('🦈 闪避失败 -30% 体力');G._surfSoul.sharkHits=(G._surfSoul.sharkHits||0)+1}
+    else{setMsg('🦈 闪避成功 · 体力保留')}
+    s.sharkRounds=Math.max(0,s.sharkRounds-1);
+    if(s.sharkRounds<=0)s.sharkActive=false;
+    if(s.stamina<=0){s.drowned=true;finSurf(true)}
+    renderAll();return;
+  }
+  // Round 5 B3: pollution cleanup — SPACE 清理塑料 (每次 +10 分 +2★ meta)
+  if(s.pollutionActive&&(k===' '||k==='c')){
+    s.sc+=10;G.meta+=2;G._surfSoul.cleanups=(G._surfSoul.cleanups||0)+1;
+    setMsg(`🛢️ 清理塑料 +10 分 +2★ meta · 累计 ${G._surfSoul.cleanups}`);
+    addEvt('good',`🛢️ 清理塑料 +10 分 +2★ meta (累计 ${G._surfSoul.cleanups})`);
+    renderAll();return;
+  }
   if(k!==' ')return;
   const pos=(s.wx-200)/500;
   // Phase C A3a: worn board shrinks window by 25%
@@ -3628,7 +3803,9 @@ function surfIn(k){const s=MG.surf;if(!s||s.ended)return;
   if(!inWhite){
     s.wipeouts++;s.combo=0;s.stamina=Math.max(0,s.stamina-15);
     s.sc=Math.max(0,s.sc-20);
-    setMsg(`🌊 翻船!(-15体力 -20分 · 累计翻船${s.wipeouts})`);
+    // tidal 巨浪 miss penalty
+    if(s.tidalActive){s.stamina=Math.max(0,s.stamina-(s.tidalMissPenalty||20));setMsg(`🌊 巨浪错过 -${s.tidalMissPenalty||20} 体力 · -20分 · 翻船${s.wipeouts}`)}
+    else setMsg(`🌊 翻船!(-15体力 -20分 · 累计翻船${s.wipeouts})`);
     if(s.stamina<=0){s.drowned=true;finSurf(true)}
     else renderAll();
     return;
@@ -3636,11 +3813,32 @@ function surfIn(k){const s=MG.surf;if(!s||s.ended)return;
   let sc=inGreen?Math.round((1-Math.abs(pos-0.7)/0.1)*30+10):Math.round((1-Math.abs(pos-0.7)/0.3)*10+3);
   if(inGreen){s.combo++;s.perfect++;s.perfectStreak++}else{s.combo=0;s.perfectStreak=0}
   if(barrel)sc+=50;
+  // Round 5 B3: pollution active → 抓浪扣 5 分
+  if(s.pollutionActive)sc-=5;
+  // Round 5 B3: tidal → perfect ×3
+  if(s.tidalActive&&inGreen)sc*=3;
+  // Round 5 B3: wax first-catch bonus (one-shot per session)
+  if(s._waxBonus&&inGreen&&!s._waxUsed){sc=Math.round(sc*(1+s._waxBonus));s._waxUsed=true}
   s.sc+=sc;s.at++;s.stamina=Math.max(0,s.stamina-Math.round((5+Math.floor(s.at/15))*s.staminaDrainMult));
   s.lastCatch=Date.now();
   s.wx=400+seeded(150+s.at)*200;
+  // Round 5 B3: rival counters (perfect 累计 ≥ 2 = 击败 +$25)
+  if(s.rivalActive&&inGreen){
+    G._surfSoul.rivalPerfect=(G._surfSoul.rivalPerfect||0)+1;
+    if(G._surfSoul.rivalPerfect>=2){
+      G.money+=25;G._surfSoul.rivalPerfect=-1;s.rivalActive=false;
+      setMsg('🏄‍♂️ 击败神秘对手 +$25');addEvt('good','🏄‍♂️ 击败神秘对手 +$25');
+    }
+  }
+  // Reset paddle rhythm on every catch so player can re-aim
+  s.paddle.startedAt=Date.now();s.paddle.cursor=0.5;
   if(barrel)setMsg('🏄 Perfect barrel +50!');
-  else setMsg(`🏄 抓浪 +${sc} · 体力${s.stamina}% · combo×${s.combo}${inGreen&&s.perfectStreak>=2?' 🔥×'+s.perfectStreak+' ('+surfPerfectStreakMul(s.perfectStreak)+'x)':''}${s.boardWorn?' ⚠板损':''}`);
+  else setMsg(`🏄 抓浪 +${sc} · 体力${s.stamina}% · combo×${s.combo}${inGreen&&s.perfectStreak>=2?' 🔥×'+s.perfectStreak+' ('+surfPerfectStreakMul(s.perfectStreak)+'x)':''}${s.boardWorn?' ⚠板损':''}${s.tidalActive?' 🌊巨浪':''}${s.pollutionActive?' 🛢️污染':''}${s.rivalActive?' 🏄‍♂️':''}`);
+  // Roll one-shot soul event (one per run, lazy check)
+  if(!G._surfSoul||!G._surfSoul.fired){
+    const evt=surfRollSoulEvent(s,s.wave);
+    if(evt)surfApplySoul(evt);
+  }
   if(s.stamina<=0){s.drowned=true;finSurf(true)}else renderAll()}
 function finSurf(drowned){const s=MG.surf;if(!s||s.ended)return;s.ended=true;const perfectStreakMul=surfPerfectStreakMul(s.perfectStreak)*(hasUpgrade('legendary_perfect')?1.5:1);const perfectBonus=Math.round(s.perfect*50*perfectStreakMul);const bonus=s.combo>=3?1.2:1,raw=Math.round((s.sc+perfectBonus)*bonus*tipFactor()),inc=drowned?Math.floor(raw*.5):raw;G.money+=inc;G.ind.surfing.xp+=inc*3;const item=rollSurfItem(s.wave);G.inventory.push(item);if(!G.invCollect||typeof G.invCollect!=='object')G.invCollect={};G.invCollect[item]=(G.invCollect[item]||0)+1;saveMeta();addEvt(drowned?'bad':'good',`🏄 ${s.wave.n} 带回${item} · +$${inc}${perfectBonus>0?' (含 perfect ×'+s.perfect+' streak×'+perfectStreakMul+')':''}`);addSch('🏄',`冲浪 +$${inc} · ${item}`);G.mg=null;G.inside=null;chkLv('surfing');setStatus(drowned?'🌊 溺水':'✅ 冲浪结束',`${s.sc}分 · ${item} · +$${inc}`,'');tickObj('Earn',Math.max(1,Math.floor(inc/10)));tickObj('Explore',1);if(s.perfect>=3)tryUnlock('surf_perfectionist');AUDIO.play(s.perfect>=3?'surf_perfect':'surf_catch');
   // Phase C B3: surf→coffee cross-game — surfed today boosts first 3 coffee customers
@@ -5496,7 +5694,7 @@ function renderAll(){
     if(G.mg==='brew'){const s=MG.brew;const _st=G.shop.streak||0;title.textContent=s.ph==='sel'?'🍺 选择原料 (订单:'+s.order.type+')':'🍺 控温酿造 订单:'+s.order.type;det.textContent=s.ph==='sel'?'1/2/3切换 SPACE开始':'当前 '+Math.round(s.t)+'°C · SPACE提交';hint.textContent='🍺 订单:'+s.order.type+' · 剩余'+Math.max(0,Math.round((s.deadline-Date.now())/1000))+'s · 目标温 ?°C' + (_st>0?' · 🔥连击×'+_st+'(×'+brewStreakMul(_st)+')':'')}
     else if(G.mg==='coffee'){const s=MG.coffee;const warn=s.c&&s.c.undercover?' 🚨卧底!':'';const _hzC=coffeeHeatZone(s.ht);const _fitC=s.c&&!s.raid?coffeeFitHint(s.pr,s.c.max):null;title.textContent='🌿 咖啡店 · 热度'+Math.round(s.ht)+'% '+_hzC.label;det.textContent='$'+s.pr+'/g · 目标 '+s.sd+'/'+s.target+warn+(_fitC?' · '+_fitC.label:'');hint.textContent='Q/W调价 SPACE成交 X拒客 · '+_hzC.label+(_fitC&&!_fitC.ok?' · 差'+(-_fitC.gap)+'元':'')}
     else if(G.mg==='shroom'){title.textContent='🍄 蘑菇种植';det.textContent='调参 SPACE推进';hint.textContent=''}
-    else if(G.mg==='surf'){const s=MG.surf;const tg=surfBreakerTelegraph(s);const psM=s.perfectStreak>=2?` · 🔥×${s.perfectStreak}(${surfPerfectStreakMul(s.perfectStreak)}x)`:'';title.textContent='🏄 巨浪生存';det.textContent='体力'+s.stamina+'% · combo'+s.combo+' · 已抓'+s.at+(s.perfect>0?' · perfect +'+(s.perfect*50):'')+psM;hint.textContent='SPACE抓 · 30s持续 · 8% perfect barrel +50 · 浪组:'+(tg.phase==='set'?'进行中':`静默${tg.msLeftLabel}s`)+' · 体力'+(tg.staminaWarn==='low'?'⚠':tg.staminaWarn==='med'?'~':'✓')}
+    else if(G.mg==='surf'){const s=MG.surf;const tg=surfBreakerTelegraph(s);const psM=s.perfectStreak>=2?` · 🔥×${s.perfectStreak}(${surfPerfectStreakMul(s.perfectStreak)}x)`:'';const padd=surfPaddleState(s);const paddCur=padd?Math.round(padd.cursor*100):0;const paddGreen=padd?(padd.cursor>=0.40&&padd.cursor<=0.55):false;const paddHint=padd?`🛟${paddCur}%${paddGreen?'✓':''}`:'';const soulBadges=[s.rescueActive?'🆘':'',s.sharkActive?'🦈':'',s.rivalActive?'🏄‍♂️':'',s.pollutionActive?'🛢️':'',s.tidalActive?'🌊':''].filter(Boolean).join(' ');title.textContent='🏄 巨浪生存'+(soulBadges?' '+soulBadges:'');det.textContent='体力'+s.stamina+'% · combo'+s.combo+' · 已抓'+s.at+(s.perfect>0?' · perfect +'+(s.perfect*50):'')+psM+(paddHint?' · '+paddHint:'');hint.textContent='SPACE抓 · P 划水回体 · 8% perfect barrel +50 · 浪组:'+(tg.phase==='set'?'进行中':`静默${tg.msLeftLabel}s`)+' · 体力'+(tg.staminaWarn==='low'?'⚠':tg.staminaWarn==='med'?'~':'✓')+(s.rescueActive?' · 🆘救人':'')+(s.sharkActive?' · 🦈闪避':'')+(s.pollutionActive?' · 🛢️清理':'')+(s.rivalActive?' · 🏄‍♂️对决':'')+(s.tidalActive?' · 🌊巨浪':'')}
     else if(G.mg==='academic'){title.textContent='📚 学术';det.textContent='';hint.textContent=''}
     else if(G.mg==='bar'){const s=MG.bar;const cur=s.cs[s.cs.length-1];const _tipH=cur&&cur.drinkId===s.recoId;const _tipR=cur&&cur.isRegular;const _tipEx=cur?barTipPreview(cur.offer,_tipH,_tipR,tipFactor()):null;title.textContent='🍻 酒吧 · 黑市讨价'+(s.diff?' ('+s.diff.label+')':'')+(cur?' · '+(_tipEx>=cur.offer?'💚':'💔')+'$'+_tipEx:'');det.textContent=cur?`${cur.face} ${cur.arch.n} 报价$${cur.offer} (底${cur.floor}/上${cur.ceiling}) 想喝 ${cur.drink}${cur.mixId!=='none'?'+'+barGetMixer(cur.mixId).ic:''}`:'暂无顾客';hint.textContent='Q/W ±1 报价 · SPACE成交 · E 倒酒'+(cur&&cur.needsMixer?(s.pour&&s.pour.active?' (再按 E 释放':' (开始'):'(无)')+' · X拒客 · 今日推荐 '+(s.recoIc||'🍺')+(s.vipDay?' · VIP日':'')+(cur?' · 💸 实时tip':'')+(s.diff?' · '+s.diff.label:'')}
     else if(G.mg==='shoplift'){const s=MG.shop;const cur=SHOP_STALLS[s.stallIdx];const el=(Date.now()-s.cycleStarted)%4000;const phase=el<1500?'🟢 绿灯':el<2000?'🟡 黄灯':'🔴 红灯';title.textContent=`🥷 ${s.stallIdx+1}/3 · ${cur.ic} ${cur.n}`;det.textContent=`${phase} · ${s.loot.length} 件到手${s.caught?' · 🚓 被抓':''}`;hint.textContent='SPACE 抓 · 绿灯100% · 黄灯50% · 红灯=罚款$30+禁入1日'}
@@ -5594,6 +5792,10 @@ function newRunInner(){
   // Phase C: customer relationship + surf/coffee cross-game state
   G.custRels={};G.surfedToday=0;G.surfBoardLife=15;G.researchTopics=[];
   G.coffeeEarnedToday=0;G.barStock={ipa:0,stout:0,lager:0};
+  // Round 5 (Phase B3): surf soul state + upgrade tracks reset each run
+  G._surfSoul=G._surfSoul||{picked:null,fired:false,rescued:false,sharkHits:0,rivalPerfect:0,rivalDay:0,cleanups:0};
+  G._surfSoul.fired=false;G._surfSoul.picked=null;G._surfSoul.rescued=false;G._surfSoul.sharkHits=0;G._surfSoul.rivalPerfect=0;G._surfSoul.cleanups=0;
+  if(!G.surfUpgrades)G.surfUpgrades=[];
   // Round 4 (Phase B2): 新一天老化所有豆库存 (fresh+1)
   coffeeAgeBeans();
   // funify-v3 Round 3: brew streak counter — resets on each new run, persists for the whole run
@@ -5711,6 +5913,9 @@ window.AB_TEST={
   COFFEE_BEANS,COFFEE_BEAN_LIST,COFFEE_SOUL_EVENTS,
   coffeeBeanMult,coffeePickDailyBean,coffeeAgeBeans,coffeeBeanQualityMult,
   coffeeRollSoulEvent,coffeeApplySoul,coffeePourState,coffeeInspectorHide,
+  // Round 5: Phase B3 · Surf Dave-depth (6 soul events + paddle + 4 upgrade tracks)
+  SURF_SOUL_EVENTS,SURF_UPGRADES,
+  surfRollSoulEvent,surfApplySoul,surfPaddleState,surfPaddleHit,surfApplyUpgradeBoosts,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

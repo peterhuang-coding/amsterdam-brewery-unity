@@ -8,6 +8,18 @@ const path = require('path');
 const HTML = path.join(__dirname, 'index.html');
 const h = fs.readFileSync(HTML, 'utf8');
 
+// ── Round 8: localStorage stub for Phase C relationship chain tests ──
+// Phase C pushRelationship/loadRelationships use localStorage; provide an in-memory shim.
+const _lsStore = new Map();
+globalThis.localStorage = {
+  getItem(k){ return _lsStore.has(k) ? _lsStore.get(k) : null },
+  setItem(k,v){ _lsStore.set(k, String(v)) },
+  removeItem(k){ _lsStore.delete(k) },
+  clear(){ _lsStore.clear() },
+  key(i){ return Array.from(_lsStore.keys())[i] },
+  get length(){ return _lsStore.size }
+};
+
 let pass = 0, fail = 0;
 const t = (n, c) => c ? pass++ : (fail++, console.log('  FAIL: ' + n));
 
@@ -599,6 +611,93 @@ t('Round7: yeast visual supports 4 choices', /var yeastItems=\[\{n:'艾尔酵母
 
 // summary assertion: tests grew this round
 t('Round7: overall pass count exceeds prior baseline (≥218)', pass >= 218);
+
+// ── funify-v3 Round 8 — Phase C (Main plot + factions) ──
+// Extract just the Phase C block (sits between Faction E2 bumpFaction and Crafting E4)
+const phaseCStart = h.indexOf('// Phase C — Main plot + factions');
+const phaseCEnd = h.indexOf('// Phase E4 — Item Crafting');
+const phaseCSrc = h.slice(phaseCStart, phaseCEnd);
+const state = G; // alias for tests — G already has factions/day/mood/objs/_run/money fields
+const AC = new Function('state', 'G', 'moodFloor', '"use strict";var G=state;function moodFloor(){return-3};\n' + phaseCSrc +
+  '; return {PLOT_PITCH,PLOT_HOOK,CHARACTER_CARDS,DAY_BEATS,FAC_LORE,RELATIONSHIPS_KEY,RELATIONSHIPS_MAX,dayBeat,todayTip,runAlignment,settlementBonus,relationshipChain,pushRelationship,loadRelationships};')(state, G, A.moodFloor);
+
+// C1 — Opening narrative card constants
+t('Round8: PLOT_PITCH is non-empty single-sentence pitch', typeof AC.PLOT_PITCH==='string' && AC.PLOT_PITCH.length>20);
+t('Round8: PLOT_HOOK is non-empty thin-mainline hook', typeof AC.PLOT_HOOK==='string' && AC.PLOT_HOOK.length>5);
+t('Round8: CHARACTER_CARDS has 4 character choices', AC.CHARACTER_CARDS.length===4);
+t('Round8: each CHARACTER_CARDS entry has ic+n+sub+start+repDelta', AC.CHARACTER_CARDS.every(c=>c.ic&&c.n&&c.sub&&c.start&&c.repDelta&&typeof c.repDelta==='object'));
+t('Round8: Mei (idx 3) repDelta covers all 3 factions', Object.keys(AC.CHARACTER_CARDS[3].repDelta).sort().join(',')==='coffee,heineken,smartshop');
+t('Round8: Bart (idx 0) repDelta = {heineken:6}', JSON.stringify(AC.CHARACTER_CARDS[0].repDelta)==='{"heineken":6}');
+t('Round8: Esra (idx 1) repDelta = {coffee:6}', JSON.stringify(AC.CHARACTER_CARDS[1].repDelta)==='{"coffee":6}');
+t('Round8: Lot (idx 2) repDelta = {smartshop:6}', JSON.stringify(AC.CHARACTER_CARDS[2].repDelta)==='{"smartshop":6}');
+
+// C2 — 7-day rhythm (DAY_BEATS map)
+t('Round8: DAY_BEATS has all 7 days', Object.keys(AC.DAY_BEATS).map(Number).sort((a,b)=>a-b).join(',')==='1,2,3,4,5,6,7');
+t('Round8: day 1-2 are learn phase', AC.DAY_BEATS[1].phase==='learn'&&AC.DAY_BEATS[2].phase==='learn');
+t('Round8: day 3 is contact (派系接触)', AC.DAY_BEATS[3].phase==='contact');
+t('Round8: day 4-5 are pick phase (站队)', AC.DAY_BEATS[4].phase==='pick'&&AC.DAY_BEATS[5].phase==='pick');
+t('Round8: day 6 is conseq phase (后果)', AC.DAY_BEATS[6].phase==='conseq');
+t('Round8: day 7 is end phase (结算)', AC.DAY_BEATS[7].phase==='end');
+t('Round8: each DAY_BEATS day has ic+t+d', Object.values(AC.DAY_BEATS).every(b=>b.ic&&b.t&&b.d));
+t('Round8: dayBeat clamps day<1 to day 1 (todayTip entry point)', AC.dayBeat(0).phase==='learn'&&AC.dayBeat(-5).phase==='learn');
+t('Round8: dayBeat clamps day>7 to day 7', AC.dayBeat(8).phase==='end'&&AC.dayBeat(99).phase==='end');
+
+// C3 — Faction lore + alignment (runAlignment)
+t('Round8: FAC_LORE covers all 3 faction ids', Object.keys(AC.FAC_LORE).sort().join(',')==='coffee,heineken,smartshop');
+const setFac=(f)=>{state.factions=Object.assign({heineken:0,coffee:0,smartshop:0},f)};
+t('Round8: runAlignment returns none when factions all 0', (()=>{setFac({heineken:0,coffee:0,smartshop:0});return AC.runAlignment().id==='none'})());
+t('Round8: runAlignment returns heineken when heineken rep highest', (()=>{setFac({heineken:30,coffee:5,smartshop:5});return AC.runAlignment().id==='heineken'})());
+t('Round8: runAlignment returns coffee when coffee rep highest', (()=>{setFac({heineken:5,coffee:30,smartshop:5});return AC.runAlignment().id==='coffee'})());
+t('Round8: runAlignment returns smartshop when smartshop rep highest', (()=>{setFac({heineken:5,coffee:5,smartshop:30});return AC.runAlignment().id==='smartshop'})());
+t('Round8: runAlignment treats abs value (negative faction wins)', (()=>{setFac({heineken:-50,coffee:10,smartshop:10});return AC.runAlignment().id==='heineken'})());
+t('Round8: runAlignment threshold <10 abs → none', (()=>{setFac({heineken:5,coffee:5,smartshop:5});return AC.runAlignment().id==='none'})());
+
+// C4 — Today tip (todayTip) — set state via state alias
+state.day=3;state.ti=0;state.money=250;state.mood=0;setFac({heineken:0,coffee:0,smartshop:0});
+state.objs=[{done:false},{done:false},{done:false}];
+t('Round8: todayTip returns string', typeof AC.todayTip()==='string' && AC.todayTip().length>0);
+t('Round8: todayTip includes day number', /Day \d/.test(AC.todayTip()));
+state.factions=null;
+t('Round8: todayTip returns PLOT_HOOK when factions undefined', AC.todayTip()===AC.PLOT_HOOK);
+setFac({heineken:0,coffee:0,smartshop:0});
+state.day=3;state.money=10;
+t('Round8: todayTip warns on low money', /现金/.test(AC.todayTip()));
+state.day=4;state.money=500;state.mood=-5;
+t('Round8: todayTip warns on low mood', /心情/.test(AC.todayTip()));
+state.day=6;state.mood=0;state.objs=[{done:true},{done:true},{done:false}];
+t('Round8: todayTip concentrates on last obj (Day 6)', /只剩 1 个目标/.test(AC.todayTip()));
+// Restore
+state.day=1;state.money=250;state.mood=0;state.objs=[{done:false},{done:false},{done:false}];setFac({heineken:0,coffee:0,smartshop:0});
+
+// C5 — Settlement bonus + cross-run relationship chain
+t('Round8: settlementBonus is +15 for strong alignment (rep>=50)', (()=>{setFac({heineken:60,coffee:0,smartshop:0});return AC.settlementBonus()===15})());
+t('Round8: settlementBonus is +8 for medium alignment (20-49)', (()=>{setFac({heineken:30,coffee:0,smartshop:0});return AC.settlementBonus()===8})());
+t('Round8: settlementBonus is +3 for weak alignment (10-19)', (()=>{setFac({heineken:15,coffee:0,smartshop:0});return AC.settlementBonus()===3})());
+t('Round8: settlementBonus is -5 when no alignment', (()=>{setFac({heineken:0,coffee:0,smartshop:0});return AC.settlementBonus()===-5})());
+t('Round8: settlementBonus treats abs value (negative rep counts)', (()=>{setFac({heineken:-60,coffee:0,smartshop:0});return AC.settlementBonus()===15})());
+
+// Cross-run relationship chain (C5) — only stores tier + alignment + rep, no plot
+t('Round8: pushRelationship persists to ab_relationships_v1', (()=>{try{localStorage.removeItem(AC.RELATIONSHIPS_KEY)}catch(e){};AC.pushRelationship({run:1,tier:'gold',tierIc:'🥇',align:'heineken',alignIc:'🍺',alignN:'Heineken Rep',rep:60,tierMult:1.5,ts:1});return JSON.parse(localStorage.getItem(AC.RELATIONSHIPS_KEY)).rels.length===1})());
+t('Round8: pushRelationship caps at RELATIONSHIPS_MAX (10)', (()=>{try{localStorage.removeItem(AC.RELATIONSHIPS_KEY)}catch(e){};for(let i=0;i<15;i++)AC.pushRelationship({run:i,tier:'silver',tierIc:'🥈',align:'none',alignIc:'🚶',alignN:'无阵营',rep:0,tierMult:1.2,ts:i});return AC.loadRelationships().length===10})());
+t('Round8: loadRelationships returns newest-first', (()=>{try{localStorage.removeItem(AC.RELATIONSHIPS_KEY)}catch(e){};AC.pushRelationship({run:1,tier:'bronze',tierIc:'🥉',align:'coffee',alignIc:'☕',alignN:'Coffee Cartel',rep:30,tierMult:1,ts:1});AC.pushRelationship({run:2,tier:'gold',tierIc:'🥇',align:'smartshop',alignIc:'🍄',alignN:'Smart Shop Synd.',rep:80,tierMult:1.5,ts:2});return AC.loadRelationships()[0].run===2})());
+t('Round8: relationshipChain returns up to N recs', (()=>{try{localStorage.removeItem(AC.RELATIONSHIPS_KEY)}catch(e){};for(let i=0;i<5;i++)AC.pushRelationship({run:i,tier:'gold',tierIc:'🥇',align:'heineken',alignIc:'🍺',alignN:'Heineken Rep',rep:60,tierMult:1.5,ts:i});return AC.relationshipChain(3).length===3})());
+t('Round8: relationshipChain records carry tier+align fields', (()=>{try{localStorage.removeItem(AC.RELATIONSHIPS_KEY)}catch(e){};AC.pushRelationship({run:7,tier:'gold',tierIc:'🥇',align:'coffee',alignIc:'☕',alignN:'Coffee Cartel',rep:80,tierMult:1.5,ts:7});const r=AC.relationshipChain(1)[0];return r.tier==='gold'&&r.align==='coffee'})());
+
+// Wiring — opening card modal HTML + R key (source-grep only)
+t('Round8: opening-modal element exists in DOM', /id="opening-modal"/.test(h));
+t('Round8: relchain-modal element exists in DOM', /id="relchain-modal"/.test(h));
+t('Round8: plot-banner element exists in DOM', /id="plot-banner"/.test(h));
+t('Round8: CSS rules for .op-box / .op-day / .op-char exist', /\.op-box|\.op-days|\.op-chars|\.op-day|\.op-char/.test(h));
+t('Round8: R key opens relchain modal in keydown', /k==='r'&&!G\.inside&&!G\.mg\)\{[^}]*showRelchain/.test(h));
+t('Round8: opening modal keydown closes on Enter/Escape', /opening-modal[\s\S]*closeOpeningCard/.test(h));
+t('Round8: modalOpen includes opening + relchain', /opening-modal[\s\S]*relchain-modal/.test(h));
+t('Round8: Phase C exports in AB_TEST', /PLOT_PITCH,PLOT_HOOK,CHARACTER_CARDS,DAY_BEATS,FAC_LORE,RELATIONSHIPS_KEY/.test(h));
+t('Round8: endGame calls settlementBonus + pushRelationship', /settlementBonus\(\)[\s\S]*pushRelationship/.test(h));
+t('Round8: newRun calls showOpeningCardIfFresh', /showOpeningCardIfFresh\(\)/.test(h));
+t('Round8: renderAll updates plot-banner via todayTip', /plot-banner[\s\S]*todayTip\(\)/.test(h));
+
+// summary assertion: tests grew this round
+t('Round8: overall pass count exceeds prior baseline (≥340)', pass >= 340);
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

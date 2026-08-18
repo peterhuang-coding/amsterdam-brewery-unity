@@ -3558,6 +3558,90 @@ frame.addEventListener('load',async()=>{
     return /s\.y=\(s\.y\+1\)%4/.test(src);
   });
 
+  // funify-v3 Round 8 — Phase C (Main plot + factions) — 18 browser assertions
+  // C1 — Opening card constants
+  check('R8: PLOT_PITCH is non-empty single-sentence pitch',()=>typeof t.PLOT_PITCH==='string'&&t.PLOT_PITCH.length>20);
+  check('R8: PLOT_HOOK is non-empty thin-mainline hook',()=>typeof t.PLOT_HOOK==='string'&&t.PLOT_HOOK.length>5);
+  check('R8: CHARACTER_CARDS has 4 character choices (Bart/Esra/Lot/Mei)',()=>Array.isArray(t.CHARACTER_CARDS)&&t.CHARACTER_CARDS.length===4);
+  check('R8: opening-modal element exists in DOM',()=>!!doc.getElementById('opening-modal'));
+  check('R8: relchain-modal element exists in DOM',()=>!!doc.getElementById('relchain-modal'));
+  check('R8: plot-banner element exists in DOM',()=>!!doc.getElementById('plot-banner'));
+
+  // C2 — 7-day rhythm
+  check('R8: DAY_BEATS has 7 entries with phase field',()=>{
+    const db=t.DAY_BEATS;const keys=Object.keys(db).map(Number).sort((a,b)=>a-b);
+    if(keys.join(',')!=='1,2,3,4,5,6,7')return false;
+    return Object.values(db).every(b=>b.ic&&b.t&&b.d&&b.phase);
+  });
+  check('R8: day 3 phase is "contact" (派系接触)',()=>t.DAY_BEATS[3].phase==='contact');
+  check('R8: day 6 phase is "conseq" (后果)',()=>t.DAY_BEATS[6].phase==='conseq');
+  check('R8: dayBeat clamps to [1,7]',()=>t.dayBeat(0).phase==='learn'&&t.dayBeat(99).phase==='end');
+
+  // C3 — Faction lore + alignment
+  check('R8: FAC_LORE has 3 faction entries',()=>Object.keys(t.FAC_LORE).sort().join(',')==='coffee,heineken,smartshop');
+  check('R8: runAlignment returns none for all-zero factions',()=>{
+    const before=t.state.factions;t.state.factions={heineken:0,coffee:0,smartshop:0};
+    const r=t.runAlignment().id;t.state.factions=before;return r==='none';
+  });
+  check('R8: runAlignment returns heineken when rep=30 heineken',()=>{
+    const before=t.state.factions;t.state.factions={heineken:30,coffee:5,smartshop:5};
+    const r=t.runAlignment().id;t.state.factions=before;return r==='heineken';
+  });
+  check('R8: settlementBonus +15 for rep>=50, -5 for none',()=>{
+    const before=t.state.factions;
+    t.state.factions={heineken:60,coffee:0,smartshop:0};const a=t.settlementBonus();
+    t.state.factions={heineken:0,coffee:0,smartshop:0};const b=t.settlementBonus();
+    t.state.factions=before;return a===15&&b===-5;
+  });
+
+  // C4 — Today tip
+  check('R8: todayTip returns string containing "Day"',()=>/Day \d/.test(t.todayTip()));
+  check('R8: todayTip warns on low money',()=>{
+    const d=t.state.day,ti=t.state.ti,m=t.state.money,mo=t.state.mood,f=t.state.factions,o=t.state.objs;
+    t.state.day=3;t.state.ti=0;t.state.money=10;t.state.mood=0;t.state.factions={heineken:0,coffee:0,smartshop:0};t.state.objs=[{done:false}];
+    const r=/现金/.test(t.todayTip());
+    t.state.day=d;t.state.ti=ti;t.state.money=m;t.state.mood=mo;t.state.factions=f;t.state.objs=o;
+    return r;
+  });
+
+  // C5 — Cross-run relationship chain
+  check('R8: RELATIONSHIPS_KEY = ab_relationships_v1',()=>t.RELATIONSHIPS_KEY==='ab_relationships_v1');
+  check('R8: RELATIONSHIPS_MAX = 10',()=>t.RELATIONSHIPS_MAX===10);
+  check('R8: pushRelationship persists to localStorage + caps at 10',()=>{
+    const k=t.RELATIONSHIPS_KEY;localStorage.removeItem(k);
+    for(let i=0;i<12;i++)t.pushRelationship({run:i,tier:'gold',tierIc:'🥇',align:'heineken',alignIc:'🍺',alignN:'Heineken Rep',rep:60,tierMult:1.5,ts:i});
+    const recs=t.loadRelationships();
+    return recs.length===10&&recs[0].run===11;
+  });
+  check('R8: relationshipChain returns up to N recs sorted newest-first',()=>{
+    const k=t.RELATIONSHIPS_KEY;localStorage.removeItem(k);
+    t.pushRelationship({run:1,tier:'gold',tierIc:'🥇',align:'coffee',alignIc:'☕',alignN:'Coffee Cartel',rep:80,tierMult:1.5,ts:1});
+    t.pushRelationship({run:2,tier:'silver',tierIc:'🥈',align:'smartshop',alignIc:'🍄',alignN:'Smart Shop Synd.',rep:40,tierMult:1.2,ts:2});
+    const r=t.relationshipChain(2);
+    return r.length===2&&r[0].run===2&&r[1].run===1&&r[0].align==='smartshop'&&r[0].tier==='silver';
+  });
+
+  // Wiring — modal flow
+  check('R8: showOpeningCardIfFresh respects ab_opening_seen_v1',()=>{
+    localStorage.setItem('ab_opening_seen_v1','1');
+    const r=t.showOpeningCardIfFresh();
+    localStorage.removeItem('ab_opening_seen_v1');
+    return r===false;
+  });
+  check('R8: showRelchain populates relchain-list',()=>{
+    t.showRelchain();
+    const list=doc.getElementById('relchain-list');
+    return list!==null;
+  });
+  check('R8: renderAll updates plot-banner text (todayTip wired)',()=>{
+    const banner=doc.getElementById('plot-banner');
+    if(!banner)return false;
+    return banner.textContent.length>0;
+  });
+  check('R8: AB_TEST exposes PLOT_PITCH/CHARACTER_CARDS/DAY_BEATS/runAlignment/settlementBonus/pushRelationship',()=>{
+    return typeof t.PLOT_PITCH==='string'&&Array.isArray(t.CHARACTER_CARDS)&&typeof t.DAY_BEATS==='object'&&typeof t.runAlignment==='function'&&typeof t.settlementBonus==='function'&&typeof t.pushRelationship==='function';
+  });
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

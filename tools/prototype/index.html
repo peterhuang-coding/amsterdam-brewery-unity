@@ -251,6 +251,30 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 #body-modal .bt-row .btn{padding:6px 12px;font-size:12px}
 #body-modal .bt-row.locked{opacity:.4}
 #body-modal .bt-row.locked .btn{pointer-events:none}
+/* Phase E2 — faction modal (F 键) */
+#fac-modal{position:fixed;inset:0;background:#000000a8;display:flex;align-items:center;justify-content:center;z-index:101}
+#fac-modal.hidden{display:none}
+#fac-modal .um-box{background:var(--panel);border:1px solid var(--gold);border-radius:12px;padding:18px;max-width:760px;width:92%;max-height:86vh;overflow:auto}
+#fac-modal h2{color:var(--gold);font-size:16px;margin-bottom:4px;text-align:center}
+#fac-modal .um-meta{text-align:center;color:var(--muted);font-size:11px;margin-bottom:10px}
+/* Phase E4 — craft modal (C/G 键,共用 modal 双 tab) */
+#craft-modal{position:fixed;inset:0;background:#000000a8;display:flex;align-items:center;justify-content:center;z-index:101}
+#craft-modal.hidden{display:none}
+#craft-modal .um-box{background:var(--panel);border:1px solid var(--gold);border-radius:12px;padding:18px;max-width:760px;width:92%;max-height:86vh;overflow:auto}
+#craft-modal h2{color:var(--gold);font-size:16px;margin-bottom:4px;text-align:center}
+#craft-modal .um-meta{text-align:center;color:var(--muted);font-size:11px;margin-bottom:10px}
+/* Phase v3 ledger modal (K 键 — 知识本) */
+#ledger-modal{position:fixed;inset:0;background:#000000a8;display:flex;align-items:center;justify-content:center;z-index:101}
+#ledger-modal.hidden{display:none}
+#ledger-modal .um-box{background:var(--panel);border:1px solid var(--gold);border-radius:12px;padding:18px;max-width:760px;width:92%;max-height:86vh;overflow:auto}
+#ledger-modal h2{color:var(--gold);font-size:16px;margin-bottom:4px;text-align:center}
+#ledger-modal .um-meta{text-align:center;color:var(--muted);font-size:11px;margin-bottom:10px}
+/* Phase v3 inv modal (I 键 — 收藏墙) */
+#inv-modal{position:fixed;inset:0;background:#000000a8;display:flex;align-items:center;justify-content:center;z-index:101}
+#inv-modal.hidden{display:none}
+#inv-modal .um-box{background:var(--panel);border:1px solid var(--gold);border-radius:12px;padding:18px;max-width:760px;width:92%;max-height:86vh;overflow:auto}
+#inv-modal h2{color:var(--gold);font-size:16px;margin-bottom:4px;text-align:center}
+#inv-modal .um-meta{text-align:center;color:var(--muted);font-size:11px;margin-bottom:10px}
 /* Phase E4 — craft/gift tabs (单 modal 双 tab,共用 um-box shell) */
 .craft-tab{display:inline-block;padding:3px 10px;margin-right:4px;cursor:pointer;border-radius:6px;background:#ffffff10;color:var(--muted);font-size:11px}
 .craft-tab.on{background:var(--gold);color:#000;font-weight:bold}

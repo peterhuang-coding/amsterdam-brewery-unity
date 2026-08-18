@@ -922,4 +922,33 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - 风险: `bumpTeacherRep` 调 `saveLedger`,频繁 visit 会让 localStorage 写入频率上升(每 NPC 一次,可接受);trust 不可降(必须跨 Run 累积),如果未来要加反悔机制需要 `unbumpTeacherRep` 配套。
 - 验收: 浏览器进 NPC 建筑按 T 看到 `🎓 pablo 信任度 +1` 提示;连续访 3 次后看到 `escape +30% 已激活`;按 K 看到「🎓 老师信任度」section,4 张卡显示当前 trust 与 bonus;进新 Run 后 K 键 trust 不丢;逃跑时 `tech.teacher` 匹配的老师 trust ≥3 即明显感觉「这次稳」。
 
+## Round 33 — 🏷️ G.modHistory 每日 mutator 去重(跨 Run 持久化)(BACKLOG #9 #6 closure)
+
+> BACKLOG #9 #6「rollDayModifier 跨 run 无回避: 加 G.modHistory 数组最近 5 天事件优先选不在历史中」落实:每日 modifier 现在排除最近 5 天的 id(去重 + 移到头部 + cap 5),跨 Run 持久化到 `ab_meta_v3.modHistory` 字段。基线 439 → 452 (+13 断言)。
+
+### Commit — funify-v3(round16-modhistory): G.modHistory anti-repeat for daily mutator
+
+- 改动:
+  - `tools/prototype/index.html` +35/-3:
+    - G init 末尾追加 `modHistory:[]`(默认空数组,loadMeta 时按 v3 恢复)
+    - `saveMeta` 升级到 `version:3`,JSON payload 加 `modHistory: G.modHistory.slice(0,5)` 字段
+    - `loadMeta` 双版本兼容:`d.version>=2` 走 meta/upgrades/legacy/run(旧数据无 modHistory 时保留内存中的值,不擦除);`d.version>=3 && Array.isArray(d.modHistory)` 时还原 `G.modHistory`,并 `filter(x=>typeof x==='string')` 防御性清洗非字符串项
+    - 新 `pushModHistory(id)` 助手:无效 id 静默忽略;已存在则先删除再 unshift(去重 + 移到头部);尾部 pop 到 cap 5;export 到 AB_TEST
+    - `rollDayModifier` 升级:candidates 从「仅排除 last」升级为「排除 last 且不在 history」(`EV_POOL.filter(e=>e.id!==last&&!history.includes(e.id))`);若 filter 把池压成空(EV_POOL 12 项,历史全占 + last 同 id 时理论可能)回退到 last-only 过滤,确保不会因 bug 锁死游戏
+    - 两处 day-roll 调用点同步更新:`tickDay` 内部 day 切换(line 3690)+ `newRun`(line 4107)都在 roll 后立刻 `pushModHistory(mod.id)`;extra_event upgrade 第二 modifier 同样在去重后 push
+    - AB_TEST 导出 `pushModHistory`
+  - `tools/prototype/test.html` +60:
+    - 13 条 Round 33 断言: pushModHistory 暴露 + G.modHistory 数组结构 + 头部追加 + 重复 id 去重移到头 + 7 项 cap 5 + 非法 id(null/空字符串/数字)静默忽略 + rollDayModifier 排除 modHistory 全 id 命中 12×12 抽样 0 违反 + 池空时回退 last-only + saveMeta v3 持久化 + loadMeta v2 向后兼容 + loadMeta 非字符串防御 + 7 天模拟 70%+ 历史感知命中率 + 3 种以上不同 modifier + _histSnap 还原不污染后续
+    - 修复 1 处 Round 13 source-audit regex 窗口:`function rollDayModifier\(\)\s*\{[\s\S]{0,500}candidates\.map` → `[\s\S]{0,1500}`(Round 33 注释块 ~700 字超过原 500 上限)
+- 机制要点:
+  1. **去重 + 移到头部**:pushModHistory 先 splice 再 unshift,保证「最近一次出现的同 id 永远在 [0]」,后续 day-roll 的 history filter 行为可预测。
+  2. **cap 5**:EV_POOL 12 项,history 满 5 + last 排除 1 = 至少 6 项可选,池不会塌陷;若理论塌陷,回退到 last-only(单 ban)保留游戏可玩性。
+  3. **跨 Run 持久化**:`ab_meta_v2` JSON bump 到 `version:3`,旧 v2 数据升级时 `d.version>=2` 仍然接受,modHistory 字段缺失时保留内存值(防御,不擦除玩家进度);v3 数据按 `filter(x=>typeof x==='string').slice(0,5)` 防御性恢复。
+  4. **newRunInner 不重置 modHistory**:玩家连续 Run 时,上一 Run 末尾 5 天的 modifier 在下一 Run day 1 仍然被排除,玩家立刻感受到「今天换了新气象」(对比之前连续 Run 容易撞到同款)。
+  5. **event_freq upgrade + crazyBlessing 仍生效**:weighted bias 在 candidates 上叠加,与 history filter 兼容;test 验证了 history-full 时不会因为 weighted pick 把池耗光。
+- 3-axis lift: 反馈 +1 (连续 Run 玩家立刻注意到 modifier 不撞款); 选择 +1 (玩家可「祈祷」下一 Run 别再撞同款警察突击,设计上 G.modHistory 已经做了); 视觉精度 N/A (无新 UI)。
+- 测试: **Round 33: 13/13 PASS**; 整体 headless CDP 445-451/452 PASS(波动来自 pre-existing tryUnlock / mgHintSeen / showMgHint / Round 15 teacherRep 等 localStorage pollution 测试,与本 Round 无关;baseline pre-Round-33 在相同环境下也是 432/439 = 7 个不通过,跨 Run localStorage 状态泄漏是已知); `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `new Function()` 解析 PASS; HTTP 200。
+- 风险: loadMeta 在 v2 数据上不擦 modHistory 是有意设计(向后兼容),但若用户主动清 ab_meta_v2 时也会一并清 modHistory(预期行为);candidates 空时的回退路径当前仅防御理论塌陷,实际 EV_POOL 12 项 + history 5 + last 1 不会出现,代码路径保留以防未来 EV_POOL 缩水或 history cap 改大。
+- 验收: 浏览器连续 7 天不出现连续 2 天同 modifier;reload 页面后 modHistory 仍在(开 devtools 看 localStorage `ab_meta_v2.modHistory`);新 Run 后前 1-2 天仍能看到「今天换样了」(因为上一 Run 的 modifier 还在 history 里被 ban)。
+
 

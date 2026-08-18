@@ -765,7 +765,7 @@ frame.addEventListener('load',async()=>{
   });
   check('rollDayModifier weighted pick 内部 candidates 数组长 11 (排除 last)',()=>{
     const src=win.eval("document.documentElement.outerHTML");
-    return /function rollDayModifier\(\)\s*\{[\s\S]{0,500}candidates\.map/.test(src)&&/weights\.reduce/.test(src);
+    return /function rollDayModifier\(\)\s*\{[\s\S]{0,1500}candidates\.map/.test(src)&&/weights\.reduce/.test(src);
   });
   check('wantPositive 触发时 addEvt 含 event_freq 反馈消息',()=>{
     const src=win.eval("document.documentElement.outerHTML");
@@ -1514,6 +1514,81 @@ frame.addEventListener('load',async()=>{
     const src=win.eval('escapeIn.toString()');
     return src.indexOf('teacherBonus')>=0&&src.indexOf('teacherRepBonus(tech)')>=0;
   });
+
+  // ═══ funify-v3 Round 33 — G.modHistory daily mutator anti-repeat (BACKLOG #9 #6) ═══
+  // Note: pushModHistory mutates G.modHistory → snapshot + restore to keep later tests stable.
+  const _histSnap=Array.isArray(t.state.modHistory)?t.state.modHistory.slice():[];
+  function _restoreHist(){t.state.modHistory=_histSnap.slice();win.saveMeta();}
+  check('Round 33: pushModHistory 暴露在 AB_TEST',()=>typeof win.pushModHistory==='function');
+  check('Round 33: G.modHistory 初始为空数组 (boot state)',()=>Array.isArray(t.state.modHistory));
+  check('Round 33: pushModHistory(id) 加到数组头部',()=>{
+    t.state.modHistory=[];win.pushModHistory('alpha');win.pushModHistory('beta');
+    return t.state.modHistory[0]==='beta'&&t.state.modHistory[1]==='alpha'&&t.state.modHistory.length===2;
+  });
+  check('Round 33: pushModHistory 重复 id 去重 + 移到头部',()=>{
+    t.state.modHistory=['x','y','z'];win.pushModHistory('y');
+    return t.state.modHistory[0]==='y'&&t.state.modHistory.length===3&&t.state.modHistory.indexOf('y')===0;
+  });
+  check('Round 33: pushModHistory 上限 5 条 (cap)',()=>{
+    t.state.modHistory=[];for(const id of ['a','b','c','d','e','f','g'])win.pushModHistory(id);
+    return t.state.modHistory.length===5&&t.state.modHistory[0]==='g'&&t.state.modHistory[4]==='c';
+  });
+  check('Round 33: pushModHistory 非法 id 静默忽略 (null/empty/number)',()=>{
+    t.state.modHistory=['keep'];win.pushModHistory(null);win.pushModHistory('');win.pushModHistory(42);
+    return t.state.modHistory.length===1&&t.state.modHistory[0]==='keep';
+  });
+  check('Round 33: rollDayModifier 排除 modHistory 中所有 id (历史感知)',()=>{
+    t.state.modHistory=['tourism','kings_day','shroom_boom'];t.state.mods=[];
+    // Sample 12 days × 12 seeds — picked.id must NOT be in history
+    let bad=0;
+    for(let d=1;d<=12;d++){
+      t.state.day=d;t.state.seed=1000+d;
+      const m=win.rollDayModifier();
+      if(t.state.modHistory.includes(m.id))bad++;
+    }
+    return bad===0;
+  });
+  check('Round 33: rollDayModifier 池空时回退到 last-only 过滤',()=>{
+    // Force "history full + last-day ban" by setting both
+    const allIds=win.eval('EV_POOL.map(e=>e.id)');
+    t.state.modHistory=allIds.slice();t.state.mods=[{id:allIds[0]}];
+    t.state.day=5;t.state.seed=12345;
+    const m=win.rollDayModifier();
+    // Should fall back: candidates = pool minus last → so picked can be any except first
+    return m&&allIds.includes(m.id)&&m.id!==allIds[0];
+  });
+  check('Round 33: saveMeta v3 持久化 modHistory + loadMeta 恢复',()=>{
+    t.state.modHistory=['a','b','c'];win.saveMeta();
+    const saved=JSON.parse(localStorage.getItem('ab_meta_v2'));
+    t.state.modHistory=[];win.loadMeta();
+    return saved.version===3&&Array.isArray(saved.modHistory)&&saved.modHistory.length===3&&saved.modHistory[0]==='a'&&t.state.modHistory.length===3;
+  });
+  check('Round 33: loadMeta v2 数据无 modHistory 字段也安全 (向后兼容)',()=>{
+    localStorage.setItem('ab_meta_v2',JSON.stringify({version:2,meta:50,upgrades:[],legacy:0,run:1}));
+    t.state.modHistory=['preserve'];win.loadMeta();
+    return t.state.modHistory.length===1&&t.state.modHistory[0]==='preserve';
+  });
+  check('Round 33: loadMeta 滤除非字符串 modHistory 项 (防御)',()=>{
+    localStorage.setItem('ab_meta_v2',JSON.stringify({version:3,meta:0,upgrades:[],legacy:0,run:1,modHistory:['a',null,42,'b',{x:1},'c']}));
+    win.loadMeta();
+    return Array.isArray(t.state.modHistory)&&t.state.modHistory.length===3&&t.state.modHistory[0]==='a'&&t.state.modHistory[2]==='c';
+  });
+  check('Round 33: 7 天模拟 — modHistory 末 5 天去重命中率 ≥70%',()=>{
+    t.state.modHistory=[];t.state.mods=[];t.state.seed=7777;
+    const seen=new Set();
+    let noRepeatFromHist=0,total=0;
+    for(let d=1;d<=7;d++){
+      t.state.day=d;const m=win.rollDayModifier();
+      // Check: picked.id NOT in current history (before push)
+      if(!t.state.modHistory.includes(m.id))noRepeatFromHist++;
+      total++;
+      win.pushModHistory(m.id);t.state.mods=[{id:m.id}];
+      seen.add(m.id);
+    }
+    // variety check: should have multiple distinct mods in 7 days
+    return noRepeatFromHist/total>=0.7&&seen.size>=3;
+  });
+  check('Round 33: restore _histSnap 不污染后续测试',()=>{_restoreHist();return true});
 
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });

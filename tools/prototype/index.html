@@ -1303,8 +1303,8 @@ function metaIndustryBoost(id){
   const upId=idMap[id]||id;
   return hasUpgrade('meta_'+upId+'_master')?1.2:1;
 }
-function saveMeta(){try{localStorage.setItem('ab_meta_v2',JSON.stringify({version:2,meta:G.meta,upgrades:G.upgrades,legacy:G.legacy,run:G.run}))}catch(e){console.warn('ab_meta_v2 save failed',e)}}
-function loadMeta(){try{const d=JSON.parse(localStorage.getItem('ab_meta_v2'));if(d&&d.version===2){G.meta=Math.max(0,d.meta|0);G.upgrades=Array.isArray(d.upgrades)?[...new Set(d.upgrades)]:[];G.legacy=Math.max(0,d.legacy|0);G.run=Math.max(0,d.run|0)}}catch(e){console.warn('ab_meta_v2 load failed',e)}}
+function saveMeta(){try{localStorage.setItem('ab_meta_v2',JSON.stringify({version:3,meta:G.meta,upgrades:G.upgrades,legacy:G.legacy,run:G.run,modHistory:Array.isArray(G.modHistory)?G.modHistory.slice(0,5):[]}))}catch(e){console.warn('ab_meta_v2 save failed',e)}}
+function loadMeta(){try{const d=JSON.parse(localStorage.getItem('ab_meta_v2'));if(d&&d.version>=2){G.meta=Math.max(0,d.meta|0);G.upgrades=Array.isArray(d.upgrades)?[...new Set(d.upgrades)]:[];G.legacy=Math.max(0,d.legacy|0);G.run=Math.max(0,d.run|0)}if(d&&d.version>=3&&Array.isArray(d.modHistory)){G.modHistory=d.modHistory.filter(x=>typeof x==='string').slice(0,5)}}catch(e){console.warn('ab_meta_v2 load failed',e)}}
 // funify-v3 Round 30 — Cross-run Ledger (📒 知识本): strainNotes + brewNotes + barRegulars + researchTopics + surfDiscovered + visited persist ab_ledger_v1
 function saveLedger(){try{localStorage.setItem('ab_ledger_v1',JSON.stringify({version:1,strainNotes:G.strainNotes||{},brewNotes:G.brewNotes||{},barRegulars:G.barRegulars||[],researchTopics:G.researchTopics||[],surfDiscovered:G.surfDiscovered||[],visited:G.visited||[],recipeKnowledge:G._recipeKnowledge||{},teacherRep:G.teacherRep||{pablo:0,ravi:0,sofie:0,chen:0}}))}catch(e){console.warn('ab_ledger_v1 save failed',e)}}
 function loadLedger(){try{const d=JSON.parse(localStorage.getItem('ab_ledger_v1'));if(d&&d.version===1){if(d.strainNotes&&typeof d.strainNotes==='object')G.strainNotes=d.strainNotes;if(d.brewNotes&&typeof d.brewNotes==='object'){for(const t of ['IPA','Stout','Lager']){if(d.brewNotes[t]&&typeof d.brewNotes[t]==='object'){G.brewNotes[t].count=Math.max(G.brewNotes[t].count|0,d.brewNotes[t].count|0);G.brewNotes[t].best=Math.max(G.brewNotes[t].best|0,d.brewNotes[t].best|0)}}}if(Array.isArray(d.barRegulars))G.barRegulars=Array.from(new Set([...(G.barRegulars||[]),...d.barRegulars]));if(Array.isArray(d.researchTopics))G.researchTopics=Array.from(new Set([...(G.researchTopics||[]),...d.researchTopics]));if(Array.isArray(d.surfDiscovered))G.surfDiscovered=Array.from(new Set([...(G.surfDiscovered||[]),...d.surfDiscovered]));if(Array.isArray(d.visited))G.visited=Array.from(new Set([...(G.visited||[]),...d.visited]));if(d.recipeKnowledge&&typeof d.recipeKnowledge==='object')G._recipeKnowledge=d.recipeKnowledge;if(d.teacherRep&&typeof d.teacherRep==='object'){if(!G.teacherRep)G.teacherRep={pablo:0,ravi:0,sofie:0,chen:0};for(const n of ['pablo','ravi','sofie','chen']){const v=d.teacherRep[n]|0;if(v>(G.teacherRep[n]|0))G.teacherRep[n]=v}}}}catch(e){console.warn('ab_ledger_v1 load failed',e)}}
@@ -1724,7 +1724,7 @@ function startFromModal(){
 }
 function skipTutorial(){try{localStorage.setItem('ab_skip_tutorial','1')}catch(e){console.warn('ab_skip_tutorial save failed',e)};document.getElementById('start-modal').classList.add('hidden');startFromModal()}
 
-const G={p:{x:100,y:400,tx:100,ty:400},day:1,ti:0,money:250,rep:0,loc:'de_pijp',ind:{},bs:[5,3,2],brewI:-1,brewT:0,events:[],mods:[],auto:false,inside:null,mg:null,ended:false,ts:0,tr:0,run:0,legacy:0,_at:null,_wp:null,_otx:null,_oty:null,_st:0,_sx:0,_sy:0,sch:[],seed:42,meta:0,metaPending:0,objs:[],upgrades:[],objDefs:{},_objDay:0,mood:0,greetedToday:[],visitedToday:[],visited:[],shop:{},surfDiscovered:[],inventory:[],todayWave:null,escapeLevel:0,escapeTeacher:null,escUsed:0,escapeLearnDay:0,keys:{},lastClickAt:0,achievements:[],achTree:{brew:0,coffee:0,rogue:0,scholar:0},teacherRep:{pablo:0,ravi:0,sofie:0,chen:0},_run:{}};
+const G={p:{x:100,y:400,tx:100,ty:400},day:1,ti:0,money:250,rep:0,loc:'de_pijp',ind:{},bs:[5,3,2],brewI:-1,brewT:0,events:[],mods:[],auto:false,inside:null,mg:null,ended:false,ts:0,tr:0,run:0,legacy:0,_at:null,_wp:null,_otx:null,_oty:null,_st:0,_sx:0,_sy:0,sch:[],seed:42,meta:0,metaPending:0,objs:[],upgrades:[],objDefs:{},_objDay:0,mood:0,greetedToday:[],visitedToday:[],visited:[],shop:{},surfDiscovered:[],inventory:[],todayWave:null,escapeLevel:0,escapeTeacher:null,escUsed:0,escapeLearnDay:0,keys:{},lastClickAt:0,achievements:[],achTree:{brew:0,coffee:0,rogue:0,scholar:0},teacherRep:{pablo:0,ravi:0,sofie:0,chen:0},modHistory:[],_run:{}};
 for(const k of Object.keys(IND_DEF))G.ind[k]={lv:0,xp:0};
 const MG={};
 
@@ -1785,6 +1785,10 @@ function rollDayObjectives(){
 //   Without event_freq: uniform weights (good=1, neutral=1, bad=1).
 //   With event_freq + 30% chance: good=3, neutral=1, bad=0.5
 //   (≈60% good · ≈20% neutral · ≈10% bad when triggered; pool never shrinks).
+// funify-v3 Round 16 — G.modHistory anti-repeat (BACKLOG #9 #6):
+//   Filter out IDs in G.modHistory (last 5 days, persisted across runs via saveMeta v3).
+//   Falls back gracefully to last-only filter if pool would otherwise be empty
+//   (EV_POOL only has 12 items; after 5 distinct days + last-day ban, ≥6 remain).
 function rollDayModifier(){
   const sd=G.seed+G.day*31+7;
   const r=Math.abs((sd*1103515245+12345)%2147483647);
@@ -1792,7 +1796,10 @@ function rollDayModifier(){
   // Apply event_freq: weighted bias instead of hard filter
   // Phase E8 — UFO blessing 跨日生效:触发后本日 modifier 强制偏正向
   const wantPositive=(hasUpgrade('event_freq')&&(r%100)<30)||(G.shop&&G.shop.crazyBlessing);
-  const candidates=EV_POOL.filter(e=>e.id!==last);
+  // Round 16: history-aware anti-repeat — last-day ban + history ban, with graceful fallback
+  const history=Array.isArray(G.modHistory)?G.modHistory:[];
+  let candidates=EV_POOL.filter(e=>e.id!==last&&!history.includes(e.id));
+  if(candidates.length===0)candidates=EV_POOL.filter(e=>e.id!==last);
   const weights=candidates.map(e=>{
     const k=EV_KIND[e.id]||'neutral';
     if(wantPositive){
@@ -1813,6 +1820,19 @@ function rollDayModifier(){
     addEvt('good','🎲 event_freq 已生效 (30%偏正向 · 本日好事件)');
   }
   return picked;
+}
+
+// funify-v3 Round 16 — G.modHistory helper (BACKLOG #9 #6)
+// Push today's modifier ID onto the front of G.modHistory, deduping recent duplicates
+// and capping the array at 5 entries. Called from both day-roll sites (autoStep + newRun).
+function pushModHistory(id){
+  if(!id||typeof id!=='string')return;
+  if(!Array.isArray(G.modHistory))G.modHistory=[];
+  // De-dup: if id already in history, remove it first so the latest occurrence moves to front
+  const idx=G.modHistory.indexOf(id);
+  if(idx!==-1)G.modHistory.splice(idx,1);
+  G.modHistory.unshift(id);
+  while(G.modHistory.length>5)G.modHistory.pop();
 }
 
 // Pick 3 unique upgrades for end-of-run modal
@@ -3687,8 +3707,8 @@ function advanceTimeAuto(){
     if(G.day>7){endGame(G.objs.every(o=>o.done));return}
     if(hasUpgrade('canal_cruise')){G.rep+=5;addEvt('info','🚢 Canal Cruise 通票 +5 rep')}
     rollDayObjectives();
-    const mod=rollDayModifier();G.mods=[{t:mod.ic+' '+mod.t,id:mod.id,effect:mod.effect}];
-    if(hasUpgrade('extra_event')){const mod2=rollDayModifier();if(mod2.id!==mod.id)G.mods.push({t:mod2.ic+' '+mod2.t,id:mod2.id,effect:mod2.effect})}
+    const mod=rollDayModifier();G.mods=[{t:mod.ic+' '+mod.t,id:mod.id,effect:mod.effect}];pushModHistory(mod.id);
+    if(hasUpgrade('extra_event')){const mod2=rollDayModifier();if(mod2.id!==mod.id){G.mods.push({t:mod2.ic+' '+mod2.t,id:mod2.id,effect:mod2.effect});pushModHistory(mod2.id);}}
     if(G.money<0){endGame(false);return}
     const mut=rollDayMutator();
     addEvt('info','🏷️ 今日变量 · '+mut.ic+' '+mut.n+' — '+mut.d);
@@ -4104,8 +4124,8 @@ function toggleMuteBtn(){AUDIO.toggleMute();const b=document.getElementById('mut
 
 function newRun(seed){
   G.run++;G.seed=Number.isFinite(seed)?seed:(42+Math.floor(Math.random()*900000));newRunInner();rollDayObjectives();
-  const mod=rollDayModifier();G.mods=[{t:mod.ic+' '+mod.t,id:mod.id,effect:mod.effect}];
-  if(hasUpgrade('extra_event')){const mod2=rollDayModifier();if(mod2.id!==mod.id)G.mods.push({t:mod2.ic+' '+mod2.t,id:mod2.id,effect:mod2.effect})}
+  const mod=rollDayModifier();G.mods=[{t:mod.ic+' '+mod.t,id:mod.id,effect:mod.effect}];pushModHistory(mod.id);
+  if(hasUpgrade('extra_event')){const mod2=rollDayModifier();if(mod2.id!==mod.id){G.mods.push({t:mod2.ic+' '+mod2.t,id:mod2.id,effect:mod2.effect});pushModHistory(mod2.id);}}
   const mut0=rollDayMutator();addEvt('info','🏷️ 今日变量 · '+mut0.ic+' '+mut0.n+' — '+mut0.d);
   saveMeta();
   document.getElementById('ba').textContent='▶ 自动运行';document.getElementById('ba').classList.remove('on');document.getElementById('upg-modal').classList.add('hidden');
@@ -4140,6 +4160,7 @@ window.AB_TEST={
   buildRunSummary,buildRunEpitaph,pushRunHistory,loadRunHistory,renderRunHistory,doBodyTrade,openBodyTrade,closeBodyTrade,bodyOpen,moodFloor,startBrew,startSurf,sBarC,endGame,MG,
   ledgerOpen,showLedger,closeLedger,toggleLedger,renderLedger,saveLedger,loadLedger,
   teacherRepBonus,bumpTeacherRep,
+  pushModHistory,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

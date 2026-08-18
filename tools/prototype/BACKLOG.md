@@ -125,7 +125,7 @@
 - ✅ [index.html:601 G escapeLevel:0 无信任] 加 `G.teacherRep:{}` 3 次同导师对话升级 escape success 10% — **Round 32 完成 (G.teacherRep + teacherRepBonus + bumpTeacherRep + escapeIn phase3 接入 + K 键 Section 7 + ab_ledger_v1 持久化 + 13 断言 → 439/439 PASS)**
 - [ ] [index.html:1019 finBar combo 局内重置] 加 `bestRunCombo` 在 upgrade 模态展示
 - [ ] [index.html:2207 endGame legacy 太简单] 加 `totalObjsDone*5` 鼓励完成目标
-- [ ] [index.html:626-639 rollDayModifier 跨 run 无回避] 加 `G.modHistory` 数组最近 5 天事件优先选不在历史中
+- [ ] [index.html:626-639 rollDayModifier 跨 run 无回避] 加 `G.modHistory` 数组最近 5 天事件优先选不在历史中 — **Round 33 funify-v3 修 (G.modHistory:[] + pushModHistory + rollDayModifier history-aware filter + saveMeta v3 bump + 13 断言)**
 - [ ] [index.html:601 G initial 没 inventory 历史] 加 "🗃️ 收藏" 模态展示累计
 - [ ] [index.html:832 tryEscape 只看 escapeLevel] 加 `G.escapeCaught:0` 跑局报告
 

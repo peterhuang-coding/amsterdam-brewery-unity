@@ -1112,6 +1112,10 @@ const SHROOM_RECIPES=[
   {id:'lionsmane_pilsner',n:'狮鬃皮尔森',  out:'啤酒',   basePrice:75,  inputs:{shroom:'lionsMane',brewBarrel:'Lager'},   cross:'brewery',desc:'酒馆限定'},
   {id:'cordyceps_jerky',  n:'虫草肉干',    out:'肉干',   basePrice:60,  inputs:{shroom:'cordyceps',surfCatch:'珍珠'},     cross:'surf',desc:'高蛋白零食'},
   {id:'golden_special',   n:'金色特调',    out:'鸡尾酒', basePrice:100, inputs:{shroom:'goldenTeacher',brewBarrel:'IPA',coffeeBean:'sumatra'},cross:'bar',desc:'调酒师联盟限定款'},
+  // Round 7 (Phase B5): 3 new beer types → cross-game recipes for Pilsner/Sour/Belgian Tripel
+  {id:'pilsner_goldenTeacher',n:'金色皮尔森', out:'瓶装',  basePrice:72,  inputs:{brewBarrel:'Pilsner',shroom:'goldenTeacher'},        cross:'brewery',desc:'金色入门'},
+  {id:'sour_philosopher',     n:'酸哲学',     out:'瓶装',  basePrice:80,  inputs:{brewBarrel:'Sour',shroom:'philosopher'},            cross:'brewery',desc:'酸+沉思'},
+  {id:'tripel_cordyceps',     n:'修道院补剂', out:'胶囊',  basePrice:88,  inputs:{brewBarrel:'BelgianTripel',shroom:'cordyceps'},     cross:'brewery',desc:'烈酒+虫草·耐力'},
 ];
 // 7 灵魂事件 — 每 run 一次性触发,根据培养参数 + 行业热度判定
 // kind: police_raid(已存在)/contamination_outbreak/new_strain/customer_undercover/power_outage/rival_strain/legendary_harvest
@@ -1161,6 +1165,132 @@ function shroomApplyUpgradeBoosts(s){
   s._lightTol=tracks.lamp*1;
   s._jarCap=1+tracks.jar;       // base 1 jar + upgrade tiers
   s._recipeStarMin=[0,3,4,2][tracks.research]||99;
+}
+// funify-v3 Round 7 — Phase B5 Brewery Dave-depth (6 beers + 4 yeasts + 8 soul events + 5 upgrade tracks)
+// 6 啤酒 — 3 existing (IPA/Stout/Lager) + 3 new (Pilsner/Sour/Belgian Tripel). recipe=[m,h,y] where y ∈ 0..3.
+// Each beer has hidden target temp (brewer learns by trial + G.brewNotes ledger).
+const BEER_CATALOG=[
+  {id:'IPA',           ic:'🍺', n:'IPA',            temp:55, recipe:[1,0,0], desc:'苦·花·琥珀',  yieldBase:30},
+  {id:'Stout',         ic:'🥃', n:'Stout',          temp:68, recipe:[2,1,0], desc:'焦·黑·厚',    yieldBase:32},
+  {id:'Lager',         ic:'🍻', n:'Lager',          temp:48, recipe:[0,2,1], desc:'净·爽·淡',    yieldBase:28},
+  {id:'Pilsner',       ic:'🌾', n:'Pilsner',        temp:51, recipe:[1,1,1], desc:'草·脆·金',    yieldBase:34},
+  {id:'Sour',          ic:'🍋', n:'Sour',           temp:42, recipe:[0,1,3], desc:'酸·果·野',    yieldBase:38},
+  {id:'BelgianTripel', ic:'🍯', n:'Belgian Tripel', temp:72, recipe:[2,0,2], desc:'果·烈·修道院',yieldBase:42},
+];
+const BEER_BY_ID=Object.fromEntries(BEER_CATALOG.map(b=>[b.id,b]));
+// 4 酵母 — 每种有 healthMul(酵母健康倍率) + tempTolerance(温度容差)。
+const YEAST_CATALOG=[
+  {id:'ale',     ic:'🍞', n:'艾尔酵母',     healthMul:1.00, tempTol:0, desc:'中性·广谱',     cost:0},
+  {id:'lager',   ic:'❄️', n:'拉格酵母',    healthMul:1.05, tempTol:1, desc:'低温·清爽',     cost:0},
+  {id:'belgian', ic:'🍯', n:'比利时酵母',   healthMul:1.10, tempTol:0, desc:'果·烈·修道院',  cost:0},
+  {id:'wild',    ic:'🌿', n:'野菌酵母',     healthMul:0.95, tempTol:2, desc:'酸·多变·艺术',  cost:0},
+];
+const YEAST_BY_ID=Object.fromEntries(YEAST_CATALOG.map(y=>[y.id,y]));
+// 8 灵魂事件 — 每 run 一次性触发,根据 mash/boil/ferment 节奏 + 行业热度判定
+const BREW_SOUL_EVENTS=[
+  {id:'tank_overflow',     ic:'💥', n:'锅溢出',     desc:'糖化锅沸溢 — 当前 30% 报废,酵母死掉',
+   effect:{kind:'tank_overflow',     lossFraction:0.3, killYeast:true}},
+  {id:'fermentation_stuck',ic:'🧊', n:'发酵卡住',   desc:'温度漂移 — 后续窗口容差 +5',
+   effect:{kind:'fermentation_stuck',tempWindowBonus:5}},
+  {id:'customers_stampede',ic:'🏃', n:'顾客涌门',   desc:'下班高峰 — 当日酿酒收入 ×1.30',
+   effect:{kind:'customers_stampede',priceMult:1.30, dayDuration:1}},
+  {id:'contaminated_hops', ic:'🤢', n:'酒花霉变',   desc:'进口酒花长霉 — 风味 -1★',
+   effect:{kind:'contaminated_hops',  starPenalty:1}},
+  {id:'kings_day_rush',    ic:'👑', n:'国王节大单', desc:'橙色全城 — +$80 + rep +2',
+   effect:{kind:'kings_day_rush',     money:80, repChange:2}},
+  {id:'celebrity_visit',   ic:'🌟', n:'名人造访',   desc:'本地名流探店 — +$60 但订单更挑剔',
+   effect:{kind:'celebrity_visit',    money:60, pickyOrder:true}},
+  {id:'legendary_batch',   ic:'✨', n:'传说批次',   desc:'★5 + 解锁一条新配方',
+   effect:{kind:'legendary_batch',    starBonus:5, unlockRecipe:true}},
+  {id:'heineken_buyout',   ic:'🏭', n:'Heineken 收购',desc:'区域经理全资 — run 永久酿酒 ×1.30',
+   effect:{kind:'heineken_buyout',    industryMul:1.30, runPermanent:true}},
+];
+// 5 升级树 × 3 tier — copper_kettle(热效率)/yeast_bank(酵母储备)/wood_barrel(陈化)/ice_cooler(冰柜)/recipe_book(配方)
+// Tracks each grant a small boost per tier; player picks 1 of each track across runs.
+const BREW_UPGRADES=[
+  {id:'brew_kettle_1',   track:'copper_kettle',tier:1,cost:8,  name:'🥉 铜锅',     d:'温度容差 +2°C',     f:{tempTolerance:2}},
+  {id:'brew_kettle_2',   track:'copper_kettle',tier:2,cost:14, name:'🥈 不锈钢锅', d:'温度容差 +4°C',     f:{tempTolerance:4}},
+  {id:'brew_kettle_3',   track:'copper_kettle',tier:3,cost:20, name:'🥇 双层蒸汽锅',d:'温度容差 +7°C',     f:{tempTolerance:7}},
+  {id:'brew_yeast_1',    track:'yeast_bank',  tier:1,cost:8,  name:'🧊 冰箱',     d:'酵母健康 ×1.10',    f:{yeastMul:1.10}},
+  {id:'brew_yeast_2',    track:'yeast_bank',  tier:2,cost:14, name:'❄️ 冷藏库',   d:'酵母健康 ×1.20',    f:{yeastMul:1.20}},
+  {id:'brew_yeast_3',    track:'yeast_bank',  tier:3,cost:20, name:'🧪 酵母银行', d:'酵母健康 ×1.35',    f:{yeastMul:1.35}},
+  {id:'brew_barrel_1',   track:'wood_barrel', tier:1,cost:8,  name:'🪵 橡木桶',   d:'★ 完美 +1',         f:{starBonus:1}},
+  {id:'brew_barrel_2',   track:'wood_barrel', tier:2,cost:14, name:'🍷 红酒桶',   d:'★ 完美 +2',         f:{starBonus:2}},
+  {id:'brew_barrel_3',   track:'wood_barrel', tier:3,cost:20, name:'🥃 威士忌桶', d:'★ 完美 +3',         f:{starBonus:3}},
+  {id:'brew_ice_1',      track:'ice_cooler',  tier:1,cost:8,  name:'🧊 冰柜',     d:'低温容差 +3°C',     f:{coldTolerance:3}},
+  {id:'brew_ice_2',      track:'ice_cooler',  tier:2,cost:14, name:'❄️ 深冻',     d:'低温容差 +6°C',     f:{coldTolerance:6}},
+  {id:'brew_ice_3',      track:'ice_cooler',  tier:3,cost:20, name:'🏔️ 极地冷库', d:'低温容差 +10°C',    f:{coldTolerance:10}},
+  {id:'brew_book_1',     track:'recipe_book', tier:1,cost:8,  name:'📒 食谱',     d:'★3+ 触发配方',     f:{recipeStarMin:3}},
+  {id:'brew_book_2',     track:'recipe_book', tier:2,cost:14, name:'📚 酿酒百科', d:'★4+ 触发配方',     f:{recipeStarMin:4}},
+  {id:'brew_book_3',     track:'recipe_book', tier:3,cost:20, name:'🎓 啤酒大师', d:'★2+ 触发配方',     f:{recipeStarMin:2}},
+];
+// Apply purchased brew upgrade tracks to a brew session state. Pure function (mutates s in place).
+function brewApplyUpgradeBoosts(s){
+  if(!s)return;
+  const tracks={copper_kettle:0,yeast_bank:0,wood_barrel:0,ice_cooler:0,recipe_book:0};
+  const ids=(G.brewUpgrades||[]);
+  for(const uid of ids){const u=BREW_UPGRADES.find(x=>x.id===uid);if(!u)continue;tracks[u.track]=Math.max(tracks[u.track],u.tier)}
+  s._tempTol=tracks.copper_kettle*2;
+  s._yeastMul=[1,1.10,1.20,1.35][tracks.yeast_bank]||1;
+  s._starBonus=tracks.wood_barrel*1;
+  s._coldTol=tracks.ice_cooler*3;
+  s._recipeStarMin=[0,3,4,2][tracks.recipe_book]||99;
+}
+// Roll one-shot soul event for the brew run. Triggers based on phase progress + RNG seed.
+function brewRollSoulEvent(s){
+  if(!G._brewSoul)G._brewSoul={picked:null,fired:false,overflow:false,stuck:false,stampede:false,contamHops:false,kingsDay:false,celebrity:false,legendary:false,buyout:false};
+  if(G._brewSoul.fired)return null;
+  const sod=G._brewSoul;
+  const phaseIdx=s.phaseIdx||0;       // 0=sel, 1..3 = mash/boil/ferment hits so far
+  const tn=s.tn||0;
+  const triggers=[
+    {id:'tank_overflow',     ok:sod.overflow===false  && phaseIdx>=1 && seeded(180+tn)<0.10},
+    {id:'fermentation_stuck',ok:sod.stuck===false     && phaseIdx>=2 && seeded(181+tn)<0.10},
+    {id:'customers_stampede',ok:sod.stampede===false  && phaseIdx>=1 && seeded(182+tn)<0.14},
+    {id:'contaminated_hops', ok:sod.contamHops===false&& phaseIdx>=1 && seeded(183+tn)<0.12},
+    {id:'kings_day_rush',    ok:sod.kingsDay===false  && phaseIdx>=2 && seeded(184+tn)<0.10},
+    {id:'celebrity_visit',   ok:sod.celebrity===false && phaseIdx>=2 && seeded(185+tn)<0.12},
+    {id:'legendary_batch',   ok:sod.legendary===false && phaseIdx>=3 && (s._qualityAtRisk===true) && seeded(186+tn)<0.35},
+    {id:'heineken_buyout',   ok:sod.buyout===false    && phaseIdx>=2 && seeded(187+tn)<0.06},
+  ];
+  for(const t of triggers){if(t.ok&&!sod.picked){sod.picked=t.id;return BREW_SOUL_EVENTS.find(e=>e.id===t.id)}}
+  return null;
+}
+// Apply soul event to MG.brew state + emit HUD log + bump faction.
+function brewApplySoul(evt){
+  if(!evt)return;
+  const e=evt.effect;
+  const s=MG.brew;
+  G._brewSoul.fired=true;
+  if(e.kind==='tank_overflow'){
+    if(s){s.lossFraction=e.lossFraction||0.3;s.killYeast=true}
+    bumpFaction('heineken',-2,'锅溢出');
+    addEvt('bad','💥 锅溢出 — 糖化报废');
+  } else if(e.kind==='fermentation_stuck'){
+    if(s){s.tempWindowBonus=e.tempWindowBonus||5}
+    addEvt('warn','🧊 发酵卡住 — 容差 +5°C');
+  } else if(e.kind==='customers_stampede'){
+    if(s){s.priceMult=e.priceMult||1.30;s.stampedeDay=e.dayDuration||1}
+    addEvt('good','🏃 顾客涌门 — 当日酿酒 ×1.30');
+  } else if(e.kind==='contaminated_hops'){
+    if(s){s.starPenalty=e.starPenalty||1}
+    addEvt('bad','🤢 酒花霉变 — 风味 -1★');
+  } else if(e.kind==='kings_day_rush'){
+    if(s){s.kingsDayMoney=e.money||80;s.kingsDayRep=e.repChange||2}
+    addEvt('good','👑 国王节大单 — +$80');
+  } else if(e.kind==='celebrity_visit'){
+    if(s){s.celebMoney=e.money||60;s.pickyOrder=e.pickyOrder||true}
+    addEvt('info','🌟 名人造访 — +$60 但订单挑剔');
+  } else if(e.kind==='legendary_batch'){
+    if(s){s.starBonus=(s.starBonus||0)+(e.starBonus||5);s.unlockRecipe=e.unlockRecipe||true;s.legendaryMoney=(s.legendaryMoney||0)+50}
+    bumpFaction('heineken',3,'传说批次');
+    bumpFaction('academic',1,'酿造合作');
+    addEvt('good','✨ 传说批次 — ★5 + 新配方');
+  } else if(e.kind==='heineken_buyout'){
+    if(!G._run.factionBonus)G._run.factionBonus={brewing:1,coffee:1,shroom:1,bar:1};
+    G._run.factionBonus.brewing*=e.industryMul||1.30;
+    addEvt('good','🏭 Heineken 收购 — 酿酒 ×1.30 (run 永久)');
+  }
 }
 // Roll one-shot soul event for the run. Triggers based on stage progress + RNG seed.
 function shroomRollSoulEvent(s){
@@ -1222,6 +1352,14 @@ function shroomPickRecipe(strainId){
   const candidates=SHROOM_RECIPES.filter(r=>r.inputs.shroom===strainId);
   if(!candidates.length)return null;
   // simple: pick first matching — recipe system expands in later rounds
+  return candidates[0];
+}
+// Round 7 (Phase B5): Pick cross-game recipe whose brewBarrel matches the just-finished beer type.
+// Used by legendary_batch soul event — unlocks a recipe (e.g. tripel_cordyceps for BelgianTripel).
+function brewPickRecipe(beerType){
+  if(!beerType)return null;
+  const candidates=SHROOM_RECIPES.filter(r=>r.inputs&&r.inputs.brewBarrel===beerType);
+  if(!candidates.length)return null;
   return candidates[0];
 }
 // Apply purchased surf upgrade tracks to a surf session state. Pure function.
@@ -2463,7 +2601,7 @@ function resetCrossRunData(opts){
     if(f==='teacherRep'){
       G.teacherRep={pablo:0,ravi:0,sofie:0,chen:0};
     }else if(f==='brewNotes'){
-      G.brewNotes={IPA:{count:0,best:0},Stout:{count:0,best:0},Lager:{count:0,best:0}};
+      G.brewNotes={IPA:{count:0,best:0},Stout:{count:0,best:0},Lager:{count:0,best:0},Pilsner:{count:0,best:0},Sour:{count:0,best:0},BelgianTripel:{count:0,best:0}};
     }else if(Array.isArray(G[f])){
       G[f]=[];
     }else if(G[f]&&typeof G[f]==='object'){
@@ -2620,7 +2758,7 @@ function renderReplay(scrub){
 }
 // funify-v3 Round 30 — Cross-run Ledger (📒 知识本): strainNotes + brewNotes + barRegulars + researchTopics + surfDiscovered + visited persist ab_ledger_v1
 function saveLedger(){try{localStorage.setItem('ab_ledger_v1',JSON.stringify({version:1,strainNotes:G.strainNotes||{},brewNotes:G.brewNotes||{},barRegulars:G.barRegulars||[],researchTopics:G.researchTopics||[],surfDiscovered:G.surfDiscovered||[],visited:G.visited||[],recipeKnowledge:G._recipeKnowledge||{},teacherRep:G.teacherRep||{pablo:0,ravi:0,sofie:0,chen:0}}))}catch(e){console.warn('ab_ledger_v1 save failed',e)}}
-function loadLedger(){try{const d=JSON.parse(localStorage.getItem('ab_ledger_v1'));if(d&&d.version===1){if(d.strainNotes&&typeof d.strainNotes==='object')G.strainNotes=d.strainNotes;if(d.brewNotes&&typeof d.brewNotes==='object'){for(const t of ['IPA','Stout','Lager']){if(d.brewNotes[t]&&typeof d.brewNotes[t]==='object'){G.brewNotes[t].count=Math.max(G.brewNotes[t].count|0,d.brewNotes[t].count|0);G.brewNotes[t].best=Math.max(G.brewNotes[t].best|0,d.brewNotes[t].best|0)}}}if(Array.isArray(d.barRegulars))G.barRegulars=Array.from(new Set([...(G.barRegulars||[]),...d.barRegulars]));if(Array.isArray(d.researchTopics))G.researchTopics=Array.from(new Set([...(G.researchTopics||[]),...d.researchTopics]));if(Array.isArray(d.surfDiscovered))G.surfDiscovered=Array.from(new Set([...(G.surfDiscovered||[]),...d.surfDiscovered]));if(Array.isArray(d.visited))G.visited=Array.from(new Set([...(G.visited||[]),...d.visited]));if(d.recipeKnowledge&&typeof d.recipeKnowledge==='object')G._recipeKnowledge=d.recipeKnowledge;if(d.teacherRep&&typeof d.teacherRep==='object'){if(!G.teacherRep)G.teacherRep={pablo:0,ravi:0,sofie:0,chen:0};for(const n of ['pablo','ravi','sofie','chen']){const v=d.teacherRep[n]|0;if(v>(G.teacherRep[n]|0))G.teacherRep[n]=v}}}}catch(e){console.warn('ab_ledger_v1 load failed',e)}}
+function loadLedger(){try{const d=JSON.parse(localStorage.getItem('ab_ledger_v1'));if(d&&d.version===1){if(d.strainNotes&&typeof d.strainNotes==='object')G.strainNotes=d.strainNotes;if(d.brewNotes&&typeof d.brewNotes==='object'){for(const t of ['IPA','Stout','Lager','Pilsner','Sour','BelgianTripel']){if(d.brewNotes[t]&&typeof d.brewNotes[t]==='object'){G.brewNotes[t].count=Math.max(G.brewNotes[t].count|0,d.brewNotes[t].count|0);G.brewNotes[t].best=Math.max(G.brewNotes[t].best|0,d.brewNotes[t].best|0)}}}if(Array.isArray(d.barRegulars))G.barRegulars=Array.from(new Set([...(G.barRegulars||[]),...d.barRegulars]));if(Array.isArray(d.researchTopics))G.researchTopics=Array.from(new Set([...(G.researchTopics||[]),...d.researchTopics]));if(Array.isArray(d.surfDiscovered))G.surfDiscovered=Array.from(new Set([...(G.surfDiscovered||[]),...d.surfDiscovered]));if(Array.isArray(d.visited))G.visited=Array.from(new Set([...(G.visited||[]),...d.visited]));if(d.recipeKnowledge&&typeof d.recipeKnowledge==='object')G._recipeKnowledge=d.recipeKnowledge;if(d.teacherRep&&typeof d.teacherRep==='object'){if(!G.teacherRep)G.teacherRep={pablo:0,ravi:0,sofie:0,chen:0};for(const n of ['pablo','ravi','sofie','chen']){const v=d.teacherRep[n]|0;if(v>(G.teacherRep[n]|0))G.teacherRep[n]=v}}}}catch(e){console.warn('ab_ledger_v1 load failed',e)}}
 // Phase E7 — Run Summary Card (本地历史 ≤10)
 // funify-e11 — Run Epitaph (幽默墓志铭):1-句 flavor text 由 run 统计驱动
 function buildRunEpitaph(card){
@@ -2848,9 +2986,9 @@ function closeLedger(){document.getElementById('ledger-modal').classList.add('hi
 function toggleLedger(){ledgerOpen()?closeLedger():showLedger()}
 function renderLedger(){
   const grid=document.getElementById('ledger-grid');if(!grid)return;
-  // Section 1: brew mastery (3 types × mastery count + best stars)
-  const brewTypes=['IPA','Stout','Lager'];
-  const brewTemp={IPA:55,Stout:68,Lager:48};
+  // Section 1: brew mastery (6 types × mastery count + best stars) — Round 7 added Pilsner/Sour/BelgianTripel
+  const brewTypes=['IPA','Stout','Lager','Pilsner','Sour','BelgianTripel'];
+  const brewTemp={IPA:55,Stout:68,Lager:48,Pilsner:51,Sour:42,BelgianTripel:72};
   const brewCards=brewTypes.map(t=>{
     const n=G.brewNotes[t]||{count:0,best:0};
     const mastered=n.count>=3;
@@ -3358,11 +3496,12 @@ function enterBldg(){
 // ═══════════════════════════════════════════
 function startBrew(){
   showMgHint('brew');
-  const types=['IPA','Stout','Lager'],recipes=[[1,0,2],[2,1,0],[0,2,1]];
-  const i=Math.floor(seeded(41)*3);
-  // Real brewery: target temp is hidden — brewer has to know IPA=55, Stout=68, Lager=48
-  // from memory or recipe notes. Each batch's yeast health drifts ±15%.
-  const order={type:types[i],recipe:recipes[i],temp:[55,68,48][i],limit:180,bonus:(hasUpgrade('ipa_recipe')&&types[i]==='IPA'?1.5:1)*(hasUpgrade('heineken_pass')&&types[i]==='IPA'?1.3:1)};
+  // funify-v3 Round 7 (Phase B5): pick from 6-beer catalog (was 3 fixed). Each beer has recipe=[m,h,y] where y ∈ 0..3.
+  const i=Math.floor(seeded(41)*BEER_CATALOG.length);
+  const beer=BEER_CATALOG[i];
+  // Real brewery: target temp is hidden — brewer has to know each style's temp from memory or recipe notes.
+  const order={type:beer.id,recipe:beer.recipe,temp:beer.temp,limit:180,bonus:(hasUpgrade('ipa_recipe')&&beer.id==='IPA'?1.5:1)*(hasUpgrade('heineken_pass')&&beer.id==='IPA'?1.3:1)};
+  // Yeast health drifts ±15% per batch; wild yeast has lower base, lager/belgian higher.
   const yeast=0.85+seeded(42+G.day*7)*0.3; // 0.85..1.15 batch variability
   // Phase C A1a: 3 段节奏 (mash/boil/ferment) — 限 4s 窗口, miss 各扣 20%/30%/40%
   const phases=[
@@ -3370,19 +3509,28 @@ function startBrew(){
     {hit:false,tStart:80000,tEnd:84000,miss:0.30,label:'🔥 Boil (75-79s)'},
     {hit:false,tStart:140000,tEnd:144000,miss:0.40,label:'🧫 Ferment (135-139s)'}
   ];
-  G.shop.order=order;MG.brew={ph:'sel',m:0,h:0,y:0,t:50,started:0,deadline:0,order:order,yeast,phases};G.mg='brew';G._mgEnterAt=Date.now();dropIng('malt');
+  G.shop.order=order;
+  MG.brew={ph:'sel',m:0,h:0,y:0,t:50,started:0,deadline:0,order:order,yeast,phases,phaseIdx:0};
+  // Round 7: apply purchased upgrade tracks (5 tracks × 3 tiers) to session state
+  brewApplyUpgradeBoosts(MG.brew);
+  // Round 7: reset soul event one-shot gating for the new run
+  G._brewSoul={picked:null,fired:false,overflow:false,stuck:false,stampede:false,contamHops:false,kingsDay:false,celebrity:false,legendary:false,buyout:false};
+  G.mg='brew';G._mgEnterAt=Date.now();dropIng('malt');
   setStatus('🍺 酿酒订单',`订单:${order.type} · 目标温 ?°C${order.bonus>1?' · IPA配方 x'+order.bonus:''} · 🌾/🔥/🧫 3 段命中窗口`,'1/2/3选原料 · ⬆⬇调温 · SPACE 命中阶段/提交');renderAll()
 }
 function brewIn(k){const s=MG.brew;if(!s)return;
-  if(s.ph==='sel'){if(k==='1')s.m=(s.m+1)%3;if(k==='2')s.h=(s.h+1)%3;if(k==='3')s.y=(s.y+1)%3;if(k===' '){s.ph='brew';s.started=Date.now();s.deadline=s.started+s.order.limit*1000;setStatus('🍺 酿酒订单',`订单:${s.order.type} · 控温中 · 3 段节奏窗口`,'⬆⬇调温 · SPACE 命中阶段/提交')}
+  if(s.ph==='sel'){if(k==='1')s.m=(s.m+1)%3;if(k==='2')s.h=(s.h+1)%3;if(k==='3')s.y=(s.y+1)%4;if(k===' '){s.ph='brew';s.started=Date.now();s.deadline=s.started+s.order.limit*1000;setStatus('🍺 酿酒订单',`订单:${s.order.type} · 控温中 · 3 段节奏窗口`,'⬆⬇调温 · SPACE 命中阶段/提交')}
   }else if(s.ph==='brew'){
     if(k==='arrowup')s.t=Math.min(90,s.t+3);
     if(k==='arrowdown')s.t=Math.max(20,s.t-3);
     if(k===' '){
+      // funify-v3 Round 7 (Phase B5): roll one-shot soul event on each phase tick
+      const soulEvt=brewRollSoulEvent(s);
+      if(soulEvt)brewApplySoul(soulEvt);
       // Phase C A1a: 检查当前是否在某个阶段窗口内
       const el=Date.now()-s.started;
       let hitPhase=s.phases.find(p=>!p.hit&&el>=p.tStart&&el<p.tEnd);
-      if(hitPhase){hitPhase.hit=true;setMsg(`${hitPhase.label} 命中! · 剩余 ${s.phases.filter(p=>!p.hit).length} 段`);return}
+      if(hitPhase){hitPhase.hit=true;s.phaseIdx=(s.phaseIdx||0)+1;setMsg(`${hitPhase.label} 命中! · 剩余 ${s.phases.filter(p=>!p.hit).length} 段`);return}
       // 不在窗口 — 提交或警告
       const missing=s.phases.filter(p=>!p.hit).length;
       if(missing>0)setMsg(`⚠ 错过 ${missing} 段 — 提交将损失 ${Math.round(s.phases.filter(p=>!p.hit).reduce((a,p)=>a+p.miss,0)*100)}% 收益`);
@@ -3390,7 +3538,15 @@ function brewIn(k){const s=MG.brew;if(!s)return;
     }
   }}
 function finBrew(timeout){const s=MG.brew;if(!s||s.ph==='done')return;s.ph='done';const o=s.order,recipeOk=s.m===o.recipe[0]&&s.h===o.recipe[1]&&s.y===o.recipe[2],tempErr=Math.abs(s.t-o.temp);
-  if(timeout||!recipeOk||tempErr>12){if(timeout&&G.bs[0]>0)G.bs[0]--;G.shop.order=null;if(G.shop.streak>0)addEvt('info',`🔥 酿酒连击中断 (×${G.shop.streak})`);G.shop.streak=0;addEvt('bad',timeout?'⏱ 酿酒订单超时，顾客流失':`🍺 订单${!recipeOk?'配方错误':'温差过大(>'+tempErr.toFixed(0)+'°C)'}`);setStatus(timeout?'❌ 订单超时':'❌ 订单失败',timeout?'库存-1':'tip 受损','按 Esc 离开');AUDIO.play('brew_fail');setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},900);return}
+  // Round 7: tank_overflow soul event forces fail with 30% loss
+  if(timeout||!recipeOk||tempErr>12||(s&&s.killYeast)){
+    if(timeout&&G.bs[0]>0)G.bs[0]--;
+    if(s&&s.lossFraction){
+      const lossMoney=Math.round((G.money||0)*s.lossFraction*0.05); // tiny demo loss
+      if(lossMoney>0){G.money=Math.max(0,G.money-lossMoney);addEvt('warn',`💥 锅溢出 — -$${lossMoney}`)}
+      delete s.lossFraction;delete s.killYeast;
+    }
+    G.shop.order=null;if(G.shop.streak>0)addEvt('info',`🔥 酿酒连击中断 (×${G.shop.streak})`);G.shop.streak=0;addEvt('bad',timeout?'⏱ 酿酒订单超时，顾客流失':`🍺 订单${!recipeOk?'配方错误':'温差过大(>'+tempErr.toFixed(0)+'°C)'}`);setStatus(timeout?'❌ 订单超时':'❌ 订单失败',timeout?'库存-1':'tip 受损','按 Esc 离开');AUDIO.play('brew_fail');setTimeout(()=>{G.mg=null;G.inside=null;renderAll()},900);return}
   // Quality scales with temp accuracy + yeast health. ±5°C is the "excellent" band.
   const tempAcc=Math.max(0.4, 1-tempErr*0.05); // 1.0 perfect, 0.6 at ±8°C, 0.4 at ±12°C
   // funify-v3 Round 3: brew streak multiplier — consecutive successes compound (Balatro style)
@@ -3400,18 +3556,42 @@ function finBrew(timeout){const s=MG.brew;if(!s||s.ph==='done')return;s.ph='done
   const phaseMissPct=s.phases?s.phases.reduce((sum,p)=>sum+(p.hit?0:p.miss),0):0;
   const phaseMult=Math.max(0.1,1-phaseMissPct);
   const phaseHits=s.phases?s.phases.filter(p=>p.hit).length:3;
-  const base=Math.round((35+(10+o.temp/10)*tipFactor())*tempAcc*s.yeast),inc=Math.round(base*1.3*industryFactor('brewing')*(o.bonus||1)*streakMul*phaseMult*(1+0.08*(G.shop.crazyBrewOrders||0)));
+  // Round 7 (Phase B5): yeast health upgrade multiplies yeast; cold-tolerance upgrade widens low-temp accuracy
+  const yeastMul=(s&&s._yeastMul)||1;
+  const coldTol=(s&&s._coldTol)||0;
+  const coldBonus=o.temp<50?coldTol*0.02:0;
+  const tempAccAdj=Math.max(0.4,Math.min(1,tempAcc+coldBonus));
+  // Round 7: contaminated_hops soul event star penalty
+  const starPenalty=(s&&s.starPenalty)||0;
+  // Round 7: customers_stampede / heineken_buyout / legendary_batch soul event money mul
+  const soulPriceMult=(s&&s.priceMult)||1;
+  const base=Math.round((35+(10+o.temp/10)*tipFactor())*tempAccAdj*s.yeast*yeastMul),inc=Math.round(base*1.3*industryFactor('brewing')*(o.bonus||1)*streakMul*phaseMult*soulPriceMult*(1+0.08*(G.shop.crazyBrewOrders||0)));
+  // Round 7: wood_barrel upgrade + legendary_batch soul event grant +1/+2/+3/+5 stars
+  const upgradeStarBonus=(s&&s._starBonus)||0;
+  const soulStarBonus=(s&&s.starBonus)||0;
+  const totalStarBonus=upgradeStarBonus+soulStarBonus;
   const quality=tempAcc>=0.95?'★完美':tempAcc>=0.8?'好':'一般';
   G.money+=inc;G.ind.brewing.xp+=Math.round(inc*(hasUpgrade('legacy_xp')?1.25:1));G.shop.order=null;
   // funify-v3 Round 30: track per-type mastery in cross-run ledger (knowledge book)
-  const bt=o.type;if(!G.brewNotes[bt])G.brewNotes[bt]={count:0,best:0};G.brewNotes[bt].count++;const phaseBonus=phaseHits>=3?1:phaseHits>=2?0.7:0.4;const stars=Math.round((tempAcc*0.6+phaseBonus*0.4)*3);if(stars>G.brewNotes[bt].best)G.brewNotes[bt].best=stars;saveLedger();
+  const bt=o.type;if(!G.brewNotes[bt])G.brewNotes[bt]={count:0,best:0};G.brewNotes[bt].count++;
+  const phaseBonus=phaseHits>=3?1:phaseHits>=2?0.7:0.4;
+  // Round 7: stars 1..5 with upgrade + soul bonuses; clamp after penalty
+  const stars=Math.max(1,Math.min(5,Math.round((tempAcc*0.6+phaseBonus*0.4)*3)+totalStarBonus-starPenalty));
+  if(stars>G.brewNotes[bt].best)G.brewNotes[bt].best=stars;saveLedger();
   // Phase E2 — faction rep drift (brew 利好 Heineken,挤压 Coffee Cartel)
   bumpFaction('heineken',2,'酿酒出单');bumpFaction('coffee',-1,'酿酒冲咖啡');
+  // Round 7: kings_day_rush soul event pays +$80 + rep +2
+  if(s&&s.kingsDayMoney){G.money+=s.kingsDayMoney;G.rep=Math.max(-30,G.rep+(s.kingsDayRep||0));addEvt('good',`👑 国王节 +$${s.kingsDayMoney} · rep +${s.kingsDayRep||0}`);delete s.kingsDayMoney;delete s.kingsDayRep}
+  // Round 7: celebrity_visit soul event pays +$60
+  if(s&&s.celebMoney){G.money+=s.celebMoney;addEvt('good',`🌟 名人造访 +$${s.celebMoney}`);delete s.celebMoney;delete s.pickyOrder}
+  // Round 7: legendary_batch soul event bonus money + cross-game recipe unlock
+  if(s&&s.legendaryMoney){G.money+=s.legendaryMoney;addEvt('good',`✨ 传说奖金 +$${s.legendaryMoney}`);delete s.legendaryMoney}
+  if(s&&s.unlockRecipe){const rec=brewPickRecipe(bt);if(rec){addEvt('good',`📜 解锁配方 ${rec.n} (${rec.desc})`)};delete s.unlockRecipe}
   // Phase A B1: brew → bar inventory (capped 12/day, overflow sells $5)
   const _bt=o.type==='IPA'?'ipa':o.type==='Stout'?'stout':'lager';
   if(G.barStock[_bt]<12){G.barStock[_bt]++;addEvt('info',`🍺 酒吧库存 +1 ${o.type} (${G.barStock[_bt]}/12)`)}
   else{G.money+=5;addEvt('info',`🍺 酒吧库存已满,溢出卖出 +$5`)}
-  addEvt('good',`🍺 ${o.type} 订单完成 +$${inc} · ${quality}${streakMul>1?' · 🔥×'+G.shop.streak+'(x'+streakMul+')':''}${phaseMissPct>0?' · ⚠漏段('+phaseHits+'/3) -'+Math.round(phaseMissPct*100)+'%':''}`);
+  addEvt('good',`🍺 ${o.type} 订单完成 +$${inc} · ${quality}${streakMul>1?' · 🔥×'+G.shop.streak+'(x'+streakMul+')':''}${phaseMissPct>0?' · ⚠漏段('+phaseHits+'/3) -'+Math.round(phaseMissPct*100)+'%':''}${totalStarBonus>0?' · 木桶+'+totalStarBonus:''}${starPenalty>0?' · 霉变-'+starPenalty+'★':''}`);
   setMsg(`🍺 ${quality} · +$${inc}${streakMul>1?' · 连击×'+G.shop.streak:''}${phaseMissPct>0?' · ⚠漏段-'+Math.round(phaseMissPct*100)+'%':''}`);addSch('🍺',`${o.type} +$${inc}`);
   G.mg=null;G.inside=null;chkLv('brewing');
   setStatus('✅ 订单完成',`+$${inc} · ${quality}${streakMul>1?' · 🔥×'+G.shop.streak+'(x'+streakMul+')':''}${phaseMissPct>0?' · ⚠漏段('+phaseHits+'/3)':''}`,'');
@@ -4793,7 +4973,7 @@ function drawMG(){
       // valve at bottom
       cx.fillStyle='#a0a0a0';cx.fillRect(fx+33,225,10,4);cx.fillRect(fx+38,229,6,8);
       // beer color in tank (visible through inspection window)
-      var liquidCol=s.order&&s.order.type==='Stout'?'#3a1a0a':s.order&&s.order.type==='IPA'?'#e0a020':'#c08030';
+      var liquidCol=s.order&&s.order.type==='Stout'?'#3a1a0a':s.order&&s.order.type==='IPA'?'#e0a020':s.order&&s.order.type==='Pilsner'?'#f0d870':s.order&&s.order.type==='Sour'?'#d0d850':s.order&&s.order.type==='BelgianTripel'?'#c89030':'#c08030';
       cx.fillStyle=liquidCol;cx.fillRect(fx+12,190,16,85);
       cx.fillStyle='#ffffff20';cx.fillRect(fx+12,190,4,85);  // glass highlight
       // foam on top
@@ -4813,12 +4993,13 @@ function drawMG(){
 
       var maltItems=[{n:'淡色麦芽',q:1,col:'#e0d090'},{n:'琥珀麦芽',q:2,col:'#c08840'},{n:'深色麦芽',q:3,col:'#5a3018'}];
       var hopItems=[{n:'柑橘酒花',q:1,col:'#90c050'},{n:'松木酒花',q:2,col:'#509040'},{n:'花香酒花',q:3,col:'#d090c0'}];
-      var yeastItems=[{n:'艾尔酵母',q:1,col:'#f0e8a0'},{n:'拉格酵母',q:2,col:'#e8c870'},{n:'比利时酵母',q:3,col:'#d0a050'}];
+      // Round 7 (Phase B5): 4 yeast choices (was 3) — wild 酵母 for Sour, etc.
+      var yeastItems=[{n:'艾尔酵母',q:1,col:'#f0e8a0'},{n:'拉格酵母',q:2,col:'#e8c870'},{n:'比利时酵母',q:3,col:'#d0a050'},{n:'野菌酵母',q:4,col:'#80c080'}];
       [{items:maltItems,sel:s.m,lb:'🌾 麦芽 Malt',x:170},{items:hopItems,sel:s.h,lb:'🌿 酒花 Hop',x:380},{items:yeastItems,sel:s.y,lb:'🔬 酵母 Yeast',x:580}].forEach(function(g){
         cx.fillStyle='#2a1505';cx.font='bold 11px sans-serif';cx.textAlign='center';
         cx.fillText(g.lb,g.x+50,328);
         g.items.forEach(function(it,i){
-          var y=160+i*42;
+          var y=160+i*38;
           // shelf highlight
           cx.fillStyle=i===g.sel?'#ecb45750':'#1a0a05';
           cx.fillRect(g.x-3,y-12,116,32);
@@ -4873,7 +5054,7 @@ function drawMG(){
       cx.fillStyle='#9a4818';for(var rv=0;rv<5;rv++){cx.beginPath();cx.arc(335+rv*35,340,2,0,Math.PI*2);cx.fill()}
       // boiling liquid
       var tm=Date.now()/1000;
-      var liquidCol=s.order&&s.order.type==='Stout'?'#3a1a0a':s.order&&s.order.type==='IPA'?'#e0a020':'#c08030';
+      var liquidCol=s.order&&s.order.type==='Stout'?'#3a1a0a':s.order&&s.order.type==='IPA'?'#e0a020':s.order&&s.order.type==='Pilsner'?'#f0d870':s.order&&s.order.type==='Sour'?'#d0d850':s.order&&s.order.type==='BelgianTripel'?'#c89030':'#c08030';
       cx.fillStyle=liquidCol;cx.beginPath();cx.ellipse(400,325,82,8,0,0,Math.PI*2);cx.fill();
       cx.fillStyle='#ffffff60';cx.beginPath();cx.ellipse(400,323,72,3,0,0,Math.PI*2);cx.fill();
       // bubbles
@@ -6004,12 +6185,17 @@ function newRunInner(){
   G._shroomSoul=G._shroomSoul||{picked:null,fired:false,raid:false,contamOutbreak:false,newStrain:false,undercover:false,powerOut:false,rival:false,legendary:false};
   G._shroomSoul.fired=false;G._shroomSoul.picked=null;
   if(!G.shroomUpgrades)G.shroomUpgrades=[];
+  // Round 7 (Phase B5): Brewery soul state + upgrade tracks (per-run)
+  G._brewSoul=G._brewSoul||{picked:null,fired:false,overflow:false,stuck:false,stampede:false,contamHops:false,kingsDay:false,celebrity:false,legendary:false,buyout:false};
+  G._brewSoul.fired=false;G._brewSoul.picked=null;
+  if(!G.brewUpgrades)G.brewUpgrades=[];
   // Round 4 (Phase B2): 新一天老化所有豆库存 (fresh+1)
   coffeeAgeBeans();
   // funify-v3 Round 3: brew streak counter — resets on each new run, persists for the whole run
   G.shop.streak=0;G.shop.streakBest=0;
   // funify-v3 Round 30: cross-run ledger (brewNotes loaded from ab_ledger_v1, see loadLedger)
-  if(!G.brewNotes||typeof G.brewNotes!=='object')G.brewNotes={IPA:{count:0,best:0},Stout:{count:0,best:0},Lager:{count:0,best:0}};
+  // Round 7 (Phase B5): ledger covers all 6 beers — Pilsner/Sour/BelgianTripel added
+  if(!G.brewNotes||typeof G.brewNotes!=='object')G.brewNotes={IPA:{count:0,best:0},Stout:{count:0,best:0},Lager:{count:0,best:0},Pilsner:{count:0,best:0},Sour:{count:0,best:0},BelgianTripel:{count:0,best:0}};
   loadLedger();
   // Phase E1/E3 — per-run talent build + daily mutator slot
   G.talents=[];G.mutator=null;
@@ -6127,9 +6313,12 @@ window.AB_TEST={
   // Round 6: Phase B4 · SmartShop Dave-depth (6 strains + 12 recipes + 3-stage cultivation + 7 soul events + 5 upgrade tracks)
   SHROOM_STRAIN_CATALOG,SHROOM_RECIPES,SHROOM_SOUL_EVENTS,SHROOM_UPGRADES,
   shroomRollSoulEvent,shroomApplySoul,shroomApplyUpgradeBoosts,shroomQuality,shroomPickRecipe,finShroom,
+  // Round 7: Phase B5 · Brewery Dave-depth (6 beers + 4 yeasts + 8 soul events + 5 upgrade tracks)
+  BEER_CATALOG,BEER_BY_ID,YEAST_CATALOG,YEAST_BY_ID,BREW_SOUL_EVENTS,BREW_UPGRADES,
+  brewRollSoulEvent,brewApplySoul,brewApplyUpgradeBoosts,brewPickRecipe,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
-    return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};
+    return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length,brewBeerCount:BEER_CATALOG.length===6,brewYeastCount:YEAST_CATALOG.length===4,brewSoulCount:BREW_SOUL_EVENTS.length===8,brewUpgradeCount:BREW_UPGRADES.length===15&&unique(BREW_UPGRADES)};
   }
 };
 </script>

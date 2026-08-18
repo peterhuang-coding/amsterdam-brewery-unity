@@ -21,6 +21,7 @@ const audioIdx = h.indexOf('// WEB AUDIO (Round 6)');
 // Stub addEvt so bumpFaction (which calls it) doesn't ReferenceError in tests
 const src = 'function addEvt(kind, msg){ /* test stub */ }\n' + h.slice(start, audioIdx);
 const G = { talents: [], mutator: null, seed: 42, day: 1, mood: 0, factions: {heineken:0,coffee:0,smartshop:0}, _run: {factionBonus:{brewing:1,coffee:1,shroom:1,bar:1}}, money: 250, bs: [5,3,2], shop: {}, inv:{}, crafted:[], npcFr:{} };
+const MG = { brew: null, shroom: null, coffee: null, surf: null }; // Round 7: brewApplySoul writes to MG.brew
 function seeded(n) { const x = Math.sin((G.seed + n * 9973 + G.day * 7919) * 12.9898) * 43758.5453; return x - Math.floor(x) }
 const A = new Function('G', 'seeded', '"use strict";' + src +
   '; return {TALENT_POOL,TALENT_BRANCHES,MUTATOR_POOL,FACTION_POOL,FAC_BY_ID,talentFactor,mutatorFactor,rollDayMutator,moodFloor,fineAmt,mutFlag,TALENT_MAX,factionRep,factionRepFactor,bumpFaction,triggerFactionEvent,CRAFT_RECIPES,CRAFT_BY_ID,CRAFT_BY_OUT,CRAFT_ING_POOL,CRAFT_ING_BY_ID,NPC_FRIENDSHIP,NPC_BY_ID,invCount,craftFactor,npcLvl,npcFriendshipFactor,doCraft,doGift};')(G, seeded);
@@ -382,10 +383,10 @@ const B4 = new Function('G', 'seeded', 'addEvt', 'bumpFaction', 'MG', '"use stri
 t('Round6: 6 strains in catalog', B4.SHROOM_STRAIN_CATALOG.length === 6);
 t('Round6: every strain has h/t/l/yieldBase', B4.SHROOM_STRAIN_CATALOG.every(s => Number.isFinite(s.h) && Number.isFinite(s.t) && Number.isFinite(s.l) && Number.isFinite(s.yieldBase)));
 t('Round6: unique strain ids', new Set(B4.SHROOM_STRAIN_CATALOG.map(s => s.id)).size === 6);
-t('Round6: 12 recipes', B4.SHROOM_RECIPES.length === 12);
+t('Round6: 15 recipes (12 Round-6 + 3 Round-7 cross-game for new beers)', B4.SHROOM_RECIPES.length === 15);
 t('Round6: every recipe has inputs.shroom + basePrice + cross', B4.SHROOM_RECIPES.every(r => r.inputs && r.inputs.shroom && Number.isFinite(r.basePrice) && r.cross));
 t('Round6: every recipe references a real strain', B4.SHROOM_RECIPES.every(r => B4.SHROOM_STRAIN_CATALOG.some(s => s.id === r.inputs.shroom)));
-t('Round6: unique recipe ids', new Set(B4.SHROOM_RECIPES.map(r => r.id)).size === 12);
+t('Round6: unique recipe ids (15 distinct)', new Set(B4.SHROOM_RECIPES.map(r => r.id)).size === 15);
 t('Round6: 7 soul events', B4.SHROOM_SOUL_EVENTS.length === 7);
 t('Round6: every soul event has effect.kind', B4.SHROOM_SOUL_EVENTS.every(e => e.effect && e.effect.kind));
 t('Round6: police_raid soul event present (matches existing 警察临检)', B4.SHROOM_SOUL_EVENTS.some(e => e.id === 'police_raid'));
@@ -459,8 +460,145 @@ t('Round6: startShroom picks from 6-strain catalog', /SHROOM_STRAIN_CATALOG\[Mat
 t('Round6: shroomIn handles 3-stage progression', /stageMx\[s\.stage-1\]/.test(h));
 t('Round6: shroomIn uses upgrade tolerance', /tempTol=s\._tempTol/.test(h));
 
+// ── 26. Round 7 (Phase B5) Brewery Dave-depth regression gate ──
+// Extract BEER_CATALOG/YEAST_CATALOG/BREW_SOUL_EVENTS/BREW_UPGRADES + helpers (brewApplyUpgradeBoosts/Roll/Apply, brewPickRecipe).
+// brewPickRecipe needs SHROOM_RECIPES; we inject a stub list before the slice.
+const b5Start = h.indexOf('// funify-v3 Round 7 — Phase B5 Brewery Dave-depth');
+t('Round7: Phase B5 block found in source', b5Start > -1);
+// find the closing brace of brewPickRecipe so we can include it in the slice
+const b5FnStart = h.indexOf('function brewPickRecipe(beerType)');
+let depth = 0, b5End = -1, inStr = false, strCh = '';
+for (let i = b5FnStart; i < h.length; i++) {
+  const c = h[i];
+  if (inStr) { if (c === '\\') { i++; continue; } if (c === strCh) inStr = false; }
+  else { if (c === '"' || c === "'" || c === '`') { inStr = true; strCh = c; continue; } if (c === '{') depth++; else if (c === '}') { depth--; if (depth === 0) { b5End = i+1; break; } } }
+}
+t('Round7: brewPickRecipe function end found', b5End > b5FnStart);
+const b5Src = b5Start > -1 && b5End > b5FnStart ? h.slice(b5Start, b5End) : '';
+const B5 = new Function('G', 'MG', 'addEvt', 'bumpFaction', 'seeded', 'SHROOM_RECIPES', '"use strict";' + b5Src +
+  '; return {BEER_CATALOG,BEER_BY_ID,YEAST_CATALOG,YEAST_BY_ID,BREW_SOUL_EVENTS,BREW_UPGRADES,brewApplyUpgradeBoosts,brewRollSoulEvent,brewApplySoul,brewPickRecipe};')(G, MG, (k,m)=>{}, (k,v,r)=>{G.factions[k]=(G.factions[k]||0)+v}, seeded, [
+  {id:'immune_broth',       n:'免疫补汤',    inputs:{brewBarrel:'IPA'}},
+  {id:'amazonian_chocolate',n:'亚马逊巧克力', inputs:{brewBarrel:'Stout'}},
+  {id:'lionsmane_pilsner',  n:'狮鬃皮尔森',   inputs:{brewBarrel:'Lager'}},
+  {id:'golden_special',     n:'金色特调',     inputs:{brewBarrel:'IPA'}},
+  {id:'pilsner_goldenTeacher',n:'金色皮尔森', inputs:{brewBarrel:'Pilsner'}},
+  {id:'sour_philosopher',   n:'酸哲学',       inputs:{brewBarrel:'Sour'}},
+  {id:'tripel_cordyceps',   n:'修道院补剂',   inputs:{brewBarrel:'BelgianTripel'}},
+]);
+
+// shape invariants
+t('Round7: 6 beers in catalog', B5.BEER_CATALOG.length === 6);
+t('Round7: every beer has id/ic/n/temp/recipe/desc/yieldBase', B5.BEER_CATALOG.every(b => b.id && b.ic && b.n && Number.isFinite(b.temp) && Array.isArray(b.recipe) && b.recipe.length === 3 && b.desc && Number.isFinite(b.yieldBase)));
+t('Round7: 6 unique beer ids', new Set(B5.BEER_CATALOG.map(b => b.id)).size === 6);
+t('Round7: 3 original beers preserved (IPA/Stout/Lager)', B5.BEER_CATALOG.some(b => b.id === 'IPA') && B5.BEER_CATALOG.some(b => b.id === 'Stout') && B5.BEER_CATALOG.some(b => b.id === 'Lager'));
+t('Round7: 3 new beers (Pilsner/Sour/BelgianTripel)', B5.BEER_CATALOG.some(b => b.id === 'Pilsner') && B5.BEER_CATALOG.some(b => b.id === 'Sour') && B5.BEER_CATALOG.some(b => b.id === 'BelgianTripel'));
+t('Round7: BEER_BY_ID map covers all 6', Object.keys(B5.BEER_BY_ID).length === 6 && Object.keys(B5.BEER_BY_ID).every(id => B5.BEER_BY_ID[id].id === id));
+
+// recipe format — every beer has y index 0..3 (wild yeast at 3)
+t('Round7: every beer recipe y ∈ {0,1,2,3}', B5.BEER_CATALOG.every(b => b.recipe[2] >= 0 && b.recipe[2] <= 3));
+t('Round7: every beer recipe m/h ∈ {0,1,2}', B5.BEER_CATALOG.every(b => [0,1,2].includes(b.recipe[0]) && [0,1,2].includes(b.recipe[1])));
+t('Round7: temp is non-trivial (40..80°C)', B5.BEER_CATALOG.every(b => b.temp >= 40 && b.temp <= 80));
+
+// yeast catalog
+t('Round7: 4 yeasts in catalog', B5.YEAST_CATALOG.length === 4);
+t('Round7: unique yeast ids', new Set(B5.YEAST_CATALOG.map(y => y.id)).size === 4);
+t('Round7: every yeast has healthMul + tempTol + desc', B5.YEAST_CATALOG.every(y => Number.isFinite(y.healthMul) && Number.isFinite(y.tempTol) && y.desc));
+t('Round7: 3 original yeasts preserved (ale/lager/belgian)', B5.YEAST_CATALOG.some(y => y.id === 'ale') && B5.YEAST_CATALOG.some(y => y.id === 'lager') && B5.YEAST_CATALOG.some(y => y.id === 'belgian'));
+t('Round7: 1 new yeast (wild)', B5.YEAST_CATALOG.some(y => y.id === 'wild'));
+
+// soul events — 8 unique one-shots with effect.kind
+t('Round7: 8 soul events', B5.BREW_SOUL_EVENTS.length === 8);
+t('Round7: every soul event has effect.kind', B5.BREW_SOUL_EVENTS.every(e => e.effect && e.effect.kind));
+t('Round7: unique soul event ids', new Set(B5.BREW_SOUL_EVENTS.map(e => e.id)).size === 8);
+t('Round7: legendary_batch soul event present', B5.BREW_SOUL_EVENTS.some(e => e.id === 'legendary_batch'));
+t('Round7: heineken_buyout soul event present (faction 利好)', B5.BREW_SOUL_EVENTS.some(e => e.id === 'heineken_buyout'));
+t('Round7: 5 unique soul kinds', new Set(B5.BREW_SOUL_EVENTS.map(e => e.effect.kind)).size >= 5);
+
+// upgrades — 5 tracks × 3 tiers = 15
+t('Round7: 15 upgrades', B5.BREW_UPGRADES.length === 15);
+t('Round7: 5 distinct upgrade tracks', new Set(B5.BREW_UPGRADES.map(u => u.track)).size === 5);
+t('Round7: every track has 3 tiers', ['copper_kettle','yeast_bank','wood_barrel','ice_cooler','recipe_book'].every(tr => B5.BREW_UPGRADES.filter(u => u.track === tr).length === 3));
+t('Round7: every upgrade tier is 1/2/3', B5.BREW_UPGRADES.every(u => [1,2,3].includes(u.tier)));
+t('Round7: unique upgrade ids', new Set(B5.BREW_UPGRADES.map(u => u.id)).size === 15);
+
+// behavior — brewApplyUpgradeBoosts populates session state
+const bSes = {};
+B5.brewApplyUpgradeBoosts(bSes);
+t('Round7: default session has _tempTol/_yeastMul/_starBonus/_coldTol/_recipeStarMin',
+  '_tempTol' in bSes && '_yeastMul' in bSes && '_starBonus' in bSes && '_coldTol' in bSes && '_recipeStarMin' in bSes);
+t('Round7: default _yeastMul = 1', bSes._yeastMul === 1);
+t('Round7: default _tempTol = 0', bSes._tempTol === 0);
+t('Round7: default _starBonus = 0', bSes._starBonus === 0);
+
+// behavior — tier3 each track → expected boost
+G.brewUpgrades = ['brew_kettle_3','brew_yeast_3','brew_barrel_3','brew_ice_3','brew_book_3'];
+const bSes2 = {};
+B5.brewApplyUpgradeBoosts(bSes2);
+t('Round7: tier3 kettle → _tempTol 6 (3 × 2)', bSes2._tempTol === 6);
+t('Round7: tier3 yeast → _yeastMul 1.35', Math.abs(bSes2._yeastMul - 1.35) < 1e-9);
+t('Round7: tier3 barrel → _starBonus 3', bSes2._starBonus === 3);
+t('Round7: tier3 ice → _coldTol 9 (3 × 3)', bSes2._coldTol === 9);
+t('Round7: tier3 book → _recipeStarMin 2', bSes2._recipeStarMin === 2);
+
+// behavior — partial upgrades track max tier per track
+G.brewUpgrades = ['brew_kettle_1','brew_kettle_3','brew_kettle_2'];
+const bSes3 = {};
+B5.brewApplyUpgradeBoosts(bSes3);
+t('Round7: max-tier-per-track wins (kettle 3 → _tempTol 6)', bSes3._tempTol === 6);
+
+// behavior — brewRollSoulEvent respects one-shot gating
+G._brewSoul = {picked:null,fired:true,overflow:false,stuck:false,stampede:false,contamHops:false,kingsDay:false,celebrity:false,legendary:false,buyout:false};
+t('Round7: brewRollSoulEvent returns null after fired', B5.brewRollSoulEvent({phaseIdx:2,tn:5}) === null);
+G._brewSoul = {picked:null,fired:false,overflow:false,stuck:false,stampede:false,contamHops:false,kingsDay:false,celebrity:false,legendary:false,buyout:false};
+const bEvt1 = B5.brewRollSoulEvent({phaseIdx:3,tn:5});
+t('Round7: brewRollSoulEvent may return event for phase 3', bEvt1 === null || (bEvt1 && bEvt1.effect && bEvt1.effect.kind));
+
+// behavior — brewApplySoul updates MG + factions
+G.shop = {}; G.factions = {heineken:0,coffee:0,smartshop:0}; MG.brew = {order:{type:'IPA'}};
+B5.brewApplySoul({id:'tank_overflow',effect:{kind:'tank_overflow',lossFraction:0.3,killYeast:true}});
+t('Round7: brewApplySoul tank_overflow flips G._brewSoul.fired', G._brewSoul.fired === true);
+t('Round7: brewApplySoul tank_overflow damages heineken faction', G.factions.heineken < 0);
+t('Round7: brewApplySoul tank_overflow sets lossFraction on MG.brew', MG.brew.lossFraction === 0.3 && MG.brew.killYeast === true);
+
+// reset factions to test heineken_buyout independently
+G._brewSoul = {picked:null,fired:false,overflow:false,stuck:false,stampede:false,contamHops:false,kingsDay:false,celebrity:false,legendary:false,buyout:false};
+G.factions = {heineken:0,coffee:0,smartshop:0};
+G._run.factionBonus = {brewing:1,coffee:1,shroom:1,bar:1};
+B5.brewApplySoul({id:'heineken_buyout',effect:{kind:'heineken_buyout',industryMul:1.30,runPermanent:true}});
+t('Round7: brewApplySoul heineken_buyout bumps G._run.factionBonus.brewing to 1.30', Math.abs(G._run.factionBonus.brewing - 1.30) < 1e-9);
+t('Round7: brewApplySoul heineken_buyout leaves coffee alone', G._run.factionBonus.coffee === 1);
+
+// behavior — brewPickRecipe (cross-game link to SHROOM_RECIPES via brewBarrel)
+// stub SHROOM_RECIPES to test the bridge (real SHROOM_RECIPES is defined further up in source)
+B5.SHMROOM_RECIPES = undefined; // not exposed
+G.factions = {heineken:0,coffee:0,smartshop:0};
+const beerRecipeMap = {IPA:'immune_broth',Stout:'amazonian_chocolate',Lager:'lionsmane_pilsner',Pilsner:'pilsner_goldenTeacher',Sour:'sour_philosopher',BelgianTripel:'tripel_cordyceps'};
+for (const beerId of Object.keys(beerRecipeMap)) {
+  // verify a recipe exists by scanning SHROOM_RECIPES in the index.html source (rough)
+  const needle = `brewBarrel:'${beerId}'`;
+  t(`Round7: SHROOM_RECIPES has cross-recipe for ${beerId} → ${beerRecipeMap[beerId]}`, h.indexOf(needle) > -1);
+}
+
+// wiring — new exports in AB_TEST
+t('Round7: AB_TEST exposes BEER_CATALOG', /BEER_CATALOG,BEER_BY_ID,YEAST_CATALOG,YEAST_BY_ID,BREW_SOUL_EVENTS,BREW_UPGRADES/.test(h));
+t('Round7: AB_TEST exposes brewApplyUpgradeBoosts', /brewRollSoulEvent,brewApplySoul,brewApplyUpgradeBoosts,brewPickRecipe/.test(h));
+t('Round7: AB_TEST validate checks brewBeerCount+brewYeastCount+brewSoulCount+brewUpgradeCount', /brewBeerCount:BEER_CATALOG\.length===6.*brewYeastCount.*brewSoulCount.*brewUpgradeCount/.test(h));
+// wiring — startBrew uses BEER_CATALOG
+t('Round7: startBrew picks from BEER_CATALOG', /Math\.floor\(seeded\(41\)\*BEER_CATALOG\.length\)/.test(h));
+t('Round7: startBrew attaches upgrade boosts', /brewApplyUpgradeBoosts\(MG\.brew\)/.test(h));
+t('Round7: startBrew resets G._brewSoul', /G\._brewSoul=\{picked:null,fired:false,overflow:false/.test(h));
+// wiring — brewIn rolls soul events
+t('Round7: brewIn calls brewRollSoulEvent on space', /const soulEvt=brewRollSoulEvent\(s\)/.test(h));
+// wiring — newRun initializes G.brewUpgrades
+t('Round7: newRun initializes G.brewUpgrades', /if\(!G\.brewUpgrades\)G\.brewUpgrades=\[\]/.test(h));
+t('Round7: newRun resets G._brewSoul.fired', /G\._brewSoul\.fired=false;G\._brewSoul\.picked=null/.test(h));
+// wiring — ledger covers 6 beers
+t('Round7: brewNotes ledger covers all 6 beers', /'IPA','Stout','Lager','Pilsner','Sour','BelgianTripel'/.test(h));
+// wiring — visual supports 4 yeasts
+t('Round7: yeast visual supports 4 choices', /var yeastItems=\[\{n:'艾尔酵母'.*\{n:'比利时酵母'.*\{n:'野菌酵母'/.test(h));
+
 // summary assertion: tests grew this round
-t('Round6: overall pass count exceeds prior baseline (≥198)', pass >= 198);
+t('Round7: overall pass count exceeds prior baseline (≥218)', pass >= 218);
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

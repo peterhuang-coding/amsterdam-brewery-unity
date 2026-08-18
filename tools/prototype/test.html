@@ -3455,6 +3455,109 @@ frame.addEventListener('load',async()=>{
     return ['SURF_SOUL_EVENTS','SURF_UPGRADES','surfRollSoulEvent','surfApplySoul','surfPaddleState','surfPaddleHit','surfApplyUpgradeBoosts'].every(fn=>new RegExp('\\b'+fn+'\\b').test(src));
   });
 
+  // ═══ Round 7 — Phase B5 Brewery Dave-depth (6 beers + 4 yeasts + 8 soul events + 5 upgrade tracks) ═══
+  check('R7: BEER_CATALOG 6 unique beers (IPA/Stout/Lager/Pilsner/Sour/BelgianTripel)',()=>{
+    const beers=win.BEER_CATALOG||t.BEER_CATALOG;if(!beers)return false;
+    const ids=beers.map(b=>b.id);
+    const want=['IPA','Stout','Lager','Pilsner','Sour','BelgianTripel'];
+    return ids.length===6&&new Set(ids).size===6&&want.every(w=>ids.includes(w));
+  });
+  check('R7: every beer has hidden target temp in 40..80°C + recipe[3]',()=>{
+    const beers=win.BEER_CATALOG||t.BEER_CATALOG;if(!beers)return false;
+    return beers.every(b=>Number.isFinite(b.temp)&&b.temp>=40&&b.temp<=80&&Array.isArray(b.recipe)&&b.recipe.length===3);
+  });
+  check('R7: BEER_BY_ID is a 6-key lookup map',()=>{
+    const m=win.BEER_BY_ID||t.BEER_BY_ID;if(!m)return false;
+    const beers=win.BEER_CATALOG||t.BEER_CATALOG;
+    return Object.keys(m).length===6&&beers.every(b=>m[b.id]&&m[b.id].id===b.id);
+  });
+  check('R7: YEAST_CATALOG 4 yeasts (ale/lager/belgian/wild)',()=>{
+    const yeasts=win.YEAST_CATALOG||t.YEAST_CATALOG;if(!yeasts)return false;
+    const ids=yeasts.map(y=>y.id);
+    return ids.length===4&&new Set(ids).size===4&&['ale','lager','belgian','wild'].every(w=>ids.includes(w));
+  });
+  check('R7: BREW_SOUL_EVENTS 8 unique with effect.kind',()=>{
+    const evs=win.BREW_SOUL_EVENTS||t.BREW_SOUL_EVENTS;if(!evs)return false;
+    const ids=evs.map(e=>e.id);
+    return ids.length===8&&new Set(ids).size===8&&evs.every(e=>e.effect&&typeof e.effect.kind==='string');
+  });
+  check('R7: BREW_SOUL_EVENTS covers 5+ unique effect.kind',()=>{
+    const evs=win.BREW_SOUL_EVENTS||t.BREW_SOUL_EVENTS;if(!evs)return false;
+    return new Set(evs.map(e=>e.effect.kind)).size>=5;
+  });
+  check('R7: BREW_UPGRADES 15 = 5 tracks × 3 tiers',()=>{
+    const ups=win.BREW_UPGRADES||t.BREW_UPGRADES;if(!ups)return false;
+    if(ups.length!==15)return false;
+    const tracks={};for(const u of ups){if(!tracks[u.track])tracks[u.track]=[];tracks[u.track].push(u.tier)}
+    const tk=Object.keys(tracks);
+    return tk.length===5&&tk.every(k=>tracks[k].length===3&&new Set(tracks[k]).size===3);
+  });
+  check('R7: brewApplyUpgradeBoosts default → _yeastMul=1 _tempTol=0 _starBonus=0 _coldTol=0 _recipeStarMin=99',()=>{
+    const fn=win.brewApplyUpgradeBoosts||t.brewApplyUpgradeBoosts;if(!fn)return false;
+    const ses={};try{fn(ses)}catch(_){return false}
+    return ses._yeastMul===1&&ses._tempTol===0&&ses._starBonus===0&&ses._coldTol===0&&ses._recipeStarMin===99;
+  });
+  check('R7: brewApplyUpgradeBoosts tier3 all tracks → _tempTol=6 _yeastMul=1.35 _starBonus=3 _coldTol=9 _recipeStarMin=2',()=>{
+    const fn=win.brewApplyUpgradeBoosts||t.brewApplyUpgradeBoosts;if(!fn)return false;
+    const before=t.state.brewUpgrades;
+    try{
+      t.state.brewUpgrades=['brew_kettle_3','brew_yeast_3','brew_barrel_3','brew_ice_3','brew_book_3'];
+      const ses={};fn(ses);
+      return ses._tempTol===6&&Math.abs(ses._yeastMul-1.35)<1e-9&&ses._starBonus===3&&ses._coldTol===9&&ses._recipeStarMin===2;
+    }finally{t.state.brewUpgrades=before}
+  });
+  check('R7: brewRollSoulEvent fired=true → returns null',()=>{
+    const fn=win.brewRollSoulEvent||t.brewRollSoulEvent;if(!fn)return false;
+    const before=t.state._brewSoul;
+    try{t.state._brewSoul={picked:null,fired:true,overflow:false,stuck:false,stampede:false,contamHops:false,kingsDay:false,celebrity:false,legendary:false,buyout:false};return fn({phaseIdx:3,tn:5})===null}
+    finally{t.state._brewSoul=before}
+  });
+  check('R7: brewApplySoul heineken_buyout → G._run.factionBonus.brewing *= 1.30 (run 永久)',()=>{
+    const fn=win.brewApplySoul||t.brewApplySoul;if(!fn)return false;
+    const beforeBonus=JSON.parse(JSON.stringify(t.state._run.factionBonus||{brewing:1,coffee:1,shroom:1,surf:1,academic:1,bar:1}));
+    const beforeSoul=t.state._brewSoul;
+    try{
+      t.state._run.factionBonus={brewing:1,coffee:1,shroom:1,surf:1,academic:1,bar:1};
+      t.state._brewSoul={picked:null,fired:false,overflow:false,stuck:false,stampede:false,contamHops:false,kingsDay:false,celebrity:false,legendary:false,buyout:false};
+      const beforeHeineken=t.state.factions.heineken;
+      fn({id:'heineken_buyout',effect:{kind:'heineken_buyout',industryMul:1.30,runPermanent:true}});
+      return Math.abs(t.state._run.factionBonus.brewing-1.30)<1e-9&&t.state._brewSoul.fired===true&&t.state.factions.heineken===beforeHeineken;
+    }finally{t.state._run.factionBonus=beforeBonus;t.state._brewSoul=beforeSoul}
+  });
+  check('R7: brewPickRecipe("BelgianTripel") → tripel_cordyceps cross-game',()=>{
+    const fn=win.brewPickRecipe||t.brewPickRecipe;if(!fn)return false;
+    const rec=fn('BelgianTripel');
+    return rec&&rec.id==='tripel_cordyceps'&&rec.inputs&&rec.inputs.brewBarrel==='BelgianTripel';
+  });
+  check('R7: brewPickRecipe null for unknown beer',()=>{
+    const fn=win.brewPickRecipe||t.brewPickRecipe;if(!fn)return false;
+    return fn('FakeBeerXYZ')===null;
+  });
+  check('R7: AB_TEST validate adds brewBeerCount+brewYeastCount+brewSoulCount+brewUpgradeCount',()=>{
+    const v=win.AB_TEST.validate();
+    return v.brewBeerCount===true&&v.brewYeastCount===true&&v.brewSoulCount===true&&v.brewUpgradeCount===true;
+  });
+  check('R7: index.html 暴露 BEER_CATALOG/YEAST_CATALOG/BREW_SOUL_EVENTS/BREW_UPGRADES/brewRollSoulEvent/brewApplySoul/brewApplyUpgradeBoosts/brewPickRecipe',()=>{
+    const src=_fetchIndex3();
+    return ['BEER_CATALOG','YEAST_CATALOG','BREW_SOUL_EVENTS','BREW_UPGRADES','brewRollSoulEvent','brewApplySoul','brewApplyUpgradeBoosts','brewPickRecipe'].every(fn=>new RegExp('\\b'+fn+'\\b').test(src));
+  });
+  check('R7: index.html startBrew 用 BEER_CATALOG + brewApplyUpgradeBoosts + G._brewSoul 重置',()=>{
+    const src=_fetchIndex3();
+    return /Math\.floor\(seeded\(41\)\*BEER_CATALOG\.length\)/.test(src)&&/brewApplyUpgradeBoosts\(MG\.brew\)/.test(src)&&/G\._brewSoul=\{picked:null,fired:false/.test(src);
+  });
+  check('R7: index.html brewIn 调 brewRollSoulEvent + brewApplySoul',()=>{
+    const src=_fetchIndex3();
+    return /const soulEvt=brewRollSoulEvent\(s\)/.test(src)&&/if\(soulEvt\)brewApplySoul\(soulEvt\)/.test(src);
+  });
+  check('R7: index.html brewNotes ledger 覆盖 6 啤酒 (IPA/Stout/Lager/Pilsner/Sour/BelgianTripel)',()=>{
+    const src=_fetchIndex3();
+    return /'IPA','Stout','Lager','Pilsner','Sour','BelgianTripel'/.test(src);
+  });
+  check('R7: index.html brew 选择 y∈0..3 (4 酵母)',()=>{
+    const src=_fetchIndex3();
+    return /s\.y=\(s\.y\+1\)%4/.test(src);
+  });
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

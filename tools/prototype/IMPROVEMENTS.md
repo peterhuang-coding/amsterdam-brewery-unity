@@ -1677,3 +1677,58 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - B4 增强:12 配方接入实际售卖,玩家在 SmartShop 选配方 + 卖给咖啡店/酒吧
 - Phase C 主线 + 派系:1 句话主线 + Heineken/Coffee Cartel/SmartShop 站队
 - 升级模态 endGame 加 shroomUpgrades 入口(per-run 升级 vs 永久 meta 升级)
+
+## Round 7 (funify-v3) — Phase B5 Brewery Dave 级深度 (PM-LOOP 20260819-011654)
+
+### 目标
+
+把 Brewery 从 3 啤酒 (IPA/Stout/Lager) + 3 段节奏 + 3 酵母升级到 Dave 级:6 啤酒 + 4 酵母 + 8 灵魂事件 + 5 升级树 × 3 tier + 跨游戏配方 link。
+
+### 已完成改动与文件
+
+- `tools/prototype/index.html`:
+  - 新增 `BEER_CATALOG` 6 啤酒 (IPA/Stout/Lager + Pilsner/Sour/Belgian Tripel),每种含 hidden target temp + recipe=[m,h,y] where y ∈ 0..3
+  - 新增 `BEER_BY_ID` map
+  - 新增 `YEAST_CATALOG` 4 酵母 (ale/lager/belgian + wild 野菌酵母),含 healthMul + tempTol + desc
+  - 新增 `YEAST_BY_ID` map
+  - 新增 `BREW_SOUL_EVENTS` 8 灵魂事件:tank_overflow(锅溢出)/fermentation_stuck(发酵卡住)/customers_stampede(顾客涌门)/contaminated_hops(酒花霉变)/kings_day_rush(国王节大单)/celebrity_visit(名人造访)/legendary_batch(传说批次)/heineken_buyout(Heineken 收购)
+  - 新增 `BREW_UPGRADES` 5 升级树 × 3 tier = 15 项:copper_kettle(热效率)/yeast_bank(酵母储备)/wood_barrel(陈化)/ice_cooler(冰柜)/recipe_book(配方解锁)
+  - 新增 `brewApplyUpgradeBoosts(s)` — 把 G.brewUpgrades 应用到会话状态(_tempTol/_yeastMul/_starBonus/_coldTol/_recipeStarMin)
+  - 新增 `brewRollSoulEvent(s)` — 8 事件 trigger 在不同 phase 阶段;`brewApplySoul(evt)` 应用效果
+  - 新增 `brewPickRecipe(beerType)` — 跨游戏 link,把刚酿完的啤酒映射到 SHROOM_RECIPES 的 brewBarrel 配方(legendary_batch 触发)
+  - 重写 `startBrew`:从 BEER_CATALOG 随机选啤酒,初始化 G._brewSoul flag + 应用 brew 升级树
+  - 重写 `brewIn`:SPACE 每次 roll 灵魂事件 + phaseIdx 递增;酵母选择 `s.y = (s.y+1)%4`
+  - 重写 `finBrew`:应用升级树加成(酵母 ×mul / 木桶 +stars / 冰柜 低温容差)+ 灵魂事件奖励(kings_day +$80 +rep+2 / celebrity +$60 / legendary +$50 + 解锁配方 / tank_overflow -30% 报废)
+  - `newRunInner`:重置 G._brewSoul.fired/picked + 初始化 G.brewUpgrades=[]
+  - `brewNotes` ledger 扩展到 6 啤酒 (IPA/Stout/Lager/Pilsner/Sour/BelgianTripel),`loadLedger` 同步
+  - 知识本 brew mastery 卡片 3 → 6 张
+  - `liquidCol` 渲染支持新啤酒颜色 (Pilsner=#f0d870, Sour=#d0d850, BelgianTripel=#c890)
+  - 可视化:酵母玻璃罐 3 → 4 (野菌绿色)
+  - 新增 3 条 SHROOM_RECIPES 跨游戏配方:`pilsner_goldenTeacher`(金色皮尔森)/`sour_philosopher`(酸哲学)/`tripel_cordyceps`(修道院补剂)
+  - AB_TEST 暴露 `BEER_CATALOG` `BEER_BY_ID` `YEAST_CATALOG` `YEAST_BY_ID` `BREW_SOUL_EVENTS` `BREW_UPGRADES` + 4 helper;validate() 新增 brewBeerCount/brewYeastCount/brewSoulCount/brewUpgradeCount
+- `tools/prototype/test-phase-e.js`:新增 61 条 R7 断言 + 修正 2 条 R6 断言 (SHROOM_RECIPES 12 → 15 反映新增跨游戏配方)
+- `tools/prototype/test.html`:新增 17 条 R7 浏览器断言
+
+### 验证结果
+
+- `node --check`(extract inline script):index.html JS OK;test.html JS OK
+- `node tools/prototype/test-phase-e.js`:**305/305 PASS**(R7 +61,基线 244)
+- headless Chrome CDP `test.html`: **817/826 PASS**(R7 +17 全部 PASS;9 个失败为 Round 37/E8 pre-existing,非本 round 引入)
+- `http://127.0.0.1:8767/index.html`:200;`test.html`:200
+- `git diff --check`:PASS
+- LOC:`index.html` 6139 → 6328 (+189),`test-phase-e.js` 467 → 603 (+136),`test.html` 3460 → 3563 (+103)
+
+### 风险
+
+- **3 段节奏与 soul event 共用 SPACE 键**:玩家可能误以为灵魂事件抢占了 phase 窗口。后续可分离:phase 命中只在 mash/boil/ferment 段窗口内,soul event roll 在 SPACE 之外的提交动作
+- **8 灵魂事件 trigger 概率可能重叠**:同 phase 多 trigger 同时命中,目前取首个。可在 brewApplySoul 里加 sod.picked 防重,但当前实现已用 sod.picked 在 brewRollSoulEvent 里互斥
+- **heineken_buyout run 永久叠加**:G._run.factionBonus.brewing *= 1.30 一次 run 仅触发一次,触发后即使玩家失败也不恢复;后续如需「破产清零」可在 endGame 加 reset
+- **木桶陈化 starBonus 与 stars 公式**:当前 `stars = round(tempAcc*0.6 + phaseBonus*0.4)*3 + upgradeStarBonus + soulStarBonus - starPenalty`,tier3 wood_barrel (+3) + legendary_batch (+5) 可能溢出 5★(已 clamp 到 5)
+- **野菌酵母 healthMul 0.95 拖累收入**:玩家选择 wild yeast 收益会下降,但解锁了 Sour 配方。可考虑加风险奖励:wild yeast 收获 + 偶尔 ★5 boost
+
+### 新 Idea
+
+- B5 增强:`brewPickRecipe` 当前取首个匹配,可加随机化 + 配方激活(松露菌茶店里可卖啤酒鸡尾酒)
+- Phase C 主线 + 派系:1 句话主线 + 派系站队面板(Heineken / Coffee Cartel / Smart Shop)
+- 升级模态 endGame 加 brewUpgrades 入口(per-run 升级 vs 永久 meta 升级,与 shroom 同构)
+- B5 soul event legend integration:`legendary_batch` 触发后 7 天复现率降低(记忆曲线)

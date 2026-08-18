@@ -68,6 +68,7 @@ localStorage.removeItem('ab_speed_v1')
 - 数据契约（5 产业、事件 ID 唯一、升级 ID 唯一、modifier 都有 effect、冲浪入口、Seed 稳定）
 - 运行时契约（目标生成数量、必须含 Explore/Talk、升级包含三张死亡升级）
 - Phase E 乘区接线（Talent / Mutator / Faction / Craft / NPC 单层效果与五层精确叠加）
+- Phase E8 Crazy Events 运行时（24 个事件 fire() 合约 + 7 个代表性效果接入 tip / 订单 / 体力 / 库存 / 顾客 / 开店 / 步速）
 - 首开 UX（fresh localStorage 看到模态、模态打开时 WASD 不生效、seed 输入框回车可启动）
 - 运河改道（点击运河坐标会被改道到最近桥端）
 - 完整闭环（自动运行 100s 内必达 ended；购买升级后 run +1 且 upgrades 增加且 ended 已复位）

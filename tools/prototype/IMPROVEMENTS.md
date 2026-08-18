@@ -802,3 +802,20 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - 验证: headless Chrome `test.html` **400/400 PASS** (368 → 378 → 385 → 391 → 398 → 400);`test-phase-e.js` **168/168 PASS**;`node --check` 内联 PASS;index/test HTML HTTP 200
 - 风险: auto-run 紧致调用只在 test.html 内,production demo 行为不变;`withPhaseEIndustryState` 使用 `Object.assign` 做 shallow restore,未来若注入非 primitive 字段需切深拷贝
 - 验收: `node --check` PASS;headless Chrome 完整 400/400;跑任意 test 修改/删除 `industryFactor` 的 E1/E2/E3/E4 接线,对应断言立刻 fail
+
+## Round 28 — E8 Crazy Events 浏览器运行时 fan-out + Midnight Sun 实效
+
+> Round 10 下一步落实：24 个搞怪事件此前只有源码审计，浏览器不曾真实调用 `fire()`；本轮加入隔离运行时门禁，并修复「极昼」只写 flag 却无法让 Dawn 酒吧营业的 flavor-only 缺口。
+
+### Commit — funify-e8(runtime-parity): Crazy Events fire() 接入 test=408/408
+
+- 改动: `tools/prototype/test.html` 新增 `withCrazyEventState` 隔离 helper + 8 条 E8 浏览器断言; `tools/prototype/index.html` 暴露 `CRAZY_POOL`/`bldgPhaseOk` 给测试,并修复 Dawn 极昼 gate; `tools/prototype/README.md` 补充 E8 运行时覆盖。
+- 运行时证据:
+  1. `CRAZY_POOL` 在真实 iframe 中确认 24 个唯一事件均有可调用 `fire()`；代表性事件不是只查 flag，而是隔离后验证下游结果: 运河彩虹 → `tipFactor()=1.5`、直升机 → 酿酒订单 `+3`、天鹅 → 冲浪体力 `-10`、海鸥 → 库存确定 `-1`、狂欢节 → 顾客 `🎭` 标记、运河涨水 → `speedMs(100)=50`。
+  2. 极昼回归验证：Dawn 时酒吧原先闭店；触发 `midnight_sun.fire()` 后 `bldgPhaseOk({tp:'bar'})` 为真，确保事件改变实际可玩路径而非仅显示文案。
+  3. 所有 E8 helper 测试在 `finally` 恢复 shop / 资源 / 时间 / modifiers / minigame 状态，不污染后续 400 条旧门禁。
+- 机制修复: `bldgPhaseOk` 在 `crazyMidnight && ti===0` 时统一放行，让极昼按事件文案真正开放 Dawn；原有上午产业 gate 保持不变。
+- 3-axis lift: 反馈 +1（事件触发后的下游效果可由门禁证明）; 选择 +1（极昼把营业时段变成可利用窗口）; 视觉精度 N/A。
+- 测试: **408/408 PASS**（基线 400 + 8 Round 28 运行时断言）; `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `node --check` PASS; HTTP 200; `git diff --check` PASS。
+- 风险: `CRAZY_POOL` 只在 `AB_TEST.data` 暴露，不进入生产 UI/API；E8 其余事件仍主要由静态契约覆盖，后续可继续补充实际小游戏入口的端到端断言。
+- 验收: 打开 `test.html`，E8 acceptance 区显示 8 条 PASS；手动 `?seed=42` 触发极昼后，在 Dawn 进入酒吧不会再收到闭店提示。

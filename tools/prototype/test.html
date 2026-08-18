@@ -42,6 +42,23 @@ frame.addEventListener('load',async()=>{
     }
   };
 
+  const withCrazyEventState=(id,fn)=>{
+    const keys=['shop','mood','money','bs','rep','ti','speed','events','upgrades','mods','mg'];
+    const before={};for(const k of keys)before[k]=t.state[k];
+    try{
+      Object.assign(t.state,{
+        shop:{crazyTipMul:1,crazyBrewOrders:0,crazySurfStam:0,crazyFaceMark:'',crazyMidnight:false,crazyBlessing:false,crazySlow:false},
+        mood:0,money:100,bs:[2,0,0],rep:0,ti:0,speed:1,events:[],upgrades:[],mods:[],mg:null
+      });
+      const event=t.data.crazyEvents&&t.data.crazyEvents.find(e=>e.id===id);
+      if(!event)throw new Error(`missing crazy event: ${id}`);
+      event.fire();
+      return fn(event);
+    }finally{
+      for(const k of keys)t.state[k]=before[k];
+    }
+  };
+
   // Phase 1: contract tests against the loaded instance
   check('测试接口可用',()=>t&&t.validate);
   const v=t.validate();
@@ -1179,6 +1196,33 @@ frame.addEventListener('load',async()=>{
     t.state._run={brewsFinished:0,coffeeSales:0,academicDone:0,bodyTradeCount:0,escUsed:0};
     return t.state.achTree.brew===0&&t.state._talentMax===4;
   });
+
+  // ═══ Phase E8 acceptance — crazy events fire into live gameplay hooks ═══
+  check('E8 runtime: 24 个 Crazy Events 全部有唯一 id + fire()',()=>{
+    const events=t.data.crazyEvents;
+    return Array.isArray(events)&&events.length===24&&new Set(events.map(e=>e.id)).size===24&&events.every(e=>typeof e.fire==='function');
+  });
+  check('E8 runtime: 🌈 运河彩虹 fire() → tipFactor ×1.5',()=>withCrazyEventState(
+    'canal_rainbow',()=>Math.abs(win.tipFactor()-1.5)<1e-6));
+  check('E8 runtime: 🚁 直升机 fire() → 酿酒订单 +3',()=>withCrazyEventState(
+    'helicopter_tour',()=>t.state.shop.crazyBrewOrders===3));
+  check('E8 runtime: 🦢 天鹅 fire() → 冲浪体力 -10',()=>withCrazyEventState(
+    'swan_attack',()=>t.state.shop.crazySurfStam===-10));
+  check('E8 runtime: 🐦 海鸥 fire() → 库存确定减少 1',()=>withCrazyEventState(
+    'seagull_steal',()=>t.state.bs[0]===1&&t.state.bs[1]===0&&t.state.bs[2]===0));
+  check('E8 runtime: 🎭 狂欢节 fire() → 顾客面具标记',()=>withCrazyEventState(
+    'carnival_mask',()=>t.state.shop.crazyFaceMark==='🎭'));
+  check('E8 runtime: 🌙 极昼 fire() → Dawn 酒吧从闭店变营业',()=>{
+    const before=t.state.shop,beforeTi=t.state.ti;
+    try{
+      t.state.shop={crazyMidnight:false};t.state.ti=0;
+      const wasClosed=!win.bldgPhaseOk({tp:'bar'});
+      const event=t.data.crazyEvents.find(e=>e.id==='midnight_sun');event.fire();
+      return wasClosed&&win.bldgPhaseOk({tp:'bar'});
+    }finally{t.state.shop=before;t.state.ti=beforeTi}
+  });
+  check('E8 runtime: 🌊 运河涨水 fire() → speedMs 100→50',()=>withCrazyEventState(
+    'canal_flood',()=>win.speedMs(100)===50));
 
   // ═══ Phase E acceptance — core systems are live in browser runtime ═══
   // (withPhaseEIndustryState helper is defined at the top of the load handler so

@@ -1746,6 +1746,7 @@ function nnBridge(px,py){let b=null,d=Infinity;BRIDGES.forEach(br=>{const bx=br.
 // Phase A C1: time-of-day gates — buildings close/open by phase to drive rhythm.
 // brew/coffee/surf = morning work · academic = afternoon/evening · bar/shroom = evening+ · station = rush hours
 function bldgPhaseOk(b){
+  if(G.shop&&G.shop.crazyMidnight&&G.ti===0)return true;
   const tp=b.tp;
   if(tp==='brew'||tp==='coffee'||tp==='surf')return G.ti<=2||(G.shop&&G.shop.crazyMidnight&&G.ti===0);
   if(tp==='academic')return G.ti===2||G.ti===3;
@@ -3970,9 +3971,9 @@ renderAll();
 try{if(localStorage.getItem('ab_skip_tutorial')==='1'){startFromModal()}}catch(e){}
 const _qp=new URLSearchParams(location.search);const _qs=_qp.get('seed');if(_qs)document.getElementById('start-seed').value=_qs;
 window.AB_TEST={
-  data:{industries:IND_DEF,events:EV_POOL,upgrades:UP_POOL,objectives:OBJ_CATS,achievements:ACH_POOL,achTree:ACH_TREE},state:G,
+  data:{industries:IND_DEF,events:EV_POOL,upgrades:UP_POOL,objectives:OBJ_CATS,achievements:ACH_POOL,achTree:ACH_TREE,crazyEvents:CRAZY_POOL},state:G,
   seedAbbrev,seeded,rollDayObjectives,rollDayModifier,pickObjDef,tickObj,newRun,endGame,clampTargetToWalkable,
-  industryFactor,tipFactor,tryUnlock,saveAch,loadAch,AUDIO,resetRunCounters,
+  industryFactor,tipFactor,bldgPhaseOk,tryUnlock,saveAch,loadAch,AUDIO,resetRunCounters,
   barTipPreview,barPatienceLeft,barDayDifficulty,coffeeHeatZone,coffeeFitHint,shroomQuality,brewStreakMul,brewNoteProgress,surfPerfectStreakMul,surfBreakerTelegraph,acadPartialCredit,acadRebuttalCost,acadRebuttalBoost,acadWriteMs,acadSubmitCooldownMs,VENUE_DEF,phaseNarr,showPhaseFlash,PHASE_NARR,confettiBurst,confettiClear,confettiUpdate,confettiDraw,CONFETTI_PALETTE,isLegendary,legendarySpeedMs,legendaryCost,legendaryMetaCap,rollUpgradeChoices,NPC_DIALOGUES,pickNpcDialog,NPC_TEACH_FLAVOR,NPC_BUILDING_FLAVOR,MG_HINT_KEYS,showMgHint,closeMgHint,mgHintSeen,getHoverBldg,speedMs,cycleSpeed,saveSpeed,loadSpeed,cancelAuto,renderAutoBtn,AUTO_CANCEL_GRACE_MS,showHelp,closeHelp,lvMaxBoost,
   buildRunSummary,buildRunEpitaph,pushRunHistory,loadRunHistory,renderRunHistory,doBodyTrade,openBodyTrade,closeBodyTrade,bodyOpen,moodFloor,startBrew,startSurf,sBarC,endGame,
   validate(){

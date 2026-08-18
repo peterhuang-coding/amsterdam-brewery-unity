@@ -2175,6 +2175,105 @@ frame.addEventListener('load',async()=>{
     localStorage.removeItem('ab_slot_2');if(slot2Before)localStorage.setItem('ab_slot_2',JSON.stringify(slot2Before));
     return meta===777&&ups.indexOf('legendary_income')>=0;
   });
+  // ═══ funify-v3 Round 35 — ⚙️ settings modal + 🗑️ clear localStorage (BACKLOG #10 #4 closure) ═══
+  check('Round 35: showSettings 函数暴露在 AB_TEST',()=>typeof win.showSettings==='function');
+  check('Round 35: closeSettings 函数暴露在 AB_TEST',()=>typeof win.closeSettings==='function');
+  check('Round 35: listAbKeys / abKeyNames / abStorageBytes / clearAllAbData 暴露',()=>typeof win.listAbKeys==='function'&&typeof win.abKeyNames==='function'&&typeof win.abStorageBytes==='function'&&typeof win.clearAllAbData==='function');
+  check('Round 35: confirmClearAbData / renderSettingsMeta / renderSettingsKeys 暴露',()=>typeof win.confirmClearAbData==='function'&&typeof win.renderSettingsMeta==='function'&&typeof win.renderSettingsKeys==='function');
+  check('Round 35: #settings-modal 存在且初始 hidden',()=>{
+    const m=doc.getElementById('settings-modal');return!!m&&m.classList.contains('hidden');
+  });
+  check('Round 35: showSettings 移除 hidden 类',()=>{
+    win.showSettings();
+    const m=doc.getElementById('settings-modal');return m&&!m.classList.contains('hidden');
+  });
+  check('Round 35: closeSettings 恢复 hidden 类',()=>{
+    win.showSettings();win.closeSettings();
+    const m=doc.getElementById('settings-modal');return m&&m.classList.contains('hidden');
+  });
+  check('Round 35: start-modal 含 ⚙️ 设置 按钮',()=>{
+    const btns=doc.querySelectorAll('#start-modal .intro-actions .btn');
+    return Array.from(btns).some(b=>b.textContent.indexOf('设置')>=0);
+  });
+  check('Round 35: abKeyNames 只列 ab_* 开头键 (排除其他应用数据)',()=>{
+    localStorage.setItem('not_ab_test_key','x');
+    try{localStorage.setItem('ab_test_round35','123')}catch(e){}
+    const names=win.abKeyNames();
+    const ok=names.indexOf('ab_test_round35')>=0&&names.indexOf('not_ab_test_key')<0;
+    localStorage.removeItem('ab_test_round35');localStorage.removeItem('not_ab_test_key');
+    return ok;
+  });
+  check('Round 35: abStorageBytes 累加 key 字符串长度 + 值字节数',()=>{
+    localStorage.setItem('ab_bytes_test','hello'); // 13-byte key + 5-byte value
+    const before=win.abStorageBytes();
+    localStorage.setItem('ab_bytes_test2','hi'); // 14-byte key + 2-byte value
+    const after=win.abStorageBytes();
+    localStorage.removeItem('ab_bytes_test');localStorage.removeItem('ab_bytes_test2');
+    return after-before>=15;
+  });
+  check('Round 35: clearAllAbData 只清 ab_* 键,不动其他键 (返回删除计数)',()=>{
+    localStorage.setItem('ab_clear_test','x');
+    localStorage.setItem('not_ab_clear_test','keep');
+    const n=win.clearAllAbData();
+    const abGone=localStorage.getItem('ab_clear_test')===null;
+    const otherKept=localStorage.getItem('not_ab_clear_test')==='keep';
+    localStorage.removeItem('not_ab_clear_test');
+    return abGone&&otherKept&&typeof n==='number'&&n>=1;
+  });
+  check('Round 35: confirmClearAbData 第 1 次点 → 按钮加 warn class',()=>{
+    win.showSettings();
+    win.confirmClearAbData();
+    const btn=doc.getElementById('set-clear-btn');
+    return btn&&btn.classList.contains('warn');
+  });
+  check('Round 35: confirmClearAbData 第 2 次点(3s 内)→ 按钮去 warn + 文字带 ✅',()=>{
+    win.showSettings();
+    win.confirmClearAbData();
+    win.confirmClearAbData();
+    const btn=doc.getElementById('set-clear-btn');
+    return btn&&!btn.classList.contains('warn')&&btn.textContent.indexOf('✅')>=0;
+  });
+  check('Round 35: showSettings 重置 _clearConfirmAt + 按钮态',()=>{
+    win.showSettings();
+    win.confirmClearAbData(); // 进入 warn
+    win.closeSettings();      // 关闭
+    win.showSettings();       // 重新打开应清回默认
+    const btn=doc.getElementById('set-clear-btn');
+    return btn&&!btn.classList.contains('warn')&&btn.textContent.indexOf('🗑️')>=0;
+  });
+  check('Round 35: renderSettingsKeys 列出 ab_* 键(写入临时键验证)',()=>{
+    localStorage.setItem('ab_render_test','y');
+    win.renderSettingsKeys();
+    const html=doc.getElementById('set-keys-list').innerHTML;
+    localStorage.removeItem('ab_render_test');
+    return html.indexOf('ab_render_test')>=0;
+  });
+  check('Round 35: renderSettingsKeys 空数据 → 显示 (无 ab_* 数据 — 全新玩家)',()=>{
+    win.clearAllAbData();
+    win.renderSettingsKeys();
+    const html=doc.getElementById('set-keys-list').innerHTML;
+    return html.indexOf('全新玩家')>=0;
+  });
+  check('Round 35: renderSettingsMeta 写入 #set-speed / #set-mute / #set-active-slot',()=>{
+    localStorage.setItem('ab_meta_v2',JSON.stringify({version:4,meta:1,upgrades:[],legacy:0,run:1,modHistory:[],invCollect:{}}));
+    win.renderSettingsMeta();
+    const sp=doc.getElementById('set-speed').textContent;
+    const sl=doc.getElementById('set-active-slot').textContent;
+    return sp.indexOf('×')>=0&&sl.indexOf('#')>=0;
+  });
+  check('Round 35: Esc 键在 settings-modal 可见时调用 closeSettings',()=>{
+    win.showSettings();
+    const before=!doc.getElementById('settings-modal').classList.contains('hidden');
+    const ev=new KeyboardEvent('keydown',{key:'Escape',bubbles:true});
+    doc.dispatchEvent(ev);
+    const after=doc.getElementById('settings-modal').classList.contains('hidden');
+    return before&&after;
+  });
+  check('Round 35: modalOpen() 在 settings-modal 可见时返 true',()=>{
+    win.closeSettings();
+    win.showSettings();
+    return win.modalOpen&&win.modalOpen();
+  });
 
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });

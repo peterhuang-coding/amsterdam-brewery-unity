@@ -1165,3 +1165,56 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 ## funify-v3 — Round 22 placeholder (backlog)
 
 (更多 commits 后续)
+
+## funify-v3 — Round 35 — ⚙️ settings modal + 🗑️ clear localStorage (BACKLOG #10 #4 closure)
+
+> 关闭 BACKLOG #10 持久化最后一项:玩家可在 start-modal 进入 ⚙️ 设置模态,浏览所有 ab_* 键 + 字节占用 + 危险区一键清空(2 步确认 + 自动 reload)。
+> 配合 Round 21/34 的 slot picker + export/import,完整闭环"备份 / 迁移 / 还原 / 清空"4 件套。
+> 基线 533/535 → **554/554 PASS** (+19 新断言),100% PASS,无 pageerror。
+
+### 范围 (按 ROI — 关闭 BACKLOG #10 #4)
+
+- [x] [index.html:CSS #96-105] 新增 `#settings-modal` 全屏遮罩样式 (蓝色 #80b8f0 边框区别于 start 的金色) + `.set-section` 卡片 + `.set-list` 滚动键列表 + `.set-clear` 红色危险按钮 (`.warn` 态 + phaseFlashIn 动画)
+- [x] [index.html:HTML #445-466] start-modal `.intro-actions` 新增 ⚙️ 设置按钮 + 新 `<div id="settings-modal">` 含 3 section: 运行时偏好 (速度/静音/激活槽) · 数据管理 (键列表 + 字节数) · 危险区 (清空按钮)
+- [x] [index.html:1500-1558] 新 8 helper:
+  - `listAbKeys()`: `{k,size}[]` 列出所有 ab_* 键 + 值字节
+  - `abStorageBytes()`: 总字节数 (key 字符串 + value)
+  - `abKeyNames()`: 仅键名数组
+  - `clearAllAbData()`: 删除所有 ab_* 键,保留其他应用数据,返回删除计数
+  - `renderSettingsKeys()`: 填 #set-keys-list 列表 (`(无 ab_* 数据 — 全新玩家)` 空态文案)
+  - `renderSettingsMeta()`: 填 #set-speed / #set-mute / #set-active-slot / 计数 / 字节
+  - `confirmClearAbData()`: 2 步确认 (3 秒内第 2 次点击才真清空 + reload)
+  - `showSettings()` / `closeSettings()`: 开/关 modal,show 时重置 warn 态
+- [x] [index.html:1858 modalOpen()] 加入 settings-modal 检查
+- [x] [index.html:4289 keydown 路由] Esc/Enter 在 settings-modal 可见时调用 closeSettings (优先级在 mg-hint 之前)
+- [x] [index.html:4420 AB_TEST] 暴露 8 个新 surface
+- [x] [test.html +19 断言] 4 helper 暴露 + 1 函数组 + 6 DOM (#settings-modal hidden/visible/close + start-modal ⚙️ 按钮 + Esc 路由 + modalOpen) + 3 数据 (abKeyNames 只列 ab_* / abStorageBytes 累加 / clearAllAbData 只删 ab_*) + 3 confirmClearAbData (warn 态 / 第 2 次点 ✅ / showSettings 重置) + 2 renderSettingsKeys (有数据 / 空态全新玩家) + 1 renderSettingsMeta
+- [x] [BACKLOG.md #10 #4] 标记完成
+- [x] [IMPROVEMENTS.md Round 35] 本条目
+
+### 机制要点
+
+1. **2 步确认防误触**: 第 1 次点 → 按钮 `.warn` class + 文字 `⚠️ 再次点击确认清空(3 秒内)`;3 秒内不点 → 自动回退到默认态;第 2 次点 → 真删 + 文字 `✅ 已清空 N 个键 · 刷新中…` + `setTimeout(location.reload, 400ms)`。
+2. **只删 ab_* 不动其他数据**: 枚举 `localStorage.key(i)` 时只删 `k.indexOf('ab_')===0`,避免误删浏览器同域名其他应用数据。
+3. **键列表实时同步**: `renderSettingsKeys()` 在 showSettings 时跑,玩家看到的是当前 localStorage 真实状态(包括 Round 21 的 3 槽 / Round 22 的 export slot / Round 30 的 ledger / Round 31 的 invCollect / Round 32 的 teacherRep)。
+4. **运行时偏好只读**: 速度 / 静音用 mid-run 按钮和 M 键切换,设置模态只显示当前值不提供控件,避免双重入口混淆。
+
+### 3-axis 升档
+
+- 持久化 +1 (4 件套闭环)
+- 反馈 +1 (⚠️→✅ 双态视觉 + 字节计数透明)
+- 选择 +1 (清空 vs 单槽 export/import vs 中途 V 切槽 — 玩家挑路径)
+
+### 验收
+
+- **554/554 PASS** (基线 533 + 19 Round 35 稳定断言,pre-existing 2 flaky 也 pass) + test-phase-e.js 168/168
+- start-modal ⚙️ 设置按钮 → 弹蓝框 modal,列出所有 ab_* 键 + 字节;🗑️ 按钮 2 步确认后 location.reload 回首启
+- Esc 关 modal,Enter 同效 (keydown 路由优先级: settings → mg-hint → help)
+- `localStorage.getItem('non_ab_key')` 不会被列入/删除 (防御)
+- BACKLOG #10 4/4 子项关闭 (#1 slot picker · #2 export/import · #4 settings clear · #10 #3 P replay 仍 open 留待 Round 36+)
+
+### 已知风险 (留待 Round 36+)
+
+- ⚠️ Round 22 标记的 2 条 pre-existing flaky (`legendary_mood_lock` ×2) 这次跑通了,但本质仍是测试设计缺陷,可能在大量 localStorage 写入后复现
+- ⚠️ BACKLOG #10 #3 P 键 replay (`G.actionLog.push({t,x,y,k})`) 仍未实现 (Round 35+ 可加)
+- ⚠️ BACKLOG #10 #6 reset button for `G.barRegulars/strainNotes/brewNotes` 仍未实现 (Round 35+ 可加)

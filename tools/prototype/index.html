@@ -101,7 +101,26 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 /* funify-v3 Round 21 — slot picker (BACKLOG #10 #1 closure) */
 .slot-picker{margin-top:14px;padding:10px;background:#00000030;border:1px solid var(--border);border-radius:7px}.slot-picker-title{color:var(--gold);font-size:12px;margin-bottom:8px;text-align:center}.slot-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.slot-card{background:var(--card);border:1px solid #fff2;border-radius:7px;padding:9px 7px;text-align:center;cursor:pointer;transition:border-color .2s,box-shadow .2s}.slot-card:hover{border-color:var(--gold)}.slot-card.active{border-color:var(--gold);box-shadow:0 0 8px #ecb45766,inset 0 0 4px #ecb45722}.slot-card.empty{opacity:0.85}.slot-card .sc-idx{font:bold 14px monospace;color:var(--gold);letter-spacing:1px}.slot-card .sc-state{font-size:10px;color:var(--muted);margin:2px 0}.slot-card .sc-info{font-size:10px;color:var(--text);line-height:1.4;margin-top:4px}.slot-card .sc-btn{margin-top:6px;font-size:11px;padding:4px 8px;border-radius:5px;background:#ecb45722;color:var(--gold);border:1px solid var(--gold);cursor:pointer}.slot-card .sc-btn:hover{background:var(--gold);color:#000}.slot-card .sc-export{margin-left:4px;background:#4090e022;color:#80b8f0;border-color:#4090e0}.slot-card .sc-export:hover{background:#4090e0;color:#fff}.slot-import{margin-top:10px;text-align:center;padding-top:8px;border-top:1px solid var(--border)}.slot-import .btn{font-size:11px;padding:5px 10px;background:#4090e022;color:#80b8f0;border:1px solid #4090e0}.slot-import .btn:hover{background:#4090e0;color:#fff}
 @media(max-width:760px){.slot-cards{grid-template-columns:1fr}}
-/* funify-v3 Round 14 — first-time mini-game key overlay */
+/* funify-v3 Round 35 — ⚙️ settings modal + 🗑️ clear localStorage (BACKLOG #10 #4 closure) */
+#settings-modal,#settings-modal.hidden{position:fixed;inset:0;background:#00000080;display:flex;align-items:center;justify-content:center;z-index:120;backdrop-filter:blur(5px)}
+#settings-modal.hidden{display:none}
+#settings-modal .intro-box{max-width:560px;border-color:#80b8f0}
+#settings-modal h1{color:#80b8f0;font-size:18px}
+.set-section{margin:12px 0;padding:9px 12px;background:#ffffff08;border:1px solid #ffffff14;border-radius:8px}
+.set-section h3{color:var(--gold);font-size:12px;margin:0 0 6px;text-transform:uppercase;letter-spacing:1px}
+.set-section p{margin:0 0 6px;font-size:11px;color:var(--text);line-height:1.5}
+.set-section .muted{color:var(--muted);font-size:10px}
+.set-list{max-height:120px;overflow-y:auto;background:#00000030;border-radius:6px;padding:6px 10px;font:10px monospace;color:var(--text);margin:6px 0;word-break:break-all}
+.set-list .empty{color:var(--muted);font-style:italic;font-family:inherit}
+.set-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:5px 0;font-size:11px;border-top:1px solid #ffffff10}
+.set-row:first-of-type{border-top:none}
+.set-row b{color:var(--gold);font-weight:600}
+.set-clear{background:#f0505022;border:1px solid #f05050;color:#ff9090;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;transition:all .2s}
+.set-clear:hover{background:#f05050;color:#fff}
+.set-clear.warn{background:#f05050;color:#fff;font-weight:bold;animation:phaseFlashIn .4s}
+@keyframes phaseFlashIn{from{transform:scale(.96);opacity:.4}to{transform:scale(1);opacity:1}}
+.set-meta-row{display:flex;justify-content:space-between;font-size:11px;color:var(--text);padding:2px 0}
+.set-meta-row b{color:var(--gold)}
 #mg-hint-modal .intro-box{max-width:520px;border-color:var(--green)}
 #mg-hint-modal h1{color:var(--green)}
 #mh-body{text-align:center}
@@ -411,7 +430,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <!-- funify-v3 Round 21 — 3-slot picker (BACKLOG #10 #1 closure):每槽独立 meta/upgrades/run · 点击切换 -->
 <!-- funify-v3 Round 34 — 加 📥 导入按钮 + file input (BACKLOG #10 #2 closure) -->
 <div class="slot-picker"><div class="slot-picker-title">💾 存档槽位 (3 个独立进度)</div><div id="slot-cards" class="slot-cards"></div><div class="slot-import"><button class="btn" onclick="document.getElementById('import-file').click()">📥 导入 JSON 到当前槽</button><input type="file" id="import-file" accept="application/json,.json" style="display:none" onchange="handleImportFile(this,getActiveSlot())"></div></div>
-<div class="intro-actions"><button class="btn" onclick="skipTutorial()">Skip 教程（下次直接进入）</button><button class="btn" onclick="showHelp()">? 查看帮助</button></div>
+<div class="intro-actions"><button class="btn" onclick="skipTutorial()">Skip 教程（下次直接进入）</button><button class="btn" onclick="showSettings()">⚙️ 设置</button><button class="btn" onclick="showHelp()">? 查看帮助</button></div>
 </div>
 </div>
 <div id="help-modal" class="hidden">
@@ -428,6 +447,34 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <h1 id="mh-title">🎮 小游戏键位</h1>
 <div id="mh-body"><div id="mh-ic"></div><div id="mh-name"></div><div id="mh-keys"></div><div id="mh-tip"></div></div>
 <button class="btn help-close" id="mh-btn" onclick="closeMgHint()">知道了 (Enter)</button>
+</div>
+</div>
+
+<!-- funify-v3 Round 35 — ⚙️ settings modal + 🗑️ clear localStorage (BACKLOG #10 #4 closure) -->
+<div id="settings-modal" class="hidden">
+<div class="intro-box">
+<h1>⚙️ 设置 &amp; 数据管理</h1>
+<div class="set-section">
+<h3>📊 运行时偏好</h3>
+<div class="set-meta-row"><span>当前速度档</span><b id="set-speed">1×</b></div>
+<div class="set-meta-row"><span>静音状态</span><b id="set-mute">🔊 开</b></div>
+<div class="set-meta-row"><span>当前激活存档槽</span><b id="set-active-slot">#1</b></div>
+<div class="muted">💡 速度和静音用 ▶▶ 按钮 / M 键直接切换（mid-run 也生效）。</div>
+</div>
+<div class="set-section">
+<h3>💾 localStorage 数据</h3>
+<p>本应用使用浏览器 localStorage 保存存档、设置与教学进度。下方列出所有 <code>ab_*</code> 键：</p>
+<div class="set-list" id="set-keys-list"></div>
+<div class="muted">共 <b id="set-keys-count">0</b> 个键 · 约 <b id="set-keys-size">0</b> 字节</div>
+</div>
+<div class="set-section">
+<h3 style="color:#ff9090">🗑️ 危险操作</h3>
+<p style="color:#ff9090">清空所有 <code>ab_*</code> 数据会：删除全部存档槽 · 重置教学提示 · 静音 / 速度偏好归零。<br>完成后页面将自动刷新，所有进度回到首启状态。</p>
+<div style="text-align:center;margin-top:8px">
+<button class="set-clear" id="set-clear-btn" onclick="confirmClearAbData()">🗑️ 清空所有 ab_* 数据</button>
+</div>
+</div>
+<button class="btn help-close" onclick="closeSettings()">关闭 (Esc)</button>
 </div>
 </div>
 
@@ -1450,6 +1497,80 @@ function cycleSlot(){
   saveSlot(cur);setActiveSlot(next);loadMeta();
   return true;
 }
+// funify-v3 Round 35 — ⚙️ settings modal + 🗑️ clear localStorage (BACKLOG #10 #4 closure)
+// 列出所有 ab_* localStorage 键 + 估算字节大小,纯数据读取无副作用
+function listAbKeys(){
+  const out=[];
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k&&k.indexOf('ab_')===0){
+        const v=localStorage.getItem(k)||'';
+        out.push({k,size:v.length});
+      }
+    }
+  }catch(e){console.warn('listAbKeys failed',e)}
+  return out;
+}
+// 估算 ab_* 总字节数(含 key 字符串长度)
+function abStorageBytes(){return listAbKeys().reduce((s,e)=>s+e.k.length+e.size,0)}
+// 列出所有 ab_* 键名(纯文本数组,供 UI/测试用)
+function abKeyNames(){return listAbKeys().map(e=>e.k)}
+// 删除所有 ab_* 键,返回删除计数;保留其他应用数据,只清本应用
+function clearAllAbData(){
+  const keys=abKeyNames();
+  for(const k of keys){try{localStorage.removeItem(k)}catch(e){console.warn('removeItem '+k+' failed',e)}}
+  return keys.length;
+}
+// 渲染 set-keys-list 区域:每个 key 一行 `name (size bytes)`
+function renderSettingsKeys(){
+  const list=document.getElementById('set-keys-list');if(!list)return;
+  const ks=listAbKeys();
+  if(!ks.length){list.innerHTML='<div class="empty">（无 ab_* 数据 — 全新玩家）</div>';return}
+  list.innerHTML=ks.map(e=>`<div class="set-row"><b>${e.k}</b><span class="muted">${e.size}B</span></div>`).join('');
+}
+// 读取当前运行时偏好并填充 #set-speed / #set-mute / #set-active-slot
+function renderSettingsMeta(){
+  const sp=document.getElementById('set-speed');if(sp)sp.textContent=(G.speed||1)+'×';
+  const mu=document.getElementById('set-mute');if(mu)mu.textContent=AUDIO&&AUDIO.muted?'🔇 静默':'🔊 开';
+  const sl=document.getElementById('set-active-slot');if(sl)sl.textContent='#'+getActiveSlot();
+  const ct=document.getElementById('set-keys-count');if(ct)ct.textContent=listAbKeys().length;
+  const sz=document.getElementById('set-keys-size');if(sz)sz.textContent=abStorageBytes();
+}
+// 2 步清空确认:第 1 次点 → 按钮变红 + 文字"再次点击确认清空",3s 内不点回退;第 2 次点 → 真的清空并刷新
+let _clearConfirmAt=0;
+function confirmClearAbData(){
+  const btn=document.getElementById('set-clear-btn');if(!btn)return;
+  const now=Date.now();
+  if(_clearConfirmAt&&(now-_clearConfirmAt)<3000&&btn.classList.contains('warn')){
+    // 第二次确认:真的清空
+    const removed=clearAllAbData();
+    btn.classList.remove('warn');
+    btn.textContent='✅ 已清空 ' + removed + ' 个键 · 刷新中…';
+    setTimeout(()=>{try{location.reload()}catch(e){console.warn('reload failed',e)}},400);
+    return;
+  }
+  // 第一次点:进入 warn 态
+  _clearConfirmAt=now;
+  btn.classList.add('warn');
+  btn.textContent='⚠️ 再次点击确认清空(3 秒内)';
+  setTimeout(()=>{if(Date.now()-_clearConfirmAt>=3000&&btn.classList.contains('warn')){btn.classList.remove('warn');btn.textContent='🗑️ 清空所有 ab_* 数据';_clearConfirmAt=0}},3100);
+}
+function showSettings(){
+  const m=document.getElementById('settings-modal');if(!m)return;
+  renderSettingsMeta();renderSettingsKeys();m.classList.remove('hidden');
+  // 重置清空按钮态(防止上次 warn 态残留)
+  _clearConfirmAt=0;
+  const btn=document.getElementById('set-clear-btn');
+  if(btn){btn.classList.remove('warn');btn.textContent='🗑️ 清空所有 ab_* 数据'}
+}
+function closeSettings(){
+  const m=document.getElementById('settings-modal');if(!m)return;
+  m.classList.add('hidden');
+  _clearConfirmAt=0;
+  const btn=document.getElementById('set-clear-btn');
+  if(btn){btn.classList.remove('warn');btn.textContent='🗑️ 清空所有 ab_* 数据'}
+}
 // funify-v3 Round 30 — Cross-run Ledger (📒 知识本): strainNotes + brewNotes + barRegulars + researchTopics + surfDiscovered + visited persist ab_ledger_v1
 function saveLedger(){try{localStorage.setItem('ab_ledger_v1',JSON.stringify({version:1,strainNotes:G.strainNotes||{},brewNotes:G.brewNotes||{},barRegulars:G.barRegulars||[],researchTopics:G.researchTopics||[],surfDiscovered:G.surfDiscovered||[],visited:G.visited||[],recipeKnowledge:G._recipeKnowledge||{},teacherRep:G.teacherRep||{pablo:0,ravi:0,sofie:0,chen:0}}))}catch(e){console.warn('ab_ledger_v1 save failed',e)}}
 function loadLedger(){try{const d=JSON.parse(localStorage.getItem('ab_ledger_v1'));if(d&&d.version===1){if(d.strainNotes&&typeof d.strainNotes==='object')G.strainNotes=d.strainNotes;if(d.brewNotes&&typeof d.brewNotes==='object'){for(const t of ['IPA','Stout','Lager']){if(d.brewNotes[t]&&typeof d.brewNotes[t]==='object'){G.brewNotes[t].count=Math.max(G.brewNotes[t].count|0,d.brewNotes[t].count|0);G.brewNotes[t].best=Math.max(G.brewNotes[t].best|0,d.brewNotes[t].best|0)}}}if(Array.isArray(d.barRegulars))G.barRegulars=Array.from(new Set([...(G.barRegulars||[]),...d.barRegulars]));if(Array.isArray(d.researchTopics))G.researchTopics=Array.from(new Set([...(G.researchTopics||[]),...d.researchTopics]));if(Array.isArray(d.surfDiscovered))G.surfDiscovered=Array.from(new Set([...(G.surfDiscovered||[]),...d.surfDiscovered]));if(Array.isArray(d.visited))G.visited=Array.from(new Set([...(G.visited||[]),...d.visited]));if(d.recipeKnowledge&&typeof d.recipeKnowledge==='object')G._recipeKnowledge=d.recipeKnowledge;if(d.teacherRep&&typeof d.teacherRep==='object'){if(!G.teacherRep)G.teacherRep={pablo:0,ravi:0,sofie:0,chen:0};for(const n of ['pablo','ravi','sofie','chen']){const v=d.teacherRep[n]|0;if(v>(G.teacherRep[n]|0))G.teacherRep[n]=v}}}}catch(e){console.warn('ab_ledger_v1 load failed',e)}}
@@ -1855,7 +1976,7 @@ function renderGifts(){
   }).join('');
   document.getElementById('craft-pane-gift').innerHTML=html;
 }
-function modalOpen(){const s=document.getElementById('start-modal'),h=document.getElementById('help-modal'),m=document.getElementById('mg-hint-modal'),t=document.getElementById('tal-modal'),f=document.getElementById('fac-modal'),c=document.getElementById('craft-modal');return(s&&!s.classList.contains('hidden'))||(h&&!h.classList.contains('hidden'))||(m&&!m.classList.contains('hidden'))||(t&&!t.classList.contains('hidden'))||(f&&!f.classList.contains('hidden'))||(c&&!c.classList.contains('hidden'))}
+function modalOpen(){const s=document.getElementById('start-modal'),h=document.getElementById('help-modal'),m=document.getElementById('mg-hint-modal'),t=document.getElementById('tal-modal'),f=document.getElementById('fac-modal'),c=document.getElementById('craft-modal'),st=document.getElementById('settings-modal');return(s&&!s.classList.contains('hidden'))||(h&&!h.classList.contains('hidden'))||(m&&!m.classList.contains('hidden'))||(t&&!t.classList.contains('hidden'))||(f&&!f.classList.contains('hidden'))||(c&&!c.classList.contains('hidden'))||(st&&!st.classList.contains('hidden'))}
 // funify-v3 Round 14 — first-time mini-game key overlay (BACKLOG #3 close)
 const MG_HINT_KEYS={
   brew:{ic:'🍺',name:'酿酒厂（啤酒订单）',keys:[['<kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd>','原料:麦芽/啤酒花/酵母各选 0/1/2'],['<kbd>SPACE</kbd>','开始酿造 (订单 180s 内完成)'],['<kbd>⬆</kbd>/<kbd>⬇</kbd>','控温 ±3°C（IPA=55°·Stout=68°·Lager=48°）'],['<kbd>ESC</kbd>','离开不收尾']],tip:'配方顺序 + 目标温度是订单的两大隐藏轴；温度误差 ≤±5°C 触发完美品。'},
@@ -4239,7 +4360,7 @@ document.addEventListener('keydown',e=>{
   if(ledgerOpen()){const tk=e.key.toLowerCase();if(tk==='k'||tk==='escape'){e.preventDefault();closeLedger()}return}
   // funify-v3 Round 20 — 🗃️ 收藏 (I key) swallows keys while open
   if(invOpen()){const tk=e.key.toLowerCase();if(tk==='i'||tk==='escape'){e.preventDefault();closeInv()}return}
-  if(modalOpen()){if(e.key==='Enter'&&document.activeElement&&document.activeElement.id==='start-seed'){e.preventDefault();startFromModal();return}if(e.key==='Escape'||e.key==='Enter'){const hm=document.getElementById('mg-hint-modal');if(hm&&!hm.classList.contains('hidden')){closeMgHint();return}const hp=document.getElementById('help-modal');if(hp&&!hp.classList.contains('hidden')&&e.key==='Escape'){closeHelp();return}}if(e.key.toLowerCase()==='m'){AUDIO.toggleMute();return}return}
+  if(modalOpen()){if(e.key==='Enter'&&document.activeElement&&document.activeElement.id==='start-seed'){e.preventDefault();startFromModal();return}if(e.key==='Escape'||e.key==='Enter'){const st=document.getElementById('settings-modal');if(st&&!st.classList.contains('hidden')){closeSettings();return}const hm=document.getElementById('mg-hint-modal');if(hm&&!hm.classList.contains('hidden')){closeMgHint();return}const hp=document.getElementById('help-modal');if(hp&&!hp.classList.contains('hidden')&&e.key==='Escape'){closeHelp();return}}if(e.key.toLowerCase()==='m'){AUDIO.toggleMute();return}return}
   // funify-v3 Round 6 — M key toggles audio mute (works even when ended/modal)
   if(e.key==='M'||e.key==='m'){AUDIO.toggleMute();setMsg(AUDIO.muted?'🔇 音频已静音':'🔊 音频开启');return}
   if(G.ended){if(e.key==='n')newRun();return}const k=e.key.toLowerCase();
@@ -4370,7 +4491,7 @@ window.AB_TEST={
   buildRunSummary,buildRunEpitaph,pushRunHistory,loadRunHistory,renderRunHistory,doBodyTrade,openBodyTrade,closeBodyTrade,bodyOpen,moodFloor,startBrew,startSurf,sBarC,endGame,MG,
   ledgerOpen,showLedger,closeLedger,toggleLedger,renderLedger,saveLedger,loadLedger,
   invOpen,showInv,closeInv,toggleInv,renderInv,SURF_CATALOG,
-  getActiveSlot,setActiveSlot,slotKey,readSlot,listSlots,switchSlot,saveSlot,pickSlot,renderSlots,exportSlot,importSlot,downloadSlot,handleImportFile,cycleSlot,
+  getActiveSlot,setActiveSlot,slotKey,readSlot,listSlots,switchSlot,saveSlot,pickSlot,renderSlots,exportSlot,importSlot,downloadSlot,handleImportFile,cycleSlot,showSettings,closeSettings,listAbKeys,abKeyNames,abStorageBytes,clearAllAbData,confirmClearAbData,renderSettingsMeta,renderSettingsKeys,
   teacherRepBonus,bumpTeacherRep,
   pushModHistory,
   crazyActiveBadges,

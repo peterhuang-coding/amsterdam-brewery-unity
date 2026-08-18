@@ -731,7 +731,7 @@ const EV_KIND={};
 EV_POOL.forEach(e=>{EV_KIND[e.id]=e.kind||'neutral'});
 
 // ═══════════════════════════════════════════
-// Phase E8 — Crazy Events (搞怪事件池,18 个 weird 事件 · Round 5 +6)
+// Phase E8 — Crazy Events (搞怪事件池,24 个 weird 事件 · Round 5 +6 · Round 7 +6)
 // 每 tick 有 4% 概率随机触发 1 个。效果多为临时 buff/debuff,贯穿当日或即时生效。
 // 哲学:Balatro 的荒诞加分 + Inscryption 的怪诞设定 + 阿姆斯特丹在地梗。
 // ═══════════════════════════════════════════
@@ -758,7 +758,14 @@ const CRAZY_POOL=[
   {id:'cat_cafe_overrun',weight:1,ic:'🐈',t:'Cat Café 占领街角 · 心情 +2',fire(){const before=G.mood;G.mood=moodFloor(Math.min(2,G.mood+2));addEvt('good',`🐈 Cat Café · 心情 ${before}→${G.mood}`)}},
   {id:'pizza_bench',weight:1,ic:'🍕',t:'Pizza Bench 接力 · 冲浪体力 +20',fire(){G.shop.crazySurfStam=(G.shop.crazySurfStam||0)+20}},
   {id:'night_market',weight:1,ic:'🎑',t:'夜市突袭 · 罚款 $5',fire(){G.money=Math.max(0,G.money-5);addEvt('bad','🎑 城管来夜市 · $5')}},
-  {id:'tram_strike',weight:1,ic:'🚋',t:'电车大罢工 · 街口堵死 (本日慢速)',fire(){G.shop.crazySlow=true;addEvt('info','🚋 GVB 工会罢工 · 改走路')}}
+  {id:'tram_strike',weight:1,ic:'🚋',t:'电车大罢工 · 街口堵死 (本日慢速)',fire(){G.shop.crazySlow=true;addEvt('info','🚋 GVB 工会罢工 · 改走路')}},
+  // ── Phase E8.3 (Round 7) — Pack v3 · 6 Amsterdam-themed 搞怪事件 ──
+  {id:'bike_swarm',weight:1,ic:'🚲',t:'🚲 自行车大军挡路 · 慢速 + tip +20%',fire(){G.shop.crazySlow=true;G.shop.crazyTipMul=(G.shop.crazyTipMul||1)*1.2;addEvt('info','🚲 Damrak 单向堵塞 · 绕行')}},
+  {id:'vondelpark_picnic',weight:1,ic:'🎨',t:'Vondelpark 画家野餐 · 心情 +1',fire(){const before=G.mood;G.mood=Math.min(2,G.mood+1);addEvt('good',`🎨 Vondelpark 画家野餐 · 心情 ${before}→${G.mood}`)}},
+  {id:'cheese_roll',weight:1,ic:'🧀',t:'Alkmaar 奶酪轮接力 · 冲浪体力 +25',fire(){G.shop.crazySurfStam=(G.shop.crazySurfStam||0)+25;addEvt('good','🧀 Gouda 轮山坡滑下 · Stam buff')}},
+  {id:'duck_parade',weight:1,ic:'🦆',t:'运河鸭子游行 · 心情 +1',fire(){const before=G.mood;G.mood=Math.min(2,G.mood+1);addEvt('good',`🦆 鸭子列队 · 心情 ${before}→${G.mood}`)}},
+  {id:'canal_crash',weight:1,ic:'🚢',t:'运河游船撞桥 · 酿酒订单 +5 (受困游客)',fire(){G.shop.crazyBrewOrders=(G.shop.crazyBrewOrders||0)+5;addEvt('info','🚢 游船卡桥 · 5 单涌来')}},
+  {id:'sinterklaas_arrival',weight:1,ic:'🎅',t:'🎅 Sinterklaas 抵港 · 派糖钱 +$15',fire(){G.money+=15;addEvt('good','🎅 Sinterklaas + Pieten · 派糖 $15')}}
 ];
 
 function tickCrazyEvent(){

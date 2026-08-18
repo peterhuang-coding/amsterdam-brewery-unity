@@ -5175,6 +5175,34 @@ function _barRoundRect(cx,x,y,w,h,r){
   cx.closePath();
 }
 
+// funify-v3 Round 10 (Phase D1) — bar drink liquid color map (used by glass pour foam animation)
+const BAR_DRINK_COLORS={
+  lager:'#e8b840',stout:'#3a1a0a',wine:'#8a2030',cider:'#f0d870',kombucha:'#c89040',
+  sour:'#f0d050',mojito:'#80c060',martini:'#e8f0e0',spritz:'#e87030',julep:'#409050',
+  old_fash:'#a06020',negroni:'#802030',brewtanic:'#9040c0',amster_sun:'#f0c060'
+};
+// Foam color = lighter version (5% mix with white)
+const BAR_FOAM_COLORS={
+  lager:'#fff2c0',stout:'#d0a070',wine:'#e8a0b0',cider:'#fff8d0',kombucha:'#f0d8a0',
+  sour:'#fff8c0',mojito:'#d0f0a0',martini:'#ffffff',spritz:'#ffd8a0',julep:'#a0e090',
+  old_fash:'#e0b890',negroni:'#d0a0a8',brewtanic:'#d090e0',amster_sun:'#fff0a0'
+};
+function barDrinkColor(id){return BAR_DRINK_COLORS[id]||'#c89040'}
+function barFoamColor(id){return BAR_FOAM_COLORS[id]||'#f0e0a0'}
+// Pour progress 0..1 — measures how full the glass is (drinks faster when SPACE pressed; capped at 0.95)
+function barPourProgress(s){
+  if(!s)return 0;
+  if(s.pour&&s.pour.active){
+    // Build a sawtooth curve that loops 0..1 each ~700ms; tie fill to "near green zone peak"
+    const elapsed=Date.now()-(s.pour.startedAt||Date.now());
+    const cycle=0.0014*elapsed;
+    const saw=cycle-Math.floor(cycle);
+    return Math.min(0.95,0.4+saw*0.55);
+  }
+  if(s.poured)return 0.95;  // recently poured full
+  return 0;
+}
+
 function drawMG(){
   // funify-v3 Round 2 (Phase A3) — sky gradient + ambient particles (replaces flat TSKY fillRect)
   drawSkyOverlay(cx,W,H,G.ti|0);drawAmbient(cx,W,H,G.ti|0,Date.now());
@@ -5340,35 +5368,68 @@ function drawMG(){
       cx.fillStyle='#fff';cx.font='bold 10px sans-serif';cx.textAlign='center';cx.fillText('↑↓ 调温 · 当前 '+Math.round(s.t)+'°C',400,475);
     }
   }else if(mg==='coffee'){
-    // === Coffeeshop interior: brick wall + chalkboard menu + grinder + espresso machine + counter ===
+    // === Coffeeshop interior (Round 10 D2): 砖墙 + 咖啡馆窗户 + 黑板菜单 + 窗台绿植 + 磨豆机 + 萃取机 + 3 段工艺表盘 + 蒸汽粒子 ===
+    var _cnow=Date.now()/1000;
+    // 1) Back wall — brick (warm red/brown)
     cx.fillStyle='#3a2818';cx.fillRect(80,30,640,210);
     cx.fillStyle='#2a1a08';for(var wn=0;wn<8;wn++)for(var wm=0;wm<4;wm++)cx.fillRect(85+wm*160,35+wn*24,150,1);
-    // chalkboard menu (with strain prices + status indicator)
-    cx.fillStyle='#5a3a1a';cx.fillRect(135,40,200,110);  // wood frame
-    cx.fillStyle='#1a2a1a';cx.fillRect(140,45,190,100);
-    cx.fillStyle='#3a4a3a';cx.fillRect(140,45,190,3);
-    cx.fillStyle='#f0e8a0';cx.font='bold 12px sans-serif';cx.textAlign='left';cx.fillText('☕ MENU',150,62);
+
+    // 2) WINDOW (left back wall) — canal view
+    cx.fillStyle='#1a1820';cx.fillRect(95,50,150,90);
+    cx.fillStyle='#3a4a5a';cx.fillRect(98,110,144,28); // canal water
+    cx.fillStyle='#1a1018';for(var ch2=0;ch2<4;ch2++){var chx=102+ch2*36;
+      cx.fillRect(chx,72,30,38); // body
+      cx.fillRect(chx+11,64,8,10); // gable
+      cx.fillStyle='#f0c060';cx.fillRect(chx+4,90,4,5);cx.fillRect(chx+18,98,4,5);cx.fillStyle='#1a1018';
+    }
+    cx.fillStyle='#5a3a1a';cx.fillRect(155,53,2,84);cx.fillRect(98,98,144,2);
+    cx.fillStyle='#7a4a25';cx.fillRect(95,140,150,4); // sill
+    // window cross decals
+    cx.fillStyle='#ffffff30';cx.fillRect(155,53,2,87);cx.fillRect(98,98,144,2);
+
+    // 3) WINDOWSILL PLANTS — 2 small potted herbs left of window
+    cx.fillStyle='#7a4a25';cx.fillRect(80,142,15,10);
+    cx.fillStyle='#3a2010';cx.fillRect(81,138,13,5); // soil
+    cx.fillStyle='#408040';for(var lp1=0;lp1<4;lp1++){cx.beginPath();cx.arc(84+lp1*2,135+Math.sin(lp1)*2,2,0,Math.PI*2);cx.fill()}
+    cx.fillStyle='#80a050';cx.beginPath();cx.arc(86,130,1.5,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#7a4a25';cx.fillRect(252,142,15,10);
+    cx.fillStyle='#3a2010';cx.fillRect(253,138,13,5);
+    cx.fillStyle='#408040';for(var lp2=0;lp2<5;lp2++){cx.beginPath();cx.arc(255+lp2*2.2,134+Math.sin(lp2+1)*2,1.8,0,Math.PI*2);cx.fill()}
+    cx.fillStyle='#a07030';cx.fillRect(259,132,1,4); // small flower stalk
+
+    // 4) CHALKBOARD MENU (center back wall, larger now)
+    cx.fillStyle='#5a3a1a';cx.fillRect(345,45,200,110);  // wood frame
+    cx.fillStyle='#1a2a1a';cx.fillRect(350,50,190,100);
+    cx.fillStyle='#3a4a3a';cx.fillRect(350,50,190,3);
+    cx.fillStyle='#f0e8a0';cx.font='bold 12px sans-serif';cx.textAlign='left';cx.fillText('☕ MENU',360,67);
     cx.font='11px sans-serif';
-    cx.fillText('1 白寡妇    $8',150,82);
-    cx.fillText('2 紫雾      $14',150,98);
-    cx.fillText('3 Amsterdam  $22',150,114);
+    var _availP=s.availableProducts||[0,1,2];
+    var _cstNames=['白寡妇','紫雾','Amsterdam Haze','Geisha 特调'];
+    _availP.forEach(function(idx,i){if(idx!==undefined&&COFFEE_PRODUCTS[idx]){var y=87+i*16;cx.fillStyle=i===s.st?'#fde68a':'#f0e8a0';cx.fillText((i+1)+' '+COFFEE_PRODUCTS[idx].n+'  $'+(COFFEE_PRODUCTS[idx].cost+(i===0?10:i===1?12:15)),360,y)}});
+    // daily bean note
+    cx.fillStyle='#80ffa0';cx.font='bold 9px sans-serif';
+    cx.fillText('今日豆 '+s.dailyBean.ic+s.dailyBean.n+' ×'+s.beanQuality.toFixed(2),360,135);
     // chalk dust
-    cx.fillStyle='#f0e8a030';for(var cd=0;cd<8;cd++){cx.beginPath();cx.arc(165+cd*22,125+Math.random()*12,1.5,0,Math.PI*2);cx.fill()}
-    // Amsterdam green-cross neon sign (right wall)
+    cx.fillStyle='#f0e8a030';for(var cd=0;cd<10;cd++){cx.beginPath();cx.arc(360+cd*22,143+Math.sin(cd)*3,1.2,0,Math.PI*2);cx.fill()}
+
+    // 5) Amsterdam green-cross neon sign (right wall)
     cx.fillStyle='#10a02030';cx.beginPath();cx.arc(610,90,45,0,Math.PI*2);cx.fill();
     cx.fillStyle='#10a020';cx.fillRect(540,65,140,50);
     cx.fillStyle='#ffffff';cx.font='bold 13px sans-serif';cx.textAlign='center';
     cx.fillText('🌿 COFFEE',610,90);
     cx.fillStyle='#fff';cx.font='8px sans-serif';cx.fillText('shop',610,105);
-    // coffee grinder (left foreground)
+
+    // 6) COFFEE GRINDER (left foreground)
     cx.fillStyle='#222';cx.fillRect(110,180,50,60);
     cx.fillStyle='#3a3a3a';cx.beginPath();cx.arc(135,170,25,0,Math.PI*2);cx.fill();
+    // hopper (bean bin)
     cx.fillStyle='#1a2a1a';cx.fillRect(125,150,20,22);
     cx.fillStyle='#1a0a05';for(var bb=0;bb<10;bb++){cx.beginPath();cx.arc(135+Math.cos(bb)*5,158+Math.sin(bb)*5,1.5,0,Math.PI*2);cx.fill()}
     cx.fillStyle='#444';cx.fillRect(115,215,40,8);
     cx.fillStyle='#aaa';cx.fillRect(132,217,4,4);
     cx.fillStyle='#666';cx.fillRect(110,238,50,3);
-    // espresso machine (right foreground)
+
+    // 7) ESPRESSO MACHINE (right foreground)
     cx.fillStyle='#c0c0c0';cx.fillRect(560,180,100,60);
     cx.fillStyle='#e0e0e0';cx.fillRect(560,180,100,4);
     cx.fillStyle='#a0a0a0';cx.fillRect(560,238,100,2);
@@ -5378,19 +5439,66 @@ function drawMG(){
     cx.fillStyle='#222';cx.fillRect(580,225,75,18);
     cx.fillStyle='#444';cx.fillRect(595,210,45,8);
     cx.fillStyle='#a0a0a0';cx.fillRect(580,242,75,4);  // drip tray
-    // steam from machine
-    cx.fillStyle='#ffffff40';for(var sm=0;sm<3;sm++){cx.beginPath();cx.arc(610+sm*5+Math.sin(Date.now()/1000+sm)*3,170-Math.abs(Math.sin(Date.now()/800+sm))*30,3,0,Math.PI*2);cx.fill()}
-    // WOODEN COUNTER across bottom
+    // steam from machine — Round 10 D2: more particles, animated drift
+    cx.fillStyle='#ffffff40';for(var sm=0;sm<5;sm++){var _sx2=605+sm*7+Math.sin(_cnow*1.4+sm)*3;var _sy2=180-Math.abs(Math.sin(_cnow*0.9+sm*1.1))*34;cx.beginPath();cx.arc(_sx2,_sy2,2.5+sm%2,0,Math.PI*2);cx.fill()}
+
+    // 8) WOODEN COUNTER across bottom
     cx.fillStyle='#5a3a1a';cx.fillRect(80,295,640,40);
     cx.fillStyle='#7a4a25';cx.fillRect(80,293,640,3);
     cx.fillStyle='#3a2010';cx.fillRect(80,333,640,4);
     cx.fillStyle='#4a2a15';for(var cg=0;cg<8;cg++)cx.fillRect(80+cg*80,300,2,33);
-    // cup on counter
-    var cupY=310+Math.sin(Date.now()/800)*2;
-    cx.fillStyle='#fff';cx.fillRect(360,cupY,18,22);
-    cx.fillStyle='#a07040';cx.fillRect(362,cupY+3,14,3);
-    cx.fillStyle='#888';cx.beginPath();cx.arc(360,cupY+8,3,Math.PI,0);cx.fill();
-    // customer (back view) at counter
+    // counter warm sheen
+    cx.fillStyle='rgba(255,200,100,0.18)';cx.fillRect(80,294,640,1);
+
+    // 9) ROUND 10 D2 — 3 STAGE PROCESS VISUALS on counter front face (磨豆 dial / 温度 gauge / 拉花 trail)
+    // Stage indicator (top right of counter)
+    var _stageIdx=(s.stage&&s.stage.idx)||0;
+    var _stageProg=(s.stage&&s.stage.progress)||0;
+    var _stageLabels=['⚙️ 磨豆','💧 萃取','🍵 拉花'];
+    var _stageCol=['#a07020','#4090d0','#e87090'];
+    // 3 mini-dial widgets spaced along counter
+    [0,1,2].forEach(function(idx){
+      var dx=180+idx*160,dy=265;
+      // dial face
+      cx.fillStyle='#1a0a04';cx.beginPath();cx.arc(dx+30,dy,22,0,Math.PI*2);cx.fill();
+      cx.fillStyle='#3a2a18';cx.beginPath();cx.arc(dx+30,dy,20,0,Math.PI*2);cx.fill();
+      cx.strokeStyle=_stageCol[idx];cx.lineWidth=2;cx.beginPath();cx.arc(dx+30,dy,18,-Math.PI/2,-Math.PI/2+Math.PI*2*(_stageIdx>idx?1:_stageIdx===idx?_stageProg:0.15));cx.stroke();
+      // ticks
+      for(var tk=0;tk<8;tk++){var ta=tk/8*Math.PI*2-Math.PI/2;cx.fillStyle='#888';cx.beginPath();cx.moveTo(dx+30+Math.cos(ta)*16,dy+Math.sin(ta)*16);cx.lineTo(dx+30+Math.cos(ta)*19,dy+Math.sin(ta)*19);cx.stroke()}
+      // needle
+      var _needleAng=(_stageIdx===idx?Math.min(1,_stageProg):(_stageIdx>idx?1:0))*Math.PI*2-Math.PI/2;
+      cx.strokeStyle=_stageIdx===idx?_stageCol[idx]:'#666';cx.lineWidth=2;cx.beginPath();cx.moveTo(dx+30,dy);cx.lineTo(dx+30+Math.cos(_needleAng)*14,dy+Math.sin(_needleAng)*14);cx.stroke();
+      // center pivot
+      cx.fillStyle=_stageCol[idx];cx.beginPath();cx.arc(dx+30,dy,2.5,0,Math.PI*2);cx.fill();
+      // label
+      cx.fillStyle='#fff';cx.font='bold 8px sans-serif';cx.textAlign='center';
+      cx.fillText(_stageLabels[idx],dx+30,dy+38);
+      // status pill
+      cx.fillStyle=_stageIdx>idx?'#78c878aa':_stageIdx===idx?_stageCol[idx]+'cc':'#ffffff20';
+      cx.fillRect(dx+8,dy+44,44,8);
+      cx.fillStyle='#fff';cx.font='bold 7px sans-serif';
+      cx.fillText(_stageIdx>idx?'✓ done':_stageIdx===idx?Math.round(_stageProg*100)+'%':'pending',dx+30,dy+50);
+    });
+
+    // 10) LATTE ART TRAIL — animated curve on cup surface when stage >=2
+    var cupX=360,cupY=305+Math.sin(_cnow*4)*1.5;
+    cx.fillStyle='#fff';cx.fillRect(cupX,cupY,18,22);
+    cx.fillStyle='#a07040';cx.fillRect(cupX+2,cupY+3,14,3);
+    cx.fillStyle='#888';cx.beginPath();cx.arc(cupX,cupY+8,3,Math.PI,0);cx.fill();
+    if(_stageIdx>=2){
+      // foam heart/leaf pattern
+      var _col=_stageCol[2];
+      cx.fillStyle=_col+'cc';
+      cx.beginPath();
+      cx.moveTo(cupX+5,cupY+9);
+      cx.bezierCurveTo(cupX+5,cupY+6,cupX+8,cupY+6,cupX+9,cupY+9);
+      cx.bezierCurveTo(cupX+10,cupY+6,cupX+13,cupY+6,cupX+13,cupY+9);
+      cx.bezierCurveTo(cupX+13,cupY+12,cupX+9,cupY+15,cupX+9,cupY+15);
+      cx.bezierCurveTo(cupX+9,cupY+15,cupX+5,cupY+12,cupX+5,cupY+9);
+      cx.closePath();cx.fill();
+    }
+
+    // 11) customer (back view) at counter — moved right of grinder
     if(s.c){
       var ccx=240+Math.sin(Date.now()/2000)*3;
       var ch=Math.sin(Date.now()/400)*1;
@@ -5401,18 +5509,21 @@ function drawMG(){
       cx.beginPath();cx.arc(ccx,262+ch,12,Math.PI*1.1,Math.PI*2);cx.fill();
       if(s.c.undercover){cx.fillStyle='#1a1a1a';cx.fillRect(ccx-13,253,26,5);cx.fillRect(ccx-10,248,20,6)}
       cx.fillStyle='#f0d8a8';cx.fillRect(ccx-15,290+ch,4,15);cx.fillRect(ccx+11,290+ch,4,15);
+      // ROUND 10 D2: patience breath ring around customer head
+      var _patRing=Math.max(0,1-(Date.now()-s.c.born)/(s.c.patience*1000));
+      cx.strokeStyle=_patRing<0.3?'#f05050':_patRing<0.6?'#f0a030':'#78c878';
+      cx.lineWidth=1.5;cx.globalAlpha=0.7;cx.beginPath();cx.arc(ccx,265+ch,15,0,Math.PI*2);cx.stroke();cx.globalAlpha=1;
     }
-    // === HUD overlay ===
+
+    // 12) === HUD overlay === (replaces modal-style status bar)
     cx.fillStyle='#fff';cx.font='bold 13px sans-serif';cx.textAlign='center';
     var cst=['白寡妇','紫雾','Amsterdam Haze'];
     var htCol=s.ht>70?'#f05050':s.ht>40?'#f0a030':'#78c878';
-    // funify-v3 Round 3: heat zone uses 4-band warning from coffeeHeatZone
     const _hz=coffeeHeatZone(s.ht);
-    cx.fillText('🌿 咖啡店 — $'+s.pr+'/g · '+cst[s.st]+' · 热度 '+Math.round(s.ht)+'% ('+_hz.label+')',400,358);
+    cx.fillText('🌿 咖啡店 — $'+s.pr+'/g · '+(s.productName||cst[s.st])+' · 热度 '+Math.round(s.ht)+'% ('+_hz.label+')',400,358);
     if(s.c&&!s.raid){
       const left=Math.max(0,Math.ceil((s.c.patience*1000-(Date.now()-s.c.born))/1000));
       const warn=s.c.undercover?' 🚨卧底!':'';
-      // funify-v3 Round 3: coffeeFitHint shows whether current price fits customer budget
       const _fit=coffeeFitHint(s.pr,s.c.max);
       cx.fillStyle='#fff';cx.font='11px sans-serif';cx.fillText(s.c.face+' 顾客出价$'+s.c.max+' · 耐心 '+left+'s'+warn,400,376);
       cx.fillStyle=_fit.col;cx.font='bold 12px sans-serif';cx.textAlign='center';
@@ -5425,14 +5536,10 @@ function drawMG(){
     // sales counter + heat bar
     cx.fillStyle='#fff';cx.font='12px sans-serif';cx.fillText('今日 '+s.sd+'/5 人 · $'+s.earn,400,425);
     cx.fillStyle='#fff1';cx.fillRect(250,435,300,12);
-    // funify-v3 Round 24: sweet-spot zone overlay (30-70% = ideal "成交" range, light green tint)
     cx.fillStyle='#78c87830';cx.fillRect(250+300*0.3,435,300*0.4,12);
-    // funify-v3 Round 24: ≥80% heat flips to bright green = "cash-out window" before 突击
     var _heatBarCol=(s.ht>=80&&s.ht<95)?'#80ffa0':_hz.col;
     cx.fillStyle=_heatBarCol;cx.fillRect(250,435,300*Math.min(1,s.ht/100),12);
-    // danger overlay: thin red border when _hz.danger >= 2
     if(_hz.danger>=2){cx.fillStyle='#f05050aa';cx.fillRect(250,435,300,2);cx.fillRect(250,445,300,2)}
-    // funify-v3 Round 24: heat status pill
     var _heatStatus=s.ht>=80&&s.ht<95?'💰 最佳成交窗口':_hz.label;
     cx.fillStyle='#aaa';cx.font='9px sans-serif';cx.fillText(_heatStatus+' · 热度自然下降 -1.5%/s',400,460);
   }else if(mg==='shroom'){
@@ -5709,6 +5816,13 @@ function drawMG(){
     }
   }else if(mg==='bar'){
     // funify-v3 Round 9 (Phase D1) — 酒吧内景 canvas: 暖光吊灯 + 阿姆斯特丹运河窗 + 酒杯架 + 顾客头像正面 + 倒酒动画
+    // funify-v3 Round 10 (Phase D1 close) — 顶部天花板暗影 + 吊灯锥光下射 + 酒杯架底部阴影 + 顾客偏好气泡 + SPACE 杯中液面/泡沫
+    // 0) CEILING SHADOW — top-of-canvas dark band (round 10 add)
+    var _ceilingG=cx.createLinearGradient(0,0,0,40);
+    _ceilingG.addColorStop(0,'rgba(15,8,4,0.55)');
+    _ceilingG.addColorStop(1,'rgba(15,8,4,0)');
+    cx.fillStyle=_ceilingG;cx.fillRect(60,20,680,40);
+
     // 1) Back wall — warm wood paneling
     cx.fillStyle='#3a2010';cx.fillRect(80,30,640,210);
     cx.fillStyle='#4a2a15';for(var bw=0;bw<10;bw++)cx.fillRect(85,40+bw*18,650,1);
@@ -5755,6 +5869,14 @@ function drawMG(){
       cx.fillRect(lx-9,ly+3,18,9);
       // filament dot
       cx.fillStyle='#fff5b0';cx.beginPath();cx.arc(lx,ly+7,2,0,Math.PI*2);cx.fill();
+      // ROUND 10 (D1): warm cone of light from pendant shade onto counter (light shaft)
+      var _cone=cx.createLinearGradient(lx,ly+18,lx,335);
+      _cone.addColorStop(0,'rgba(255,210,110,'+(0.18*_flicker[lp])+')');
+      _cone.addColorStop(0.6,'rgba(255,200,80,'+(0.06*_flicker[lp])+')');
+      _cone.addColorStop(1,'rgba(255,200,80,0)');
+      cx.fillStyle=_cone;cx.beginPath();
+      cx.moveTo(lx-22,ly+18);cx.lineTo(lx+22,ly+18);
+      cx.lineTo(lx+70,335);cx.lineTo(lx-70,335);cx.closePath();cx.fill();
     }
 
     // 4) HEINEKEN NEON — left back wall corner
@@ -5767,6 +5889,11 @@ function drawMG(){
     // 5) GLASS RACK — mounted under back wall, inverted glasses
     cx.fillStyle='#5a3a1a';cx.fillRect(140,260,520,5); // rack board
     cx.fillStyle='#7a4a25';cx.fillRect(140,259,520,1);
+    // ROUND 10 (D1): soft shadow strip under glass rack onto back wall
+    var _rackShadow=cx.createLinearGradient(0,265,0,290);
+    _rackShadow.addColorStop(0,'rgba(0,0,0,0.45)');
+    _rackShadow.addColorStop(1,'rgba(0,0,0,0)');
+    cx.fillStyle=_rackShadow;cx.fillRect(140,265,520,25);
     for(var gl=0;gl<10;gl++){var gx=160+gl*48,gy=265;
       // glass (inverted triangle: top wide, narrows down)
       cx.fillStyle='#ffffff15';cx.beginPath();
@@ -5832,6 +5959,67 @@ function drawMG(){
     if(s.pour&&s.pour.active){cx.fillStyle='rgba(255,200,80,0.7)';cx.fillRect(16,4,1,12)}
     cx.restore();
 
+    // ROUND 10 (D1): glass + liquid + foam on counter (right of bartender, in front of customer)
+    // Fills 0%..100% as barPourProgress tracks the sawtooth cursor. Foam sits on top.
+    if(s.pour&&s.pour.active){
+      var _drinkId=s.pour.drinkId||(s.cs[0]&&s.cs[0].drinkId)||'lager';
+      var _liquidCol=barDrinkColor(_drinkId);
+      var _foamCol=barFoamColor(_drinkId);
+      var _fill=barPourProgress(s);
+      var _gx=200,_gy=345,_gw=24,_gh=42;
+      // shadow under glass
+      cx.fillStyle='#0006';cx.beginPath();cx.ellipse(_gx+_gw/2,_gy+_gh+1,16,3,0,0,Math.PI*2);cx.fill();
+      // glass body (translucent)
+      cx.fillStyle='#ffffff18';_barRoundRect(cx,_gx,_gy,_gw,_gh,3);cx.fill();
+      cx.strokeStyle='#ffffff80';cx.lineWidth=1;_barRoundRect(cx,_gx,_gy,_gw,_gh,3);cx.stroke();
+      // liquid surface (inside glass)
+      var _liquidH=_gh*_fill;
+      var _liquidY=_gy+_gh-_liquidH;
+      // liquid gradient (darker at bottom)
+      var _lg=cx.createLinearGradient(_gx,_liquidY,_gx,_gy+_gh);
+      _lg.addColorStop(0,_liquidCol);
+      _lg.addColorStop(1,'rgba(0,0,0,0.35)');
+      cx.save();
+      cx.beginPath();
+      cx.rect(_gx+1,_liquidY,_gw-2,_liquidH);
+      _barRoundRect(cx,_gx,_gy,_gw,_gh,3);cx.clip();
+      cx.fillStyle=_lg;cx.fillRect(_gx,_liquidY,_gw,_liquidH);
+      // ripple on liquid surface
+      var _rt=Date.now()/1000;
+      cx.strokeStyle='rgba(255,255,255,0.45)';cx.lineWidth=1;cx.beginPath();
+      for(var _rx=0;_rx<_gw;_rx+=2){var _ry=_liquidY+Math.sin(_rx*0.7+_rt*4)*0.8;_rx===0?cx.moveTo(_gx+_rx,_ry):cx.lineTo(_gx+_rx,_ry)}
+      cx.stroke();
+      // foam blob on top of liquid (slightly above surface)
+      if(_fill>0.05){
+        var _foamH=Math.min(8,_fill*12+2);
+        cx.fillStyle=_foamCol;
+        cx.beginPath();
+        cx.ellipse(_gx+_gw/2,_liquidY,_gw/2-1,_foamH/2,0,0,Math.PI*2);
+        cx.fill();
+        // 3-4 small foam bubbles drifting
+        for(var _fb=0;_fb<4;_fb++){
+          var _fbx=_gx+3+_fb*5+Math.sin(_rt*2+_fb)*1.5;
+          var _fby=_liquidY-Math.abs(Math.sin(_rt*1.4+_fb*1.3))*_foamH*0.6-1;
+          cx.fillStyle=_foamCol;cx.beginPath();cx.arc(_fbx,_fby,1.2+(_fb%2),0,Math.PI*2);cx.fill();
+        }
+      }
+      cx.restore();
+      // tiny label above glass showing drink name
+      cx.fillStyle='#fff';cx.font='bold 8px sans-serif';cx.textAlign='center';
+      cx.fillText(_drinkId.toUpperCase()+' · '+Math.round(_fill*100)+'%',_gx+_gw/2,_gy-4);
+    } else if(s.poured&&s.cs[0]){
+      // recently poured full glass — show full liquid for 1.5s after SPACE成交 for cocktails
+      var _dId=s.cs[0].drinkId||'lager';
+      var _lc=barDrinkColor(_dId);
+      var _fc=barFoamColor(_dId);
+      var _gx=200,_gy=345,_gw=24,_gh=42;
+      cx.fillStyle='#0006';cx.beginPath();cx.ellipse(_gx+_gw/2,_gy+_gh+1,16,3,0,0,Math.PI*2);cx.fill();
+      cx.fillStyle='#ffffff18';_barRoundRect(cx,_gx,_gy,_gw,_gh,3);cx.fill();
+      cx.strokeStyle='#ffffff80';cx.lineWidth=1;_barRoundRect(cx,_gx,_gy,_gw,_gh,3);cx.stroke();
+      cx.fillStyle=_lc;_barRoundRect(cx,_gx+1,_gy+8,_gw-2,_gh-9,2);cx.fill();
+      cx.fillStyle=_fc;cx.beginPath();cx.ellipse(_gx+_gw/2,_gy+8,_gw/2-1,3,0,0,Math.PI*2);cx.fill();
+    }
+
     // 12) CUSTOMER — facing FRONT (emoji portrait + speech bubble), not back view
     if(s.cs.length>0){var c=s.cs[s.cs.length-1];
       var ccx=400,cy=355;
@@ -5880,7 +6068,32 @@ function drawMG(){
       cx.beginPath();cx.moveTo(ccx-6,_by+_bubbleH);cx.lineTo(ccx,_by+_bubbleH+7);cx.lineTo(ccx+6,_by+_bubbleH);cx.closePath();cx.fill();
       cx.strokeStyle='#3a2010';cx.lineWidth=1.5;cx.beginPath();cx.moveTo(ccx-6,_by+_bubbleH);cx.lineTo(ccx,_by+_bubbleH+7);cx.lineTo(ccx+6,_by+_bubbleH);cx.stroke();
 
-      cx.fillStyle='#222';cx.font='bold 11px sans-serif';
+      // ROUND 10 (D1): drink preference bubble — drink emoji chip + price tag pill
+      // (placed ABOVE the speech bubble, small + unmistakable so player sees what the customer wants at a glance)
+      var _prefIc=(c.drinkObj&&c.drinkObj.ic)||c.drink||'🍺';
+      var _prefCol=barDrinkColor(c.drinkId);
+      var _prefY=_by-26;
+      // chip pill (drink icon + liquid color stripe)
+      cx.fillStyle='#1a0a04e0';_barRoundRect(cx,ccx-26,_prefY,52,18,9);cx.fill();
+      cx.strokeStyle=_prefCol;cx.lineWidth=1.5;_barRoundRect(cx,ccx-26,_prefY,52,18,9);cx.stroke();
+      // liquid color stripe at top of chip
+      cx.fillStyle=_prefCol;cx.fillRect(ccx-22,_prefY+3,8,3);
+      // drink emoji
+      cx.fillStyle='#fff';cx.font='13px sans-serif';cx.textAlign='center';
+      cx.fillText(_prefIc,ccx+5,_prefY+13);
+      // tier badge (★ count)
+      var _tierN=(c.drinkObj&&c.drinkObj.tier)||1;
+      cx.fillStyle=_tierN>=4?'#f0c040':_tierN>=3?'#e8a020':_tierN>=2?'#a07020':'#888';
+      cx.font='bold 8px sans-serif';cx.fillText('★'.repeat(Math.min(_tierN,4)),ccx-15,_prefY+12);
+      // price tag pill below the chip
+      cx.fillStyle='#0a0a0ae0';_barRoundRect(cx,ccx-22,_prefY+19,44,12,5);cx.fill();
+      cx.fillStyle=c.offer>=c.ceiling-1?'#f0a040':c.offer<=c.floor+1?'#80e090':'#fff5b0';
+      cx.font='bold 9px sans-serif';cx.fillText('$'+c.offer,ccx,_prefY+28);
+      // tiny tail connecting chip to speech bubble
+      cx.fillStyle='#1a0a04e0';cx.beginPath();
+      cx.moveTo(ccx-3,_prefY+18);cx.lineTo(ccx,_prefY+22);cx.lineTo(ccx+3,_prefY+18);cx.closePath();cx.fill();
+
+      cx.fillStyle='#222';cx.font='bold 11px sans-serif';cx.textAlign='center';
       var _tag=c.wantReco?'✨ 要'+s.recoIc:s.drink;
       var _tag2=c.isRegular?' 👤常客':'';
       cx.fillText(c.arch.n+_tag+_tag2, ccx, _by+15);
@@ -6681,6 +6894,8 @@ window.AB_TEST={
   BAR_DRINK_CATALOG,BAR_MIXERS,BAR_LEGENDARY_DRINKS,BAR_SOUL_EVENTS,BAR_DRINK_STOCK_BY_ID,
   barAvailableDrinks,barAvailableMixers,barPickRecoDrinkId,barGetDrink,barGetMixer,
   barRollSoulEvent,barApplySoul,barPourState,startBar,barIn,
+  // Round 10 (Phase D1): bar drink color map + pour progress for canvas foam/liquid animation
+  barDrinkColor,barFoamColor,barPourProgress,BAR_DRINK_COLORS,BAR_FOAM_COLORS,
   // Round 4: Phase B2 · Coffee Dave-depth (5 beans / 7-day freshness / 3-stage process / 4 soul events)
   COFFEE_BEANS,COFFEE_BEAN_LIST,COFFEE_SOUL_EVENTS,
   coffeeBeanMult,coffeePickDailyBean,coffeeAgeBeans,coffeeBeanQualityMult,

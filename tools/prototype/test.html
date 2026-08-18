@@ -188,6 +188,38 @@ frame.addEventListener('load',async()=>{
     return results.every(Boolean);
   });
 
+  // ═══ funify-v3 Round 10 (Phase D1 close + D2 coffee canvas) — 顾客偏好气泡 + 液面泡沫 + 咖啡内景 ═══
+  check('barDrinkColor 暴露并对 14 杯酒返回合法颜色',()=>{
+    const ids=['lager','stout','wine','cider','kombucha','sour','mojito','martini','spritz','julep','old_fash','negroni','brewtanic','amster_sun'];
+    return ids.every(id=>{const c=win.eval('barDrinkColor("'+id+'")');return typeof c==='string'&&/^#[0-9a-f]{6}$/i.test(c)});
+  });
+  check('barFoamColor 暴露并对 14 杯酒返回合法颜色',()=>{
+    const ids=['lager','stout','wine','cider','kombucha','sour','mojito','martini','spritz','julep','old_fash','negroni','brewtanic','amster_sun'];
+    return ids.every(id=>{const c=win.eval('barFoamColor("'+id+'")');return typeof c==='string'&&/^#[0-9a-f]{6}$/i.test(c)});
+  });
+  check('BAR_DRINK_COLORS 含 14 个条目',()=>win.eval('Object.keys(BAR_DRINK_COLORS).length===14'));
+  check('BAR_FOAM_COLORS 含 14 个条目',()=>win.eval('Object.keys(BAR_FOAM_COLORS).length===14'));
+  check('barDrinkColor 未知 id 走 fallback c89040',()=>win.eval('barDrinkColor("bogus")')==='#c89040');
+  // barPourProgress is pure — pass local objects directly (don't mutate MG.bar which the game overwrites)
+  check('barPourProgress 无 pour 时返回 0',()=>win.eval('barPourProgress({pour:null})')===0);
+  check('barPourProgress active pour 时返回 0.4..0.95',()=>{
+    const v=win.eval('barPourProgress({pour:{active:true,drinkId:"lager",startedAt:Date.now()-300}})');
+    return typeof v==='number'&&v>=0.4&&v<=0.95;
+  });
+  check('barPourProgress poured 后立即 0.95',()=>win.eval('barPourProgress({pour:null,poured:true})')===0.95);
+  check('barPourProgress null/undefined 安全',()=>win.eval('barPourProgress(null)===0&&barPourProgress(undefined)===0'));
+  check('index.html 源含 ceiling shadow 渐变',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /_ceilingG|_ceilingShadow|ceilingG/.test(src)});
+  check('index.html 源含 pendant light cone 锥光',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /warm cone|_cone|warm cone of light/.test(src)});
+  check('index.html 源含 shelf shadow strip',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /_rackShadow|shelf shadow|back-bar shelf/.test(src)});
+  check('index.html 源含 drink preference bubble 偏好气泡',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /drink preference|_prefIc|_prefCol|preference bubble/.test(src)});
+  check('index.html 源含 liquid surface foam 液面泡沫',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /liquid surface|foam blob|_liquidH|foam on top/.test(src)});
+  // Phase D2 coffee canvas tests
+  check('coffee index.html 源含 windowsill plants 窗台绿植',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /WINDOWSILL PLANTS|windowsill plants|窗台绿植/.test(src)});
+  check('coffee index.html 源含 3 段工艺 dials',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /3 STAGE PROCESS|3 段流程|3-stage|stage.process/.test(src)});
+  check('coffee index.html 源含 latte art trail 拉花',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /LATTE ART|latte art trail|拉花/.test(src)});
+  check('coffee index.html 源含 steam particles 蒸汽粒子',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /steam from machine|steam particles|蒸汽粒子/.test(src)});
+  check('coffee index.html 源含 patience breath ring',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /patience breath|_patRing|breath ring/.test(src)});
+
   // ═══ funify-v3 Round 1 — coffee heat zone + fit hint (BACKLOG B3) ═══
   check('coffeeHeatZone(20)==安全/绿',()=>{const z=win.eval('coffeeHeatZone(20)');return z.col==='#78c878'&&z.label==='安全'&&z.danger===0});
   check('coffeeHeatZone(50)==警戒/黄',()=>{const z=win.eval('coffeeHeatZone(50)');return z.col==='#e8a020'&&z.label==='警戒'&&z.danger===1});

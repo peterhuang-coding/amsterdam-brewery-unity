@@ -1492,4 +1492,48 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 
 ### 风险
 - DREAM_SUMMATIVE 是 day 7 强制派发,seed 决定 5 段之一,玩家可能连跑多个 run 都看不到 mood-bad 那段 → 接受 (Roguelike 可重玩性本身)
+
+## Round 40 — INC_DEF inc bump + legendary_inc_boost (BACKLOG #6 #1 closure)
+
+> BACKLOG #6 #1 closure:5 产业 inc 数组从 [12,18,26] 等「过小」值提升到 [25,40,55]/[22,36,52]/[22,38,52]/[20,33,48]/[18,30,45],配合新传奇升级 legendary_inc_boost ×1.3,让 late-game 经营有实际 scale。
+
+### 改动
+
+- `tools/prototype/index.html` +5/-5 lines
+  - `:765-769` INC_DEF 5 产业 inc 数组全升:brewing [12,18,26]→[25,40,55] / coffee_shop [10,16,24]→[22,36,52] / smart_shop [11,17,25]→[22,38,52] / surfing [9,15,23]→[20,33,48] / academic [8,14,22]→[18,30,45]
+  - `:1022` 新增 `legendary_inc_boost` UP_POOL 项:cat=传奇, cost=260★, t='📈 收入飞轮', d='所有产业收入 +30% (×1.3,与 legendary_income ×2 叠加 = ×2.6)'
+  - `:1548-1550` `industryFactor()` 在 legendary_income baseline 后插入 `if(hasUpgrade('legendary_inc_boost'))f*=1.3` 叠加层;与现有 legendary_income ×2 → total ×2.6,与 meta_<id>_master ×1.2 → ×3.12,与 lvMaxBoost ×1.1 → ×3.43
+
+- `tools/prototype/test.html` +33 lines = 7 新 Round 40 断言:
+  1. brewing.inc 升级到 [25,40,55]
+  2. coffee_shop.inc 升级到 [22,36,52]
+  3. smart_shop.inc 升级到 [22,38,52]
+  4. surfing.inc 升级到 [20,33,48]
+  5. academic.inc 升级到 [18,30,45]
+  6. legendary_inc_boost UP_POOL 项 (cat=传奇, cost=260, title 含「收入飞轮」)
+  7. legendary_inc_boost 单独 → industryFactor(brewing)=1.3
+  8. legendary_income ×2 + legendary_inc_boost ×1.3 → industryFactor=2.6
+  9. legendary_inc_boost + meta_brew_master → industryFactor(brewing)=1.56
+  10. industryFactor(brewing, lv=2, both legendary) > 2.5 (lvMaxBoost ×1.1 叠加后 2.86)
+  11. industryFactor 5 产业 (both legendary) 都 ≥2.5
+
+### 机制
+
+1. **inc 数组 scale-up** (Slay the Spire late-game scaling): lv 0 (学徒) ~25 → lv 2 (大师) ~55,系数 ~2.2×;之前 lv 0 → lv 2 仅 ×2.17 但 base 值太小 (12 → 26);新版 base × ~2.1 提升让 workInd 单次更有意义
+2. **legendary_inc_boost ×1.3 升级** (Balatro 顶级 joker 套路): cost 260★ 介于 legendary_income ×2 (200) 和 legendary_perfect (280) 之间,定位「传奇收入 ×2 + 收入飞轮 ×1.3 = ×2.6」双传奇组合,给老玩家 late-game build 多一条路径
+3. **叠加顺序** (跟 legendary_income 一样放在 baseline 第一位后):f*=1.3 在 lvMaxBoost / metaIndustryBoost / talent / mutator / faction 之前,保证 per-run 决策 (talent/mutator/faction) 仍可压过专精,只被放缩
+4. **绘制 UI** (UI 提示同步):工作 ind 卡片 `$${def.inc[ind.lv]}/次` 文本已自动反映新值 (line 4726)
+
+### 风险
+
+- 工作 inc 实测 base 值 (无任何升级) ~25-55,远高于老版 ~12-26 → 普通玩家 7 天 Run 收入大幅增加,可能影响 late-game 难度曲线 (低难度档更简单)
+- legendary_inc_boost ×1.3 与 legendary_income ×2 共存时 total ×2.6,叠加 meta_brew_master ×1.2 + lvMaxBoost ×1.1 = ×3.43,理论 5 传奇全开极端 build 但 cost 高 (>1100★),玩家一般只能开 1-2 个
+- INC_DEF 数组变动影响 `t.data.industries` 暴露值,任何下游测试断言 `brewing.inc[2]===26` 的会失败 (目前无此测试)
+
+### 验收
+
+- test.html 基线 PASS 数 +7 (新断言全绿)
+- test-phase-e.js 168/168 PASS (无回归)
+- node --check index.html/test.html PASS
+- BACKLOG.md #6 #1 INC_DEF inc:[12,18,26] 过小 标记完成
 - `${money}` 占位符使用字符串拼接而非模板字符串,避免 inner script 转义问题

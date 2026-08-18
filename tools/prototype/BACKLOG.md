@@ -83,7 +83,7 @@
 - ✅ [index.html:633 wantPositive 30% 无生效提示] event_freq 触发时 addEvt `🎲 event_freq 已生效（30%偏正向）` — **Round 20 funify-v3 完成（wantPositive + good 同时成立时 addEvt 反馈）**
 - ✅ [index.html:2151 advanceTimeAuto 120ms 太快] 暴露 speed slider（300/150/60ms 三档）— **Round 19 funify-v3 完成（1×/2×/4× 三档循环按钮,ab_speed_v1 持久化,advanceTimeAuto 接入 speedMs,floor 15ms 保护）**
 - ✅ [index.html:633 EV_KIND 与 EV_POOL 同步] 改 `EV_POOL.forEach(e=>EV_KIND[e.id]=e.kind||'neutral')` — **Round 4 funify-v3 已修**
-- [ ] [index.html:484 IND_DEF inc:[12,18,26] 过小] 提升 inc 数组到 [25,40,55]
+- ✅ [index.html:484 IND_DEF inc:[12,18,26] 过小] 提升 inc 数组到 [25,40,55] — **Round 40 funify-v3 完成 (INC_DEF inc 数组 5 产业全升,新增 legendary_inc_boost ×1.3 升级)**
 - ✅ [index.html:510-524 OBJ_CATS 无难度递增] day 1-3 走 n:30 轻松档，day 4-7 强制 n:100/服务 6/酿酒 3 — **Round 21 funify-v3 完成（pickObjDef 按 day-bucket 分档,defs 先按 n 升序排序再选 idx;day 1-2=easy / 3-4=medium / 5-7=hard;Explore/Talk 保持 easy 直到 day 6）**
 - ✅ [index.html:633 wantPositive hard filter 缩池] 改 weighted pick 而非 hard filter — **Round 20 funify-v3 完成（weights 数组 + reduce 抽签,池子永远 11 候选,good=3 / neutral=1 / bad=0.5）**
 - [ ] [index.html:2210 endGame won objs.every 太严] 改 ≥2 即 won，bronze/silver/gold 3 档

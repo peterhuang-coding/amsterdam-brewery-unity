@@ -2815,6 +2815,47 @@ frame.addEventListener('load',async()=>{
   // 11. day 1-7 同 seed 完整序列 - 每次调用都返回有效 dream (no undefined)
   check('Round 39: day 1-7 序列全有效 (no undefined/null)',()=>{const had=t.state.day;const hadS=t.state.seed;const hadM=t.state.money;const hadR=t.state.rep;const hadP=t.state.meta;t.state.seed=42;t.state.money=100;t.state.rep=10;t.state.meta=5;let valid=true;for(let d=1;d<=7;d++){t.state.day=d;const x=win.dayAwareDream();if(!x||typeof x.t!=='string')valid=false}t.state.day=had;t.state.seed=hadS;t.state.money=hadM;t.state.rep=hadR;t.state.meta=hadP;return valid});
 
+  // ═══════════════════════════════════════════
+  // Round 40 — INC_DEF inc bump + legendary_inc_boost (BACKLOG #6 #1 closure)
+  // ═══════════════════════════════════════════
+
+  // 1. IND_DEF 5 个产业的 inc 数组升级到 [25,40,55]/[22,36,52]/[22,38,52]/[20,33,48]/[18,30,45]
+  check('Round 40: IND_DEF brewing.inc 升级到 [25,40,55]',()=>JSON.stringify(t.data.industries.brewing.inc)==='[25,40,55]');
+  check('Round 40: IND_DEF coffee_shop.inc 升级到 [22,36,52]',()=>JSON.stringify(t.data.industries.coffee_shop.inc)==='[22,36,52]');
+  check('Round 40: IND_DEF smart_shop.inc 升级到 [22,38,52]',()=>JSON.stringify(t.data.industries.smart_shop.inc)==='[22,38,52]');
+  check('Round 40: IND_DEF surfing.inc 升级到 [20,33,48]',()=>JSON.stringify(t.data.industries.surfing.inc)==='[20,33,48]');
+  check('Round 40: IND_DEF academic.inc 升级到 [18,30,45]',()=>JSON.stringify(t.data.industries.academic.inc)==='[18,30,45]');
+  // 2. legendary_inc_boost 升级存在
+  check('Round 40: UP_POOL 含 legendary_inc_boost (cat=传奇, cost=260)',()=>{
+    const u=t.data.upgrades.find(x=>x.id==='legendary_inc_boost');
+    return u&&u.cat==='传奇'&&u.cost===260&&u.t.includes('收入飞轮');
+  });
+  // 3. legendary_inc_boost 单独生效:industryFactor(brewing) = 1.3
+  check('Round 40: legendary_inc_boost 单独 → industryFactor(brewing)=1.3',()=>withPhaseEIndustryState(
+    {upgrades:['legendary_inc_boost'],mods:[],_run:{factionBonus:{brewing:1,coffee:1,shroom:1,surf:1,academic:1,bar:1}}},
+    ()=>Math.abs(win.industryFactor('brewing')-1.3)<1e-6
+  ));
+  // 4. legendary_income + legendary_inc_boost 叠加:industryFactor(brewing) = 2.6
+  check('Round 40: legendary_income ×2 + legendary_inc_boost ×1.3 → industryFactor=2.6',()=>withPhaseEIndustryState(
+    {upgrades:['legendary_income','legendary_inc_boost'],mods:[],_run:{factionBonus:{brewing:1,coffee:1,shroom:1,surf:1,academic:1,bar:1}}},
+    ()=>Math.abs(win.industryFactor('brewing')-2.6)<1e-6
+  ));
+  // 5. legendary_inc_boost 叠加 meta_brew_master:1.3 × 1.2 = 1.56
+  check('Round 40: legendary_inc_boost + meta_brew_master → industryFactor(brewing)=1.56',()=>withPhaseEIndustryState(
+    {upgrades:['legendary_inc_boost','meta_brew_master'],mods:[],_run:{factionBonus:{brewing:1,coffee:1,shroom:1,surf:1,academic:1,bar:1}}},
+    ()=>Math.abs(win.industryFactor('brewing')-1.56)<1e-6
+  ));
+  // 6. workInd 真实路径: lv=2 酿酒 + legendary_income ×2 + legendary_inc_boost ×1.3 → industryFactor 至少 ×2.6 (叠加 lvMaxBoost ×1.1 后 2.86)
+  check('Round 40: industryFactor(brewing, lv=2, both legendary) > 2.5',()=>withPhaseEIndustryState(
+    {upgrades:['legendary_income','legendary_inc_boost'],mods:[],_run:{factionBonus:{brewing:1,coffee:1,shroom:1,surf:1,academic:1,bar:1}}},
+    ()=>win.industryFactor('brewing')>2.5
+  ));
+  // 7. industryFactor 5 产业全验证: legendary_inc_boost + legendary_income 都拉到所有产业 (>=2.5)
+  check('Round 40: industryFactor 5 产业 (both legendary) 都 ≥2.5',()=>withPhaseEIndustryState(
+    {upgrades:['legendary_income','legendary_inc_boost'],mods:[],_run:{factionBonus:{brewing:1,coffee:1,shroom:1,surf:1,academic:1,bar:1}}},
+    ()=>['brewing','coffee','shroom','surf','academic','bar'].every(id=>win.industryFactor(id)>=2.5)
+  ));
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

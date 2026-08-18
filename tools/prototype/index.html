@@ -84,6 +84,8 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 .ind-card:focus-visible,.upg-card:focus-visible,.obj-row:focus-visible{outline:2px solid var(--gold);outline-offset:2px;background:#202838}
 .ind-card[tabindex]:focus-visible,.upg-card[tabindex]:focus-visible,.obj-row[tabindex]:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 #msg{transition:color .25s}#msg.flash{color:var(--gold)}
+/* Round 18 — 今日搞怪徽章 */
+.cb-row{display:flex;align-items:center;gap:5px;padding:3px 6px;margin:1px 0;background:var(--card);border-radius:5px;border-left:2px solid var(--gold);font-size:10px}.cb-row[data-k="tip"]{border-left-color:var(--green)}.cb-row[data-k="surf"]{border-left-color:#60a0d0}.cb-row[data-k="brew"]{border-left-color:#e8a020}.cb-row[data-k="face"]{border-left-color:#c060c0}.cb-row[data-k="midnight"]{border-left-color:#6080c0}.cb-row[data-k="bless"]{border-left-color:#80c060}.cb-row[data-k="slow"]{border-left-color:#a06030}.cb-ic{font-size:13px}.cb-t{color:var(--text)}
 @media(prefers-reduced-motion:reduce){.btn.go{animation:none!important}#phase-flash.on{animation:none!important}}
 @media(max-width:760px){
   body{display:block;user-select:auto}#app{height:auto;min-height:100vh;grid-template-columns:1fr;grid-template-rows:auto auto 420px auto auto}
@@ -767,7 +769,7 @@ EV_POOL.forEach(e=>{EV_KIND[e.id]=e.kind||'neutral'});
 // ═══════════════════════════════════════════
 const CRAZY_POOL=[
   {id:'canal_rainbow',weight:1,ic:'🌈',t:'运河彩虹 · 游客 tip +50%',fire(){G.shop.crazyTipMul=(G.shop.crazyTipMul||1)*1.5}},
-  {id:'helicopter_tour',weight:1,ic:'🚁',t:'直升机观光 · 酿酒订单 +3',fire(){G.shop.crazyBrewOrders=(G.shop.crazyBrewOrders||0)+3}},
+  {id:'helicopter_tour',weight:1,ic:'🚁',t:'直升机观光 · 酿酒收入 ×1.24',fire(){G.shop.crazyBrewOrders=(G.shop.crazyBrewOrders||0)+3}},
   {id:'swan_attack',weight:1,ic:'🦢',t:'天鹅袭击 · 冲浪体力 -10',fire(){G.shop.crazySurfStam=(G.shop.crazySurfStam||0)-10}},
   {id:'masterchef_visit',weight:1,ic:'🧑‍🍳',t:'名厨到访 · 酒吧 tip +30%',fire(){G.shop.crazyTipMul=(G.shop.crazyTipMul||1)*1.3}},
   {id:'seagull_steal',weight:1,ic:'🐦',t:'海鸥偷窃 · 库存 -1',fire(){
@@ -783,7 +785,7 @@ const CRAZY_POOL=[
   {id:'stranger_birthday',weight:1,ic:'🎂',t:'陌生人庆生 · 意外红包 +$20',fire(){G.money+=20}},
   {id:'canal_flood',weight:1,ic:'🌊',t:'运河涨水 · 移动速度 -50% (本日)',fire(){G.shop.crazySlow=true}},
   // ── Phase E8.2 (Round 5) — Pack v2 · 6 Amsterdam-themed 搞怪事件 ──
-  {id:'tulip_crash',weight:1,ic:'🌷',t:'郁金香泡沫崩 · 酿酒订单 -3',fire(){G.shop.crazyBrewOrders=(G.shop.crazyBrewOrders||0)-3}},
+  {id:'tulip_crash',weight:1,ic:'🌷',t:'郁金香泡沫崩 · 酿酒收入 ×0.76',fire(){G.shop.crazyBrewOrders=(G.shop.crazyBrewOrders||0)-3}},
   {id:'rijksmuseum_steal',weight:1,ic:'🖼️',t:'Rijksmuseum 失窃 · rep -5',fire(){G.rep=Math.max(-20,(G.rep||0)-5);addEvt('bad','🖼️ 名画失踪 · 全市耻辱')}},
   {id:'cat_cafe_overrun',weight:1,ic:'🐈',t:'Cat Café 占领街角 · 心情 +2',fire(){const before=G.mood;G.mood=moodFloor(Math.min(2,G.mood+2));addEvt('good',`🐈 Cat Café · 心情 ${before}→${G.mood}`)}},
   {id:'pizza_bench',weight:1,ic:'🍕',t:'Pizza Bench 接力 · 冲浪体力 +20',fire(){G.shop.crazySurfStam=(G.shop.crazySurfStam||0)+20}},
@@ -794,9 +796,41 @@ const CRAZY_POOL=[
   {id:'vondelpark_picnic',weight:1,ic:'🎨',t:'Vondelpark 画家野餐 · 心情 +1',fire(){const before=G.mood;G.mood=Math.min(2,G.mood+1);addEvt('good',`🎨 Vondelpark 画家野餐 · 心情 ${before}→${G.mood}`)}},
   {id:'cheese_roll',weight:1,ic:'🧀',t:'Alkmaar 奶酪轮接力 · 冲浪体力 +25',fire(){G.shop.crazySurfStam=(G.shop.crazySurfStam||0)+25;addEvt('good','🧀 Gouda 轮山坡滑下 · Stam buff')}},
   {id:'duck_parade',weight:1,ic:'🦆',t:'运河鸭子游行 · 心情 +1',fire(){const before=G.mood;G.mood=Math.min(2,G.mood+1);addEvt('good',`🦆 鸭子列队 · 心情 ${before}→${G.mood}`)}},
-  {id:'canal_crash',weight:1,ic:'🚢',t:'运河游船撞桥 · 酿酒订单 +5 (受困游客)',fire(){G.shop.crazyBrewOrders=(G.shop.crazyBrewOrders||0)+5;addEvt('info','🚢 游船卡桥 · 5 单涌来')}},
+  {id:'canal_crash',weight:1,ic:'🚢',t:'运河游船撞桥 · 酿酒收入 ×1.40 (受困游客)',fire(){G.shop.crazyBrewOrders=(G.shop.crazyBrewOrders||0)+5;addEvt('info','🚢 游船卡桥 · 5 单涌来')}},
   {id:'sinterklaas_arrival',weight:1,ic:'🎅',t:'🎅 Sinterklaas 抵港 · 派糖钱 +$15',fire(){G.money+=15;addEvt('good','🎅 Sinterklaas + Pieten · 派糖 $15')}}
 ];
+
+// Round 18 — 今日搞怪效果徽章:从 G.shop.* crazy 字段算出当前 active effects
+// 让玩家一眼看到「🚁 酿酒收入 ×1.24」「🦢 体力 -10」「🎭 顾客戴面具」等当日 buff/debuff
+function crazyActiveBadges(){
+  const out=[];const s=G.shop||{};
+  if(s.crazyTipMul&&s.crazyTipMul>1.0001){
+    const pct=Math.round((s.crazyTipMul-1)*100);
+    out.push({ic:'💰',t:`tip +${pct}%`,k:'tip'});
+  }
+  if(s.crazySurfStam){
+    const v=s.crazySurfStam;
+    out.push({ic:v>0?'🏄':'🦢',t:`冲浪体力 ${v>0?'+':''}${v}`,k:'surf'});
+  }
+  if(s.crazyBrewOrders){
+    const v=s.crazyBrewOrders;
+    const mul=1+0.08*v;
+    out.push({ic:v>0?'🚁':'🌷',t:`酿酒收入 ×${mul.toFixed(2)}`,k:'brew'});
+  }
+  if(s.crazyFaceMark){
+    out.push({ic:s.crazyFaceMark,t:'顾客戴面具',k:'face'});
+  }
+  if(s.crazyMidnight){
+    out.push({ic:'🌙',t:'极昼 · Dawn 开门',k:'midnight'});
+  }
+  if(s.crazyBlessing){
+    out.push({ic:'🛸',t:'明日事件全正',k:'bless'});
+  }
+  if(s.crazySlow){
+    out.push({ic:'🚲',t:'移动 ×0.5 慢速',k:'slow'});
+  }
+  return out;
+}
 
 function tickCrazyEvent(){
   // 4% per tick (~6 ticks/day) → 期望 ~24% 每天至少 1 次,平均每天 1-2 次
@@ -3981,6 +4015,11 @@ function renderAll(){
       <div class="im">风险${def.risk} · $${def.inc[ind.lv]}/次 · ${isMax?'满级 ✦传奇 ×1.1':'→'+def.lvs[ind.lv+1]}</div>
       <div class="ib"><div class="if" style="width:${pct}%;background:${def.cl}"></div></div>
       <div class="ix">${ind.xp}/${next} XP · ${isMax?'满级 ×1.1':'进度 '+(Math.round(pct))+'%'}</div></div>`}
+  // Round 18 — 今日搞怪效果徽章 (crazy events active effects) appended to #left
+  const _cb=crazyActiveBadges();
+  lh+='<h3 style="margin-top:8px">🎪 今日搞怪</h3>';
+  if(_cb.length){lh+=_cb.map(b=>`<div class="cb-row" data-k="${b.k}"><span class="cb-ic">${b.ic}</span><span class="cb-t">${b.t}</span></div>`).join('')}
+  else{lh+='<div style="font-size:10px;color:var(--muted);padding:2px 4px">无 active 效果</div>'}
   lp.innerHTML=lh;
   // Right objectives (Roguelike)
   const objsEl=document.getElementById('objs');
@@ -4161,6 +4200,7 @@ window.AB_TEST={
   ledgerOpen,showLedger,closeLedger,toggleLedger,renderLedger,saveLedger,loadLedger,
   teacherRepBonus,bumpTeacherRep,
   pushModHistory,
+  crazyActiveBadges,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

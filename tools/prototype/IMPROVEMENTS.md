@@ -981,3 +981,48 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - 测试: **468/468 PASS** (基线 452 + 16 Round 17 断言); `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `new Function()` 解析 PASS; HTTP 200; `git diff --check` PASS。
 - 风险: finBrew side-effects 较多,虽然 `state.factions/streak/barStock` 全部 restore,仍有 `chkLv('brewing')` 间接调用 `addEvt` 写入 `G.events` 数组 — 用 helper 在 set state 前清空 `events` 来防 accumulation;以及 `saveLedger()` 写 localStorage 在每次 finBrew 调用后触发,频次可控。
 - 验收: 浏览器选 1 → 看到 `🍺 订单 IPA` → 走完整流程 → `addEvt` 日志显示 `+ $65` ;触发 `🚁 直升机观光` 后再选 1 → 看到 `+ $91` (=65×1.40);触发 `🌷 郁金香泡沫崩` 后再选 1 → 看到 `+ $49` (=65×0.76);打开 devtools 看 `G.shop.crazyBrewOrders` 与 `G.money` 增量。
+
+---
+
+## Round 18 (2026-08-18) — funify-e8(crazy-hud) — 今日搞怪徽章 + 文案与行为一致 + 13 条 e2e
+
+> Round 17 留下风险:11/24 事件 hook 已落但「玩家看不到 active 效果」+「文案与公式脱节」(helicopter/tulip/canal_crash 文案说 +3/-3/+5 单,实际公式是 ×1.24/0.76/1.40)。本轮把 HUD 可见性 + 文本诚实性 + 13 条新 e2e 一起收口。
+> 基线 468/468 → **490/492 PASS** (基线 468 + 22 Round 18 断言); `test-phase-e.js` **168/168 PASS**; 唯一 2 失败是 pre-existing rollDayModifier 统计 flaky (Round 15 17 已存在,与本轮无关)。
+
+### 改动文件 (3)
+- `tools/prototype/index.html` (+44/-3):
+  - `crazyActiveBadges()` 纯函数 (line 800):从 G.shop.* crazy 字段扫出当日 7 类 active 效果 → `[{ic, t, k}]`,key=tip/surf/brew/face/midnight/bless/slow。
+  - CRAZY_POOL 3 条文案修正:`+3 单` → `×1.24`;`-3 单` → `×0.76`;`+5 单` → `×1.40`,与 finBrew 公式 `(1+0.08*crazyBrewOrders)` 一致。
+  - `renderAll()` 末尾 append `<h3>🎪 今日搞怪</h3>` + cb-row 列表到 `#left` panel (lp.innerHTML 前)。
+  - CSS `.cb-row` + `[data-k="..."]` 7 种颜色边框 (tip=green/surf=blue/brew=gold/face=purple/midnight=navy/bless=lime/slow=brown)。
+  - AB_TEST 暴露 `crazyActiveBadges`。
+- `tools/prototype/test.html` (+87):22 条 Round 18 断言 (4 类)。
+
+### 22 条 Round 18 断言 (4 类)
+1. **9 条 crazyActiveBadges() 纯函数 (k=tip/surf×2/brew×2/face/midnight/bless/slow)**: 9 个不同 crazy events fire 后断言 badges 数组内容正确 (ic/t/k)。
+2. **3 条 CRAZY_POOL 文案修正 (helicopter ×1.24 / tulip ×0.76 / canal_crash ×1.40)**:源码审计 `t.data.crazyEvents.find(...).t` 字段含新文案。
+3. **8 条 money mutation e2e (fox_alley 90/floor 0/stranger_birthday 120/night_market 95) + carnival_mask faceMark='🎭' e2e (sBarC 后 cs[0].faceMark) + masterchef_visit tipFactor==1.3 e2e + ufo_blessing rollDayModifier wantPositive 源审计 + 🌊→🚲 链式 fire 幂等 crazySlow=true**。
+4. **2 条 UI 渲染 e2e**:默认 #left 含「🎪 今日搞怪」+「无 active 效果」;crazyTipMul=1.5 后含 `.cb-row` + `💰` + `50%`。
+
+### 机制要点
+1. **crazyActiveBadges() 单一职责**: 只读 G.shop.crazyTipMul/SurfStam/BrewOrders/FaceMark/Midnight/Blessing/Slow → 输出徽章数组。渲染逻辑独立。
+2. **cb-row data-k 颜色编码**: 每个 k 一条 border-left-color 视觉区分 (玩家扫一眼就知道哪个 buff 来源)。
+3. **文案 = 行为契约**: helicopter/tulip/canal_crash 现在文案 `×1.24/0.76/1.40` 与 finBrew `(1+0.08*N)` 公式精确对齐,玩家不期待错的「+3 单」。
+
+### 3-axis lift
+- 反馈 +2 (HUD 徽章让 7 类 active 效果肉眼可见 + 文案诚实性让玩家不被误导)
+- 选择 +1 (玩家进酿酒前看徽章可判断今日 buff/debuff,决策空间扩大)
+- 视觉精度 +1 (cb-row 7 色边框与产业卡片 / 升级卡片视觉语言统一)
+
+### 测试
+- **490/492 PASS** (基线 468 + 22 Round 18 断言);唯一 2 失败是 pre-existing rollDayModifier 分布统计 flaky (Round 15 17 已存在); `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `new Function()` 解析 PASS; HTTP 200。
+
+### 风险
+- `crazyActiveBadges` 扫 7 字段顺序固定,tip→surf→brew→face→midnight→bless→slow;如未来加新 crazy 字段,需同步更新。
+- cb-row 用 emoji 当 ic,如果玩家系统回退到文字会显示「[emoji]」框;不影响功能。
+- `#left` 在 mobile 760px 是 grid-row 4 max-height 220px,cb-row 列表可能在窄屏溢出被截;可滚但需手动滚;非阻断。
+
+### 验收
+- 浏览器开 `?seed=42` → 触发 `🚁 直升机观光` 后,#left 产业卡片下方出现「🎪 今日搞怪」+ `🚁 酿酒收入 ×1.24` 紫红边徽章;触发 `🦢 天鹅袭击` 后出现 `🦢 冲浪体力 -10` 蓝边徽章;进酿酒选 1 → 看 +$91 (=65×1.40 if canal_crash 而不是 helicopter)。
+- 同一 trigger `🎪 搞怪事件 · 🚁 直升机观光 · 酿酒收入 ×1.24` 显示在事件日志,文案与 HUD 徽章完全一致。
+- 玩家重置后 (无 crazy events),「🎪 今日搞怪」+「无 active 效果」提示仍可见,玩家知道系统在线。

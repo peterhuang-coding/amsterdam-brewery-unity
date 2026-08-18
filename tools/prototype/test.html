@@ -1554,6 +1554,93 @@ frame.addEventListener('load',async()=>{
     return/G\.shop\.crazySurfStam/.test(src);
   });
 
+  // ═══ Round 18 — funify-e8(crazy-hud) — 今日搞怪徽章 + 文案与行为一致 + 13 条 e2e ═══
+  // 🎪 crazyActiveBadges() 纯函数:从 G.shop.* crazy 字段算出当日 active effects 列表
+  check('R18 HUD: crazyActiveBadges 暴露在 AB_TEST',()=>typeof win.crazyActiveBadges==='function');
+  check('R18 HUD: 初始空 G.shop → crazyActiveBadges() 返回 []',()=>{
+    const before=t.state.shop;
+    try{t.state.shop={};const r=win.crazyActiveBadges();return Array.isArray(r)&&r.length===0;}
+    finally{t.state.shop=before;}
+  });
+  check('R18 HUD: crazyTipMul=1.5 → 返回 [{💰,tip +50%,tip}]',()=>withCrazyEventState(
+    'canal_rainbow',()=>{const r=win.crazyActiveBadges();return r.length===1&&r[0].ic==='💰'&&/50%/.test(r[0].t)&&r[0].k==='tip';}));
+  check('R18 HUD: 🦢 swan_attack crazySurfStam=-10 → [{🦢,冲浪体力 -10,surf}]',()=>withCrazyEventState(
+    'swan_attack',()=>{const r=win.crazyActiveBadges();return r.length===1&&r[0].ic==='🦢'&&/-10/.test(r[0].t)&&r[0].k==='surf';}));
+  check('R18 HUD: 🍕 pizza_bench crazySurfStam=+20 → [{🏄,冲浪体力 +20,surf}]',()=>withCrazyEventState(
+    'pizza_bench',()=>{const r=win.crazyActiveBadges();return r.length===1&&r[0].ic==='🏄'&&/\+20/.test(r[0].t);}));
+  check('R18 HUD: 🚁 helicopter_tour crazyBrewOrders=3 → [{🚁,酿酒收入 ×1.24,brew}]',()=>withCrazyEventState(
+    'helicopter_tour',()=>{const r=win.crazyActiveBadges();return r.length===1&&r[0].ic==='🚁'&&/×1\.24/.test(r[0].t)&&r[0].k==='brew';}));
+  check('R18 HUD: 🌷 tulip_crash crazyBrewOrders=-3 → [{🌷,酿酒收入 ×0.76,brew}]',()=>withCrazyEventState(
+    'tulip_crash',()=>{const r=win.crazyActiveBadges();return r.length===1&&r[0].ic==='🌷'&&/×0\.76/.test(r[0].t);}));
+  check('R18 HUD: 🎭 carnival_mask crazyFaceMark=\'🎭\' → [{🎭,顾客戴面具,face}]',()=>withCrazyEventState(
+    'carnival_mask',()=>{const r=win.crazyActiveBadges();return r.length===1&&r[0].ic==='🎭'&&r[0].k==='face';}));
+  check('R18 HUD: 🌙 midnight_sun crazyMidnight=true → [{🌙,极昼,k=midnight}]',()=>withCrazyEventState(
+    'midnight_sun',()=>{const r=win.crazyActiveBadges();return r.length===1&&r[0].k==='midnight';}));
+  check('R18 HUD: 🛸 ufo_blessing crazyBlessing=true → [{🛸,明日,k=bless}]',()=>withCrazyEventState(
+    'ufo_blessing',()=>{const r=win.crazyActiveBadges();return r.length===1&&r[0].k==='bless';}));
+  check('R18 HUD: 🚲 bike_swarm 双效果 → [{💰,tip +20%},{🚲,移动,k=slow}] (len 2)',()=>withCrazyEventState(
+    'bike_swarm',()=>{const r=win.crazyActiveBadges();return r.length===2&&r.some(b=>b.k==='tip')&&r.some(b=>b.k==='slow');}));
+  // 📜 文案与行为一致 — CRAZY_POOL 中 3 个条目 t 字段描述应反映实际 finBrew 公式
+  check('R18 text: helicopter_tour 文案 "×1.24" 反映 (1+0.08*3)',()=>{
+    const e=t.data.crazyEvents.find(x=>x.id==='helicopter_tour');return e&&/×1\.24/.test(e.t);
+  });
+  check('R18 text: tulip_crash 文案 "×0.76" 反映 (1+0.08*(-3))',()=>{
+    const e=t.data.crazyEvents.find(x=>x.id==='tulip_crash');return e&&/×0\.76/.test(e.t);
+  });
+  check('R18 text: canal_crash 文案 "×1.40" 反映 (1+0.08*5)',()=>{
+    const e=t.data.crazyEvents.find(x=>x.id==='canal_crash');return e&&/×1\.40/.test(e.t);
+  });
+  // 🦊 fox_alley / 🎂 stranger_birthday / 🎑 night_market money mutations: fire() 后 money 实际变化
+  check('R18 e2e: 🦊 fox_alley fire() → money -= 10 (初始 $100)',()=>withCrazyEventState(
+    'fox_alley',()=>t.state.money===90));
+  check('R18 e2e: 🦊 fox_alley 钱已为 5 → money floor 0 (不变负)',()=>{
+    const before=t.state.shop,tm=t.state.money;
+    try{t.state.shop={crazyTipMul:1,crazyBrewOrders:0,crazySurfStam:0,crazyFaceMark:'',crazyMidnight:false,crazyBlessing:false,crazySlow:false};t.state.money=5;t.data.crazyEvents.find(e=>e.id==='fox_alley').fire();return t.state.money===0;}
+    finally{t.state.shop=before;t.state.money=tm;}
+  });
+  check('R18 e2e: 🎂 stranger_birthday fire() → money += 20 (初始 $100)',()=>withCrazyEventState(
+    'stranger_birthday',()=>t.state.money===120));
+  check('R18 e2e: 🎑 night_market fire() → money -= 5 (初始 $100)',()=>withCrazyEventState(
+    'night_market',()=>t.state.money===95));
+  // 🎭 carnival_mask → sBarC 顾客 face end-to-end (验证 UI 真实戴面具)
+  check('R18 e2e: 🎭 carnival_mask fire() → sBarC 顾客 faceMark=🎭',()=>{
+    const beforeShop=t.state.shop,beforeMg=t.state.mg,beforeMGbar=t.MG.bar;
+    try{
+      t.state.shop={crazyFaceMark:'',crazyTipMul:1,crazyBrewOrders:0,crazySurfStam:0,crazyMidnight:false,crazyBlessing:false,crazySlow:false};
+      t.state.mg=null;
+      t.MG.bar={cs:[],sd:0,earn:0,mx:1,pool:[{n:'Normal',face:'🧑',floor:6,max:14}],recoDrink:'🍺',diff:null,vipDay:false};
+      t.data.crazyEvents.find(e=>e.id==='carnival_mask').fire();
+      win.sBarC();
+      return t.MG.bar.cs.length===1&&t.MG.bar.cs[0].faceMark==='🎭';
+    }finally{
+      t.state.shop=beforeShop;t.state.mg=beforeMg;t.MG.bar=beforeMGbar;
+    }
+  });
+  // 🧑‍🍳 masterchef_visit → finBar tipFactor() e2e (收入放大 1.3×)
+  check('R18 e2e: 🧑‍🍳 masterchef_visit fire() → tipFactor()=1.3 真实生效',()=>withCrazyEventState(
+    'masterchef_visit',()=>Math.abs(win.tipFactor()-1.3)<1e-6));
+  // 🛸 ufo_blessing → rollDayModifier 只选 'good' events (源审计 + 单次抽样)
+  check('R18 e2e: 🛸 ufo_blessing 后 rollDayModifier 强制 wantPositive (源审计)',()=>{
+    const src=win.eval('rollDayModifier.toString()');return/G\.shop.*crazyBlessing/.test(src);
+  });
+  // 🌊 crazySlow + 🚲 bike_swarm 二次 fire (幂等) crazySlow=true 仍 true
+  check('R18 e2e: 🌊→🚲 链式 fire → crazySlow=true 仍 true (幂等)',()=>{
+    const before=t.state.shop;
+    try{t.state.shop={crazySlow:false};t.data.crazyEvents.find(e=>e.id==='canal_flood').fire();t.data.crazyEvents.find(e=>e.id==='bike_swarm').fire();return t.state.shop.crazySlow===true&&t.state.shop.crazyTipMul>1;}
+    finally{t.state.shop=before;}
+  });
+  // 🎪 crazy-badges 元素存在 & 初始无 active 效果时显示「无 active 效果」
+  check('R18 render: #left 包含「🎪 今日搞怪」 h3 + 默认 「无 active 效果」',()=>{
+    const before=t.state.shop;
+    try{t.state.shop={};win.renderAll();const html=win.document.getElementById('left').innerHTML;return/🎪 今日搞怪/.test(html)&&/无 active 效果/.test(html);}
+    finally{t.state.shop=before;win.renderAll();}
+  });
+  check('R18 render: crazyTipMul=1.5 → #left 渲染 cb-row 含 💰 + 50%',()=>{
+    const before=t.state.shop;
+    try{t.state.shop={crazyTipMul:1.5,crazyBrewOrders:0,crazySurfStam:0,crazyFaceMark:'',crazyMidnight:false,crazyBlessing:false,crazySlow:false};win.renderAll();const html=win.document.getElementById('left').innerHTML;return/cb-row/.test(html)&&/💰/.test(html)&&/50%/.test(html);}
+    finally{t.state.shop=before;win.renderAll();}
+  });
+
   // ═══ Phase E acceptance — core systems are live in browser runtime ═══
   // (withPhaseEIndustryState helper is defined at the top of the load handler so
   // it is in scope for the legendary_income tests at line ~390.)

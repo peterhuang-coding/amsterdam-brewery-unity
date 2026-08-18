@@ -2701,6 +2701,86 @@ frame.addEventListener('load',async()=>{
   check('tickObj 源: 包含 obj-toast 创建',()=>/tickObj\([^)]*\)[\s\S]{0,1500}obj-toast/.test(_r6src));
   check('tickObj 源: 包含 fading 类名',()=>/tickObj\([^)]*\)[\s\S]{0,1800}fading/.test(_r6src));
 
+  // ═══ funify-v3 Round 38 — 🎲 per-run shuffled event pool (BACKLOG #10 #7 closure) ═══
+  // 1. runHashPool 函数暴露在 AB_TEST
+  check('Round 38: runHashPool 函数暴露在 AB_TEST',()=>typeof win.runHashPool==='function');
+  // 2. runHashPool 空 / 单元素输入 → 直接返回 slice
+  check('Round 38: runHashPool([]) 返回空数组',()=>{const r=win.runHashPool(1,[]);return Array.isArray(r)&&r.length===0});
+  check('Round 38: runHashPool([a]) 返回 [a] (单元素不打乱)',()=>{const r=win.runHashPool(1,[{id:'x'}]);return r.length===1&&r[0].id==='x'});
+  // 3. 同 run 重复调用 → 同顺序 (deterministic)
+  check('Round 38: runHashPool 相同 run → 相同顺序 (deterministic)',()=>{
+    const src=[1,2,3,4,5,6,7,8,9,10].map(x=>({id:'id'+x}));
+    const a=win.runHashPool(7,src).map(x=>x.id).join(',');
+    const b=win.runHashPool(7,src).map(x=>x.id).join(',');
+    return a===b&&a.length>10;
+  });
+  // 4. 不同 run → 不同顺序 (高概率)
+  check('Round 38: runHashPool 不同 run → 顺序不同',()=>{
+    const src=Array.from({length:12},(_,i)=>({id:'ev'+i}));
+    const a=win.runHashPool(1,src).map(x=>x.id).join(',');
+    const b=win.runHashPool(2,src).map(x=>x.id).join(',');
+    const c=win.runHashPool(5,src).map(x=>x.id).join(',');
+    return a!==b&&a!==c&&b!==c;
+  });
+  // 5. runHashPool 不修改原数组 (pure function)
+  check('Round 38: runHashPool 不修改 source 数组',()=>{
+    const src=[1,2,3,4,5,6,7,8].map(x=>({id:'k'+x}));
+    const before=src.map(x=>x.id).join(',');
+    win.runHashPool(3,src);
+    win.runHashPool(7,src);
+    return src.map(x=>x.id).join(',')===before;
+  });
+  // 6. runHashPool 输出包含 source 所有元素 (permutation)
+  check('Round 38: runHashPool 输出是 source 的置换 (length 一致 + 全部 ID 出现)',()=>{
+    const src=Array.from({length:12},(_,i)=>({id:'ev'+i}));
+    const r=win.runHashPool(4,src);
+    if(r.length!==src.length)return false;
+    const srcIds=new Set(src.map(x=>x.id));
+    return r.every(x=>srcIds.has(x.id));
+  });
+  // 7. runHashPool 接受字符串数字 run (robust)
+  check('Round 38: runHashPool 接受非数字 run (转为 0 或 floor)',()=>{
+    const src=[{id:'a'},{id:'b'},{id:'c'},{id:'d'},{id:'e'}];
+    const r1=win.runHashPool('3',src);
+    const r2=win.runHashPool(3,src);
+    const r3=win.runHashPool(null,src);
+    return r1.length===5&&r2.length===5&&r3.length===5&&r1.map(x=>x.id).join(',')===r2.map(x=>x.id).join(',');
+  });
+  // 8. rollDayModifier 源: 使用 runHashPool 包装 EV_POOL
+  check('Round 38: rollDayModifier 源包含 runHashPool 调用',()=>/function rollDayModifier\(\)\{[\s\S]{0,800}runHashPool\(G\.run,EV_POOL\)/.test(_r6src));
+  // 9. rollDayModifier 端到端:同 seed 不同 run,前 3 天的 modifier 序列可能不同
+  check('Round 38: rollDayModifier 同 seed 不同 run 跑 3 天序列不同 (高概率)',()=>{
+    const had=t.state.mods.slice();const hadRun=t.state.run;const hadSeed=t.state.seed;const hadDay=t.state.day;const hadHist=t.state.modHistory;
+    // Run 1: 跑 day 1..3
+    t.state.seed=42;t.state.run=1;t.state.modHistory=[];t.state.mods=[];
+    const seq1=[];for(let d=1;d<=3;d++){t.state.day=d;const m=win.rollDayModifier();seq1.push(m.id);t.state.mods=[{id:m.id,ic:m.ic,t:m.t}];if(t.state.modHistory)t.state.modHistory.unshift(m.id)}
+    // Run 2: 同 seed 跑 day 1..3,run 改为 2
+    t.state.seed=42;t.state.run=2;t.state.modHistory=[];t.state.mods=[];
+    const seq2=[];for(let d=1;d<=3;d++){t.state.day=d;const m=win.rollDayModifier();seq2.push(m.id);t.state.mods=[{id:m.id,ic:m.ic,t:m.t}];if(t.state.modHistory)t.state.modHistory.unshift(m.id)}
+    // 还原
+    t.state.mods=had;t.state.run=hadRun;t.state.seed=hadSeed;t.state.day=hadDay;t.state.modHistory=hadHist;
+    return seq1.join(',')!==seq2.join(',');
+  });
+  // 10. rollDayModifier 端到端:同 seed 同 run 跑 7 天序列相同 (deterministic)
+  check('Round 38: rollDayModifier 同 seed 同 run 跑 7 天序列相同 (deterministic)',()=>{
+    const had=t.state.mods.slice();const hadRun=t.state.run;const hadSeed=t.state.seed;const hadDay=t.state.day;const hadHist=t.state.modHistory;
+    const pickSeq=()=>{const out=[];for(let d=1;d<=7;d++){t.state.day=d;const m=win.rollDayModifier();out.push(m.id);t.state.mods=[{id:m.id,ic:m.ic,t:m.t}];if(t.state.modHistory)t.state.modHistory.unshift(m.id)}t.state.modHistory=[];t.state.mods=[];return out.join(',')};
+    t.state.seed=42;t.state.run=3;t.state.modHistory=[];t.state.mods=[];
+    const s1=pickSeq();
+    t.state.modHistory=[];t.state.mods=[];
+    const s2=pickSeq();
+    t.state.mods=had;t.state.run=hadRun;t.state.seed=hadSeed;t.state.day=hadDay;t.state.modHistory=hadHist;
+    return s1===s2;
+  });
+  // 11. rollDayModifier 仍然遵守 last/history 过滤 (roundHashPool 后还要 filter)
+  check('Round 38: rollDayModifier 仍过滤 last 与 history (重排出但不漏过滤)',()=>{
+    const had=t.state.mods.slice();const hadRun=t.state.run;const hadSeed=t.state.seed;const hadDay=t.state.day;const hadHist=t.state.modHistory;
+    t.state.seed=42;t.state.run=4;t.state.day=1;t.state.modHistory=['tourism','kings_day'];t.state.mods=[{id:'police_raid'}];
+    const m=win.rollDayModifier();
+    t.state.mods=had;t.state.run=hadRun;t.state.seed=hadSeed;t.state.day=hadDay;t.state.modHistory=hadHist;
+    return m&&m.id!=='police_raid'&&m.id!=='tourism'&&m.id!=='kings_day';
+  });
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

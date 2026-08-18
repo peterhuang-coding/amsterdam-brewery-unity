@@ -2452,6 +2452,27 @@ function rollDayObjectives(){
   G._objDay=G.day;
 }
 
+// funify-v3 Round 38 — Per-run shuffled pool (BACKLOG #10 #7):
+//   Returns a deterministic Fisher-Yates shuffle of `source` seeded by `run`.
+//   Same run number → same shuffle (so save/load is replayable).
+//   Different run number → different ordering (so consecutive runs feel fresh
+//   even with the same seed). Used by rollDayModifier to vary EV_POOL order
+//   per run, breaking the static "every Run #1 seed=42 produces the same 7-day
+//   event sequence" pattern. Pure function, no side effects, no G.* mutation.
+function runHashPool(run,source){
+  if(!Array.isArray(source)||source.length<2)return Array.isArray(source)?source.slice():[];
+  const r=Math.max(0,Math.floor(Number(run))||0);
+  // LCG seeded by run — deterministic per run number, varies across runs
+  let s=(r*2654435761+40503)>>>0;
+  const rnd=()=>{s=(s*1664525+1013904223)>>>0;return(s&0x7fffffff)/0x7fffffff};
+  const out=source.slice();
+  for(let i=out.length-1;i>0;i--){
+    const j=Math.floor(rnd()*(i+1));
+    const t=out[i];out[i]=out[j];out[j]=t;
+  }
+  return out;
+}
+
 // Roll today's modifier (1 of EV_POOL, never repeats 2 days in a row).
 // EV_KIND auto-derived from EV_POOL[].kind (see data section above).
 // funify-v3 Round 20 — weighted pick instead of hard filter (BACKLOG #6):
@@ -2462,6 +2483,12 @@ function rollDayObjectives(){
 //   Filter out IDs in G.modHistory (last 5 days, persisted across runs via saveMeta v3).
 //   Falls back gracefully to last-only filter if pool would otherwise be empty
 //   (EV_POOL only has 12 items; after 5 distinct days + last-day ban, ≥6 remain).
+// funify-v3 Round 38 — per-run pool shuffle (BACKLOG #10 #7):
+//   The working pool is `runHashPool(G.run, EV_POOL)` so each new run sees a
+//   different ordering of the same 12 events. Same seed + same run number still
+//   produces identical sequence (deterministic), but run #2 with seed=42 plays
+//   differently from run #1 with seed=42. The last/history ban still operates
+//   on the same set of IDs, so the anti-repeat contract is preserved.
 function rollDayModifier(){
   const sd=G.seed+G.day*31+7;
   const r=Math.abs((sd*1103515245+12345)%2147483647);
@@ -2470,9 +2497,11 @@ function rollDayModifier(){
   // Phase E8 — UFO blessing 跨日生效:触发后本日 modifier 强制偏正向
   const wantPositive=(hasUpgrade('event_freq')&&(r%100)<30)||(G.shop&&G.shop.crazyBlessing);
   // Round 16: history-aware anti-repeat — last-day ban + history ban, with graceful fallback
+  // Round 38: pool order varies per G.run via runHashPool
   const history=Array.isArray(G.modHistory)?G.modHistory:[];
-  let candidates=EV_POOL.filter(e=>e.id!==last&&!history.includes(e.id));
-  if(candidates.length===0)candidates=EV_POOL.filter(e=>e.id!==last);
+  const pool=runHashPool(G.run,EV_POOL);
+  let candidates=pool.filter(e=>e.id!==last&&!history.includes(e.id));
+  if(candidates.length===0)candidates=pool.filter(e=>e.id!==last);
   const weights=candidates.map(e=>{
     const k=EV_KIND[e.id]||'neutral';
     if(wantPositive){
@@ -4905,6 +4934,7 @@ window.AB_TEST={
   AB_LEDGER_FIELDS,resetCrossRunData,confirmResetCrossRunData,
   buildSeedUrl,copySeedUrl,parseSeedFromUrl,flashSeedCopied,copySeedUrlFromModal,SEED_COPY_HINT,
   RECENT_SEEDS_MAX,getRecentSeeds,pushRecentSeed,clearRecentSeeds,renderRecentSeeds,pickFreshRandomSeed,startWithRecentSeed,
+  runHashPool,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

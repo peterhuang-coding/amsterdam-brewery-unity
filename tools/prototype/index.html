@@ -345,6 +345,8 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div id="craft-modal" class="hidden">
 <div class="um-box">
 <h2>🛠️ 合成 &amp; 送礼 · 本 Run</h2>
+<div class="um-box">
+<h2>🛠️ 合成 &amp; 送礼 · 本 Run</h2>
 <div class="um-meta">
   <span id="craft-tab-info">按 <kbd>C</kbd> 配方册 / <kbd>G</kbd> 送礼 / <kbd>ESC</kbd> 关闭 · 6 原料 · 8 配方 · 4 NPC L0-3</span>
   <span style="display:block;margin-top:4px">
@@ -354,6 +356,15 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 </div>
 <div id="craft-pane-craft"></div>
 <div id="craft-pane-gift" class="hidden"></div>
+</div>
+</div>
+
+<!-- funify-v3 Round 30 — Knowledge Book (📒 知识本,K 键) — 跨 Run 累积的知识博物馆 -->
+<div id="ledger-modal" class="hidden">
+<div class="um-box">
+<h2>📒 知识本 · 跨 Run 累积</h2>
+<div class="um-meta">🍺 配方掌握 · 🍄 菌株笔记 · 🍻 常客 · 🔬 学术主题 · 🗺️ 浪点发现 · 📍 建筑足迹 · <b>localStorage 永久</b> · 按 <kbd>K</kbd> 或 <kbd>ESC</kbd> 关闭</div>
+<div id="ledger-grid"></div>
 </div>
 </div>
 
@@ -376,7 +387,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <h1 id="start-modal-title">Amsterdam Brewery — 肉鸽中台</h1>
 <div class="intro-sub">Day 1 of 7 · 🌱 一周城市经营 roguelike · 输入 Seed 开始本 Run</div>
 <h2>玩法目标</h2>
-<div class="start-summary">🎯 7 天内每天完成 <b>3 个目标</b>，应对每日 <b>随机事件</b><br>🏭 5 个产业（酿酒/酒吧/咖啡/蘑菇/冲浪/学术）会真实改变收益<br>🏆 跑完获得 <b>★ meta</b>，在 3 选 1 升级中囤积下一局起跑线<br>🆕 Phase E:每日 <b>🏷️ 变量</b> + 4 分支 <b>🌳 天赋树</b>(T) + 3 <b>🚩 派系</b>(F) + 8 <b>🛠️ 配方</b>(C) × 4 <b>🎁 NPC</b>(G) + 24 个 <b>🦄 搞怪事件</b></div>
+<div class="start-summary">🎯 7 天内每天完成 <b>3 个目标</b>，应对每日 <b>随机事件</b><br>🏭 5 个产业（酿酒/酒吧/咖啡/蘑菇/冲浪/学术）会真实改变收益<br>🏆 跑完获得 <b>★ meta</b>，在 3 选 1 升级中囤积下一局起跑线<br>🆕 Phase E:每日 <b>🏷️ 变量</b> + 4 分支 <b>🌳 天赋树</b>(T) + 3 <b>🚩 派系</b>(F) + 8 <b>🛠️ 配方</b>(C) × 4 <b>🎁 NPC</b>(G) + 24 个 <b>🦄 搞怪事件</b> + <b>📒 知识本</b>(K)跨 Run 累积</div>
 <h2>操作图</h2>
 <div class="keys">
 <div class="key-card"><kbd>W</kbd><span>向上移动</span></div><div class="key-card"><kbd>A</kbd><span>向左移动</span></div><div class="key-card"><kbd>S</kbd><span>向下移动</span></div>
@@ -389,7 +400,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div id="help-modal" class="hidden">
 <div class="intro-box">
 <h1>操作帮助</h1>
-<div class="help-grid"><div><b>W/A/S/D</b> 移动小人（方向键也可）</div><div><b>E</b> 进入附近建筑</div><div><b>Space</b> 推进时间 / 小游戏确认</div><div><b>Q/W</b> 变体中调价或调节参数</div><div><b>X</b> 拒绝咖啡卧底或酒吧顾客</div><div><b>H</b> 打开本帮助，<b>Esc</b> 退出当前界面</div><div><b>T</b> 天赋树 · <b>F</b> 派系 · <b>J</b> 成就树 · <b>C</b> 配方 · <b>G</b> 送礼 · <b>B</b> 肉体交易</div><div><b>1-9</b> 选关 · <b>▶▶</b> 切换速度 1×/2×/4× · <b>M</b> 静音</div></div>
+<div class="help-grid"><div><b>W/A/S/D</b> 移动小人（方向键也可）</div><div><b>E</b> 进入附近建筑</div><div><b>Space</b> 推进时间 / 小游戏确认</div><div><b>Q/W</b> 变体中调价或调节参数</div><div><b>X</b> 拒绝咖啡卧底或酒吧顾客</div><div><b>H</b> 打开本帮助，<b>Esc</b> 退出当前界面</div><div><b>T</b> 天赋树 · <b>F</b> 派系 · <b>J</b> 成就树 · <b>C</b> 配方 · <b>G</b> 送礼 · <b>B</b> 肉体交易 · <b>K</b> 知识本</div><div><b>1-9</b> 选关 · <b>▶▶</b> 切换速度 1×/2×/4× · <b>M</b> 静音</div></div>
 <button class="btn help-close" onclick="closeHelp()">关闭</button>
 </div>
 </div>
@@ -1256,6 +1267,9 @@ function industryFactor(id){
 function lvMaxBoost(id){const keyMap={coffee:'coffee_shop',surf:'surfing'};const key=keyMap[id]||id;const ind=G.ind[key];return(ind&&ind.lv>=2)?1.1:1}
 function saveMeta(){try{localStorage.setItem('ab_meta_v2',JSON.stringify({version:2,meta:G.meta,upgrades:G.upgrades,legacy:G.legacy,run:G.run}))}catch(e){console.warn('ab_meta_v2 save failed',e)}}
 function loadMeta(){try{const d=JSON.parse(localStorage.getItem('ab_meta_v2'));if(d&&d.version===2){G.meta=Math.max(0,d.meta|0);G.upgrades=Array.isArray(d.upgrades)?[...new Set(d.upgrades)]:[];G.legacy=Math.max(0,d.legacy|0);G.run=Math.max(0,d.run|0)}}catch(e){console.warn('ab_meta_v2 load failed',e)}}
+// funify-v3 Round 30 — Cross-run Ledger (📒 知识本): strainNotes + brewNotes + barRegulars + researchTopics + surfDiscovered + visited persist ab_ledger_v1
+function saveLedger(){try{localStorage.setItem('ab_ledger_v1',JSON.stringify({version:1,strainNotes:G.strainNotes||{},brewNotes:G.brewNotes||{},barRegulars:G.barRegulars||[],researchTopics:G.researchTopics||[],surfDiscovered:G.surfDiscovered||[],visited:G.visited||[],recipeKnowledge:G._recipeKnowledge||{}}))}catch(e){console.warn('ab_ledger_v1 save failed',e)}}
+function loadLedger(){try{const d=JSON.parse(localStorage.getItem('ab_ledger_v1'));if(d&&d.version===1){if(d.strainNotes&&typeof d.strainNotes==='object')G.strainNotes=d.strainNotes;if(d.brewNotes&&typeof d.brewNotes==='object'){for(const t of ['IPA','Stout','Lager']){if(d.brewNotes[t]&&typeof d.brewNotes[t]==='object'){G.brewNotes[t].count=Math.max(G.brewNotes[t].count|0,d.brewNotes[t].count|0);G.brewNotes[t].best=Math.max(G.brewNotes[t].best|0,d.brewNotes[t].best|0)}}}if(Array.isArray(d.barRegulars))G.barRegulars=Array.from(new Set([...(G.barRegulars||[]),...d.barRegulars]));if(Array.isArray(d.researchTopics))G.researchTopics=Array.from(new Set([...(G.researchTopics||[]),...d.researchTopics]));if(Array.isArray(d.surfDiscovered))G.surfDiscovered=Array.from(new Set([...(G.surfDiscovered||[]),...d.surfDiscovered]));if(Array.isArray(d.visited))G.visited=Array.from(new Set([...(G.visited||[]),...d.visited]));if(d.recipeKnowledge&&typeof d.recipeKnowledge==='object')G._recipeKnowledge=d.recipeKnowledge}}catch(e){console.warn('ab_ledger_v1 load failed',e)}}
 // Phase E7 — Run Summary Card (本地历史 ≤10)
 // funify-e11 — Run Epitaph (幽默墓志铭):1-句 flavor text 由 run 统计驱动
 function buildRunEpitaph(card){
@@ -1465,6 +1479,88 @@ function renderFactions(){
 function craftOpen(){return!document.getElementById('craft-modal').classList.contains('hidden')}
 function showCraft(tab){document.getElementById('craft-modal').classList.remove('hidden');craftTab(tab||'craft')}
 function closeCraft(){document.getElementById('craft-modal').classList.add('hidden')}
+// funify-v3 Round 30 — Knowledge Book (📒 知识本): 跨 Run ledger 展示 (BACKLOG #9 close)
+function ledgerOpen(){return!document.getElementById('ledger-modal').classList.contains('hidden')}
+function showLedger(){document.getElementById('ledger-modal').classList.remove('hidden');renderLedger()}
+function closeLedger(){document.getElementById('ledger-modal').classList.add('hidden')}
+function toggleLedger(){ledgerOpen()?closeLedger():showLedger()}
+function renderLedger(){
+  const grid=document.getElementById('ledger-grid');if(!grid)return;
+  // Section 1: brew mastery (3 types × mastery count + best stars)
+  const brewTypes=['IPA','Stout','Lager'];
+  const brewTemp={IPA:55,Stout:68,Lager:48};
+  const brewCards=brewTypes.map(t=>{
+    const n=G.brewNotes[t]||{count:0,best:0};
+    const mastered=n.count>=3;
+    const stars='★'.repeat(Math.min(3,n.best))+(n.best<3?'☆'.repeat(3-n.best):'');
+    return `<div class="at-tier${mastered?' unlocked':''}">
+      <div class="at-ic">🍺</div>
+      <div class="at-name">${t} · ${n.count}次酿${mastered?' · ✓ 配方已掌握':''}</div>
+      <div class="at-desc">目标温 ${brewTemp[t]}°C · 隐藏于配方选择阶段,需凭经验推断</div>
+      <div class="at-prog">${stars} 最佳品质 · 累积 ${n.count}/3 解锁</div>
+      <div class="at-bar"><div style="width:${Math.min(100,Math.round(n.count/3*100))}%"></div></div>
+    </div>`;
+  }).join('');
+  // Section 2: strain notes (3 strains × humidity/temp/light)
+  const strainCards=['金色导师','亚马逊','哲学家'].map(n=>{
+    const note=G.strainNotes&&G.strainNotes[n];
+    if(note){
+      return `<div class="at-tier unlocked">
+        <div class="at-ic">🍄</div>
+        <div class="at-name">${n} · 已记录</div>
+        <div class="at-desc">湿 ${note.h}% · 温 ${note.t}°C · 光 ${note.l}h</div>
+        <div class="at-prog">首次种植时自动解锁</div>
+      </div>`;
+    }
+    return `<div class="at-tier locked">
+      <div class="at-ic">🍄</div>
+      <div class="at-name">${n} · ???</div>
+      <div class="at-desc">目标参数未解 · 种植第 1 次成功后自动记录</div>
+      <div class="at-prog">未发现</div>
+    </div>`;
+  }).join('');
+  // Section 3: bar regulars
+  const regs=G.barRegulars||[];
+  const regsText=regs.length?regs.map(n=>`<span style="background:#5fd35f33;padding:2px 6px;border-radius:4px;margin:2px;display:inline-block">${n}</span>`).join(''):'<span style="color:var(--muted)">尚无回头客 · 在酒吧成功成交 3 次后,该 archetype 自动加入常客名单</span>';
+  // Section 4: research topics
+  const topics=G.researchTopics||[];
+  const allTopics=['psilocybin','mycelium','microdosing'];
+  const topicsCards=allTopics.map(t=>{
+    const unlocked=topics.includes(t);
+    return `<div class="at-tier${unlocked?' unlocked':' locked'}">
+      <div class="at-ic">🔬</div>
+      <div class="at-name">${t}${unlocked?' · ✓':' · ???'}</div>
+      <div class="at-desc">${unlocked?'已解锁,可作为学术投稿主题':'未解锁 · ★4 蘑菇收获解锁 1 个 · ★5 解锁全部'}</div>
+    </div>`;
+  }).join('');
+  // Section 5: surf discoveries
+  const surfCards=(WAVE_POINTS||[]).map(w=>{
+    const known=G.surfDiscovered&&G.surfDiscovered.includes(w.id);
+    return `<div class="at-tier${known?' unlocked':' locked'}">
+      <div class="at-ic">🏄</div>
+      <div class="at-name">${known?w.n:'???'} · ${known?w.diff+'★':''}</div>
+      <div class="at-desc">${known?w.special:'未发现 · 完整跑一次冲浪 session 解锁'}</div>
+    </div>`;
+  }).join('');
+  // Section 6: visited buildings
+  const visited=G.visited||[];
+  const visitedPct=Math.round(visited.length/(BLDGS||[]).length*100);
+  const visitedCard=`<div class="at-tier${visited.length>=BLDGS.length*0.5?' unlocked':''}">
+    <div class="at-ic">📍</div>
+    <div class="at-name">足迹 ${visited.length}/${(BLDGS||[]).length} (${visitedPct}%)</div>
+    <div class="at-desc">${visited.length?'已探索:'+visited.slice(0,5).join(' / ')+(visited.length>5?' +'+visited.length-5+'...':''):'尚未探索任何建筑 · 按 E 进入任何建筑自动记录'}</div>
+    <div class="at-prog">${visitedPct}% · 探索度进度</div>
+    <div class="at-bar"><div style="width:${visitedPct}%"></div></div>
+  </div>`;
+  grid.innerHTML=`
+    <div style="margin-bottom:12px"><b style="color:var(--gold)">🍺 配方掌握 (3 类)</b><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">${brewCards}</div></div>
+    <div style="margin-bottom:12px"><b style="color:var(--gold)">🍄 蘑菇菌株笔记 (3 株)</b><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">${strainCards}</div></div>
+    <div style="margin-bottom:12px"><b style="color:var(--gold)">🍻 酒吧常客</b><div style="margin-top:6px">${regsText}</div></div>
+    <div style="margin-bottom:12px"><b style="color:var(--gold)">🔬 学术研究主题 (3 类)</b><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">${topicsCards}</div></div>
+    <div style="margin-bottom:12px"><b style="color:var(--gold)">🏄 浪点发现 (7 个)</b><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">${surfCards}</div></div>
+    <div style="margin-bottom:12px"><b style="color:var(--gold)">📍 足迹</b><div style="margin-top:6px">${visitedCard}</div></div>
+  `;
+}
 // Phase E6 — Body Trade: mood → meta exchange (Inscryption body-parts 致敬)
 function bodyOpen(){return !document.getElementById('body-modal').classList.contains('hidden')}
 function openBodyTrade(){
@@ -1826,6 +1922,8 @@ function finBrew(timeout){const s=MG.brew;if(!s||s.ph==='done')return;s.ph='done
   const base=Math.round((35+(10+o.temp/10)*tipFactor())*tempAcc*s.yeast),inc=Math.round(base*1.3*industryFactor('brewing')*(o.bonus||1)*streakMul*phaseMult*(1+0.08*(G.shop.crazyBrewOrders||0)));
   const quality=tempAcc>=0.95?'★完美':tempAcc>=0.8?'好':'一般';
   G.money+=inc;G.ind.brewing.xp+=Math.round(inc*(hasUpgrade('legacy_xp')?1.25:1));G.shop.order=null;
+  // funify-v3 Round 30: track per-type mastery in cross-run ledger (knowledge book)
+  const bt=o.type;if(!G.brewNotes[bt])G.brewNotes[bt]={count:0,best:0};G.brewNotes[bt].count++;const phaseBonus=phaseHits>=3?1:phaseHits>=2?0.7:0.4;const stars=Math.round((tempAcc*0.6+phaseBonus*0.4)*3);if(stars>G.brewNotes[bt].best)G.brewNotes[bt].best=stars;saveLedger();
   // Phase E2 — faction rep drift (brew 利好 Heineken,挤压 Coffee Cartel)
   bumpFaction('heineken',2,'酿酒出单');bumpFaction('coffee',-1,'酿酒冲咖啡');
   // Phase A B1: brew → bar inventory (capped 12/day, overflow sells $5)
@@ -2086,7 +2184,7 @@ function shroomIn(k){const s=MG.shroom;if(!s)return;if(k==='arrowup')s.hu=Math.m
     if(!s.floatTexts)s.floatTexts=[];
     s.floatTexts.push({text:'+'+Math.round(20+acc*15)+'%',x:380,y:380,born:Date.now(),col:acc>0.7?'#78ffa0':acc>0.4?'#e8d878':'#f0a878'});
     // Learn the strain on first successful grow (>=2 stars)
-    if(!G.strainNotes[st.n]&&s.tn>=s.mx){G.strainNotes[st.n]={h:st.h,t:st.t,l:st.l};addEvt('info',`📓 笔记记录菌株 ${st.n}: 湿${st.h}% · 温${st.t}°C · 光${st.l}h`)}
+    if(!G.strainNotes[st.n]&&s.tn>=s.mx){G.strainNotes[st.n]={h:st.h,t:st.t,l:st.l};addEvt('info',`📓 笔记记录菌株 ${st.n}: 湿${st.h}% · 温${st.t}°C · 光${st.l}h`);saveLedger()}
     if(s.tn>=s.mx||s.gr>=100){
       const q=Math.round(Math.min(100,s.gr)/20);
       const bonus=q*12+5;G.money+=bonus;G.ind.smart_shop.xp+=bonus*2;
@@ -2096,7 +2194,7 @@ function shroomIn(k){const s=MG.shroom;if(!s)return;if(k==='arrowup')s.hu=Math.m
       if(!G.researchTopics)G.researchTopics=[];
       const candidates=['psilocybin','mycelium','microdosing'];
       if(q>=4){const fresh=candidates.filter(t=>!G.researchTopics.includes(t));const pick=fresh[Math.floor(seeded(160+G.day)*fresh.length)];if(pick){G.researchTopics.push(pick);addEvt('good',`🔬 解锁学术主题 ${pick} (投稿 +20 分协同)`)}}
-      if(q>=5){for(const t of candidates)if(!G.researchTopics.includes(t))G.researchTopics.push(t);addEvt('good',`🔬 学术主题全解锁 — psilocybin/mycelium/microdosing`)}
+      if(q>=5){for(const t of candidates)if(!G.researchTopics.includes(t))G.researchTopics.push(t);addEvt('good',`🔬 学术主题全解锁 — psilocybin/mycelium/microdosing`);saveLedger()}
       addEvt('good',`🍄 收获 +$${bonus} · ${'★'.repeat(q)}品质`);addSch('🍄',`蘑菇 +$${bonus}`);
       G.mg=null;G.inside=null;chkLv('smart_shop');setStatus('✅ 蘑菇收获',`${'★'.repeat(q)}品质 +$${bonus}`,'');
       tickObj('Earn',Math.max(1,Math.floor(bonus/10)));tickObj('Explore',1);AUDIO.play('shroom_pick');
@@ -2254,7 +2352,7 @@ function pickWavePoint(n){const w=WAVE_POINTS[n-1];if(!w)return;G.todayWave=w;
   G.mg='surf';G._mgEnterAt=Date.now();dropIng('shell');MG.surf={wave:w,wx:400,sc:0,at:0,stamina:Math.max(20,100+(G.shop.crazySurfStam||0)),combo:0,perfect:0,perfectStreak:0,started:Date.now(),
     lastCatch:0,drowned:false,ended:false,setPhase:true,nextLull:Date.now()+3500,wipeouts:0,
     boardWorn,windowWidth:boardWorn?0.075:0.1,staminaDrainMult:boardWorn?0.5:1};
-  if(!G.surfDiscovered.includes(w.id)){G.surfDiscovered.push(w.id);G.meta+=5;addEvt('good',`🗺️ 首次发现 ${w.n} +5★ meta`)}
+  if(!G.surfDiscovered.includes(w.id)){G.surfDiscovered.push(w.id);G.meta+=5;addEvt('good',`🗺️ 首次发现 ${w.n} +5★ meta`);saveLedger()}
   setStatus('🏄 '+w.n,`难度${w.diff} · 特殊:${w.special} · 板磨损 ${G.surfBoardLife}/15${boardWorn?' ⚠需修':''}`,'SPACE抓浪 · R 修板$20 · N 换新$50 · 绿区=perfect · 错过=翻船');renderAll()}
 function rollSurfItem(wave){let item=wave.item;if(seeded(140+G.inventory.length)<.3){const upgrades={'海龟':'古地图','钓鱼人':'鱼钩','隐藏洞穴':'宝石','雷暴':'闪电石','灯塔回声':'回声瓶','海鸥群':'羽毛'};item=upgrades[wave.special]||'稀有遗物'}return item}
 function surfIn(k){const s=MG.surf;if(!s||s.ended)return;
@@ -2520,7 +2618,7 @@ function barIn(k){const s=MG.bar;if(!s)return;const cur=s.cs[s.cs.length-1];if(!
     s.earn+=final2;s.combo++;s.sd++;
     const vipBonus=cur.arch.n==='VIP'&&s.vipDay?30:0;
     if(vipBonus){G.meta+=30;addEvt('good','🎩 VIP 顾客服务成功 +30★ meta')}
-    if(!G.barRegulars.includes(cur.arch.n))G.barRegulars.push(cur.arch.n);
+    if(!G.barRegulars.includes(cur.arch.n)){G.barRegulars.push(cur.arch.n);saveLedger()}
     const tag=drinkMatch?' ✨命中推荐':cur.wantReco?' (拒绝想要的酒)':'';
     const reg=regularBonus?' 👤常客+20%':'';
     addEvt('good',`🍻 ${cur.face}${cur.arch.n} 成交 +$${final2}${tag}${reg}${stockTag}${relLv>=2?' 💛L'+Math.floor(relLv):''}`);setMsg(`✅ ${cur.arch.n} +$${final2}${tag}${stockTag}`);AUDIO.play('bar_sale');
@@ -3856,6 +3954,8 @@ document.addEventListener('keydown',e=>{
   if(craftOpen()){const tk=e.key.toLowerCase();if(tk==='c'||tk==='escape'){e.preventDefault();closeCraft()}else if(tk==='g'){e.preventDefault();craftTab('gift')}return}
   // Phase E6 — Body Trade panel swallows keys while open
   if(bodyOpen()){const tk=e.key.toLowerCase();if(tk==='b'||tk==='escape'){e.preventDefault();closeBodyTrade()}return}
+  // funify-v3 Round 30 — Knowledge Book (K key) swallows keys while open
+  if(ledgerOpen()){const tk=e.key.toLowerCase();if(tk==='k'||tk==='escape'){e.preventDefault();closeLedger()}return}
   if(modalOpen()){if(e.key==='Enter'&&document.activeElement&&document.activeElement.id==='start-seed'){e.preventDefault();startFromModal();return}if(e.key==='Escape'||e.key==='Enter'){const hm=document.getElementById('mg-hint-modal');if(hm&&!hm.classList.contains('hidden')){closeMgHint();return}const hp=document.getElementById('help-modal');if(hp&&!hp.classList.contains('hidden')&&e.key==='Escape'){closeHelp();return}}if(e.key.toLowerCase()==='m'){AUDIO.toggleMute();return}return}
   // funify-v3 Round 6 — M key toggles audio mute (works even when ended/modal)
   if(e.key==='M'||e.key==='m'){AUDIO.toggleMute();setMsg(AUDIO.muted?'🔇 音频已静音':'🔊 音频开启');return}
@@ -3882,6 +3982,7 @@ document.addEventListener('keydown',e=>{
   if(k==='t'){toggleTalents();return}
   if(k==='f'){toggleFactions();return}
   if(k==='j'){toggleAchtree();return}
+  if(k==='k'){toggleLedger();return}
   // Phase E6 — Body Trade (B 键,心情换 meta)
   if(k==='b'){openBodyTrade();return}
   if(k==='c'){showCraft('craft');return}
@@ -3921,6 +4022,9 @@ function newRunInner(){
   G.coffeeEarnedToday=0;G.barStock={ipa:0,stout:0,lager:0};
   // funify-v3 Round 3: brew streak counter — resets on each new run, persists for the whole run
   G.shop.streak=0;G.shop.streakBest=0;
+  // funify-v3 Round 30: cross-run ledger (brewNotes loaded from ab_ledger_v1, see loadLedger)
+  if(!G.brewNotes||typeof G.brewNotes!=='object')G.brewNotes={IPA:{count:0,best:0},Stout:{count:0,best:0},Lager:{count:0,best:0}};
+  loadLedger();
   // Phase E1/E3 — per-run talent build + daily mutator slot
   G.talents=[];G.mutator=null;
   // Phase E2 — per-run faction rep (seeded [-15, +15] 起始,3 派系)
@@ -3976,6 +4080,7 @@ window.AB_TEST={
   industryFactor,tipFactor,bldgPhaseOk,tryUnlock,saveAch,loadAch,AUDIO,resetRunCounters,
   barTipPreview,barPatienceLeft,barDayDifficulty,coffeeHeatZone,coffeeFitHint,shroomQuality,brewStreakMul,brewNoteProgress,surfPerfectStreakMul,surfBreakerTelegraph,acadPartialCredit,acadRebuttalCost,acadRebuttalBoost,acadWriteMs,acadSubmitCooldownMs,VENUE_DEF,phaseNarr,showPhaseFlash,PHASE_NARR,confettiBurst,confettiClear,confettiUpdate,confettiDraw,CONFETTI_PALETTE,isLegendary,legendarySpeedMs,legendaryCost,legendaryMetaCap,rollUpgradeChoices,NPC_DIALOGUES,pickNpcDialog,NPC_TEACH_FLAVOR,NPC_BUILDING_FLAVOR,MG_HINT_KEYS,showMgHint,closeMgHint,mgHintSeen,getHoverBldg,speedMs,cycleSpeed,saveSpeed,loadSpeed,cancelAuto,renderAutoBtn,AUTO_CANCEL_GRACE_MS,showHelp,closeHelp,lvMaxBoost,
   buildRunSummary,buildRunEpitaph,pushRunHistory,loadRunHistory,renderRunHistory,doBodyTrade,openBodyTrade,closeBodyTrade,bodyOpen,moodFloor,startBrew,startSurf,sBarC,endGame,MG,
+  ledgerOpen,showLedger,closeLedger,toggleLedger,renderLedger,saveLedger,loadLedger,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

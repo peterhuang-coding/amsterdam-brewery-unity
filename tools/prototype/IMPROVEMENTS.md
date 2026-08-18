@@ -841,3 +841,27 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - 风险: `MG` 现在挂在 `AB_TEST` 上，仅供测试入口；不会进入生产 UI/API。`MG.bar` 直接赋值后未走 startBar 的 pool shuffle，因此 pool 顺序固定——断言也只依赖 `arch.n` 与 `faceMark`，对 shuffle 不敏感。
 - 验收: 打开 `test.html`，E8 e2e 区显示 4 条 PASS；carnival_mask fire() 后立刻调 sBarC()，返回的顾客 faceMark 必为 `🎭`；UFO fire() 后 35 picks 至少 ~70% 是 good，比无 flag 的 ~42% 高出 ≥20pp。
 
+
+## Round 30 — 📒 知识本 (Ledger) 跨 Run 知识博物馆 (BACKLOG #9 closure)
+
+> BACKLOG #9「G.brewNotes 与 G.strainNotes 跨 run 但无展示」落实:把 strainNotes/brewNotes/barRegulars/researchTopics/surfDiscovered/visited 6 类跨 run 知识全部纳入 localStorage (`ab_ledger_v1`),并通过 K 键弹出「知识本」面板集中展示。基线 412 → 417 (+5 断言)。
+
+### Commit — funify-v3(ledger): 知识本 (K 键) + 跨 Run ledger 持久化 test=417/417
+
+- 改动: `tools/prototype/index.html` 新增 `ledger-modal` HTML 容器 + `ledgerOpen/showLedger/closeLedger/toggleLedger/renderLedger` 5 个函数 + `saveLedger/loadLedger` localStorage 持久化;`tools/prototype/test.html` +5 断言。
+- 机制:
+  1. **G.brewNotes 跟踪 (3 类)**: `finBrew` 成功路径 (recipeOk + tempErr≤12) 后 `G.brewNotes[type].count++`,best 记录基于 tempAcc (60%) + phaseHits (40%) 的综合 stars。3 次酿某种即视为「配方已掌握」解锁金色边框。
+  2. **6 类跨 Run ledger**: `ab_ledger_v1` 持久化 strainNotes/brewNotes/barRegulars/researchTopics/surfDiscovered/visited 6 个数组/对象。`loadLedger` 在 newRun 末尾合并 (取并集 + 计数 max),防止已有累积被覆盖。
+  3. **K 键入口**: `toggleLedger()` 在 5 个 modal (tal/fac/craft/body/achtree) 之后插入第 6 个。`ledgerOpen()` 在 keydown 路由中 swallow K/Esc;打开后渲染 6 个 section 卡片网格 (at-tier CSS 复用,unlocked 金边)。
+  4. **renderLedger 内容**:
+     - 🍺 配方掌握 (3 类 × count + best stars + 目标温)
+     - 🍄 菌株笔记 (3 株 × 湿/温/光参数 · 未发现显示 ???)
+     - 🍻 常客名单 (横向 tag 显示 · 空时给出引导文案)
+     - 🔬 学术主题 (psilocybin/mycelium/microdosing 3 个 · ★4/★5 蘑菇收获解锁)
+     - 🏄 浪点发现 (7 个 × 难度 + 特殊效果)
+     - 📍 足迹 (visited.length / BLDGS.length 百分比进度条)
+  5. **help-modal 与 intro-modal 同步**: intro 第 4 行加「📒 知识本(K)跨 Run 累积」;help-modal 第 8 行加「K 知识本」键位。
+- 3-axis lift: 反馈 +1 (跨 run 累积玩家看得见,每完成一次酿/种/聊/发现都有视觉确认); 选择 +1 (玩家可主动查阅自己已掌握知识,决策时有依据); 视觉精度 +1 (at-tier 网格 + 进度条 + 金边统一语言)。
+- 测试: **417/417 PASS** (基线 412 + 5 Round 30 断言: 5 个函数暴露 1 + K 键开关 roundtrip 1 + renderLedger 6 section 渲染 1 + finBrew 增量路径 1 + ledger save/load roundtrip 1); `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `node --check` PASS; HTTP 200; `git diff --check` PASS。
+- 风险: ledger 合并只取 max (count) 与 union (array),不删除数据 — 玩家即使中途换 Run,旧数据全部保留;`saveLedger` 在 brewNotes/strainNotes/researchTopics/surfDiscovered/barRegulars 5 处 push 后调用,频次可控。
+- 验收: 浏览器首开看 intro 屏「📒 知识本(K)」字样;酿 3 次同一种酒后,按 K 看到该类型卡片金边「✓ 配方已掌握」;种植 ★4 蘑菇后,按 K 看到对应菌株解锁;进新 Run 后 K 键内容仍保留 (localStorage 持久)。

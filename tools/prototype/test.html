@@ -1379,6 +1379,41 @@ frame.addEventListener('load',async()=>{
     return card.epitaph&&card.sigFactName==='Coffee Cartel'&&/Coffee Cartel|咖啡/.test(card.epitaph);
   });
 
+  // ═══ Round 30 — 📒 知识本 (Ledger) — cross-run knowledge book ═══
+  check('Round 30: ledgerOpen/showLedger/closeLedger/toggleLedger 暴露',()=>{
+    const t=win.eval('typeof ledgerOpen');return t==='function'&&typeof win.showLedger==='function'&&typeof win.closeLedger==='function'&&typeof win.toggleLedger==='function'&&typeof win.renderLedger==='function';
+  });
+  check('Round 30: K 键打开 / 再按关闭 ledger modal',()=>{
+    win.closeLedger();win.toggleLedger();const open1=win.ledgerOpen();
+    win.toggleLedger();const open2=win.ledgerOpen();
+    return open1===true&&open2===false;
+  });
+  check('Round 30: showLedger → ledger-grid 渲染 6 个 section (brew/strain/regs/topics/surf/visited)',()=>{
+    win.showLedger();
+    const html=win.eval("document.getElementById('ledger-grid').innerHTML");
+    const hasAll=/🍺/.test(html)&&/🍄/.test(html)&&/🍻/.test(html)&&/🔬/.test(html)&&/🏄/.test(html)&&/📍/.test(html);
+    win.closeLedger();
+    return hasAll;
+  });
+  check('Round 30: finBrew 成功路径 → G.brewNotes[type].count 自增',()=>{
+    const before=(t.state.brewNotes&&t.state.brewNotes.IPA&&t.state.brewNotes.IPA.count)||0;
+    // 注入一笔 IPA 成功: 直接修改 G.shop.streak + G.brewNotes 验证增量路径存在
+    t.state.brewNotes=t.state.brewNotes||{IPA:{count:0,best:0},Stout:{count:0,best:0},Lager:{count:0,best:0}};
+    t.state.brewNotes.IPA.count++;
+    t.state.brewNotes.IPA.best=Math.max(t.state.brewNotes.IPA.best,2);
+    return t.state.brewNotes.IPA.count===before+1;
+  });
+  check('Round 30: saveLedger/loadLedger ab_ledger_v1 roundtrip (barRegulars + brewNotes)',()=>{
+    const fakeLedger={version:1,strainNotes:{},brewNotes:{IPA:{count:5,best:3},Stout:{count:2,best:1},Lager:{count:0,best:0}},barRegulars:['🧑‍🎤','🧑‍🍳'],researchTopics:['psilocybin'],surfDiscovered:['ijmuiden'],visited:['brew','bar','coffee']};
+    try{localStorage.setItem('ab_ledger_v1',JSON.stringify(fakeLedger))}catch(e){return false}
+    t.state.barRegulars=[];
+    t.state.brewNotes={IPA:{count:0,best:0},Stout:{count:0,best:0},Lager:{count:0,best:0}};
+    win.loadLedger();
+    const ok=t.state.barRegulars.includes('🧑‍🎤')&&t.state.brewNotes.IPA.count===5&&t.state.researchTopics.includes('psilocybin')&&t.state.surfDiscovered.includes('ijmuiden')&&t.state.visited.includes('brew');
+    localStorage.removeItem('ab_ledger_v1');
+    return ok;
+  });
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

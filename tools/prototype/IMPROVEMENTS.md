@@ -786,3 +786,19 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - 验证: `test-phase-e.js` **168/168 PASS**;`index.html` 与 `test.html` 内联脚本 `node --check` PASS;headless Chrome 定向实测 `{talent:1.25,mutator:1.6,faction:1.5,craft:1.25,npc:1.5,stack:5.625}`
 - 风险: 完整 `test.html` headless 基线仍有 pre-existing auto-run 失败及其级联（本轮观测 369/400）;本轮只新增隔离断言,不改游戏行为
 - 验收: 打开 `test.html`,Phase E acceptance 区 6 条均显示 PASS;任意删掉 `industryFactor` 的 E1/E2/E3/E4 接线都会触发对应失败
+
+## Round 27 — Test gate 恢复 400/400 (auto-run + win.G + state-pollution 修复)
+
+- commit: `funify-e1-e4(test-gate): 400/400 headless PASS — auto-run + win.G + state-pollution fixes`
+- 改动: `tools/prototype/test.html` +91/-79;`tools/prototype/index.html` +1/-1(checkAchTier toast typo)
+- 修复:
+  1. **auto-run headless stall**: 1×1px 隐藏 iframe 内 `setTimeout` 被节流到 ~1Hz,200-2000ms 的 autoStep 永远跑不完 7 天 → 把 polling loop 换成紧凑的 `autoStep()` 同步调用,绕过定时器节流
+  2. **`win.G` 永远是 undefined**: `G` 是 `const` 顶层声明,不在 `window` 上;`t.state`(= `AB_TEST.state`)才是规范访问器。把所有 `win.G.x` 改 `t.state.x`
+  3. **state pollution 渗透**: `legendary_income` / `industryFactor lv=2` 等边界测试只 save/restore `upgrades`+`mods`,auto-run 跑过后 `talents`/`mutator`/`factions`/`crafted`/`npcFr` 残留乘区 → 改用 `withPhaseEIndustryState` 统一隔离
+  4. **TDZ**: `withPhaseEIndustryState` 在 line ~1180 定义,但 line ~390 已使用 → 提升到 load handler 顶
+  5. **checkAchTier toast typo**: `t.t.toUpperCase()` (DOM 元素) → `tier.t.toUpperCase()`;addEvt 那行是对的
+  6. **陈旧 source audit 正则**: `legendary_no_raid` 旧假设 `noRaid` 局部变量短路;`finCoffee` confettiBurst 旧假设 `n:8` 字面值 → 全部改成匹配当前 `hasUpgrade('legendary_no_raid')` 内联 + `s.streakCorrect>=5?14:8` 动态 n
+  7. **E9 rogue/scholar gold 假设错**: 注释写「3 tiers unlock in one go」但只设了 gold 的条件(escUsed/visited),bronze/silver 的前置条件(escUsed≥3/academicDone≥4)没满足 → 补齐 `escUsed=10` / `academicDone=10`
+- 验证: headless Chrome `test.html` **400/400 PASS** (368 → 378 → 385 → 391 → 398 → 400);`test-phase-e.js` **168/168 PASS**;`node --check` 内联 PASS;index/test HTML HTTP 200
+- 风险: auto-run 紧致调用只在 test.html 内,production demo 行为不变;`withPhaseEIndustryState` 使用 `Object.assign` 做 shallow restore,未来若注入非 primitive 字段需切深拷贝
+- 验收: `node --check` PASS;headless Chrome 完整 400/400;跑任意 test 修改/删除 `industryFactor` 的 E1/E2/E3/E4 接线,对应断言立刻 fail

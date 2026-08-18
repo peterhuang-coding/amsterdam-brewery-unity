@@ -5231,6 +5231,12 @@ const BAR_FOAM_COLORS={
 };
 function barDrinkColor(id){return BAR_DRINK_COLORS[id]||'#c89040'}
 function barFoamColor(id){return BAR_FOAM_COLORS[id]||'#f0e0a0'}
+// funify-v3 Round 12 (Phase D5) — brewery bottle palette + yeast mutation hook (canvas red glow)
+const BREW_BOTTLE_COLORS={IPA:'#e0a020',Stout:'#3a1a0a',Lager:'#f0d870',Pilsner:'#f0c850',Sour:'#d0d850',BelgianTripel:'#c89030'};
+function brewBottleColor(id){return BREW_BOTTLE_COLORS[id]||'#c89040'}
+// yeast mutation rare-event flag — read by drawMG to render red glow over yeast jars
+function brewYeastMutationFlag(s){return !!(s&&s._yeastMutation)}
+function brewSetYeastMutation(s,on){if(s)s._yeastMutation=!!on}
 // Pour progress 0..1 — measures how full the glass is (drinks faster when SPACE pressed; capped at 0.95)
 function barPourProgress(s){
   if(!s)return 0;
@@ -5268,6 +5274,37 @@ function drawMG(){
     cx.fillStyle='#f0e0a0';cx.font='bold 11px sans-serif';cx.textAlign='center';
     cx.fillText('🍺 Brouwerij De Pijl',615,72);
     cx.fillStyle='#7a4a25';cx.fillRect(540,85,150,2);
+    // funify-v3 Round 12 (Phase D5) — 6 beer bottle selection strip (top shelf) + 3 wood barrel rack (left wall)
+    // (1) 6 beer bottle strip — current order type highlighted with gold ring + ⭐
+    var _b6=BEER_CATALOG,_bx0=110,_bStep=92;
+    for(var _bi=0;_bi<_b6.length;_bi++){var _bId=_b6[_bi].id,_bCol=brewBottleColor(_bId),_bOn=s.order&&s.order.type===_bId;
+      var _bx=_bx0+_bi*_bStep,_by=88;
+      cx.fillStyle='#2a1505';cx.fillRect(_bx-2,_by-1,54,21);  // shelf shadow
+      // bottle body
+      cx.fillStyle='#3a2010';cx.fillRect(_bx+18,_by+3,12,16);  // neck
+      cx.fillStyle='#4a2810';cx.fillRect(_bx+16,_by+6,16,2);  // shoulder
+      cx.fillStyle='#5a3010';cx.fillRect(_bx+14,_by+8,20,11);  // body
+      cx.fillStyle=_bCol;cx.fillRect(_bx+16,_by+10,16,7);  // liquid fill
+      cx.fillStyle='#ffffff30';cx.fillRect(_bx+16,_by+10,2,7);  // shine
+      cx.fillStyle='#7a4a25';cx.fillRect(_bx+14,_by+18,20,1);  // base
+      // label
+      cx.fillStyle='#f0e8a0';cx.fillRect(_bx+14,_by+12,20,4);
+      cx.fillStyle='#222';cx.font='bold 5px sans-serif';cx.textAlign='center';cx.fillText(_b6[_bi].n,_bx+24,_by+15.5);
+      // current target ring
+      if(_bOn){cx.strokeStyle='#e8a020';cx.lineWidth=1.5;cx.strokeRect(_bx+12,_by-1,24,21);cx.fillStyle='#e8a020';cx.font='bold 9px sans-serif';cx.fillText('★',_bx+38,_by+8)}
+    }
+    // (2) 3 wood barrel rack — stacked horizontal barrels on left wall (陈化 aging decor)
+    for(var _wb=0;_wb<3;_wb++){var _wy=110+_wb*30,_wx=86;
+      cx.fillStyle='#0006';cx.beginPath();cx.ellipse(_wx+22,_wy+19,22,3,0,0,Math.PI*2);cx.fill();  // shadow
+      cx.fillStyle='#5a3010';cx.fillRect(_wx,_wy,44,18);  // barrel body
+      cx.fillStyle='#7a4a25';cx.fillRect(_wx,_wy+2,44,1);cx.fillRect(_wx,_wy+8,44,1);cx.fillRect(_wx,_wy+14,44,1);  // wood staves
+      cx.fillStyle='#a0a0a0';cx.fillRect(_wx-1,_wy+3,2,12);cx.fillRect(_wx+43,_wy+3,2,12);  // metal bands
+      cx.fillStyle='#888';cx.fillRect(_wx-1,_wy+3,2,1);cx.fillRect(_wx+43,_wy+3,2,1);
+      cx.fillStyle='#3a2010';cx.beginPath();cx.ellipse(_wx,_wy+9,2,9,0,0,Math.PI*2);cx.fill();  // left cap
+      cx.fillStyle='#3a2010';cx.beginPath();cx.ellipse(_wx+44,_wy+9,2,9,0,0,Math.PI*2);cx.fill();  // right cap
+      // beer color peek through bunghole
+      cx.fillStyle=brewBottleColor(s.order?s.order.type:'IPA');cx.beginPath();cx.arc(_wx+22,_wy+9,2,0,Math.PI*2);cx.fill();
+    }
     // 3 copper fermentation tanks (background row)
     for(var ft=0;ft<3;ft++){var fx=120+ft*170;
       // shadow
@@ -5341,6 +5378,18 @@ function drawMG(){
       var tqW=tq/9*260;cx.fillStyle=_brewQCol;cx.fillRect(380,425,tqW,18);
       cx.fillStyle=_brewQCol;cx.fillRect(380+tqW-2,423,4,22);
       cx.fillStyle=_brewQCol;cx.font='bold 10px sans-serif';cx.textAlign='left';cx.fillText('配方品质: '+'★'.repeat(tq)+' '+_brewQLabel,386,438);
+      // funify-v3 Round 12 (Phase D5) — yeast mutation rare-event red glow over yeast jar row
+      if(brewYeastMutationFlag(s)){var _mutPulse=0.5+0.5*Math.sin(Date.now()/180);var _mutAlpha=0.35+0.4*_mutPulse;
+        // glow over the active yeast jar (group index 2 at x=580, item index = s.y)
+        var _mutY=160+s.y*38;cx.save();cx.globalAlpha=_mutAlpha;
+        cx.fillStyle='#ff2030';cx.beginPath();cx.arc(580+50,_mutY,28,0,Math.PI*2);cx.fill();
+        cx.restore();
+        // warning banner
+        cx.fillStyle='#ff2030';cx.font='bold 11px sans-serif';cx.textAlign='center';
+        cx.fillText('⚠ 酵母变异 — '+Math.round(_mutAlpha*100)+'%',400,418);
+        // pulse halo over yeast group label
+        cx.strokeStyle='#ff5050';cx.lineWidth=2;cx.strokeRect(580-6,318,116,8);
+      }
     } else {
       // === Brewing phase: copper kettle + thermometer + ingredient drops ===
       cx.fillStyle='#fff';cx.font='bold 13px sans-serif';cx.textAlign='center';
@@ -5408,6 +5457,69 @@ function drawMG(){
       cx.fillStyle='#1a1a1a';cx.fillRect(182,462,436,18);
       cx.fillStyle='#e84830';cx.fillRect(180,460,440*(s.t/80),22);
       cx.fillStyle='#fff';cx.font='bold 10px sans-serif';cx.textAlign='center';cx.fillText('↑↓ 调温 · 当前 '+Math.round(s.t)+'°C',400,475);
+      // funify-v3 Round 12 (Phase D5) — digital thermometer readout + needle swing (right of kettle)
+      var _dgtX=520,_dgtY=340;
+      cx.fillStyle='#1a1820';cx.fillRect(_dgtX,_dgtY,72,42);  // panel
+      cx.fillStyle='#000';cx.fillRect(_dgtX+2,_dgtY+2,68,38);
+      cx.fillStyle='#0f3020';cx.fillRect(_dgtX+3,_dgtY+3,66,36);  // LCD bg
+      cx.fillStyle='#80f8a0';cx.font='bold 22px monospace';cx.textAlign='center';
+      cx.fillText(Math.round(s.t)+'°',_dgtX+36,_dgtY+24);
+      cx.fillStyle='#80f8a050';cx.font='bold 7px monospace';cx.fillText('°C',_dgtX+60,_dgtY+14);
+      // needle swing arc (small dial)
+      var _dialX=_dgtX+36,_dialY=_dgtY+54,_dialR=14;
+      cx.fillStyle='#1a1820';cx.beginPath();cx.arc(_dialX,_dialY,_dialR,0,Math.PI*2);cx.fill();
+      cx.strokeStyle='#888';cx.lineWidth=1;cx.beginPath();cx.arc(_dialX,_dialY,_dialR-1,Math.PI*0.75,Math.PI*0.25);cx.stroke();
+      var _needleAng=Math.PI*0.75+((s.t-20)/70)*Math.PI*1.5;
+      cx.strokeStyle='#e84830';cx.lineWidth=2;cx.beginPath();cx.moveTo(_dialX,_dialY);cx.lineTo(_dialX+Math.cos(_needleAng)*(_dialR-3),_dialY+Math.sin(_needleAng)*(_dialR-3));cx.stroke();
+      cx.fillStyle='#888';cx.beginPath();cx.arc(_dialX,_dialY,1.5,0,Math.PI*2);cx.fill();
+      cx.fillStyle='#aaa';cx.font='6px sans-serif';cx.textAlign='center';cx.fillText('20',_dialX-_dialR-1,_dialY+2);cx.fillText('90',_dialX+_dialR+5,_dialY+2);
+      // (2) 4 yeast glass jars — right column (current active highlighted)
+      var _yNames=YEAST_CATALOG;
+      for(var _yi=0;_yi<_yNames.length;_yi++){var _yAct=_yi===s.y,_yJ=_yi*32,_yX=610,_yY=160+_yJ;
+        // shadow
+        cx.fillStyle='#0006';cx.beginPath();cx.ellipse(_yX+18,_yY+28,16,2,0,0,Math.PI*2);cx.fill();
+        // jar body (amber glass)
+        cx.fillStyle=_yAct?'#7a5020':'#3a2810';cx.fillRect(_yX+5,_yY+4,26,22);
+        cx.fillStyle=_yAct?'#a07030':'#5a3818';cx.fillRect(_yX+6,_yY+5,24,20);
+        // yeast culture color (each strain has its own)
+        var _yCol=_yi===0?'#f0e8a0':_yi===1?'#e8c870':_yi===2?'#d0a050':'#80c080';
+        cx.fillStyle=_yCol;cx.fillRect(_yX+8,_yY+10,20,12);
+        cx.fillStyle='#ffffff30';cx.fillRect(_yX+8,_yY+10,3,12);  // glass shine
+        // metal lid
+        cx.fillStyle=_yAct?'#a0a0a0':'#777';cx.fillRect(_yX+4,_yY+1,28,4);
+        cx.fillStyle='#bbb';cx.fillRect(_yX+4,_yY+1,28,1);
+        // active ring + check
+        if(_yAct){cx.strokeStyle='#e8a020';cx.lineWidth=1.5;cx.strokeRect(_yX+3,_yY,30,28);cx.fillStyle='#e8a020';cx.font='bold 9px sans-serif';cx.textAlign='left';cx.fillText('✓',_yX+34,_yY+10)}
+        // tiny label
+        cx.fillStyle=_yAct?'#fff':'#ccc';cx.font='6px sans-serif';cx.textAlign='left';cx.fillText(_yNames[_yi].ic+' '+_yNames[_yi].n,_yX,_yY+34);
+      }
+      // (3) 3-stage progress ring — mash/boil/ferment arcs, current stage pulses
+      var _ringCX=680,_ringCY=440,_ringR=28;
+      // outer bezel
+      cx.fillStyle='#1a1820';cx.beginPath();cx.arc(_ringCX,_ringCY,_ringR+2,0,Math.PI*2);cx.fill();
+      cx.fillStyle='#0a0a0a';cx.beginPath();cx.arc(_ringCX,_ringCY,_ringR,0,Math.PI*2);cx.fill();
+      // 3 arcs (each 120deg), starting from top
+      var _phasesLab=['🌾 Mash','🔥 Boil','🧫 Ferm'],_phasesCol=['#e0d090','#e8a020','#80c080'];
+      for(var _pi=0;_pi<3;_pi++){var _a0=-Math.PI/2+_pi*(Math.PI*2/3),_a1=_a0+Math.PI*2/3-0.08;
+        var _hit=s.phases&&s.phases[_pi]&&s.phases[_pi].hit;
+        var _cur=s.phases&&s.phaseIdx===_pi;
+        var _col=_hit?_phasesCol[_pi]:'#333';
+        cx.strokeStyle=_col;cx.lineWidth=_cur?5:3;
+        cx.beginPath();cx.arc(_ringCX,_ringCY,_ringR-5,_a0,_a1);cx.stroke();
+        // pulse glow on current
+        if(_cur){var _pulse=0.5+0.5*Math.sin(Date.now()/220);cx.strokeStyle='rgba(232,160,32,'+(0.4+0.4*_pulse)+')';cx.lineWidth=2;cx.beginPath();cx.arc(_ringCX,_ringCY,_ringR-9,_a0,_a1);cx.stroke()}
+      }
+      // center label
+      var _curLabel=s.phases?_phasesLab[Math.min(s.phaseIdx||0,2)]:'🌾 Mash';
+      cx.fillStyle='#fff';cx.font='bold 9px sans-serif';cx.textAlign='center';cx.fillText(_curLabel,_ringCX,_ringCY+3);
+      // small hint below
+      cx.fillStyle='#888';cx.font='7px sans-serif';cx.fillText('3 段节奏',_ringCX,_ringCY+_ringR+8);
+      // (4) enhanced steam wisps — 6 wisps + breathing
+      var _stN=Date.now()/1000;
+      cx.fillStyle='#ffffff20';
+      for(var _sw=0;_sw<6;_sw++){var _sxp=375+_sw*10+Math.sin(_stN/1.5+_sw)*8,_syp=295-Math.abs(Math.sin(_stN*0.7+_sw*0.4))*70;cx.beginPath();cx.arc(_sxp,_syp,5+(_sw%2),0,Math.PI*2);cx.fill()}
+      cx.fillStyle='#ffffff14';
+      for(var _sw2=0;_sw2<4;_sw2++){var _sxp2=380+_sw2*15+Math.cos(_stN/1.2+_sw2)*6,_syp2=275-Math.abs(Math.sin(_stN*0.5+_sw2*0.3))*90;cx.beginPath();cx.arc(_sxp2,_syp2,7,0,Math.PI*2);cx.fill()}
     }
   }else if(mg==='coffee'){
     // === Coffeeshop interior (Round 10 D2): 砖墙 + 咖啡馆窗户 + 黑板菜单 + 窗台绿植 + 磨豆机 + 萃取机 + 3 段工艺表盘 + 蒸汽粒子 ===
@@ -7129,9 +7241,11 @@ window.AB_TEST={
   // Round 7: Phase B5 · Brewery Dave-depth (6 beers + 4 yeasts + 8 soul events + 5 upgrade tracks)
   BEER_CATALOG,BEER_BY_ID,YEAST_CATALOG,YEAST_BY_ID,BREW_SOUL_EVENTS,BREW_UPGRADES,
   brewRollSoulEvent,brewApplySoul,brewApplyUpgradeBoosts,brewPickRecipe,
+  // Round 12: Phase D5 — brewery canvas palette + yeast mutation hook
+  BREW_BOTTLE_COLORS,brewBottleColor,brewYeastMutationFlag,brewSetYeastMutation,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
-    return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length,brewBeerCount:BEER_CATALOG.length===6,brewYeastCount:YEAST_CATALOG.length===4,brewSoulCount:BREW_SOUL_EVENTS.length===8,brewUpgradeCount:BREW_UPGRADES.length===15&&unique(BREW_UPGRADES)};
+    return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length,brewBeerCount:BEER_CATALOG.length===6,brewYeastCount:YEAST_CATALOG.length===4,brewSoulCount:BREW_SOUL_EVENTS.length===8,brewUpgradeCount:BREW_UPGRADES.length===15&&unique(BREW_UPGRADES),brewBottlePalette:Object.keys(BREW_BOTTLE_COLORS).length===6&&unique(Object.keys(BREW_BOTTLE_COLORS).map(id=>({id})))};
   }
 };
 </script>

@@ -220,6 +220,23 @@ frame.addEventListener('load',async()=>{
   check('coffee index.html 源含 steam particles 蒸汽粒子',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /steam from machine|steam particles|蒸汽粒子/.test(src)});
   check('coffee index.html 源含 patience breath ring',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /patience breath|_patRing|breath ring/.test(src)});
 
+  // ═══ funify-v3 Round 12 (Phase D5) — 酿酒内景 canvas runtime tests ═══
+  check('BREW_BOTTLE_COLORS 暴露且含 6 个啤酒 id',()=>{const c=win.eval('BREW_BOTTLE_COLORS');return c&&Object.keys(c).length===6});
+  check('BREW_BOTTLE_COLORS 6 个 id 均合法 hex',()=>{const c=win.eval('BREW_BOTTLE_COLORS');const ids=['IPA','Stout','Lager','Pilsner','Sour','BelgianTripel'];return ids.every(id=>typeof c[id]==='string'&&/^#[0-9a-f]{6}$/i.test(c[id]))});
+  check('brewBottleColor 已知 id 返回合法 hex',()=>['IPA','Stout','Lager','Pilsner','Sour','BelgianTripel'].every(id=>{const c=win.eval('brewBottleColor("'+id+'")');return typeof c==='string'&&/^#[0-9a-f]{6}$/i.test(c)}));
+  check('brewBottleColor 未知 id 走 fallback c89040',()=>win.eval('brewBottleColor("bogus")')==='#c89040');
+  check('brewYeastMutationFlag(null) → false',()=>win.eval('brewYeastMutationFlag(null)')===false);
+  check('brewYeastMutationFlag({}) → false',()=>win.eval('brewYeastMutationFlag({})')===false);
+  check('brewYeastMutationFlag({_yeastMutation:true}) → true',()=>win.eval('brewYeastMutationFlag({_yeastMutation:true})')===true);
+  check('brewSetYeastMutation 切换 flag 可逆',()=>{win.eval('window.__bm={};brewSetYeastMutation(window.__bm,true)');const a=win.eval('window.__bm._yeastMutation');win.eval('brewSetYeastMutation(window.__bm,false)');const b=win.eval('window.__bm._yeastMutation');win.eval('delete window.__bm');return a===true&&b===false});
+  check('brew index.html 源含 6 beer bottle selection strip',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /6 beer bottle|_b6|BREW_BOTTLE_COLORS|beer bottle selection|6 beer/i.test(src)});
+  check('brew index.html 源含 3 wood barrel rack 陈化桶',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /wood barrel rack|3 wood barrels|_wb|wood barrel|barrel body/i.test(src)});
+  check('brew index.html 源含 3-stage progress ring mash/boil/ferment',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /3-stage progress ring|stage progress|3 段节奏|mash.*boil.*ferment|_ringCX|stage progress ring/i.test(src)});
+  check('brew index.html 源含 4 yeast glass jars 右栏',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /4 yeast glass jars|YEAST_CATALOG|yeast jar.*right|4 yeast|4 罐.*酵母/i.test(src)});
+  check('brew index.html 源含 yeast mutation red glow 变异警告红光',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /yeast mutation|酵母变异|brewYeastMutationFlag|mutation red glow/i.test(src)});
+  check('brew index.html 源含 digital thermometer readout + needle swing',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /digital thermometer|_dgtX|needle swing|temp.*digital/i.test(src)});
+  check('brew index.html 源含 enhanced steam wisps 6 缕蒸汽',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /enhanced steam|_stN|steam wisps|6 wisps|enhanced steam wisps/i.test(src)});
+
   // ═══ funify-v3 Round 1 — coffee heat zone + fit hint (BACKLOG B3) ═══
   check('coffeeHeatZone(20)==安全/绿',()=>{const z=win.eval('coffeeHeatZone(20)');return z.col==='#78c878'&&z.label==='安全'&&z.danger===0});
   check('coffeeHeatZone(50)==警戒/黄',()=>{const z=win.eval('coffeeHeatZone(50)');return z.col==='#e8a020'&&z.label==='警戒'&&z.danger===1});

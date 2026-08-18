@@ -1068,3 +1068,47 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - 触发 `🖼️ Rijksmuseum 失窃` 后,rep 从 0 变 -5,事件日志含「🖼️ 名画失踪 · 全市耻辱」bad 事件。
 - 触发 `🎅 Sinterklaas 抵港` 后,money 增加 $15,事件日志含「🎅 Sinterklaas + Pieten · 派糖 $15」good 事件。
 - 触发 `🎺 街头乐队` 后,mood 增加 +1 (cap 2)。
+
+## funify-v3 — Round 20 (2026-08-18) — 🗃️ 收藏 (I 键) BACKLOG #9 #10 closure
+
+### 目标
+为 `G.inventory[]` (冲浪每次带回物品) 增加跨 Run 持久收藏墙 + UI 模态 + 累加器,与 R15 知识本 (K 键)、R30 ledger (ab_ledger_v1) 同样模式 — 数据已存在内存,缺持久与 UI 表面。
+
+### 改了什么
+- **`G.invCollect` 累加器** (index.html, +1/-1):`{itemName: count}` 跨 Run 累计。`finSurf` push 时同时 `invCollect[item]+=1` 并 `saveMeta()`。
+- **`SURF_CATALOG` 12 项目录** (index.html, +12/-0):5 常驻 (贝壳/海星/珍珠/古硬币/古罗盘) + 7 稀有 (古地图/鱼钩/宝石/闪电石/回声瓶/羽毛/稀有遗物),与 WAVE_POINTS + rollSurfItem 完全对齐。
+- **saveMeta v3 → v4 bump** (index.html, +2/-2):写入 `invCollect`,loadMeta `version>=4` 时恢复,旧 v3 数据完全兼容。
+- **🗃️ 收藏 modal** (index.html, +62/-0):`#inv-modal` + `invOpen/showInv/closeInv/toggleInv/renderInv` 5 函数 + 总数/稀有 2 概览卡片 + 12 张 item 卡片 (locked/unlocked 状态)。
+- **I 键接线** (index.html, +3/-0):keydown `i` → `toggleInv()`,modal open 时 swallow i/Esc。
+- **help + start-modal 文档** (index.html, +2/-2):H 键帮助行追加 I 键,start-summary 追加 "🗃️ 收藏(I) 跨 Run 累积"。
+- **AB_TEST 暴露** (index.html, +1/-0):`invOpen/showInv/closeInv/toggleInv/renderInv/SURF_CATALOG` 6 项。
+- **8 条 R20 浏览器 e2e 断言** (test.html, +60/-0):catalog shape + 函数暴露 + DOM 存在 + 渲染解锁数 + 总件数 + 稀有件数 + show/hide/toggle + saveMeta v4 往返 + v3 兼容。
+
+### 8 条新断言 (3 类)
+1. **3 条 contract**:SURF_CATALOG shape (5 常驻 + 7 稀有) + 5 函数暴露 + DOM 存在 + 默认 hidden。
+2. **4 条 e2e 渲染**:`G.invCollect` 全空显示 0/12、`{古罗盘:1, 宝石:3}` 显示 4 件 + 1/7 稀有、`showInv()`/`closeInv()`/`toggleInv()` 真实操作 inv-modal classList。
+3. **1 条数据对齐**:12 个 SURF_CATALOG.id 与 `WAVE_POINTS.item` + `rollSurfItem` upgrades 完全覆盖。
+4. **2 条持久化往返**:saveMeta v4 写入 → loadMeta v4 复原 (古罗盘/宝石/羽毛);v3 旧数据 loadMeta 不污染 (meta/upgrades/legacy/run/modHistory 全部正确)。
+
+### 测试
+- **507/508 PASS** (CDP headless Chrome test.html): 基线 496 + 8 R20 稳定;偶发 1 失败是 pre-existing rollDayModifier / event_freq 分布统计 flaky。
+- `test-phase-e.js` 168/168 PASS。
+- 两个 HTML 内联脚本 `node --check` 等效 PASS。
+- `http://127.0.0.1:8767/test.html` 200,`index.html` 200。
+
+### 机制要点
+1. **const top-level 不绑 window**:R20 测试初版用 `win.SURF_CATALOG` 直接访问失败 — `const SURF_CATALOG = [...]` 在 `<script>` 顶层声明不会绑到 `window`,必须通过 `win.AB_TEST.SURF_CATALOG` 才能拿到。这与已有 `const G`/`const EV_POOL` 等一致,只是测试要绕开。修正后 8 条全 pass。
+2. **`saveMeta v4` 平滑 bump**:`loadMeta` 用 `version>=N` 阶梯式恢复 (v2/v3/v4 各管一段),旧 v3 玩家存档不需迁移代码,直接打开仍能恢复 meta/upgrades/run/modHistory。
+3. **`finSurf` 内联 `saveMeta`**:每次冲浪结束立即落盘 (无 debounce),避免玩家 surf 后秒关页面丢失 1-2 件收藏。
+4. **I 键冲突检查**:与现有键 (Q/WASD/E/SPACE/1-9/T/F/G/C/K/J/B/M/N/H/X) 无冲突,`i` 之前仅在 <input> autofocus 时偶尔出现,modal open 时 swallow 住避免误触。
+
+### 风险
+- **`invCollect` 12 项是 hard-coded**:新加 surf 物品需同步更新 SURF_CATALOG,否则 collect UI 不会显示新物品。短期内 WAVE_POINTS + rollSurfItem 已稳定,无新物品预期。
+- **rare_upgrades 文案中"海龟/钓鱼人/..."等特殊条件 30%**:`SURF_CATALOG` where 字段是文本说明,玩家可读,但不是 strict mapping(同一古硬币可能多次 rollSurfItem 升级),仅做 narrative。
+- **saveMeta 体积增长**:每次冲浪都 save,12 项物品名 + count ≈ 100 字节,7 天 run × 14 surf ≈ 1.4KB 增量,localStorage 5MB 配额内无压力。
+
+### 验收
+- 浏览器开 `?seed=42` 跑完整 7 天,完成若干冲浪,按 **I** 打开收藏 modal:看到累计贝壳/海星/珍珠等物品,locked 卡片显示 "???"。
+- 触发「隐藏洞穴」special 冲浪 → 30% 概率获得「💎 宝石」,I 模态中宝石 ×1 解锁。
+- 重启浏览器 (F5),收藏数据不丢 (localStorage 永久)。
+- 在浏览器 console 跑 `localStorage.getItem('ab_meta_v2')`,`invCollect` 字段含累计冲浪物品。

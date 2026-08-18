@@ -370,6 +370,15 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 </div>
 </div>
 
+<!-- funify-v3 Round 20 — 🗃️ 收藏 (I 键):跨 Run 累积的冲浪物品墙 (BACKLOG #9 #10 closure) -->
+<div id="inv-modal" class="hidden">
+<div class="um-box">
+<h2>🗃️ 收藏 · 跨 Run 冲浪物品墙</h2>
+<div class="um-meta">🏄 7 个浪点各掉 <b>专属物品</b>(贝壳/海星/珍珠/古硬币/古罗盘) · 累计 ≥1 件解锁该卡片 · 30% 概率升级为 <b>稀有遗物</b>(古地图/鱼钩/宝石/闪电石/回声瓶/羽毛) · <b>localStorage 永久</b> · 按 <kbd>I</kbd> 或 <kbd>ESC</kbd> 关闭</div>
+<div id="inv-grid"></div>
+</div>
+</div>
+
 <!-- Phase E6 — Body Trade modal (B 键,心情永久换 meta,Inscryption body-parts 致敬) -->
 <div id="body-modal" class="hidden">
 <div class="um-box">
@@ -389,7 +398,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <h1 id="start-modal-title">Amsterdam Brewery — 肉鸽中台</h1>
 <div class="intro-sub">Day 1 of 7 · 🌱 一周城市经营 roguelike · 输入 Seed 开始本 Run</div>
 <h2>玩法目标</h2>
-<div class="start-summary">🎯 7 天内每天完成 <b>3 个目标</b>，应对每日 <b>随机事件</b><br>🏭 5 个产业（酿酒/酒吧/咖啡/蘑菇/冲浪/学术）会真实改变收益<br>🏆 跑完获得 <b>★ meta</b>，在 3 选 1 升级中囤积下一局起跑线<br>🆕 Phase E:每日 <b>🏷️ 变量</b> + 4 分支 <b>🌳 天赋树</b>(T) + 3 <b>🚩 派系</b>(F) + 8 <b>🛠️ 配方</b>(C) × 4 <b>🎁 NPC</b>(G) + 24 个 <b>🦄 搞怪事件</b> + <b>📒 知识本</b>(K)跨 Run 累积</div>
+<div class="start-summary">🎯 7 天内每天完成 <b>3 个目标</b>，应对每日 <b>随机事件</b><br>🏭 5 个产业（酿酒/酒吧/咖啡/蘑菇/冲浪/学术）会真实改变收益<br>🏆 跑完获得 <b>★ meta</b>，在 3 选 1 升级中囤积下一局起跑线<br>🆕 Phase E:每日 <b>🏷️ 变量</b> + 4 分支 <b>🌳 天赋树</b>(T) + 3 <b>🚩 派系</b>(F) + 8 <b>🛠️ 配方</b>(C) × 4 <b>🎁 NPC</b>(G) + 24 个 <b>🦄 搞怪事件</b> + <b>📒 知识本</b>(K) + <b>🗃️ 收藏</b>(I)跨 Run 累积</div>
 <h2>操作图</h2>
 <div class="keys">
 <div class="key-card"><kbd>W</kbd><span>向上移动</span></div><div class="key-card"><kbd>A</kbd><span>向左移动</span></div><div class="key-card"><kbd>S</kbd><span>向下移动</span></div>
@@ -402,7 +411,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div id="help-modal" class="hidden">
 <div class="intro-box">
 <h1>操作帮助</h1>
-<div class="help-grid"><div><b>W/A/S/D</b> 移动小人（方向键也可）</div><div><b>E</b> 进入附近建筑</div><div><b>Space</b> 推进时间 / 小游戏确认</div><div><b>Q/W</b> 变体中调价或调节参数</div><div><b>X</b> 拒绝咖啡卧底或酒吧顾客</div><div><b>H</b> 打开本帮助，<b>Esc</b> 退出当前界面</div><div><b>T</b> 天赋树 · <b>F</b> 派系 · <b>J</b> 成就树 · <b>C</b> 配方 · <b>G</b> 送礼 · <b>B</b> 肉体交易 · <b>K</b> 知识本</div><div><b>1-9</b> 选关 · <b>▶▶</b> 切换速度 1×/2×/4× · <b>M</b> 静音</div></div>
+<div class="help-grid"><div><b>W/A/S/D</b> 移动小人（方向键也可）</div><div><b>E</b> 进入附近建筑</div><div><b>Space</b> 推进时间 / 小游戏确认</div><div><b>Q/W</b> 变体中调价或调节参数</div><div><b>X</b> 拒绝咖啡卧底或酒吧顾客</div><div><b>H</b> 打开本帮助，<b>Esc</b> 退出当前界面</div><div><b>T</b> 天赋树 · <b>F</b> 派系 · <b>J</b> 成就树 · <b>C</b> 配方 · <b>G</b> 送礼 · <b>B</b> 肉体交易 · <b>K</b> 知识本 · <b>I</b> 收藏</div><div><b>1-9</b> 选关 · <b>▶▶</b> 切换速度 1×/2×/4× · <b>M</b> 静音</div></div>
 <button class="btn help-close" onclick="closeHelp()">关闭</button>
 </div>
 </div>
@@ -639,6 +648,22 @@ const WAVE_POINTS=[
 {id:'sand_bar',n:'🏖️ 沙洲',diff:3,dist:180,item:'古硬币',special:'隐藏洞穴'},
 {id:'storm_pier',n:'⛈️ 风暴码头',diff:5,dist:300,item:'古罗盘',special:'雷暴'},
 {id:'lighthouse',n:'🗼 灯塔岩',diff:4,dist:250,item:'珍珠',special:'灯塔回声'}
+];
+// funify-v3 Round 20 — Surf Item Catalog (BACKLOG #9 #10 收藏模态)
+// Union of WAVE_POINTS.item + rollSurfItem rare upgrades. Used by 🗃️ 收藏 modal (I 键).
+const SURF_CATALOG=[
+  {id:'贝壳',    ic:'🐚', where:'beginner_bay/canal_wave', rare:false},
+  {id:'海星',    ic:'⭐', where:'pier_break',              rare:false},
+  {id:'珍珠',    ic:'🦪', where:'reef_left/lighthouse',    rare:false},
+  {id:'古硬币',  ic:'🪙', where:'sand_bar',                rare:false},
+  {id:'古罗盘',  ic:'🧭', where:'storm_pier',              rare:false},
+  {id:'古地图',  ic:'🗺️', where:'海龟 30% 概率升级',       rare:true},
+  {id:'鱼钩',    ic:'🪝', where:'钓鱼人 30% 概率升级',     rare:true},
+  {id:'宝石',    ic:'💎', where:'隐藏洞穴 30% 概率升级',   rare:true},
+  {id:'闪电石',  ic:'⚡', where:'雷暴 30% 概率升级',       rare:true},
+  {id:'回声瓶',  ic:'🍾', where:'灯塔回声 30% 概率升级',   rare:true},
+  {id:'羽毛',    ic:'🪶', where:'海鸥群 30% 概率升级',     rare:true},
+  {id:'稀有遗物',ic:'✨', where:'其他浪点 30% 概率升级',   rare:true}
 ];
 const ESCAPE_TECHS=[
 {lv:1,teacher:'pablo',name:'装作学生',suc:.5,desc:'靠书包藏手机,装作赶论文'},
@@ -1337,8 +1362,8 @@ function metaIndustryBoost(id){
   const upId=idMap[id]||id;
   return hasUpgrade('meta_'+upId+'_master')?1.2:1;
 }
-function saveMeta(){try{localStorage.setItem('ab_meta_v2',JSON.stringify({version:3,meta:G.meta,upgrades:G.upgrades,legacy:G.legacy,run:G.run,modHistory:Array.isArray(G.modHistory)?G.modHistory.slice(0,5):[]}))}catch(e){console.warn('ab_meta_v2 save failed',e)}}
-function loadMeta(){try{const d=JSON.parse(localStorage.getItem('ab_meta_v2'));if(d&&d.version>=2){G.meta=Math.max(0,d.meta|0);G.upgrades=Array.isArray(d.upgrades)?[...new Set(d.upgrades)]:[];G.legacy=Math.max(0,d.legacy|0);G.run=Math.max(0,d.run|0)}if(d&&d.version>=3&&Array.isArray(d.modHistory)){G.modHistory=d.modHistory.filter(x=>typeof x==='string').slice(0,5)}}catch(e){console.warn('ab_meta_v2 load failed',e)}}
+function saveMeta(){try{localStorage.setItem('ab_meta_v2',JSON.stringify({version:4,meta:G.meta,upgrades:G.upgrades,legacy:G.legacy,run:G.run,modHistory:Array.isArray(G.modHistory)?G.modHistory.slice(0,5):[],invCollect:G.invCollect&&typeof G.invCollect==='object'?G.invCollect:{}}))}catch(e){console.warn('ab_meta_v2 save failed',e)}}
+function loadMeta(){try{const d=JSON.parse(localStorage.getItem('ab_meta_v2'));if(d&&d.version>=2){G.meta=Math.max(0,d.meta|0);G.upgrades=Array.isArray(d.upgrades)?[...new Set(d.upgrades)]:[];G.legacy=Math.max(0,d.legacy|0);G.run=Math.max(0,d.run|0)}if(d&&d.version>=3&&Array.isArray(d.modHistory)){G.modHistory=d.modHistory.filter(x=>typeof x==='string').slice(0,5)}if(d&&d.version>=4&&d.invCollect&&typeof d.invCollect==='object'){if(!G.invCollect||typeof G.invCollect!=='object')G.invCollect={};for(const k of Object.keys(d.invCollect)){const v=d.invCollect[k]|0;if(v>0)G.invCollect[k]=v}}}catch(e){console.warn('ab_meta_v2 load failed',e)}}
 // funify-v3 Round 30 — Cross-run Ledger (📒 知识本): strainNotes + brewNotes + barRegulars + researchTopics + surfDiscovered + visited persist ab_ledger_v1
 function saveLedger(){try{localStorage.setItem('ab_ledger_v1',JSON.stringify({version:1,strainNotes:G.strainNotes||{},brewNotes:G.brewNotes||{},barRegulars:G.barRegulars||[],researchTopics:G.researchTopics||[],surfDiscovered:G.surfDiscovered||[],visited:G.visited||[],recipeKnowledge:G._recipeKnowledge||{},teacherRep:G.teacherRep||{pablo:0,ravi:0,sofie:0,chen:0}}))}catch(e){console.warn('ab_ledger_v1 save failed',e)}}
 function loadLedger(){try{const d=JSON.parse(localStorage.getItem('ab_ledger_v1'));if(d&&d.version===1){if(d.strainNotes&&typeof d.strainNotes==='object')G.strainNotes=d.strainNotes;if(d.brewNotes&&typeof d.brewNotes==='object'){for(const t of ['IPA','Stout','Lager']){if(d.brewNotes[t]&&typeof d.brewNotes[t]==='object'){G.brewNotes[t].count=Math.max(G.brewNotes[t].count|0,d.brewNotes[t].count|0);G.brewNotes[t].best=Math.max(G.brewNotes[t].best|0,d.brewNotes[t].best|0)}}}if(Array.isArray(d.barRegulars))G.barRegulars=Array.from(new Set([...(G.barRegulars||[]),...d.barRegulars]));if(Array.isArray(d.researchTopics))G.researchTopics=Array.from(new Set([...(G.researchTopics||[]),...d.researchTopics]));if(Array.isArray(d.surfDiscovered))G.surfDiscovered=Array.from(new Set([...(G.surfDiscovered||[]),...d.surfDiscovered]));if(Array.isArray(d.visited))G.visited=Array.from(new Set([...(G.visited||[]),...d.visited]));if(d.recipeKnowledge&&typeof d.recipeKnowledge==='object')G._recipeKnowledge=d.recipeKnowledge;if(d.teacherRep&&typeof d.teacherRep==='object'){if(!G.teacherRep)G.teacherRep={pablo:0,ravi:0,sofie:0,chen:0};for(const n of ['pablo','ravi','sofie','chen']){const v=d.teacherRep[n]|0;if(v>(G.teacherRep[n]|0))G.teacherRep[n]=v}}}}catch(e){console.warn('ab_ledger_v1 load failed',e)}}
@@ -1648,6 +1673,33 @@ function renderLedger(){
     <div style="margin-bottom:12px"><b style="color:var(--gold)">🎓 老师信任度 (4 位 NPC · escape +10%/次,封顶 +50%)</b><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">${teacherCards}</div></div>
   `;
 }
+// funify-v3 Round 20 — 🗃️ 收藏 (I 键):Surf Item 跨 Run 收藏墙 (BACKLOG #9 #10 closure)
+function invOpen(){return!document.getElementById('inv-modal').classList.contains('hidden')}
+function showInv(){document.getElementById('inv-modal').classList.remove('hidden');renderInv()}
+function closeInv(){document.getElementById('inv-modal').classList.add('hidden')}
+function toggleInv(){invOpen()?closeInv():showInv()}
+function renderInv(){
+  const grid=document.getElementById('inv-grid');if(!grid)return;
+  if(!G.invCollect||typeof G.invCollect!=='object')G.invCollect={};
+  const catalog=SURF_CATALOG||[];
+  const totalUnlocked=catalog.filter(i=>(G.invCollect[i.id]|0)>0).length;
+  const totalCount=Object.values(G.invCollect).reduce((s,v)=>s+(v|0),0);
+  const rareUnlocked=catalog.filter(i=>i.rare&&(G.invCollect[i.id]|0)>0).length;
+  const rareTotal=catalog.filter(i=>i.rare).length;
+  const summary=`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><div class="at-tier unlocked" style="flex:1;min-width:140px"><div class="at-ic">🗃️</div><div class="at-name">总收藏 ${totalCount} 件</div><div class="at-desc">跨 Run 累积冲浪掉落</div><div class="at-prog">${totalUnlocked}/${catalog.length} 类别解锁</div><div class="at-bar"><div style="width:${Math.round(totalUnlocked/(catalog.length||1)*100)}%"></div></div></div><div class="at-tier${rareUnlocked===rareTotal?' unlocked':''}" style="flex:1;min-width:140px"><div class="at-ic">✨</div><div class="at-name">稀有遗物 ${rareUnlocked}/${rareTotal}</div><div class="at-desc">30% 升级概率掉落</div><div class="at-prog">${rareUnlocked===rareTotal?'✓ 全部集齐 · 海滩博物馆馆长':'差 '+(rareTotal-rareUnlocked)+' 件'}</div><div class="at-bar"><div style="width:${Math.round(rareUnlocked/(rareTotal||1)*100)}%"></div></div></div></div>`;
+  const cards=catalog.map(i=>{
+    const n=G.invCollect[i.id]|0;
+    const unlocked=n>0;
+    const tag=i.rare?'✨ 稀有':'🏖️ 常驻';
+    return `<div class="at-tier${unlocked?' unlocked':' locked'}">
+      <div class="at-ic">${i.ic}</div>
+      <div class="at-name">${unlocked?i.id:'???'} · ×${unlocked?n:0}</div>
+      <div class="at-desc">${tag} · 来源: ${i.where}</div>
+      <div class="at-prog">${unlocked?'累计 '+n+' 次掉落':'未发现 · 完成冲浪 session 后自动记录'}</div>
+    </div>`;
+  }).join('');
+  grid.innerHTML=summary+`<div style="margin-bottom:8px"><b style="color:var(--gold)">📦 冲浪物品目录 (${catalog.length} 项)</b><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">${cards}</div></div>`;
+}
 // Phase E6 — Body Trade: mood → meta exchange (Inscryption body-parts 致敬)
 function bodyOpen(){return !document.getElementById('body-modal').classList.contains('hidden')}
 function openBodyTrade(){
@@ -1758,7 +1810,7 @@ function startFromModal(){
 }
 function skipTutorial(){try{localStorage.setItem('ab_skip_tutorial','1')}catch(e){console.warn('ab_skip_tutorial save failed',e)};document.getElementById('start-modal').classList.add('hidden');startFromModal()}
 
-const G={p:{x:100,y:400,tx:100,ty:400},day:1,ti:0,money:250,rep:0,loc:'de_pijp',ind:{},bs:[5,3,2],brewI:-1,brewT:0,events:[],mods:[],auto:false,inside:null,mg:null,ended:false,ts:0,tr:0,run:0,legacy:0,_at:null,_wp:null,_otx:null,_oty:null,_st:0,_sx:0,_sy:0,sch:[],seed:42,meta:0,metaPending:0,objs:[],upgrades:[],objDefs:{},_objDay:0,mood:0,greetedToday:[],visitedToday:[],visited:[],shop:{},surfDiscovered:[],inventory:[],todayWave:null,escapeLevel:0,escapeTeacher:null,escUsed:0,escapeLearnDay:0,keys:{},lastClickAt:0,achievements:[],achTree:{brew:0,coffee:0,rogue:0,scholar:0},teacherRep:{pablo:0,ravi:0,sofie:0,chen:0},modHistory:[],_run:{}};
+const G={p:{x:100,y:400,tx:100,ty:400},day:1,ti:0,money:250,rep:0,loc:'de_pijp',ind:{},bs:[5,3,2],brewI:-1,brewT:0,events:[],mods:[],auto:false,inside:null,mg:null,ended:false,ts:0,tr:0,run:0,legacy:0,_at:null,_wp:null,_otx:null,_oty:null,_st:0,_sx:0,_sy:0,sch:[],seed:42,meta:0,metaPending:0,objs:[],upgrades:[],objDefs:{},_objDay:0,mood:0,greetedToday:[],visitedToday:[],visited:[],shop:{},surfDiscovered:[],inventory:[],invCollect:{},todayWave:null,escapeLevel:0,escapeTeacher:null,escUsed:0,escapeLearnDay:0,keys:{},lastClickAt:0,achievements:[],achTree:{brew:0,coffee:0,rogue:0,scholar:0},teacherRep:{pablo:0,ravi:0,sofie:0,chen:0},modHistory:[],_run:{}};
 for(const k of Object.keys(IND_DEF))G.ind[k]={lv:0,xp:0};
 const MG={};
 
@@ -2493,7 +2545,7 @@ function surfIn(k){const s=MG.surf;if(!s||s.ended)return;
   if(barrel)setMsg('🏄 Perfect barrel +50!');
   else setMsg(`🏄 抓浪 +${sc} · 体力${s.stamina}% · combo×${s.combo}${inGreen&&s.perfectStreak>=2?' 🔥×'+s.perfectStreak+' ('+surfPerfectStreakMul(s.perfectStreak)+'x)':''}${s.boardWorn?' ⚠板损':''}`);
   if(s.stamina<=0){s.drowned=true;finSurf(true)}else renderAll()}
-function finSurf(drowned){const s=MG.surf;if(!s||s.ended)return;s.ended=true;const perfectStreakMul=surfPerfectStreakMul(s.perfectStreak)*(hasUpgrade('legendary_perfect')?1.5:1);const perfectBonus=Math.round(s.perfect*50*perfectStreakMul);const bonus=s.combo>=3?1.2:1,raw=Math.round((s.sc+perfectBonus)*bonus*tipFactor()),inc=drowned?Math.floor(raw*.5):raw;G.money+=inc;G.ind.surfing.xp+=inc*3;const item=rollSurfItem(s.wave);G.inventory.push(item);addEvt(drowned?'bad':'good',`🏄 ${s.wave.n} 带回${item} · +$${inc}${perfectBonus>0?' (含 perfect ×'+s.perfect+' streak×'+perfectStreakMul+')':''}`);addSch('🏄',`冲浪 +$${inc} · ${item}`);G.mg=null;G.inside=null;chkLv('surfing');setStatus(drowned?'🌊 溺水':'✅ 冲浪结束',`${s.sc}分 · ${item} · +$${inc}`,'');tickObj('Earn',Math.max(1,Math.floor(inc/10)));tickObj('Explore',1);if(s.perfect>=3)tryUnlock('surf_perfectionist');AUDIO.play(s.perfect>=3?'surf_perfect':'surf_catch');
+function finSurf(drowned){const s=MG.surf;if(!s||s.ended)return;s.ended=true;const perfectStreakMul=surfPerfectStreakMul(s.perfectStreak)*(hasUpgrade('legendary_perfect')?1.5:1);const perfectBonus=Math.round(s.perfect*50*perfectStreakMul);const bonus=s.combo>=3?1.2:1,raw=Math.round((s.sc+perfectBonus)*bonus*tipFactor()),inc=drowned?Math.floor(raw*.5):raw;G.money+=inc;G.ind.surfing.xp+=inc*3;const item=rollSurfItem(s.wave);G.inventory.push(item);if(!G.invCollect||typeof G.invCollect!=='object')G.invCollect={};G.invCollect[item]=(G.invCollect[item]||0)+1;saveMeta();addEvt(drowned?'bad':'good',`🏄 ${s.wave.n} 带回${item} · +$${inc}${perfectBonus>0?' (含 perfect ×'+s.perfect+' streak×'+perfectStreakMul+')':''}`);addSch('🏄',`冲浪 +$${inc} · ${item}`);G.mg=null;G.inside=null;chkLv('surfing');setStatus(drowned?'🌊 溺水':'✅ 冲浪结束',`${s.sc}分 · ${item} · +$${inc}`,'');tickObj('Earn',Math.max(1,Math.floor(inc/10)));tickObj('Explore',1);if(s.perfect>=3)tryUnlock('surf_perfectionist');AUDIO.play(s.perfect>=3?'surf_perfect':'surf_catch');
   // Phase C B3: surf→coffee cross-game — surfed today boosts first 3 coffee customers
   G.surfedToday=G.day;
   // Phase C A3a: 板磨损 — 每 3 抓损 1,最低 0
@@ -4073,6 +4125,8 @@ document.addEventListener('keydown',e=>{
   if(bodyOpen()){const tk=e.key.toLowerCase();if(tk==='b'||tk==='escape'){e.preventDefault();closeBodyTrade()}return}
   // funify-v3 Round 30 — Knowledge Book (K key) swallows keys while open
   if(ledgerOpen()){const tk=e.key.toLowerCase();if(tk==='k'||tk==='escape'){e.preventDefault();closeLedger()}return}
+  // funify-v3 Round 20 — 🗃️ 收藏 (I key) swallows keys while open
+  if(invOpen()){const tk=e.key.toLowerCase();if(tk==='i'||tk==='escape'){e.preventDefault();closeInv()}return}
   if(modalOpen()){if(e.key==='Enter'&&document.activeElement&&document.activeElement.id==='start-seed'){e.preventDefault();startFromModal();return}if(e.key==='Escape'||e.key==='Enter'){const hm=document.getElementById('mg-hint-modal');if(hm&&!hm.classList.contains('hidden')){closeMgHint();return}const hp=document.getElementById('help-modal');if(hp&&!hp.classList.contains('hidden')&&e.key==='Escape'){closeHelp();return}}if(e.key.toLowerCase()==='m'){AUDIO.toggleMute();return}return}
   // funify-v3 Round 6 — M key toggles audio mute (works even when ended/modal)
   if(e.key==='M'||e.key==='m'){AUDIO.toggleMute();setMsg(AUDIO.muted?'🔇 音频已静音':'🔊 音频开启');return}
@@ -4100,6 +4154,7 @@ document.addEventListener('keydown',e=>{
   if(k==='f'){toggleFactions();return}
   if(k==='j'){toggleAchtree();return}
   if(k==='k'){toggleLedger();return}
+  if(k==='i'){toggleInv();return}
   // Phase E6 — Body Trade (B 键,心情换 meta)
   if(k==='b'){openBodyTrade();return}
   if(k==='c'){showCraft('craft');return}
@@ -4198,6 +4253,7 @@ window.AB_TEST={
   barTipPreview,barPatienceLeft,barDayDifficulty,coffeeHeatZone,coffeeFitHint,shroomQuality,brewStreakMul,brewNoteProgress,surfPerfectStreakMul,surfBreakerTelegraph,acadPartialCredit,acadRebuttalCost,acadRebuttalBoost,acadWriteMs,acadSubmitCooldownMs,VENUE_DEF,phaseNarr,showPhaseFlash,PHASE_NARR,confettiBurst,confettiClear,confettiUpdate,confettiDraw,CONFETTI_PALETTE,isLegendary,legendarySpeedMs,legendaryCost,legendaryMetaCap,rollUpgradeChoices,NPC_DIALOGUES,pickNpcDialog,NPC_TEACH_FLAVOR,NPC_BUILDING_FLAVOR,MG_HINT_KEYS,showMgHint,closeMgHint,mgHintSeen,getHoverBldg,speedMs,cycleSpeed,saveSpeed,loadSpeed,cancelAuto,renderAutoBtn,AUTO_CANCEL_GRACE_MS,showHelp,closeHelp,lvMaxBoost,metaIndustryBoost,
   buildRunSummary,buildRunEpitaph,pushRunHistory,loadRunHistory,renderRunHistory,doBodyTrade,openBodyTrade,closeBodyTrade,bodyOpen,moodFloor,startBrew,startSurf,sBarC,endGame,MG,
   ledgerOpen,showLedger,closeLedger,toggleLedger,renderLedger,saveLedger,loadLedger,
+  invOpen,showInv,closeInv,toggleInv,renderInv,SURF_CATALOG,
   teacherRepBonus,bumpTeacherRep,
   pushModHistory,
   crazyActiveBadges,

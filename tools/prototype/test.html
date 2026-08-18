@@ -1665,6 +1665,81 @@ frame.addEventListener('load',async()=>{
   check('R19 e2e: 🎺 street_band fire() → mood 0 → 1 (单 buff)',()=>withCrazyEventState(
     'street_band',()=>t.state.mood===1));
 
+  // ═══ R20 — 🗃️ 收藏 (I 键) BACKLOG #9 #10 closure ═══
+  const ab=win.AB_TEST;
+  check('R20 contract: SURF_CATALOG 含 12 项 (5 常驻 + 7 稀有)',()=>{
+    const sc=ab&&ab.SURF_CATALOG;
+    return Array.isArray(sc)&&sc.length===12 && sc.filter(i=>!i.rare).length===5 && sc.filter(i=>i.rare).length===7;
+  });
+  check('R20 contract: invOpen/showInv/closeInv/toggleInv/renderInv 全部暴露在 AB_TEST',()=>{
+    return typeof win.invOpen==='function'&&typeof win.showInv==='function'&&typeof win.closeInv==='function'&&typeof win.toggleInv==='function'&&typeof win.renderInv==='function';
+  });
+  check('R20 contract: #inv-modal DOM 存在 + 默认 hidden',()=>{
+    const m=doc.getElementById('inv-modal');
+    return !!m&&m.classList.contains('hidden');
+  });
+  check('R20 e2e: G.invCollect 全空 → renderInv 显示 0/12 解锁',()=>{
+    const had=t.state.invCollect;
+    t.state.invCollect={};
+    win.renderInv();
+    const grid=doc.getElementById('inv-grid');
+    const ok=grid&&grid.textContent.includes('0/12')&&grid.textContent.includes('0 件');
+    t.state.invCollect=had;
+    return ok;
+  });
+  check('R20 e2e: G.invCollect={古罗盘:1,宝石:3} → renderInv 含 4 件 + 1/7 稀有',()=>{
+    const had=t.state.invCollect;
+    t.state.invCollect={'古罗盘':1,'宝石':3};
+    win.renderInv();
+    const grid=doc.getElementById('inv-grid');
+    const ok=grid&&grid.textContent.includes('4 件')&&grid.textContent.includes('1/7');
+    t.state.invCollect=had;
+    return ok;
+  });
+  check('R20 e2e: showInv() 揭开 #inv-modal,closeInv() 隐藏',()=>{
+    const m=doc.getElementById('inv-modal');
+    if(!m)return false;
+    const had=m.classList.contains('hidden');
+    win.showInv();
+    const opened=!m.classList.contains('hidden');
+    win.closeInv();
+    const closed=m.classList.contains('hidden');
+    return opened&&closed&&had;
+  });
+  check('R20 e2e: toggleInv() 切换 hidden 状态',()=>{
+    const m=doc.getElementById('inv-modal');
+    if(!m)return false;
+    const wasHidden=m.classList.contains('hidden');
+    win.toggleInv();
+    const open1=!m.classList.contains('hidden');
+    win.toggleInv();
+    const open2=m.classList.contains('hidden');
+    if(!wasHidden&&open2)win.closeInv();
+    return open1&&open2;
+  });
+  check('R20 e2e: 12 个 SURF_CATALOG 项 id 与 rollSurfItem 升级表一致',()=>{
+    const ids=(ab.SURF_CATALOG||[]).map(i=>i.id).sort();
+    return ids.indexOf('贝壳')>=0&&ids.indexOf('海星')>=0&&ids.indexOf('珍珠')>=0&&ids.indexOf('古硬币')>=0&&ids.indexOf('古罗盘')>=0&&
+      ids.indexOf('古地图')>=0&&ids.indexOf('鱼钩')>=0&&ids.indexOf('宝石')>=0&&ids.indexOf('闪电石')>=0&&ids.indexOf('回声瓶')>=0&&ids.indexOf('羽毛')>=0&&ids.indexOf('稀有遗物')>=0;
+  });
+  check('R20 e2e: saveMeta v4 写入 invCollect → loadMeta v4 复原',()=>{
+    const hadCollect=JSON.parse(JSON.stringify(t.state.invCollect||{}));
+    t.state.invCollect={'古罗盘':2,'宝石':5,'羽毛':1};
+    win.saveMeta();
+    t.state.invCollect={};
+    win.loadMeta();
+    const ok=t.state.invCollect&&t.state.invCollect['古罗盘']===2&&t.state.invCollect['宝石']===5&&t.state.invCollect['羽毛']===1;
+    t.state.invCollect=hadCollect;
+    return ok;
+  });
+  check('R20 e2e: saveMeta v4 写入 → loadMeta v3 旧数据不污染 (兼容回退)',()=>{
+    localStorage.setItem('ab_meta_v2',JSON.stringify({version:3,meta:50,upgrades:['ov_fiets'],legacy:3,run:7,modHistory:['a','b']}));
+    t.state.invCollect={};
+    win.loadMeta();
+    return t.state.meta==50 && Array.isArray(t.state.upgrades)&&t.state.upgrades[0]==='ov_fiets'&&
+      t.state.legacy===3&&t.state.run===7&&Array.isArray(t.state.modHistory)&&t.state.modHistory.length===2;
+  });
+
   // ═══ Phase E acceptance — core systems are live in browser runtime ═══
   // (withPhaseEIndustryState helper is defined at the top of the load handler so
   // it is in scope for the legendary_income tests at line ~390.)

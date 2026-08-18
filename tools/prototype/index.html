@@ -818,7 +818,15 @@ const UP_POOL=[
   {id:'legendary_speed',cat:'传奇',cost:180,t:'⚡ 阿姆斯特丹时光',d:'自动运行节奏 +50% (120ms → 80ms)'},
   {id:'legendary_perfect',cat:'传奇',cost:280,t:'🎯 完美大师',d:'冲浪/酿酒完美抓 +50% (×1.5 mul 叠加)'},
   {id:'legendary_mood_lock',cat:'传奇',cost:240,t:'☀️ 永久好心情',d:'心情永远 ≥0 (tip 永久 1.2×,不会低落)'},
-  {id:'legendary_meta_x2',cat:'传奇',cost:300,t:'⭐ Meta 黑洞',d:'所有 Meta 收益 ×2 (含 meta_cap 叠加 = ×3)'}
+  {id:'legendary_meta_x2',cat:'传奇',cost:300,t:'⭐ Meta 黑洞',d:'所有 Meta 收益 ×2 (含 meta_cap 叠加 = ×3)'},
+  // === Meta Industry Specialization (Round 14 — BACKLOG #9 #3 closure) ===
+  // 5 个跨 run 行业专精升级,cost 70★,各产业收入 +20% (与其他乘区叠加)
+  // cat 用「专精」区分永久/阿姆/传奇 3 档,定位中等门槛的 build 决策
+  {id:'meta_brew_master',cat:'专精',cost:70,t:'🍺 酿酒大师',d:'酿酒产业收入 +20% (与 legendary_income/talent 叠加)'},
+  {id:'meta_coffee_master',cat:'专精',cost:70,t:'☕ 咖啡大师',d:'咖啡店收入 +20% (不受热度影响)'},
+  {id:'meta_shroom_master',cat:'专精',cost:70,t:'🍄 蘑菇大师',d:'蘑菇种植收入 +20% (smart_shop 产业)'},
+  {id:'meta_surf_master',cat:'专精',cost:70,t:'🏄 冲浪大师',d:'冲浪收入 +20% (含完美抓加成)'},
+  {id:'meta_acad_master',cat:'专精',cost:70,t:'🔬 学术大师',d:'学术论文收入 +20% (含 partial credit)'}
 ];
 
 // ═══════════════════════════════════════════
@@ -1250,6 +1258,9 @@ function industryFactor(id){
   if(id==='academic'&&hasUpgrade('museumkaart'))f*=1.25;
   if(id==='bar'&&hasMod('kings_day'))f*=1.5;
   f*=lvMaxBoost(id);
+  // Round 14 — Meta industry specialization (cross-run permanent +20%)
+  // 放在 lvMaxBoost 之后、talent/mutator 之前,保证 per-run 决策仍可压过专精
+  f*=metaIndustryBoost(id);
   // Phase E1/E3 — talent (per-run build) × daily mutator (per-day rule warp)
   // 乘区叠在最后,保证 modifier/upgrade 的既有平衡关系不被改写,只被放缩。
   f*=talentFactor(id)*mutatorFactor(id);
@@ -1265,6 +1276,15 @@ function industryFactor(id){
 // Pure function — does not mutate G, safe to call from industryFactor.
 // Maps industryFactor ids ('coffee'/'surf') to G.ind keys ('coffee_shop'/'surfing').
 function lvMaxBoost(id){const keyMap={coffee:'coffee_shop',surf:'surfing'};const key=keyMap[id]||id;const ind=G.ind[key];return(ind&&ind.lv>=2)?1.1:1}
+// Round 14 — Meta Industry Specialization (BACKLOG #9 #3 closure)
+// Per-industry +20% cross-run upgrade. Looks up 'meta_<upId>_master' in UP_POOL
+// where upId maps industryFactor id → UP_POOL id (brewing→brew, others direct).
+// Pure function — does not mutate G, safe to call from industryFactor.
+function metaIndustryBoost(id){
+  const idMap={brewing:'brew',academic:'acad'};
+  const upId=idMap[id]||id;
+  return hasUpgrade('meta_'+upId+'_master')?1.2:1;
+}
 function saveMeta(){try{localStorage.setItem('ab_meta_v2',JSON.stringify({version:2,meta:G.meta,upgrades:G.upgrades,legacy:G.legacy,run:G.run}))}catch(e){console.warn('ab_meta_v2 save failed',e)}}
 function loadMeta(){try{const d=JSON.parse(localStorage.getItem('ab_meta_v2'));if(d&&d.version===2){G.meta=Math.max(0,d.meta|0);G.upgrades=Array.isArray(d.upgrades)?[...new Set(d.upgrades)]:[];G.legacy=Math.max(0,d.legacy|0);G.run=Math.max(0,d.run|0)}}catch(e){console.warn('ab_meta_v2 load failed',e)}}
 // funify-v3 Round 30 — Cross-run Ledger (📒 知识本): strainNotes + brewNotes + barRegulars + researchTopics + surfDiscovered + visited persist ab_ledger_v1
@@ -4078,7 +4098,7 @@ window.AB_TEST={
   data:{industries:IND_DEF,events:EV_POOL,upgrades:UP_POOL,objectives:OBJ_CATS,achievements:ACH_POOL,achTree:ACH_TREE,crazyEvents:CRAZY_POOL},state:G,
   seedAbbrev,seeded,rollDayObjectives,rollDayModifier,pickObjDef,tickObj,newRun,endGame,clampTargetToWalkable,
   industryFactor,tipFactor,bldgPhaseOk,tryUnlock,saveAch,loadAch,AUDIO,resetRunCounters,
-  barTipPreview,barPatienceLeft,barDayDifficulty,coffeeHeatZone,coffeeFitHint,shroomQuality,brewStreakMul,brewNoteProgress,surfPerfectStreakMul,surfBreakerTelegraph,acadPartialCredit,acadRebuttalCost,acadRebuttalBoost,acadWriteMs,acadSubmitCooldownMs,VENUE_DEF,phaseNarr,showPhaseFlash,PHASE_NARR,confettiBurst,confettiClear,confettiUpdate,confettiDraw,CONFETTI_PALETTE,isLegendary,legendarySpeedMs,legendaryCost,legendaryMetaCap,rollUpgradeChoices,NPC_DIALOGUES,pickNpcDialog,NPC_TEACH_FLAVOR,NPC_BUILDING_FLAVOR,MG_HINT_KEYS,showMgHint,closeMgHint,mgHintSeen,getHoverBldg,speedMs,cycleSpeed,saveSpeed,loadSpeed,cancelAuto,renderAutoBtn,AUTO_CANCEL_GRACE_MS,showHelp,closeHelp,lvMaxBoost,
+  barTipPreview,barPatienceLeft,barDayDifficulty,coffeeHeatZone,coffeeFitHint,shroomQuality,brewStreakMul,brewNoteProgress,surfPerfectStreakMul,surfBreakerTelegraph,acadPartialCredit,acadRebuttalCost,acadRebuttalBoost,acadWriteMs,acadSubmitCooldownMs,VENUE_DEF,phaseNarr,showPhaseFlash,PHASE_NARR,confettiBurst,confettiClear,confettiUpdate,confettiDraw,CONFETTI_PALETTE,isLegendary,legendarySpeedMs,legendaryCost,legendaryMetaCap,rollUpgradeChoices,NPC_DIALOGUES,pickNpcDialog,NPC_TEACH_FLAVOR,NPC_BUILDING_FLAVOR,MG_HINT_KEYS,showMgHint,closeMgHint,mgHintSeen,getHoverBldg,speedMs,cycleSpeed,saveSpeed,loadSpeed,cancelAuto,renderAutoBtn,AUTO_CANCEL_GRACE_MS,showHelp,closeHelp,lvMaxBoost,metaIndustryBoost,
   buildRunSummary,buildRunEpitaph,pushRunHistory,loadRunHistory,renderRunHistory,doBodyTrade,openBodyTrade,closeBodyTrade,bodyOpen,moodFloor,startBrew,startSurf,sBarC,endGame,MG,
   ledgerOpen,showLedger,closeLedger,toggleLedger,renderLedger,saveLedger,loadLedger,
   validate(){

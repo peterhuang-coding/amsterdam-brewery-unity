@@ -865,3 +865,27 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - 测试: **417/417 PASS** (基线 412 + 5 Round 30 断言: 5 个函数暴露 1 + K 键开关 roundtrip 1 + renderLedger 6 section 渲染 1 + finBrew 增量路径 1 + ledger save/load roundtrip 1); `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `node --check` PASS; HTTP 200; `git diff --check` PASS。
 - 风险: ledger 合并只取 max (count) 与 union (array),不删除数据 — 玩家即使中途换 Run,旧数据全部保留;`saveLedger` 在 brewNotes/strainNotes/researchTopics/surfDiscovered/barRegulars 5 处 push 后调用,频次可控。
 - 验收: 浏览器首开看 intro 屏「📒 知识本(K)」字样;酿 3 次同一种酒后,按 K 看到该类型卡片金边「✓ 配方已掌握」;种植 ★4 蘑菇后,按 K 看到对应菌株解锁;进新 Run 后 K 键内容仍保留 (localStorage 持久)。
+
+## Round 31 — 🏭 Meta 行业专精升级 (BACKLOG #9 #3 closure)
+
+> BACKLOG #9 item 125「meta industry upgrades」落实:把行业乘区从「永久/阿姆/传奇 3 档」扩为 4 档,新增 cat:'专精' 中等门槛档。基线 417 → 426 (+9 断言)。
+
+### Commit — funify-e12(meta-industry): 5 行业 +20% 跨 Run 专精 test=426/426
+
+- 改动:
+  - `tools/prototype/index.html` +22/-2:
+    - `UP_POOL` 末尾追加 5 条 cat:'专精' cost=70★: `meta_brew_master` / `meta_coffee_master` / `meta_shroom_master` / `meta_surf_master` / `meta_acad_master`,每个 +20% 单产业收入
+    - 新 `metaIndustryBoost(id)` 纯函数,idMap 把 `brewing→brew` / `academic→acad` 映射到 UP_POOL id,其余直映射 (`coffee`/`shroom`/`surf`)
+    - `industryFactor()` 在 `lvMaxBoost` 之后、`talent`/`mutator` 之前插入 `f*=metaIndustryBoost(id)`,保证 per-run 决策可压过专精
+    - `AB_TEST` 暴露 `metaIndustryBoost`
+  - `tools/prototype/test.html` +57:
+    - 9 条 Round 31 断言: 函数暴露 + 默认 1 (5 ids) + idMap 端到端 (brew/acad 走映射,coffee 直映射) + industryFactor 集成 (brewing 1.2 / coffee+coffee_wave 1.56 / shroom 1.2 / academic+legendary 2.4) + UP_POOL 5 条 cat:'专精' cost:70 完整性源审计
+- 机制要点:
+  1. **idMap 必要性**:`industryFactor('brewing')` 与 `industryFactor('academic')` 用全名,但 UP_POOL id 偏短 (`brew`/`acad`),如果直映射 `'meta_'+id+'_master'` 会找不到 `meta_brewing_master` / `meta_academic_master`,所以走 idMap 翻译。3/5 ids (`coffee`/`shroom`/`surf`) 命名一致,直接拼接。
+  2. **优先级设计**:专精乘区放 `lvMaxBoost` 之后、`talentFactor` 之前。`legendary_income` ×2 仍是最强基底,专精 ×1.2 叠在 lvMax 后,talent/mutator 可压过 — 玩家 pick talent 0.7 时实际拿 0.84 而非 1.2,符合「per-run 选择权高于跨-run 选择」的肉鸽设计直觉。
+  3. **shroom 行业特殊性**:`G.ind.shroom` 不存在(实际 key=`smart_shop`),`lvMaxBoost` 对 shroom 一向返回 1,我的 metaIndustryBoost 不依赖 `G.ind`,所以 shroom 走完整 +1.2 路径,这是修了一处隐性既有 bug 的副效果。
+  4. **build 多样性放大**:5 专精 × 6 传奇 × 8 永久 × 6 阿姆 = 25 个跨 run 升级可选;与既有 12 talent × 3 派系 × 12 mutator 相乘,理论开局组合突破 25*432 = 10,800。
+- 3-axis lift: 反馈 +1 (升级 modal 新增 5 条带 emoji 标签的橙边卡); 选择 +1 (中等价位 70★ 档填补「永久 30-90 与传奇 180-300」之间的 gap,让预算 80-150★ 的玩家有清晰分支); 视觉精度 N/A (复用既有 cat:'专精' 沿用永久 cat 的样式)。
+- 测试: **426/426 PASS** (基线 417 + 9 Round 31 断言); `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `new Function()` 解析 PASS; HTTP 200; `git diff --check` PASS。
+- 风险: 5 个新升级若全买需 350★,约 7 个 run 累积,进度曲线合理;`idMap` 是 hardcoded,如果未来新增行业需同时改 `idMap` 与 UP_POOL。
+- 验收: 浏览器按 U 看升级 modal,看到 🍺/☕/🍄/🏄/🔬 5 个 70★ 的「专精」卡;购买后立刻生效,如酿酒 +20% 显示在 finBrew 的 `industryFactor('brewing')` 上;legder K 键看不到专精卡 (cat 不属于 ledger 范围);跨 run 累积在 `ab_meta_v2.upgrades` 数组中保留。

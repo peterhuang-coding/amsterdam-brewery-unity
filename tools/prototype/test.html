@@ -1414,6 +1414,63 @@ frame.addEventListener('load',async()=>{
     return ok;
   });
 
+  // ═══ Round 14 — Phase E12 Meta Industry Specialization ═══
+  check('Round 14: metaIndustryBoost 暴露 + 默认 1',()=>{
+    if(typeof win.metaIndustryBoost!=='function')return false;
+    const before=t.state.upgrades.slice();
+    t.state.upgrades=[];
+    const r1=win.metaIndustryBoost('brewing');
+    const r2=win.metaIndustryBoost('coffee');
+    const r3=win.metaIndustryBoost('shroom');
+    const r4=win.metaIndustryBoost('surf');
+    const r5=win.metaIndustryBoost('academic');
+    t.state.upgrades=before;
+    return r1===1&&r2===1&&r3===1&&r4===1&&r5===1;
+  });
+  check('Round 14: meta_acad_master 持有 → metaIndustryBoost(academic)=1.2 (idMap 映射)',()=>{
+    const before=t.state.upgrades.slice();
+    t.state.upgrades=['meta_acad_master'];
+    const r=win.metaIndustryBoost('academic');
+    t.state.upgrades=before;
+    return r===1.2;
+  });
+  check('Round 14: meta_brew_master 持有 → metaIndustryBoost(brewing)=1.2',()=>{
+    const before=t.state.upgrades.slice();
+    t.state.upgrades=['meta_brew_master'];
+    const r=win.metaIndustryBoost('brewing');
+    t.state.upgrades=before;
+    return r===1.2;
+  });
+  check('Round 14: meta_coffee_master 持有 → metaIndustryBoost(coffee)=1.2 (直映射)',()=>{
+    const before=t.state.upgrades.slice();
+    t.state.upgrades=['meta_coffee_master'];
+    const r=win.metaIndustryBoost('coffee');
+    t.state.upgrades=before;
+    return r===1.2;
+  });
+  check('Round 14: industryFactor(brewing) +meta_brew_master 拉满到 1.2 (无其他乘区)',()=>withPhaseEIndustryState(
+    {upgrades:['meta_brew_master'],mods:[],talents:[]},
+    ()=>Math.abs(win.industryFactor('brewing')-1.2)<1e-6
+  ));
+  check('Round 14: industryFactor(coffee) +meta_coffee_master +coffee_wave → 1.56',()=>withPhaseEIndustryState(
+    {upgrades:['meta_coffee_master'],mods:[{id:'coffee_wave'}],talents:[]},
+    ()=>{t.state.ind.coffee_shop.lv=0;return Math.abs(win.industryFactor('coffee')-1.56)<1e-6}
+  ));
+  check('Round 14: industryFactor(shroom) +meta_shroom_master → 1.2 (smart_shop 行业)',()=>withPhaseEIndustryState(
+    {upgrades:['meta_shroom_master'],mods:[],talents:[]},
+    ()=>Math.abs(win.industryFactor('shroom')-1.2)<1e-6
+  ));
+  check('Round 14: industryFactor(academic) legendary_income+meta_acad_master → 2.4',()=>withPhaseEIndustryState(
+    {upgrades:['legendary_income','meta_acad_master'],mods:[],talents:[]},
+    ()=>{t.state.ind.academic.lv=0;return Math.abs(win.industryFactor('academic')-2.4)<1e-6}
+  ));
+  check('Round 14: UP_POOL 5 专精条目 cat:"专精" cost=70 完整存在',()=>{
+    const ids=['meta_brew_master','meta_coffee_master','meta_shroom_master','meta_surf_master','meta_acad_master'];
+    const pool=win.eval('UP_POOL');
+    for(const id of ids){const u=pool.find(x=>x.id===id);if(!u||u.cat!=='专精'||u.cost!==70)return false}
+    return true;
+  });
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

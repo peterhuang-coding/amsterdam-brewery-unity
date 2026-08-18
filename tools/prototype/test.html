@@ -2958,6 +2958,50 @@ frame.addEventListener('load',async()=>{
       && src.indexOf("{id:'bronze_run',ic:'🥉',n:'铜牌 Run'") !== -1;
   });
 
+  // ── Round 1: City Living Vibe (Phase A1-A2) — 30 NPCs + 3 boats + 2 trams + 8 bikes ──
+  check('R1: AB_TEST.initCity/tickCity/drawCity 暴露',()=>typeof t.initCity==='function'&&typeof t.tickCity==='function'&&typeof t.drawCity==='function');
+  check('R1: NPC_ARCHETYPES 含 8 archetypes',()=>Array.isArray(t.NPC_ARCHETYPES) && t.NPC_ARCHETYPES.length === 8);
+  check('R1: CITY_BOAT_ROUTES × 3, CITY_TRAM_ROUTES × 2, CITY_BIKE_PATHS × 8',()=>t.CITY_BOAT_ROUTES.length === 3 && t.CITY_TRAM_ROUTES.length === 2 && t.CITY_BIKE_PATHS.length === 8);
+  check('R1: state.city 已 init(30 NPCs / 3 boats / 2 trams / 8 bikes)',()=>{
+    const c = t.state.city;
+    return c && Array.isArray(c.npcs) && c.npcs.length === 30
+      && Array.isArray(c.boats) && c.boats.length === 3
+      && Array.isArray(c.trams) && c.trams.length === 2
+      && Array.isArray(c.bikes) && c.bikes.length === 8;
+  });
+  check('R1: tickCity(1000) 推 NPCs 位置',()=>{
+    const c = t.state.city;
+    const before = c.npcs[0].x;
+    t.tickCity(1000);
+    return c.npcs[0].x !== before;
+  });
+  check('R1: tickCity(1000) 同时推 boats/trams/bikes',()=>{
+    const c = t.state.city;
+    const b0 = c.boats[0].x, t0 = c.trams[0].x, bk0 = c.bikes[0].x;
+    t.tickCity(1000);
+    return c.boats[0].x !== b0 && c.trams[0].x !== t0 && c.bikes[0].x !== bk0;
+  });
+  check('R1: 极长 tick (60s) 后 NPCs 仍在画面内',()=>{
+    t.tickCity(60000);
+    return t.state.city.npcs.every(n => n.x >= -20 && n.x <= 820);
+  });
+  check('R1: 8 archetypes 覆盖全 6 时段(0-5)',()=>{
+    const slots = new Set();
+    t.NPC_ARCHETYPES.forEach(a => a.phases.forEach(p => slots.add(p)));
+    return slots.size === 6;
+  });
+  check('R1: 切换 G.ti 验证不同时段 NPC 可见集合不同(Dawn vs LateNight)',()=>{
+    const c = t.state.city;
+    const before_ti = t.state.ti;
+    const visibleAt = (ti) => new Set(c.npcs.filter(n => t.NPC_ARCHETYPES.find(a => a.n === n.arch && a.phases.includes(ti))).map(n => n.arch));
+    const v0 = visibleAt(0), v5 = visibleAt(5);
+    t.state.ti = before_ti;
+    // Dawn (Commuter/Worker) ≠ LateNight (Barfly/Drunk/Mystery). Both non-empty, both sets differ.
+    return v0.size > 0 && v5.size > 0
+      && v0.has('Commuter') && !v5.has('Commuter')
+      && v5.has('Barfly') && !v0.has('Barfly');
+  });
+
   const h=document.createElement('h2');h.className=passed===total?'pass':'fail';h.textContent=`${passed}/${total} PASS`;results.prepend(h);
 });
 setTimeout(()=>{if(results.textContent==='正在加载…')results.innerHTML='<h2 class="fail">FAIL — Demo 加载超时</h2>'},15000);

@@ -770,6 +770,152 @@ const STREETS=[
 ];
 
 // ═══════════════════════════════════════════
+// CITY LIVING VIBE (Round 1: webdemo-dave-mode-24h, Phase A1-A2)
+// 30 flowing NPCs + 3 boats + 2 trams + 8 bikes
+// Each agent moves continuously on canvas; phase-aware visibility
+// ═══════════════════════════════════════════
+const NPC_ARCHETYPES=[
+  {n:'Commuter',ic:'👨‍💼',phases:[0,1,2,3]},
+  {n:'Tourist',ic:'🧳',phases:[1,2,3]},
+  {n:'Student',ic:'🧑‍🎓',phases:[1,2,3,4]},
+  {n:'Vendor',ic:'🧑‍🍳',phases:[1,2,3]},
+  {n:'Barfly',ic:'🍻',phases:[3,4,5]},
+  {n:'Drunk',ic:'🥴',phases:[4,5]},
+  {n:'Worker',ic:'👷',phases:[0,1,2,3,4]},
+  {n:'Mystery',ic:'🕵️',phases:[2,3,4,5]},
+];
+
+// 3 canal/river routes — boats travel along axis
+const CITY_BOAT_ROUTES=[
+  {x1:14, y1:255, x2:790, y2:255, dir:1},    // Singel canal
+  {x1:14, y1:395, x2:790, y2:395, dir:1},    // Amstel river
+  {x1:0,  y1:88,  x2:790, y2:88,  dir:-1},   // IJ river
+];
+
+// 2 tram lines — east-west
+const CITY_TRAM_ROUTES=[
+  {x1:14, y1:200, x2:790, y2:200, dir:1},    // Damrak/Kalverstraat axis
+  {x1:14, y1:380, x2:790, y2:380, dir:-1},   // Ceintuurbaan axis (reverse)
+];
+
+// 8 bike paths — mixed horizontal/vertical streets
+const CITY_BIKE_PATHS=[
+  {x1:14, y1:140, x2:790, y2:140, dir:1},
+  {x1:14, y1:300, x2:790, y2:300, dir:-1},
+  {x1:14, y1:440, x2:790, y2:440, dir:1},
+  {x1:340, y1:108, x2:340, y2:495, dir:-1},
+  {x1:560, y1:108, x2:560, y2:495, dir:1},
+  {x1:120, y1:108, x2:120, y2:495, dir:-1},
+  {x1:720, y1:108, x2:720, y2:495, dir:1},
+  {x1:480, y1:108, x2:480, y2:495, dir:-1},
+];
+
+const CITY_BOAT_IC=['⛵','🚤','🛥️'];
+
+function initCity(){
+  if(!G.city)G.city={npcs:[],boats:[],trams:[],bikes:[]};
+  G.city.npcs.length=0;G.city.boats.length=0;
+  G.city.trams.length=0;G.city.bikes.length=0;
+  // 30 NPCs spread across 8 archetypes; placement on streets
+  for(let i=0;i<30;i++){
+    const arch=NPC_ARCHETYPES[i%NPC_ARCHETYPES.length];
+    const st=STREETS[(i*7+3)%STREETS.length];
+    const dir=(i&1)?1:-1;
+    G.city.npcs.push({
+      x:st.x+(i*23-200),y:st.y+((i*7)%5)-2,
+      vx:dir*(0.18+((i*13)%7)*0.03),
+      arch:arch.n,
+      ic:arch.ic,
+    });
+  }
+  // 3 boats on canonical routes
+  for(let i=0;i<CITY_BOAT_ROUTES.length;i++){
+    const r=CITY_BOAT_ROUTES[i];
+    G.city.boats.push({
+      x:r.x1+((r.x2-r.x1)*((i+1)/4)),
+      y:r.y1,dir:r.dir,route:i,
+      ic:CITY_BOAT_IC[i%CITY_BOAT_IC.length],
+    });
+  }
+  // 2 trams orbit lines
+  for(let i=0;i<CITY_TRAM_ROUTES.length;i++){
+    const r=CITY_TRAM_ROUTES[i];
+    G.city.trams.push({
+      x:r.x1+((r.x2-r.x1)*((i+1)/3)),
+      y:r.y1,dir:r.dir,route:i,
+      ic:'🚊',
+    });
+  }
+  // 8 bikes on paths
+  for(let i=0;i<CITY_BIKE_PATHS.length;i++){
+    const p=CITY_BIKE_PATHS[i];
+    const horiz=p.y1===p.y2;
+    G.city.bikes.push({
+      x:horiz?p.x1+((p.x2-p.x1)*((i+1)/9)):p.x1,
+      y:horiz?p.y1:p.y1+((p.y2-p.y1)*((i+1)/9)),
+      dir:p.dir,path:i,
+      ic:'🚴',
+    });
+  }
+}
+
+function tickCity(dt){
+  if(!G||!G.city)return;
+  const c=G.city;
+  for(const n of c.npcs){
+    n.x+=n.vx*dt*0.06;
+    if(n.x>800)n.x=-10;
+    if(n.x<-10)n.x=810;
+  }
+  for(const b of c.boats){
+    const r=CITY_BOAT_ROUTES[b.route];
+    b.x+=b.dir*dt*0.04;
+    if(b.x>r.x2)b.x=r.x1;
+    if(b.x<r.x1)b.x=r.x2;
+  }
+  for(const t of c.trams){
+    const r=CITY_TRAM_ROUTES[t.route];
+    t.x+=t.dir*dt*0.08;
+    if(t.x>r.x2)t.x=r.x1;
+    if(t.x<r.x1)t.x=r.x2;
+  }
+  for(const b of c.bikes){
+    const p=CITY_BIKE_PATHS[b.path];
+    const horiz=p.y1===p.y2;
+    if(horiz){b.x+=b.dir*dt*0.12;if(b.x>p.x2)b.x=p.x1;if(b.x<p.x1)b.x=p.x2;}
+    else{b.y+=b.dir*dt*0.12;if(b.y>p.y2)b.y=p.y1;if(b.y<p.y1)b.y=p.y2;}
+  }
+}
+
+function drawCity(){
+  if(!G||!G.city)return;
+  const c=G.city;
+  const phaseIdx=G.ti|0;
+  cx.save();
+  cx.textAlign='center';cx.textBaseline='middle';
+  // trams (foreground — sit on top of streets, behind buildings)
+  for(const t of c.trams){
+    cx.fillStyle='#cc3333';cx.fillRect(t.x-18,t.y-4,36,8);
+    cx.fillStyle='#ffd84a';cx.fillRect(t.x-14,t.y-2,4,4);cx.fillRect(t.x+10,t.y-2,4,4);
+    cx.font='bold 9px sans-serif';cx.fillStyle='#fff';cx.fillText('🚊',t.x,t.y-7);
+  }
+  // bikes on streets
+  cx.font='10px sans-serif';
+  for(const b of c.bikes){cx.fillText(b.ic,b.x,b.y);}
+  // boats on canals
+  cx.font='12px sans-serif';
+  for(const b of c.boats){cx.fillText(b.ic,b.x,b.y);}
+  // NPCs — phase-filtered visible
+  cx.font='9px sans-serif';
+  for(const n of c.npcs){
+    const ar=NPC_ARCHETYPES.find(a=>a.n===n.arch);
+    if(ar&&ar.phases&&ar.phases.indexOf(phaseIdx)===-1)continue;
+    cx.fillText(n.ic,n.x,n.y);
+  }
+  cx.restore();
+}
+
+// ═══════════════════════════════════════════
 // DISTRICT LABELS (small faded gray text behind everything)
 // ═══════════════════════════════════════════
 const DISTRICTS=[
@@ -3557,6 +3703,9 @@ function drawMap(){
     cx.fillStyle='#f0e0a0';cx.fillRect(b.x+b.w/2-1,b.y-1,2,1);
   });
 
+  // ── 9b. Round 1: city living vibe — flowing NPCs + boats + trams + bikes ──
+  drawCity();
+
   // ── 10. Interactive BLDGS (circles with emoji icon) — Mini Metro style ──
   var sorted=BLDGS.slice().sort(function(a,b){return (a.y)-(b.y)});
   sorted.forEach(function(b){
@@ -4334,6 +4483,8 @@ function update(){
   if(Math.abs(p.x-opx)<0.5&&Math.abs(p.y-opy)<0.5&&inCanal(nx,ny)&&!onBridge(nx,ny)){G._st++;if(G._st>15){G._st=0;const br=nnBridge(p.x,p.y);if(br){G._wp=br;G._otx=p.tx;G._oty=p.ty;const bInfo=BRIDGES.find(b=>Math.abs(b.x+b.w/2-br.x)<1&&Math.abs(b.y+b.h/2-br.y)<1);setMsg('🚶 运河挡路 → 改道 '+(bInfo?bInfo.n:'桥'))}}}
   else G._st=0;
   if(G._wp){const wx=G._wp.x,wy=G._wp.y;if(Math.abs(p.x-wx)<12&&Math.abs(p.y-wy)<12){G._wp=null;p.tx=G._otx||p.x;p.ty=G._oty||p.y;G._otx=null;G._oty=null}else{if(!G._otx){G._otx=p.tx;G._oty=p.ty}p.tx=wx;p.ty=wy}}
+  // Round 1: city living vibe — NPCs/boats/trams/bikes flow continuously
+  const _lastTick=G._cityLastTick||Date.now();const _dt=Math.min(50,Date.now()-_lastTick);G._cityLastTick=Date.now();tickCity(_dt);
 }
 
 // ═══════════════════════════════════════════
@@ -4921,6 +5072,8 @@ function newRunInner(){
   // Phase E6 — 肉体交易 trauma 标记(每 run 重置)
   G.shop.traumaUntil=0;
   for(const k of Object.keys(IND_DEF))G.ind[k]={lv:0,xp:0};
+  // Round 1: city living vibe — 30 NPCs + 3 boats + 2 trams + 8 bikes
+  initCity();
 }
 
 // funify-v3 Round 6 — bottom-bar mute button: toggles AUDIO + refreshes label
@@ -5001,6 +5154,8 @@ window.AB_TEST={
   buildSeedUrl,copySeedUrl,parseSeedFromUrl,flashSeedCopied,copySeedUrlFromModal,SEED_COPY_HINT,
   RECENT_SEEDS_MAX,getRecentSeeds,pushRecentSeed,clearRecentSeeds,renderRecentSeeds,pickFreshRandomSeed,startWithRecentSeed,
   runHashPool,dayAwareDream,DREAM_SUMMATIVE,DREAM_POOL,
+  // Round 1: city living vibe
+  initCity,tickCity,drawCity,NPC_ARCHETYPES,CITY_BOAT_ROUTES,CITY_TRAM_ROUTES,CITY_BIKE_PATHS,CITY_BOAT_IC,
   validate(){
     const unique=a=>new Set(a.map(x=>x.id)).size===a.length;
     return {industries:Object.keys(IND_DEF).length===5,eventIds:unique(EV_POOL),upgradeIds:unique(UP_POOL),modifierEffects:EV_POOL.every(x=>x.effect),surfEntry:typeof startSurf==='function',achPool:ACH_POOL.length,achIds:unique(ACH_POOL),achTree:ACH_TREE.length===4&&ACH_TREE.every(b=>b.tiers.length===3),audioApi:typeof AUDIO.play==='function',audioPresets:Object.keys({brew_ok:1,brew_fail:1,coffee_sale:1,coffee_raid:1,shroom_pick:1,surf_perfect:1,surf_catch:1,bar_clink:1,bar_sale:1,objective:1,achievement:1,click:1,raid_alarm:1}).length};

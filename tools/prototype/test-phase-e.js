@@ -305,6 +305,65 @@ t('newRunInner resets achTree', /newRunInner[\s\S]{0,400}?G\.achTree=\{/.test(h)
 t('achtree-modal HTML present', /id="achtree-modal"[\s\S]{0,200}id="achtree-grid"/.test(h));
 t('help text mentions J 成就树', /<b>J<\/b> 成就树/.test(h));
 
+// ── 23b. Round 1: City Living Vibe (Phase A1-A2) — flowing NPCs + boats + trams + bikes ──
+const cityStart = h.indexOf('// CITY LIVING VIBE (Round 1');
+const cityEnd = h.indexOf('// ═══════════════════════════════════════════\n// DISTRICT LABELS');
+// define a stub cx so drawCity can be parsed without ReferenceError
+const citySrc = 'const cx={fillStyle:"",strokeStyle:"",lineWidth:1,font:"",textAlign:"",textBaseline:"",fillRect(){},strokeRect(){},beginPath(){},arc(){},fill(){},stroke(){},save(){},restore(){},fillText(){},setLineDash(){}};\n' + h.slice(cityStart, cityEnd);
+const CITY_G = {ti:0,seed:42,day:1};
+const CITY_STREETS = [
+  {x:340,y:200,t:'A'},{x:200,y:300,t:'B'},{x:480,y:200,t:'C'},
+  {x:170,y:425,t:'D'},{x:510,y:425,t:'E'},{x:300,y:415,t:'F'},
+  {x:580,y:270,t:'G'},{x:680,y:140,t:'H'},{x:200,y:320,t:'I'},
+];
+const C = new Function('G','STREETS','"use strict";'+citySrc+
+  '; return {NPC_ARCHETYPES,CITY_BOAT_ROUTES,CITY_TRAM_ROUTES,CITY_BIKE_PATHS,CITY_BOAT_IC,initCity,tickCity};')(CITY_G, CITY_STREETS);
+
+t('Round1: NPC_ARCHETYPES has 8 archetypes', C.NPC_ARCHETYPES.length === 8);
+t('Round1: every NPC archetype has n+ic+phases', C.NPC_ARCHETYPES.every(a => a.n && a.ic && Array.isArray(a.phases) && a.phases.length>=2));
+t('Round1: NPC archetype ids are unique', new Set(C.NPC_ARCHETYPES.map(a => a.n)).size === C.NPC_ARCHETYPES.length);
+t('Round1: NPC phases cover all 6 time slots 0-5',
+  C.NPC_ARCHETYPES.every(a => a.phases.every(p => p >= 0 && p <= 5)) &&
+  new Set(C.NPC_ARCHETYPES.flatMap(a => a.phases)).size === 6);
+t('Round1: CITY_BOAT_ROUTES has 3 routes', C.CITY_BOAT_ROUTES.length === 3);
+t('Round1: CITY_TRAM_ROUTES has 2 routes', C.CITY_TRAM_ROUTES.length === 2);
+t('Round1: CITY_BIKE_PATHS has 8 paths', C.CITY_BIKE_PATHS.length === 8);
+t('Round1: every route has x1/y1/x2/y2/dir', [...C.CITY_BOAT_ROUTES, ...C.CITY_TRAM_ROUTES, ...C.CITY_BIKE_PATHS].every(r => Number.isFinite(r.x1) && Number.isFinite(r.y1) && Number.isFinite(r.x2) && Number.isFinite(r.y2) && (r.dir === 1 || r.dir === -1)));
+t('Round1: CITY_BOAT_IC has 3 boat emojis', C.CITY_BOAT_IC.length === 3 && C.CITY_BOAT_IC.every(s => typeof s === 'string' && s.length >= 1));
+
+// runtime — initCity populates G.city
+C.initCity();
+t('Round1: initCity creates G.city with 4 arrays', CITY_G.city && Array.isArray(CITY_G.city.npcs) && Array.isArray(CITY_G.city.boats) && Array.isArray(CITY_G.city.trams) && Array.isArray(CITY_G.city.bikes));
+t('Round1: G.city.npcs has exactly 30 NPCs', CITY_G.city.npcs.length === 30);
+t('Round1: G.city.boats has exactly 3 boats', CITY_G.city.boats.length === 3);
+t('Round1: G.city.trams has exactly 2 trams', CITY_G.city.trams.length === 2);
+t('Round1: G.city.bikes has exactly 8 bikes', CITY_G.city.bikes.length === 8);
+t('Round1: every NPC has x/y/vx/arch/ic', CITY_G.city.npcs.every(n => Number.isFinite(n.x) && Number.isFinite(n.y) && Number.isFinite(n.vx) && n.arch && n.ic));
+t('Round1: every NPC arch is a known archetype', CITY_G.city.npcs.every(n => C.NPC_ARCHETYPES.some(a => a.n === n.arch)));
+t('Round1: every boat route is a known route', CITY_G.city.boats.every(b => b.route >= 0 && b.route < C.CITY_BOAT_ROUTES.length));
+t('Round1: every tram route is a known route', CITY_G.city.trams.every(t => t.route >= 0 && t.route < C.CITY_TRAM_ROUTES.length));
+t('Round1: every bike path is a known path', CITY_G.city.bikes.every(b => b.path >= 0 && b.path < C.CITY_BIKE_PATHS.length));
+
+// movement — tickCity advances positions
+const npc0 = CITY_G.city.npcs[0].x, npc1 = CITY_G.city.npcs[1].x;
+const boat0 = CITY_G.city.boats[0].x, tram0 = CITY_G.city.trams[0].x;
+const bike0 = CITY_G.city.bikes[0].x;
+C.tickCity(1000);
+t('Round1: NPCs move after tick', CITY_G.city.npcs[0].x !== npc0 || CITY_G.city.npcs[1].x !== npc1);
+t('Round1: boats move after tick', CITY_G.city.boats[0].x !== boat0);
+t('Round1: trams move after tick', CITY_G.city.trams[0].x !== tram0);
+t('Round1: bikes move after tick', CITY_G.city.bikes[0].x !== bike0);
+t('Round1: tram stays on its y (route axis)', C.CITY_TRAM_ROUTES.every((r, i) => CITY_G.city.trams[i].y === r.y1));
+t('Round1: boat stays on its y (route axis)', C.CITY_BOAT_ROUTES.every((r, i) => CITY_G.city.boats[i].y === r.y1));
+t('Round1: no NaN after extreme tick', CITY_G.city.npcs.every(n => Number.isFinite(n.x) && Number.isFinite(n.y)));
+C.tickCity(60000);
+t('Round1: NPCs stay within canvas width after extreme tick', CITY_G.city.npcs.every(n => n.x >= -20 && n.x <= 820));
+t('Round1: boats stay within route range after extreme tick', CITY_G.city.boats.every(b => b.x >= C.CITY_BOAT_ROUTES[b.route].x1 - 5 && b.x <= C.CITY_BOAT_ROUTES[b.route].x2 + 5));
+
+// initCity is idempotent
+C.initCity();
+t('Round1: initCity is idempotent', CITY_G.city.npcs.length === 30 && CITY_G.city.boats.length === 3);
+
 // ── 24. Final summary ──
 t('all 10 sub-modules Phase E1-E10 covered (E1/E2/E3/E4/E5/E6/E7/E8 wired)',
   ['TALENT_POOL','FACTION_POOL','MUTATOR_POOL','CRAFT_RECIPES','CRAZY_POOL','doBodyTrade','buildRunSummary','day-bar-fill','ACH_POOL','industryFactor']

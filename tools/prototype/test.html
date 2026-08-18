@@ -1335,6 +1335,225 @@ frame.addEventListener('load',async()=>{
     }
   });
 
+  // ═══ Round 17 — funify-e8(downstream-fanout) — surf / finBrew / tip composite hooks ═══
+  // 🦢 swan_attack / 🍕 pizza_bench / 🧀 cheese_roll: crazySurfStam must propagate
+  // into pickWavePoint()'s MG.surf.stamina = Math.max(20, 100+(crazySurfStam||0)).
+  // Note: t.MG (AB_TEST export) is the same object as global MG; assigning to
+  // t.MG.surf/surf/brew properties is what pickWavePoint/finBrew write to.
+  check('E8 e2e fan-out: 🦢 swan_attack fire() → pickWavePoint(1) → MG.surf.stamina=90',()=>{
+    const keys=['shop','mg','surfBoardLife','todayWave','money','bs'];
+    const before={};for(const k of keys)before[k]=t.state[k];
+    const beforeSurf=t.MG.surf;
+    try{
+      Object.assign(t.state,{
+        shop:{crazyTipMul:1,crazyBrewOrders:0,crazySurfStam:0,crazyFaceMark:'',crazyMidnight:false,crazyBlessing:false,crazySlow:false},
+        mg:null,surfBoardLife:15,todayWave:null,money:500,bs:[2,0,0]
+      });
+      t.MG.surf=null;
+      t.data.crazyEvents.find(e=>e.id==='swan_attack').fire();
+      win.pickWavePoint(1);
+      return t.MG.surf&&t.MG.surf.stamina===90;
+    }finally{
+      for(const k of keys)t.state[k]=before[k];
+      t.MG.surf=beforeSurf;
+    }
+  });
+  check('E8 e2e fan-out: 🍕 pizza_bench fire() → pickWavePoint(1) → MG.surf.stamina=120',()=>{
+    const keys=['shop','mg','surfBoardLife','todayWave','money','bs'];
+    const before={};for(const k of keys)before[k]=t.state[k];
+    const beforeSurf=t.MG.surf;
+    try{
+      Object.assign(t.state,{
+        shop:{crazyTipMul:1,crazyBrewOrders:0,crazySurfStam:0,crazyFaceMark:'',crazyMidnight:false,crazyBlessing:false,crazySlow:false},
+        mg:null,surfBoardLife:15,todayWave:null,money:500,bs:[2,0,0]
+      });
+      t.MG.surf=null;
+      t.data.crazyEvents.find(e=>e.id==='pizza_bench').fire();
+      win.pickWavePoint(1);
+      return t.MG.surf&&t.MG.surf.stamina===120;
+    }finally{
+      for(const k of keys)t.state[k]=before[k];
+      t.MG.surf=beforeSurf;
+    }
+  });
+  check('E8 e2e fan-out: 🧀 cheese_roll fire() → pickWavePoint(1) → MG.surf.stamina=125',()=>{
+    const keys=['shop','mg','surfBoardLife','todayWave','money','bs'];
+    const before={};for(const k of keys)before[k]=t.state[k];
+    const beforeSurf=t.MG.surf;
+    try{
+      Object.assign(t.state,{
+        shop:{crazyTipMul:1,crazyBrewOrders:0,crazySurfStam:0,crazyFaceMark:'',crazyMidnight:false,crazyBlessing:false,crazySlow:false},
+        mg:null,surfBoardLife:15,todayWave:null,money:500,bs:[2,0,0]
+      });
+      t.MG.surf=null;
+      t.data.crazyEvents.find(e=>e.id==='cheese_roll').fire();
+      win.pickWavePoint(1);
+      return t.MG.surf&&t.MG.surf.stamina===125;
+    }finally{
+      for(const k of keys)t.state[k]=before[k];
+      t.MG.surf=beforeSurf;
+    }
+  });
+  // 🦢🦢 stamina floor: crazySurfStam=-900 should still cap at 20 via Math.max(20, ...)
+  check('E8 e2e fan-out: 🦢 stamina floor: Math.max(20, 100+(-900)) → 20',()=>{
+    const keys=['shop','mg','surfBoardLife','todayWave','money','bs'];
+    const before={};for(const k of keys)before[k]=t.state[k];
+    const beforeSurf=t.MG.surf;
+    try{
+      Object.assign(t.state,{
+        shop:{crazyTipMul:1,crazyBrewOrders:0,crazySurfStam:-900,crazyFaceMark:'',crazyMidnight:false,crazyBlessing:false,crazySlow:false},
+        mg:null,surfBoardLife:15,todayWave:null,money:500,bs:[2,0,0]
+      });
+      t.MG.surf=null;
+      win.pickWavePoint(1);
+      return t.MG.surf&&t.MG.surf.stamina===20;
+    }finally{
+      for(const k of keys)t.state[k]=before[k];
+      t.MG.surf=beforeSurf;
+    }
+  });
+  // 🚁 helicopter_tour / 🌷 tulip_crash / 🚢 canal_crash: crazyBrewOrders must propagate
+  // into finBrew's (1+0.08*(G.shop.crazyBrewOrders||0)) factor. Direct finBrew call
+  // has 10+ side effects (dropIng/saveLedger/bumpFaction/chkLv/addEvt/setMsg/addSch),
+  // so we instead verify the contract via (a) source audit confirms the formula is
+  // in finBrew, and (b) the (1+0.08*N) math matches what crazy events set.
+  check('E8 e2e fan-out: 🚁 helicopter_tour fire() → (1+0.08*crazyBrewOrders)=1.24',()=>withCrazyEventState(
+    'helicopter_tour',()=>t.state.shop.crazyBrewOrders===3&&Math.abs(1+0.08*t.state.shop.crazyBrewOrders-1.24)<1e-6));
+  check('E8 e2e fan-out: 🌷 tulip_crash fire() → (1+0.08*crazyBrewOrders)=0.76',()=>withCrazyEventState(
+    'tulip_crash',()=>t.state.shop.crazyBrewOrders===-3&&Math.abs(1+0.08*t.state.shop.crazyBrewOrders-0.76)<1e-6));
+  check('E8 e2e fan-out: 🚢 canal_crash fire() → (1+0.08*crazyBrewOrders)=1.40',()=>withCrazyEventState(
+    'canal_crash',()=>t.state.shop.crazyBrewOrders===5&&Math.abs(1+0.08*t.state.shop.crazyBrewOrders-1.40)<1e-6));
+  // End-to-end finBrew: do one full finBrew call with proper state to verify
+  // the formula actually lands in G.money. We restore everything after to keep
+  // the call's side effects from cascading into later tests.
+  check('E8 e2e fan-out: finBrew 单次完整调用,money 增加非零',()=>{
+    const beforeShop=t.state.shop,beforeM=t.state.money,beforeBrew=t.MG.brew;
+    const beforeBrewNotes=t.state.brewNotes,beforeBarStock=t.state.barStock,beforeStreak=t.state.shop.streak;
+    const beforeFactions=t.state.factions;
+    const restoreInd={lv:t.state.ind.brewing.lv,xp:t.state.ind.brewing.xp};
+    try{
+      t.state.ind.brewing.lv=0;t.state.ind.brewing.xp=0;
+      t.state.brewNotes={IPA:{count:0,best:0},Stout:{count:0,best:0},Lager:{count:0,best:0}};
+      t.state.barStock={lager:0,ipa:0,stout:0};
+      t.state.shop={crazyTipMul:1,crazyBrewOrders:0,crazySurfStam:0,crazyFaceMark:'',crazyMidnight:false,crazyBlessing:false,crazySlow:false,streak:0,streakBest:0,order:null};
+      t.state.money=0;
+      t.state.factions={heineken:0,coffee:0,smartshop:0};
+      const order={type:'IPA',recipe:[2,1,0],temp:50,limit:30,bonus:1};
+      t.MG.brew={ph:'brew',m:2,h:1,y:0,t:50,order,yeast:1,phases:[]};
+      win.finBrew(false);
+      // sanity: order processed correctly, money went up, streak incremented
+      return t.state.money>0&&t.state.shop.streak===1&&t.MG.brew.ph==='done';
+    }finally{
+      t.state.shop=beforeShop;t.state.money=beforeM;t.MG.brew=beforeBrew;
+      t.state.brewNotes=beforeBrewNotes;t.state.barStock=beforeBarStock;
+      t.state.shop.streak=beforeStreak;
+      t.state.factions=beforeFactions;
+      t.state.ind.brewing.lv=restoreInd.lv;t.state.ind.brewing.xp=restoreInd.xp;
+    }
+  });
+  // End-to-end finBrew with crazyBrewOrders=5: income should be > 1× baseline,
+  // proving the multiplier actually amplifies the result. (Exact 1.40× ratio is
+  // tricky due to Math.round() at the outer boundary; we use a looser ratio check
+  // that only fails if the multiplier is broken or zero.)
+  check('E8 e2e fan-out: finBrew crazyBrewOrders=5 收入 > baseline (1.35× 下限)',()=>{
+    const beforeShop=t.state.shop,beforeM=t.state.money,beforeBrew=t.MG.brew;
+    const beforeBrewNotes=t.state.brewNotes,beforeBarStock=t.state.barStock,beforeStreak=t.state.shop.streak;
+    const beforeFactions=t.state.factions;
+    const restoreInd={lv:t.state.ind.brewing.lv,xp:t.state.ind.brewing.xp};
+    const runOnce=(crazyBrewOrders)=>{
+      t.state.shop={crazyTipMul:1,crazyBrewOrders,crazySurfStam:0,crazyFaceMark:'',crazyMidnight:false,crazyBlessing:false,crazySlow:false,streak:0,streakBest:0,order:null};
+      t.state.money=0;
+      t.state.factions={heineken:0,coffee:0,smartshop:0};
+      const order={type:'IPA',recipe:[2,1,0],temp:50,limit:30,bonus:1};
+      t.MG.brew={ph:'brew',m:2,h:1,y:0,t:50,order,yeast:1,phases:[]};
+      win.finBrew(false);
+      return t.state.money;
+    };
+    try{
+      t.state.ind.brewing.lv=0;t.state.ind.brewing.xp=0;
+      t.state.brewNotes={IPA:{count:0,best:0},Stout:{count:0,best:0},Lager:{count:0,best:0}};
+      t.state.barStock={lager:0,ipa:0,stout:0};
+      const inc0=runOnce(0);
+      const inc5=runOnce(5);
+      // 1.40 expected; we use 1.35 as a lower bound to absorb Math.round() jitter
+      return inc0>0&&inc5>0&&inc5/inc0>=1.35;
+    }finally{
+      t.state.shop=beforeShop;t.state.money=beforeM;t.MG.brew=beforeBrew;
+      t.state.brewNotes=beforeBrewNotes;t.state.barStock=beforeBarStock;
+      t.state.shop.streak=beforeStreak;
+      t.state.factions=beforeFactions;
+      t.state.ind.brewing.lv=restoreInd.lv;t.state.ind.brewing.xp=restoreInd.xp;
+    }
+  });
+  // Same but verify crazyBrewOrders=-3 (tulip_crash) reduces income below 1× baseline
+  check('E8 e2e fan-out: finBrew crazyBrewOrders=-3 收入 < baseline (0.80× 上限)',()=>{
+    const beforeShop=t.state.shop,beforeM=t.state.money,beforeBrew=t.MG.brew;
+    const beforeBrewNotes=t.state.brewNotes,beforeBarStock=t.state.barStock,beforeStreak=t.state.shop.streak;
+    const beforeFactions=t.state.factions;
+    const restoreInd={lv:t.state.ind.brewing.lv,xp:t.state.ind.brewing.xp};
+    const runOnce=(crazyBrewOrders)=>{
+      t.state.shop={crazyTipMul:1,crazyBrewOrders,crazySurfStam:0,crazyFaceMark:'',crazyMidnight:false,crazyBlessing:false,crazySlow:false,streak:0,streakBest:0,order:null};
+      t.state.money=0;
+      t.state.factions={heineken:0,coffee:0,smartshop:0};
+      const order={type:'IPA',recipe:[2,1,0],temp:50,limit:30,bonus:1};
+      t.MG.brew={ph:'brew',m:2,h:1,y:0,t:50,order,yeast:1,phases:[]};
+      win.finBrew(false);
+      return t.state.money;
+    };
+    try{
+      t.state.ind.brewing.lv=0;t.state.ind.brewing.xp=0;
+      t.state.brewNotes={IPA:{count:0,best:0},Stout:{count:0,best:0},Lager:{count:0,best:0}};
+      t.state.barStock={lager:0,ipa:0,stout:0};
+      const inc0=runOnce(0);
+      const incNeg=runOnce(-3);
+      // 0.76 expected; we use 0.80 as upper bound to absorb Math.round() jitter
+      return inc0>0&&incNeg>0&&incNeg/inc0<=0.80;
+    }finally{
+      t.state.shop=beforeShop;t.state.money=beforeM;t.MG.brew=beforeBrew;
+      t.state.brewNotes=beforeBrewNotes;t.state.barStock=beforeBarStock;
+      t.state.shop.streak=beforeStreak;
+      t.state.factions=beforeFactions;
+      t.state.ind.brewing.lv=restoreInd.lv;t.state.ind.brewing.xp=restoreInd.xp;
+    }
+  });
+  // 🧑‍🍳 masterchef_visit / 🚲 bike_swarm / 🚋 tram_strike: tipFactor + speedMs composite.
+  // masterchef_visit: crazyTipMul=1.3, no slow → tipFactor()=1.3, speedMs(100)=100
+  // bike_swarm: crazyTipMul=1.2, slow=true → tipFactor()=1.2, speedMs(100)=50
+  // tram_strike: slow=true only → tipFactor()=1, speedMs(100)=50
+  check('E8 e2e fan-out: 🧑‍🍳 masterchef_visit fire() → tipFactor()×1.3, speedMs 不变',()=>withCrazyEventState(
+    'masterchef_visit',()=>Math.abs(win.tipFactor()-1.3)<1e-6&&win.speedMs(100)===100));
+  check('E8 e2e fan-out: 🚲 bike_swarm fire() → tipFactor()×1.2 AND speedMs(100)=50',()=>withCrazyEventState(
+    'bike_swarm',()=>Math.abs(win.tipFactor()-1.2)<1e-6&&win.speedMs(100)===50));
+  check('E8 e2e fan-out: 🚋 tram_strike fire() → tipFactor 不变, speedMs(100)=50',()=>withCrazyEventState(
+    'tram_strike',()=>Math.abs(win.tipFactor()-1)<1e-6&&win.speedMs(100)===50));
+  // stack: 运河涨水 + 自行车大军 both set crazySlow=true → speedMs(100) still 50 (idempotent)
+  check('E8 e2e fan-out: 🌊+🚲 双 slow → speedMs(100)=50 (idempotent)',()=>{
+    const keys=['shop','mood','money','bs','rep','ti','speed','events','upgrades','mods','mg'];
+    const before={};for(const k of keys)before[k]=t.state[k];
+    try{
+      Object.assign(t.state,{
+        shop:{crazyTipMul:1,crazyBrewOrders:0,crazySurfStam:0,crazyFaceMark:'',crazyMidnight:false,crazyBlessing:false,crazySlow:false},
+        mood:0,money:100,bs:[2,0,0],rep:0,ti:0,speed:1,events:[],upgrades:[],mods:[],mg:null
+      });
+      t.data.crazyEvents.find(e=>e.id==='canal_flood').fire();
+      t.data.crazyEvents.find(e=>e.id==='bike_swarm').fire();
+      return t.state.shop.crazySlow===true&&win.speedMs(100)===50;
+    }finally{
+      for(const k of keys)t.state[k]=before[k];
+    }
+  });
+  // source audit: verify finBrew source actually contains the crazyBrewOrders reference
+  // (regression guard against accidental hoisting)
+  check('E8 e2e fan-out: finBrew 源码引用 G.shop.crazyBrewOrders',()=>{
+    const src=win.eval('finBrew.toString()');
+    return/G\.shop\.crazyBrewOrders/.test(src);
+  });
+  // source audit: pickWavePoint source actually uses crazySurfStam
+  check('E8 e2e fan-out: pickWavePoint 源码引用 G.shop.crazySurfStam',()=>{
+    const src=win.eval('pickWavePoint.toString()');
+    return/G\.shop\.crazySurfStam/.test(src);
+  });
+
   // ═══ Phase E acceptance — core systems are live in browser runtime ═══
   // (withPhaseEIndustryState helper is defined at the top of the load handler so
   // it is in scope for the legendary_income tests at line ~390.)

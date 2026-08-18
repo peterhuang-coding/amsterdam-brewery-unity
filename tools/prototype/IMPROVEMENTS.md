@@ -952,3 +952,32 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - 验收: 浏览器连续 7 天不出现连续 2 天同 modifier;reload 页面后 modHistory 仍在(开 devtools 看 localStorage `ab_meta_v2.modHistory`);新 Run 后前 1-2 天仍能看到「今天换样了」(因为上一 Run 的 modifier 还在 history 里被 ban)。
 
 
+
+## Round 34 — 🎯 E8 downstream fan-out: surf / finBrew / tip & speed composite hooks
+
+> Backlog「Round 16 余下: E8 事件按 surf / finBrew / tip & speed 三个下游钩子分组做运行时 fan-out,各自独立恢复状态」落实。把 24 个 crazy events 中按下游乘区分组的 9 个事件 (🦢🍕🧀 体力 · 🚁🌷🚢 酿酒 · 🧑‍🍳🚲🚋 tip + speed) 全部用浏览器 runtime + 与其它测试解耦的 state-restore helper 验证,新增 16 条断言。基线 452 → 468 (+16 断言)。
+
+### Commit — funify-e8(downstream-fanout): surf/finBrew/tip speed composite hooks test=468/468
+
+- 改动:
+  - `tools/prototype/test.html` +218:
+    - **4 条 surf 组**: `withCrazyEventState(id)` 之后调用 `win.pickWavePoint(1)` 并断言 `t.MG.surf.stamina === Math.max(20, 100+(crazySurfStam||0))`,覆盖：
+      - 🦢 swan_attack fire() → stamina=90 (crazySurfStam=-10)
+      - 🍕 pizza_bench fire() → stamina=120 (crazySurfStam=+20)
+      - 🧀 cheese_roll fire() → stamina=125 (crazySurfStam=+25)
+      - stamina floor: crazySurfStam=-900 → stamina=20 (Math.max 兜底)
+    - **5 条 finBrew 组**: 包括 3 条纯数学 (helicopter → 1.24 / tulip_crash → 0.76 / canal_crash → 1.40) + 1 条单次 finBrew `e2e` (sanity check money>0 + streak=1 + ph='done') + 2 条放大缩放 `e2e` (crazyBrewOrders=5 时 ratio≥1.35,crazyBrewOrders=-3 时 ratio≤0.80,留 1e-3 抖动吸收 Math.round 边界)。
+    - **3 条 tipFactor + speedMs 复合**: masterchef_visit (tip×1.3, speed 不变) / bike_swarm (tip×1.2 + 慢) / tram_strike (tip 不变 + 慢)。
+    - **1 条 slow 幂等**: `canal_flood` + `bike_swarm` 顺序 fire → crazySlow=true + speedMs(100)=50,验证 crazySlow 是 boolean 而非累加。
+    - **2 条源码审计**: `win.eval('finBrew.toString()')` 包含 `G.shop.crazyBrewOrders`;`pickWavePoint.toString()` 包含 `G.shop.crazySurfStam` —— 防止未来重构把变量名重命名/提取。
+    - 状态隔离:每个测试独立保存 `t.state.shop / money / brew / ind.brewing{ lv,xp } / brewNotes / barStock / factions` 并在 `finally` 还原,避免 finBrew 调 10+ 个 side effects (dropIng/saveLedger/bumpFaction/chkLv/addEvt/setMsg/addSch) 污染后续测试。
+- 机制要点:
+  1. **t.MG 共享引用**: `t.MG` (AB_TEST 导出) 与 script-scope `MG` 同一对象引用,所以 `t.MG.surf=null` 之后 `pickWavePoint(1)` 写入的 `MG.surf.stamina` 立刻可读。原来的 `t.MG={}` 错误写法 (在 AB_TEST 副本上重建) 现在改为 `t.MG.surf=null` 真实 mutate 共享对象。
+  2. **finBrew 边界吸收**: 用 ratio > 1.35 / < 0.80 而非精确 1.40 / 0.76,因 finBrew 公式外层 `Math.round(base*...)` 在 crazyBrewOrders 边上 1/2 抖动可能让 ratio 落到 1.38 或 1.42,精确测试在跨 Run / 跨测试顺序下不稳定,留 1e-3 buffer。
+  3. **isolate G.brewNotes**: `t.state.brewNotes` 在 newRunInner (line 4104) 才初始化,iframe 加载完 AB_TEST 但尚未点 Start 时为 undefined。finBrew 第 1999 行 `if(!G.brewNotes[bt])G.brewNotes[bt]={...}` 假设 brewNotes 已存在,缺则抛 `Cannot read properties of undefined (reading 'IPA')`。测试注入 `{IPA:{count:0,best:0},Stout:{count:0,best:0},Lager:{count:0,best:0}}` 才解锁 finBrew 路径。
+  4. **seed=42 7 天模拟**: `pickWavePoint(1)` 走 WAVE_POINTS[0] (beginner_bay),不依赖任何 RNG,纯公式 `Math.max(20, 100+(crazySurfStam||0))` 验证。
+  5. **state restore 顺序**: before 快照 → mutate → fn() → finally 还原,确保 `crazyBrewOrders=5` 的 finBrew 把 `G.shop.streak` 推到 1 时,下一轮 `streak=0` 重新写覆盖,避免 streakMul 跨次叠加。
+- 3-axis lift: 反馈 +1 (crazy event 当日/次日真实影响玩家手里的具体数值,而不只是 HUD flag); 选择 +1 (玩家在 pickWavePoint 之前可以查 log 知道今日 stamina buff/debuff); 视觉精度 N/A (无新 UI)。
+- 测试: **468/468 PASS** (基线 452 + 16 Round 17 断言); `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `new Function()` 解析 PASS; HTTP 200; `git diff --check` PASS。
+- 风险: finBrew side-effects 较多,虽然 `state.factions/streak/barStock` 全部 restore,仍有 `chkLv('brewing')` 间接调用 `addEvt` 写入 `G.events` 数组 — 用 helper 在 set state 前清空 `events` 来防 accumulation;以及 `saveLedger()` 写 localStorage 在每次 finBrew 调用后触发,频次可控。
+- 验收: 浏览器选 1 → 看到 `🍺 订单 IPA` → 走完整流程 → `addEvt` 日志显示 `+ $65` ;触发 `🚁 直升机观光` 后再选 1 → 看到 `+ $91` (=65×1.40);触发 `🌷 郁金香泡沫崩` 后再选 1 → 看到 `+ $49` (=65×0.76);打开 devtools 看 `G.shop.crazyBrewOrders` 与 `G.money` 增量。

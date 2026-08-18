@@ -819,3 +819,25 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - 测试: **408/408 PASS**（基线 400 + 8 Round 28 运行时断言）; `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `node --check` PASS; HTTP 200; `git diff --check` PASS。
 - 风险: `CRAZY_POOL` 只在 `AB_TEST.data` 暴露，不进入生产 UI/API；E8 其余事件仍主要由静态契约覆盖，后续可继续补充实际小游戏入口的端到端断言。
 - 验收: 打开 `test.html`，E8 acceptance 区显示 8 条 PASS；手动 `?seed=42` 触发极昼后，在 Dawn 进入酒吧不会再收到闭店提示。
+
+## Round 29 — E8 end-to-end 浏览器钩子 (carnival_mask 顾客面具 + crazyBlessing 偏正向)
+
+> Round 28 下一步落实：把 `carnival_mask` 与 `crazyBlessing` 从「仅写 flag」提升为下游消费端真实验证。Round 28 只断言 fire() 后状态值正确，本轮断言状态被下游业务函数真实消费。
+
+### Commit — funify-e8(e2e-hooks): carnival_mask + crazyBlessing 端到端门禁 test=412/412
+
+- 改动:
+  - `tools/prototype/index.html` AB_TEST 导出补 `MG`（脚本顶层 `const MG` 不可被 iframe 外 eval 访问，carnival 测试需要回读 `MG.bar.cs`）。
+  - `tools/prototype/test.html` 新增 4 条 Round 29 浏览器 e2e 断言：
+    1. `carnival_mask → sBarC()` 后顾客 `faceMark === '🎭'`（覆盖默认 / 常客 `💛`）。
+    2. `carnival_mask` 在 VIP 顾客上仍戴 `🎭`（验证 carnival 优先级最高，胜过 VIP 专属 `🎩`）。
+    3. `crazyBlessing` 在 5 seeds × 7 天 = 35 picks 上 `goodRate ≥ baseline + 20pp`（实际再加权 good=3/bad=0.5/neutral=1，5/12 good 池从 ~0.42 → ~0.71）。
+    4. 反向 control：无 blessing 时 35 picks 至少 1 个非 good（保证测试非恒真）。
+- 实现要点:
+  - carnival 钩子验证需要构造最小 `MG.bar`（`cs/sd/pool/diff`）然后调 `sBarC()`，再读 `MG.bar.cs[len-1].faceMark`；用 `try/finally` 恢复 G.shop/MG.bar，避免污染后续门禁。
+  - blessing 测试承认「偏正向」是再加权而非硬过滤（设计选择：tulip_auction `kind:'neutral'` 仍可被抽中），用 goodRate 差值检验比「全部 good」更贴实现语义。
+- 3-axis lift: 反馈 +1（carnival/blessing 现在有真实下游消费证明）; 选择 +1（确认 blessing 不阻挡 neutral 事件，给后续精修留余地）; 视觉精度 N/A。
+- 测试: **412/412 PASS**（基线 408 + 4 Round 29 e2e 断言）; `test-phase-e.js` **168/168 PASS**; 两个 HTML 内联脚本 `node --check` PASS; HTTP 200; `git diff --check` PASS。
+- 风险: `MG` 现在挂在 `AB_TEST` 上，仅供测试入口；不会进入生产 UI/API。`MG.bar` 直接赋值后未走 startBar 的 pool shuffle，因此 pool 顺序固定——断言也只依赖 `arch.n` 与 `faceMark`，对 shuffle 不敏感。
+- 验收: 打开 `test.html`，E8 e2e 区显示 4 条 PASS；carnival_mask fire() 后立刻调 sBarC()，返回的顾客 faceMark 必为 `🎭`；UFO fire() 后 35 picks 至少 ~70% 是 good，比无 flag 的 ~42% 高出 ≥20pp。
+

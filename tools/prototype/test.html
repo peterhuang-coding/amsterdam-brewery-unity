@@ -1224,6 +1224,117 @@ frame.addEventListener('load',async()=>{
   check('E8 runtime: 🌊 运河涨水 fire() → speedMs 100→50',()=>withCrazyEventState(
     'canal_flood',()=>win.speedMs(100)===50));
 
+  // ═══ Round 12 — E8 end-to-end downstream hooks (not just state) ═══
+  // carnival_mask: faceMark must propagate to a freshly spawned bar customer,
+  // not just live on G.shop.crazyFaceMark. We construct a minimal MG.bar so
+  // sBarC() can run without auto-run. (MG is exposed via AB_TEST in Round 12
+  // so test.html can read back the spawned customer without eval-scoped refs.)
+  check('E8 e2e: 🎭 carnival_mask → sBarC() 顾客 faceMark=🎭 (override VIP🎩/常客💛)',()=>{
+    const keys=['shop','mg','barRegulars','custRels'];
+    const before={};for(const k of keys)before[k]=t.state[k];
+    const beforeMG=t.MG.bar;
+    try{
+      Object.assign(t.state,{
+        shop:{crazyTipMul:1,crazyBrewOrders:0,crazySurfStam:0,crazyFaceMark:'',crazyMidnight:false,crazyBlessing:false,crazySlow:false},
+        mg:null,barRegulars:[],custRels:{}
+      });
+      t.MG.bar={cs:[],sd:0,earn:0,combo:0,mx:6,
+        offer:null,reco:0,recoDrink:'🥃',
+        pool:[{n:'Normal',face:'🧑',floor:6,max:14}],
+        vipDay:false,diff:{tier:'easy',poolNames:['Normal'],patienceMult:1.25,mxDelta:0,wantRecoP:0.25,label:'🌱',color:'#78c878'}};
+      const event=t.data.crazyEvents.find(e=>e.id==='carnival_mask');event.fire();
+      // sanity: state was set
+      if(t.state.shop.crazyFaceMark!=='🎭')return false;
+      // spawn one bar customer — should pick up faceMark='🎭'
+      t.sBarC();
+      const cur=t.MG.bar.cs[t.MG.bar.cs.length-1];
+      return !!cur&&cur.faceMark==='🎭';
+    }finally{
+      for(const k of keys)t.state[k]=before[k];
+      t.MG.bar=beforeMG;
+    }
+  });
+  check('E8 e2e: 🎭 carnival_mask + VIP 顾客仍戴 🎭 (carnival 优先级最高)',()=>{
+    const keys=['shop','mg','barRegulars','custRels'];
+    const before={};for(const k of keys)before[k]=t.state[k];
+    const beforeMG=t.MG.bar;
+    try{
+      Object.assign(t.state,{
+        shop:{crazyTipMul:1,crazyBrewOrders:0,crazySurfStam:0,crazyFaceMark:'',crazyMidnight:false,crazyBlessing:false,crazySlow:false},
+        mg:null,barRegulars:[],custRels:{}
+      });
+      t.MG.bar={cs:[],sd:0,earn:0,combo:0,mx:6,
+        offer:null,reco:0,recoDrink:'🥃',
+        pool:[{n:'VIP',face:'🎩',floor:25,max:60}],
+        vipDay:false,diff:{tier:'easy',poolNames:['VIP'],patienceMult:1.25,mxDelta:0,wantRecoP:0.25,label:'🌱',color:'#78c878'}};
+      const event=t.data.crazyEvents.find(e=>e.id==='carnival_mask');event.fire();
+      t.sBarC();
+      const cur=t.MG.bar.cs[t.MG.bar.cs.length-1];
+      return !!cur&&cur.arch.n==='VIP'&&cur.faceMark==='🎭';
+    }finally{
+      for(const k of keys)t.state[k]=before[k];
+      t.MG.bar=beforeMG;
+    }
+  });
+  // crazyBlessing: re-weights rollDayModifier (good=3, bad=0.5, neutral=1) so
+  // a blessing-armed run should pick significantly more 'good' mods than the
+  // same seeds without the flag. We sample 5 seeds × 7 days = 35 picks and
+  // assert blessing-armed goodRate strictly exceeds unflagged goodRate by a
+  // margin that survives deterministic seeds (≥ +20 pp).
+  check('E8 e2e: 🛸 crazyBlessing → 35 picks goodRate ≥ unflagged goodRate + 20pp',()=>{
+    const keys=['shop','seed','mods','day','upgrades'];
+    const before={};for(const k of keys)before[k]=t.state[k];
+    const EVK=win.eval('EV_KIND');
+    const sample=(armed)=>{
+      let good=0,total=0;
+      for(const seed of [42,100,200,250,777]){
+        for(let d=1;d<=7;d++){
+          t.state.shop={crazyTipMul:1,crazyBrewOrders:0,crazySurfStam:0,crazyFaceMark:'',crazyMidnight:false,crazyBlessing:!!armed,crazySlow:false};
+          t.state.upgrades=[];
+          t.state.seed=seed;t.state.day=d;t.state.mods=[];
+          const picked=t.rollDayModifier();
+          if(EVK[picked.id]==='good')good++;
+          total++;
+        }
+      }
+      return {good,total,rate:good/total};
+    };
+    try{
+      const withBlessing=sample(true);
+      const noBlessing=sample(false);
+      // need +20pp or better; with reweight good=3 vs neutral=1 (and bad=0.5)
+      // across 12-mod pool (~5 good / 4 neutral / 3 bad) the expected goodRate
+      // jumps from ~0.42 → ~0.71, so +0.20 is a comfortable lower bound.
+      return withBlessing.rate>=noBlessing.rate+0.20;
+    }finally{
+      for(const k of keys)t.state[k]=before[k];
+    }
+  });
+  // crazyBlessing: control — without the flag, at least one day across the
+  // 5 seeds must NOT be 'good' (verifies the test isn't a tautology and that
+  // blessing genuinely re-weights the bias).
+  check('E8 e2e: 🛸 control: 无 crazyBlessing → 5 seeds × 7 天至少 1 个非 good',()=>{
+    const keys=['shop','seed','mods','day','upgrades'];
+    const before={};for(const k of keys)before[k]=t.state[k];
+    try{
+      t.state.shop={crazyTipMul:1,crazyBrewOrders:0,crazySurfStam:0,crazyFaceMark:'',crazyMidnight:false,crazyBlessing:false,crazySlow:false};
+      t.state.upgrades=[];
+      const EVK=win.eval('EV_KIND');
+      let badOrNeutralSeen=false;
+      for(const seed of [42,100,200,250,777]){
+        for(let d=1;d<=7;d++){
+          t.state.seed=seed;t.state.day=d;t.state.mods=[];
+          const picked=t.rollDayModifier();
+          if(EVK[picked.id]!=='good'){badOrNeutralSeen=true;break}
+        }
+        if(badOrNeutralSeen)break;
+      }
+      return badOrNeutralSeen;
+    }finally{
+      for(const k of keys)t.state[k]=before[k];
+    }
+  });
+
   // ═══ Phase E acceptance — core systems are live in browser runtime ═══
   // (withPhaseEIndustryState helper is defined at the top of the load handler so
   // it is in scope for the legendary_income tests at line ~390.)

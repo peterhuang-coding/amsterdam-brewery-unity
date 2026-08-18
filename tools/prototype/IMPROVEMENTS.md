@@ -774,3 +774,15 @@ Web Demo 6 小游戏「手感/反馈/选择」三维优化轨迹。每轮 1 game
 - 测试: **168/168 PASS** (基线 164 + 4 Round 25 断言: intro Phase E 提示含 T/F/C/G + 24 搞怪事件 + renderRunHistory best 公式 + 🏆 banner 字符串 + 金色边框样式)
 - 风险: 纯增量 — 旧 intro 屏 + 旧 renderRunHistory 仍正常显示;best 计算 O(N) 在 N≤10 时无性能问题
 - 验收: 浏览器首开看 intro 第 4 行 🆕 Phase E 预告;完成几局后看升级模态折叠的「📜 历史 Run 卡片」顶部出现金色 🏆 banner
+
+## Round 26 — Phase E 核心系统浏览器运行时接线门禁
+
+- commit: `funify-e1-e4(runtime-parity): verify core multipliers in browser`
+- 改动: `tools/prototype/test.html` +6 运行时断言 + 隔离状态 helper;`tools/prototype/README.md` 移除过期硬编码浏览器计数,补 Phase E 乘区覆盖说明
+- 机制:
+  1. 每条断言先清空 upgrade/mod/满级产业等既有乘区,再分别验证 Talent ×1.25、Mutator ×1.6、Faction ×1.5、Craft ×1.25、NPC L3 ×1.5
+  2. 最后一条在真实 iframe 中把五层同时叠加,精确断言 `industryFactor('brewing') === 5.625`,防止任一系统退化成 flavor text
+  3. `finally` 恢复所有被替换的 `G` 字段与产业等级,不污染后续 E11/历史卡测试
+- 验证: `test-phase-e.js` **168/168 PASS**;`index.html` 与 `test.html` 内联脚本 `node --check` PASS;headless Chrome 定向实测 `{talent:1.25,mutator:1.6,faction:1.5,craft:1.25,npc:1.5,stack:5.625}`
+- 风险: 完整 `test.html` headless 基线仍有 pre-existing auto-run 失败及其级联（本轮观测 369/400）;本轮只新增隔离断言,不改游戏行为
+- 验收: 打开 `test.html`,Phase E acceptance 区 6 条均显示 PASS;任意删掉 `industryFactor` 的 E1/E2/E3/E4 接线都会触发对应失败

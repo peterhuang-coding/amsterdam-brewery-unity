@@ -63,10 +63,11 @@ localStorage.removeItem('ab_speed_v1')
 
 ## 验证
 
-打开 `test.html`。**当前 353/353 PASS**（基线 19 + 334 funify-v3 增项），覆盖：
+打开 `test.html`，页面顶部会显示当前动态断言计数；另可运行 `node test-phase-e.js`（当前 **168/168 PASS**）。覆盖：
 
 - 数据契约（5 产业、事件 ID 唯一、升级 ID 唯一、modifier 都有 effect、冲浪入口、Seed 稳定）
 - 运行时契约（目标生成数量、必须含 Explore/Talk、升级包含三张死亡升级）
+- Phase E 乘区接线（Talent / Mutator / Faction / Craft / NPC 单层效果与五层精确叠加）
 - 首开 UX（fresh localStorage 看到模态、模态打开时 WASD 不生效、seed 输入框回车可启动）
 - 运河改道（点击运河坐标会被改道到最近桥端）
 - 完整闭环（自动运行 100s 内必达 ended；购买升级后 run +1 且 upgrades 增加且 ended 已复位）

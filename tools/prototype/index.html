@@ -784,6 +784,19 @@ const CANALS=[
 ];
 
 // ═══════════════════════════════════════════
+// LANDMARKS — iconic Amsterdam buildings (drawn after CIVIC, before BLDGS)
+// Real positions: Rijksmuseum @ Museumplein, Anne Frank @ Prinsengracht 263,
+// Beurs van Berlage @ Dam 2, Magere Brug @ Amstel.
+// ═══════════════════════════════════════════
+const LANDMARKS=[
+  {x:485,y:225,n:'Rijksmuseum',real:'Museumplein',shape:'temple',col:'#a82828'},
+  {x:240,y:300,n:'Anne Frank',real:'Prinsengracht 263',shape:'narrow',col:'#7a4020'},
+  {x:380,y:200,n:'Beurs',real:'Dam 2',shape:'wide',col:'#a06820'},
+  {x:570,y:395,n:'Magere Brug',real:'Amstel',shape:'liftbridge',col:'#5a3a1a'},
+  {x:300,y:160,n:'Centraal',real:'Centraal Station',shape:'station',col:'#c83030'},
+];
+
+// ═══════════════════════════════════════════
 // BRIDGES — crossing points where streets meet canals
 // ═══════════════════════════════════════════
 const BRIDGES=[
@@ -5061,6 +5074,128 @@ function finBar(){
 // ═══════════════════════════════════════════
 // 2.5D isometric helpers
 function shadeColor(hex, light){const c=parseInt(hex.slice(1),16);return 'rgb('+Math.max(0,Math.min(255,((c>>16)&255)+light))+','+Math.max(0,Math.min(255,((c>>8)&255)+light))+','+Math.max(0,Math.min(255,(c&255)+light))+')'}
+
+// funify-v3 R-map-refine — Amsterdam signature visual: gabled canal house facades.
+// 4 iconic gable types: 0=klokgevel (bell), 1=trapgevel (stepped), 2=halsgevel (neck), 3=spout+hijsbalk (hoist beam).
+// Each draws on top of an 8-wide brick house body. Used by drawMap CIVIC loop.
+function drawGabledHouse(gx,gy,w,h,cl,t){
+  // Body shadow + body + window (matches old plain-rect look but adds depth)
+  cx.fillStyle='#0002';cx.fillRect(gx+1,gy+h,w,1);
+  cx.fillStyle=cl;cx.fillRect(gx,gy,w,h);
+  // brick courses (3 horizontal lines for ~14-18 tall, 2 for 12-13 tall)
+  cx.fillStyle='#00000018';
+  for(var by=gy+3;by<gy+h-1;by+=4)cx.fillRect(gx,by,w,1);
+  // central lit window (Amsterdam's tall narrow windows)
+  cx.fillStyle='#f0e0a0';cx.fillRect(gx+w/2-1,gy+h/2-2,2,4);
+  // gable on top — drawn darker for depth
+  cx.fillStyle=shadeColor(cl,-25);
+  var top=gy;
+  if(t===0){
+    // klokgevel — bell gable with rounded shoulders
+    cx.beginPath();
+    cx.moveTo(gx,top);cx.lineTo(gx,gy-3);
+    cx.bezierCurveTo(gx+w*0.15,gy-6,gx+w*0.4,gy-7,gx+w*0.5,gy-7);
+    cx.bezierCurveTo(gx+w*0.6,gy-7,gx+w*0.85,gy-6,gx+w,gy-3);
+    cx.lineTo(gx+w,top);cx.closePath();cx.fill();
+  }else if(t===1){
+    // trapgevel — 3 stair steps
+    cx.beginPath();
+    cx.moveTo(gx,top);cx.lineTo(gx,gy-6);
+    cx.lineTo(gx+1.5,gy-6);cx.lineTo(gx+1.5,gy-4.5);cx.lineTo(gx+3,gy-4.5);cx.lineTo(gx+3,gy-3);
+    cx.lineTo(gx+w-3,gy-3);cx.lineTo(gx+w-3,gy-4.5);cx.lineTo(gx+w-1.5,gy-4.5);cx.lineTo(gx+w-1.5,gy-6);
+    cx.lineTo(gx+w,gy-6);cx.lineTo(gx+w,top);cx.closePath();cx.fill();
+  }else if(t===2){
+    // halsgevel — narrow neck + wide top
+    cx.beginPath();
+    cx.moveTo(gx,top);cx.lineTo(gx,gy-3);
+    cx.lineTo(gx+w*0.35,gy-3);cx.lineTo(gx+w*0.35,gy-6);
+    cx.lineTo(gx+w*0.65,gy-6);cx.lineTo(gx+w*0.65,gy-3);
+    cx.lineTo(gx+w,gy-3);cx.lineTo(gx+w,top);cx.closePath();cx.fill();
+  }else{
+    // spout gable + hijsbalk hoist beam sticking out top (the crane that lifts furniture to upper floors)
+    cx.beginPath();
+    cx.moveTo(gx,top);cx.lineTo(gx,gy-2);
+    cx.lineTo(gx+w*0.25,gy-5);cx.lineTo(gx+w*0.75,gy-5);
+    cx.lineTo(gx+w,gy-2);cx.lineTo(gx+w,top);cx.closePath();cx.fill();
+    cx.fillStyle='#3a2010';cx.fillRect(gx+w*0.35,gy-7,w*0.3,1);
+    cx.fillRect(gx+w*0.45,gy-8,1,1);
+  }
+}
+
+// funify-v3 R-map-refine — Landmark building renderer. 5 distinct shapes for visual variety.
+function drawLandmark(L){
+  cx.save();
+  var cxm=L.x,cym=L.y;
+  if(L.shape==='temple'){
+    // Rijksmuseum — 8-column neoclassical facade + pediment + bike racks in front
+    cx.fillStyle='#d0c0a0';cx.fillRect(cxm-24,cym-1,48,11);
+    cx.fillStyle=L.col;cx.fillRect(cxm-24,cym-1,48,3);
+    cx.fillStyle='#f0e8c8';for(var i=0;i<8;i++)cx.fillRect(cxm-21+i*6,cym+2,2.5,7);
+    // pediment triangle
+    cx.fillStyle=L.col;cx.beginPath();cx.moveTo(cxm-24,cym-1);cx.lineTo(cxm,cym-12);cx.lineTo(cxm+24,cym-1);cx.closePath();cx.fill();
+    cx.fillStyle='#f0e0a0';cx.fillRect(cxm-1,cym-6,2,2); // pediment window
+    // "I amsterdam" letters — tiny
+    cx.fillStyle='#ec407a';cx.font='bold 6px sans-serif';cx.textAlign='center';cx.fillText('I AMSTERDAM',cxm,cym+5);
+    // bike racks
+    cx.fillStyle='#3a3a3a';for(var j=0;j<6;j++)cx.fillRect(cxm-16+j*6,cym+11,4,2);
+    cx.font='bold 7px sans-serif';cx.fillStyle='#1a1a1a';cx.fillText(L.n,cxm,cym+22);
+  }else if(L.shape==='narrow'){
+    // Anne Frank House — tall narrow stepped gable + bookshop front
+    cx.fillStyle=L.col;cx.fillRect(cxm-4,cym-12,8,18);
+    cx.fillStyle=shadeColor(L.col,-25);
+    cx.beginPath();
+    cx.moveTo(cxm-4,cym-12);cx.lineTo(cxm-4,cym-19);
+    cx.lineTo(cxm-2.5,cym-19);cx.lineTo(cxm-2.5,cym-17);cx.lineTo(cxm-1,cym-17);cx.lineTo(cxm-1,cym-15);
+    cx.lineTo(cxm+1,cym-15);cx.lineTo(cxm+1,cym-17);cx.lineTo(cxm+2.5,cym-17);cx.lineTo(cxm+2.5,cym-19);
+    cx.lineTo(cxm+4,cym-19);cx.lineTo(cxm+4,cym-12);cx.closePath();cx.fill();
+    cx.fillStyle='#f0e0a0';cx.fillRect(cxm-1.5,cym-9,3,4); // window
+    // bookshop awning
+    cx.fillStyle='#3a2010';cx.fillRect(cxm-6,cym+1,12,3);
+    cx.fillStyle='#fde68a';cx.font='bold 5px sans-serif';cx.fillText('BOOKS',cxm,cym+3.5);
+    cx.font='bold 7px sans-serif';cx.fillStyle='#1a1a1a';cx.fillText(L.n,cxm,cym+13);
+  }else if(L.shape==='wide'){
+    // Beurs van Berlage — brick base + clock tower + arches
+    cx.fillStyle=L.col;cx.fillRect(cxm-14,cym-7,28,12);
+    cx.fillStyle='#d0a050';cx.fillRect(cxm-14,cym-11,28,4);
+    cx.fillStyle='#3a2010';cx.beginPath();cx.arc(cxm-9,cym-1,2.5,0,Math.PI,0);cx.fill();
+    cx.beginPath();cx.arc(cxm,cym-1,2.5,0,Math.PI,0);cx.fill();
+    cx.beginPath();cx.arc(cxm+9,cym-1,2.5,0,Math.PI,0);cx.fill();
+    // clock tower
+    cx.fillStyle='#a06820';cx.fillRect(cxm-3,cym-19,6,8);
+    cx.fillStyle='#f0e0a0';cx.beginPath();cx.arc(cxm,cym-15,2.5,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#1a1a1a';cx.fillRect(cxm,cym-16,0.8,1.2); // clock hand
+    cx.font='bold 7px sans-serif';cx.fillStyle='#1a1a1a';cx.fillText(L.n,cxm,cym+13);
+  }else if(L.shape==='liftbridge'){
+    // Magere Brug — iconic white-painted wooden lift bridge with two towers + arch
+    // water reflection
+    cx.fillStyle='#3a689066';cx.fillRect(cxm-18,cym+1,36,2);
+    // bridge deck (white wood)
+    cx.fillStyle='#f8f0e0';cx.fillRect(cxm-15,cym-1,30,3);
+    cx.fillStyle='#a08060';cx.fillRect(cxm-15,cym+2,30,1);
+    // two lift towers (the bridge raises by these)
+    cx.fillStyle=L.col;cx.fillRect(cxm-14,cym-12,3,12);
+    cx.fillRect(cxm+11,cym-12,3,12);
+    cx.fillStyle='#3a2010';cx.fillRect(cxm-15,cym-13,5,1);cx.fillRect(cxm+10,cym-13,5,1);
+    // center arch
+    cx.strokeStyle='#f8f0e0';cx.lineWidth=1;cx.beginPath();cx.moveTo(cxm-10,cym-1);cx.quadraticCurveTo(cxm,cym-7,cxm+10,cym-1);cx.stroke();
+    // warm lamplight dots at night
+    cx.fillStyle='#ffcc44';cx.beginPath();cx.arc(cxm-12,cym-8,1.2,0,Math.PI*2);cx.fill();
+    cx.beginPath();cx.arc(cxm+12,cym-8,1.2,0,Math.PI*2);cx.fill();
+    cx.font='bold 7px sans-serif';cx.fillStyle='#1a1a1a';cx.fillText(L.n,cxm,cym+11);
+  }else if(L.shape==='station'){
+    // Centraal Station — red brick + green copper spires + "1889" banner
+    cx.fillStyle=L.col;cx.fillRect(cxm-14,cym-3,28,9);
+    cx.fillStyle='#a04825';for(var sb=0;sb<3;sb++)cx.fillRect(cxm-14,cym-2+sb*3,28,1);
+    cx.fillStyle='#5a8a40';cx.beginPath();cx.moveTo(cxm-3,cym-3);cx.lineTo(cxm-2,cym-15);cx.lineTo(cxm+2,cym-15);cx.lineTo(cxm+3,cym-3);cx.closePath();cx.fill();
+    cx.fillStyle='#f0e0a0';cx.fillRect(cxm-1,cym-13,2,2); // spire window
+    // "CENTRAAL STATION" banner
+    cx.fillStyle='#fde68a';cx.fillRect(cxm-12,cym-1,24,3);
+    cx.fillStyle='#1a1a1a';cx.font='bold 4px sans-serif';cx.fillText('CENTRAAL STATION',cxm,cym+0.8);
+    cx.font='bold 7px sans-serif';cx.fillStyle='#1a1a1a';cx.fillText(L.n,cxm,cym+13);
+  }
+  cx.restore();
+}
+
 function drawMap(){
   // ═══════════════════════════════════════════
   // Mini Metro-style Amsterdam map
@@ -5134,11 +5269,21 @@ function drawMap(){
     cx.fillText(b.n,b.x+b.w/2,b.y-5);
   });
 
-  // ── 8. CIVIC decorative canal houses (Mini Metro: small filled rectangles) ──
+  // ── 8. CIVIC decorative canal houses (R-map-refine: real gabled facades) ──
+  // Each house gets one of 4 iconic Amsterdam gable types (klokgevel/trapgevel/halsgevel/spout)
+  // selected stably by position hash so the city looks consistent across renders.
+  // Skip gable on the y=260 strip (canal south bank) since gables face the canal & would clash with houseboats above.
   CIVIC.forEach(function(b){
-    cx.fillStyle='#0002';cx.fillRect(b.x+1,b.y+b.h,b.w,1);
-    cx.fillStyle=b.cl;cx.fillRect(b.x,b.y,b.w,b.h);
-    cx.fillStyle='#f0e0a0';cx.fillRect(b.x+b.w/2-1,b.y+b.h/2-1,2,2);
+    var gableType=((b.x*7+b.y*13+b.w*3+b.h*5)>>>0)%4;
+    var skipGable=(b.y>=255&&b.y<=265);
+    if(skipGable){
+      // plain body — gable invisible (faces away from viewer on canal side)
+      cx.fillStyle='#0002';cx.fillRect(b.x+1,b.y+b.h,b.w,1);
+      cx.fillStyle=b.cl;cx.fillRect(b.x,b.y,b.w,b.h);
+      cx.fillStyle='#f0e0a0';cx.fillRect(b.x+b.w/2-1,b.y+b.h/2-1,2,2);
+    }else{
+      drawGabledHouse(b.x,b.y,b.w,b.h,b.cl,gableType);
+    }
   });
 
   // ── 9. Houseboats (small colored rects along canal edges) ──
@@ -5147,6 +5292,10 @@ function drawMap(){
     cx.fillStyle=b.cl;cx.fillRect(b.x,b.y,b.w,b.h);
     cx.fillStyle='#f0e0a0';cx.fillRect(b.x+b.w/2-1,b.y-1,2,1);
   });
+
+  // ── 9a. LANDMARKS (R-map-refine: 5 iconic Amsterdam buildings) ──
+  // Rijksmuseum / Anne Frank / Beurs / Magere Brug / Centraal Station
+  LANDMARKS.forEach(drawLandmark);
 
   // ── 9b. Round 1: city living vibe — flowing NPCs + boats + trams + bikes ──
   drawCity();

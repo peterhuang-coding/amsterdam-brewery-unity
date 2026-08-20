@@ -676,7 +676,7 @@ const BLDGS=[
   // === SCIENCE PARK (far east) ===
   {x:680,y:315,r:12,id:'lab',n:'Chen实验室',cl:'#5080a0',d:'science_park',tp:'npc',ic:'🔬',npc:'chen',real:'Science Park'},
   {x:680,y:355,r:12,id:'pablo',n:'Pablo教室',cl:'#c05030',d:'science_park',tp:'npc',ic:'📚',npc:'pablo',real:'UvA'},
-  {x:720,y:395,r:12,id:'lib',n:'图书馆',cl:'#708090',d:'science_park',tp:'academic',ic:'📖',real:'Allard Pierson'},
+  {x:720,y:395,r:12,id:'lib',n:'图书馆',cl:'#708090',d:'science_park',tp:'dive',ic:'📖',real:'Allard Pierson'},
   {x:680,y:395,r:12,id:'ravi',n:'Ravi宿舍',cl:'#f0c850',d:'science_park',tp:'npc',ic:'💻',npc:'ravi',real:'Science Park'},
   // === DE PIJP (south of Amstel) ===
   {x:220,y:470,r:12,id:'market',n:'Albert Cuyp',cl:'#c0a060',d:'de_pijp',tp:'market',ic:'🛒',real:'Albert Cuypstraat',crime:'shoplift'},
@@ -3793,7 +3793,7 @@ function enterBldg(){
   // funify-v3 Round 26 — 📼 记录进入建筑
   logAction('enter',{x:G.p.x,y:G.p.y,day:G.day,ti:G.ti,detail:b.n+' ('+b.tp+')'});
   if(b.tp==='bar'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'🍸 酒吧'});startBar()}else if(b.tp==='brew'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'🍺 酿酒'});startBrew()}else if(b.tp==='coffee'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'☕ 咖啡'});startCoffee()}
-  else if(b.tp==='shroom'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'🍄 蘑菇'});startShroom()}else if(b.tp==='surf'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'🏄 冲浪'});startSurf()}else if(b.tp==='academic'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'📚 学术'});startAcad()}else if(b.tp==='station'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'🚉 车站'});startStation()}
+  else if(b.tp==='shroom'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'🍄 蘑菇'});startShroom()}else if(b.tp==='surf'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'🏄 冲浪'});startSurf()}else if(b.tp==='dive'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'📚 巨量标记'});startDive()}else if(b.tp==='academic'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'📚 学术'});startAcad()}else if(b.tp==='station'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'🚉 车站'});startStation()}
   else if(b.tp==='market'){logAction('mgStart',{x:G.p.x,y:G.p.y,detail:'🏪 偷窃'});startShoplift()}
   else{setStatus('🏠 '+b.n,'按 T 对话 / 收益 +$10~24','按 E / Esc 离开');addSch(b.ic,b.n)}
 }
@@ -4923,6 +4923,115 @@ function startBar(){
 const BAR_DRINK_STOCK={'🥃':'stout','🍺':'ipa','🍷':'lager','🍏':'ipa','🫖':'lager','🍋':'stout','🌿':'ipa','🍸':'stout','🍹':'lager'};
 // Phase B1 (Round 3): drinkId → stockKey direct lookup (replaces icon mapping)
 const BAR_DRINK_STOCK_BY_ID={'lager':'ipa','stout':'stout','wine':'lager','cider':'ipa','kombucha':'lager','sour':'stout','mojito':'ipa','martini':'stout','spritz':'lager','julep':'stout','old_fash':'stout','negroni':'ipa','brewtanic':'ipa','amster_sun':'stout'};
+
+// ═══════════════════════════════════════════
+// R-mvp: 巨量标记 (Mass Tagging) — NEW mini-game for 巨量生存 concept
+// Top-down workstation: classify data items on conveyor belt with 1-5 keys.
+// "Abstract = concrete": AI ocean drift → tangible conveyor-belt labeling.
+// Artifacts go to inventory, sellable in 黑市 (bar) for cash (cross-link).
+// ═══════════════════════════════════════════
+const DIVE_LABELS=[
+  {id:'paper',  ic:'📄', n:'论文'},
+  {id:'code',   ic:'💻', n:'代码'},
+  {id:'data',   ic:'📊', n:'数据集'},
+  {id:'idea',   ic:'💡', n:'点子'},
+  {id:'draft',  ic:'📝', n:'草稿'}
+];
+// artifact catalog — what you earn from successful dives
+const DIVE_ARTIFACTS=[
+  {id:'paper_rare',  ic:'📜', n:'稀有论文',   val:80,  desc:'arXiv 顶会论文'},
+  {id:'code_clean',  ic:'🧹', n:'干净代码',   val:60,  desc:'代码无 lint'},
+  {id:'dataset_v1',  ic:'📦', n:'v1 数据集',  val:40,  desc:'基线数据集'},
+  {id:'idea_seed',   ic:'🌱', n:'种子想法',   val:25,  desc:'可孵化方向'},
+  {id:'draft_paper', ic:'📃', n:'论文草稿',   val:35,  desc:'半成品'}
+];
+function startDive(){
+  showMgHint('dive');
+  // Resources: GPU time, Focus, Coffee. All 100% at start.
+  // Conveyor-belt items: 5 items in queue, each moving left → target zone (center) → right edge.
+  const initialItems=[];
+  for(let i=0;i<5;i++) initialItems.push({label:DIVE_LABELS[i%5], x:600-i*120, y:200+((i%3)*60), tagged:false, born:Date.now()+i*200});
+  MG.dive={
+    items:initialItems,
+    gpu:100,focus:100,coffee:100,
+    score:0,depth:1,combo:0,bestCombo:0,
+    artifacts:[], // collected this run
+    started:Date.now(),ended:false,limit:60*1000 // 60s session
+  };
+  G.mg='dive';G._mgEnterAt=Date.now();
+  setStatus('📚 巨量标记 · D1',`深度 1 · 5 类标签 · 60s 内做标注`,'按 1-5 标注 · 标签正确 +1 artifact · 错误 -10 专注 · SPACE 喝咖啡补专注');
+  renderAll();
+}
+function diveIn(k){
+  const s=MG.dive;if(!s||s.ended)return;
+  // SPACE = drink coffee (+20 focus, costs coffee resource if available)
+  if(k===' '){
+    if(s.coffee>0){s.focus=Math.min(100,s.focus+15);s.coffee=Math.max(0,s.coffee-10);setMsg('☕ 咖啡 +15 专注 (消耗 1 杯)');renderAll()}
+    else{setMsg('☕ 咖啡用完了!');}
+    return;
+  }
+  // 1-5 = tag the frontmost item in target zone (x=300..380)
+  const numMap={'1':0,'2':1,'3':2,'4':3,'5':4};
+  if(numMap[k]!==undefined){
+    const targetItem=s.items.find(it=>!it.tagged&&it.x>=280&&it.x<=400);
+    if(!targetItem){setMsg('⚠️ 传送带上没有 item 在目标区');return}
+    const chosenLabel=numMap[k];
+    if(chosenLabel===DIVE_LABELS.indexOf(targetItem.label)){
+      // correct tag
+      const art=DIVE_ARTIFACTS[Math.floor(Math.random()*DIVE_ARTIFACTS.length)];
+      s.artifacts.push(art);
+      s.score+=10;s.combo++;s.bestCombo=Math.max(s.bestCombo,s.combo);
+      // depth rises every 5 combo
+      if(s.combo>0&&s.combo%5===0){s.depth=Math.min(10,s.depth+1);setMsg(`🌊 深度 +1 → ${s.depth} (combo ${s.combo})`);}
+      targetItem.tagged=true;
+      addEvt('good',`📚 +${art.ic} ${art.n} (combo ${s.combo})`);
+      // respawn new item from right
+      targetItem.x=600;targetItem.label=DIVE_LABELS[Math.floor(Math.random()*DIVE_LABELS.length)];targetItem.tagged=false;
+    }else{
+      // wrong tag
+      s.combo=0;s.focus=Math.max(0,s.focus-10);
+      targetItem.tagged=true; // force-respawn anyway
+      setMsg(`❌ 标错 -10 专注 (剩 ${s.focus}%)`);
+      targetItem.x=600;targetItem.label=DIVE_LABELS[Math.floor(Math.random()*DIVE_LABELS.length)];targetItem.tagged=false;
+    }
+    renderAll();
+  }
+}
+function updateDive(){
+  const s=MG.dive;if(!s||s.ended)return;
+  const now=Date.now();
+  // Move items left → right at speed proportional to depth
+  const speed=0.8+s.depth*0.3;
+  s.items.forEach(it=>{
+    if(it.tagged)return;
+    it.x-=speed;
+    // If item exits left edge without being tagged → missed item → focus -5
+    if(it.x<-40){it.x=600;it.label=DIVE_LABELS[Math.floor(Math.random()*DIVE_LABELS.length)];s.focus=Math.max(0,s.focus-5);setMsg(`⏭ 漏掉 1 个 -5 专注 (剩 ${s.focus}%)`);}
+  });
+  // GPU drains slowly
+  s.gpu=Math.max(0,s.gpu-0.05);
+  // Focus drains slowly when active
+  s.focus=Math.max(0,s.focus-0.04);
+  // Time up?
+  if(now-s.started>=s.limit||s.focus<=0){finDive();}
+}
+function finDive(){
+  const s=MG.dive;if(!s||s.ended)return;s.ended=true;
+  // Add artifacts to global inventory + sell price
+  const earned=s.artifacts.reduce((sum,a)=>sum+a.val,0);
+  G.money+=earned;
+  G.inventory.push(...s.artifacts.map(a=>a.ic));
+  if(!G.invCollect||typeof G.invCollect!=='object')G.invCollect={};
+  s.artifacts.forEach(a=>{G.invCollect[a.n]=(G.invCollect[a.n]||0)+1;});
+  G.ind.academic=G.ind.academic||{xp:0,lv:1};G.ind.academic.xp+=s.score;
+  addEvt('good',`📚 巨量标记结束 · ${s.artifacts.length} 件 artifact · +$${earned} · 深度 ${s.depth} · combo ${s.bestCombo}`);
+  addSch('📚',`巨量标记 +$${earned} · ${s.artifacts.length}件`);
+  G.mg=null;G.inside=null;chkLv('academic');
+  setStatus('✅ 巨量标记完成',`${s.artifacts.length} 件 artifact · +$${earned} · 深度 ${s.depth}`,`去黑市(酒吧)卖 artifact?按 1-5 离开`);
+  // Cross-link hint: 提示玩家去酒吧卖
+  setMsg('📚 巨量标记收获了 '+s.artifacts.length+' 件 artifact,去酒吧 (黑市) 卖给联系人!');
+}
+
 function sBarC(){
   const s=MG.bar;if(!s)return;
   if(s.sd>=s.mx){finBar();return}
@@ -6308,6 +6417,89 @@ function drawMG(){
       cx.fillStyle='#fff';cx.font='9px sans-serif';cx.textAlign='left';
       cx.fillText(_rhythm.phase==='set'?'🌊 浪组推进':(_rhythm.msLeftLabel&&_rhythm.msLeftLabel!=='·'?'· 静默 '+_rhythm.msLeftLabel+' 后下一组':'⏸ 静默'),rbX,rbY-3);
     }
+  }else if(mg==='dive'){
+    // R-mvp: 巨量标记 (Mass Tagging) — top-down workstation with conveyor belt
+    var _dn=Date.now()/1000;var s=MG.dive;
+    // 1) floor (desk wood)
+    cx.fillStyle='#3a2818';cx.fillRect(80,30,640,460);
+    cx.fillStyle='#5a3a20';for(var dk=0;dk<14;dk++)cx.fillRect(85,40+dk*32,650,1);
+    // 2) window (Amsterdam view from library)
+    cx.fillStyle='#1a1820';cx.fillRect(540,50,150,80);
+    cx.fillStyle='#3a4a5a';cx.fillRect(543,110,144,18);
+    cx.fillStyle='#1a1018';for(var wh=0;wh<4;wh++){var wx=548+wh*36;cx.fillRect(wx,72,28,38);cx.fillRect(wx+11,62,8,12);}
+    cx.fillStyle='#5a3a1a';cx.fillRect(540,50,150,3);
+    // 3) monitor on desk (the workstation)
+    cx.fillStyle='#1a1a1a';cx.fillRect(140,80,300,140);
+    cx.fillStyle='#0a3050';cx.fillRect(145,85,290,130);
+    cx.fillStyle='#fff';cx.font='bold 11px sans-serif';cx.textAlign='left';
+    cx.fillText('📚 数据标注工作台',155,103);
+    // depth indicator inside monitor
+    var _depthW=270;cx.fillStyle='#0a1a2a';cx.fillRect(155,115,_depthW,8);
+    var _depthF=Math.min(1,s.depth/10);
+    cx.fillStyle=_depthF<0.5?'#4090c0':_depthF<0.8?'#e8a020':'#f04040';
+    cx.fillRect(155,115,_depthW*_depthF,8);
+    cx.fillStyle='#aef';cx.font='9px sans-serif';cx.fillText(`🌊 深度 ${s.depth}/10  ·  combo ${s.combo}  ·  score ${s.score}`,155,138);
+    // 4) conveyor belt (right side, 3 lanes)
+    cx.fillStyle='#222';cx.fillRect(80,180,640,180);
+    cx.fillStyle='#333';for(var cbl=0;cbl<3;cbl++){var cbY=200+cbl*55;cx.fillRect(80,cbY,640,40);}
+    // belt rollers (left/right)
+    cx.fillStyle='#666';cx.beginPath();cx.arc(80,220,12,0,Math.PI*2);cx.fill();
+    cx.beginPath();cx.arc(720,220,12,0,Math.PI*2);cx.fill();
+    cx.beginPath();cx.arc(80,275,12,0,Math.PI*2);cx.fill();
+    cx.beginPath();cx.arc(720,275,12,0,Math.PI*2);cx.fill();
+    cx.beginPath();cx.arc(80,330,12,0,Math.PI*2);cx.fill();
+    cx.beginPath();cx.arc(720,330,12,0,Math.PI*2);cx.fill();
+    // target zone (green outline, where to press 1-5)
+    cx.strokeStyle='#80ff80';cx.lineWidth=2;cx.setLineDash([4,3]);
+    cx.strokeRect(280,180,100,180);
+    cx.setLineDash([]);
+    cx.fillStyle='#80ff8030';cx.fillRect(280,180,100,180);
+    // 5) draw items on belt (each lane = different y)
+    s.items.forEach(function(it,i){
+      var lane=i%3;var yi=200+lane*55;
+      // item card
+      cx.fillStyle='#1a3050';cx.strokeStyle=it.tagged?'#888':'#5af';cx.lineWidth=2;
+      cx.fillRect(it.x,yi+5,40,30);cx.strokeRect(it.x,yi+5,40,30);
+      cx.fillStyle='#fff';cx.font='16px sans-serif';cx.textAlign='center';cx.textBaseline='middle';
+      cx.fillText(it.label.ic,it.x+20,yi+20);
+      cx.textBaseline='alphabetic';
+      // tag number under (1-5)
+      cx.fillStyle='#aef';cx.font='bold 9px sans-serif';cx.fillText((DIVE_LABELS.indexOf(it.label)+1),it.x+20,yi+50);
+    });
+    // 6) label legend at bottom (1-5 → icon)
+    DIVE_LABELS.forEach(function(lb,i){
+      var lx=120+i*120;var ly=380;
+      cx.fillStyle='#1a1a1a';cx.fillRect(lx,ly,110,30);
+      cx.fillStyle='#fff';cx.font='bold 11px sans-serif';cx.textAlign='left';
+      cx.fillText((i+1)+' '+lb.ic+' '+lb.n,lx+5,ly+12);
+      cx.fillStyle='#80ff80';cx.font='9px sans-serif';
+      cx.fillText(`[按 ${i+1}]`,lx+5,ly+24);
+    });
+    // 7) 3 resource gauges (top)
+    var _gx=10,_gy=50;
+    function _gauge(x,y,label,val,col){
+      cx.fillStyle='#0a0a0acc';cx.fillRect(x,y,90,12);
+      cx.fillStyle=col;cx.fillRect(x,y,90*val/100,12);
+      cx.fillStyle='#fff';cx.font='bold 9px sans-serif';cx.textAlign='left';
+      cx.fillText(label+' '+Math.round(val)+'%',x+3,y+9);
+    }
+    _gauge(_gx,_gy,'🖥 GPU',s.gpu,'#40a0d0');
+    _gauge(_gx,_gy+18,'🎯 专注',s.focus,s.focus<30?'#f05050':s.focus<60?'#f0a030':'#80ffa0');
+    _gauge(_gx,_gy+36,'☕ 咖啡',s.coffee,'#a07020');
+    // 8) timer + score top right
+    cx.fillStyle='#0a0a0ae0';cx.fillRect(640,30,150,40);
+    var _left=Math.max(0,Math.round((s.limit-(Date.now()-s.started))/1000));
+    cx.fillStyle=_left<10?'#f05050':_left<30?'#f0a030':'#80ffa0';
+    cx.font='bold 14px sans-serif';cx.textAlign='center';
+    cx.fillText('⏱ '+_left+'s',715,46);
+    cx.fillStyle='#fff';cx.font='11px sans-serif';cx.fillText('score '+s.score+' · combo '+s.combo,715,62);
+    // 9) collected artifacts tray (bottom-right)
+    cx.fillStyle='#0a0a0ae0';cx.fillRect(540,420,170,40);
+    cx.fillStyle='#fff';cx.font='bold 9px sans-serif';cx.textAlign='left';cx.fillText('📦 本次收获:',545,432);
+    var _shown=s.artifacts.slice(-5);
+    _shown.forEach(function(a,ai){cx.font='16px sans-serif';cx.fillText(a.ic,575+ai*22,452);});
+    if(s.artifacts.length>5){cx.fillStyle='#aaa';cx.font='9px sans-serif';cx.fillText('+'+(s.artifacts.length-5),690,452);}
+  }else if(mg==='academic'){
   }else if(mg==='academic'){
     // === Professor's office: warm wood wall + bookshelf + desk + laptop + coffee mug ===
     cx.fillStyle='#3a2818';cx.fillRect(80,30,640,210);
@@ -6595,6 +6787,53 @@ function drawMG(){
       cx.strokeStyle='#ffffff80';cx.lineWidth=1;_barRoundRect(cx,_gx,_gy,_gw,_gh,3);cx.stroke();
       cx.fillStyle=_lc;_barRoundRect(cx,_gx+1,_gy+8,_gw-2,_gh-9,2);cx.fill();
       cx.fillStyle=_fc;cx.beginPath();cx.ellipse(_gx+_gw/2,_gy+8,_gw/2-1,3,0,0,Math.PI*2);cx.fill();
+    }
+
+    // 11b. R-map-refine MVP — bar queue visualization (waiting customers to the LEFT of active one)
+    // Draw small portrait icons for s.cs[0..length-2] (everyone BEFORE the active customer).
+    // Each one walks in from off-screen with a slide-in animation.
+    if(s.cs.length>1){
+      for(var qi=0;qi<s.cs.length-1;qi++){
+        var qc=s.cs[qi];
+        // Queue position: 0=leftmost (next-in-line), grows right
+        var qx=170-qi*40; // step left for each waiting
+        var qy=345;
+        // Slide-in entrance animation (first 600ms after born)
+        var qBorn=qc.born||Date.now();
+        var qAge=(Date.now()-qBorn)/1000;
+        var qSlide=qAge<0.6?(1-qAge/0.6)*60:0; // slides from x+60 to x in 600ms
+        qx+=qSlide;
+        // Patience ring color (visual: tells player who's about to leave)
+        var qPat=Math.max(0,1-(Date.now()-qBorn)/(qc.patience*1000));
+        var qPatCol=qPat<0.3?'#f05050':qPat<0.6?'#f0a030':'#78c878';
+        // Small shadow
+        cx.fillStyle='#0004';cx.beginPath();cx.ellipse(qx,375,10,2.5,0,0,Math.PI*2);cx.fill();
+        // Body (smaller scale)
+        cx.fillStyle=qc.arch.n==='VIP'?'#8a2030':qc.isRegular?'#3a5060':'#2a2a2a';
+        cx.fillRect(qx-10,qy-25,20,30);
+        cx.fillStyle='#5a3020';cx.fillRect(qx-8,qy-22,16,18);
+        // Head
+        cx.fillStyle='#f0d8a8';cx.beginPath();cx.arc(qx,qy-32,8,0,Math.PI*2);cx.fill();
+        // Hair (small patch)
+        cx.fillStyle='#3a2820';cx.beginPath();cx.arc(qx,qy-37,8,Math.PI*1.05,Math.PI*2);cx.fill();
+        // emoji
+        cx.font='14px sans-serif';cx.textAlign='center';cx.textBaseline='middle';
+        cx.fillText(qc.face,qx,qy-30);
+        cx.textBaseline='alphabetic';
+        // patience ring around head
+        cx.strokeStyle=qPatCol;cx.lineWidth=1;cx.globalAlpha=0.6;
+        cx.beginPath();cx.arc(qx,qy-32,10,0,Math.PI*2*qPat);cx.stroke();
+        cx.globalAlpha=1;
+        // small drink chip (so player knows what they want)
+        var qDrinkIc=(qc.drinkObj&&qc.drinkObj.ic)||qc.drink||'🍺';
+        cx.fillStyle='#1a0a04d0';_barRoundRect(cx,qx-9,qy-50,18,10,4);cx.fill();
+        cx.fillStyle='#fff';cx.font='9px sans-serif';cx.textAlign='center';
+        cx.fillText(qDrinkIc,qx,qy-43);
+      }
+      // queue count badge (above queue)
+      cx.fillStyle='#0a0a0ae0';_barRoundRect(cx,80,330,40,16,8);cx.fill();
+      cx.fillStyle='#fff';cx.font='bold 9px sans-serif';cx.textAlign='center';
+      cx.fillText('👥+'+(s.cs.length-1),100,341);
     }
 
     // 12) CUSTOMER — facing FRONT (emoji portrait + speech bubble), not back view
@@ -7242,6 +7481,7 @@ function renderAll(){
     else if(G.mg==='surf'){const s=MG.surf;const tg=surfBreakerTelegraph(s);const psM=s.perfectStreak>=2?` · 🔥×${s.perfectStreak}(${surfPerfectStreakMul(s.perfectStreak)}x)`:'';const padd=surfPaddleState(s);const paddCur=padd?Math.round(padd.cursor*100):0;const paddGreen=padd?(padd.cursor>=0.40&&padd.cursor<=0.55):false;const paddHint=padd?`🛟${paddCur}%${paddGreen?'✓':''}`:'';const soulBadges=[s.rescueActive?'🆘':'',s.sharkActive?'🦈':'',s.rivalActive?'🏄‍♂️':'',s.pollutionActive?'🛢️':'',s.tidalActive?'🌊':''].filter(Boolean).join(' ');title.textContent='🏄 巨浪生存'+(soulBadges?' '+soulBadges:'');det.textContent='体力'+s.stamina+'% · combo'+s.combo+' · 已抓'+s.at+(s.perfect>0?' · perfect +'+(s.perfect*50):'')+psM+(paddHint?' · '+paddHint:'');hint.textContent='SPACE抓 · P 划水回体 · 8% perfect barrel +50 · 浪组:'+(tg.phase==='set'?'进行中':`静默${tg.msLeftLabel}s`)+' · 体力'+(tg.staminaWarn==='low'?'⚠':tg.staminaWarn==='med'?'~':'✓')+(s.rescueActive?' · 🆘救人':'')+(s.sharkActive?' · 🦈闪避':'')+(s.pollutionActive?' · 🛢️清理':'')+(s.rivalActive?' · 🏄‍♂️对决':'')+(s.tidalActive?' · 🌊巨浪':'')}
     else if(G.mg==='academic'){title.textContent='📚 学术';det.textContent='';hint.textContent=''}
     else if(G.mg==='bar'){const s=MG.bar;const cur=s.cs[s.cs.length-1];const _tipH=cur&&cur.drinkId===s.recoId;const _tipR=cur&&cur.isRegular;const _tipEx=cur?barTipPreview(cur.offer,_tipH,_tipR,tipFactor()):null;title.textContent='🍻 酒吧 · 黑市讨价'+(s.diff?' ('+s.diff.label+')':'')+(cur?' · '+(_tipEx>=cur.offer?'💚':'💔')+'$'+_tipEx:'');det.textContent=cur?`${cur.face} ${cur.arch.n} 报价$${cur.offer} (底${cur.floor}/上${cur.ceiling}) 想喝 ${cur.drink}${cur.mixId!=='none'?'+'+barGetMixer(cur.mixId).ic:''}`:'暂无顾客';hint.textContent='Q/W ±1 报价 · SPACE成交 · E 倒酒'+(cur&&cur.needsMixer?(s.pour&&s.pour.active?' (再按 E 释放':' (开始'):'(无)')+' · X拒客 · 今日推荐 '+(s.recoIc||'🍺')+(s.vipDay?' · VIP日':'')+(cur?' · 💸 实时tip':'')+(s.diff?' · '+s.diff.label:'')}
+    else if(G.mg==='dive'){const s=MG.dive;title.textContent='📚 巨量标记 · 深度 '+s.depth;det.textContent='GPU '+Math.round(s.gpu)+'% · 专注 '+Math.round(s.focus)+'% · 咖啡 '+Math.round(s.coffee)+'% · combo '+s.combo;hint.textContent='1/2/3/4/5 标注 · SPACE 喝咖啡 · 漏标 -5 专注'}
     else if(G.mg==='shoplift'){const s=MG.shop;const cur=SHOP_STALLS[s.stallIdx];const el=(Date.now()-s.cycleStarted)%4000;const phase=el<1500?'🟢 绿灯':el<2000?'🟡 黄灯':'🔴 红灯';title.textContent=`🥷 ${s.stallIdx+1}/3 · ${cur.ic} ${cur.n}`;det.textContent=`${phase} · ${s.loot.length} 件到手${s.caught?' · 🚓 被抓':''}`;hint.textContent='SPACE 抓 · 绿灯100% · 黄灯50% · 红灯=罚款$30+禁入1日'}
     else if(G.mg==='escape'){const s=MG.escape;if(s.ph==='p1'){title.textContent='🎫 Phase 1/3 · 选技术';det.textContent='按 1/2/3/4 (学过的) · 1s 内';hint.textContent='未学 = 罚款 $10'}else if(s.ph==='p2'){const el=Date.now()-s.p2Started;const win=el>=1500&&el<2300?1:el>=2700&&el<3500?2:el>=3900&&el<4700?3:0;title.textContent=`🎫 Phase 2/3 · 上车窗口 ${win?'🟢 '+(win)+'/3':'⏳'}`;det.textContent=`已用 ${(el/1000).toFixed(1)}s / 5s`;hint.textContent='窗口内按 SPACE'}}
   }else if(G.day===1&&G.ti===0&&!G.sch.length){title.textContent='🟢 Day 1 · 就绪';det.textContent='按 WASD 移动 · 按 E 进入建筑';hint.textContent='💡 走到公寓/酒吧/咖啡店 · 或按 ▶ 自动运行跑完整局'}
@@ -7274,6 +7514,7 @@ document.addEventListener('keydown',e=>{
     if(k==='escape'){cancelAuto('escape');G.mg=null;G.inside=null;setStatus('🟢 就绪','','');renderAll();return}
     if(G.mg==='brew')brewIn(k);else if(G.mg==='coffee')coffeeIn(k);else if(G.mg==='shroom')shroomIn(k);
     else if(G.mg==='surf')surfIn(k);else if(G.mg==='bar')barIn(k);
+    else if(G.mg==='dive')diveIn(k);
     else if(G.mg==='shoplift')shopliftIn(k);
     else if(G.mg==='escape')escapeIn(k);
     else if(G.mg==='waveSelect'){if(k==='escape')hideWaveSelect();else if(k>='1'&&k<='7')pickWavePoint(parseInt(k));return}
@@ -7400,7 +7641,7 @@ function newRun(seed){
   renderAll();
 }
 
-function frame(){update();updateSurf();updateBrew();updateCoffee();updateBar();confettiUpdate(16);if(G.mg)drawMG();else drawMap();confettiDraw();requestAnimationFrame(frame)}
+function frame(){update();updateSurf();updateBrew();updateCoffee();updateBar();updateDive();confettiUpdate(16);if(G.mg)drawMG();else drawMap();confettiDraw();requestAnimationFrame(frame)}
 renderAll();frame();
 // Modal skip button
 document.getElementById('upg-skip').addEventListener('click',()=>{

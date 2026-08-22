@@ -385,6 +385,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div class="tb"><span class="vl" id="t-escape">🚇 Lv 0 · 周已逃 0 次</span></div>
 <div class="tb"><span class="ic">💭</span><span class="vl" id="t-mood">😐</span></div>
 <div class="tb"><span class="ic">🏅</span><span class="vl" id="t-ach" style="color:var(--gold)">0/12</span></div>
+<div class="tb"><span class="ic">🌊</span><span class="vl" id="t-depth" style="color:var(--cyan)">深度 1</span></div>
 <div id="mods"></div>
 </div>
 
@@ -7480,6 +7481,8 @@ function renderAll(){
   const _dd=document.getElementById('day-dots');if(_dd){let dh='';for(let i=1;i<=7;i++){const cls=i<G.day?'done':i===G.day?'cur':'';dh+=`<div class="day-dot ${cls}" style="left:${(i-1)*11+2}px"></div>`;}_dd.innerHTML=dh;}
   const m=document.getElementById('t-money');m.textContent='$'+G.money;m.className='vl '+(G.money<50?'mc':G.money<100?'mw':'mg');
   document.getElementById('t-rep').textContent=G.rep+' rep';document.getElementById('t-stock').textContent=`🍺${G.bs[0]} 🥃${G.bs[1]} 🍷${G.bs[2]}`;
+  // R21 — top bar 深度 (Max dive depth this run)
+  var _td=document.getElementById('t-depth');if(_td){var _dv=(G.diveStats&&G.diveStats.maxDepth)||1;_td.textContent='深度 '+_dv;_td.style.color=_dv<3?'#80c0e0':_dv<6?'#40e0d0':'#ffd060';}
   document.getElementById('t-run').textContent='Run #'+G.run+' · 遗产'+G.legacy;
   document.getElementById('t-seed').textContent=seedAbbrev(G.seed);
   document.getElementById('t-meta').textContent='🏆 meta '+G.meta;

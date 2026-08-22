@@ -4909,7 +4909,9 @@ function startBar(){
   if(!G.barRegulars)G.barRegulars=[];
   // Reset soul-event tracker for this bar session
   G._barSoul={picked:null,fired:false,drunkServed:0};
-  MG.bar={cs:[],sd:0,earn:0,combo:0,mx:6+diff.mxDelta,offer:null,recoId,recoDrink:recoId,recoIc:recoDrinkObj?recoDrinkObj.ic:'🍺',pool,vipDay:isVipDay,diff,pour:null,cocktailBonus:1,earnMul:1,blackoutRounds:0,tipBoostRounds:0,tipBoostMul:1};G.mg='bar';G._mgEnterAt=Date.now();sBarC();
+  MG.bar={cs:[],sd:0,earn:0,combo:0,mx:6+diff.mxDelta,offer:null,recoId,recoDrink:recoId,recoIc:recoDrinkObj?recoDrinkObj.ic:'🍺',pool,vipDay:isVipDay,diff,pour:null,cocktailBonus:1,earnMul:1,blackoutRounds:0,tipBoostRounds:0,tipBoostMul:1};G.mg='bar';G._mgEnterAt=Date.now();
+  // R17 — spawn 3 customers up front so queue visualization has something to show
+  sBarC();sBarC();sBarC();
   // Phase A B1: surface brew→bar inventory in HUD (empty stock = -50% pay for that drink)
   const _st=G.barStock||{ipa:0,stout:0,lager:0};
   // Round 3: count available drinks + recommend pour hint for needsMixer reco

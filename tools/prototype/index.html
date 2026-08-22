@@ -683,6 +683,10 @@ const BLDGS=[
   {x:220,y:470,r:12,id:'market',n:'Albert Cuyp',cl:'#c0a060',d:'de_pijp',tp:'market',ic:'🛒',real:'Albert Cuypstraat',crime:'shoplift'},
   {x:330,y:470,r:12,id:'sofie',n:'Sofie花店',cl:'#dc6e8c',d:'de_pijp',tp:'npc',ic:'🌷',npc:'sofie',real:'Ceintuurbaan'},
   {x:430,y:470,r:12,id:'apt',n:'Sarphati公寓',cl:'#8b6b4a',d:'de_pijp',tp:'home',ic:'🏠',real:'Sarphatipark'},
+  // === R22 — EDGES: westerdock 西码头 / noord-oost 东北 / bijlmer 东南 ===
+  {x:30,y:225,r:10,id:'karel',n:'Westerdock',cl:'#406080',d:'westerdock',tp:'npc',ic:'⚓',npc:'karel',real:'Westerdok'},
+  {x:770,y:55,r:10,id:'mees',n:'Noord-Oost',cl:'#508070',d:'noord_oost',tp:'npc',ic:'🏘️',npc:'mees',real:'NDSM-Plein'},
+  {x:770,y:470,r:10,id:'lotte',n:'Bijlmer',cl:'#a07040',d:'bijlmer',tp:'npc',ic:'🏘️',npc:'lotte',real:'Bijlmer-Zuidoost'},
 ];
 // Derive w/h from r for legacy collision math (curBldg, onBridge still use .w/.h)
 // Done after BRIDGES is declared below.
@@ -1625,6 +1629,22 @@ const NPC_DIALOGUES={
     'C:"今天 PCR 跑了 96 板,coffee 是真的续命——别忘了按 1 号杯。"',
     'C:"组里 postdoc 发了篇 Nature 子刊,庆祝去酒吧——但酒别冲太烫。"',
     'C:"你那台破离心机又漏了——回头让你看看我的新冷冻电镜。"'
+  ],
+  // R22 — 边缘 NPC: westerdock 西码头 + bijlmer 东南
+  karel:[
+    'K:"Westerdock 今天码头鱼便宜,新鲜 herring €3 一条,配 onion 完美。"',
+    'K:"风从北海吹过来,今晚浪预报 Lv3 — perfect barrel 的机会。"',
+    'K:"我这船有 30 年历史,比你岁数都大。刷一层漆还能再战十年。"'
+  ],
+  lotte:[
+    'L:"Bijlmer 这边 metro 50 路到 Centraal,15 分钟,但周一挤死。"',
+    'L:"我家楼下 kebab 店凌晨 2 点还开着,surfer 早课补给站。"',
+    'L:"你别看我住郊区,我存钱罐里有 €200,你敢偷试试。"'
+  ],
+  mees:[
+    'M:"Noord 这边 NDSM 旧船厂周末跳蚤市场,vintage 家具便宜到哭。"',
+    'M:"坐渡轮 901 到 Centraal,免费,顺便看 IJ 河两岸。"',
+    'M:"这边房价便宜,但冬天风大得把自行车吹倒,别问我怎么知道。"'
   ]
 };
 function pickNpcDialog(npc){

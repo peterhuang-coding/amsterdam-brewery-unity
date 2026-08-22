@@ -3953,8 +3953,11 @@ function startCoffee(){
   const phaseIcon=phase==='morning'?'☀️早':phase==='afternoon'?'🌤️午':'🌃夜';
   const surfTag=MG.coffee.surfBoost>0?' · 🌊海风x3':' ';
   const beanTag=` · 今日豆${dailyBean.ic}${dailyBean.n}×${beanQuality.toFixed(2)}`;
-  setStatus('🌿 咖啡店',`${phaseIcon} · 目标 ${target}人 · 客群随时间段 · 卧底率 ${Math.round(coffeeUndercoverProb(MG.coffee)*100)}% · 热度 0%${surfTag}${beanTag}`,
-    `1-4选品 · Q/W调价 · SPACE成交(完美3段+20%) · X拒客 · E${phase==='evening'?'🌃地下':'🔒'} · P🛡️雇帮$50`);
+  // R20 — roast level + cup size
+  MG.coffee.roast=MG.coffee.roast||'medium';MG.coffee.roastMul=1.0;
+  MG.coffee.cup=MG.coffee.cup||'cup';MG.coffee.cupMul=1.0;
+  setStatus('🌿 咖啡店',`${phaseIcon} · 目标 ${target}人 · 客群随时间段 · 卧底率 ${Math.round(coffeeUndercoverProb(MG.coffee)*100)}% · 热度 0% · 烘焙中 · 杯型默认${surfTag}${beanTag}`,
+    `1-4选品 · Q/W调价 · R循环烘焙(浅×0.85/中×1/深×1.2) · F循环杯型(espresso×0.7/cup×1/mug×1.3/togo×1.5) · SPACE成交 · X拒客 · E${phase==='evening'?'🌃地下':'🔒'} · P🛡️雇帮$50`);
 }
 function sCoffeeC(){
   const s=MG.coffee;if(!s)return;
@@ -4023,6 +4026,24 @@ function coffeeIn(k){const s=MG.coffee;if(!s||s.raid)return;s.lastT=Date.now();
   // Q/W 调价 ±1(5..50)
   if(k==='q')s.pr=Math.max(5,s.pr-1);
   if(k==='w')s.pr=Math.min(50,s.pr+1);
+  // R20 — R 循环烘焙 (light ×0.85 / medium ×1.0 / dark ×1.20)
+  if(k==='r'){
+    const lvls=['light','medium','dark'];
+    const muls=[0.85,1.0,1.20];
+    const cur=lvls.indexOf(s.roast||'medium');
+    const nxt=(cur+1)%3;
+    s.roast=lvls[nxt];s.roastMul=muls[nxt];
+    setMsg(`烘焙 ${s.roast} · 价格系数 ×${s.roastMul}`);
+  }
+  // R20 — F 循环杯型 (espresso ×0.7 / cup ×1.0 / mug ×1.3 / togo ×1.5)
+  if(k==='f'){
+    const cups=['espresso','cup','mug','togo'];
+    const muls=[0.7,1.0,1.3,1.5];
+    const cur=cups.indexOf(s.cup||'cup');
+    const nxt=(cur+1)%4;
+    s.cup=cups[nxt];s.cupMul=muls[nxt];
+    setMsg(`杯型 ${s.cup} · 价格系数 ×${s.cupMul}`);
+  }
   // P 雇佣帮派 ($50 一次性, -80% 卧底概率, 2× 热度衰减)
   if(k==='p'&&!s.gangPaid&&G.money>=50){G.money-=50;s.gang=true;s.gangPaid=true;setMsg('🛡️ 帮派护航 · 卧底 -80% · 热度衰减 ×2 (本日)');addEvt('good','🛡️ 雇佣帮派 -$50 · 卧底概率 -32%')}
   if(k==='p'&&s.gangPaid)setMsg('🛡️ 帮派已雇佣');
@@ -6024,6 +6045,32 @@ function drawMG(){
       cx.strokeStyle=_patRing<0.3?'#f05050':_patRing<0.6?'#f0a030':'#78c878';
       cx.lineWidth=1.5;cx.globalAlpha=0.7;cx.beginPath();cx.arc(ccx,265+ch,15,0,Math.PI*2);cx.stroke();cx.globalAlpha=1;
     }
+
+    // R20 — Cup preview panel (right side): shows current roast + cup type
+    var _cup=s.cup||'cup',_r=s.roast||'medium';
+    var _roastCol=_r==='light'?'#c08040':_r==='medium'?'#704020':'#3a1a08';
+    cx.fillStyle='#1a1010e0';cx.fillRect(640,180,80,150);
+    cx.fillStyle='#fff';cx.font='bold 10px sans-serif';cx.textAlign='center';cx.fillText('☕ 杯型',680,196);
+    cx.font='9px sans-serif';cx.fillStyle='#ffd060';cx.fillText('R烘焙:'+_r,680,210);
+    cx.fillStyle='#aef';cx.fillText('F杯型:'+_cup,680,224);
+    // cup shape (varies by cup type)
+    var _cupX=680,_cupY=255,_cupW=_cup==='espresso'?20:_cup==='togo'?28:_cup==='mug'?32:24,_cupH=_cup==='espresso'?16:_cup==='togo'?30:_cup==='mug'?28:20;
+    cx.fillStyle='#f0e8d0';cx.fillRect(_cupX-_cupW/2,_cupY-_cupH,_cupW,_cupH);
+    cx.fillStyle=_roastCol;cx.fillRect(_cupX-_cupW/2,_cupY-_cupH,_cupW,_cupH/2.5);
+    // latte art: heart shape on cream
+    if(_cup!=='espresso'){
+      cx.fillStyle='rgba(255,240,200,0.7)';
+      var _la=_cnow*0.5;
+      cx.beginPath();cx.arc(_cupX-3,_cupY-_cupH+5+Math.sin(_la)*0.5,2.5,0,Math.PI*2);cx.fill();
+      cx.beginPath();cx.arc(_cupX+3,_cupY-_cupH+5+Math.sin(_la)*0.5,2.5,0,Math.PI*2);cx.fill();
+      cx.beginPath();cx.moveTo(_cupX-5,_cupY-_cupH+7);cx.lineTo(_cupX,_cupY-_cupH+11);cx.lineTo(_cupX+5,_cupY-_cupH+7);cx.fill();
+    }
+    // steam
+    cx.fillStyle='rgba(220,220,220,0.4)';cx.globalAlpha=0.5;
+    for(var st2=0;st2<3;st2++){cx.beginPath();cx.arc(_cupX+Math.sin(_cnow*2+st2)*3,_cupY-_cupH-6-st2*4,2,0,Math.PI*2);cx.fill()}
+    cx.globalAlpha=1;
+    // price × mult display
+    cx.fillStyle='#fff';cx.font='bold 9px sans-serif';cx.fillText('价格 ×'+((s.roastMul||1)*(s.cupMul||1)).toFixed(2),680,320);
 
     // 12) === HUD overlay === (replaces modal-style status bar)
     cx.fillStyle='#fff';cx.font='bold 13px sans-serif';cx.textAlign='center';

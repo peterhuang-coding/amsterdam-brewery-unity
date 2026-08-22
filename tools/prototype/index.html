@@ -6329,44 +6329,54 @@ function drawMG(){
       // splash
       cx.fillStyle='#ffffff60';cx.beginPath();cx.arc(sfx+10,sfy+1,2,0,Math.PI*2);cx.fill();
     }
-    // === SURFER SIDE-VIEW (centered, standing on board) ===
-    var _pStance=s.setPhase?Math.sin(_sn*3)*2:0; // sway during set
-    var _playerX=380,_playerY=275+_pStance;
-    // Surfboard (under feet)
+    // === SURFER SIDE-VIEW (R19 — 巨浪生存具象化:船倾斜 + 浪打到船 + 水花飞溅) ===
+    var _setPh=s.setPhase||'calm';
+    var _pSway=_setPh==='set'?Math.sin(_sn*3)*2.5:Math.sin(_sn*1.5)*1;
+    var _pTilt=_setPh==='set'?(s.perfectStreak>=1?-8:-3):0;  // lean into wave when perfect streak
+    var _playerX=380,_playerY=275+_pSway;
+    // board shadow on water
+    cx.fillStyle='#0004';cx.beginPath();cx.ellipse(_playerX,_playerY+18,38,4,0,0,Math.PI*2);cx.fill();
+    cx.save();cx.translate(_playerX,_playerY+10);cx.rotate(_pTilt*Math.PI/180);
+    // Surfboard tilted
     cx.fillStyle='#3a78c0';
     cx.beginPath();
-    cx.moveTo(_playerX-30,_playerY+8);
-    cx.lineTo(_playerX+30,_playerY+8);
-    cx.lineTo(_playerX+34,_playerY+12);
-    cx.lineTo(_playerX-34,_playerY+12);
-    cx.closePath();cx.fill();
+    cx.moveTo(-30,-2);cx.lineTo(30,-2);cx.lineTo(34,2);cx.lineTo(-34,2);cx.closePath();cx.fill();
     // Board stripe
-    cx.fillStyle='#5a98e0';cx.fillRect(_playerX-26,_playerY+9,52,2);
+    cx.fillStyle='#5a98e0';cx.fillRect(-26,-1,52,2);
     // Board fin
     cx.fillStyle='#1a3050';
-    cx.beginPath();cx.moveTo(_playerX-22,_playerY+12);cx.lineTo(_playerX-18,_playerY+18);cx.lineTo(_playerX-14,_playerY+12);cx.closePath();cx.fill();
-    // Player body (silhouette)
+    cx.beginPath();cx.moveTo(-22,2);cx.lineTo(-18,8);cx.lineTo(-14,2);cx.closePath();cx.fill();
+    // Player body (silhouette) — also tilted
     cx.fillStyle='#1a2030';
-    // legs
-    cx.fillRect(_playerX-5,_playerY+1,3,7);
-    cx.fillRect(_playerX+2,_playerY+1,3,7);
-    // torso
-    cx.fillRect(_playerX-7,_playerY-8,14,10);
-    // head
-    cx.fillStyle='#f0d8a8';
-    cx.beginPath();cx.arc(_playerX,_playerY-13,5,0,Math.PI*2);cx.fill();
-    // hair / cap
-    cx.fillStyle='#202020';
-    cx.beginPath();cx.arc(_playerX,_playerY-15,5,Math.PI,0);cx.fill();
-    // arms (out for balance)
-    cx.fillStyle='#1a2030';
-    cx.fillRect(_playerX-12,_playerY-7,4,2);
-    cx.fillRect(_playerX+8,_playerY-7,4,2);
-    // spray near board
-    cx.fillStyle='#ffffff80';
-    for(var sb=0;sb<6;sb++){var sx=_playerX+(_sn*40+sb*12)%60-30;var sy=_playerY+12+Math.sin(_sn*3+sb)*2;
-      cx.beginPath();cx.arc(sx,sy,1+sb%2,0,Math.PI*2);cx.fill();
+    cx.fillRect(-5,-9,3,7);cx.fillRect(2,-9,3,7); // legs
+    cx.fillRect(-7,-18,14,10); // torso
+    cx.fillStyle='#f0d8a8';cx.beginPath();cx.arc(0,-23,5,0,Math.PI*2);cx.fill(); // head
+    cx.fillStyle='#202020';cx.beginPath();cx.arc(0,-25,5,Math.PI,0);cx.fill(); // cap
+    cx.fillStyle='#1a2030';cx.fillRect(-12,-17,4,2);cx.fillRect(8,-17,4,2); // arms
+    cx.restore();
+    // spray near board — bigger in 'set' phase
+    var _sprayN=_setPh==='set'?12:6;
+    for(var sb=0;sb<_sprayN;sb++){
+      var sx=_playerX+(_sn*60+sb*8)%50-25;
+      var sy=_playerY+12+sb%3*2+Math.sin(_sn*4+sb)*2;
+      var sa=_setPh==='set'?0.7:0.4;
+      cx.fillStyle='rgba(255,255,255,'+sa+')';
+      cx.beginPath();cx.arc(sx,sy,1+sb%3,0,Math.PI*2);cx.fill();
     }
+    // === R19 splash impact when big wave hits (only during set, scaled by combo) ===
+    if(_setPh==='set'){
+      var _spN=4+s.combo;
+      for(var sp=0;sp<_spN;sp++){
+        var spx=_playerX+Math.sin(_sn*5+sp)*30;
+        var spy=_playerY-10+(_sn*40+sp*15)%40;
+        cx.fillStyle='rgba(255,255,255,'+(0.5-Math.abs(spy-(_playerY-10))/40)+')';
+        cx.beginPath();cx.arc(spx,spy,2+sp%2,0,Math.PI*2);cx.fill();
+      }
+    }
+    // wake trail (white foam behind board)
+    cx.strokeStyle='rgba(255,255,255,0.4)';cx.lineWidth=2;
+    cx.beginPath();cx.moveTo(_playerX-30,_playerY+10);
+    cx.quadraticCurveTo(_playerX-50,_playerY+8,_playerX-80,_playerY+12);cx.stroke();
     // === TOP WAVE FORECAST TIMELINE — 4 upcoming blocks (left→right: soon→later) ===
     var _fcX=110,_fcY=40,_fcW=560,_fcH=24,_fcBlock=_fcW/4;
     // track

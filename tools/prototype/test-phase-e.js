@@ -696,6 +696,28 @@ t('Round8: endGame calls settlementBonus + pushRelationship', /settlementBonus\(
 t('Round8: newRun calls showOpeningCardIfFresh', /showOpeningCardIfFresh\(\)/.test(h));
 t('Round8: renderAll updates plot-banner via todayTip', /plot-banner[\s\S]*todayTip\(\)/.test(h));
 
+// ── 26. funify-v3 Round 23 — Surf 巨浪知识打捞 (knowledge-salvage) gate ──
+// 用与游戏内同构的最小桩数据喂给从 index.html 切出的纯函数块 (与 B4 抽取方式一致)
+const W23_WAVES=[{id:'beginner_bay',item:'贝壳',special:'海鸥群'},{id:'pier_break',item:'海星',special:'钓鱼人'},{id:'reef_left',item:'珍珠',special:'海龟'},{id:'canal_wave',item:'贝壳',special:'桥下阴影'},{id:'sand_bar',item:'古硬币',special:'隐藏洞穴'},{id:'storm_pier',item:'古罗盘',special:'雷暴'},{id:'lighthouse',item:'珍珠',special:'灯塔回声'}];
+const W23_CAT=[{id:'贝壳',kind:'词条'},{id:'海星',kind:'词条'},{id:'珍珠',kind:'词条'},{id:'古硬币',kind:'记忆'},{id:'古罗盘',kind:'记忆'},{id:'古地图',kind:'配方'},{id:'鱼钩',kind:'配方'},{id:'宝石',kind:'记忆'},{id:'闪电石',kind:'回声'},{id:'回声瓶',kind:'回声'},{id:'羽毛',kind:'回声'},{id:'稀有遗物',kind:'回声'}];
+const s23Start=h.indexOf('// funify-v3 Round 23 — Surf 巨浪知识打捞');
+const s23End=s23Start>-1?h.indexOf('// end surf knowledge helpers',s23Start):-1;
+t('R23: surf knowledge block found in source',s23Start>-1&&s23End>s23Start);
+const s23Src=s23Start>-1?h.slice(s23Start,s23End):'';
+const S23=new Function('G','seeded','WAVE_POINTS','SURF_CATALOG','"use strict";'+s23Src+'; return {SURF_DEPTH_BANDS,surfDepthBand,surfFragPool,surfFragKind,surfSalvage};')(G,seeded,W23_WAVES,W23_CAT);
+// 深度分带映射: 0=浪脚,1=浪腰,2=浪心,越界封顶 2,稀有度 1/2/4 递增
+t('R23: 深度分带映射 0→浪脚 1→浪腰 2→浪心 越界封顶2 + 稀有度 1/2/4',S23.surfDepthBand(0)===0&&S23.surfDepthBand(1)===1&&S23.surfDepthBand(2)===2&&S23.surfDepthBand(9)===2&&S23.SURF_DEPTH_BANDS[0].mult===1&&S23.SURF_DEPTH_BANDS[1].mult===2&&S23.SURF_DEPTH_BANDS[2].mult===4);
+// 打捞池按浪点×分带差异化: 脚=浪点专属词条,腰=特殊升级,心=稀有遗物
+t('R23: 打捞池按浪点×分带差异化 (storm_pier 腰=闪电石 心=稀有遗物; beginner_bay 脚=贝壳; reef_left 腰=古地图)',(()=>{const f=S23.surfFragPool('storm_pier',1),h2=S23.surfFragPool('storm_pier',2),b0=S23.surfFragPool('beginner_bay',0),r1=S23.surfFragPool('reef_left',1);return f[0]==='闪电石'&&h2[0]==='稀有遗物'&&b0[0]==='贝壳'&&r1[0]==='古地图'&&S23.surfFragKind('贝壳')==='词条'&&S23.surfFragKind('闪电石')==='回声'})());
+// 知识碎片落袋: surfSalvage 浪心 miss 代价×2(cost=50)且成功只落稀有遗物
+t('R23: surfSalvage 浪心 miss 代价×2 (cost=50) 且成功只落稀有遗物',(()=>{let miss=false;for(let i=0;i<300;i++){const r=S23.surfSalvage({wave:W23_WAVES[5],at:i},2);if(r.miss){if(r.cost!==50)return false;miss=true}else if(r.item!=='稀有遗物')return false}return miss})());
+t('R23: surfSalvage 分数分层 (浪脚≤30 · 浪心≥48)',(()=>{for(let i=0;i<200;i++){const f1=S23.surfSalvage({wave:W23_WAVES[5],at:i},0);const h1=S23.surfSalvage({wave:W23_WAVES[5],at:i+400},2);if(!f1.miss&&f1.score>30)return false;if(!h1.miss&&h1.score<48)return false}return true})());
+// 联动触发: finSurf 写 G._surfCatch (跨产业配方 surfCatch 输入) + 浪心遗物 meta+2
+t('R23: 联动触发 — finSurf 写 G._surfCatch + 浪心遗物 meta+2',/G\._surfCatch\[item\]=\(G\._surfCatch\[item\]\|\|0\)\+1/.test(h)&&/s\.fragKinds&&s\.fragKinds\['稀有遗物'\]\)\{G\.meta\+=2/.test(h));
+// 动词与提示语: surfDive 深潜 + keyup 300ms 判定 + 首屏核心提示语
+t('R23: 长按深潜 surfDive + keyup ≥300ms 判定 + 首屏提示语「浪里有海吞掉的东西——捞出来」',/function surfDive\(s\)/.test(h)&&/hold>=300\)surfDive\(s\)/.test(h)&&h.includes('浪里有海吞掉的东西——捞出来'));
+t('R23: SURF_CATALOG 12 种全部重定义为知识碎片 (kind 字段齐全)',(()=>{const a=h.indexOf('const SURF_CATALOG=['),b=a>-1?h.indexOf('];',a):-1;return a>-1&&b>a&&(h.slice(a,b).match(/kind:'/g)||[]).length===12})());
+
 // summary assertion: tests grew this round
 t('Round8: overall pass count exceeds prior baseline (≥340)', pass >= 340);
 

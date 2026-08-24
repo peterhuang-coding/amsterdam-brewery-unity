@@ -501,7 +501,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div id="inv-modal" class="hidden">
 <div class="um-box">
 <h2>🗃️ 收藏 · 跨 Run 冲浪物品墙</h2>
-<div class="um-meta">🏄 7 个浪点各掉 <b>专属物品</b>(贝壳/海星/珍珠/古硬币/古罗盘) · 累计 ≥1 件解锁该卡片 · 30% 概率升级为 <b>稀有遗物</b>(古地图/鱼钩/宝石/闪电石/回声瓶/羽毛) · <b>localStorage 永久</b> · 按 <kbd>I</kbd> 或 <kbd>ESC</kbd> 关闭</div>
+<div class="um-meta">🌊 巨浪里有海吞掉的知识 — 7 个浪点按 <b>深度分带</b>打捞:浪脚掉<b>词条</b>(贝壳/海星/珍珠/古硬币/古罗盘) · 浪腰掉<b>配方/记忆</b>(古地图/鱼钩/宝石/闪电石/回声瓶/羽毛) · 浪心掉<b>稀有遗物</b>(+2★ meta) · <b>localStorage 永久</b> · 按 <kbd>I</kbd> 或 <kbd>ESC</kbd> 关闭</div>
 <div id="inv-grid"></div>
 </div>
 </div>
@@ -1122,37 +1122,37 @@ const WAVE_POINTS=[
 {id:'storm_pier',n:'⛈️ 风暴码头',diff:5,dist:300,item:'古罗盘',special:'雷暴'},
 {id:'lighthouse',n:'🗼 灯塔岩',diff:4,dist:250,item:'珍珠',special:'灯塔回声'}
 ];
-// funify-v3 Round 20 — Surf Item Catalog (BACKLOG #9 #10 收藏模态)
-// Union of WAVE_POINTS.item + rollSurfItem rare upgrades. Used by 🗃️ 收藏 modal (I 键).
+// funify-v3 Round 20/23 — Surf 知识碎片目录 (BACKLOG #9 #10 收藏模态)
+// 12 种重定义为「被海吞没的知识」:词条/配方/记忆/回声,按浪点×深度分带掉落。Used by 🗃️ 收藏 modal (I 键)。
 const SURF_CATALOG=[
-  {id:'贝壳',    ic:'🐚', where:'beginner_bay/canal_wave', rare:false},
-  {id:'海星',    ic:'⭐', where:'pier_break',              rare:false},
-  {id:'珍珠',    ic:'🦪', where:'reef_left/lighthouse',    rare:false},
-  {id:'古硬币',  ic:'🪙', where:'sand_bar',                rare:false},
-  {id:'古罗盘',  ic:'🧭', where:'storm_pier',              rare:false},
-  {id:'古地图',  ic:'🗺️', where:'海龟 30% 概率升级',       rare:true},
-  {id:'鱼钩',    ic:'🪝', where:'钓鱼人 30% 概率升级',     rare:true},
-  {id:'宝石',    ic:'💎', where:'隐藏洞穴 30% 概率升级',   rare:true},
-  {id:'闪电石',  ic:'⚡', where:'雷暴 30% 概率升级',       rare:true},
-  {id:'回声瓶',  ic:'🍾', where:'灯塔回声 30% 概率升级',   rare:true},
-  {id:'羽毛',    ic:'🪶', where:'海鸥群 30% 概率升级',     rare:true},
-  {id:'稀有遗物',ic:'✨', where:'其他浪点 30% 概率升级',   rare:true}
+  {id:'贝壳',    ic:'🐚', kind:'词条', where:'beginner_bay/canal_wave · 浪脚', rare:false},
+  {id:'海星',    ic:'⭐', kind:'词条', where:'pier_break · 浪脚',              rare:false},
+  {id:'珍珠',    ic:'🦪', kind:'词条', where:'reef_left/lighthouse · 浪脚',    rare:false},
+  {id:'古硬币',  ic:'🪙', kind:'记忆', where:'sand_bar · 浪脚',                rare:false},
+  {id:'古罗盘',  ic:'🧭', kind:'记忆', where:'storm_pier · 浪脚',              rare:false},
+  {id:'古地图',  ic:'🗺️', kind:'配方', where:'海龟 · 浪腰',                   rare:true},
+  {id:'鱼钩',    ic:'🪝', kind:'配方', where:'钓鱼人 · 浪腰',                  rare:true},
+  {id:'宝石',    ic:'💎', kind:'记忆', where:'隐藏洞穴 · 浪腰',                rare:true},
+  {id:'闪电石',  ic:'⚡', kind:'回声', where:'雷暴 · 浪腰',                    rare:true},
+  {id:'回声瓶',  ic:'🍾', kind:'回声', where:'灯塔回声 · 浪腰',                rare:true},
+  {id:'羽毛',    ic:'🪶', kind:'回声', where:'海鸥群 · 浪腰',                  rare:true},
+  {id:'稀有遗物',ic:'✨', kind:'回声', where:'浪心 · 深潜打捞',                rare:true}
 ];
 
-// funify-v3 Round 5 — Phase B3 Surf Dave-depth (6 soul events + paddle/ride + 4 upgrade tracks)
-// 6 灵魂事件: 救生/鲨鱼/神秘对手/灯塔/污染/巨浪 (per-run one-shot, triggered by surf conditions)
+// funify-v3 Round 5/23 — Phase B3 Surf Dave-depth (6 soul events + paddle/ride + 4 upgrade tracks)
+// 6 灵魂事件重叙事为「浪语」(机制不变): 呼救/暗影/对手/灯塔/浊流/巨浪 (per-run one-shot)
 const SURF_SOUL_EVENTS=[
-  {id:'rescue',    ic:'🆘', n:'救生时刻',  desc:'海上有人挥手求救 · SPACE 转向救人 → +$30 +5★ meta,弃浪丢 combo',
+  {id:'rescue',    ic:'🆘', n:'浪语·呼救',  desc:'浪里有溺水者的低语 · SPACE 捞起他 → +$30 +5★ meta,弃浪丢 combo',
    effect:{kind:'rescue',    reward:30, metaReward:5, forfeitCombo:true}},
-  {id:'shark',     ic:'🦈', n:'鲨鱼尾随',  desc:'鲨鱼鳍渐近 · SPACE 急停闪避,失败扣 30% 体力',
+  {id:'shark',     ic:'🦈', n:'浪语·暗影',  desc:'深水有黑影尾随 · SPACE 急停闪避,失败扣 30% 体力',
    effect:{kind:'shark',     dodgeCorrect:0.55, dodgeFailStamina:0.3, telemetryRounds:3}},
-  {id:'rival',     ic:'🏄‍♂️', n:'神秘对手',  desc:'挑战者并排抓浪 · 3 浪内累计 perfect ≥ 2 = 击败 +$25',
+  {id:'rival',     ic:'🏄‍♂️', n:'浪语·对手',  desc:'另一个打捞者并排下潜 · 3 浪内浪腰/浪心打捞 ≥ 2 = 击败 +$25',
    effect:{kind:'rival',     perfectRequired:2, roundsLimit:3, reward:25}},
-  {id:'lighthouse',ic:'🗼', n:'灯塔回声',  desc:'灯塔光束扫描 → 解锁 1 个未发现浪点 (灯塔优先)',
+  {id:'lighthouse',ic:'🗼', n:'浪语·灯塔',  desc:'灯塔光束扫过浪墙 → 解锁 1 个未发现浪点 (灯塔优先)',
    effect:{kind:'lighthouse', discover:1, prefer:'lighthouse'}},
-  {id:'pollution', ic:'🛢️', n:'海洋污染',  desc:'原油泄漏 · 抓浪扣 5 分,SPACE 清理塑料 +10 分 +2★ meta',
+  {id:'pollution', ic:'🛢️', n:'浪语·浊流',  desc:'油污裹挟碎片 · 打捞扣 5 分,SPACE 清理 +10 分 +2★ meta',
    effect:{kind:'pollution', catchPenalty:5, cleanupScore:10, cleanupMeta:2}},
-  {id:'tidal',     ic:'🌊', n:'巨浪来袭',  desc:'巨浪周期 5s · 完美抓浪奖励 ×3,错过扣 20 体力',
+  {id:'tidal',     ic:'🌊', n:'浪语·巨浪',  desc:'巨浪周期 5s · 浪心打捞奖励 ×3,被卷走额外扣 20 体力',
    effect:{kind:'tidal',      perfectMul:3, missStaminaPenalty:20, setPeriodMs:5000}},
 ];
 // Surf upgrade tree — 4 tracks, each 3 tiers. Persisted in G (per-run) via UP_POOL-style effect hooks.
@@ -1590,6 +1590,30 @@ function surfPaddleHit(s){
   const hit=cur>=0.40 && cur<=0.55;
   if(hit){s.stamina=Math.min(100,s.stamina+5);s.paddle._hits++;return '+'}
   return '0';
+}
+// funify-v3 Round 23 — Surf 巨浪知识打捞 (Abzû 智慧之洋) — pure helpers (test-sliced)
+// Depth bands: 0 浪脚(foot 普通) → 1 浪腰(waist 稀有) → 2 浪心(heart 传说/灵魂回声). Pool per wave point × band.
+const SURF_DEPTH_BANDS=[
+  {id:'foot',  n:'浪脚', mult:1, cost:5,  miss:0.10},
+  {id:'waist', n:'浪腰', mult:2, cost:12, miss:0.22},
+  {id:'heart', n:'浪心', mult:4, cost:25, miss:0.38}
+];
+function surfDepthBand(d){return Math.max(0,Math.min(2,d|0))}
+function surfFragPool(waveId,band){const w=(WAVE_POINTS.find(x=>x.id===waveId)||WAVE_POINTS[0]);if(band===2)return ['稀有遗物'];if(band===1)return [({海龟:'古地图',钓鱼人:'鱼钩',隐藏洞穴:'宝石',雷暴:'闪电石',灯塔回声:'回声瓶',海鸥群:'羽毛'})[w.special]||'稀有遗物'];return [w.item]}
+function surfFragKind(item){const f=SURF_CATALOG.find(x=>x.id===item);return f?(f.kind||'词条'):'回声'}
+// Salvage attempt at band: returns {miss:true,cost} or {miss:false,item,score,cost}. Deterministic via seeded.
+function surfSalvage(s,band){const b=surfDepthBand(band);const B=SURF_DEPTH_BANDS[b];const pool=surfFragPool(s.wave&&s.wave.id,b);const miss=seeded(90+(s.at|0)*7+b)<B.miss;if(miss)return {miss:true,band:b,cost:B.cost*2};const item=pool[Math.floor(seeded(91+(s.at|0)*7+b)*pool.length)];const score=Math.round((12+seeded(92+(s.at|0)*13+b)*18)*B.mult*(s.tidalActive&&b===2?3:1));return {miss:false,band:b,item,score,cost:B.cost}}
+// end surf knowledge helpers
+// SPACE 长按 ≥300ms = 深潜进更深分带 (keyup 判定);更深 = 稀有度×N 但体力代价更高
+function surfDive(s){
+  if(!s||s.ended)return;
+  const b=surfDepthBand((s.band||0)+1);
+  if(b===(s.band||0)){setMsg('⏬ 已在浪心 · 最深无法再潜');return}
+  const cost=b===1?8:15;
+  s.band=b;s.stamina=Math.max(0,s.stamina-cost);
+  setMsg(`🤿 深潜进${SURF_DEPTH_BANDS[b].n} (-${cost}体力 · 稀有度×${SURF_DEPTH_BANDS[b].mult})`);
+  if(s.stamina<=0){s.drowned=true;finSurf(true);return}
+  renderAll();
 }
 
 const ESCAPE_TECHS=[
@@ -3437,7 +3461,7 @@ const MG_HINT_KEYS={
   brew:{ic:'🍺',name:'酿酒厂（啤酒订单）',keys:[['<kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd>','原料:麦芽/啤酒花/酵母各选 0/1/2'],['<kbd>SPACE</kbd>','开始酿造 (订单 180s 内完成)'],['<kbd>⬆</kbd>/<kbd>⬇</kbd>','控温 ±3°C（IPA=55°·Stout=68°·Lager=48°）'],['<kbd>ESC</kbd>','离开不收尾']],tip:'配方顺序 + 目标温度是订单的两大隐藏轴；温度误差 ≤±5°C 触发完美品。'},
   coffee:{ic:'🌿',name:'Noord 咖啡店',keys:[['<kbd>1-4</kbd>','选品 (espresso/drip/cold_brew/special, rep 解锁)'],['<kbd>Q</kbd>/<kbd>W</kbd>','自定义调价 ±1 (5-50)'],['<kbd>P</kbd>','雇帮派 $50 · 卧底 -80% · 衰减 ×2'],['<kbd>E</kbd>','🌃 夜间地下交易 (仅 evening · rep≥20)'],['<kbd>SPACE</kbd>','成交 · 匹配产品 +25% · 高 tier +15%'],['<kbd>X</kbd>','拒绝卧底 (-8°) / 离店 (-2°)'],['<kbd>ESC</kbd>','结束打烊']],tip:'8 客群随时间段刷新 · 热度随价格+卧底积累 · 雇佣帮派/开夜市都是风险收益权衡 · 5 连正确服务触发 streak +20% 。'},
   shroom:{ic:'🍄',name:'SmartShop（蘑菇培养）',keys:[['<kbd>⬆</kbd>/<kbd>⬇</kbd>','湿度 ±5（目标 60%）'],['<kbd>⬅</kbd>/<kbd>➡</kbd>','温度 ±1（目标 22°C）'],['<kbd>Q</kbd>/<kbd>W</kbd>','光照 ±1（目标 8）'],['<kbd>SPACE</kbd>','启动培养'],['<kbd>ESC</kbd>','取消并离开']],tip:'偏离参数会拉高污染风险；参数过偏导致报废本批收入清零。'},
-  surf:{ic:'🏄',name:'冲浪（Noord 海滩）',keys:[['<kbd>⬆</kbd>/<kbd>⬇</kbd>','加速/减速（体能消耗调整）'],['<kbd>⬅</kbd>/<kbd>➡</kbd>','左右躲闪破浪'],['<kbd>SPACE</kbd>','完美抓（相位于绿色完美圈时）'],['<kbd>ESC</kbd>','中断并带回分数']],tip:'相位于绿色圈 + 3 连完美触发 perfect streak multiplier；体力见底将自动带回。'},
+  surf:{ic:'🌊',name:'巨浪 · 知识打捞（Noord 海滩）',keys:[['<kbd>SPACE</kbd>','探身打捞当前深度 (松手=捞)'],['<kbd>SPACE 长按</kbd>','深潜进更深分带:浪脚→浪腰→浪心'],['<kbd>P</kbd>','划水回体 +5 (节奏绿区)'],['<kbd>ESC</kbd>','中断并带回分数']],tip:'浪里有海吞掉的东西——捞出来。越深碎片越稀有;浪心捞遗物 +2★ meta;被浪卷走扣体力并可能听见「浪语」。'},
   academic:{ic:'📚',name:'学术答辩（Science Park）',keys:[['<kbd>1</kbd>','方法论Ⅰ'],['<kbd>2</kbd>','方法论Ⅱ'],['<kbd>3</kbd>','方法论Ⅲ'],['<kbd>SPACE</kbd>','提交方法论'],['<kbd>ESC</kbd>','中断并扣分']],tip:'方法论与挑战 (Venue) 匹配给部分学分；Venue 越难基础回报越高。'},
   bar:{ic:'🍸',name:'Tweede Kans 酒吧',keys:[['<kbd>1</kbd>','推荐常客的酒'],['<kbd>2</kbd>','高价推荐'],['<kbd>3</kbd>','低价推荐'],['<kbd>SPACE</kbd>','递酒给当前顾客'],['<kbd>X</kbd>','拒当前顾客'],['<kbd>ESC</kbd>','打烊']],tip:'VIP 日（Vrijdag）每位顾客 ×2 小费；patience 归零顾客走人并损失连续。'}
 };
@@ -4496,7 +4520,7 @@ function pickWavePoint(n){const w=WAVE_POINTS[n-1];if(!w)return;G.todayWave=w;
     boardWorn,windowWidth:boardWorn?0.075:0.1,staminaDrainMult:boardWorn?0.5:1,
     paddle:{active:true,startedAt:Date.now(),cursor:0.5,msPerCycle:1200,_hits:0},
     rescueActive:false,sharkActive:false,rivalActive:false,pollutionActive:false,tidalActive:false,
-    _waxUsed:false,
+    _waxUsed:false,band:0,lastFrag:null,fragKinds:{},_spPress:null,_timeCost:0,
     // Round 11 D3: forecast/weather/shark fin fields
     _forecast:[_mkWave(),_mkWave(),_mkWave(),_mkWave()],
     _forecastLastRefill:Date.now(),
@@ -4508,7 +4532,7 @@ function pickWavePoint(n){const w=WAVE_POINTS[n-1];if(!w)return;G.todayWave=w;
   surfApplyUpgradeBoosts(session);
   G.mg='surf';G._mgEnterAt=Date.now();dropIng('shell');MG.surf=session;
   if(!G.surfDiscovered.includes(w.id)){G.surfDiscovered.push(w.id);G.meta+=5;addEvt('good',`🗺️ 首次发现 ${w.n} +5★ meta`);saveLedger()}
-  setStatus('🏄 '+w.n,`难度${w.diff} · 特殊:${w.special} · 板磨损 ${G.surfBoardLife}/15${boardWorn?' ⚠需修':''}`,'SPACE抓浪 · P 划水回体 · R 修板$20 · N 换新$50 · 绿区=perfect · 错过=翻船');renderAll()}
+  setStatus('🌊 '+w.n,`难度${w.diff} · ${w.special} · 板磨损 ${G.surfBoardLife}/15${boardWorn?' ⚠需修':''}`,'浪里有海吞掉的东西——捞出来 · SPACE打捞 · 长按SPACE深潜 · P划水回体');renderAll()}
 function rollSurfItem(wave){let item=wave.item;if(seeded(140+G.inventory.length)<.3){const upgrades={'海龟':'古地图','钓鱼人':'鱼钩','隐藏洞穴':'宝石','雷暴':'闪电石','灯塔回声':'回声瓶','海鸥群':'羽毛'};item=upgrades[wave.special]||'稀有遗物'}return item}
 function surfIn(k){const s=MG.surf;if(!s||s.ended)return;
   // Phase C A3a: 修板/换新选项
@@ -4548,37 +4572,34 @@ function surfIn(k){const s=MG.surf;if(!s||s.ended)return;
     renderAll();return;
   }
   if(k!==' ')return;
-  const pos=(s.wx-200)/500;
-  // Phase C A3a: worn board shrinks window by 25%
-  const wW=s.windowWidth;
-  const inGreen=pos>(0.7-wW*0.5)&&pos<(0.7+wW*0.5);
-  const inWhite=pos>(0.6-wW)&&pos<(0.8+wW);
-  const barrel=seeded(80+s.at)<0.08;
-  // Wipeout: caught outside the white zone (totally mistimed) = lose stamina + combo + counter
-  if(!inWhite){
-    s.wipeouts++;s.combo=0;s.stamina=Math.max(0,s.stamina-15);
+  // Round 23 — 深度分带打捞: SPACE 探身打捞当前分带 (长按=深潜由 keyup 判定)
+  const band=s.band||0;
+  const r=surfSalvage(s,band);
+  const cost=Math.max(2,Math.round(r.cost*(s.staminaDrainMult||1)));
+  if(r.miss){
+    // 被浪卷走 = 体力/时间代价 + 触发灵魂事件(浪语)
+    s.wipeouts++;s.combo=0;s.perfectStreak=0;
+    s.stamina=Math.max(0,s.stamina-cost-(s.tidalActive?(s.tidalMissPenalty||20):0));
     s.sc=Math.max(0,s.sc-20);
-    // tidal 巨浪 miss penalty
-    if(s.tidalActive){s.stamina=Math.max(0,s.stamina-(s.tidalMissPenalty||20));setMsg(`🌊 巨浪错过 -${s.tidalMissPenalty||20} 体力 · -20分 · 翻船${s.wipeouts}`)}
-    else setMsg(`🌊 翻船!(-15体力 -20分 · 累计翻船${s.wipeouts})`);
+    setMsg(`🌊 被浪卷走!(-${cost}体力 -20分 · 卷走${s.wipeouts}次)`);
+    if(!G._surfSoul||!G._surfSoul.fired){const evt=surfRollSoulEvent(s,s.wave);if(evt)surfApplySoul(evt)}
     if(s.stamina<=0){s.drowned=true;finSurf(true)}
     else renderAll();
     return;
   }
-  let sc=inGreen?Math.round((1-Math.abs(pos-0.7)/0.1)*30+10):Math.round((1-Math.abs(pos-0.7)/0.3)*10+3);
-  if(inGreen){s.combo++;s.perfect++;s.perfectStreak++}else{s.combo=0;s.perfectStreak=0}
-  if(barrel)sc+=50;
-  // Round 5 B3: pollution active → 抓浪扣 5 分
-  if(s.pollutionActive)sc-=5;
-  // Round 5 B3: tidal → perfect ×3
-  if(s.tidalActive&&inGreen)sc*=3;
-  // Round 5 B3: wax first-catch bonus (one-shot per session)
-  if(s._waxBonus&&inGreen&&!s._waxUsed){sc=Math.round(sc*(1+s._waxBonus));s._waxUsed=true}
-  s.sc+=sc;s.at++;s.stamina=Math.max(0,s.stamina-Math.round((5+Math.floor(s.at/15))*s.staminaDrainMult));
-  s.lastCatch=Date.now();
+  let sc=r.score;
+  if(s.pollutionActive)sc=Math.max(0,sc-5);
+  if(s.tidalActive&&band===2)sc*=3;
+  if(s._waxBonus&&!s._waxUsed){sc=Math.round(sc*(1+s._waxBonus));s._waxUsed=true}
+  s.sc+=sc;s.at++;s.combo++;
+  if(band===2){s.perfect++;s.perfectStreak++}else s.perfectStreak=0;
+  s.stamina=Math.max(0,s.stamina-cost);
+  s.lastFrag=r.item;s.band=band;s.lastCatch=Date.now();
+  s.fragKinds[r.item]=(s.fragKinds[r.item]||0)+1;
+  if(band===2)s._timeCost=(s._timeCost||0)+700; // 浪心: 时间代价
   s.wx=400+seeded(150+s.at)*200;
-  // Round 5 B3: rival counters (perfect 累计 ≥ 2 = 击败 +$25)
-  if(s.rivalActive&&inGreen){
+  // Round 5 B3: rival counters (浪腰/浪心打捞 累计 ≥ 2 = 击败 +$25)
+  if(s.rivalActive&&band>=1){
     G._surfSoul.rivalPerfect=(G._surfSoul.rivalPerfect||0)+1;
     if(G._surfSoul.rivalPerfect>=2){
       G.money+=25;G._surfSoul.rivalPerfect=-1;s.rivalActive=false;
@@ -4587,15 +4608,14 @@ function surfIn(k){const s=MG.surf;if(!s||s.ended)return;
   }
   // Reset paddle rhythm on every catch so player can re-aim
   s.paddle.startedAt=Date.now();s.paddle.cursor=0.5;
-  if(barrel)setMsg('🏄 Perfect barrel +50!');
-  else setMsg(`🏄 抓浪 +${sc} · 体力${s.stamina}% · combo×${s.combo}${inGreen&&s.perfectStreak>=2?' 🔥×'+s.perfectStreak+' ('+surfPerfectStreakMul(s.perfectStreak)+'x)':''}${s.boardWorn?' ⚠板损':''}${s.tidalActive?' 🌊巨浪':''}${s.pollutionActive?' 🛢️污染':''}${s.rivalActive?' 🏄‍♂️':''}`);
+  setMsg(`🫧 捞到${r.item}(${SURF_DEPTH_BANDS[band].n}×${SURF_DEPTH_BANDS[band].mult}) +${sc}分 · 体力${s.stamina}% · combo×${s.combo}${band===2&&s.perfectStreak>=2?' 🔥×'+s.perfectStreak+' ('+surfPerfectStreakMul(s.perfectStreak)+'x)':''}${band===2?' · ⏳浪心时间代价':''}${s.tidalActive?' 🌊巨浪':''}${s.pollutionActive?' 🛢️污染':''}${s.rivalActive?' 🏄‍♂️':''}`);
   // Roll one-shot soul event (one per run, lazy check)
   if(!G._surfSoul||!G._surfSoul.fired){
     const evt=surfRollSoulEvent(s,s.wave);
     if(evt)surfApplySoul(evt);
   }
   if(s.stamina<=0){s.drowned=true;finSurf(true)}else renderAll()}
-function finSurf(drowned){const s=MG.surf;if(!s||s.ended)return;s.ended=true;const perfectStreakMul=surfPerfectStreakMul(s.perfectStreak)*(hasUpgrade('legendary_perfect')?1.5:1);const perfectBonus=Math.round(s.perfect*50*perfectStreakMul);const bonus=s.combo>=3?1.2:1,raw=Math.round((s.sc+perfectBonus)*bonus*tipFactor()),inc=drowned?Math.floor(raw*.5):raw;G.money+=inc;G.ind.surfing.xp+=inc*3;const item=rollSurfItem(s.wave);G.inventory.push(item);if(!G.invCollect||typeof G.invCollect!=='object')G.invCollect={};G.invCollect[item]=(G.invCollect[item]||0)+1;saveMeta();addEvt(drowned?'bad':'good',`🏄 ${s.wave.n} 带回${item} · +$${inc}${perfectBonus>0?' (含 perfect ×'+s.perfect+' streak×'+perfectStreakMul+')':''}`);addSch('🏄',`冲浪 +$${inc} · ${item}`);G.mg=null;G.inside=null;chkLv('surfing');setStatus(drowned?'🌊 溺水':'✅ 冲浪结束',`${s.sc}分 · ${item} · +$${inc}`,'');tickObj('Earn',Math.max(1,Math.floor(inc/10)));tickObj('Explore',1);if(s.perfect>=3)tryUnlock('surf_perfectionist');AUDIO.play(s.perfect>=3?'surf_perfect':'surf_catch');
+function finSurf(drowned){const s=MG.surf;if(!s||s.ended)return;s.ended=true;const perfectStreakMul=surfPerfectStreakMul(s.perfectStreak)*(hasUpgrade('legendary_perfect')?1.5:1);const perfectBonus=Math.round(s.perfect*50*perfectStreakMul);const bonus=s.combo>=3?1.2:1,raw=Math.round((s.sc+perfectBonus)*bonus*tipFactor()),inc=drowned?Math.floor(raw*.5):raw;G.money+=inc;G.ind.surfing.xp+=inc*3;const item=s.lastFrag||rollSurfItem(s.wave);G.inventory.push(item);if(!G.invCollect||typeof G.invCollect!=='object')G.invCollect={};G.invCollect[item]=(G.invCollect[item]||0)+1;if(!G._surfCatch||typeof G._surfCatch!=='object')G._surfCatch={};G._surfCatch[item]=(G._surfCatch[item]||0)+1;if(s.fragKinds&&s.fragKinds['稀有遗物']){G.meta+=2;addEvt('good','✨ 浪心打捞遗物 +2★ meta')}saveMeta();addEvt(drowned?'bad':'good',`🏄 ${s.wave.n} 捞起${item} · +$${inc}${perfectBonus>0?' (含 perfect ×'+s.perfect+' streak×'+perfectStreakMul+')':''}`);addSch('🤿',`打捞 +$${inc} · ${item}`);G.mg=null;G.inside=null;chkLv('surfing');setStatus(drowned?'🌊 被浪卷走':'✅ 打捞结束',`${s.sc}分 · ${item} · +$${inc}`,'');tickObj('Earn',Math.max(1,Math.floor(inc/10)));tickObj('Explore',1);if(s.perfect>=3)tryUnlock('surf_perfectionist');AUDIO.play(s.perfect>=3?'surf_perfect':'surf_catch');
   // Phase C B3: surf→coffee cross-game — surfed today boosts first 3 coffee customers
   G.surfedToday=G.day;
   // Phase C A3a: 板磨损 — 每 3 抓损 1,最低 0
@@ -6318,187 +6338,63 @@ function drawMG(){
       cx.fillStyle='#888';cx.fillText('3 个 0.8s 窗口: 1.5s / 2.7s / 3.9s',400,300);
     }
   }else if(mg==='surf'){
-    // === funify-v3 Round 11 (Phase D3) — Surf side-view scene ===
-    // Horizon + sin-wave rolling ocean + surfer side-standing + 5 area variants + weather
-    // + stamina bar + wave forecast timeline (4 upcoming) + shark fin warning
+    // === funify-v3 Round 23 — 巨浪知识打捞: Hokusai 竖向浪墙 (≥60% 画布) + 漩涡 + 发光知识泡沫 ===
     var _sn=Date.now()/1000;
-    var _wt=s._weather||'sunny';
-    var _wi=s._weatherIntensity||0.5;
-    var _at=s._areaTint||'#80b8d0';
-    // Sky gradient — varies with weather
-    var _skyTop=_wt==='rain'?'#3a4858':_wt==='fog'?'#90989a':_wt==='sunset'?'#d88060':'#6ea0c8';
-    var _skyMid=_wt==='rain'?'#587080':_wt==='fog'?'#b0b8b8':_wt==='sunset'?'#e8b070':'#a8d0e0';
-    var _skyBot=_wt==='rain'?'#7888a0':_wt==='fog'?'#c8d0d0':_wt==='sunset'?'#f0c890':'#d8ecec';
-    var skyG=cx.createLinearGradient(0,30,0,210);
-    skyG.addColorStop(0,_skyTop);skyG.addColorStop(0.6,_skyMid);skyG.addColorStop(1,_skyBot);
-    cx.fillStyle=skyG;cx.fillRect(80,30,640,180);
-    // Distant horizon line + sky reflection on water
-    cx.fillStyle='#40608060';cx.fillRect(80,208,640,3);
-    cx.fillStyle='#5a7890';cx.fillRect(80,211,640,1);
-    // Background distant ships / windsurfers silhouette
-    for(var ds=0;ds<3;ds++){var dx=160+ds*220+Math.sin(_sn*0.3+ds)*8;
-      cx.fillStyle='#3a5060';cx.fillRect(dx,200,4,2);
-      cx.fillRect(dx+1,196,2,5);
-      cx.fillStyle='#ffffff40';cx.fillRect(dx+1,196,2,2);
+    var band=s.band||0;
+    // deep night sky + sea glow
+    var skyG=cx.createLinearGradient(0,30,0,470);skyG.addColorStop(0,'#0b1630');skyG.addColorStop(0.5,'#16406a');skyG.addColorStop(1,'#0c2036');
+    cx.fillStyle=skyG;cx.fillRect(80,30,640,440);
+    cx.fillStyle='#e8f4ff24';cx.beginPath();cx.arc(150,90,40,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#f0f8ff';cx.beginPath();cx.arc(150,90,22,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#9fd8f0';cx.font='9px sans-serif';cx.textAlign='left';cx.fillText('Ab(水)+Zû(知) 智慧之洋 · 捞起被海吞掉的知识',90,48);
+    // === THE WAVE WALL: 3-layer faces rising from the left ===
+    cx.fillStyle='#1c4466';cx.beginPath();cx.moveTo(235,470);cx.lineTo(235,70);cx.quadraticCurveTo(480,30,720,42);cx.lineTo(720,470);cx.closePath();cx.fill();
+    cx.fillStyle='#27567e';cx.beginPath();cx.moveTo(255,470);cx.lineTo(255,102);cx.quadraticCurveTo(490,62,720,74);cx.lineTo(720,470);cx.closePath();cx.fill();
+    cx.fillStyle='#3a6d9a';cx.beginPath();cx.moveTo(285,470);cx.lineTo(285,150);cx.quadraticCurveTo(520,116,720,128);cx.lineTo(720,470);cx.closePath();cx.fill();
+    // Hokusai claw curls at crest — 3 white fingers reaching left
+    var _claw=function(x0,y0,r0,sw){cx.strokeStyle='#eaf6ff';cx.lineWidth=sw;cx.beginPath();cx.arc(x0,y0,r0,Math.PI*0.95,Math.PI*1.95);cx.stroke();cx.beginPath();cx.arc(x0+r0*0.4,y0-r0*0.28,r0*0.26,Math.PI*0.5,Math.PI*1.9);cx.stroke()};
+    _claw(330,46,28,5);_claw(362,64,22,4);_claw(396,84,17,3.5);
+    // foam droplets along crest
+    cx.fillStyle='#ffffffb0';
+    for(var f1=0;f1<14;f1++){var fxx=290+f1*30+Math.sin(_sn*2+f1)*6;var fyy=44+Math.sin(f1*2.4)*12;cx.beginPath();cx.arc(fxx,fyy,1.5+f1%3,0,Math.PI*2);cx.fill()}
+    // swirls (漩涡) inside the wall body
+    cx.strokeStyle='#cfe8ff33';cx.lineWidth=2;
+    for(var sw1=0;sw1<3;sw1++){var swx=440+sw1*95,swy=210+sw1*80;cx.beginPath();cx.arc(swx,swy,26-sw1*4,0,Math.PI*2);cx.stroke();cx.beginPath();cx.arc(swx,swy,13-sw1*2,Math.PI*0.3,Math.PI*2.1);cx.stroke()}
+    // === DEPTH BANDS: 浪脚(词条) / 浪腰(配方·记忆) / 浪心(遗物·灵魂回声) — top = deepest ===
+    var _zones=[[0,'浪脚','词条 · 普通碎片',398,70],[1,'浪腰','配方/记忆 · 稀有',288,108],[2,'浪心','遗物 · 灵魂回声',150,138]];
+    for(var zi=0;zi<3;zi++){
+      var zn=_zones[zi];
+      cx.fillStyle=(zn[0]===2?'#ffd8a0':'#9fd8f0')+(zn[0]===2?'26':'1e');cx.fillRect(300,zn[3],420,zn[4]);
+      cx.fillStyle='#9fd8f0';cx.font='bold 12px sans-serif';cx.textAlign='left';
+      cx.fillText(zn[1]+' · '+zn[2],316,zn[3]+18);
+      if(band===zn[0]){cx.strokeStyle='#ffffff';cx.lineWidth=2;cx.strokeRect(302,zn[3]+2,416,zn[4]-4)}
     }
-    // 3-layer parallax ocean with sin-wave rolling — amplitude scaled by wave.diff
-    var _diff=s.wave.diff||1;
-    var _amp=[6,12,18,28,38][Math.min(4,_diff-1)]||10;
-    function _waveY(x,t,amp,freq,off){return 240+amp*Math.sin((x*freq)+t+off)}
-    // Far ocean (subtle, no foam)
-    cx.fillStyle=_at+'60';
-    cx.beginPath();cx.moveTo(80,240);
-    for(var wf=80;wf<=720;wf+=8){cx.lineTo(wf,_waveY(wf,_sn*0.5,_amp*0.35,0.012,0))}
-    cx.lineTo(720,290);cx.lineTo(80,290);cx.closePath();cx.fill();
-    // Mid ocean (main rolling band)
-    cx.fillStyle=_at;
-    cx.beginPath();cx.moveTo(80,260);
-    for(var wm=80;wm<=720;wm+=6){cx.lineTo(wm,_waveY(wm,_sn*1.0,_amp*0.6,0.018,1.5))}
-    cx.lineTo(720,300);cx.lineTo(80,300);cx.closePath();cx.fill();
-    // Near ocean (foreground, with foam crests)
-    cx.fillStyle=_at+'e0';
-    cx.beginPath();cx.moveTo(80,285);
-    for(var wn=80;wn<=720;wn+=4){cx.lineTo(wn,_waveY(wn,_sn*1.4,_amp*0.85,0.025,3.0))}
-    cx.lineTo(720,330);cx.lineTo(80,330);cx.closePath();cx.fill();
-    // Foam crests on near waves
-    cx.fillStyle='#ffffff';
-    for(var fc=0;fc<5;fc++){var fx=120+fc*130+_sn*30%130;var fy=_waveY(fx,_sn*1.4,_amp*0.85,0.025,3.0);
-      cx.beginPath();cx.ellipse(fx,fy-1,8,2,0,0,Math.PI*2);cx.fill();
+    // glowing knowledge-foam (echo glyphs)
+    var _glyphs=['阿','水','知','浪','忆','語'];
+    for(var gi=0;gi<6;gi++){
+      var gx=350+(gi*67)%380,gy=170+(gi*53)%270+Math.sin(_sn*1.6+gi)*6;
+      cx.shadowColor='#aee8ff';cx.shadowBlur=10;
+      cx.fillStyle='#0e2438cc';cx.beginPath();cx.arc(gx,gy,12,0,Math.PI*2);cx.fill();
+      cx.shadowBlur=0;cx.strokeStyle='#aee8ff66';cx.beginPath();cx.arc(gx,gy,12,0,Math.PI*2);cx.stroke();
+      cx.fillStyle='#d8f4ff';cx.font='bold 12px sans-serif';cx.textAlign='center';cx.fillText(_glyphs[gi],gx,gy+4);
     }
-    // === WEATHER OVERLAY ===
-    if(_wt==='rain'){
-      cx.strokeStyle='#c0d0e060';cx.lineWidth=1;
-      for(var rd=0;rd<28*_wi;rd++){var rx=(rd*37+_sn*60)%640+80;var ry=(rd*53+_sn*180)%180+30;
-        cx.beginPath();cx.moveTo(rx,ry);cx.lineTo(rx-2,ry+8);cx.stroke();
-      }
-    }else if(_wt==='fog'){
-      cx.fillStyle='#ffffff40';
-      for(var fg=0;fg<8;fg++){var fx=120+fg*70+Math.sin(_sn*0.4+fg)*20;var fy=80+Math.cos(_sn*0.3+fg)*30;
-        cx.beginPath();cx.ellipse(fx,fy,28+fg%3*8,10,0,0,Math.PI*2);cx.fill();
-      }
-    }else if(_wt==='sunset'){
-      // Sun on horizon
-      cx.fillStyle='#ffd060';
-      cx.beginPath();cx.arc(640,205,16,0,Math.PI*2);cx.fill();
-      cx.fillStyle='#ff904040';
-      cx.beginPath();cx.arc(640,205,28,0,Math.PI*2);cx.fill();
-    }else if(_wt==='sunny'){
-      // Subtle sun glow upper-left
-      cx.fillStyle='#fff0a030';
-      cx.beginPath();cx.arc(150,70,30,0,Math.PI*2);cx.fill();
-    }
-    // === SHARK FIN WARNING (when sharkActive) — dark triangle sliding across ===
-    if(s._sharkFinActive){
-      var sfx=s._sharkFinX||0;
-      var sfy=_waveY(sfx,_sn*1.4,_amp*0.85,0.025,3.0)-4;
-      cx.fillStyle='#1a1820';
-      cx.beginPath();cx.moveTo(sfx,sfy-12);cx.lineTo(sfx+14,sfy);cx.lineTo(sfx-2,sfy);cx.closePath();cx.fill();
-      cx.fillStyle='#2a3040';cx.beginPath();cx.moveTo(sfx,sfy-9);cx.lineTo(sfx+8,sfy-1);cx.lineTo(sfx-1,sfy-1);cx.closePath();cx.fill();
-      // splash
-      cx.fillStyle='#ffffff60';cx.beginPath();cx.arc(sfx+10,sfy+1,2,0,Math.PI*2);cx.fill();
-    }
-    // === SURFER SIDE-VIEW (R19 — 巨浪生存具象化:船倾斜 + 浪打到船 + 水花飞溅) ===
-    var _setPh=s.setPhase||'calm';
-    var _pSway=_setPh==='set'?Math.sin(_sn*3)*2.5:Math.sin(_sn*1.5)*1;
-    var _pTilt=_setPh==='set'?(s.perfectStreak>=1?-8:-3):0;  // lean into wave when perfect streak
-    var _playerX=380,_playerY=275+_pSway;
-    // board shadow on water
-    cx.fillStyle='#0004';cx.beginPath();cx.ellipse(_playerX,_playerY+18,38,4,0,0,Math.PI*2);cx.fill();
-    cx.save();cx.translate(_playerX,_playerY+10);cx.rotate(_pTilt*Math.PI/180);
-    // Surfboard tilted
-    cx.fillStyle='#3a78c0';
-    cx.beginPath();
-    cx.moveTo(-30,-2);cx.lineTo(30,-2);cx.lineTo(34,2);cx.lineTo(-34,2);cx.closePath();cx.fill();
-    // Board stripe
-    cx.fillStyle='#5a98e0';cx.fillRect(-26,-1,52,2);
-    // Board fin
-    cx.fillStyle='#1a3050';
-    cx.beginPath();cx.moveTo(-22,2);cx.lineTo(-18,8);cx.lineTo(-14,2);cx.closePath();cx.fill();
-    // Player body (silhouette) — also tilted
-    cx.fillStyle='#1a2030';
-    cx.fillRect(-5,-9,3,7);cx.fillRect(2,-9,3,7); // legs
-    cx.fillRect(-7,-18,14,10); // torso
-    cx.fillStyle='#f0d8a8';cx.beginPath();cx.arc(0,-23,5,0,Math.PI*2);cx.fill(); // head
-    cx.fillStyle='#202020';cx.beginPath();cx.arc(0,-25,5,Math.PI,0);cx.fill(); // cap
-    cx.fillStyle='#1a2030';cx.fillRect(-12,-17,4,2);cx.fillRect(8,-17,4,2); // arms
-    cx.restore();
-    // spray near board — bigger in 'set' phase
-    var _sprayN=_setPh==='set'?12:6;
-    for(var sb=0;sb<_sprayN;sb++){
-      var sx=_playerX+(_sn*60+sb*8)%50-25;
-      var sy=_playerY+12+sb%3*2+Math.sin(_sn*4+sb)*2;
-      var sa=_setPh==='set'?0.7:0.4;
-      cx.fillStyle='rgba(255,255,255,'+sa+')';
-      cx.beginPath();cx.arc(sx,sy,1+sb%3,0,Math.PI*2);cx.fill();
-    }
-    // === R19 splash impact when big wave hits (only during set, scaled by combo) ===
-    if(_setPh==='set'){
-      var _spN=4+s.combo;
-      for(var sp=0;sp<_spN;sp++){
-        var spx=_playerX+Math.sin(_sn*5+sp)*30;
-        var spy=_playerY-10+(_sn*40+sp*15)%40;
-        cx.fillStyle='rgba(255,255,255,'+(0.5-Math.abs(spy-(_playerY-10))/40)+')';
-        cx.beginPath();cx.arc(spx,spy,2+sp%2,0,Math.PI*2);cx.fill();
-      }
-    }
-    // wake trail (white foam behind board)
-    cx.strokeStyle='rgba(255,255,255,0.4)';cx.lineWidth=2;
-    cx.beginPath();cx.moveTo(_playerX-30,_playerY+10);
-    cx.quadraticCurveTo(_playerX-50,_playerY+8,_playerX-80,_playerY+12);cx.stroke();
-    // === TOP WAVE FORECAST TIMELINE — 4 upcoming blocks (left→right: soon→later) ===
-    var _fcX=110,_fcY=40,_fcW=560,_fcH=24,_fcBlock=_fcW/4;
-    // track
-    cx.fillStyle='#1a305080';cx.fillRect(_fcX-2,_fcY-2,_fcW+4,_fcH+4);
-    cx.fillStyle='#0a1828';cx.fillRect(_fcX,_fcY,_fcW,_fcH);
-    // "now" pointer
-    cx.fillStyle='#ecb457';cx.fillRect(_fcX,_fcY-3,2,_fcH+6);
-    if(s._forecast&&s._forecast.length){
-      var _waveNames=['·','≈','≋','🌊'];
-      s._forecast.forEach(function(f,i){
-        var bx=_fcX+i*_fcBlock+3,bw=_fcBlock-6;
-        var bh=4+f.size*5;
-        var bcol=f.size>=3?'#e85040':f.size>=2?'#e8a020':'#80c0e0';
-        var by=_fcY+_fcH-bh;
-        cx.fillStyle=bcol+'50';cx.fillRect(bx,by,bw,bh);
-        cx.fillStyle=bcol;cx.fillRect(bx,by,bw,2);
-        cx.fillStyle='#fff';cx.font='bold 8px sans-serif';cx.textAlign='center';
-        cx.fillText(f.size===1?'·':f.size===2?'≈':'≋',bx+bw/2,_fcY+10);
-        cx.fillStyle='#aaa';cx.font='7px sans-serif';
-        cx.fillText(((f.msLeft||0)/1000).toFixed(1)+'s',bx+bw/2,_fcY+_fcH-2);
-        if(f.perfect){cx.fillStyle='#78ffa0';cx.fillText('★',bx+bw-5,_fcY+10)}
-      });
-    }
-    // forecast label
-    cx.fillStyle='#fff';cx.font='bold 8px sans-serif';cx.textAlign='left';
-    cx.fillText('浪预报',_fcX-58,_fcY+_fcH-2);
-    // === AREA BADGE (top right) ===
-    cx.fillStyle='#00000080';cx.fillRect(640,38,80,32);
-    cx.fillStyle='#fff';cx.font='bold 9px sans-serif';cx.textAlign='center';
-    cx.fillText(s.wave.n,680,52);
-    cx.fillStyle=_at;cx.font='8px sans-serif';
-    cx.fillText('Lv'+_diff+' · '+({sunny:'☀️',cloudy:'⛅',rain:'🌧️',fog:'🌫️',sunset:'🌅'})[_wt],680,64);
-    // === BOTTOM HUD — stamina + score + rhythm telegraph (preserved from round 24) ===
-    cx.fillStyle='#1a305080';cx.fillRect(120,440,560,40);
-    cx.fillStyle='#fff';cx.font='bold 12px sans-serif';cx.textAlign='left';cx.fillText('🏄 '+s.wave.n,135,455);
-    cx.fillStyle='#fff';cx.textAlign='right';cx.fillText(s.sc+'分 · '+s.at+'次抓'+(s.perfect>0?' · perfect×'+s.perfect:''),665,455);
-    cx.fillStyle='#1a1a1a';cx.fillRect(135,463,250,10);
-    cx.fillStyle=s.stamina>60?'#78c878':s.stamina>30?'#f0a030':'#f05050';cx.fillRect(135,463,250*(s.stamina/100),10);
-    cx.fillStyle='#aaa';cx.font='9px sans-serif';cx.textAlign='left';cx.fillText('体力 '+s.stamina+'%',390,471);
-    var pos=(s.wx-200)/500;
-    var greenState=pos>0.6&&pos<0.8?'完美区!':pos>0.3&&pos<0.95?'白区':'错过!';
-    cx.fillStyle='#ecb457';cx.font='bold 11px sans-serif';cx.textAlign='center';cx.fillText(greenState,400,455);
-    // funify-v3 Round 24: 浪组节奏 indicator — set (blue, pulsing) vs lull (gold) + ms countdown
+    // diver silhouette at current band depth
+    var _py=[438,328,188][band];
+    var _px=180+Math.sin(_sn*2)*3;
+    cx.fillStyle='#0008';cx.beginPath();cx.ellipse(_px,_py+16,22,3,0,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#f0e8d8';cx.beginPath();cx.arc(_px,_py-8,6,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#182430';cx.fillRect(_px-4,_py-4,8,12);cx.fillRect(_px-12,_py-2,16,3);cx.fillRect(_px-14,_py+1,20,2);
+    cx.fillStyle='#e8a020';cx.fillRect(_px+2,_py-3,2,6);
+    // === BOTTOM HUD — score / stamina / band + rhythm telegraph ===
+    cx.fillStyle='#0e2438ee';cx.fillRect(120,436,560,34);
+    cx.fillStyle='#fff';cx.font='bold 11px sans-serif';cx.textAlign='left';
+    cx.fillText('🌊 '+s.wave.n+' · 深度:'+SURF_DEPTH_BANDS[band].n,132,452);
+    cx.fillText('已捞'+s.at+' · '+s.sc+'分'+(s.perfect>0?' · 遗物×'+s.perfect:''),400,452);
+    cx.fillStyle='#101820';cx.fillRect(132,460,220,7);
+    cx.fillStyle=s.stamina>60?'#78c878':s.stamina>30?'#f0a030':'#f05050';cx.fillRect(132,460,220*(s.stamina/100),7);
+    cx.fillStyle='#aaa';cx.font='9px sans-serif';cx.textAlign='left';cx.fillText('体力'+s.stamina+'%',358,467);
     var _rhythm=surfBreakerTelegraph(s);
-    if(_rhythm){
-      var rbX=395,rbY=465,rbW=270,rbH=5;
-      cx.fillStyle='#1a1a1a';cx.fillRect(rbX,rbY,rbW,rbH);
-      var _phasePct=_rhythm.phase==='set'?Math.max(0,1-_rhythm.msLeft/3500):Math.max(0,_rhythm.msLeft/2000);
-      if(_phasePct>1)_phasePct=1;
-      var _phaseCol=_rhythm.phase==='set'?'#4090c0':'#e8a020';
-      cx.fillStyle=_phaseCol;cx.fillRect(rbX,rbY,rbW*_phasePct,rbH);
-      cx.fillStyle='#fff';cx.font='9px sans-serif';cx.textAlign='left';
-      cx.fillText(_rhythm.phase==='set'?'🌊 浪组推进':(_rhythm.msLeftLabel&&_rhythm.msLeftLabel!=='·'?'· 静默 '+_rhythm.msLeftLabel+' 后下一组':'⏸ 静默'),rbX,rbY-3);
-    }
+    if(_rhythm){var _phasePct=Math.min(1,Math.max(0,_rhythm.phase==='set'?1-_rhythm.msLeft/3500:_rhythm.msLeft/2000));cx.fillStyle='#1a1a1a';cx.fillRect(400,456,240,4);cx.fillStyle=_rhythm.phase==='set'?'#4090c0':'#e8a020';cx.fillRect(400,456,240*_phasePct,4);cx.fillStyle='#888';cx.font='9px sans-serif';cx.textAlign='left';cx.fillText(_rhythm.phase==='set'?'🌊 浪组推进':'⏸ 静默'+(_rhythm.msLeftLabel!=='·'?' '+_rhythm.msLeftLabel+'s':''),400,470)}
   }else if(mg==='dive'){
     // R-mvp: 巨量标记 (Mass Tagging) — top-down workstation with conveyor belt
     var _dn=Date.now()/1000;var s=MG.dive;
@@ -7107,7 +7003,7 @@ function autoStep(){
     if(G.mg==='brew'){if(s.ph==='sel'){s.m=s.order.recipe[0];s.h=s.order.recipe[1];s.y=s.order.recipe[2];s.ph='brew';s.started=Date.now();s.deadline=s.started+s.order.limit*1000;setStatus('🍺 自动酿造',`控温中... · 🔥×${G.shop.streak||0}${G.shop.streakBest?'(最高×'+G.shop.streakBest+')':''}`,'');G._at=setTimeout(autoStep,1000);renderAll();return}else{s.t=s.order.temp+Math.floor(seeded(101)*3)-1;finBrew(false);G._at=setTimeout(autoStep,500);return}}
     if(G.mg==='coffee'&&!s.raid){if(s.sd>=s.target){finCoffee();G._at=setTimeout(autoStep,500);return}if(s.c){if(s.c.undercover){if(hasUpgrade('legendary_no_raid')){s.pr=Math.min(50,s.c.max-1);s.earn+=s.pr;s.sd++;s.ht=Math.min(95,s.ht+2);setStatus('🌿 自动经营','$'+s.earn+' '+s.sd+'/'+s.target+'人 🛡️免突击','');G._at=setTimeout(autoStep,500);renderAll();return}s.pr=Math.min(50,s.c.max-1);s.sd++;s.ht=Math.max(0,s.ht-(50-s.ht)/5);if(s.sd>=s.target)finCoffee();else sCoffeeC();setStatus('🌿 自动经营','$'+s.earn+' '+s.sd+'/'+s.target+'人 ⛔拒卧底','');G._at=setTimeout(autoStep,500);renderAll();return}if(s.ht>60)s.pr=Math.max(5,s.c.max-8);else s.pr=s.c.max-2+Math.floor(seeded(99)*3);if(s.pr<=s.c.max){s.earn+=s.pr;s.ht+=Math.round(s.pr/[8,14,22][s.st]*8)}s.sd++;s.ht=Math.min(hasUpgrade('legendary_no_raid')?95:100,s.ht+3);if(s.ht>=100&&!hasUpgrade('legendary_no_raid')){s.raid=true;setStatus('🚨 被突击','','');G._at=setTimeout(()=>{G.mg=null;G.inside=null;addSch('🚨','咖啡突击提早下班');advanceTimeAuto();renderAll()},2000);return}if(s.sd>=s.target)finCoffee();else sCoffeeC();setStatus('🌿 自动经营','$'+s.earn+' '+s.sd+'/'+s.target+'人','');G._at=setTimeout(autoStep,500);renderAll();return}}
     if(G.mg==='shroom'){if(s.tn<s.mx){const st=s.st;s.hu+=(st.h-s.hu>0?5:-5);s.tp+=(st.t-s.tp>0?1:-1);s.li+=(st.l-s.li>0?1:-1);const acc=1-(Math.abs(s.hu-st.h)/100+Math.abs(s.tp-st.t)/35+Math.abs(s.li-st.l)/14)/3;s.gr+=20+acc*15;s.tn++;if(s.tn>=s.mx||s.gr>=100){const q=Math.round(Math.min(100,s.gr)/20);const inc=q*12+5;G.money+=inc;G.ind.smart_shop.xp+=inc*2;addEvt('good','🍄 +$'+inc);addSch('🍄','蘑菇 +$'+inc);G.mg=null;G.inside=null;chkLv('smart_shop');setStatus('✅ 蘑菇收获','+$'+inc,'')}else setStatus('🍄 自动种植',Math.round(s.gr)+'%','');G._at=setTimeout(autoStep,600);renderAll();return}}
-    if(G.mg==='surf'){const ss=s;if(ss.ended){G._at=setTimeout(autoStep,300);return}ss.wx-=80;const pos=(ss.wx-200)/500,green=pos>0.6&&pos<0.8,barrel=seeded(80+ss.at)<.08;let sc=green?Math.round((1-Math.abs(pos-0.7)/0.1)*30+10):pos>0.3&&pos<0.95?Math.round((1-Math.abs(pos-0.7)/0.3)*10+3):1;if(green){ss.combo++;ss.perfect++;ss.perfectStreak++}else{ss.combo=0;ss.perfectStreak=0}if(barrel)sc+=50;ss.sc+=sc;ss.at++;ss.stamina=Math.max(0,ss.stamina-15);if(ss.stamina<=0){finSurf(true);G._at=setTimeout(autoStep,300);return}if(Date.now()-ss.started>=5000){finSurf(false);G._at=setTimeout(autoStep,300);return}setStatus('🏄 自动冲浪',ss.sc+'分 体力'+ss.stamina+'%','');G._at=setTimeout(autoStep,300);renderAll();return}
+    if(G.mg==='surf'){const ss=s;if(ss.ended){G._at=setTimeout(autoStep,300);return}const band=surfDepthBand(Math.floor(ss.at/2));const r=surfSalvage(ss,band);const cost=Math.max(2,Math.round(r.cost*(ss.staminaDrainMult||1)));if(r.miss){ss.wipeouts++;ss.combo=0;ss.perfectStreak=0;ss.stamina=Math.max(0,ss.stamina-cost)}else{ss.sc+=r.score;ss.combo++;ss.at++;ss.band=band;ss.lastFrag=r.item;ss.fragKinds[r.item]=(ss.fragKinds[r.item]||0)+1;if(band===2){ss.perfect++;ss.perfectStreak++;ss._timeCost=(ss._timeCost||0)+700}ss.stamina=Math.max(0,ss.stamina-cost)}ss.stamina=Math.max(0,ss.stamina-5);if(ss.stamina<=0){finSurf(true);G._at=setTimeout(autoStep,300);return}if(Date.now()-ss.started>=5000+(ss._timeCost||0)){finSurf(false);G._at=setTimeout(autoStep,300);return}setStatus('🤿 自动打捞',SURF_DEPTH_BANDS[band].n+' '+ss.sc+'分 体力'+ss.stamina+'%','');G._at=setTimeout(autoStep,300);renderAll();return}
     if(G.mg==='academic'){if(s.ph==='gather'){s.sel=[0,1];s.ph='write';s.ws=Date.now();s.speed=1;s.sc=30+s.ids[0].q*15+s.ids[1].q*15+Math.floor(seeded(180+G.day)*15);setStatus('📚 自动写论文',s.ids[0].t+'+'+s.ids[1].t,'预计'+s.sc+'分');G._at=setTimeout(autoStep,1000);renderAll();return}
       else{if(Date.now()-s.ws>acadWriteMs(s)*0.27){const pc=acadPartialCredit(s.sc,s.venue);const ok=pc.accepted;const venueMult=(VENUE_DEF[s.venue]||VENUE_DEF['本地研讨']).mult;const g=ok?Math.round(60*venueMult):Math.round(15*venueMult);G.money+=g;G.rep+=Math.round(s.sc/10);G.ind.academic.xp+=Math.round(s.sc*1.5);G._run.academicDone++;checkAchTier();addEvt(ok?'good':'info','📚 论文'+(ok?'接收':'被拒')+' '+s.sc+'分 '+(pc.label||'')+' +$'+g+(s.speed===2?' (⚡2×速)':''));addSch('📚','论文 +$'+g);G.mg=null;G.inside=null;chkLv('academic');setStatus(ok?'🎉 接收':'📋 被拒','+$'+g,'');G._at=setTimeout(autoStep,500);renderAll();return}else{G._at=setTimeout(autoStep,300);return}}}
     if(G.mg==='bar'){const bs=s;if(bs.sd>=bs.mx){bs.pour=null;finBar();G._at=setTimeout(autoStep,300);renderAll();return}else if(!bs.cs.length){sBarC();G._at=setTimeout(autoStep,200);renderAll();return}else{const cur=bs.cs[bs.cs.length-1];const mid=Math.max(cur.floor+1,Math.min(cur.ceiling-1,Math.floor((cur.floor+cur.ceiling)/2)));cur.offer=mid;s.sd++;const final=Math.round(mid*tipFactor());s.earn+=final;addEvt('good','🍻 自动成交 '+cur.arch.n+' +$'+final);s.cs.pop();bs.pour=null;setStatus('🍻 自动酒吧','$'+s.earn+' '+s.sd+'/'+s.mx,'');G._at=setTimeout(autoStep,200);renderAll();return}}
@@ -7562,7 +7458,7 @@ function renderAll(){
     if(G.mg==='brew'){const s=MG.brew;const _st=G.shop.streak||0;title.textContent=s.ph==='sel'?'🍺 选择原料 (订单:'+s.order.type+')':'🍺 控温酿造 订单:'+s.order.type;det.textContent=s.ph==='sel'?'1/2/3切换 SPACE开始':'当前 '+Math.round(s.t)+'°C · SPACE提交';hint.textContent='🍺 订单:'+s.order.type+' · 剩余'+Math.max(0,Math.round((s.deadline-Date.now())/1000))+'s · 目标温 ?°C' + (_st>0?' · 🔥连击×'+_st+'(×'+brewStreakMul(_st)+')':'')}
     else if(G.mg==='coffee'){const s=MG.coffee;const warn=s.c&&s.c.undercover?' 🚨卧底!':'';const _hzC=coffeeHeatZone(s.ht);const _fitC=s.c&&!s.raid?coffeeFitHint(s.pr,s.c.max):null;title.textContent='🌿 咖啡店 · 热度'+Math.round(s.ht)+'% '+_hzC.label;det.textContent='$'+s.pr+'/g · 目标 '+s.sd+'/'+s.target+warn+(_fitC?' · '+_fitC.label:'');hint.textContent='Q/W调价 SPACE成交 X拒客 · '+_hzC.label+(_fitC&&!_fitC.ok?' · 差'+(-_fitC.gap)+'元':'')}
     else if(G.mg==='shroom'){title.textContent='🍄 蘑菇种植';det.textContent='调参 SPACE推进';hint.textContent=''}
-    else if(G.mg==='surf'){const s=MG.surf;const tg=surfBreakerTelegraph(s);const psM=s.perfectStreak>=2?` · 🔥×${s.perfectStreak}(${surfPerfectStreakMul(s.perfectStreak)}x)`:'';const padd=surfPaddleState(s);const paddCur=padd?Math.round(padd.cursor*100):0;const paddGreen=padd?(padd.cursor>=0.40&&padd.cursor<=0.55):false;const paddHint=padd?`🛟${paddCur}%${paddGreen?'✓':''}`:'';const soulBadges=[s.rescueActive?'🆘':'',s.sharkActive?'🦈':'',s.rivalActive?'🏄‍♂️':'',s.pollutionActive?'🛢️':'',s.tidalActive?'🌊':''].filter(Boolean).join(' ');title.textContent='🏄 巨浪生存'+(soulBadges?' '+soulBadges:'');det.textContent='体力'+s.stamina+'% · combo'+s.combo+' · 已抓'+s.at+(s.perfect>0?' · perfect +'+(s.perfect*50):'')+psM+(paddHint?' · '+paddHint:'');hint.textContent='SPACE抓 · P 划水回体 · 8% perfect barrel +50 · 浪组:'+(tg.phase==='set'?'进行中':`静默${tg.msLeftLabel}s`)+' · 体力'+(tg.staminaWarn==='low'?'⚠':tg.staminaWarn==='med'?'~':'✓')+(s.rescueActive?' · 🆘救人':'')+(s.sharkActive?' · 🦈闪避':'')+(s.pollutionActive?' · 🛢️清理':'')+(s.rivalActive?' · 🏄‍♂️对决':'')+(s.tidalActive?' · 🌊巨浪':'')}
+    else if(G.mg==='surf'){const s=MG.surf;const tg=surfBreakerTelegraph(s);const bd=SURF_DEPTH_BANDS[s.band||0];const psM=s.perfectStreak>=2?` · 🔥×${s.perfectStreak}(${surfPerfectStreakMul(s.perfectStreak)}x)`:'';const padd=surfPaddleState(s);const paddCur=padd?Math.round(padd.cursor*100):0;const paddGreen=padd?(padd.cursor>=0.40&&padd.cursor<=0.55):false;const paddHint=padd?`🛟${paddCur}%${paddGreen?'✓':''}`:'';const soulBadges=[s.rescueActive?'🆘':'',s.sharkActive?'🦈':'',s.rivalActive?'🏄‍♂️':'',s.pollutionActive?'🛢️':'',s.tidalActive?'🌊':''].filter(Boolean).join(' ');title.textContent='🌊 巨浪 · 知识打捞'+(soulBadges?' '+soulBadges:'');det.textContent='体力'+s.stamina+'% · 深度:'+bd.n+'×'+bd.mult+' · 已捞'+s.at+(s.perfect>0?' · 遗物×'+s.perfect:'')+psM+(paddHint?' · '+paddHint:'');hint.textContent='浪里有海吞掉的东西——捞出来 · SPACE打捞 · 长按SPACE深潜 · P划水回体 · 浪组:'+(tg.phase==='set'?'进行中':`静默${tg.msLeftLabel}s`)+(s.rescueActive?' · 🆘救人':'')+(s.sharkActive?' · 🦈闪避':'')+(s.pollutionActive?' · 🛢️清理':'')+(s.rivalActive?' · 🏄‍♂️对决':'')+(s.tidalActive?' · 🌊巨浪':'')}
     else if(G.mg==='academic'){title.textContent='📚 学术';det.textContent='';hint.textContent=''}
     else if(G.mg==='bar'){const s=MG.bar;const cur=s.cs[s.cs.length-1];const _tipH=cur&&cur.drinkId===s.recoId;const _tipR=cur&&cur.isRegular;const _tipEx=cur?barTipPreview(cur.offer,_tipH,_tipR,tipFactor()):null;title.textContent='🍻 酒吧 · 黑市讨价'+(s.diff?' ('+s.diff.label+')':'')+(cur?' · '+(_tipEx>=cur.offer?'💚':'💔')+'$'+_tipEx:'');det.textContent=cur?`${cur.face} ${cur.arch.n} 报价$${cur.offer} (底${cur.floor}/上${cur.ceiling}) 想喝 ${cur.drink}${cur.mixId!=='none'?'+'+barGetMixer(cur.mixId).ic:''}`:'暂无顾客';hint.textContent='Q/W ±1 报价 · SPACE成交 · E 倒酒'+(cur&&cur.needsMixer?(s.pour&&s.pour.active?' (再按 E 释放':' (开始'):'(无)')+' · X拒客 · 今日推荐 '+(s.recoIc||'🍺')+(s.vipDay?' · VIP日':'')+(cur?' · 💸 实时tip':'')+(s.diff?' · '+s.diff.label:'')}
     else if(G.mg==='dive'){const s=MG.dive;title.textContent='📚 巨量标记 · 深度 '+s.depth;det.textContent='GPU '+Math.round(s.gpu)+'% · 专注 '+Math.round(s.focus)+'% · 咖啡 '+Math.round(s.coffee)+'% · combo '+s.combo;hint.textContent='1/2/3/4/5 标注 · SPACE 喝咖啡 · 漏标 -5 专注'}
@@ -7575,6 +7471,14 @@ function renderAll(){
 // ═══════════════════════════════════════════
 // INPUT
 // ═══════════════════════════════════════════
+// Round 23: SPACE 长按判定 — keydown 记录按下时刻,keyup 判定: ≥300ms=深潜,<300ms=打捞
+document.addEventListener('keyup',e=>{
+  const k=e.key.toLowerCase();
+  if(G.mg!=='surf'||k!==' '||G.ended)return;
+  const s=MG.surf;if(!s||s.ended||s._spPress==null)return;
+  const hold=Date.now()-s._spPress;s._spPress=null;
+  if(hold>=300)surfDive(s);else surfIn(' ');
+});
 document.addEventListener('keydown',e=>{
   // Phase E1/E2 — talent & faction panels swallow all keys while open (T/F/ESC to close)
   if(talOpen()){const tk=e.key.toLowerCase();if(tk==='t'||tk==='escape'){e.preventDefault();closeTalents()}return}
@@ -7597,7 +7501,14 @@ document.addEventListener('keydown',e=>{
   if(G.mg){cancelAuto('key');
     if(k==='escape'){cancelAuto('escape');G.mg=null;G.inside=null;setStatus('🟢 就绪','','');renderAll();return}
     if(G.mg==='brew')brewIn(k);else if(G.mg==='coffee')coffeeIn(k);else if(G.mg==='shroom')shroomIn(k);
-    else if(G.mg==='surf')surfIn(k);else if(G.mg==='bar')barIn(k);
+    else if(G.mg==='surf'){
+      const ss=MG.surf;
+      if(k===' '&&ss&&!e.repeat){
+        if((ss.rescueActive&&!ss.rescueResolved)||(ss.sharkActive&&(ss.sharkRounds||0)>0)||ss.pollutionActive)surfIn(k);
+        else{ss._spPress=Date.now();setMsg('🫳 探身… 松手打捞 · 按住深潜')}
+      }
+      else if(k!==' ')surfIn(k);
+    }else if(G.mg==='bar')barIn(k);
     else if(G.mg==='dive')diveIn(k);
     else if(G.mg==='shoplift')shopliftIn(k);
     else if(G.mg==='escape')escapeIn(k);

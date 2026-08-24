@@ -3620,7 +3620,7 @@ frame.addEventListener('load',async()=>{
   });
   check('R5: index.html surfIn tidal perfect*=3 + pollution catch-=5',()=>{
     const src=_fetchIndex3();
-    return /s\.tidalActive&&inGreen\)sc\*=3/.test(src)&&/s\.pollutionActive\)sc-=5/.test(src);
+    return /s\.tidalActive&&band===2\)sc\*=3/.test(src)&&/s\.pollutionActive\)sc=Math\.max\(0,sc-5\)/.test(src);
   });
   check('R5: index.html newRunInner 重置 G._surfSoul + 初始化 G.surfUpgrades',()=>{
     const src=_fetchIndex3();

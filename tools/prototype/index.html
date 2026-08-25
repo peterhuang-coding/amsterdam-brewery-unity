@@ -7676,7 +7676,7 @@ function newRun(seed){
   renderAll();
 }
 
-function frame(){update();updateSurf();updateBrew();updateCoffee();updateBar();updateDive();confettiUpdate(16);if(G.mg)drawMG();else drawMap();confettiDraw();requestAnimationFrame(frame)}
+function frame(){update();updateSurf();updateBrew();updateCoffee();updateBar();updateDive();confettiUpdate(16);cx.clearRect(0,0,W,H);if(G.mg)drawMG();else drawMap();confettiDraw();requestAnimationFrame(frame)}
 renderAll();frame();
 // Modal skip button
 document.getElementById('upg-skip').addEventListener('click',()=>{

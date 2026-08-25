@@ -718,6 +718,21 @@ t('R23: 联动触发 — finSurf 写 G._surfCatch + 浪心遗物 meta+2',/G\._su
 t('R23: 长按深潜 surfDive + keyup ≥300ms 判定 + 首屏提示语「浪里有海吞掉的东西——捞出来」',/function surfDive\(s\)/.test(h)&&/hold>=300\)surfDive\(s\)/.test(h)&&h.includes('浪里有海吞掉的东西——捞出来'));
 t('R23: SURF_CATALOG 12 种全部重定义为知识碎片 (kind 字段齐全)',(()=>{const a=h.indexOf('const SURF_CATALOG=['),b=a>-1?h.indexOf('];',a):-1;return a>-1&&b>a&&(h.slice(a,b).match(/kind:'/g)||[]).length===12})());
 
+// ── 27. funify-v3 R24 — 大地图相机 + Zelda 小地图 gate ──
+const c24Start=h.indexOf('// CAM_BLOCK_START');
+const c24End=c24Start>-1?h.indexOf('// CAM_BLOCK_END',c24Start):-1;
+t('R24: 相机 helper 块存在于源码',c24Start>-1&&c24End>c24Start);
+const camSrc=c24Start>-1?h.slice(c24Start,c24End):'';
+const C24=new Function('W','H','"use strict";'+camSrc+'; return {CAM,worldToScreen,screenToWorld,camClamp,camZoomAt,mmViewRect,minimapRect};')(800,500);
+t('R24: worldToScreen/screenToWorld z=1 往返一致',(()=>{const w=C24.screenToWorld(400,250),s=C24.worldToScreen(w.x,w.y);return Math.abs(s.x-400)<1e-9&&Math.abs(s.y-250)<1e-9})());
+t('R24: zoom 2× 屏幕↔世界往返一致 + 中心世界点不变',(()=>{C24.CAM.z=2;C24.CAM.cx=400;C24.CAM.cy=250;const w=C24.screenToWorld(400,250),s=C24.worldToScreen(300,200),w2=C24.screenToWorld(s.x,s.y);return Math.abs(w.x-400)<1e-9&&Math.abs(w.y-250)<1e-9&&Math.abs(s.x-200)<1e-9&&Math.abs(s.y-150)<1e-9&&Math.abs(w2.x-300)<1e-9&&Math.abs(w2.y-200)<1e-9})());
+t('R24: camZoomAt 缩放 clamp 1..3 (输入 9→3, 0.1→1)',(()=>{C24.CAM.z=1;C24.camZoomAt(400,250,9);const z1=C24.CAM.z;C24.camZoomAt(400,250,0.1);return z1===3&&C24.CAM.z===1})());
+t('R24: camClamp z=3 边界钳制 (中心不越 133.3/666.7)',(()=>{C24.CAM.z=3;C24.CAM.cx=0;C24.CAM.cy=500;C24.camClamp();return Math.abs(C24.CAM.cx-800/6)<1e-9&&Math.abs(C24.CAM.cy-(500-500/6))<1e-9})());
+t('R24: 小地图视窗框映射 (z=1 全图 140×100; z=2 中心 70×50@43,417)',(()=>{C24.CAM.z=1;C24.CAM.cx=400;C24.CAM.cy=250;const a=C24.mmViewRect(8,392,140,100);C24.CAM.z=2;const b=C24.mmViewRect(8,392,140,100);return a.x===8&&a.y===392&&a.w===140&&a.h===100&&Math.abs(b.x-43)<1e-9&&Math.abs(b.y-417)<1e-9&&Math.abs(b.w-70)<1e-9&&Math.abs(b.h-50)<1e-9})());
+t('R24: ≥8 地名/地标标签且重要地标红色加粗 (MAP_LABELS)',(()=>{const a=h.indexOf('const MAP_LABELS=['),b2=a>-1?h.indexOf('];',a):-1;const blk=a>-1?h.slice(a,b2):'';return(blk.match(/\{x:/g)||[]).length>=8&&/red:1/.test(blk)})());
+t('R24: M 键/滚轮缩放/小地图点击跳转 全部接入源码',()=>/e\.key==='m'/.test(h)&&/addEventListener\('wheel'/.test(h)&&/mmJump\(sx,sy\)/.test(h));
+t('R24: 相机只渲染不写世界 (移动目标仍写 G.p.tx 世界坐标)',()=>/G\.p\.tx=cl\.x/.test(h)&&/screenToWorld\(/.test(h));
+
 // summary assertion: tests grew this round
 t('Round8: overall pass count exceeds prior baseline (≥340)', pass >= 340);
 

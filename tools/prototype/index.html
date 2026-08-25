@@ -425,7 +425,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <button class="btn" onclick="workInd()">🔧 快速经营</button>
 <button class="btn" onclick="newRun()">🔄 新游戏</button>
 <button class="btn" id="speed-btn" onclick="cycleSpeed()" aria-label="切换游戏速度 1×/2×/4×" title="切换 1×/2×/4× 步速 (越快越省时)">▶▶ 1×</button>
-<button class="btn" id="mute-btn" onclick="toggleMuteBtn()" aria-label="切换音频" title="按 M 键切换">🔊</button>
+<button class="btn" id="mute-btn" onclick="toggleMuteBtn()" aria-label="切换音频" title="静音开关 (地图上 M 键 = 小地图)">🔊</button>
 <span id="msg" aria-live="polite" aria-atomic="true">WASD走 · E进建筑 · A自动运行 · 按 H 查看帮助</span>
 </div>
 </div>
@@ -544,7 +544,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div id="help-modal" class="hidden">
 <div class="intro-box">
 <h1>操作帮助</h1>
-<div class="help-grid"><div><b>W/A/S/D</b> 移动小人（方向键也可）</div><div><b>E</b> 进入附近建筑</div><div><b>Space</b> 推进时间 / 小游戏确认</div><div><b>Q/W</b> 变体中调价或调节参数</div><div><b>X</b> 拒绝咖啡卧底或酒吧顾客</div><div><b>H</b> 打开本帮助，<b>Esc</b> 退出当前界面</div><div><b>T</b> 天赋树 · <b>F</b> 派系 · <b>J</b> 成就树 · <b>C</b> 配方 · <b>G</b> 送礼 · <b>B</b> 肉体交易 · <b>K</b> 知识本 · <b>I</b> 收藏 · <b>V</b> 切换存档槽 · <b>L</b> 📼 回放</div><div><b>1-9</b> 选关 · <b>▶▶</b> 切换速度 1×/2×/4× · <b>M</b> 静音</div></div>
+<div class="help-grid"><div><b>W/A/S/D</b> 移动小人（方向键也可）</div><div><b>E</b> 进入附近建筑</div><div><b>Space</b> 推进时间 / 小游戏确认</div><div><b>Q/W</b> 变体中调价或调节参数</div><div><b>X</b> 拒绝咖啡卧底或酒吧顾客</div><div><b>H</b> 打开本帮助，<b>Esc</b> 退出当前界面</div><div><b>T</b> 天赋树 · <b>F</b> 派系 · <b>J</b> 成就树 · <b>C</b> 配方 · <b>G</b> 送礼 · <b>B</b> 肉体交易 · <b>K</b> 知识本 · <b>I</b> 收藏 · <b>V</b> 切换存档槽 · <b>L</b> 📼 回放</div><div><b>1-9</b> 选关 · <b>▶▶</b> 切换速度 1×/2×/4× · <b>M</b> 小地图 · 🔊 按钮静音 · 滚轮缩放 / 拖拽平移</div></div>
 <button class="btn help-close" onclick="closeHelp()">关闭</button>
 </div>
 </div>
@@ -621,7 +621,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div class="set-meta-row"><span>当前速度档</span><b id="set-speed">1×</b></div>
 <div class="set-meta-row"><span>静音状态</span><b id="set-mute">🔊 开</b></div>
 <div class="set-meta-row"><span>当前激活存档槽</span><b id="set-active-slot">#1</b></div>
-<div class="muted">💡 速度和静音用 ▶▶ 按钮 / M 键直接切换（mid-run 也生效）。</div>
+<div class="muted">💡 速度用 ▶▶ 按钮切换；静音点 🔊 按钮（地图上 M 键 = 小地图折叠/展开）。</div>
 </div>
 <div class="set-section">
 <h3>💾 localStorage 数据</h3>
@@ -3591,7 +3591,7 @@ function renderSlots(){
 // 玩家点了某槽 — 激活该槽,然后开始新 Run (跨 Run meta 累计对新槽生效,槽 1 旧存档向下兼容)
 function pickSlot(n){if(n<1||n>3)return;setActiveSlot(n);document.getElementById('start-modal').classList.add('hidden');startFromModal()}
 
-const G={p:{x:100,y:400,tx:100,ty:400},day:1,ti:0,money:250,rep:0,loc:'de_pijp',ind:{},bs:[5,3,2],brewI:-1,brewT:0,events:[],mods:[],auto:false,inside:null,mg:null,ended:false,ts:0,tr:0,run:0,legacy:0,_at:null,_wp:null,_otx:null,_oty:null,_st:0,_sx:0,_sy:0,sch:[],seed:42,meta:0,metaPending:0,objs:[],upgrades:[],objDefs:{},_objDay:0,mood:0,greetedToday:[],visitedToday:[],visited:[],shop:{},surfDiscovered:[],inventory:[],invCollect:{},todayWave:null,escapeLevel:0,escapeTeacher:null,escUsed:0,escapeLearnDay:0,keys:{},lastClickAt:0,achievements:[],achTree:{brew:0,coffee:0,rogue:0,scholar:0},teacherRep:{pablo:0,ravi:0,sofie:0,chen:0},modHistory:[],recentSeeds:[],_run:{}};
+const G={p:{x:100,y:400,tx:100,ty:400},day:1,ti:0,money:250,rep:0,loc:'de_pijp',ind:{},bs:[5,3,2],brewI:-1,brewT:0,events:[],mods:[],auto:false,inside:null,mg:null,ended:false,ts:0,tr:0,run:0,legacy:0,_at:null,_wp:null,_otx:null,_oty:null,_st:0,_sx:0,_sy:0,sch:[],seed:42,meta:0,metaPending:0,objs:[],upgrades:[],objDefs:{},_objDay:0,mood:0,greetedToday:[],visitedToday:[],visited:[],shop:{},surfDiscovered:[],inventory:[],invCollect:{},todayWave:null,escapeLevel:0,escapeTeacher:null,escUsed:0,escapeLearnDay:0,keys:{},lastClickAt:0,mm:1,achievements:[],achTree:{brew:0,coffee:0,rogue:0,scholar:0},teacherRep:{pablo:0,ravi:0,sofie:0,chen:0},modHistory:[],recentSeeds:[],_run:{}};
 for(const k of Object.keys(IND_DEF))G.ind[k]={lv:0,xp:0};
 const MG={};
 
@@ -5248,52 +5248,7 @@ function finBar(){
 // 2.5D isometric helpers
 function shadeColor(hex, light){const c=parseInt(hex.slice(1),16);return 'rgb('+Math.max(0,Math.min(255,((c>>16)&255)+light))+','+Math.max(0,Math.min(255,((c>>8)&255)+light))+','+Math.max(0,Math.min(255,(c&255)+light))+')'}
 
-// funify-v3 R-map-refine — Amsterdam signature visual: gabled canal house facades.
-// 4 iconic gable types: 0=klokgevel (bell), 1=trapgevel (stepped), 2=halsgevel (neck), 3=spout+hijsbalk (hoist beam).
-// Each draws on top of an 8-wide brick house body. Used by drawMap CIVIC loop.
-function drawGabledHouse(gx,gy,w,h,cl,t){
-  // Body shadow + body + window (matches old plain-rect look but adds depth)
-  cx.fillStyle='#0002';cx.fillRect(gx+1,gy+h,w,1);
-  cx.fillStyle=cl;cx.fillRect(gx,gy,w,h);
-  // brick courses (3 horizontal lines for ~14-18 tall, 2 for 12-13 tall)
-  cx.fillStyle='#00000018';
-  for(var by=gy+3;by<gy+h-1;by+=4)cx.fillRect(gx,by,w,1);
-  // central lit window (Amsterdam's tall narrow windows)
-  cx.fillStyle='#f0e0a0';cx.fillRect(gx+w/2-1,gy+h/2-2,2,4);
-  // gable on top — drawn darker for depth
-  cx.fillStyle=shadeColor(cl,-25);
-  var top=gy;
-  if(t===0){
-    // klokgevel — bell gable with rounded shoulders
-    cx.beginPath();
-    cx.moveTo(gx,top);cx.lineTo(gx,gy-3);
-    cx.bezierCurveTo(gx+w*0.15,gy-6,gx+w*0.4,gy-7,gx+w*0.5,gy-7);
-    cx.bezierCurveTo(gx+w*0.6,gy-7,gx+w*0.85,gy-6,gx+w,gy-3);
-    cx.lineTo(gx+w,top);cx.closePath();cx.fill();
-  }else if(t===1){
-    // trapgevel — 3 stair steps
-    cx.beginPath();
-    cx.moveTo(gx,top);cx.lineTo(gx,gy-6);
-    cx.lineTo(gx+1.5,gy-6);cx.lineTo(gx+1.5,gy-4.5);cx.lineTo(gx+3,gy-4.5);cx.lineTo(gx+3,gy-3);
-    cx.lineTo(gx+w-3,gy-3);cx.lineTo(gx+w-3,gy-4.5);cx.lineTo(gx+w-1.5,gy-4.5);cx.lineTo(gx+w-1.5,gy-6);
-    cx.lineTo(gx+w,gy-6);cx.lineTo(gx+w,top);cx.closePath();cx.fill();
-  }else if(t===2){
-    // halsgevel — narrow neck + wide top
-    cx.beginPath();
-    cx.moveTo(gx,top);cx.lineTo(gx,gy-3);
-    cx.lineTo(gx+w*0.35,gy-3);cx.lineTo(gx+w*0.35,gy-6);
-    cx.lineTo(gx+w*0.65,gy-6);cx.lineTo(gx+w*0.65,gy-3);
-    cx.lineTo(gx+w,gy-3);cx.lineTo(gx+w,top);cx.closePath();cx.fill();
-  }else{
-    // spout gable + hijsbalk hoist beam sticking out top (the crane that lifts furniture to upper floors)
-    cx.beginPath();
-    cx.moveTo(gx,top);cx.lineTo(gx,gy-2);
-    cx.lineTo(gx+w*0.25,gy-5);cx.lineTo(gx+w*0.75,gy-5);
-    cx.lineTo(gx+w,gy-2);cx.lineTo(gx+w,top);cx.closePath();cx.fill();
-    cx.fillStyle='#3a2010';cx.fillRect(gx+w*0.35,gy-7,w*0.3,1);
-    cx.fillRect(gx+w*0.45,gy-8,1,1);
-  }
-}
+// funify-v3 R24 — CIVIC 运河屋改为 OSM 浅灰米色建筑块 (原山墙门面绘制已随 drawMap 重绘移除)
 
 // funify-v3 R-map-refine — Landmark building renderer. 5 distinct shapes for visual variety.
 function drawLandmark(L){
@@ -5369,69 +5324,63 @@ function drawLandmark(L){
   cx.restore();
 }
 
+// CAM_BLOCK_START — funify-v3 R24 地图相机:纯渲染变换(translate/scale),不改世界坐标/碰撞/持久化
+const CAM={cx:400,cy:250,z:1};
+function worldToScreen(wx,wy){return{x:(wx-CAM.cx)*CAM.z+W/2,y:(wy-CAM.cy)*CAM.z+H/2}}
+function screenToWorld(sx,sy){return{x:(sx-W/2)/CAM.z+CAM.cx,y:(sy-H/2)/CAM.z+CAM.cy}}
+function camClamp(){const hw=W/2/CAM.z,hh=H/2/CAM.z;CAM.cx=Math.min(Math.max(CAM.cx,hw),W-hw);CAM.cy=Math.min(Math.max(CAM.cy,hh),H-hh)}
+function camZoomAt(sx,sy,z){const w=screenToWorld(sx,sy);CAM.z=Math.min(3,Math.max(1,z));CAM.cx=w.x-(sx-W/2)/CAM.z;CAM.cy=w.y-(sy-H/2)/CAM.z;camClamp()}
+// 小地图视窗框:当前相机可见世界区域投影到小地图盒 (mx,my,mw,mh)
+function mmViewRect(mx,my,mw,mh){const hw=W/2/CAM.z,hh=H/2/CAM.z;const x0=Math.max(0,CAM.cx-hw),y0=Math.max(0,CAM.cy-hh),x1=Math.min(W,CAM.cx+hw),y1=Math.min(H,CAM.cy+hh);return{x:mx+x0/W*mw,y:my+y0/H*mh,w:(x1-x0)/W*mw,h:(y1-y0)/H*mh}}
+function minimapRect(){return{x:8,y:H-108,w:140,h:100}}
+function mmJump(sx,sy){const mr=minimapRect();CAM.cx=(sx-mr.x)/mr.w*W;CAM.cy=(sy-mr.y)/mr.h*H;camClamp()}
+// CAM_BLOCK_END
+
+// funify-v3 R24 — OSM 地名/地标标签层 (red:1 = 重要地标红色加粗)
+const MAP_LABELS=[
+ {x:380,y:110,t:'中央车站',red:1},
+ {x:485,y:190,t:'Rijksmuseum',red:1},
+ {x:272,y:284,t:'安妮之家',red:1},
+ {x:575,y:360,t:'Magere Brug',red:1},
+ {x:150,y:114,t:'IJ 湾',red:0},
+ {x:415,y:289,t:'运河带',red:0},
+ {x:735,y:250,t:'Artis 动物园',red:0},
+ {x:70,y:462,t:'Vondelpark',red:0},
+ {x:660,y:462,t:'Oosterpark',red:0},
+ {x:380,y:70,t:'Amsterdam-Noord',red:0},
+];
+
 function drawMap(){
   // ═══════════════════════════════════════════
-  // Mini Metro-style Amsterdam map
-  // Layer order: ground → streets → parks → canals → bridges →
-  //              districts (faded) → CIVIC houses → houseboats →
-  //              BLDGS (circles+icon) → street labels → canals labels →
-  //              churches → legend → player
+  // funify-v3 R24 — OSM 风格大地图 (图层序:背景→主干道→水面→桥→建筑→公园→铁路→船屋→地标→标签)
+  // 相机 = 纯渲染变换 (ctx.save/translate/scale),不改世界坐标
   // ═══════════════════════════════════════════
+  cx.save();
+  cx.translate(W/2,H/2);cx.scale(CAM.z,CAM.z);cx.translate(-CAM.cx,-CAM.cy);
 
-  // ── 1. Cream paper-like ground (Amsterdam cobblestone base) ──
-  cx.fillStyle='#f0e8d4';cx.fillRect(0,0,W,H);
+  // ── 1. 背景土地 (OSM 米色) ──
+  cx.fillStyle='#f2efe9';cx.fillRect(0,0,W,H);
 
-  // ── 2. Subtle paper texture (dots) ──
-  cx.fillStyle='#e0d4ba';for(var i=0;i<W;i+=8){for(var j=0;j<H;j+=8){if(((i*7+j*13)%23)===0)cx.fillRect(i,j,1,1)}}
+  // ── 2. 主干道 (暖橙色粗线) + 次级街道 (白/浅灰) ──
+  cx.strokeStyle='#f2b880';cx.lineWidth=4;
+  cx.beginPath();cx.moveTo(0,200);cx.lineTo(800,200);cx.moveTo(0,380);cx.lineTo(800,380);cx.moveTo(340,90);cx.lineTo(340,500);cx.stroke();
+  cx.strokeStyle='#ffffff';cx.lineWidth=2;
+  cx.beginPath();cx.moveTo(200,90);cx.lineTo(200,500);cx.moveTo(480,90);cx.lineTo(480,500);cx.moveTo(620,90);cx.lineTo(620,500);cx.stroke();
+  cx.strokeStyle='#e8e2d6';cx.lineWidth=1;
+  cx.beginPath();cx.moveTo(0,140);cx.lineTo(800,140);cx.moveTo(0,300);cx.lineTo(800,300);cx.moveTo(0,440);cx.lineTo(800,440);cx.moveTo(120,90);cx.lineTo(120,500);cx.moveTo(560,90);cx.lineTo(560,500);cx.moveTo(720,90);cx.lineTo(720,500);cx.stroke();
 
-  // ── 3. District labels (small, faded — backdrop) ──
-  cx.save();cx.globalAlpha=0.18;cx.font='bold 11px sans-serif';cx.textAlign='center';
-  DISTRICTS.forEach(function(d){cx.fillStyle=d.cl;cx.fillText(d.t,d.x,d.y)});
-  cx.restore();
-
-  // ── 4. Streets (thin lines, real Amsterdam street grid pattern) ──
-  cx.strokeStyle='#d8c8a8';cx.lineWidth=2;
-  cx.beginPath();cx.moveTo(0,200);cx.lineTo(800,200);cx.stroke();
-  cx.beginPath();cx.moveTo(0,380);cx.lineTo(800,380);cx.stroke();
-  cx.beginPath();cx.moveTo(200,90);cx.lineTo(200,500);cx.stroke();
-  cx.beginPath();cx.moveTo(340,90);cx.lineTo(340,500);cx.stroke();
-  cx.beginPath();cx.moveTo(480,90);cx.lineTo(480,500);cx.stroke();
-  cx.beginPath();cx.moveTo(620,90);cx.lineTo(620,500);cx.stroke();
-  cx.strokeStyle='#e8d8c0';cx.lineWidth=1;
-  cx.beginPath();cx.moveTo(0,140);cx.lineTo(800,140);cx.stroke();
-  cx.beginPath();cx.moveTo(0,300);cx.lineTo(800,300);cx.stroke();
-  cx.beginPath();cx.moveTo(0,440);cx.lineTo(800,440);cx.stroke();
-  cx.beginPath();cx.moveTo(120,90);cx.lineTo(120,500);cx.stroke();
-  cx.beginPath();cx.moveTo(560,90);cx.lineTo(560,500);cx.stroke();
-  cx.beginPath();cx.moveTo(720,90);cx.lineTo(720,500);cx.stroke();
-
-  // ── 5. Parks (filled green) ──
-  PARKS.forEach(function(p){
-    cx.fillStyle=p.cl;cx.fillRect(p.x,p.y,p.w,p.h);
-    cx.fillStyle='#6a9848';cx.fillRect(p.x,p.y+p.h-3,p.w,3);
-    cx.fillStyle='#3a5a28';
-    for(var t=0;t<8;t++){var tx=p.x+5+t*((p.w-10)/8),ty=p.y+5+((t*7)%3)*4;
-      cx.beginPath();cx.arc(tx,ty,2.5,0,Math.PI*2);cx.fill()}
-  });
-
-  // ── 6. Canals (thick blue lines with name labels) ──
+  // ── 3. 水面 (蓝:IJ/Amstel 河面填充 + 运河细线盖在街道上,桥提供过河点) ──
   CANALS.forEach(function(c){
-    if(!c.n)return;
-    var isRiver=c.tp==='river';
-    cx.fillStyle=isRiver?'#4a86b4':'#5a90c0';
+    cx.fillStyle='#aad3df';
     cx.fillRect(c.x,c.y,c.w,c.h);
-    cx.fillStyle=isRiver?'#6aa0c8':'#88b4d8';
-    for(var i=0;i<c.w;i+=14){cx.fillRect(c.x+i+((Date.now()/600+i)%3|0),c.y+c.h/2-1,4,1)}
-    cx.fillStyle='#3a6890';
-    cx.fillRect(c.x,c.y,c.w,1);
-    cx.fillRect(c.x,c.y+c.h-1,c.w,1);
-    if(c.w>50){
-      cx.font='italic 9px sans-serif';cx.fillStyle='#3a6890';cx.textAlign='center';
+    if(c.tp==='river'){cx.fillStyle='#9ac0cf';cx.fillRect(c.x,c.y,c.w,1.5);cx.fillRect(c.x,c.y+c.h-1.5,c.w,1.5)}
+    if(c.n&&c.w>50){
+      cx.font='italic 8px sans-serif';cx.fillStyle='#5a7a8a';cx.textAlign='center';
       cx.fillText(c.n,c.x+c.w/2,c.y+c.h/2+3);
     }
   });
 
-  // ── 7. Bridges (Mini Metro style: white rectangles with small lamp dots) ──
+  // ── 4. Bridges (Mini Metro style: white rectangles with small lamp dots) ──
   BRIDGES.forEach(function(b){
     cx.fillStyle='#ffffff';cx.fillRect(b.x-3,b.y-2,b.w+6,5);
     cx.fillStyle='#f0e8d4';cx.fillRect(b.x-3,b.y+3,b.w+6,1);
@@ -5442,24 +5391,27 @@ function drawMap(){
     cx.fillText(b.n,b.x+b.w/2,b.y-5);
   });
 
-  // ── 8. CIVIC decorative canal houses (R-map-refine: real gabled facades) ──
-  // Each house gets one of 4 iconic Amsterdam gable types (klokgevel/trapgevel/halsgevel/spout)
-  // selected stably by position hash so the city looks consistent across renders.
-  // Skip gable on the y=260 strip (canal south bank) since gables face the canal & would clash with houseboats above.
+  // ── 5. CIVIC 运河屋 → OSM 浅灰米色建筑块 (描边 + 小窗) ──
   CIVIC.forEach(function(b){
-    var gableType=((b.x*7+b.y*13+b.w*3+b.h*5)>>>0)%4;
-    var skipGable=(b.y>=255&&b.y<=265);
-    if(skipGable){
-      // plain body — gable invisible (faces away from viewer on canal side)
-      cx.fillStyle='#0002';cx.fillRect(b.x+1,b.y+b.h,b.w,1);
-      cx.fillStyle=b.cl;cx.fillRect(b.x,b.y,b.w,b.h);
-      cx.fillStyle='#f0e0a0';cx.fillRect(b.x+b.w/2-1,b.y+b.h/2-1,2,2);
-    }else{
-      drawGabledHouse(b.x,b.y,b.w,b.h,b.cl,gableType);
-    }
+    cx.fillStyle='#e0d8c8';cx.fillRect(b.x,b.y,b.w,b.h);
+    cx.strokeStyle='#c8bea8';cx.lineWidth=0.5;cx.strokeRect(b.x+0.25,b.y+0.25,b.w-0.5,b.h-0.5);
+    cx.fillStyle='#b8a88e';cx.fillRect(b.x+b.w/2-1,b.y+b.h/2-2,2,4);
   });
 
-  // ── 9. Houseboats (small colored rects along canal edges) ──
+  // ── 6. 公园 (OSM 浅绿,CIVIC 绿地) ──
+  PARKS.forEach(function(p){
+    cx.fillStyle='#c9e8a8';cx.fillRect(p.x,p.y,p.w,p.h);
+    cx.fillStyle='#8ab86a';
+    for(var t=0;t<6;t++){var tx=p.x+6+t*((p.w-12)/6),ty=p.y+5+((t*7)%3)*4;
+      cx.beginPath();cx.arc(tx,ty,2,0,Math.PI*2);cx.fill()}
+  });
+
+  // ── 7. 铁路 (灰色虚线,中央车站→Bijlmer) ──
+  cx.strokeStyle='#8a8a86';cx.lineWidth=2;cx.setLineDash([5,4]);
+  cx.beginPath();cx.moveTo(390,115);cx.lineTo(755,465);cx.stroke();
+  cx.setLineDash([]);
+
+  // ── 8. Houseboats (small colored rects along canal edges) ──
   HOUSEBOATS.forEach(function(b){
     cx.fillStyle='#0002';cx.fillRect(b.x+1,b.y+b.h,b.w,1);
     cx.fillStyle=b.cl;cx.fillRect(b.x,b.y,b.w,b.h);
@@ -5507,7 +5459,19 @@ function drawMap(){
     }
   });
 
-  // ── 11. Church spires (Amsterdam three iconic towers) ──
+  // ── 11. OSM 地名/地标标签 (白描边 + 深色字,重要地标红色加粗) ──
+  MAP_LABELS.forEach(function(L){
+    cx.font=(L.red?'bold 9px ':'8px ')+'sans-serif';cx.textAlign='center';cx.textBaseline='middle';
+    cx.lineWidth=2.5;cx.strokeStyle='#f2efe9';cx.strokeText(L.t,L.x,L.y);
+    cx.fillStyle=L.red?'#c02828':'#3a3428';cx.fillText(L.t,L.x,L.y);
+    cx.textBaseline='alphabetic';
+  });
+  // ── 11a. District labels (faded backdrop) ──
+  cx.save();cx.globalAlpha=0.18;cx.font='bold 11px sans-serif';cx.textAlign='center';
+  DISTRICTS.forEach(function(d){cx.fillStyle=d.cl;cx.fillText(d.t,d.x,d.y)});
+  cx.restore();
+
+  // ── 12. Church spires (Amsterdam three iconic towers) ──
   function drawSpire(x,y,h,bodyCl,roofCl,crownCl,label){
     cx.fillStyle=bodyCl;cx.fillRect(x-2,y-8,4,h);
     cx.fillStyle=roofCl;
@@ -5520,11 +5484,11 @@ function drawMap(){
   drawSpire(335, 230, 26,'#7a4830','#a06040','#e8a020','⛪ Nieuwe Kerk');
   drawSpire(580, 240, 20,'#7a4830','#c87040','#e8a020','⛪ Oude Kerk');
 
-  // ── 12. Dam Square diamond ──
+  // ── 13. Dam Square diamond ──
   cx.fillStyle='#e8d090';cx.font='bold 10px sans-serif';cx.textAlign='center';
   cx.fillText('◆ DAM ◆',335,225);
 
-  // ── 13. Street labels (italic, light gray) ──
+  // ── 14. Street labels (italic, light gray) ──
   STREETS.forEach(function(s){
     cx.save();
     cx.translate(s.x,s.y);if(s.ang)cx.rotate(s.ang);
@@ -5533,31 +5497,7 @@ function drawMap(){
     cx.restore();
   });
 
-  // ── 14. Mini legend (top right) ──
-  cx.fillStyle='#00000050';cx.fillRect(680,8,115,72);
-  cx.font='bold 8px sans-serif';cx.fillStyle='#1a1a1a';cx.textAlign='left';
-  cx.fillText('AMSTERDAM',688,18);
-  cx.font='7px sans-serif';
-  cx.fillStyle='#5a90c0';cx.fillRect(688,24,10,3);cx.fillStyle='#1a1a1a';cx.fillText('Canal',702,28);
-  cx.fillStyle='#8b3a1a';cx.fillRect(688,32,8,8);cx.fillStyle='#1a1a1a';cx.fillText('Canal house',702,39);
-  cx.fillStyle='#7aa848';cx.fillRect(688,44,10,5);cx.fillStyle='#1a1a1a';cx.fillText('Park',702,49);
-  cx.strokeStyle='#c0a020';cx.lineWidth=1;cx.beginPath();cx.moveTo(688,55);cx.lineTo(700,55);cx.stroke();
-  cx.fillStyle='#1a1a1a';cx.fillText('Tram line',702,59);
-  cx.fillStyle='#3a7060';cx.fillRect(688,64,10,3);cx.fillStyle='#1a1a1a';cx.fillText('Houseboat',702,69);
-  cx.fillStyle='#ffffff';cx.fillRect(688,73,10,2);cx.strokeStyle='#1a1a1a';cx.strokeRect(688,73,10,2);
-  cx.fillStyle='#1a1a1a';cx.fillText('Bridge',702,77);
-
-  // ── 15. Compass (top left) — funify-v3 Round 22: arrow no longer overlaps N label ──
-  cx.fillStyle='#00000050';cx.beginPath();cx.arc(28,28,18,0,Math.PI*2);cx.fill();
-  cx.font='bold 9px sans-serif';cx.fillStyle='#1a1a1a';cx.textAlign='center';
-  // N shifted up to top of arc (above arrow tip); W/E at horizontal edge; S at bottom
-  cx.fillText('N',28,16);cx.fillText('S',28,42);cx.fillText('W',12,31);cx.fillText('E',44,31);
-  // Red needle: short, below N label so they no longer collide
-  cx.strokeStyle='#c83030';cx.lineWidth=1.5;cx.beginPath();cx.moveTo(28,30);cx.lineTo(28,22);cx.stroke();
-  // Tiny dot at center
-  cx.fillStyle='#c83030';cx.beginPath();cx.arc(28,30,1.2,0,Math.PI*2);cx.fill();
-
-  // ── 16. Player (3D character on top) ──
+  // ── 15. Player (3D character on top) ──
   var bob=Math.sin(Date.now()/150)*1.5,p=G.p;
   var mdd=Math.sqrt((p.tx-p.x)*(p.tx-p.x)+(p.ty-p.y)*(p.ty-p.y));
   var facing=mdd>1?Math.atan2(p.ty-p.y,p.tx-p.x):0;
@@ -5590,6 +5530,70 @@ function drawMap(){
     cx.strokeStyle='#c83030';cx.lineWidth=2;cx.setLineDash([3,2]);cx.lineDashOffset=-Date.now()/300%5;
     cx.beginPath();cx.arc(cb.x+cb.w/2,cb.y+cb.h/2,cb.r+3,0,Math.PI*2);cx.stroke();
     cx.setLineDash([]);cx.lineDashOffset=0;
+  }
+  cx.restore();
+
+  // ═══ 屏幕空间 HUD (不随相机变换) ═══
+  // ── 16. Mini legend (top right, OSM 配色) ──
+  cx.fillStyle='#00000050';cx.fillRect(680,8,115,72);
+  cx.font='bold 8px sans-serif';cx.fillStyle='#1a1a1a';cx.textAlign='left';
+  cx.fillText('AMSTERDAM',688,18);
+  cx.font='7px sans-serif';
+  cx.fillStyle='#aad3df';cx.fillRect(688,24,10,3);cx.fillStyle='#1a1a1a';cx.fillText('Canal',702,28);
+  cx.fillStyle='#e0d8c8';cx.fillRect(688,32,8,8);cx.fillStyle='#1a1a1a';cx.fillText('Building',702,39);
+  cx.fillStyle='#c9e8a8';cx.fillRect(688,44,10,5);cx.fillStyle='#1a1a1a';cx.fillText('Park',702,49);
+  cx.strokeStyle='#f2b880';cx.lineWidth=2;cx.beginPath();cx.moveTo(688,55);cx.lineTo(700,55);cx.stroke();
+  cx.fillStyle='#1a1a1a';cx.fillText('Main road',702,59);
+  cx.fillStyle='#3a7060';cx.fillRect(688,64,10,3);cx.fillStyle='#1a1a1a';cx.fillText('Houseboat',702,69);
+  cx.fillStyle='#ffffff';cx.fillRect(688,73,10,2);cx.strokeStyle='#1a1a1a';cx.strokeRect(688,73,10,2);
+  cx.fillStyle='#1a1a1a';cx.fillText('Bridge',702,77);
+
+  // ── 17. Compass (top left) — funify-v3 Round 22: arrow no longer overlaps N label ──
+  cx.fillStyle='#00000050';cx.beginPath();cx.arc(28,28,18,0,Math.PI*2);cx.fill();
+  cx.font='bold 9px sans-serif';cx.fillStyle='#1a1a1a';cx.textAlign='center';
+  // N shifted up to top of arc (above arrow tip); W/E at horizontal edge; S at bottom
+  cx.fillText('N',28,16);cx.fillText('S',28,42);cx.fillText('W',12,31);cx.fillText('E',44,31);
+  // Red needle: short, below N label so they no longer collide
+  cx.strokeStyle='#c83030';cx.lineWidth=1.5;cx.beginPath();cx.moveTo(28,30);cx.lineTo(28,22);cx.stroke();
+  // Tiny dot at center
+  cx.fillStyle='#c83030';cx.beginPath();cx.arc(28,30,1.2,0,Math.PI*2);cx.fill();
+
+  // ── 18. 汇报注记 (画布角落小字,可选口径) ──
+  cx.font='8px sans-serif';cx.fillStyle='#807868';cx.textAlign='left';
+  cx.fillText('OSM 风格大地图 + Zelda 式小地图 · 滚轮缩放 · 拖拽平移 · M 折叠小地图',8,56);
+
+  // ── 19. Zelda 式小地图 (左下角 140×100,固定北向) ──
+  if(G.mm===1){
+    const mrx=8,mry=H-108,mrw=140,mrh=100;
+    cx.save();
+    _barRoundRect(cx,mrx,mry,mrw,mrh,6);cx.fillStyle='#14181fcc';cx.fill();
+    cx.clip();
+    cx.fillStyle='#f2efe9';cx.fillRect(mrx,mry,mrw,mrh);
+    const mmx=wx=>mrx+wx/W*mrw,mmy=wy=>mry+wy/H*mrh;
+    cx.fillStyle='#aad3df';
+    CANALS.forEach(c=>{if(c.tp==='river')cx.fillRect(mmx(c.x),mmy(c.y),c.w/W*mrw,Math.max(2,c.h/H*mrh));else cx.fillRect(mmx(c.x),mmy(c.y),Math.max(1,c.w/W*mrw),1)});
+    cx.fillStyle='#c9e8a8';PARKS.forEach(p=>cx.fillRect(mmx(p.x),mmy(p.y),p.w/W*mrw,p.h/H*mrh));
+    cx.strokeStyle='#f2b880';cx.lineWidth=1;
+    cx.beginPath();cx.moveTo(mmx(0),mmy(200));cx.lineTo(mmx(800),mmy(200));cx.moveTo(mmx(0),mmy(380));cx.lineTo(mmx(800),mmy(380));cx.moveTo(mmx(340),mmy(90));cx.lineTo(mmx(340),mmy(500));cx.stroke();
+    cx.fillStyle='#cfc4b2';CIVIC.forEach(b=>cx.fillRect(mmx(b.x),mmy(b.y),Math.max(1,b.w*0.175),Math.max(1,b.h*0.2)));
+    BLDGS.forEach(b=>{cx.fillStyle=b.cl;cx.beginPath();cx.arc(mmx(b.x+b.w/2),mmy(b.y+b.h/2),2,0,Math.PI*2);cx.fill()});
+    // 半透明视窗框 = 当前相机视野
+    const vr=mmViewRect(mrx,mry,mrw,mrh);
+    cx.fillStyle='#ffffff2e';cx.fillRect(vr.x,vr.y,vr.w,vr.h);
+    cx.strokeStyle='#ffffff88';cx.lineWidth=1;cx.strokeRect(vr.x,vr.y,vr.w,vr.h);
+    // 玩家红点 + 朝向箭头 (地图固定北向,箭头旋转)
+    const f=facing||0;
+    const ppx=mmx(G.p.x),ppy=mmy(G.p.y);
+    cx.fillStyle='#e03030';cx.beginPath();cx.arc(ppx,ppy,3,0,Math.PI*2);cx.fill();
+    cx.strokeStyle='#fff';cx.lineWidth=1.5;
+    cx.beginPath();cx.moveTo(ppx,ppy);cx.lineTo(ppx+Math.cos(f)*6,ppy+Math.sin(f)*6);cx.stroke();
+    cx.restore();
+    cx.strokeStyle='#ffffff22';cx.strokeRect(mrx,mry,mrw,mrh);
+    cx.font='8px sans-serif';cx.textAlign='center';cx.fillStyle='#ffffff99';cx.fillText('✕',mrx+mrw-8,mry+8);
+  }else{
+    // 折叠块:点击展开 (M 键亦切换)
+    _barRoundRect(cx,8,H-26,26,18,5);cx.fillStyle='#14181fcc';cx.fill();
+    cx.font='10px sans-serif';cx.textAlign='center';cx.fillStyle='#e0d8c8';cx.fillText('🗺',21,H-13);
   }
   cx.textAlign='start';
 }
@@ -7495,6 +7499,8 @@ document.addEventListener('keydown',e=>{
   // funify-v3 Round 26 — 📼 Action Replay (L key) swallows keys while open
   if(replayOpen()){const tk=e.key.toLowerCase();if(tk==='l'||tk==='escape'){e.preventDefault();closeReplay()}return}
   if(modalOpen()){if(e.key==='Enter'&&document.activeElement&&document.activeElement.id==='start-seed'){e.preventDefault();startFromModal();return}if(e.key==='Escape'||e.key==='Enter'){const st=document.getElementById('settings-modal');if(st&&!st.classList.contains('hidden')){closeSettings();return}const hm=document.getElementById('mg-hint-modal');if(hm&&!hm.classList.contains('hidden')){closeMgHint();return}const hp=document.getElementById('help-modal');if(hp&&!hp.classList.contains('hidden')&&e.key==='Escape'){closeHelp();return}const op=document.getElementById('opening-modal');if(op&&!op.classList.contains('hidden')){closeOpeningCard();return}const rc=document.getElementById('relchain-modal');if(rc&&!rc.classList.contains('hidden')){closeRelchain();return}}if(e.key.toLowerCase()==='m'){AUDIO.toggleMute();return}return}
+  // funify-v3 R24 — 地图上 M 键折叠/展开小地图 (mg/inside/end 下 M 仍为静音,见下)
+  if((e.key==='m'||e.key==='M')&&!G.inside&&!G.mg&&!G.ended){G.mm=G.mm===1?0:1;setMsg(G.mm===1?'🗺 小地图展开 · 点击小地图可跳转':'🗺 小地图已折叠 · 点击左下角 🗺 展开');renderAll();return}
   // funify-v3 Round 6 — M key toggles audio mute (works even when ended/modal)
   if(e.key==='M'||e.key==='m'){AUDIO.toggleMute();setMsg(AUDIO.muted?'🔇 音频已静音':'🔊 音频开启');return}
   if(G.ended){if(e.key==='n')newRun();return}const k=e.key.toLowerCase();
@@ -7546,18 +7552,52 @@ document.addEventListener('keydown',e=>{
   renderAll();
 });
 document.addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(G.keys)delete G.keys[k]});
-cv.addEventListener('click',e=>{if(modalOpen())return;if(Date.now()-G.lastClickAt<200)return;G.lastClickAt=Date.now();AUDIO.play('click');if(!G.inside&&!G.mg&&!G.ended){G._wp=null;const r=cv.getBoundingClientRect();const scale=r.width/W;const tx=(e.clientX-r.left)/scale;const ty=(e.clientY-r.top)/scale;const cl=clampTargetToWalkable(tx,ty);if(cl){G.p.tx=cl.x;G.p.ty=cl.y}else{G.p.tx=tx;G.p.ty=ty}}});
+cv.addEventListener('click',e=>{if(modalOpen())return;if(Date.now()-G.lastClickAt<200)return;G.lastClickAt=Date.now();AUDIO.play('click');if(!G.inside&&!G.mg&&!G.ended){const r=cv.getBoundingClientRect();const scale=r.width/W;const sx=(e.clientX-r.left)/scale,sy=(e.clientY-r.top)/scale;
+  // R24: 小地图交互 — 视窗内点击跳转 / ✕ 角收起 / 折叠块展开
+  const mr=minimapRect();
+  if(G.mm===1&&sx>=mr.x&&sx<=mr.x+mr.w&&sy>=mr.y&&sy<=mr.y+mr.h){
+    if(sx>=mr.x+mr.w-16&&sy<=mr.y+12){G.mm=0;renderAll();return}
+    mmJump(sx,sy);renderAll();return;
+  }
+  if(G.mm!==1&&sx>=8&&sx<=34&&sy>=H-26&&sy<=H-8){G.mm=1;renderAll();return}
+  // R24: 拖拽平移后抑制移动点击
+  if(G._pan&&G._pan.moved>4){G._pan.moved=0;return}
+  G._wp=null;const w=screenToWorld(sx,sy);const cl=clampTargetToWalkable(w.x,w.y);if(cl){G.p.tx=cl.x;G.p.ty=cl.y}else{G.p.tx=w.x;G.p.ty=w.y}}});
 // funify-v3 Round 18 — mouse hover halo + Amsterdam real-location tooltip (BACKLOG #38 + Round 17 risk)
 cv.addEventListener('mousemove',e=>{
   if(modalOpen()){G._hoverBldg=null;return}
   const r=cv.getBoundingClientRect(),scale=r.width/W;
   const mx=(e.clientX-r.left)/scale,my=(e.clientY-r.top)/scale;
+  // R24: 拖拽平移相机 (只改 CAM,不写世界状态)
+  if(G._pan&&G._pan.on){
+    G._pan.moved+=Math.abs(mx-G._pan.sx)+Math.abs(my-G._pan.sy);
+    CAM.cx=G._pan.cx-(mx-G._pan.sx)/CAM.z;CAM.cy=G._pan.cy-(my-G._pan.sy)/CAM.z;
+    camClamp();G._pan.sx=mx;G._pan.sy=my;renderAll();
+  }
+  const w=screenToWorld(mx,my);
   const prev=G._hoverBldg&&G._hoverBldg.id;
-  const next=getHoverBldg(mx,my);
+  const next=getHoverBldg(w.x,w.y);
   G._hoverBldg=next;
   if((prev||'')!==((next&&next.id)||''))renderAll();
 });
 cv.addEventListener('mouseleave',()=>{if(G._hoverBldg){G._hoverBldg=null;renderAll()}});
+// funify-v3 R24 — 拖拽平移 (mousedown/mouseup) + 滚轮缩放 (1×-3×,以鼠标为中心)
+cv.addEventListener('mousedown',e=>{
+  if(e.button!==0||modalOpen()||G.mg||G.inside||G.ended)return;
+  const r=cv.getBoundingClientRect(),scale=r.width/W;
+  const sx=(e.clientX-r.left)/scale,sy=(e.clientY-r.top)/scale;
+  const mr=minimapRect();
+  if(G.mm===1&&sx>=mr.x&&sx<=mr.x+mr.w&&sy>=mr.y&&sy<=mr.y+mr.h){mmJump(sx,sy);renderAll();return}
+  G._pan={on:true,sx,sy,cx:CAM.cx,cy:CAM.cy,moved:0};
+});
+document.addEventListener('mouseup',()=>{if(G._pan)G._pan.on=false});
+cv.addEventListener('wheel',e=>{
+  if(modalOpen()||G.mg||G.inside||G.ended)return;
+  e.preventDefault();
+  const r=cv.getBoundingClientRect(),scale=r.width/W;
+  camZoomAt((e.clientX-r.left)/scale,(e.clientY-r.top)/scale,CAM.z*(e.deltaY<0?1.15:1/1.15));
+  renderAll();
+},{passive:false});
 
 function newRunInner(){
   G.day=1;G.ti=0;G.ended=false;G.metaPending=0;G.visited=[];G.visitedToday=[];G.greetedToday=[];G.keys={};resetRunCounters();

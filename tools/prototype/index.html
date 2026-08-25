@@ -7587,7 +7587,7 @@ cv.addEventListener('mousedown',e=>{
   const r=cv.getBoundingClientRect(),scale=r.width/W;
   const sx=(e.clientX-r.left)/scale,sy=(e.clientY-r.top)/scale;
   const mr=minimapRect();
-  if(G.mm===1&&sx>=mr.x&&sx<=mr.x+mr.w&&sy>=mr.y&&sy<=mr.y+mr.h){mmJump(sx,sy);renderAll();return}
+  if(G.mm===1&&sx>=mr.x&&sx<=mr.x+mr.w&&sy>=mr.y&&sy<=mr.y+mr.h&&!(sx>=mr.x+mr.w-16&&sy<=mr.y+12)){mmJump(sx,sy);renderAll();return}
   G._pan={on:true,sx,sy,cx:CAM.cx,cy:CAM.cy,moved:0};
 });
 document.addEventListener('mouseup',()=>{if(G._pan)G._pan.on=false});

@@ -3528,23 +3528,21 @@ frame.addEventListener('load',async()=>{
       return Math.abs(s.staminaDrainMult-0.80)<0.05;
     }finally{for(const k of keys)t.state[k]=before[k]}
   });
-  check('R5: surfPaddleState null/无 active → null',()=>{
-    return win.surfPaddleState(null)===null&&win.surfPaddleState({})===null&&win.surfPaddleState({paddle:{active:false}})===null;
+  check('R25: surfBandAt carve 高度→分带映射 (0.1→浪脚 0.5→浪腰 0.85→浪心 clamp)',()=>{
+    const fn=win.surfBandAt;if(!fn)return false;
+    return fn(0.1)===0&&fn(0.5)===1&&fn(0.85)===2&&fn(9)===2&&fn(-1)===0;
   });
-  check('R5: surfPaddleState active → 返回 {cursor,startedAt}',()=>{
-    const s={paddle:{active:true,startedAt:Date.now()-300,msPerCycle:1200,cursor:0.5}};
-    const st=win.surfPaddleState(s);
-    return st&&typeof st.cursor==='number'&&st.cursor>=0&&st.cursor<1;
+  check('R25: surfBalVerdict 平衡条判定 (ok/warn/fail 落水)',()=>{
+    const fn=win.surfBalVerdict;if(!fn)return false;
+    return fn(0.2,60)==='ok'&&fn(0.9,60)==='warn'&&fn(0.2,0)==='fail';
   });
-  check('R5: surfPaddleHit cursor 在 green (0.40-0.55) → "+" 且 stamina+5',()=>{
-    const s={stamina:80,paddle:{active:true,startedAt:Date.now(),cursor:0.47,msPerCycle:1200,_hits:0}};
-    const r=win.surfPaddleHit(s);
-    return r==='+'&&s.stamina===85;
+  check('R25: surfFragCollect 碎片骑过收集 (分带匹配+x 过骑手)',()=>{
+    const fn=win.surfFragCollect;if(!fn)return false;
+    const s={h:0.5};
+    return fn(s,{band:1,x:320,taken:false})===true&&fn(s,{band:0,x:320,taken:0})===false&&fn(s,{band:1,x:320,taken:true})===false&&fn(s,{band:1,x:360,taken:false})===false;
   });
-  check('R5: surfPaddleHit cursor 不在 green → "0" 且 stamina 不变',()=>{
-    const s={stamina:80,paddle:{active:true,startedAt:Date.now(),cursor:0.20,msPerCycle:1200,_hits:0}};
-    const r=win.surfPaddleHit(s);
-    return r==='0'&&s.stamina===80;
+  check('R25: 骑浪常量暴露 (SURF_RIDE_X/CARVE_STEP/LIP_H)',()=>{
+    return win.eval('SURF_RIDE_X')===320&&win.eval('SURF_CARVE_STEP')===0.18&&win.eval('SURF_LIP_H')===0.72;
   });
   check('R5: surfRollSoulEvent 没 fire → 触发概率 roll 返回事件或 null',()=>{
     const keys=['_surfSoul'];
@@ -3602,17 +3600,17 @@ frame.addEventListener('load',async()=>{
       t.MG.surf=null;
     }
   });
-  check('R5: index.html pickWavePoint 初始化 paddle + rescueActive/sharkActive/...',()=>{
+  check('R25: index.html pickWavePoint 初始化骑浪状态 + rescueActive/sharkActive/...',()=>{
     const src=_fetchIndex3();
-    return /paddle:\{active:true/.test(src)&&/rescueActive:false/.test(src)&&/sharkActive:false/.test(src)&&/surfApplyUpgradeBoosts\(session\)/.test(src);
+    return /h:0\.5,pumpT:0/.test(src)&&/barrel:false,bal:0,balHealth:100/.test(src)&&/rescueActive:false/.test(src)&&/sharkActive:false/.test(src)&&/surfApplyUpgradeBoosts\(session\)/.test(src);
   });
   check('R5: index.html surfIn SPACE 末尾调用 surfRollSoulEvent',()=>{
     const src=_fetchIndex3();
     return /surfRollSoulEvent\(s,s\.wave\)/.test(src)&&/surfApplySoul\(evt\)/.test(src);
   });
-  check('R5: index.html surfIn P key 触发 surfPaddleHit',()=>{
+  check('R25: index.html surfIn A/D carve 沿浪面切高度 (SURF_CARVE_STEP)',()=>{
     const src=_fetchIndex3();
-    return /k==='p'\|\|k==='P'/.test(src)&&/surfPaddleHit\(s\)/.test(src);
+    return /k==='a'\|\|k==='arrowleft'/.test(src)&&/k==='d'\|\|k==='arrowright'/.test(src)&&/SURF_CARVE_STEP/.test(src);
   });
   check('R5: index.html surfIn shark/rescue/pollution 三个 soul 分支存在',()=>{
     const src=_fetchIndex3();
@@ -3626,9 +3624,9 @@ frame.addEventListener('load',async()=>{
     const src=_fetchIndex3();
     return /G\._surfSoul\.fired=false/.test(src)&&/G\._surfSoul\.picked=null/.test(src)&&/if\(!G\.surfUpgrades\)G\.surfUpgrades=\[\]/.test(src);
   });
-  check('R5: index.html 暴露 SURF_SOUL_EVENTS/SURF_UPGRADES/surfRollSoulEvent/surfApplySoul/surfPaddleState/surfPaddleHit/surfApplyUpgradeBoosts',()=>{
+  check('R25: index.html 暴露 SURF_SOUL_EVENTS/SURF_UPGRADES/surfRollSoulEvent/surfApplySoul/surfBandAt/surfBalVerdict/surfFragCollect/surfApplyUpgradeBoosts',()=>{
     const src=_fetchIndex3();
-    return ['SURF_SOUL_EVENTS','SURF_UPGRADES','surfRollSoulEvent','surfApplySoul','surfPaddleState','surfPaddleHit','surfApplyUpgradeBoosts'].every(fn=>new RegExp('\\b'+fn+'\\b').test(src));
+    return ['SURF_SOUL_EVENTS','SURF_UPGRADES','surfRollSoulEvent','surfApplySoul','surfBandAt','surfBalVerdict','surfFragCollect','surfApplyUpgradeBoosts'].every(fn=>new RegExp('\\b'+fn+'\\b').test(src));
   });
 
   // ═══ Round 7 — Phase B5 Brewery Dave-depth (6 beers + 4 yeasts + 8 soul events + 5 upgrade tracks) ═══

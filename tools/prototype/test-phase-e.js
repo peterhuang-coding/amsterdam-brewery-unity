@@ -714,9 +714,16 @@ t('R23: surfSalvage 浪心 miss 代价×2 (cost=50) 且成功只落稀有遗物'
 t('R23: surfSalvage 分数分层 (浪脚≤30 · 浪心≥48)',(()=>{for(let i=0;i<200;i++){const f1=S23.surfSalvage({wave:W23_WAVES[5],at:i},0);const h1=S23.surfSalvage({wave:W23_WAVES[5],at:i+400},2);if(!f1.miss&&f1.score>30)return false;if(!h1.miss&&h1.score<48)return false}return true})());
 // 联动触发: finSurf 写 G._surfCatch (跨产业配方 surfCatch 输入) + 浪心遗物 meta+2
 t('R23: 联动触发 — finSurf 写 G._surfCatch + 浪心遗物 meta+2',/G\._surfCatch\[item\]=\(G\._surfCatch\[item\]\|\|0\)\+1/.test(h)&&/s\.fragKinds&&s\.fragKinds\['稀有遗物'\]\)\{G\.meta\+=2/.test(h));
-// 动词与提示语: surfDive 深潜 + keyup 300ms 判定 + 首屏核心提示语
-t('R23: 长按深潜 surfDive + keyup ≥300ms 判定 + 首屏提示语「浪里有海吞掉的东西——捞出来」',/function surfDive\(s\)/.test(h)&&/hold>=300\)surfDive\(s\)/.test(h)&&h.includes('浪里有海吞掉的东西——捞出来'));
+// 动词与提示语: surfDive(现为冲进浪管) + keyup 300ms 判定
+t('R23: surfDive + keyup ≥300ms 判定 (长按冲浪管)',/function surfDive\(s\)/.test(h)&&/hold>=300\)surfDive\(s\)/.test(h));
 t('R23: SURF_CATALOG 12 种全部重定义为知识碎片 (kind 字段齐全)',(()=>{const a=h.indexOf('const SURF_CATALOG=['),b=a>-1?h.indexOf('];',a):-1;return a>-1&&b>a&&(h.slice(a,b).match(/kind:'/g)||[]).length===12})());
+
+// ── 26b. funify-v3 R25 — Surf 骑浪重做 (carve/pump/浪管平衡条/碎片骑过收集) gate ──
+const S25=new Function('G','seeded','WAVE_POINTS','SURF_CATALOG','"use strict";'+s23Src+'; return {surfBandAt,surfBalVerdict,surfFragCollect,surfFragIc,SURF_RIDE_X,SURF_CARVE_STEP,SURF_LIP_H};')(G,seeded,W23_WAVES,W23_CAT);
+t('R25: carve 高度→分带映射 (0.1→浪脚 0.5→浪腰 0.85→浪心 越界clamp)',S25.surfBandAt(0.1)===0&&S25.surfBandAt(0.5)===1&&S25.surfBandAt(0.85)===2&&S25.surfBandAt(9)===2&&S25.surfBandAt(-1)===0&&S25.SURF_RIDE_X===320&&S25.SURF_CARVE_STEP===0.18&&S25.SURF_LIP_H===0.72);
+t('R25: 浪管平衡条判定 (健康>0 且 |bal|≤0.85→ok · 越界→warn · 健康归零→fail落水)',S25.surfBalVerdict(0.2,60)==='ok'&&S25.surfBalVerdict(0.9,60)==='warn'&&S25.surfBalVerdict(0.2,0)==='fail');
+t('R25: 碎片骑过收集判定 (分带匹配+x 过骑手→触发 · 错带/已取/未到→不触发)',(()=>{const s={h:0.5};return S25.surfFragCollect(s,{band:1,x:S25.SURF_RIDE_X,taken:false})===true&&S25.surfFragCollect(s,{band:0,x:S25.SURF_RIDE_X,taken:false})===false&&S25.surfFragCollect(s,{band:1,x:S25.SURF_RIDE_X,taken:true})===false&&S25.surfFragCollect(s,{band:1,x:S25.SURF_RIDE_X+40,taken:false})===false&&S25.surfFragIc('不存在')==='🫧'&&S25.surfFragIc('贝壳')!=='🫧'})());
+t('R25: 骑浪口径 — 长按冲浪管 surfDive + keyup ≥300ms + 首屏提示语「骑浪收集知识」',/function surfDive\(s\)/.test(h)&&/hold>=300\)surfDive\(s\)/.test(h)&&h.includes('骑浪收集知识'));
 
 // ── 27. funify-v3 R24 — 大地图相机 + Zelda 小地图 gate ──
 const c24Start=h.indexOf('// CAM_BLOCK_START');

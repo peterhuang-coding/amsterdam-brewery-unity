@@ -740,6 +740,13 @@ t('R24: ≥8 地名/地标标签且重要地标红色加粗 (MAP_LABELS)',(()=>{
 t('R24: M 键/滚轮缩放/小地图点击跳转 全部接入源码',()=>/e\.key==='m'/.test(h)&&/addEventListener\('wheel'/.test(h)&&/mmJump\(sx,sy\)/.test(h));
 t('R24: 相机只渲染不写世界 (移动目标仍写 G.p.tx 世界坐标)',()=>/G\.p\.tx=cl\.x/.test(h)&&/screenToWorld\(/.test(h));
 
+// ── 28. funify-v3 R25 T0 批修 — 学术黑屏/深度HUD/派系id/库存显示源/seed 确定性 gate ──
+t('T0: drawMG academic 分支唯一且非空 (空分支遮蔽已移除,不再黑屏)', (h.match(/else if\(mg==='academic'\)\{/g)||[]).length===1 && /else if\(mg==='academic'\)\{\s*\/\/ === Professor's office/.test(h));
+t('T0: dive 深度写入 G.diveStats.maxDepth (diveIn 深度上升 + newRun 重置)', /s\.depth=Math\.min\(10,s\.depth\+1\);G\.diveStats=G\.diveStats\|\|\{maxDepth:1\};G\.diveStats\.maxDepth=Math\.max\(G\.diveStats\.maxDepth,s\.depth\)/.test(h) && /G\.diveStats=\{maxDepth:1\};/.test(h));
+t('T0: bumpFaction 无无效派系 id (academic/acad 已映射到 heineken/smartshop/coffee)', !/bumpFaction\('academic'/.test(h) && !/bumpFaction\('acad'/.test(h) && /bumpFaction\('heineken',1,'酿造合作'\)/.test(h) && /bumpFaction\('smartshop',1,'学术合作'\)/.test(h) && /bumpFaction\('coffee',1,'巨浪学术奇观'\)/.test(h));
+t('T0: 顶栏+酒吧画布库存显示源统一为 G.barStock (ipa/stout/lager)', /getElementById\('t-stock'\)[^;\n]*barStock\.ipa/.test(h) && /\(\(G\.barStock&&G\.barStock\.ipa\)\|\|0\)\+/.test(h) && /\(\(G\.barStock&&G\.barStock\.stout\)\|\|0\)\+/.test(h) && /\(\(G\.barStock&&G\.barStock\.lager\)\|\|0\)\+/.test(h));
+t('T0: surf/dive 玩法路径 Math.random 已 seeded 化 (wave/forecast/frag/artifact/label)', /s\.wx<100\)\{s\.wx=500\+seeded\(476\+s\.at\)/.test(h) && /f\.x<250\)\{f\.x=620\+seeded\(483\+s\.at\)/.test(h) && /seeded\(521\+s\.score\)\*DIVE_ARTIFACTS\.length/.test(h) && /seeded\(524\+s\.score\+s\.focus\)\*DIVE_LABELS\.length/.test(h));
+
 // summary assertion: tests grew this round
 t('Round8: overall pass count exceeds prior baseline (≥340)', pass >= 340);
 

@@ -1383,7 +1383,7 @@ function brewApplySoul(evt){
   } else if(e.kind==='legendary_batch'){
     if(s){s.starBonus=(s.starBonus||0)+(e.starBonus||5);s.unlockRecipe=e.unlockRecipe||true;s.legendaryMoney=(s.legendaryMoney||0)+50}
     bumpFaction('heineken',3,'传说批次');
-    bumpFaction('academic',1,'酿造合作');
+    bumpFaction('heineken',1,'酿造合作'); // T0: 原 'academic' 派系不存在→映射 heineken(酿酒)
     addEvt('good','✨ 传说批次 — ★5 + 新配方');
   } else if(e.kind==='heineken_buyout'){
     if(!G._run.factionBonus)G._run.factionBonus={brewing:1,coffee:1,shroom:1,bar:1};
@@ -1435,7 +1435,7 @@ function shroomApplySoul(evt){
   } else if(e.kind==='legendary_harvest'){
     if(s){s.starBonus=e.starBonus||5;s.legendaryMoney=e.money||50;s.unlockTopic=true}
     bumpFaction('smartshop',2,'传说收获');
-    bumpFaction('academic',1,'学术合作');
+    bumpFaction('smartshop',1,'学术合作'); // T0: 原 'academic' 派系不存在→映射 smartshop(蘑菇)
   }
 }
 // Quality from 0..100 → 1..5 stars. Pure function.
@@ -1564,7 +1564,7 @@ function surfApplySoul(evt){
   }
   if(e.kind==='tidal'){
     if(s){s.tidalActive=true;s.tidalPerfectMul=e.perfectMul||3;s.tidalMissPenalty=e.missStaminaPenalty||20;s.tidalSetPeriodMs=e.setPeriodMs||5000}
-    bumpFaction('acad',1,'巨浪学术奇观');
+    bumpFaction('coffee',1,'巨浪学术奇观'); // T0: 原 'acad' 派系不存在→映射 coffee(Noord 冲浪区帮派)
   }
   addEvt('good',evt.ic+' '+evt.n+' · '+evt.desc);
   setMsg('✨ 灵魂事件: '+evt.n);
@@ -4495,11 +4495,11 @@ function pickWavePoint(n){const w=WAVE_POINTS[n-1];if(!w)return;G.todayWave=w;
     if(id==='canal_wave')return'fog';
     if(id==='lighthouse')return'sunset';
     if(id==='beginner_bay')return'sunny';
-    return Math.random()<0.5?'cloudy':'sunny';
+    return seeded(471)<0.5?'cloudy':'sunny';
   };
-  const _mkWave=()=>{
-    const big=Math.random()<(w.diff>=4?0.45:w.diff>=3?0.25:0.10);
-    return {size:big?(2+Math.random()|0):(1), perfect:big&&Math.random()<0.3, msLeft:1800+Math.random()*2200};
+  const _mkWave=(i)=>{
+    const big=seeded(472+i)<(w.diff>=4?0.45:w.diff>=3?0.25:0.10);
+    return {size:big?(2+seeded(473+i)|0):(1), perfect:big&&seeded(474+i)<0.3, msLeft:1800+seeded(475+i)*2200};
   };
   const session={wave:w,wx:400,sc:0,at:0,stamina:Math.max(20,100+(G.shop.crazySurfStam||0)),combo:0,perfect:0,perfectStreak:0,started:Date.now(),
     lastCatch:0,drowned:false,ended:false,setPhase:true,nextLull:Date.now()+3500,wipeouts:0,
@@ -4509,7 +4509,7 @@ function pickWavePoint(n){const w=WAVE_POINTS[n-1];if(!w)return;G.todayWave=w;
     rescueActive:false,sharkActive:false,rivalActive:false,pollutionActive:false,tidalActive:false,
     _waxUsed:false,band:0,lastFrag:null,fragKinds:{},_spPress:null,_timeCost:0,
     // Round 11 D3: forecast/weather/shark fin fields
-    _forecast:[_mkWave(),_mkWave(),_mkWave(),_mkWave()],
+    _forecast:[_mkWave(0),_mkWave(1),_mkWave(2),_mkWave(3)],
     _forecastLastRefill:Date.now(),
     _weather:_weatherPick(w.id),
     _weatherIntensity:Math.min(1,w.diff/5+0.2),
@@ -4585,16 +4585,16 @@ function updateSurf(){const s=MG.surf;if(!s||G.mg!=='surf'||s.ended)return;
   const _spd=(G.auto?8:3)*(s.pumpT>0?2:1);
   if(s.setPhase){
     s.wx-=_spd;
-    if(s.wx<100){s.wx=500+Math.random()*200}
-    if(now>=s.nextLull){s.setPhase=false;s.nextLull=now+1200+Math.random()*600}
+    if(s.wx<100){s.wx=500+seeded(476+s.at)*200}
+    if(now>=s.nextLull){s.setPhase=false;s.nextLull=now+1200+seeded(477+s.at)*600}
   }else{
     if(now>=s.nextLull){
-      s.setPhase=true;s.nextLull=now+2500+Math.random()*1200;
+      s.setPhase=true;s.nextLull=now+2500+seeded(478+s.at)*1200;
       // Round 11 D3: shift forecast — consume front block, push new one (4 blocks ahead)
       if(s._forecast){
         s._forecast.shift();
-        const big=Math.random()<((s.wave&&s.wave.diff>=4)?0.45:(s.wave&&s.wave.diff>=3)?0.25:0.10);
-        s._forecast.push({size:big?(2+Math.random()|0):(1),perfect:big&&Math.random()<0.3,msLeft:1800+Math.random()*2200});
+        const big=seeded(479+s.at)<((s.wave&&s.wave.diff>=4)?0.45:(s.wave&&s.wave.diff>=3)?0.25:0.10);
+        s._forecast.push({size:big?(2+seeded(480+s.at)|0):(1),perfect:big&&seeded(481+s.at)<0.3,msLeft:1800+seeded(482+s.at)*2200});
       }
     }
   }
@@ -4619,7 +4619,7 @@ function surfRidePhysics(s){
   const _spd=(G.auto?8:3)*(s.pumpT>0?2:1);
   for(const f of s.frags){
     if(s.setPhase)f.x-=_spd;
-    if(f.x<250){f.x=620+Math.random()*200;f.band=(Math.random()<0.08)?2:(Math.random()<0.35?1:0);f.item=surfFragPool(s.wave.id,f.band)[0];f.y=435-100*f.band;f.taken=false}
+    if(f.x<250){f.x=620+seeded(483+s.at)*200;f.band=(seeded(484+s.at)<0.08)?2:(seeded(485+s.at)<0.35?1:0);f.item=surfFragPool(s.wave.id,f.band)[0];f.y=435-100*f.band;f.taken=false}
     if(!f.taken&&surfFragCollect(s,f)){
       f.taken=true;const band=f.band;let sc=Math.round((8+seeded(252+s.at)*12)*SURF_DEPTH_BANDS[band].mult);
       if(s.tidalActive&&band===2)sc*=3;
@@ -5041,21 +5041,21 @@ function diveIn(k){
     const chosenLabel=numMap[k];
     if(chosenLabel===DIVE_LABELS.indexOf(targetItem.label)){
       // correct tag
-      const art=DIVE_ARTIFACTS[Math.floor(Math.random()*DIVE_ARTIFACTS.length)];
+      const art=DIVE_ARTIFACTS[Math.floor(seeded(521+s.score)*DIVE_ARTIFACTS.length)];
       s.artifacts.push(art);
       s.score+=10;s.combo++;s.bestCombo=Math.max(s.bestCombo,s.combo);
       // depth rises every 5 combo
-      if(s.combo>0&&s.combo%5===0){s.depth=Math.min(10,s.depth+1);setMsg(`🌊 深度 +1 → ${s.depth} (combo ${s.combo})`);}
+      if(s.combo>0&&s.combo%5===0){s.depth=Math.min(10,s.depth+1);G.diveStats=G.diveStats||{maxDepth:1};G.diveStats.maxDepth=Math.max(G.diveStats.maxDepth,s.depth);setMsg(`🌊 深度 +1 → ${s.depth} (combo ${s.combo})`);}
       targetItem.tagged=true;
       addEvt('good',`📚 +${art.ic} ${art.n} (combo ${s.combo})`);
       // respawn new item from right
-      targetItem.x=600;targetItem.label=DIVE_LABELS[Math.floor(Math.random()*DIVE_LABELS.length)];targetItem.tagged=false;
+      targetItem.x=600;targetItem.label=DIVE_LABELS[Math.floor(seeded(522+s.score)*DIVE_LABELS.length)];targetItem.tagged=false;
     }else{
       // wrong tag
       s.combo=0;s.focus=Math.max(0,s.focus-10);
       targetItem.tagged=true; // force-respawn anyway
       setMsg(`❌ 标错 -10 专注 (剩 ${s.focus}%)`);
-      targetItem.x=600;targetItem.label=DIVE_LABELS[Math.floor(Math.random()*DIVE_LABELS.length)];targetItem.tagged=false;
+      targetItem.x=600;targetItem.label=DIVE_LABELS[Math.floor(seeded(523+s.score+s.focus)*DIVE_LABELS.length)];targetItem.tagged=false;
     }
     renderAll();
   }
@@ -5069,7 +5069,7 @@ function updateDive(){
     if(it.tagged)return;
     it.x-=speed;
     // If item exits left edge without being tagged → missed item → focus -5
-    if(it.x<-40){it.x=600;it.label=DIVE_LABELS[Math.floor(Math.random()*DIVE_LABELS.length)];s.focus=Math.max(0,s.focus-5);setMsg(`⏭ 漏掉 1 个 -5 专注 (剩 ${s.focus}%)`);}
+    if(it.x<-40){it.x=600;it.label=DIVE_LABELS[Math.floor(seeded(524+s.score+s.focus)*DIVE_LABELS.length)];s.focus=Math.max(0,s.focus-5);setMsg(`⏭ 漏掉 1 个 -5 专注 (剩 ${s.focus}%)`);}
   });
   // GPU drains slowly
   s.gpu=Math.max(0,s.gpu-0.05);
@@ -5082,6 +5082,7 @@ function finDive(){
   const s=MG.dive;if(!s||s.ended)return;s.ended=true;
   // Add artifacts to global inventory + sell price
   const earned=s.artifacts.reduce((sum,a)=>sum+a.val,0);
+  G.diveStats=G.diveStats||{maxDepth:1};G.diveStats.maxDepth=Math.max(G.diveStats.maxDepth,s.depth);
   G.money+=earned;
   G.inventory.push(...s.artifacts.map(a=>a.ic));
   if(!G.invCollect||typeof G.invCollect!=='object')G.invCollect={};
@@ -6498,7 +6499,6 @@ function drawMG(){
     _shown.forEach(function(a,ai){cx.font='16px sans-serif';cx.fillText(a.ic,575+ai*22,452);});
     if(s.artifacts.length>5){cx.fillStyle='#aaa';cx.font='9px sans-serif';cx.fillText('+'+(s.artifacts.length-5),690,452);}
   }else if(mg==='academic'){
-  }else if(mg==='academic'){
     // === Professor's office: warm wood wall + bookshelf + desk + laptop + coffee mug ===
     cx.fillStyle='#3a2818';cx.fillRect(80,30,640,210);
     cx.fillStyle='#2a1a08';for(var wp=0;wp<10;wp++)cx.fillRect(85,40+wp*18,650,1);
@@ -6965,7 +6965,7 @@ function drawMG(){
         cx.fillText('🍸 按 E 开始倒酒计时 (绿区 +20%)',400,452);
       }
     }
-    cx.fillStyle='#fff';cx.font='11px sans-serif';cx.fillText('库存 🍺'+G.bs[0]+' 🥃'+G.bs[1]+' 🍷'+G.bs[2]+' · 灵魂: '+(G._barSoul&&G._barSoul.picked?(G._barSoul.fired?'已触发':'待触发'):'暂无'),400,475);
+    cx.fillStyle='#fff';cx.font='11px sans-serif';cx.fillText('库存 🍺'+((G.barStock&&G.barStock.ipa)||0)+' 🥃'+((G.barStock&&G.barStock.stout)||0)+' 🍷'+((G.barStock&&G.barStock.lager)||0)+' · 灵魂: '+(G._barSoul&&G._barSoul.picked?(G._barSoul.fired?'已触发':'待触发'):'暂无'),400,475);
   }
   cx.textAlign='start';
 }
@@ -7416,7 +7416,7 @@ function renderAll(){
   const _dbf=document.getElementById('day-bar-fill');if(_dbf)_dbf.style.width=Math.min(100,(G.day/7)*100)+'%';
   const _dd=document.getElementById('day-dots');if(_dd){let dh='';for(let i=1;i<=7;i++){const cls=i<G.day?'done':i===G.day?'cur':'';dh+=`<div class="day-dot ${cls}" style="left:${(i-1)*11+2}px"></div>`;}_dd.innerHTML=dh;}
   const m=document.getElementById('t-money');m.textContent='$'+G.money;m.className='vl '+(G.money<50?'mc':G.money<100?'mw':'mg');
-  document.getElementById('t-rep').textContent=G.rep+' rep';document.getElementById('t-stock').textContent=`🍺${G.bs[0]} 🥃${G.bs[1]} 🍷${G.bs[2]}`;
+  document.getElementById('t-rep').textContent=G.rep+' rep';document.getElementById('t-stock').textContent=`🍺${(G.barStock&&G.barStock.ipa)||0} 🥃${(G.barStock&&G.barStock.stout)||0} 🍷${(G.barStock&&G.barStock.lager)||0}`;
   // R21 — top bar 深度 (Max dive depth this run)
   var _td=document.getElementById('t-depth');if(_td){var _dv=(G.diveStats&&G.diveStats.maxDepth)||1;_td.textContent='深度 '+_dv;_td.style.color=_dv<3?'#80c0e0':_dv<6?'#40e0d0':'#ffd060';}
   document.getElementById('t-run').textContent='Run #'+G.run+' · 遗产'+G.legacy;
@@ -7624,6 +7624,7 @@ function newRunInner(){
   // Phase A: per-run state for C1/C2/B1
   G.workedToday={brew:0,coffee:0,bar:0};
   G.barStock={ipa:0,stout:0,lager:0};
+  G.diveStats={maxDepth:1};
   G.coffeeEarnedToday=0;
   // Phase B: per-run crime state (shoplift hotGoods + market ban + escape tracking)
   G.shop.hotGoods=[];G.shop.marketBanDay=0;G.shop.lastShopliftDay=0;

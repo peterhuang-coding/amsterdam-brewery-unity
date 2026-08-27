@@ -725,6 +725,14 @@ t('R25: 浪管平衡条判定 (健康>0 且 |bal|≤0.85→ok · 越界→warn �
 t('R25: 碎片骑过收集判定 (分带匹配+x 过骑手→触发 · 错带/已取/未到→不触发)',(()=>{const s={h:0.5};return S25.surfFragCollect(s,{band:1,x:S25.SURF_RIDE_X,taken:false})===true&&S25.surfFragCollect(s,{band:0,x:S25.SURF_RIDE_X,taken:false})===false&&S25.surfFragCollect(s,{band:1,x:S25.SURF_RIDE_X,taken:true})===false&&S25.surfFragCollect(s,{band:1,x:S25.SURF_RIDE_X+40,taken:false})===false&&S25.surfFragIc('不存在')==='🫧'&&S25.surfFragIc('贝壳')!=='🫧'})());
 t('R25: 骑浪口径 — 长按冲浪管 surfDive + keyup ≥300ms + 首屏提示语「骑浪收集知识」',/function surfDive\(s\)/.test(h)&&/hold>=300\)surfDive\(s\)/.test(h)&&h.includes('骑浪收集知识'));
 
+// ── 26c. funify-v3 R26 — Surf 多样性 (浪单 seeded/浪形参数 clamp/碎片运动模式/连珠) gate ──
+const S26=new Function('G','seeded','WAVE_POINTS','SURF_CATALOG','"use strict";'+s23Src+'; return {SURF_WAVE_SHAPES,SURF_SESSION_MODS,surfRollSheet,surfShapeParam,surfFragMode,surfChainGain};')(G,seeded,W23_WAVES,W23_CAT);
+t('R26: 浪单 seeded 确定性 — 同 seed 同浪单 (shape/mod/jitter 全等),换 seed 有分叉',(()=>{const a=S26.surfRollSheet(486),b=S26.surfRollSheet(486),c=S26.surfRollSheet(487);return a.shape.id===b.shape.id&&a.mod.id===b.mod.id&&a.jitter===b.jitter&&(a.shape.id!==c.shape.id||a.mod.id!==c.mod.id||a.jitter!==c.jitter)})());
+t('R26: 4 浪形参数齐全且含黑浪(night=1) + 4 修饰',S26.SURF_WAVE_SHAPES.length===4&&S26.SURF_WAVE_SHAPES.every(x=>x.crest>0&&x.lip>0&&x.speed>0&&x.und>0&&x.fragMul>0&&(x.night===0||x.night===1))&&S26.SURF_WAVE_SHAPES.some(x=>x.night)&&S26.SURF_SESSION_MODS.length===4);
+t('R26: 浪形参数 clamp — 抖动越界被钳在 [lo,hi] 内',S26.surfShapeParam({speed:1.4},1,'speed',0.6,1.4)===1.4&&S26.surfShapeParam({speed:0.6},0,'speed',0.6,1.4)===0.6&&S26.surfShapeParam({speed:0.8},0.5,'speed',0.6,1.4)>0.6&&S26.surfShapeParam({speed:0.8},0.5,'speed',0.6,1.4)<1.4);
+t('R26: 碎片运动模式 seeded 分配 — 浪心必静态,其余落在 drift/sink/chain 且同 seed 稳定',(()=>{const m=S26.surfFragMode(2,500),m2=S26.surfFragMode(2,500),m3=S26.surfFragMode(0,500);return m==='static'&&m2==='static'&&['drift','sink','chain'].includes(m3)&&S26.surfFragMode(0,500)===m3})());
+t('R26: 连珠奖励触发 — 同种×3/×6 落袋 +50% (×1/×2 不触发)',S26.surfChainGain(3,20)===10&&S26.surfChainGain(6,20)===10&&S26.surfChainGain(1,20)===0&&S26.surfChainGain(2,20)===0);
+
 // ── 27. funify-v3 R24 — 大地图相机 + Zelda 小地图 gate ──
 const c24Start=h.indexOf('// CAM_BLOCK_START');
 const c24End=c24Start>-1?h.indexOf('// CAM_BLOCK_END',c24Start):-1;

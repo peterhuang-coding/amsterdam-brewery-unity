@@ -3461,7 +3461,7 @@ function renderGifts(){
 function modalOpen(){const s=document.getElementById('start-modal'),h=document.getElementById('help-modal'),m=document.getElementById('mg-hint-modal'),t=document.getElementById('tal-modal'),f=document.getElementById('fac-modal'),c=document.getElementById('craft-modal'),st=document.getElementById('settings-modal'),r=document.getElementById('replay-modal'),o=document.getElementById('opening-modal'),rc=document.getElementById('relchain-modal');return(s&&!s.classList.contains('hidden'))||(h&&!h.classList.contains('hidden'))||(m&&!m.classList.contains('hidden'))||(t&&!t.classList.contains('hidden'))||(f&&!f.classList.contains('hidden'))||(c&&!c.classList.contains('hidden'))||(st&&!st.classList.contains('hidden'))||(r&&!r.classList.contains('hidden'))||(o&&!o.classList.contains('hidden'))||(rc&&!rc.classList.contains('hidden'))}
 // funify-v3 Round 14 — first-time mini-game key overlay (BACKLOG #3 close)
 const MG_HINT_KEYS={
-  brew:{ic:'🍺',name:'酿酒厂（啤酒订单）',keys:[['<kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd>','原料:麦芽/啤酒花/酵母各选 0/1/2'],['<kbd>SPACE</kbd>','开始酿造 (订单 180s 内完成)'],['<kbd>⬆</kbd>/<kbd>⬇</kbd>','控温 ±3°C（IPA=55°·Stout=68°·Lager=48°）'],['<kbd>ESC</kbd>','离开不收尾']],tip:'配方顺序 + 目标温度是订单的两大隐藏轴；温度误差 ≤±5°C 触发完美品。'},
+  brew:{ic:'🍺',name:'酿酒厂（啤酒订单）',keys:[['<kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd>','原料:麦芽/啤酒花/酵母各选 0/1/2'],['<kbd>SPACE</kbd>','开始酿造 (订单 18s 内完成)'],['<kbd>⬆</kbd>/<kbd>⬇</kbd>','控温 ±3°C（IPA=55°·Stout=68°·Lager=48°）'],['<kbd>ESC</kbd>','离开不收尾']],tip:'配方顺序 + 目标温度是订单的两大隐藏轴；温度误差 ≤±5°C 触发完美品。'},
   coffee:{ic:'🌿',name:'Noord 咖啡店',keys:[['<kbd>1-4</kbd>','选品 (espresso/drip/cold_brew/special, rep 解锁)'],['<kbd>Q</kbd>/<kbd>W</kbd>','自定义调价 ±1 (5-50)'],['<kbd>P</kbd>','雇帮派 $50 · 卧底 -80% · 衰减 ×2'],['<kbd>E</kbd>','🌃 夜间地下交易 (仅 evening · rep≥20)'],['<kbd>SPACE</kbd>','成交 · 匹配产品 +25% · 高 tier +15%'],['<kbd>X</kbd>','拒绝卧底 (-8°) / 离店 (-2°)'],['<kbd>ESC</kbd>','结束打烊']],tip:'8 客群随时间段刷新 · 热度随价格+卧底积累 · 雇佣帮派/开夜市都是风险收益权衡 · 5 连正确服务触发 streak +20% 。'},
   shroom:{ic:'🍄',name:'SmartShop（蘑菇培养）',keys:[['<kbd>⬆</kbd>/<kbd>⬇</kbd>','湿度 ±5（目标 60%）'],['<kbd>⬅</kbd>/<kbd>➡</kbd>','温度 ±1（目标 22°C）'],['<kbd>Q</kbd>/<kbd>W</kbd>','光照 ±1（目标 8）'],['<kbd>SPACE</kbd>','启动培养'],['<kbd>ESC</kbd>','取消并离开']],tip:'偏离参数会拉高污染风险；参数过偏导致报废本批收入清零。'},
   surf:{ic:'🌊',name:'巨浪 · 知识打捞（Noord 海滩）',keys:[['<kbd>SPACE</kbd>','探身打捞当前深度 (松手=捞)'],['<kbd>SPACE 长按</kbd>','深潜进更深分带:浪脚→浪腰→浪心'],['<kbd>P</kbd>','划水回体 +5 (节奏绿区)'],['<kbd>ESC</kbd>','中断并带回分数']],tip:'浪里有海吞掉的东西——捞出来。越深碎片越稀有;浪心捞遗物 +2★ meta;被浪卷走扣体力并可能听见「浪语」。'},
@@ -3855,14 +3855,14 @@ function startBrew(){
   const i=Math.floor(seeded(41)*BEER_CATALOG.length);
   const beer=BEER_CATALOG[i];
   // Real brewery: target temp is hidden — brewer has to know each style's temp from memory or recipe notes.
-  const order={type:beer.id,recipe:beer.recipe,temp:beer.temp,limit:180,bonus:(hasUpgrade('ipa_recipe')&&beer.id==='IPA'?1.5:1)*(hasUpgrade('heineken_pass')&&beer.id==='IPA'?1.3:1)};
+  const order={type:beer.id,recipe:beer.recipe,temp:beer.temp,limit:18,bonus:(hasUpgrade('ipa_recipe')&&beer.id==='IPA'?1.5:1)*(hasUpgrade('heineken_pass')&&beer.id==='IPA'?1.3:1)};
   // Yeast health drifts ±15% per batch; wild yeast has lower base, lager/belgian higher.
   const yeast=0.85+seeded(42+G.day*7)*0.3; // 0.85..1.15 batch variability
-  // Phase C A1a: 3 段节奏 (mash/boil/ferment) — 限 4s 窗口, miss 各扣 20%/30%/40%
+  // Phase C A1a: 3 段节奏 (mash/boil/ferment) — 限 2s 窗口, miss 各扣 20%/30%/40% (R27: 180s→18s 压缩,窗口连续不干等)
   const phases=[
-    {hit:false,tStart:20000,tEnd:24000,miss:0.20,label:'🌾 Mash (15-19s)'},
-    {hit:false,tStart:80000,tEnd:84000,miss:0.30,label:'🔥 Boil (75-79s)'},
-    {hit:false,tStart:140000,tEnd:144000,miss:0.40,label:'🧫 Ferment (135-139s)'}
+    {hit:false,tStart:4000,tEnd:6000,miss:0.20,label:'🌾 Mash (4-6s)'},
+    {hit:false,tStart:9000,tEnd:11000,miss:0.30,label:'🔥 Boil (9-11s)'},
+    {hit:false,tStart:14000,tEnd:16000,miss:0.40,label:'🧫 Ferment (14-16s)'}
   ];
   G.shop.order=order;
   MG.brew={ph:'sel',m:0,h:0,y:0,t:50,started:0,deadline:0,order:order,yeast,phases,phaseIdx:0};

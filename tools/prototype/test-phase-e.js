@@ -755,6 +755,18 @@ t('T0: bumpFaction 无无效派系 id (academic/acad 已映射到 heineken/smart
 t('T0: 顶栏+酒吧画布库存显示源统一为 G.barStock (ipa/stout/lager)', /getElementById\('t-stock'\)[^;\n]*barStock\.ipa/.test(h) && /\(\(G\.barStock&&G\.barStock\.ipa\)\|\|0\)\+/.test(h) && /\(\(G\.barStock&&G\.barStock\.stout\)\|\|0\)\+/.test(h) && /\(\(G\.barStock&&G\.barStock\.lager\)\|\|0\)\+/.test(h));
 t('T0: surf/dive 玩法路径 Math.random 已 seeded 化 (wave/forecast/frag/artifact/label)', /s\.wx<100\)\{s\.wx=500\+seeded\(476\+s\.at\)/.test(h) && /f\.x<250\)\{f\.x=620\+seeded\(483\+s\.at\)/.test(h) && /seeded\(521\+s\.score\)\*DIVE_ARTIFACTS\.length/.test(h) && /seeded\(524\+s\.score\+s\.focus\)\*DIVE_LABELS\.length/.test(h));
 
+// ── 29. funify-v3 R27 — Brew UX (SPACE 关提示 / ✕ 退出 / ended 堵漏 / brew 工艺可视化) gate ──
+const r27Hit=/function mgExitHit\(sx,sy\)\{[^}]+\}/.exec(h);
+t('R27: mgExitHit 函数存在且命中 ✕ 区域 (W-16,16)', !!r27Hit && new Function('W', '"use strict";' + r27Hit[0] + ';return mgExitHit(W-16,16)===true')(800));
+t('R27: mgExitHit ✕ 外 (W-30,16)/(400,400)/(W-16,30) 全 false', !!r27Hit && new Function('W', '"use strict";' + r27Hit[0] + ';return mgExitHit(W-30,16)===false&&mgExitHit(400,400)===false&&mgExitHit(W-16,30)===false')(800));
+t('R27: mgExitMiniGame 清 mg/inside + 就绪 (等价 ESC 分支)', h.includes("function mgExitMiniGame(){cancelAuto('escape');G.mg=null;G.inside=null;setStatus('🟢 就绪','','');renderAll()}"));
+t('R27: keydown modalOpen 分支 SPACE 关 mg-hint-modal 且保留 m 静音', h.includes("if(e.key===' '){const hm=document.getElementById('mg-hint-modal');if(hm&&!hm.classList.contains('hidden')){e.preventDefault();closeMgHint();return}}") && h.includes("if(e.key.toLowerCase()==='m'){AUDIO.toggleMute();return}return}"));
+t('R27: keydown ended 分支清 G.mg/G.inside 且 n 触发 newRun', h.includes("if(G.ended){G.mg=null;G.inside=null;if(e.key==='n')newRun();return}"));
+t('R27: canvas click 在 G.mg 时经 mgExitHit 路由 ✕ 退出 (先于小地图分支)', h.includes("if(G.mg&&!G.ended){const r=cv.getBoundingClientRect();const scale=r.width/W;const sx=(e.clientX-r.left)/scale,sy=(e.clientY-r.top)/scale;if(mgExitHit(sx,sy)){mgExitMiniGame();return}return}"));
+t('R27: drawMG 右上角画 ✕ 按钮 + ESC 退出文案', h.includes('strokeRect(W-24,8,16,16)') && h.includes('ESC 退出'));
+t('R27: brew 3 段药丸 4 态着色 (灰/黄闪/绿✓/红✗) + 窗口亮黄提示', h.includes("Math.floor(Date.now()/300)%2?'#f0d040':'#8a7a18'") && h.includes("_mk=' ✓'") && h.includes("_mk=' ✗'") && h.includes("fillText('按 SPACE!',400,214)"));
+t('R27: brew 进度条 + 锅温/目标温标签 + 锅体温度着色 + sel 原料提示', h.includes("'s/'+(s.order.limit||180)+'s'") && h.includes("'🌡 '+Math.round(s.t)+'°C · 目标 ?°C'") && h.includes("rgba(70,120,230,'+(0.16*(1-_tN))") && h.includes("'1/2/3 选原料 · 🌾'+s.m+' 🌿'+s.h+' 🔬'+s.y"));
+
 // summary assertion: tests grew this round
 t('Round8: overall pass count exceeds prior baseline (≥340)', pass >= 340);
 

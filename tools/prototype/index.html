@@ -5679,9 +5679,17 @@ function barPourProgress(s){
   return 0;
 }
 
+// funify-v3 R27 — mini-game canvas ✕ exit (top-right 16×16; click ≈ ESC 分支)
+function mgExitHit(sx,sy){return sx>=W-24&&sx<=W-8&&sy>=8&&sy<=24}
+function mgExitMiniGame(){cancelAuto('escape');G.mg=null;G.inside=null;setStatus('🟢 就绪','','');renderAll()}
+
 function drawMG(){
   // funify-v3 Round 2 (Phase A3) — sky gradient + ambient particles (replaces flat TSKY fillRect)
   drawSkyOverlay(cx,W,H,G.ti|0);drawAmbient(cx,W,H,G.ti|0,Date.now());
+  // funify-v3 R27 — ✕ exit button (top-right 16×16) + ESC hint, every mini-game
+  cx.strokeStyle='rgba(255,120,120,.85)';cx.lineWidth=1.5;cx.strokeRect(W-24,8,16,16);
+  cx.fillStyle='rgba(255,120,120,.9)';cx.font='bold 12px sans-serif';cx.textAlign='center';cx.fillText('✕',W-16,20);
+  cx.fillStyle='rgba(255,255,255,.55)';cx.font='8px sans-serif';cx.textAlign='right';cx.fillText('ESC 退出',W-8,36);cx.lineWidth=1;
   var mg=G.mg,s=MG[mg];
   cx.fillStyle='#1a1820ee';cx.fillRect(60,20,680,460);
   cx.fillStyle='#fff';cx.font='18px sans-serif';cx.textAlign='center';
@@ -5761,6 +5769,16 @@ function drawMG(){
     cx.fillStyle='#2a1505';for(var fp=288;fp<490;fp+=14)cx.fillRect(80,fp,640,1);
     cx.fillStyle='#5a3a1a';cx.fillRect(80,288,640,2);  // front edge
 
+    // funify-v3 R27 — 3-stage process pills: 灰未到 / 亮黄闪烁窗口 / 绿✓命中 / 红✗错过
+    var _elP=s.started?Date.now()-s.started:0,_plI=['🌾 Mash','🔥 Boil','🧫 Ferm'];
+    for(var _pI=0;_pI<3;_pI++){var _ph=s.phases[_pI],_px=170+_pI*153,_py=112,_pc='#3a3a3a',_mk='';
+      if(_ph.hit){_pc='#2a8a3a';_mk=' ✓'}
+      else if(s.started&&_elP>=_ph.tEnd){_pc='#a03030';_mk=' ✗'}
+      else if(s.started&&_elP>=_ph.tStart){_pc=Math.floor(Date.now()/300)%2?'#f0d040':'#8a7a18';_mk=' !'}
+      cx.fillStyle='#0008';cx.fillRect(_px-2,_py-2,147,20);
+      cx.fillStyle=_pc;cx.fillRect(_px,_py,143,16);
+      cx.fillStyle=_pc==='#3a3a3a'?'#999':'#fff';cx.font='bold 10px sans-serif';cx.textAlign='center';cx.fillText(_plI[_pI]+_mk,_px+71,_py+12)}
+
     if(s.ph==='sel'){
       // === Wooden bar counter with 3 glass jars of ingredients ===
       cx.fillStyle='#5a3a1a';cx.fillRect(140,330,520,80);  // counter top
@@ -5818,6 +5836,10 @@ function drawMG(){
         // pulse halo over yeast group label
         cx.strokeStyle='#ff5050';cx.lineWidth=2;cx.strokeRect(580-6,318,116,8);
       }
+      // funify-v3 R27 — sel phase: 原料选择提示 + 当前 m/h/y
+      cx.fillStyle='#0009';cx.fillRect(300,296,200,20);
+      cx.fillStyle='#f0e8a0';cx.font='bold 11px sans-serif';cx.textAlign='center';
+      cx.fillText('1/2/3 选原料 · 🌾'+s.m+' 🌿'+s.h+' 🔬'+s.y,400,310);
     } else {
       // === Brewing phase: copper kettle + thermometer + ingredient drops ===
       cx.fillStyle='#fff';cx.font='bold 13px sans-serif';cx.textAlign='center';
@@ -5841,6 +5863,10 @@ function drawMG(){
       cx.fillStyle='#a05020';cx.fillRect(308,316,184,2);  // rim shadow
       // rivets on body
       cx.fillStyle='#9a4818';for(var rv=0;rv<5;rv++){cx.beginPath();cx.arc(335+rv*35,340,2,0,Math.PI*2);cx.fill()}
+      // funify-v3 R27 — 锅体温度着色 (低温偏蓝 / 高温偏橙)
+      var _tN=Math.max(0,Math.min(1,(s.t-20)/70));
+      cx.fillStyle='rgba(70,120,230,'+(0.16*(1-_tN)).toFixed(3)+')';cx.fillRect(310,320,180,100);
+      cx.fillStyle='rgba(255,140,30,'+(0.16*_tN).toFixed(3)+')';cx.fillRect(310,320,180,100);
       // boiling liquid
       var tm=Date.now()/1000;
       var liquidCol=s.order&&s.order.type==='Stout'?'#3a1a0a':s.order&&s.order.type==='IPA'?'#e0a020':s.order&&s.order.type==='Pilsner'?'#f0d870':s.order&&s.order.type==='Sour'?'#d0d850':s.order&&s.order.type==='BelgianTripel'?'#c89030':'#c08030';
@@ -5867,6 +5893,10 @@ function drawMG(){
       // heat shimmer (horizontal noise line above kettle rim)
       cx.fillStyle='#ffffff20';
       for(var hs=0;hs<4;hs++){cx.fillRect(310+hs*45+Math.sin(tm*4+hs)*3,316,40,1)}
+      // funify-v3 R27 — 锅前温度标签: 当前 s.t°C + 隐藏目标 ?°C
+      cx.fillStyle='#0009';cx.fillRect(352,382,96,16);
+      cx.fillStyle='#ffe8c0';cx.font='bold 11px sans-serif';cx.textAlign='center';
+      cx.fillText('🌡 '+Math.round(s.t)+'°C · 目标 ?°C',400,394);
       // ingredient emojis floating in
       if(s.m>=0)cx.font='20px sans-serif';cx.fillText('🌾',345+Math.sin(tm)*5,308);
       if(s.h>=0)cx.fillText('🌿',395+Math.cos(tm)*5,306);
@@ -5875,6 +5905,11 @@ function drawMG(){
       // steam wisps (4 base wisps from kettle mouth)
       cx.fillStyle='#ffffff30';
       for(var sw=0;sw<4;sw++){cx.beginPath();cx.arc(385+sw*15+Math.sin(tm/2+sw)*8,285-Math.abs(Math.sin(tm*0.5+sw))*50,6,0,Math.PI*2);cx.fill()}
+      // funify-v3 R27 — 阶段窗口打开时锅上方亮黄提示「按 SPACE!」
+      var _elB=Date.now()-s.started,_openPh=s.phases.find(p=>!p.hit&&_elB>=p.tStart&&_elB<p.tEnd);
+      if(_openPh){var _spPul=0.55+0.45*Math.sin(Date.now()/150);
+        cx.fillStyle='#000a';cx.fillRect(340,198,120,22);
+        cx.fillStyle='rgba(255,220,60,'+_spPul.toFixed(3)+')';cx.font='bold 14px sans-serif';cx.textAlign='center';cx.fillText('按 SPACE!',400,214)}
       // BIG THERMOMETER on left
       cx.fillStyle='#0a0a0a';cx.fillRect(140,340,40,140);  // body
       cx.fillStyle='#1a1a1a';cx.fillRect(142,342,36,136);
@@ -5898,6 +5933,11 @@ function drawMG(){
       // Order ticket
       cx.fillStyle='#f0e8d0';cx.fillRect(560,335,150,30);
       cx.fillStyle='#222';cx.font='bold 10px sans-serif';cx.textAlign='left';cx.fillText('📝 '+s.order.type,568,353);
+      // funify-v3 R27 — 进度条 (已用时间 / 订单限时)
+      var _prg=Math.max(0,Math.min(1,(Date.now()-s.started)/((s.order.limit||180)*1000)));
+      cx.fillStyle='#1a4a2a';cx.fillRect(280,446,240,12);
+      cx.fillStyle='#48c860';cx.fillRect(280,446,240*_prg,12);
+      cx.fillStyle='#fff';cx.font='bold 9px sans-serif';cx.textAlign='center';cx.fillText('⏱ '+Math.round((Date.now()-s.started)/1000)+'s/'+(s.order.limit||180)+'s',400,455);
       // bottom temperature control bar
       cx.fillStyle='#0a0a0a';cx.fillRect(180,460,440,22);
       cx.fillStyle='#1a1a1a';cx.fillRect(182,462,436,18);
@@ -7553,12 +7593,12 @@ document.addEventListener('keydown',e=>{
   if(invOpen()){const tk=e.key.toLowerCase();if(tk==='i'||tk==='escape'){e.preventDefault();closeInv()}return}
   // funify-v3 Round 26 — 📼 Action Replay (L key) swallows keys while open
   if(replayOpen()){const tk=e.key.toLowerCase();if(tk==='l'||tk==='escape'){e.preventDefault();closeReplay()}return}
-  if(modalOpen()){if(e.key==='Enter'&&document.activeElement&&document.activeElement.id==='start-seed'){e.preventDefault();startFromModal();return}if(e.key==='Escape'||e.key==='Enter'){const st=document.getElementById('settings-modal');if(st&&!st.classList.contains('hidden')){closeSettings();return}const hm=document.getElementById('mg-hint-modal');if(hm&&!hm.classList.contains('hidden')){closeMgHint();return}const hp=document.getElementById('help-modal');if(hp&&!hp.classList.contains('hidden')&&e.key==='Escape'){closeHelp();return}const op=document.getElementById('opening-modal');if(op&&!op.classList.contains('hidden')){closeOpeningCard();return}const rc=document.getElementById('relchain-modal');if(rc&&!rc.classList.contains('hidden')){closeRelchain();return}}if(e.key.toLowerCase()==='m'){AUDIO.toggleMute();return}return}
+  if(modalOpen()){if(e.key==='Enter'&&document.activeElement&&document.activeElement.id==='start-seed'){e.preventDefault();startFromModal();return}if(e.key==='Escape'||e.key==='Enter'){const st=document.getElementById('settings-modal');if(st&&!st.classList.contains('hidden')){closeSettings();return}const hm=document.getElementById('mg-hint-modal');if(hm&&!hm.classList.contains('hidden')){closeMgHint();return}const hp=document.getElementById('help-modal');if(hp&&!hp.classList.contains('hidden')&&e.key==='Escape'){closeHelp();return}const op=document.getElementById('opening-modal');if(op&&!op.classList.contains('hidden')){closeOpeningCard();return}const rc=document.getElementById('relchain-modal');if(rc&&!rc.classList.contains('hidden')){closeRelchain();return}}if(e.key===' '){const hm=document.getElementById('mg-hint-modal');if(hm&&!hm.classList.contains('hidden')){e.preventDefault();closeMgHint();return}}if(e.key.toLowerCase()==='m'){AUDIO.toggleMute();return}return}
   // funify-v3 R24 — 地图上 M 键折叠/展开小地图 (mg/inside/end 下 M 仍为静音,见下)
   if((e.key==='m'||e.key==='M')&&!G.inside&&!G.mg&&!G.ended){G.mm=G.mm===1?0:1;setMsg(G.mm===1?'🗺 小地图展开 · 点击小地图可跳转':'🗺 小地图已折叠 · 点击左下角 🗺 展开');renderAll();return}
   // funify-v3 Round 6 — M key toggles audio mute (works even when ended/modal)
   if(e.key==='M'||e.key==='m'){AUDIO.toggleMute();setMsg(AUDIO.muted?'🔇 音频已静音':'🔊 音频开启');return}
-  if(G.ended){if(e.key==='n')newRun();return}const k=e.key.toLowerCase();
+  if(G.ended){G.mg=null;G.inside=null;if(e.key==='n')newRun();return}const k=e.key.toLowerCase();
   if(G.mg){cancelAuto('key');
     if(k==='escape'){cancelAuto('escape');G.mg=null;G.inside=null;setStatus('🟢 就绪','','');renderAll();return}
     if(G.mg==='brew')brewIn(k);else if(G.mg==='coffee')coffeeIn(k);else if(G.mg==='shroom')shroomIn(k);
@@ -7607,7 +7647,7 @@ document.addEventListener('keydown',e=>{
   renderAll();
 });
 document.addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(G.keys)delete G.keys[k]});
-cv.addEventListener('click',e=>{if(modalOpen())return;if(Date.now()-G.lastClickAt<200)return;G.lastClickAt=Date.now();AUDIO.play('click');if(!G.inside&&!G.mg&&!G.ended){const r=cv.getBoundingClientRect();const scale=r.width/W;const sx=(e.clientX-r.left)/scale,sy=(e.clientY-r.top)/scale;
+cv.addEventListener('click',e=>{if(modalOpen())return;if(Date.now()-G.lastClickAt<200)return;G.lastClickAt=Date.now();AUDIO.play('click');if(G.mg&&!G.ended){const r=cv.getBoundingClientRect();const scale=r.width/W;const sx=(e.clientX-r.left)/scale,sy=(e.clientY-r.top)/scale;if(mgExitHit(sx,sy)){mgExitMiniGame();return}return}if(!G.inside&&!G.mg&&!G.ended){const r=cv.getBoundingClientRect();const scale=r.width/W;const sx=(e.clientX-r.left)/scale,sy=(e.clientY-r.top)/scale;
   // R24: 小地图交互 — 视窗内点击跳转 / ✕ 角收起 / 折叠块展开
   const mr=minimapRect();
   if(G.mm===1&&sx>=mr.x&&sx<=mr.x+mr.w&&sy>=mr.y&&sy<=mr.y+mr.h){
@@ -7782,7 +7822,7 @@ window.AB_TEST={
   PLOT_PITCH,PLOT_HOOK,CHARACTER_CARDS,DAY_BEATS,FAC_LORE,RELATIONSHIPS_KEY,RELATIONSHIPS_MAX,
   dayBeat,todayTip,runAlignment,settlementBonus,relationshipChain,pushRelationship,loadRelationships,
   renderOpeningCard,closeOpeningCard,showOpeningCardIfFresh,showRelchain,closeRelchain,
-  barTipPreview,barPatienceLeft,barDayDifficulty,coffeeHeatZone,coffeeFitHint,shroomQuality,brewStreakMul,brewNoteProgress,surfPerfectStreakMul,surfBreakerTelegraph,acadPartialCredit,acadRebuttalCost,acadRebuttalBoost,acadWriteMs,acadSubmitCooldownMs,VENUE_DEF,phaseNarr,showPhaseFlash,PHASE_NARR,confettiBurst,confettiClear,confettiUpdate,confettiDraw,CONFETTI_PALETTE,isLegendary,legendarySpeedMs,legendaryCost,legendaryMetaCap,rollUpgradeChoices,NPC_DIALOGUES,pickNpcDialog,NPC_TEACH_FLAVOR,NPC_BUILDING_FLAVOR,MG_HINT_KEYS,showMgHint,closeMgHint,mgHintSeen,getHoverBldg,speedMs,cycleSpeed,saveSpeed,loadSpeed,cancelAuto,renderAutoBtn,AUTO_CANCEL_GRACE_MS,showHelp,closeHelp,lvMaxBoost,metaIndustryBoost,
+  barTipPreview,barPatienceLeft,barDayDifficulty,coffeeHeatZone,coffeeFitHint,shroomQuality,brewStreakMul,brewNoteProgress,surfPerfectStreakMul,surfBreakerTelegraph,acadPartialCredit,acadRebuttalCost,acadRebuttalBoost,acadWriteMs,acadSubmitCooldownMs,VENUE_DEF,phaseNarr,showPhaseFlash,PHASE_NARR,confettiBurst,confettiClear,confettiUpdate,confettiDraw,CONFETTI_PALETTE,isLegendary,legendarySpeedMs,legendaryCost,legendaryMetaCap,rollUpgradeChoices,NPC_DIALOGUES,pickNpcDialog,NPC_TEACH_FLAVOR,NPC_BUILDING_FLAVOR,MG_HINT_KEYS,showMgHint,closeMgHint,mgHintSeen,mgExitHit,mgExitMiniGame,getHoverBldg,speedMs,cycleSpeed,saveSpeed,loadSpeed,cancelAuto,renderAutoBtn,AUTO_CANCEL_GRACE_MS,showHelp,closeHelp,lvMaxBoost,metaIndustryBoost,
   buildRunSummary,buildRunEpitaph,pushRunHistory,loadRunHistory,renderRunHistory,doBodyTrade,openBodyTrade,closeBodyTrade,bodyOpen,moodFloor,startBrew,startSurf,sBarC,endGame,MG,
   ledgerOpen,showLedger,closeLedger,toggleLedger,renderLedger,saveLedger,loadLedger,
   invOpen,showInv,closeInv,toggleInv,renderInv,SURF_CATALOG,

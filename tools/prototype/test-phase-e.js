@@ -739,7 +739,7 @@ t('R28: 碎片显示名 → 帖子/词条卡 (贝壳→词条:… · 稀有遗�
 t('R28: 今日热点 seeded 头条 — 同 seed 同头条 · 全部落在 6 条池内',(()=>{const pool=['甘草糖到底多难吃','荷兰人为何钟爱生鲱鱼','运河自行车打捞队日捞百辆','AI 论文引用自己的回复','啤酒厂 WiFi 密码竟是发酵温度','橙衣军团开始囤郁金香'];const H=S26.surfHotHeadline(488);if(S26.surfHotHeadline(488)!==H||!pool.includes(H))return false;for(let i=0;i<40;i++)if(!pool.includes(S26.surfHotHeadline(i)))return false;return true})());
 t('R28: 逃生氧气模型 — 满体力 5s 耗尽 · 每次游泳 -2 · 越界 clamp 0',S26.surfDrownO2({stamina:100,drownAt:1000,drownStrokes:0},5000)===20&&S26.surfDrownO2({stamina:100,drownAt:1000,drownStrokes:0},6000)===0&&S26.surfDrownO2({stamina:100,drownAt:1000,drownStrokes:3},1000)===94&&S26.surfDrownO2({stamina:30,drownAt:1000,drownStrokes:0},99999)===0);
 t('R28: 主动下潜触发 — 骑浪 SPACE 连按两下 → surfStartDrown(s,false)',/Date\.now\(\)-_prev<400\)\{surfStartDrown\(s,false\)/.test(h));
-t('R28: 落水必触发逃生 — 浪管失衡 → surfStartDrown(s,true) · 氧气归零才 wipeout++',/surfStartDrown\(s,true\)/.test(h)&&/s\.drownFromWipe\)\{s\.wipeouts\+\+/.test(h));
+t('R28: 落水必触发逃生 — 浪管失衡 → surfStartDrown(s,true) · 氧气归零一律走真 wipeout 链 (wipeouts++/combo清/灵魂事件/timeCost)',/surfStartDrown\(s,true\)/.test(h)&&/s\.stamina=0;\s+s\.wipeouts\+\+;s\.combo=0;s\.perfectStreak=0;s\._timeCost=\(s\._timeCost\|\|0\)\+700/.test(h));
 t('R28: 回港记账 — finSurf 进 settle + updateSurf 2.6s 归档退出 + auto 直入骑浪跳过登船',/s\.settled=true;s\.settleAt=Date\.now\(\)/.test(h)&&/settleAt>=2600\)mgExitMiniGame\(\)/.test(h)&&/if\(!G\.auto\)session\.boarding=true/.test(h));
 
 // ── 27. funify-v3 R24 — 大地图相机 + Zelda 小地图 gate ──

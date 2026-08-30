@@ -726,12 +726,21 @@ t('R25: 碎片骑过收集判定 (分带匹配+x 过骑手→触发 · 错带/�
 t('R25: 骑浪口径 — 长按冲浪管 surfDive + keyup ≥300ms + 首屏提示语「骑浪收集知识」',/function surfDive\(s\)/.test(h)&&/hold>=300\)surfDive\(s\)/.test(h)&&h.includes('骑浪收集知识'));
 
 // ── 26c. funify-v3 R26 — Surf 多样性 (浪单 seeded/浪形参数 clamp/碎片运动模式/连珠) gate ──
-const S26=new Function('G','seeded','WAVE_POINTS','SURF_CATALOG','"use strict";'+s23Src+'; return {SURF_WAVE_SHAPES,SURF_SESSION_MODS,surfRollSheet,surfShapeParam,surfFragMode,surfChainGain};')(G,seeded,W23_WAVES,W23_CAT);
+const S26=new Function('G','seeded','WAVE_POINTS','SURF_CATALOG','"use strict";'+s23Src+'; return {SURF_WAVE_SHAPES,SURF_SESSION_MODS,surfRollSheet,surfShapeParam,surfFragMode,surfChainGain,SURF_SKIN_SHAPE,SURF_SKIN_MOD,SURF_SKIN_FRAG,surfFragName,surfHotHeadline,surfDrownO2};')(G,seeded,W23_WAVES,W23_CAT);
 t('R26: 浪单 seeded 确定性 — 同 seed 同浪单 (shape/mod/jitter 全等),换 seed 有分叉',(()=>{const a=S26.surfRollSheet(486),b=S26.surfRollSheet(486),c=S26.surfRollSheet(487);return a.shape.id===b.shape.id&&a.mod.id===b.mod.id&&a.jitter===b.jitter&&(a.shape.id!==c.shape.id||a.mod.id!==c.mod.id||a.jitter!==c.jitter)})());
 t('R26: 4 浪形参数齐全且含黑浪(night=1) + 4 修饰',S26.SURF_WAVE_SHAPES.length===4&&S26.SURF_WAVE_SHAPES.every(x=>x.crest>0&&x.lip>0&&x.speed>0&&x.und>0&&x.fragMul>0&&(x.night===0||x.night===1))&&S26.SURF_WAVE_SHAPES.some(x=>x.night)&&S26.SURF_SESSION_MODS.length===4);
 t('R26: 浪形参数 clamp — 抖动越界被钳在 [lo,hi] 内',S26.surfShapeParam({speed:1.4},1,'speed',0.6,1.4)===1.4&&S26.surfShapeParam({speed:0.6},0,'speed',0.6,1.4)===0.6&&S26.surfShapeParam({speed:0.8},0.5,'speed',0.6,1.4)>0.6&&S26.surfShapeParam({speed:0.8},0.5,'speed',0.6,1.4)<1.4);
 t('R26: 碎片运动模式 seeded 分配 — 浪心必静态,其余落在 drift/sink/chain 且同 seed 稳定',(()=>{const m=S26.surfFragMode(2,500),m2=S26.surfFragMode(2,500),m3=S26.surfFragMode(0,500);return m==='static'&&m2==='static'&&['drift','sink','chain'].includes(m3)&&S26.surfFragMode(0,500)===m3})());
 t('R26: 连珠奖励触发 — 同种×3/×6 落袋 +50% (×1/×2 不触发)',S26.surfChainGain(3,20)===10&&S26.surfChainGain(6,20)===10&&S26.surfChainGain(1,20)===0&&S26.surfChainGain(2,20)===0);
+
+// ── 27. funify-v3 Round 28 — 奇浪五拍 + 互联网皮肤 ──
+t('R28: 皮肤映射层 — 断浪→404风暴 · 黑浪→暗网 · 顺风→adblock · 逆风→防火墙 · 雨幕→弹窗广告雨 (id/数据不动)',S26.SURF_SKIN_SHAPE.closeout==='404风暴'&&S26.SURF_SKIN_SHAPE.night==='暗网'&&S26.SURF_SKIN_MOD.tailwind==='adblock'&&S26.SURF_SKIN_MOD.headwind==='防火墙'&&S26.SURF_SKIN_MOD.rain==='弹窗广告雨');
+t('R28: 碎片显示名 → 帖子/词条卡 (贝壳→词条:… · 稀有遗物→置顶:… · 未知 id 原样返回)',S26.surfFragName('贝壳').indexOf('词条:')===0&&S26.surfFragName('稀有遗物').indexOf('置顶:')===0&&S26.surfFragName('不存在的id')==='不存在的id');
+t('R28: 今日热点 seeded 头条 — 同 seed 同头条 · 全部落在 6 条池内',(()=>{const pool=['甘草糖到底多难吃','荷兰人为何钟爱生鲱鱼','运河自行车打捞队日捞百辆','AI 论文引用自己的回复','啤酒厂 WiFi 密码竟是发酵温度','橙衣军团开始囤郁金香'];const H=S26.surfHotHeadline(488);if(S26.surfHotHeadline(488)!==H||!pool.includes(H))return false;for(let i=0;i<40;i++)if(!pool.includes(S26.surfHotHeadline(i)))return false;return true})());
+t('R28: 逃生氧气模型 — 满体力 5s 耗尽 · 每次游泳 -2 · 越界 clamp 0',S26.surfDrownO2({stamina:100,drownAt:1000,drownStrokes:0},5000)===20&&S26.surfDrownO2({stamina:100,drownAt:1000,drownStrokes:0},6000)===0&&S26.surfDrownO2({stamina:100,drownAt:1000,drownStrokes:3},1000)===94&&S26.surfDrownO2({stamina:30,drownAt:1000,drownStrokes:0},99999)===0);
+t('R28: 主动下潜触发 — 骑浪 SPACE 连按两下 → surfStartDrown(s,false)',/Date\.now\(\)-_prev<400\)\{surfStartDrown\(s,false\)/.test(h));
+t('R28: 落水必触发逃生 — 浪管失衡 → surfStartDrown(s,true) · 氧气归零才 wipeout++',/surfStartDrown\(s,true\)/.test(h)&&/s\.drownFromWipe\)\{s\.wipeouts\+\+/.test(h));
+t('R28: 回港记账 — finSurf 进 settle + updateSurf 2.6s 归档退出 + auto 直入骑浪跳过登船',/s\.settled=true;s\.settleAt=Date\.now\(\)/.test(h)&&/settleAt>=2600\)mgExitMiniGame\(\)/.test(h)&&/if\(!G\.auto\)session\.boarding=true/.test(h));
 
 // ── 27. funify-v3 R24 — 大地图相机 + Zelda 小地图 gate ──
 const c24Start=h.indexOf('// CAM_BLOCK_START');

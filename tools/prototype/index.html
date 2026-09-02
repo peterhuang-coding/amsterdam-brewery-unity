@@ -3839,6 +3839,7 @@ function bldgPhaseLabel(tp){
 }
 function enterBldg(){
   const b=curBldg();if(!b||G.inside||G.mg)return;
+  const _pf=document.getElementById('phase-flash');if(_pf)_pf.classList.remove('on'); // 进建筑即收起换天过场
   if(b.tp==='market'&&hasMod('canal_block')){setStatus('🚢 市集关闭','运河堵塞导致今日无法营业','明日再来');return}
   if(!bldgPhaseOk(b)){setStatus('⏰ '+b.n+' 已闭店',bldgPhaseLabel(b.tp)+' 才营业','按时段再来');return}
   G.inside=b;G.loc=b.d;G.p.tx=G.p.x;G.p.ty=G.p.y;
@@ -7391,6 +7392,7 @@ function phaseNarr(day,ti){
 let _phaseFlashTO=null;
 function showPhaseFlash(day,ti,opts){
   const el=document.getElementById('phase-flash');if(!el)return;
+  if(G.mg)return; // 小游戏进行中不弹换天过场(避免压在小游戏画面上像卡死)
   const info=phaseNarr(day,ti);
   el.querySelector('.pf-d').textContent=info.title;
   el.querySelector('.pf-t').textContent=info.ic+(opts&&opts.iconOverride?'':' 欢迎来到 '+info.phase);

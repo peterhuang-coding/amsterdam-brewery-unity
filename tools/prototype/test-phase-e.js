@@ -295,7 +295,7 @@ t('renderAll updates day-bar-fill width', /day-bar-fill[\s\S]{0,200}width=Math\.
 t('renderAll renders 7 day-dots', /for\(let i=1;i<=7;i\+\+\)/.test(h));
 
 // ── 22b. Phase E round 8 — Phase E teaser + Run History best stats ──
-t('intro screen mentions Phase E teaser (24 搞怪事件) + help 标注 MVP 锁', /🆕 Phase E/.test(h) && /24 个 <b>🦄 搞怪事件<\/b>/.test(h) && h.includes('🔒 MVP 版暂未开放：T 天赋树'));
+t('intro screen mentions MVP teaser (4 核心产业) + help 标注 MVP 锁', /✂️ MVP 版：聚焦核心闭环/.test(h) && /4 个核心产业（酿酒\/酒吧\/咖啡\/冲浪）/.test(h) && h.includes('🔒 MVP 版暂未开放：T 天赋树'));
 t('renderRunHistory computes best stats header (best money/rep/meta)', /renderRunHistory[\s\S]{0,500}best=\{money:0,rep:-Infinity,meta:0\}/.test(h) || /renderRunHistory[\s\S]{0,500}best=\{money:0,rep:-Infinity,meta:0,combo:0,escFree:Infinity\}/.test(h));
 t('renderRunHistory shows 🏆 个人最佳 banner', /🏆 个人最佳 \(跨 \$\{runs\.length\} Run\)/.test(h) || /🏆 个人最佳 \(跨 '\+runs\.length\+'\s*Run\)/.test(h));
 t('renderRunHistory best uses border-color:var(--gold)', /bestRow=.*border-color:var\(--gold\)/.test(h));

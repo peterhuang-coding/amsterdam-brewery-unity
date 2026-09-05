@@ -148,7 +148,7 @@ t('crossing +50 alone does NOT trigger plus100 (still 60, not 100)', G.factions.
 
 // ── 10. F key panel + sidebar badge wiring ──
 t('F-key panel exists in DOM', h.includes('id="fac-modal"') && h.includes('id="fac-grid"'));
-t('F key handler toggles faction panel', /k==='f'.*toggleFactions/.test(h));
+t('F key handler R29 MVP 封入口 → setMsg 🔒 (代码保留)', /k==='f'\)\{setMsg\('🔒 MVP 版暂未开放'\);return\}/.test(h));
 t('F panel consumes F/ESC while open', /facOpen\(\)\)\{[^}]*closeFactions/.test(h));
 t('sidebar shows faction badges', /FACTION_POOL\.map\(f=>/.test(h) || /FACTION_POOL\.map\(f=>/.test(h.replace(/\s+/g, ' ')));
 
@@ -180,8 +180,8 @@ t('L3 NPCs stack multiplicatively across industries', Math.abs(A.npcFriendshipFa
 
 // ── 13. Phase E4 — DOM + key wiring ──
 t('craft modal exists in DOM', h.includes('id="craft-modal"') && h.includes('id="craft-pane-craft"') && h.includes('id="craft-pane-gift"'));
-t('C key handler opens craft pane', /k==='c'.*showCraft\('craft'\)/.test(h));
-t('G key handler opens gift pane', /k==='g'.*showCraft\('gift'\)/.test(h));
+t('C key handler R29 MVP 封入口 → setMsg 🔒 (代码保留)', /k==='c'\)\{setMsg\('🔒 MVP 版暂未开放'\);return\}/.test(h));
+t('G key handler R29 MVP 封入口 → setMsg 🔒 (代码保留)', /k==='g'\)\{setMsg\('🔒 MVP 版暂未开放'\);return\}/.test(h));
 t('craft modal swallows C/G/ESC', /craftOpen\(\)\)\{[^}]*closeCraft/.test(h));
 t('ingredient drop wired in 5 minigame entry points', (h.match(/dropIng\(/g)||[]).length >= 6);
 t('ingredient pool has all 6 ids', new Set(A.CRAFT_ING_POOL.map(i=>i.id)).size === 6);
@@ -262,7 +262,7 @@ t('speedMs honors crazySlow (-50% time)', /crazySlow\)\?0\.5:1/.test(h));
 t('doBodyTrade defined', /function doBodyTrade\(n\)/.test(h));
 t('body-modal CSS added', /#body-modal\s*\{/.test(h));
 t('body-modal HTML present', /id="body-modal"[\s\S]{0,200}肉体交易/.test(h));
-t('B key triggers openBodyTrade', /if\(k==='b'\)\{openBodyTrade\(\);return\}/.test(h));
+t('B key R29 MVP 封入口 → setMsg 🔒 (代码保留)', /if\(k==='b'\)\{setMsg\('🔒 MVP 版暂未开放'\);return\}/.test(h));
 t('B/ESC closes body modal', /if\(tk==='b'\|\|tk==='escape'\)\{e\.preventDefault\(\);closeBodyTrade\(\)\}/.test(h));
 t('moodFloor honors traumaUntil (-1 extra)', /traumaUntil&&G\.shop\.traumaUntil>=G\.day\)\?-1:0/.test(h));
 t('body_trade_1 achievement added', /id:'body_trade_1'/.test(h));
@@ -284,7 +284,7 @@ t('summary card has 4 numbers + 4 emoji', /\$\{card\.money\}[\s\S]{0,300}sigArch
 
 // ── 22. Phase E10 — Demo Telemetry & Polish ──
 t('intro screen shows Day 1 of 7 · 🌱', /Day 1 of 7 · 🌱/.test(h));
-t('help text includes T/F/C/G/B keys (with optional J)', /<b>T<\/b> 天赋树 · <b>F<\/b> 派系(?: · <b>J<\/b> 成就树)? · <b>C<\/b> 配方 · <b>G<\/b> 送礼 · <b>B<\/b> 肉体交易/.test(h));
+t('help text 标注 R29 MVP 封入口 T/F/J/C/G/B/R/L/K/I (代码保留)', h.includes('🔒 MVP 版暂未开放：T 天赋树') && h.includes('· F 派系') && h.includes('· J 成就树') && h.includes('· C 配方') && h.includes('· G 送礼') && h.includes('· B 肉体交易'));
 t('day-bar CSS added', /#day-bar\s*\{/.test(h));
 t('day-bar-fill CSS added', /#day-bar-fill\s*\{/.test(h));
 t('day-dot CSS added', /\.day-dot\s*\{/.test(h));
@@ -295,7 +295,7 @@ t('renderAll updates day-bar-fill width', /day-bar-fill[\s\S]{0,200}width=Math\.
 t('renderAll renders 7 day-dots', /for\(let i=1;i<=7;i\+\+\)/.test(h));
 
 // ── 22b. Phase E round 8 — Phase E teaser + Run History best stats ──
-t('intro screen mentions Phase E teaser (T/F/C/G + 搞怪事件)', /🆕 Phase E/.test(h) && /<b>T<\/b>/.test(h) && /<b>F<\/b>/.test(h) && /<b>C<\/b>/.test(h) && /<b>G<\/b>/.test(h) && /24 个 <b>🦄 搞怪事件<\/b>/.test(h));
+t('intro screen mentions Phase E teaser (24 搞怪事件) + help 标注 MVP 锁', /🆕 Phase E/.test(h) && /24 个 <b>🦄 搞怪事件<\/b>/.test(h) && h.includes('🔒 MVP 版暂未开放：T 天赋树'));
 t('renderRunHistory computes best stats header (best money/rep/meta)', /renderRunHistory[\s\S]{0,500}best=\{money:0,rep:-Infinity,meta:0\}/.test(h) || /renderRunHistory[\s\S]{0,500}best=\{money:0,rep:-Infinity,meta:0,combo:0,escFree:Infinity\}/.test(h));
 t('renderRunHistory shows 🏆 个人最佳 banner', /🏆 个人最佳 \(跨 \$\{runs\.length\} Run\)/.test(h) || /🏆 个人最佳 \(跨 '\+runs\.length\+'\s*Run\)/.test(h));
 t('renderRunHistory best uses border-color:var(--gold)', /bestRow=.*border-color:var\(--gold\)/.test(h));
@@ -316,7 +316,7 @@ t('G._run counters wired (brewsFinished/coffeeSales/escUsed/bodyTradeCount/acade
 t('achTreeProgress function returns pct + cur + next', /function achTreeProgress/.test(h) && /r\.push\(\{br:br\.id,cur,next:/.test(h));
 t('newRunInner resets achTree', /newRunInner[\s\S]{0,400}?G\.achTree=\{/.test(h) || /G\.achTree=\{brew:0,coffee:0,rogue:0,scholar:0\}/.test(h));
 t('achtree-modal HTML present', /id="achtree-modal"[\s\S]{0,200}id="achtree-grid"/.test(h));
-t('help text mentions J 成就树', /<b>J<\/b> 成就树/.test(h));
+t('help text 标注 J 成就树 R29 MVP 封入口', h.includes('🔒 MVP 版暂未开放：T 天赋树') && h.includes('· J 成就树'));
 
 // ── 23b. Round 1: City Living Vibe (Phase A1-A2) — flowing NPCs + boats + trams + bikes ──
 const cityStart = h.indexOf('// CITY LIVING VIBE (Round 1');
@@ -688,7 +688,7 @@ t('Round8: opening-modal element exists in DOM', /id="opening-modal"/.test(h));
 t('Round8: relchain-modal element exists in DOM', /id="relchain-modal"/.test(h));
 t('Round8: plot-banner element exists in DOM', /id="plot-banner"/.test(h));
 t('Round8: CSS rules for .op-box / .op-day / .op-char exist', /\.op-box|\.op-days|\.op-chars|\.op-day|\.op-char/.test(h));
-t('Round8: R key opens relchain modal in keydown', /k==='r'&&!G\.inside&&!G\.mg\)\{[^}]*showRelchain/.test(h));
+t('Round8: R key R29 MVP 封入口 → setMsg 🔒 (代码保留)', h.includes("k==='r'&&!G.inside&&!G.mg){setMsg('🔒 MVP 版暂未开放');return}"));
 t('Round8: opening modal keydown closes on Enter/Escape', /opening-modal[\s\S]*closeOpeningCard/.test(h));
 t('Round8: modalOpen includes opening + relchain', /opening-modal[\s\S]*relchain-modal/.test(h));
 t('Round8: Phase C exports in AB_TEST', /PLOT_PITCH,PLOT_HOOK,CHARACTER_CARDS,DAY_BEATS,FAC_LORE,RELATIONSHIPS_KEY/.test(h));
@@ -775,6 +775,14 @@ t('R27: canvas click 在 G.mg 时经 mgExitHit 路由 ✕ 退出 (先于小地�
 t('R27: drawMG 右上角画 ✕ 按钮 + ESC 退出文案', h.includes('strokeRect(W-24,8,16,16)') && h.includes('ESC 退出'));
 t('R27: brew 3 段药丸 4 态着色 (灰/黄闪/绿✓/红✗) + 窗口亮黄提示', h.includes("Math.floor(Date.now()/300)%2?'#f0d040':'#8a7a18'") && h.includes("_mk=' ✓'") && h.includes("_mk=' ✗'") && h.includes("fillText('按 SPACE!',400,214)"));
 t('R27: brew 进度条 + 锅温/目标温标签 + 锅体温度着色 + sel 原料提示', h.includes("'s/'+(s.order.limit||180)+'s'") && h.includes("'🌡 '+Math.round(s.t)+'°C · 目标 ?°C'") && h.includes("rgba(70,120,230,'+(0.16*(1-_tN))") && h.includes("'1/2/3 选原料 · 🌾'+s.m+' 🌿'+s.h+' 🔬'+s.y"));
+
+// ── 30. funify-v3 R29 MVP 剪枝 — 封边缘系统入口 + 无顾客死态兜底 gate ──
+t('R29: keydown 封面板入口 T/F/J/C/G/B/L/R/K/I → setMsg 🔒 (代码保留)',['t','f','j','c','g','b','l','i','k'].every(k=>h.includes("if(k==='"+k+"'){setMsg('🔒 MVP 版暂未开放');return}"))&&h.includes("if(k==='r'&&!G.inside&&!G.mg){setMsg('🔒 MVP 版暂未开放');return}"));
+t('R29: enterBldg 封 5 场景 market/station/academic/dive/shroom → setStatus 锁 (brew/coffee/surf/bar 保留)',h.includes("if(['market','station','academic','dive','shroom'].includes(b.tp)){setStatus('🔒 该场景 MVP 版暂未开放','','');return}"));
+t('R29: 自动运行 picker 不再选 shroom/academic (下午/晚间池只留核心)',h.includes("const afternoonOpen=BLDGS.filter(b=>['brew','coffee','surf'].includes(b.tp)&&G.ti===2);")&&h.includes("const eveningOpen=BLDGS.filter(b=>b.tp==='bar'&&G.ti>=2&&G.ti<=5);"));
+t('R29: barIn 无顾客兜底 — SPACE→finBar 提前打烊 + 「暂无顾客 · SPACE 打烊」提示',h.includes("if(!cur){if(k===' '){setMsg('🌃 提前打烊');finBar();return}setStatus('🍻 暂无顾客 · SPACE 打烊','','');return}"));
+t('R29: coffeeIn 无顾客兜底 — SPACE→finCoffee + 状态提示',h.includes("if(!s.c){setStatus('🌿 暂无顾客 · SPACE 打烊','','');if(k===' ')finCoffee();return}"));
+t('R29: help 面板 + MG_HINT_KEYS 标注 MVP 锁 (shroom/academic 标 🔒)',h.includes('🔒 MVP 版暂未开放：T 天赋树')&&h.includes("name:'SmartShop（蘑菇培养）· 🔒 MVP 版暂未开放'")&&h.includes("name:'学术答辩（Science Park）· 🔒 MVP 版暂未开放'"));
 
 // summary assertion: tests grew this round
 t('Round8: overall pass count exceeds prior baseline (≥340)', pass >= 340);

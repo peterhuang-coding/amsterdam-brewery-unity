@@ -2664,18 +2664,22 @@ frame.addEventListener('load',async()=>{
     const after=doc.getElementById('replay-modal').classList.contains('hidden');
     return before&&after;
   });
-  check('Round 26: L 键 keydown 关闭状态下打开 replay modal',()=>{
+  check('Round 26: L 键 keydown R29 MVP 封入口 → 🔒 提示且 replay 不开',()=>{
     win.closeReplay();
     // 关所有 modal 避免守卫吞掉 L 键
-    for(const id of ['start-modal','help-modal','mg-hint-modal','tal-modal','fac-modal','craft-modal','settings-modal','replay-modal','body-modal','achtree-modal','ledger-modal','inv-modal']){
+    for(const id of ['start-modal','help-modal','mg-hint-modal','tal-modal','fac-modal','craft-modal','settings-modal','replay-modal','body-modal','achtree-modal','ledger-modal','inv-modal','opening-modal','relchain-modal']){
       const e=doc.getElementById(id);if(e)e.classList.add('hidden');
     }
-    // 确保 G.ended=false 让 keydown 走到 L 路由
-    t.state.ended=false;
+    // 清 auto-run 残留的 mg/inside + 确保 G.ended=false 让 keydown 走到 L 路由
+    const had={mg:t.state.mg,inside:t.state.inside,ended:t.state.ended};
+    t.state.mg=null;t.state.inside=null;t.state.ended=false;
     const ev=new KeyboardEvent('keydown',{key:'L',bubbles:true});
     doc.dispatchEvent(ev);
     const m=doc.getElementById('replay-modal');
-    return m&&!m.classList.contains('hidden');
+    const msg=doc.getElementById('msg');
+    const ok=m&&m.classList.contains('hidden')&&!!msg&&msg.textContent.includes('🔒 MVP 版暂未开放');
+    t.state.mg=had.mg;t.state.inside=had.inside;t.state.ended=had.ended;
+    return ok;
   });
   check('Round 26: renderReplay(0.5) 接受 scrub 0..1 不报错',()=>{
     win.showReplay();
@@ -2706,7 +2710,11 @@ frame.addEventListener('load',async()=>{
     return before>0&&afterEmpty&&lsGone;
   });
   check('Round 26: modalOpen() 在 replay-modal 可见时返 true',()=>{win.showReplay();const r=win.modalOpen();win.closeReplay();return r===true});
-  check('Round 26: help-modal 文案含 L 键提示',()=>{const h=doc.getElementById('help-modal');return h&&h.textContent.includes('L')&&h.textContent.includes('回放')});
+  check('Round 26: help-modal 文案标注 MVP 封入口键位',()=>{const h=doc.getElementById('help-modal');return h&&h.textContent.includes('🔒 MVP 版暂未开放')&&h.textContent.includes('L 回放')&&h.textContent.includes('V 切换存档槽')});
+  // ═══ funify-v3 R29 MVP 剪枝 — 封边缘系统入口 + 无顾客死态兜底 ═══
+  check('R29: keydown T 封入口 → setMsg 🔒 提示 (源码)',()=>/k==='t'\)\{setMsg\('🔒 MVP 版暂未开放'\);return\}/.test(win.eval("document.documentElement.outerHTML")));
+  check('R29: enterBldg 封 market/station/academic/dive/shroom (源码)',()=>/\['market','station','academic','dive','shroom'\]\.includes\(b\.tp\)\)\{setStatus\('🔒 该场景 MVP 版暂未开放'/.test(win.eval("document.documentElement.outerHTML")));
+  check('R29: barIn 无顾客 SPACE→finBar 提前打烊 (源码)',()=>/if\(!cur\)\{if\(k===' '\)\{setMsg\('🌃 提前打烊'\);finBar\(\);return\}setStatus\('🍻 暂无顾客 · SPACE 打烊'/.test(win.eval("document.documentElement.outerHTML")));
 
   // ═══ funify-v3 Round 28 — logAction('end') on endGame + 跨 Run 知识数据重置 + settings UI (BACKLOG #10 #6 closure) ═══
   check('Round 28: AB_LEDGER_FIELDS 通过 AB_TEST 暴露 + 8 项全在',()=>{

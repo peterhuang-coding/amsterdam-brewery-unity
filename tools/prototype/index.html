@@ -544,7 +544,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div id="help-modal" class="hidden">
 <div class="intro-box">
 <h1>操作帮助</h1>
-<div class="help-grid"><div><b>W/A/S/D</b> 移动小人（方向键也可）</div><div><b>E</b> 进入附近建筑</div><div><b>Space</b> 推进时间 / 小游戏确认</div><div><b>Q/W</b> 变体中调价或调节参数</div><div><b>X</b> 拒绝咖啡卧底或酒吧顾客</div><div><b>H</b> 打开本帮助，<b>Esc</b> 退出当前界面</div><div><b>T</b> 天赋树 · <b>F</b> 派系 · <b>J</b> 成就树 · <b>C</b> 配方 · <b>G</b> 送礼 · <b>B</b> 肉体交易 · <b>K</b> 知识本 · <b>I</b> 收藏 · <b>V</b> 切换存档槽 · <b>L</b> 📼 回放</div><div><b>1-9</b> 选关 · <b>▶▶</b> 切换速度 1×/2×/4× · <b>M</b> 小地图 · 🔊 按钮静音 · 滚轮缩放 / 拖拽平移</div></div>
+<div class="help-grid"><div><b>W/A/S/D</b> 移动小人（方向键也可）</div><div><b>E</b> 进入附近建筑</div><div><b>Space</b> 推进时间 / 小游戏确认</div><div><b>Q/W</b> 变体中调价或调节参数</div><div><b>X</b> 拒绝咖啡卧底或酒吧顾客</div><div><b>H</b> 打开本帮助，<b>Esc</b> 退出当前界面</div><div><b>V</b> 切换存档槽 · 🔒 MVP 版暂未开放：T 天赋树 · F 派系 · J 成就树 · C 配方 · G 送礼 · B 肉体交易 · R 关系链 · L 回放 · K 知识本 · I 收藏</div><div><b>1-9</b> 选关 · <b>▶▶</b> 切换速度 1×/2×/4× · <b>M</b> 小地图 · 🔊 按钮静音 · 滚轮缩放 / 拖拽平移</div></div>
 <button class="btn help-close" onclick="closeHelp()">关闭</button>
 </div>
 </div>
@@ -3469,11 +3469,11 @@ function modalOpen(){const s=document.getElementById('start-modal'),h=document.g
 // funify-v3 Round 14 — first-time mini-game key overlay (BACKLOG #3 close)
 const MG_HINT_KEYS={
   brew:{ic:'🍺',name:'酿酒厂（啤酒订单）',keys:[['<kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd>','原料:麦芽/啤酒花/酵母各选 0/1/2'],['<kbd>SPACE</kbd>','开始酿造 (订单 18s 内完成)'],['<kbd>⬆</kbd>/<kbd>⬇</kbd>','控温 ±3°C（IPA=55°·Stout=68°·Lager=48°）'],['<kbd>ESC</kbd>','离开不收尾']],tip:'配方顺序 + 目标温度是订单的两大隐藏轴；温度误差 ≤±5°C 触发完美品。'},
-  coffee:{ic:'🌿',name:'Noord 咖啡店',keys:[['<kbd>1-4</kbd>','选品 (espresso/drip/cold_brew/special, rep 解锁)'],['<kbd>Q</kbd>/<kbd>W</kbd>','自定义调价 ±1 (5-50)'],['<kbd>P</kbd>','雇帮派 $50 · 卧底 -80% · 衰减 ×2'],['<kbd>E</kbd>','🌃 夜间地下交易 (仅 evening · rep≥20)'],['<kbd>SPACE</kbd>','成交 · 匹配产品 +25% · 高 tier +15%'],['<kbd>X</kbd>','拒绝卧底 (-8°) / 离店 (-2°)'],['<kbd>ESC</kbd>','结束打烊']],tip:'8 客群随时间段刷新 · 热度随价格+卧底积累 · 雇佣帮派/开夜市都是风险收益权衡 · 5 连正确服务触发 streak +20% 。'},
-  shroom:{ic:'🍄',name:'SmartShop（蘑菇培养）',keys:[['<kbd>⬆</kbd>/<kbd>⬇</kbd>','湿度 ±5（目标 60%）'],['<kbd>⬅</kbd>/<kbd>➡</kbd>','温度 ±1（目标 22°C）'],['<kbd>Q</kbd>/<kbd>W</kbd>','光照 ±1（目标 8）'],['<kbd>SPACE</kbd>','启动培养'],['<kbd>ESC</kbd>','取消并离开']],tip:'偏离参数会拉高污染风险；参数过偏导致报废本批收入清零。'},
+  coffee:{ic:'🌿',name:'Noord 咖啡店',keys:[['<kbd>1-4</kbd>','选品 (espresso/drip/cold_brew/special, rep 解锁)'],['<kbd>Q</kbd>/<kbd>W</kbd>','自定义调价 ±1 (5-50)'],['<kbd>P</kbd>','雇帮派 $50 · 卧底 -80% · 衰减 ×2'],['<kbd>E</kbd>','🌃 夜间地下交易 (仅 evening · rep≥20)'],['<kbd>SPACE</kbd>','成交 · 匹配产品 +25% · 高 tier +15% · 无顾客=打烊'],['<kbd>X</kbd>','拒绝卧底 (-8°) / 离店 (-2°)'],['<kbd>ESC</kbd>','结束打烊']],tip:'8 客群随时间段刷新 · 热度随价格+卧底积累 · 雇佣帮派/开夜市都是风险收益权衡 · 5 连正确服务触发 streak +20% 。'},
+  shroom:{ic:'🍄',name:'SmartShop（蘑菇培养）· 🔒 MVP 版暂未开放',keys:[['<kbd>⬆</kbd>/<kbd>⬇</kbd>','湿度 ±5（目标 60%）'],['<kbd>⬅</kbd>/<kbd>➡</kbd>','温度 ±1（目标 22°C）'],['<kbd>Q</kbd>/<kbd>W</kbd>','光照 ±1（目标 8）'],['<kbd>SPACE</kbd>','启动培养'],['<kbd>ESC</kbd>','取消并离开']],tip:'偏离参数会拉高污染风险；参数过偏导致报废本批收入清零。'},
   surf:{ic:'🌊',name:'信息高速公路 · 冲浪科研（Noord 海滩）',keys:[['<kbd>SPACE</kbd>','压浪加速 · 连按两下=主动下潜捞沉帖'],['<kbd>SPACE 长按</kbd>','冲进深网(浪管)·平衡条'],['<kbd>P</kbd>','落海逃生时上浮'],['<kbd>ESC</kbd>','中断并带回分数']],tip:'科研员在信息高速公路上冲浪——帖子/词条卡是碎片,断浪是 404 风暴,黑浪是暗网。落水先进信息深海,捞沉帖或上浮逃生。'},
-  academic:{ic:'📚',name:'学术答辩（Science Park）',keys:[['<kbd>1</kbd>','方法论Ⅰ'],['<kbd>2</kbd>','方法论Ⅱ'],['<kbd>3</kbd>','方法论Ⅲ'],['<kbd>SPACE</kbd>','提交方法论'],['<kbd>ESC</kbd>','中断并扣分']],tip:'方法论与挑战 (Venue) 匹配给部分学分；Venue 越难基础回报越高。'},
-  bar:{ic:'🍸',name:'Tweede Kans 酒吧',keys:[['<kbd>1</kbd>','推荐常客的酒'],['<kbd>2</kbd>','高价推荐'],['<kbd>3</kbd>','低价推荐'],['<kbd>SPACE</kbd>','递酒给当前顾客'],['<kbd>X</kbd>','拒当前顾客'],['<kbd>ESC</kbd>','打烊']],tip:'VIP 日（Vrijdag）每位顾客 ×2 小费；patience 归零顾客走人并损失连续。'}
+  academic:{ic:'📚',name:'学术答辩（Science Park）· 🔒 MVP 版暂未开放',keys:[['<kbd>1</kbd>','方法论Ⅰ'],['<kbd>2</kbd>','方法论Ⅱ'],['<kbd>3</kbd>','方法论Ⅲ'],['<kbd>SPACE</kbd>','提交方法论'],['<kbd>ESC</kbd>','中断并扣分']],tip:'方法论与挑战 (Venue) 匹配给部分学分；Venue 越难基础回报越高。'},
+  bar:{ic:'🍸',name:'Tweede Kans 酒吧',keys:[['<kbd>1</kbd>','推荐常客的酒'],['<kbd>2</kbd>','高价推荐'],['<kbd>3</kbd>','低价推荐'],['<kbd>SPACE</kbd>','递酒给当前顾客 · 无顾客时=提前打烊'],['<kbd>X</kbd>','拒当前顾客'],['<kbd>ESC</kbd>','打烊']],tip:'VIP 日（Vrijdag）每位顾客 ×2 小费；patience 归零顾客走人并损失连续。'}
 };
 function loadMgHints(){try{const s=localStorage.getItem('ab_mg_hints_seen_v1');return new Set(s?JSON.parse(s):[])}catch(e){return new Set()}}
 function saveMgHints(set){try{localStorage.setItem('ab_mg_hints_seen_v1',JSON.stringify(Array.from(set)))}catch(e){console.warn('ab_mg_hints_seen_v1 save failed',e)}}
@@ -3841,6 +3841,8 @@ function enterBldg(){
   const b=curBldg();if(!b||G.inside||G.mg)return;
   const _pf=document.getElementById('phase-flash');if(_pf)_pf.classList.remove('on'); // 进建筑即收起换天过场
   if(b.tp==='market'&&hasMod('canal_block')){setStatus('🚢 市集关闭','运河堵塞导致今日无法营业','明日再来');return}
+  // funify-v3 R29 MVP 剪枝 — 封非核心场景入口(代码保留),4 核心 = brew/coffee/surf/bar
+  if(['market','station','academic','dive','shroom'].includes(b.tp)){setStatus('🔒 该场景 MVP 版暂未开放','','');return}
   if(!bldgPhaseOk(b)){setStatus('⏰ '+b.n+' 已闭店',bldgPhaseLabel(b.tp)+' 才营业','按时段再来');return}
   G.inside=b;G.loc=b.d;G.p.tx=G.p.x;G.p.ty=G.p.y;
   if(!G.visited.includes(b.id))G.visited.push(b.id);
@@ -4074,6 +4076,8 @@ function updateCoffee(){
   if(s.nightTradeActive)s.ht=Math.min(100,s.ht+dt*0.8);
 }
 function coffeeIn(k){const s=MG.coffee;if(!s||s.raid)return;s.lastT=Date.now();
+  // funify-v3 R29 MVP — 无顾客死态兜底:SPACE 提前打烊,其他键状态提示
+  if(!s.c){setStatus('🌿 暂无顾客 · SPACE 打烊','','');if(k===' ')finCoffee();return}
   // 1-4 选品 — 索引到 COFFEE_PROD_LIST
   if(k==='1'&&s.availableProducts&&s.availableProducts[0]){const k0=s.availableProducts[0];s.productName=COFFEE_PRODUCTS[k0].n;s.productMult=COFFEE_PRODUCTS[k0].mult;s.st=k0;s.pr=COFFEE_PRODUCTS[k0].cost+10;setMsg(`选品 · ${COFFEE_PRODUCTS[k0].n} $${s.pr}/份`)}
   if(k==='2'&&s.availableProducts&&s.availableProducts[1]){const k1=s.availableProducts[1];s.productName=COFFEE_PRODUCTS[k1].n;s.productMult=COFFEE_PRODUCTS[k1].mult;s.st=k1;s.pr=COFFEE_PRODUCTS[k1].cost+12;setMsg(`选品 · ${COFFEE_PRODUCTS[k1].n} $${s.pr}/份`)}
@@ -5211,7 +5215,7 @@ function sBarC(){
   s.offer=s.cs[s.cs.length-1];
   renderAll();
 }
-function barIn(k){const s=MG.bar;if(!s)return;const cur=s.cs[s.cs.length-1];if(!cur)return;
+function barIn(k){const s=MG.bar;if(!s)return;const cur=s.cs[s.cs.length-1];if(!cur){if(k===' '){setMsg('🌃 提前打烊');finBar();return}setStatus('🍻 暂无顾客 · SPACE 打烊','','');return}
   if(k==='q'){cur.offer=Math.max(cur.floor,cur.offer-1);AUDIO.play('bar_clink')}
   if(k==='w'){cur.offer=Math.min(cur.ceiling,cur.offer+1);AUDIO.play('bar_clink')}
   // Phase B1 (Round 3): hold-and-release pour meter — only meaningful for cocktails (needsMixer)
@@ -7202,9 +7206,8 @@ function autoStep(){
   let target;
   // Phase A C1: auto-picker respects time gates — phase-closed buildings are skipped
   const morningOpen=BLDGS.filter(b=>['brew','coffee','surf'].includes(b.tp)&&G.ti<=2);
-  const afternoonOpen=BLDGS.filter(b=>['brew','coffee','surf'].includes(b.tp)&&G.ti===2).concat(
-                       BLDGS.filter(b=>b.tp==='academic'&&(G.ti===2||G.ti===3)));
-  const eveningOpen=BLDGS.filter(b=>(b.tp==='bar'||b.tp==='shroom')&&G.ti>=2&&G.ti<=5);
+  const afternoonOpen=BLDGS.filter(b=>['brew','coffee','surf'].includes(b.tp)&&G.ti===2);
+  const eveningOpen=BLDGS.filter(b=>b.tp==='bar'&&G.ti>=2&&G.ti<=5);
   const _pool=[...morningOpen,...afternoonOpen,...eveningOpen];
   if(G.ti>=3&&G.ti<=5){target=BLDGS.find(b=>b.id==='bar')||_pool[Math.floor(seeded(190+G.ti)*_pool.length)]}
   else if(G.ti<=2){
@@ -7212,7 +7215,7 @@ function autoStep(){
     if(npcVisit)target=BLDGS.find(b=>b.tp==='npc'&&b.npc===ESCAPE_TECHS[G.escapeLevel].teacher);
     if(!target){
       // Prefer morning-open first; fall back to any time-ok building
-      const ch=_pool.length?_pool:BLDGS.filter(b=>['brew','coffee','shroom','surf','academic'].includes(b.tp));
+      const ch=_pool.length?_pool:BLDGS.filter(b=>['brew','coffee','surf'].includes(b.tp));
       target=ch[Math.floor(seeded(190+G.ti)*ch.length)];
     }
   }
@@ -7715,19 +7718,19 @@ document.addEventListener('keydown',e=>{
   if(k==='e')enterBldg();if(k===' ')advanceTimeAuto();if(k==='n')newRun();if(k==='h')showHelp();
   // funify-v3 Round 34 — V 键 mid-run cycle slot (BACKLOG #10 #2 closure)
   if(k==='v'){cycleSlot();const n=getActiveSlot();setMsg(`📂 切到槽 ${n} · 当前进度已存`);return}
-  // funify-v3 Round 26 — L 键 📼 行动回放(非 mini-game 时)
-  if(k==='l'){toggleReplay();return}
-  if(k==='t'){toggleTalents();return}
-  if(k==='f'){toggleFactions();return}
-  if(k==='j'){toggleAchtree();return}
-  if(k==='k'){toggleLedger();return}
-  if(k==='i'){toggleInv();return}
-  // funify-v3 Round 8 — Phase C 跨 Run 关系链 (R 键 — 与 Phase E replay L 键并列)
-  if(k==='r'&&!G.inside&&!G.mg){const rc=document.getElementById('relchain-modal');if(rc&&rc.classList.contains('hidden'))showRelchain();else closeRelchain();return}
-  // Phase E6 — Body Trade (B 键,心情换 meta)
-  if(k==='b'){openBodyTrade();return}
-  if(k==='c'){showCraft('craft');return}
-  if(k==='g'){showCraft('gift');return}
+  // funify-v3 R29 MVP 剪枝 — 边缘面板入口只封不删(代码保留):T/F/J/C/G/B/L/R/K/I
+  if(k==='l'){setMsg('🔒 MVP 版暂未开放');return}
+  if(k==='t'){setMsg('🔒 MVP 版暂未开放');return}
+  if(k==='f'){setMsg('🔒 MVP 版暂未开放');return}
+  if(k==='j'){setMsg('🔒 MVP 版暂未开放');return}
+  if(k==='k'){setMsg('🔒 MVP 版暂未开放');return}
+  if(k==='i'){setMsg('🔒 MVP 版暂未开放');return}
+  // funify-v3 Round 8 — Phase C 跨 Run 关系链 (R 键 — R29 MVP 封入口)
+  if(k==='r'&&!G.inside&&!G.mg){setMsg('🔒 MVP 版暂未开放');return}
+  // Phase E6 — Body Trade (B 键 — R29 MVP 封入口)
+  if(k==='b'){setMsg('🔒 MVP 版暂未开放');return}
+  if(k==='c'){setMsg('🔒 MVP 版暂未开放');return}
+  if(k==='g'){setMsg('🔒 MVP 版暂未开放');return}
   if(k==='1'){G.loc='de_pijp';G._wp=null;G.p.tx=100;G.p.ty=390}if(k==='2'){G.loc='science_park';G._wp=null;G.p.tx=640;G.p.ty=330}
   if(k==='3'){G.loc='tweede_kans';G._wp=null;G.p.tx=380;G.p.ty=410}if(k==='4'){G.loc='bloemenmarkt';G._wp=null;G.p.tx=310;G.p.ty=90}
   if(k==='5'){G.loc='noord';G._wp=null;G.p.tx=90;G.p.ty=55}

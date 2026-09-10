@@ -16,6 +16,95 @@
     line(points,color,width=1) { const c=this.ctx;c.strokeStyle=color;c.lineWidth=width;c.beginPath();points.forEach((p,i)=>i?c.lineTo(...p):c.moveTo(...p));c.stroke(); }
     text(value,x,y,size,color,font='Georgia',align='center') { const c=this.ctx;c.font=`${size}px ${font}`;c.fillStyle=color;c.textAlign=align;c.fillText(value,x,y); }
     bottle(x,y,color,scale=1) { const c=this.ctx;c.save();c.translate(x,y);c.scale(scale,scale);this.rect(-5,-43,10,13,color);this.rect(-9,-31,18,31,color);this.rect(-4,-44,8,3,'#cfa762');this.rect(-7,-20,14,13,'#ddcf98');this.rect(-4,-36,2,9,'#ffffff25');this.rect(-6,-27,2,21,'#ffffff15');this.text('TK',0,-10,7,'#3e4933');c.restore(); }
+    cityWorldPoint(x,y) {
+      const view=this.cityTransform||{scale:1,tx:0,ty:0};
+      return {x:(x-view.tx)/view.scale,y:(y-view.ty)/view.scale};
+    }
+    drawCity(view,time) {
+      const C=window.City,c=this.ctx,scale=Math.min(1100/C.WIDTH,640/C.HEIGHT)*(view.zoom||1);
+      const tx=scale*C.WIDTH<=1100?(1100-scale*C.WIDTH)/2:-Math.max(0,Math.min(C.WIDTH-1100/scale,view.position.x-550/scale))*scale;
+      const ty=scale*C.HEIGHT<=640?(640-scale*C.HEIGHT)/2:-Math.max(0,Math.min(C.HEIGHT-640/scale,view.position.y-320/scale))*scale;
+      this.cityTransform={scale,tx,ty};
+      c.clearRect(0,0,1100,640);this.rect(0,0,1100,640,'#204d58');
+      c.save();c.translate(tx,ty);c.scale(scale,scale);
+      this.rect(0,0,C.WIDTH,C.HEIGHT,'#2c6470');
+      for(let i=0;i<80;i++)this.rect((i*139+time*9)%C.WIDTH,(i*83)%C.HEIGHT,20+i%4*13,2,'#b9d6bd20');
+      const land=C.LAND;this.rect(land.x-7,land.y-7,land.w+14,land.h+14,'#9b9f7c');this.rect(land.x,land.y,land.w,land.h,'#b8ad89');
+      // Street surfaces are clipped at canals. Crossings are drawn separately.
+      c.save();c.beginPath();c.rect(land.x,land.y,land.w,land.h);c.clip();
+      for(const x of [190,390,590,890,1190,1490,1650]){this.rect(x-19,40,38,1040,'#d0c5a2');this.line([[x,40],[x,1080]],'#a9a580',1);}
+      for(const y of [270,520,690,890,1040]){this.rect(70,y-18,1660,36,'#d0c5a2');this.line([[70,y],[1730,y]],'#a9a580',1);}
+      // Small public greens give the quays room to breathe.
+      for(const park of [{x:92,y:64,w:260,h:158},{x:1160,y:530,w:220,h:155},{x:150,y:860,w:215,h:140}]){
+        this.rect(park.x,park.y,park.w,park.h,'#84966b');
+        this.line([[park.x+15,park.y+park.h/2],[park.x+park.w-15,park.y+park.h/2]],'#c4bd91',13);
+        for(let i=0;i<8;i++){const x=park.x+25+(i%4)*(park.w-50)/3,y=park.y+25+Math.floor(i/4)*(park.h-50);this.ellipse(x+4,y+6,15,18,'#425a4845');this.ellipse(x,y,14,19,i%2?'#527655':'#6c865c');this.ellipse(x-4,y-5,8,11,'#94a776');}
+      }
+      c.restore();
+      for(const water of C.WATERS){
+        this.rect(water.x-5,water.y-5,water.w+10,water.h+10,'#ded0a4');this.rect(water.x,water.y,water.w,water.h,'#3c7680');
+        for(let i=0;i<Math.floor(water.w*water.h/1300);i++){const x=water.x+((i*41+time*5)%Math.max(1,water.w-16)),y=water.y+(i*59)%water.h;this.rect(x,y,13,2,'#d2ddbe35');}
+      }
+      this.text('H E T   I J',460,393,26,'#c2d6be80','Georgia');
+      this.text('NOORD',1260,67,27,'#405b4b','Georgia');this.text('JORDAAN',285,490,24,'#52624a','Georgia');
+      this.text('CENTRUM',770,503,21,'#687056','Georgia');this.text('DE PIJP',865,862,25,'#52624a','Georgia');this.text('SCIENCE PARK',1445,865,20,'#52624a','Georgia');
+      for(const crossing of C.CROSSINGS){
+        if(crossing.kind==='ferry'){
+          c.setLineDash([7,9]);this.line([[crossing.x+crossing.w/2,crossing.y],[crossing.x+crossing.w/2,crossing.y+crossing.h]],'#e8d6a3',3);c.setLineDash([]);
+          for(const y of [crossing.y,crossing.y+crossing.h-13]){this.rect(crossing.x-15,y,crossing.w+30,13,'#736c4b');this.rect(crossing.x-15,y+2,crossing.w+30,2,'#d4bd87');}
+          this.text('免费渡轮',crossing.x+crossing.w+10,crossing.y+100,17,'#e4d8ac','sans-serif','left');
+        }else{
+          this.rect(crossing.x,crossing.y,crossing.w,crossing.h,'#b1a279');
+          const horizontal=crossing.w>crossing.h;
+          if(horizontal){this.rect(crossing.x,crossing.y,crossing.w,4,'#5a6752');this.rect(crossing.x,crossing.y+crossing.h-4,crossing.w,4,'#5a6752');}
+          else{this.rect(crossing.x,crossing.y,4,crossing.h,'#5a6752');this.rect(crossing.x+crossing.w-4,crossing.y,4,crossing.h,'#5a6752');}
+        }
+      }
+      const colors=['#997457','#718a76','#a18d6b','#996c50','#899376'];
+      C.BUILDINGS.forEach((b,i)=>{
+        this.rect(b.x+7,b.y+9,b.w,b.h,'#40514435');
+        const units=b.id==='lab'?1:Math.max(1,Math.floor(b.w/42));
+        for(let k=0;k<units;k++){
+          const w=b.w/units,x=b.x+k*w,color=colors[(i+k)%colors.length];
+          this.rect(x,b.y,w-2,b.h,color);this.rect(x,b.y+b.h-23,w-2,23,'#cdb38b');
+          this.rect(x+3,b.y+4,w-8,b.h-29,b.id==='lab'?'#a9b5a1':'#625d4e');
+          this.line([[x+w/2,b.y+7],[x+w/2,b.y+b.h-26]],'#a39b7c',2);
+          this.rect(x+w-13,b.y+9,6,10,'#aa9271');
+          // Narrow stepped gables and two front windows make recognizable canal houses.
+          this.rect(x+w/2-9,b.y+b.h-29,18,7,color);this.rect(x+w/2-5,b.y+b.h-35,10,7,color);
+          this.rect(x+7,b.y+b.h-18,8,10,'#45665c');this.rect(x+w-18,b.y+b.h-18,8,10,'#45665c');
+          this.rect(x+w/2-4,b.y+b.h-13,8,13,'#344f43');
+        }
+        if(b.id==='lab'){for(let wx=b.x+10;wx<b.x+b.w-10;wx+=24)this.rect(wx,b.y+9,15,b.h-38,'#cbd8c0');this.text('UvA',b.x+b.w/2,b.y+b.h-7,12,'#344f43','monospace');}
+        if(b.id==='pub'){this.rect(b.x+22,b.y+b.h-30,56,14,'#2b5949');this.text('TWEEDE KANS',b.x+50,b.y+b.h-19,7,'#ead29c','Georgia');}
+      });
+      // Working boats and cranes distinguish the north bank from the café streets.
+      this.line([[1310,285],[1310,209],[1370,209]],'#b99756',7);this.line([[1310,234],[1360,209]],'#b99756',3);this.line([[1368,211],[1368,250]],'#405d51',2);
+      for(const mooring of [{x:1090,y:374},{x:480,y:735},{x:1080,y:568}]){this.ellipse(mooring.x,mooring.y,12,29,'#244e53');this.ellipse(mooring.x,mooring.y-2,9,24,'#af9060');this.rect(mooring.x-6,mooring.y-8,12,16,'#d5c49b');}
+      for(let i=0;i<9;i++){const x=155+(i*157)%1500,y=260+(i%3)*215;if(C.walkable(x,y)){this.ellipse(x,y+4,5,4,'#43594444');this.rect(x-3,y-3,6,10,['#728465','#977550','#596f73'][i%3]);this.ellipse(x,y-7,4,4,'#c4a575');}}
+      // Market awnings and café tables identify working destinations at a glance.
+      for(let i=0;i<4;i++){const x=840+i*48,y=1070;this.rect(x,y,40,16,'#615d42');this.rect(x-3,y-20,46,22,i%2?'#bd8b59':'#668568');for(let k=0;k<4;k++)this.rect(x-3+k*12,y-20,6,22,'#e3d0a3');}
+      for(const x of [685,775]){this.ellipse(x,956,12,8,'#755f3f');this.ellipse(x,956,10,6,'#d6bd84');for(const dx of [-18,18])this.rect(x+dx-3,953,6,8,'#646a48');}
+      if(view.path.length){c.setLineDash([10,9]);c.lineDashOffset=this.reduced.matches?0:-time*12;this.line([[view.position.x,view.position.y],...view.path.map(p=>[p.x,p.y])],'#f5d48e',5);c.setLineDash([]);c.lineDashOffset=0;}
+      for(const place of Object.values(C.PLACES)){
+        const active=view.target===place.id||view.mode==='place'&&view.place===place.id,known=view.position.visited.includes(place.id);
+        this.ellipse(place.x,place.y,active?27:20,active?27:20,active?'#f0cd82':'#214a48');
+        this.ellipse(place.x,place.y,active?23:16,active?23:16,known?'#305b48':'#56694f');
+        this.text(place.icon,place.x,place.y+7,21,'#efdbac','sans-serif');
+        const labelWidth=Math.max(120,place.name.length*15+25),labelY=place.id==='market'?place.y-48:place.y+34;
+        this.rect(place.x-labelWidth/2,labelY-18,labelWidth,29,active?'#edd5a0':'#ece0bfec');
+        this.text(place.name,place.x,labelY+2,16,active?'#244334':'#3e5647','sans-serif');
+      }
+      const p=view.position,isFerry=C.onFerry(p.x,p.y);
+      this.ellipse(p.x,p.y+9,isFerry?25:15,isFerry?12:7,'#1c434060');
+      if(isFerry){this.ellipse(p.x,p.y+6,21,32,'#b9945a');this.rect(p.x-12,p.y-9,24,26,'#e4cd9b');}
+      this.ellipse(p.x,p.y,10,14,'#1d4140');this.ellipse(p.x,p.y-15,9,9,'#d4aa73');this.rect(p.x-9,p.y-22,18,6,'#ce8e4c');
+      this.line([[p.x-4,p.y+11],[p.x-5,p.y+19],[p.x-8,p.y+19]],'#253d37',4);this.line([[p.x+4,p.y+11],[p.x+5,p.y+19],[p.x+8,p.y+19]],'#253d37',4);
+      this.text('你',p.x,p.y-35,16,'#fff1c8','sans-serif');
+      c.restore();
+      this.text('N',1068,43,13,'#e6d5a9','monospace');this.line([[1068,52],[1068,78]],'#e6d5a9',2);this.line([[1062,58],[1068,50],[1074,58]],'#e6d5a9',2);
+      this.text('AMSTERDAM / 游戏街区示意',1072,621,10,'#d4d6b4','monospace','right');
+    }
     drawCanal(state,time) {
       const c=this.ctx,f=state.forage;
       c.clearRect(0,0,1100,640);
@@ -56,9 +145,10 @@
       this.rect(358,45,384,77,'#163e43e8');this.text('NOORD / 北岸运河',550,74,21,'#e2d1a6','Georgia');this.text('城市更新中，贵重物品请自行打捞。',550,99,14,'#b7cbb0','sans-serif');
       this.text('有用收获 '+f.haul+' / 3',550,607,18,'#f0d497','sans-serif');
     }
-    draw(state, timestamp, selectedId) {
+    draw(state, timestamp, selectedId, cityView) {
       const c=this.ctx;
       const time=this.reduced.matches?0:timestamp/1000;
+      if(state.phase==='prep'&&cityView&&(cityView.mode==='map'||cityView.place!=='pub')){this.drawCity(cityView,time);return;}
       if(state.phase==='forage'){this.drawCanal(state,time);return;}
       const night=['night','summary','ending'].includes(state.phase);
       c.clearRect(0,0,1100,640);

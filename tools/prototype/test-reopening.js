@@ -701,4 +701,58 @@ test('sparse arrays and hidden array properties cannot enter a restored game', (
   assert.equal(R.restore({ ...state, log: decoratedLog }), null);
 });
 
+test('market crate trades one action and €8 for exactly two ales and one stout once a day', () => {
+  const initial = prep();
+  const state = doAct(initial, { type: 'prepare', kind: 'market' });
+  assert.equal(state.cash, 37);
+  assert.equal(state.actions, 1);
+  assert.equal(R.stock(state, 'blond'), 8);
+  assert.equal(R.stock(state, 'stout'), 3);
+  assert.ok(state.batches.slice(-2).every(b => b.quality === 1 && !b.aged));
+  reject(state, { type: 'prepare', kind: 'market' });
+  reject({ ...initial, cash: 7 }, { type: 'prepare', kind: 'market' });
+});
+
+test('lab supplies two stored hops for €6 once a day without bypassing preparation', () => {
+  const initial = prep();
+  let state = doAct(initial, { type: 'prepare', kind: 'lab' });
+  assert.equal(state.cash, 39);
+  assert.equal(state.hops, 2);
+  assert.equal(state.actions, 1);
+  reject(state, { type: 'prepare', kind: 'lab' });
+  reject({ ...initial, cash: 5 }, { type: 'prepare', kind: 'lab' });
+  state = brew(state, 'stout', [0, 0, 0]);
+  assert.equal(state.hops, 1);
+  assert.equal(state.batches.at(-1).quality, 2);
+  reject(state, { type: 'prepare', kind: 'market' });
+});
+
+test('three days of lab and salvage can retain fifteen hops and remain restorable', () => {
+  let state = prep();
+  for (let day = 1; day <= 3; day++) {
+    state = doAct(state, { type: 'prepare', kind: 'lab' });
+    state = doAct(state, { type: 'prepare', kind: 'surf' });
+    const hops = state.forage.items.filter(item => item.kind === 'hops').slice(0, 3);
+    for (const item of hops) state = catchItem(state, item);
+    state = playNight(state);
+    if (day < 3) state = doAct(state, { type: 'next' });
+  }
+  assert.equal(state.hops, 15);
+  assert.ok(R.restore(state));
+});
+
+test('three days of market plus sealed bottles fit valid batch bounds', () => {
+  let state = prep();
+  for (let day = 1; day <= 3; day++) {
+    state = doAct(state, { type: 'prepare', kind: 'market' });
+    state = doAct(state, { type: 'prepare', kind: 'surf' });
+    const bottles = state.forage.items.filter(item => item.kind === 'bottle').slice(0, 3);
+    for (const item of bottles) state = catchItem(state, item);
+    state = playNight(state);
+    if (day < 3) state = doAct(state, { type: 'next' });
+  }
+  assert.equal(state.batches.length, 17);
+  assert.ok(R.restore(state));
+});
+
 console.log('\n' + tests + ' reopening behavioral tests passed.');

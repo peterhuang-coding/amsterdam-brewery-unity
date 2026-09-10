@@ -213,7 +213,7 @@
       case 'prepare': {
         if (state.phase !== 'prep' || state.actions < 1) return fail('今天的行动已用完，可以开门迎客了。');
         const kind = action.kind;
-        if (!['brew', 'coffee', 'visit', 'surf'].includes(kind)) return fail('没有这种白天行动。');
+        if (!['brew', 'coffee', 'visit', 'surf', 'market', 'lab'].includes(kind)) return fail('没有这种白天行动。');
         if (kind !== 'brew' && state.prepared.includes(kind)) return fail('今天已经去过这里了。');
         if (kind === 'brew') {
           if (!owns(BEERS, action.beer)) return fail('先选一种要酿的酒。');
@@ -223,7 +223,15 @@
           state.phase = 'brew';
           say(state, '开酿' + BEERS[action.beer].short + '。把握三次火候，完成一批六杯。');
         } else {
+          const outingCost = kind === 'market' ? 8 : kind === 'lab' ? 6 : 0;
+          if (state.cash < outingCost) return fail('这趟需要 €' + outingCost + '。Bram 的咖啡馆还在招临时工。');
+          state.cash -= outingCost;
           state.prepared.push(kind);
+          if (kind === 'market') {
+            for (const beer of ['blond', 'stout']) state.batches.push({ id: 'd' + state.day + '-market-' + beer, beer, cups: beer === 'blond' ? 2 : 1, quality: 1, madeDay: state.day, aged: false });
+            say(state, '€8 带回收摊酒箱：2 杯艾尔、1 杯黑啤。摊主说没有滞销，只有尚未被发现的限量款。');
+          }
+          if (kind === 'lab') { state.hops += 2; say(state, 'Chen 收下 €6 材料费，给你两份试验酒花。论文还没发表，香气已经通过鼻审。'); }
           if (kind === 'coffee') { state.cash += 18; state.friends.bram++; say(state, '帮 Bram 忙过午市：工资 €18，头衔免费。他今晚愿意多等一会儿。'); }
           if (kind === 'visit') { state.promises.lotte = true; say(state, '你答应给 Lotte 留一杯黑啤。她会在今晚晚些时候来。'); }
           if (kind === 'surf') {
@@ -422,10 +430,10 @@
     if (!shape(s.friends, 'lotte bram marta') || !Object.values(s.friends).every(n => integer(n, 0, 20))) return false;
     if (!shape(s.promises, 'lotte') || typeof s.promises.lotte !== 'boolean') return false;
     if (!Array.isArray(s.upgrades) || s.upgrades.length > 2 || !unique(s.upgrades) || !s.upgrades.every(id => owns(UPGRADES, id))) return false;
-    if (!integer(s.hops, 0, 9) || typeof s.music !== 'boolean' || !integer(s.totalSatisfied, 0, 30) || !integer(s.totalServed, s.totalSatisfied, 30)) return false;
+    if (!integer(s.hops, 0, 15) || typeof s.music !== 'boolean' || !integer(s.totalSatisfied, 0, 30) || !integer(s.totalServed, s.totalSatisfied, 30)) return false;
     if (!Array.isArray(s.log) || s.log.length > 12 || !s.log.every(string) || !string(s.lastMessage)) return false;
-    if (!Array.isArray(s.prepared) || !unique(s.prepared) || !s.prepared.every(kind => ['coffee', 'visit', 'surf'].includes(kind))) return false;
-    if (!Array.isArray(s.batches) || s.batches.length < 2 || s.batches.length > 14 || !unique(s.batches.map(b => b && b.id))) return false;
+    if (!Array.isArray(s.prepared) || !unique(s.prepared) || !s.prepared.every(kind => ['coffee', 'visit', 'surf', 'market', 'lab'].includes(kind))) return false;
+    if (!Array.isArray(s.batches) || s.batches.length < 2 || s.batches.length > 17 || !unique(s.batches.map(b => b && b.id))) return false;
     if (!s.batches.every(b => shape(b, 'id beer cups quality madeDay aged') && string(b.id) && b.id.length > 0 && owns(BEERS, b.beer) && integer(b.cups, 0, 6) && integer(b.quality, 1, 3) && integer(b.madeDay, 1, s.day) && typeof b.aged === 'boolean')) return false;
     if (s.phase === 'brew') {
       if (!shape(s.brew, 'beer hits') || !owns(BEERS, s.brew.beer) || !Array.isArray(s.brew.hits) || s.brew.hits.length > 2 || !s.brew.hits.every(n => number(n, 0, 1))) return false;

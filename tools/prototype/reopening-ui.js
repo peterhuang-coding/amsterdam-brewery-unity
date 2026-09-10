@@ -1,25 +1,33 @@
 (function () {
   'use strict';
-  const R=window.Reopening;
+  const R=window.Reopening, C=window.City;
   const $=id=>document.getElementById(id);
   const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const SAVE_KEY='ab_reopening_v1';
-  const ui={selected:null,beer:'blond',premium:false,modal:null,returnFocus:null,brewElapsed:0,sound:true,tutorialSeen:false,signature:'',lastFrame:performance.now(),lastSave:0,noticeTimer:null,audio:null};
+  const ui={selected:null,beer:'blond',premium:false,modal:null,returnFocus:null,brewElapsed:0,sound:true,tutorialSeen:false,signature:'',lastFrame:performance.now(),lastSave:0,noticeTimer:null,audio:null,city:C.create(),cityPath:[],cityTarget:null,cityMode:'map',cityPlace:'pub',cityNear:'pub',cityFerry:false,cityZoom:1,cityKeys:new Set(),cityFrame:performance.now()};
   let state=R.createGame(seedFromUrl());
   let restored=false,saveError=false;
   try {
     const saved=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');
-    if(saved){const valid=R.restore(saved.game||saved);if(valid){state=valid;restored=state.phase!=='welcome';ui.tutorialSeen=Boolean(saved.tutorialSeen);ui.sound=saved.sound!==false;ui.brewElapsed=state.phase==='brew'&&Number.isFinite(saved.brewElapsed)?Math.max(0,Math.min(6,saved.brewElapsed)):0;}else saveError=true;}
+    if(saved){const valid=R.restore(saved.game||saved);if(valid){state=valid;ui.city=C.restore(saved.city);restored=state.phase!=='welcome';ui.tutorialSeen=Boolean(saved.tutorialSeen);ui.sound=saved.sound!==false;ui.brewElapsed=state.phase==='brew'&&Number.isFinite(saved.brewElapsed)?Math.max(0,Math.min(6,saved.brewElapsed)):0;}else saveError=true;}
   } catch {saveError=true;}
   const scene=new PubScene($('pub-canvas'));
   const DAYS=['试营业，试着活着','好评与坏账','合法地重新开业'];
   const PORTRAITS={lotte:'👩🏻',bram:'🧔🏽',marta:'👩🏼‍🍳'};
+  const PLACE_COPY={
+    pub:{brief:'酿酒 / 开门',quote:'这块招牌归你。招牌下面的土地，房东说另谈。',detail:'回到自家柜台。酿一批新酒，或者翻开营业牌。'},
+    lotte:{brief:'留酒约定',quote:'桥不收过路费，所以大家还能在桥上碰面。',detail:'Lotte 在桥边排练。给她留一杯今晚的黑啤，她会在下一晚带来乐队。'},
+    coffee:{brief:'帮工 +€18',quote:'招聘联合创始人。工作内容：洗杯子。工资照付。',detail:'Bram 的午市缺人。帮完这半天，拿 €18 现金，他今晚也愿意多等你一会儿。'},
+    noord:{brief:'限时打捞',quote:'城市更新的意思是：旧东西先扔进水里。',detail:'渡轮尽头是北岸旧码头。借条船，30 秒打捞酒花和密封瓶；捞到单车得付清运费。'},
+    market:{brief:'3 杯 / €8',quote:'没有滞销，只有尚未被发现的限量款。',detail:'收摊前买一箱现货：2 杯金色艾尔、1 杯黑啤，品质 1。比酿造少花 €4，也少拿 3 杯。'},
+    lab:{brief:'2 酒花 / €6',quote:'论文还在返修，酒花已经通过鼻审。',detail:'Chen 有两份多出来的试验酒花。材料费 €6；之后每酿一批消耗一份，品质提高一级，最高 3。'}
+  };
   const $board=$('action-content');
 
   function seedFromUrl(){const n=Number(new URLSearchParams(location.search).get('seed'));return Number.isSafeInteger(n)&&n>0?n:42;}
   function money(n){return '€'+Math.round(Number(n)||0);}
   function save(){
-    try{localStorage.setItem(SAVE_KEY,JSON.stringify({version:1,game:state,brewElapsed:ui.brewElapsed,tutorialSeen:ui.tutorialSeen,sound:ui.sound}));$('save-status').textContent='进度已保存在这台设备';}
+    try{localStorage.setItem(SAVE_KEY,JSON.stringify({version:1,game:state,city:ui.city,brewElapsed:ui.brewElapsed,tutorialSeen:ui.tutorialSeen,sound:ui.sound}));$('save-status').textContent='进度已保存在这台设备';}
     catch{$('save-status').textContent='当前浏览器无法保存 · 请保持页面打开';}
   }
   function sound(kind='tap'){
@@ -41,21 +49,24 @@
   }
   function dispatch(action){
     if(ui.modal)return;
-    const previous=state.phase;
+    const previous=state.phase,previousDay=state.day;
     const result=R.act(state,action);
     if(!result.ok){notify(result.message||'现在无法这样操作。',true);return;}
     state=result.state;
+    if(action.type==='start'||state.day!==previousDay){const fresh=C.create();ui.city={...fresh,visited:ui.city.visited};ui.cityMode='map';ui.cityPlace='pub';ui.cityPath=[];ui.cityTarget=null;}
     if(action.type==='prepare'&&action.kind==='brew')ui.brewElapsed=0;
     if(action.type==='brewHit')ui.brewElapsed=0;
     if(action.type==='serve'||action.type==='water')ui.selected=null;
     if(result.message)notify(result.message);
     sound(['serve','brewHit','upgrade','finish'].includes(action.type)?'good':'tap');
     save();render();
+    if(action.type==='start'||state.day!==previousDay)window.scrollTo({top:0,behavior:'auto'});
     if(previous!==state.phase&&matchMedia('(max-width: 800px)').matches&&['brew','forage','summary','ending'].includes(state.phase))$('action-content').scrollIntoView({behavior:'auto',block:'start'});
     if(action.type==='open'&&state.day===1&&!ui.tutorialSeen)showFirstGuest();
     syncEvent();
   }
   function modal(kicker,title,body,buttons,kind='normal'){
+    ui.cityKeys.clear();
     ui.returnFocus=document.activeElement;
     ui.modal={kicker,title,body,buttons,kind};
     $('dialog-kicker').textContent=kicker;$('dialog-title').textContent=title;$('dialog-body').innerHTML=body;
@@ -80,7 +91,7 @@
   function showHelp(){
     if(ui.modal)return;
     modal('HOW TO PLAY · 阅读时暂停','照顾好今天，也准备好明天。',
-      '<p><b>白天两次行动。</b>酿酒花 €12，得到 6 杯；帮咖啡店赚 €18；去北岸运河打捞酒花和押金瓶，躲开需要清运费的单车残骸；拜访 Lotte，答应今晚留给她一杯黑啤。</p>'+
+      '<p><b>先逛城市。</b>WASD / 方向键移动，点击地点自动绕过运河和建筑，E 进入附近地点。去北岸走渡轮。逛地图免费，办事才花行动。市场 €8 买 3 杯现货，实验室 €6 买 2 份酒花。</p><p><b>白天两次行动。</b>酿酒花 €12，得到 6 杯；帮咖啡店赚 €18；去北岸运河打捞酒花和押金瓶，躲开需要清运费的单车残骸；拜访 Lotte，答应今晚留给她一杯黑啤。</p>'+
       '<p><b>夜晚接待客人。</b>点击想先服务的人，核对口味和预算。每次开始倒酒消耗一杯库存；指针进入绿色区域再收杯。价格超过预算、口味不对或倒得太差，客人不会满意。</p>'+
       '<p><b>每晚都有麻烦。</b>房东、网红、检查员会提出要求。先看成本，再选应对方式；这时游戏暂停。基础租金 €18，事件会影响实际账单。</p><p><b>第三晚重开。</b>前两晚可选一件设备。最后留下至少 €100，并累计让 12 位客人满意。</p>'+
       '<p><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> 选客人 · <kbd>E</kbd> 开始倒酒 · <kbd>Space</kbd> 收杯 / 酿造确认 / 打捞 · <kbd>A</kbd><kbd>D</kbd> 移动小船 · <kbd>P</kbd> 暂停 · <kbd>H</kbd> 帮助。所有操作也有可点击按钮。</p>'+
@@ -93,7 +104,72 @@
   function confirmRestart(){
     modal('NEW BEGINNING','重新开始这三天？','<p>当前三天的进度会被新一局替换。你可以继续使用这张相同的顾客安排。</p>',[{label:'保留进度，继续玩'},{label:'重新开始',secondary:true,run:()=>restart(state.seed)}]);
   }
-  function restart(seed){state=R.createGame(seed);ui.selected=null;ui.beer='blond';ui.premium=false;ui.brewElapsed=0;ui.tutorialSeen=false;save();render();window.scrollTo({top:0,behavior:'auto'});}
+  function restart(seed){state=R.createGame(seed);ui.selected=null;ui.beer='blond';ui.premium=false;ui.brewElapsed=0;ui.tutorialSeen=false;ui.city=C.create();ui.cityMode='map';ui.cityPlace='pub';ui.cityPath=[];ui.cityTarget=null;save();render();window.scrollTo({top:0,behavior:'auto'});}
+  function cityView(){return {position:ui.city,path:ui.cityPath,target:ui.cityTarget,zoom:ui.cityZoom,mode:ui.cityMode,place:ui.cityPlace};}
+  function renderCityToolbar(){
+    const toolbar=$('city-toolbar');toolbar.hidden=state.phase!=='prep';
+    if(state.phase!=='prep')return;
+    const near=C.near(ui.city);
+    toolbar.innerHTML=ui.cityMode==='place'?'<span>城市漫游不消耗行动</span><button data-action="city-map">← 回到城市地图 · M</button>':
+      `<span>已发现 ${ui.city.visited.length} / 6 处 · ${C.onFerry(ui.city.x,ui.city.y)?'渡轮上':near?esc(near.district):'运河街道'}</span><button data-action="city-zoom">${ui.cityZoom===1?'放大跟随':'查看全城'}</button><button data-action="city-enter" ${near?'':'disabled'}>${near?'进入 '+esc(near.name)+' · E':'靠近地点后按 E'}</button>`;
+  }
+  function renderCityBoard(headings){
+    const near=C.near(ui.city),used=state.prepared||[],blocked=state.actions<=0;
+    const budget=`<div class="action-budget"><span>今天还可以做 <b>${state.actions}</b> 件事</span><span class="action-pips">${[0,1].map(i=>`<i class="${i<state.actions?'available':''}"></i>`).join('')}</span></div>`;
+    if(ui.cityMode==='map'){
+      const destination=ui.cityTarget&&C.PLACES[ui.cityTarget];
+      $board.innerHTML=headings+`<h2>${ui.cityPath.length?'走着，生意在前面。':'城市很大。<br>本钱有点小。'}</h2>`+budget+
+        `<p class="board-copy">${ui.cityPath.length?(destination?'正在前往 '+esc(destination.name)+'。':'正在沿运河走。'):'六个去处，带回六种过日子的办法。点地图或下方地点自动过去，也可以自己走。'}</p>`+
+        (ui.cityPath.length?`<div class="city-route"><span class="route-symbol">↝</span><strong>${destination?esc(destination.name):'沿途走走'}</strong><p id="city-route-note">沿虚线前往</p><button class="text-button" data-action="city-stop">停下来看看</button></div>`:
+        `<div class="city-nearby"><span class="field-label">${near?'现在附近':'慢慢逛，不用交停车费'}</span><h3>${near?esc(near.name):'运河街道'}</h3><p>${near?esc(PLACE_COPY[near.id].quote):'沿着河岸走，过河找桥；去 Noord 找渡轮。'}</p>${near?'<button class="primary" data-action="city-enter">进去看看 · E</button>':''}</div>`)+
+        '<div class="city-key-guide"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向键走路</span><span><kbd>E</kbd> 进入附近地点</span><span>点击地图 / 地点自动寻路</span></div>'+
+        `<div class="board-bottom"><button class="secondary" data-action="city-travel" data-place="pub">回酒吧${blocked?'，准备开门':'看看'} →</button><p class="small-note">走路、渡轮、看地图都不花行动。${blocked?'今天办完事了，回去迎接晚上的客人。':'进店办事才花一次准备机会。'}</p></div>`;
+      return;
+    }
+    const p=C.PLACES[ui.cityPlace],copy=PLACE_COPY[p.id];
+    $board.innerHTML=headings+`<p class="place-district">${esc(p.district)} / 已抵达</p><h2>${esc(p.name)}</h2>`+budget+`<p class="place-quote">“${esc(copy.quote)}”</p><p class="board-copy">${esc(copy.detail)}</p>`;
+    if(p.id==='pub'){
+      $board.innerHTML+=`<p class="field-label">酿一批 · 1 次行动 / €12 / 6 杯${state.hops?' · 酒花库存 '+state.hops:''}</p><div class="brew-picks">${Object.values(R.BEERS).map(b=>`<button class="brew-pick" data-action="brew" data-beer="${b.id}" data-focus="brew-${b.id}" ${blocked||state.cash<b.cost?'disabled':''}>${beerDot(b.id)}<strong>${esc(b.name)}</strong><small>${esc(b.description)}</small></button>`).join('')}</div>`+
+        (state.promises.lotte?'<p class="promise-note">记得给 Lotte 留一杯黑啤。</p>':'')+
+        `<button class="primary" data-action="open" data-focus="open">${blocked?'翻开营业牌 →':'准备就绪，开始营业 →'}</button><p class="small-note">${state.actions?'现在营业会放弃剩余行动。':''} 基础租金 €18。</p>`;
+    }else{
+      const cost=p.id==='market'?8:p.id==='lab'?6:0;
+      const labels={coffee:'帮 Bram 忙过午市 · +€18',lotte:'答应给 Lotte 留黑啤',noord:'借船下运河 · 30 秒',market:'买收摊酒箱 · €8',lab:'领取试验酒花 · €6'};
+      $board.innerHTML+=`<button class="primary" data-action="prepare" data-kind="${p.kind}" data-focus="prepare-${p.kind}" ${blocked||used.includes(p.kind)||state.cash<cost?'disabled':''}>${used.includes(p.kind)?'今天已经办过了':labels[p.id]}</button><p class="small-note">1 次准备机会 · 每天一次${state.cash<cost?' · 现金不足，去咖啡馆帮工可以赚 €18':''}</p>`;
+    }
+    if(blocked&&p.id!=='pub')$board.innerHTML+='<button class="secondary" data-action="city-travel" data-place="pub">回酒吧，准备开门 →</button>';
+    if(p.id==='lab')$board.innerHTML+=`<p class="promise-note">酒花库存：${state.hops} 份 · 每批消耗一份</p>`;
+    $board.innerHTML+='<div class="board-bottom"><button class="text-button" data-action="city-map">← 出去逛逛 · M</button></div>';
+  }
+  function travelTo(id,point){
+    if(state.phase!=='prep'||ui.modal)return;
+    const place=id&&C.PLACES[id];if(id&&!place)return;
+    ui.cityMode='map';ui.cityKeys.clear();ui.cityTarget=id;
+    ui.cityPath=C.route(ui.city,place||point);
+    if(!ui.cityPath.length){if(place&&Math.hypot(ui.city.x-place.x,ui.city.y-place.y)<60)enterCityPlace(place.id);else{ui.cityTarget=null;notify('这边暂时走不到，换个落脚点。',true);render();}return;}
+    render();
+    if(matchMedia('(max-width: 800px)').matches)$('pub-canvas').scrollIntoView({block:'start',behavior:'auto'});
+  }
+  function enterCityPlace(id){
+    if(state.phase!=='prep'||ui.modal)return;
+    const place=id?C.PLACES[id]:C.near(ui.city);
+    if(!place||Math.hypot(ui.city.x-place.x,ui.city.y-place.y)>65){notify('再靠近一点，就能进去了。');return;}
+    ui.cityKeys.clear();ui.cityPath=[];ui.cityTarget=null;ui.cityPlace=place.id;ui.cityMode='place';
+    if(!ui.city.visited.includes(place.id))ui.city.visited.push(place.id);
+    save();render();
+    if(matchMedia('(max-width: 800px)').matches)$('action-content').scrollIntoView({block:'start',behavior:'auto'});
+  }
+  function stepCity(seconds){
+    if(!ui.cityKeys.size&&!ui.cityPath.length)return;
+    let position=ui.city,arrived=false;
+    if(ui.cityKeys.size){const held=ui.cityKeys;position=C.move(ui.city,Number(held.has('d')||held.has('arrowright'))-Number(held.has('a')||held.has('arrowleft')),Number(held.has('s')||held.has('arrowdown'))-Number(held.has('w')||held.has('arrowup')),seconds);}
+    else{const result=C.moveAlong(ui.city,ui.cityPath,seconds);position=result.position;ui.cityPath=result.path;arrived=result.arrived;}
+    ui.city={...ui.city,x:position.x,y:position.y};
+    const near=C.near(ui.city),nextNear=near?.id||null,onFerry=C.onFerry(ui.city.x,ui.city.y);
+    if(near&&!ui.city.visited.includes(near.id)){ui.city.visited.push(near.id);save();}
+    if(arrived){const target=ui.cityTarget;ui.cityTarget=null;if(target){enterCityPlace(target);return;}save();render();}
+    else if(nextNear!==ui.cityNear||onFerry!==ui.cityFerry){ui.cityNear=nextNear;ui.cityFerry=onFerry;renderCityToolbar();if(!ui.cityPath.length)renderCityBoard('<p class="board-eyebrow">TWEEDE KANS / CITY</p>');}
+  }
   function selectedCustomer(){const waiting=R.customers(state);return waiting.find(c=>c.id===ui.selected)||waiting[0]||null;}
   function selectedPour(){return state.night?.pours.find(p=>p.customerId===ui.selected)||null;}
   function beerDot(id){return `<i class="beer-dot" style="background:${R.BEERS[id].color}"></i>`;}
@@ -101,31 +177,40 @@
     if(state.phase==='welcome')return ['AMSTERDAM · 房东还没来封门','再撑三个晚上。'];
     if(state.phase==='ending')return ['TWEEDE KANS · 三天之后',state.result?.won?'恭喜，还能继续交租。':'店倒了，房租没倒。'];
     if(state.phase==='forage')return ['DAY '+state.day+' · 北岸运河 / 限时 30 秒','在水里，找点利润。'];
+    if(state.phase==='prep')return [`DAY ${state.day} / 3 · ${ui.cityMode==='map'?'白天 / 城市漫游':C.PLACES[ui.cityPlace].district}`,ui.cityMode==='map'?'今天，去哪儿找生意？':C.PLACES[ui.cityPlace].name];
     if(state.phase==='summary')return [`DAY ${state.day} · 打烊之后`,'今天留下了什么。'];
     return [`DAY ${state.day} / 3 · ${state.phase==='night'?'营业中':'白天的准备'}`,DAYS[state.day-1]];
   }
   function render(){
     const oldFocus=document.activeElement?.dataset?.focus;
     const [kicker,title]=topCopy();$('chapter-kicker').textContent=kicker;$('chapter-title').textContent=title;
-    $('pub-canvas').setAttribute('aria-label',state.phase==='forage'?'北岸运河三航道打捞场景，小船和漂浮物随行动变化；右侧有完整文字信息和操作按钮':'运河边的 Tweede Kans 酒吧，酒瓶随库存变化，顾客和升级出现在柜台前');
+    $('pub-canvas').setAttribute('aria-label',state.phase==='prep'&&(ui.cityMode==='map'||ui.cityPlace!=='pub')?'阿姆斯特丹六地点城市地图，点击地点规划步行路线；WASD 移动，桥和渡轮可过河':state.phase==='forage'?'北岸运河三航道打捞场景，小船和漂浮物随行动变化；右侧有完整文字信息和操作按钮':'运河边的 Tweede Kans 酒吧，酒瓶随库存变化，顾客和升级出现在柜台前');
+    $('pub-canvas').style.cursor=state.phase==='prep'&&ui.cityMode==='map'?'crosshair':'default';
     $('cash').textContent=money(state.cash);
     $('blond-stock').innerHTML=R.stock(state,'blond')+' <small>杯</small>';$('stout-stock').innerHTML=R.stock(state,'stout')+' <small>杯</small>';
     $('day-track').innerHTML=DAYS.map((name,i)=>`<div class="day-step ${state.day===i+1?'current':state.day>i+1?'complete':''}"><span class="day-number">${state.day>i+1?'✓':i+1}</span><span>${name}</span></div>`).join('');
     $('sound-button').textContent=ui.sound?'♪':'♩';$('sound-button').setAttribute('aria-label',ui.sound?'关闭声音':'开启声音');
     $('equipment').innerHTML=state.upgrades.map(id=>`<span>${esc(R.UPGRADES[id].name)}</span>`).join('')+(state.music?'<span>♫ 乐队今晚到场</span>':'');
-    $('room-time').textContent=state.phase==='night'?'OPEN · '+DAYS[state.day-1]:state.phase==='forage'?'NOORD · 城市把利润扔进了水里':state.phase==='brew'?'BREWING · 比创业鸡汤有营养':state.phase==='prep'?'DAYLIGHT · 好好准备，晚上挨宰':'TWEEDE KANS · 运河边';
-    $('room-caption').textContent=state.phase==='forage'?'环保与盈利偶尔顺路。单车除外。':['summary','ending'].includes(state.phase)&&state.reports[state.reports.length-1]?.promiseBroken?'没有罚单的人情债，也会被记住。':state.music?'至少今晚，音乐比催租声大。':state.promises.lotte?'给 Lotte 留一杯黑啤。信誉比许可证便宜。':state.day===3?'今晚的目标：灯亮着，门没被封。':'这家店，还没倒。';
-    renderQueue();renderBoard();renderPours();renderStory();
+    $('room-time').textContent=state.phase==='night'?'OPEN · '+DAYS[state.day-1]:state.phase==='forage'?'NOORD · 城市把利润扔进了水里':state.phase==='brew'?'BREWING · 比创业鸡汤有营养':state.phase==='prep'?(ui.cityMode==='map'?'AMSTERDAM · 白天属于你，晚上属于账单':C.PLACES[ui.cityPlace].district+' · '+C.PLACES[ui.cityPlace].name):'TWEEDE KANS · 运河边';
+    $('room-caption').textContent=state.phase==='prep'?(ui.cityMode==='map'?'过桥别走水里。房东不报销打捞自己。':PLACE_COPY[ui.cityPlace].quote):state.phase==='forage'?'环保与盈利偶尔顺路。单车除外。':['summary','ending'].includes(state.phase)&&state.reports[state.reports.length-1]?.promiseBroken?'没有罚单的人情债，也会被记住。':state.music?'至少今晚，音乐比催租声大。':state.promises.lotte?'给 Lotte 留一杯黑啤。信誉比许可证便宜。':state.day===3?'今晚的目标：灯亮着，门没被封。':'这家店，还没倒。';
+    renderQueue();renderBoard();renderPours();renderStory();renderCityToolbar();
     const log=(state.log||[]).slice(0,3);
     $('journal-entries').innerHTML=log.length?log.map(line=>`<li>${esc(line)}</li>`).join(''):'<li>房东说钥匙免费，保管钥匙的杯垫另算。</li><li>三天后开业。许可证需要营业流水，营业需要许可证。</li><li>街坊只想喝杯好酒。他们的要求居然最合理。</li>';
-    $('control-hint').textContent=state.phase==='forage'?'A / D 换航道 · Space 打捞 · P 暂停':state.phase==='brew'?'Space 确认工艺 · P 暂停 · H 帮助':state.phase==='night'?'1 / 2 / 3 选客 · E 倒酒 · Space 收杯 · P 暂停':'鼠标或键盘操作 · H 帮助 · P 暂停';
-    ui.signature=signature();updateMeters();scene.draw(state,performance.now(),ui.selected);
+    $('control-hint').textContent=state.phase==='prep'?'WASD / 方向键移动 · 点击地点自动寻路 · E 进入 · M 地图 · P 暂停':state.phase==='forage'?'A / D 换航道 · Space 打捞 · P 暂停':state.phase==='brew'?'Space 确认工艺 · P 暂停 · H 帮助':state.phase==='night'?'1 / 2 / 3 选客 · E 倒酒 · Space 收杯 · P 暂停':'鼠标或键盘操作 · H 帮助 · P 暂停';
+    ui.signature=signature();updateMeters();scene.draw(state,performance.now(),ui.selected,cityView());
     if(oldFocus){const next=document.querySelector(`[data-focus="${CSS.escape(oldFocus)}"]`);if(next&&!next.disabled)next.focus({preventScroll:true});}
   }
   function renderQueue(){
     const waiting=R.customers(state);
     const current=selectedCustomer();ui.selected=current?.id||null;
     $('queue-title').textContent=state.phase==='night'?'柜台前 · 选一位先服务':'这条街上的熟面孔';
+    if(state.phase==='prep'){
+      $('queue-title').textContent='城市去处 · 点击规划路线';
+      $('queue').classList.add('city-destinations');
+      $('queue').innerHTML=Object.values(C.PLACES).map(p=>`<button class="destination ${ui.cityTarget===p.id||ui.cityMode==='place'&&ui.cityPlace===p.id?'selected':''}" data-action="city-travel" data-place="${p.id}" data-focus="city-${p.id}" aria-label="前往${esc(p.name)}"><span>${p.icon}</span><strong>${esc(p.name)}<small>${esc(p.district)} · ${PLACE_COPY[p.id].brief}</small></strong><i>${ui.city.visited.includes(p.id)?'✓':'·'}</i></button>`).join('');
+      return;
+    }
+    $('queue').classList.remove('city-destinations');
     if(state.phase==='night'){
       if(!waiting.length){
         const next=state.night.orders.filter(o=>o.status==='future').sort((a,b)=>a.arrival-b.arrival)[0];
@@ -144,7 +229,7 @@
     let person='lotte',text='这条运河连倒影都在涨房租。给我留杯黑的。';
     if(state.phase==='night'){const guest=selectedCustomer();if(guest){person=guest.person||guest.name;text=guest.quote;}}
     else if(state.music){person='lotte';text='你记得给我留的那杯酒。我也记得帮你叫上他们。';}
-    else if(state.hops){person='bram';text='北岸带回来的酒花很香，留给下一桶。';}
+    else if(state.hops){person='bram';text='酒花留给下一桶。它们的香气不需要写申请。';}
     else if(state.friends.marta>0){person='marta';text='不错。今天带来的投诉信，可以改成情书草稿。';}
     $('story-line').innerHTML=`<span class="quote-mark">“</span><p>${esc(text)}</p><span class="story-author">— ${esc(R.PEOPLE[person]?.name||person)}</span>`;
   }
@@ -152,23 +237,13 @@
     const headings=`<p class="board-eyebrow">TWEEDE KANS / ${state.phase==='night'?'SERVICE':'REOPENING'}</p>`;
     if(state.phase==='welcome'){
       $board.innerHTML=headings+'<h2>啤酒要新鲜。<br>账单也是。</h2><p class="board-copy">接手一家快倒闭的酒吧。房东要现金，检查员要手续，街坊只想喝点像样的。<br>你有三天，证明这门生意值得被继续收租。</p>'+
-        '<ol class="rule-list"><li><em>早</em><span>下运河捞点东西，把来历酿成故事。</span></li><li><em>晚</em><span>卖酒，接客，应付不请自来的麻烦。</span></li><li><em>后</em><span>数钱、还人情，留住明天的库存。</span></li></ol>'+
+        '<ol class="rule-list"><li><em>早</em><span>逛六个城市去处，弄点货，把来历酿成故事。</span></li><li><em>晚</em><span>卖酒，接客，应付不请自来的麻烦。</span></li><li><em>后</em><span>数钱、还人情，留住明天的库存。</span></li></ol>'+
         '<button class="primary" data-action="start" data-focus="start">推开店门 →</button>'+
         `<label class="start-seed">这三天的顾客安排 <input id="seed-input" type="number" min="1" max="2147483647" step="1" value="${state.seed}" aria-label="顾客安排种子"></label>`+
         '<div class="goal-strip"><span>三天完整试玩</span><span>可暂停 · 自动存档</span></div>';
       return;
     }
-    if(state.phase==='prep'){
-      const used=state.prepared||[],blocked=state.actions<=0;
-      $board.innerHTML=headings+`<h2>${state.actions?'今晚，准备些什么？':'准备好了，天也快黑了。'}</h2><div class="action-budget"><span>今天还可以做 <b>${state.actions}</b> 件事</span><span class="action-pips">${[0,1].map(i=>`<i class="${i<state.actions?'available':''}"></i>`).join('')}</span></div>`+
-        (state.promises.lotte?'<p class="promise-note">约定：给 Lotte 留一杯黑啤。她在今晚晚些时候到店。</p>':'')+
-        `<p class="field-label">酿一批酒 · 1 次行动 / €12 / 6 杯${state.hops?' · 北岸酒花提升品质':''}</p><div class="brew-picks">${Object.values(R.BEERS).map(b=>`<button class="brew-pick" data-action="brew" data-beer="${b.id}" data-focus="brew-${b.id}" ${blocked||state.cash<b.cost?'disabled':''}>${beerDot(b.id)}<strong>${esc(b.name)}</strong><small>${esc(b.description)}</small></button>`).join('')}</div>`+
-        prepButton('coffee','☕','给 Bram 当半天「联合创始人」','工资 €18，头衔免费。今晚他会多给一点耐心。',blocked||used.includes('coffee'))+
-        prepButton('visit','✉','到桥边找 Lotte','答应留黑啤；她会带来乐队，音量盖过催租声。',blocked||used.includes('visit'))+
-        prepButton('surf','≈','去北岸运河「循环经济」','30 秒打捞：酒花提品质，押金瓶变库存，别捞单车。',blocked||used.includes('surf'))+
-        `<div class="board-bottom"><button class="primary" data-action="open" data-focus="open">${blocked?'翻开营业牌 →':'准备就绪，开始营业 →'}</button><p class="small-note">${state.actions?'现在开门会放弃剩余准备机会。':'今天的选择，马上就能看见回报。'} 每晚租金 €18。</p></div>`;
-      return;
-    }
+    if(state.phase==='prep'){renderCityBoard(headings);return;}
     if(state.phase==='brew'){
       const b=R.BEERS[state.brew.beer],hits=state.brew.hits;
       $board.innerHTML=headings+`<h2>这一桶，${esc(b.name)}。</h2><p class="board-copy">三段工艺，浅绿区域最理想。<br>按 <b>Space</b> 或按钮确认；失手也会得到一批酒。</p><div class="brew-stages">${['糖化','煮沸','发酵'].map((name,i)=>`<span class="brew-stage ${i===hits.length?'current':i<hits.length?'done':''}">${i<hits.length?'✓ ':''}${name}</span>`).join('')}</div><div class="brew-vessel"><img src="assets/img/gen/brew.jpg" alt="冒着蒸汽的铜制酿酒锅"></div><div class="score-chips">${hits.map(n=>`<span>${n>.85?'完美':n>.45?'稳稳完成':'下段再来'}</span>`).join('')}</div>${timingTrack('brew-meter')}<div class="timing-labels"><span>太早</span><span>恰到好处</span><span>过火</span></div><button class="primary" data-action="brew-hit" data-focus="brew-hit">确认${['糖化','煮沸','发酵'][hits.length]} · Space</button><p class="small-note">每段最多 6 秒；超过时机会自动进入下一段。<br>已花费 €12 和 1 次行动，完成后入库 6 杯。</p><button class="text-button" data-action="cancel-brew">放弃这批酒</button>`;
@@ -191,7 +266,6 @@
     const won=state.result?.won;
     $board.innerHTML=headings+`<h2>${esc(state.result?.title||(won?'招牌重新亮了。':'下一次机会，还在。'))}</h2><p class="board-copy">${esc(state.result?.description||'你让这家店重新有了声音。')}</p><div class="result-badge">${won?'OPEN':'AGAIN'}</div><div class="receipt"><div><span>留下的现金</span><strong>${money(state.cash)} / €100</strong></div><div><span>满意的客人</span><strong>${state.totalSatisfied} / 12</strong></div><div><span>亲手送出的酒</span><strong>${state.totalServed} 杯</strong></div></div><div class="friend-memories">${['lotte','bram','marta'].map(id=>`<div class="friend-memory"><strong>${esc(R.PEOPLE[id].name)}</strong>${friendStatus(id)}</div>`).join('')}</div><button class="primary" data-action="replay" data-focus="replay">这次换一种安排，再试一次 →</button><button class="text-button" data-action="new-seed">换一组客人，重新开店</button><p class="small-note">${won?'这次，你给这家店留下了一个明天。':'试着多留库存、先照顾快等不及的人。每次重来都从同样的资源开始。'}</p>`;
   }
-  function prepButton(kind,icon,title,description,disabled){return `<button class="action-card" data-action="prepare" data-kind="${kind}" data-focus="prepare-${kind}" ${disabled?'disabled':''}><span class="action-icon">${icon}</span><span><strong>${title}</strong><small>${description}</small></span><span class="cost">${(state.prepared||[]).includes(kind)?'已完成':'1 次'}</span></button>`;}
   function timingTrack(id){return `<div class="timing-track" id="${id}"><i class="sweet-zone"></i><i class="perfect-zone"></i><i class="needle"></i></div>`;}
   function receipt(r){return `<div class="receipt"><div><span>今晚营业额</span><strong>+${money(r.earned)}</strong></div><div><span>送出的酒 / 满意顾客</span><strong>${r.served} / ${r.satisfied}</strong></div><div><span>错过的顾客</span><strong>${r.lost}</strong></div><div><span>今夜租金</span><strong>−${money(r.rent)}</strong></div><div class="receipt-total"><span>手头留下</span><strong>${money(r.cash)}</strong></div></div>`;}
   function renderService(headings){
@@ -220,6 +294,7 @@
   }
   function signature(){return JSON.stringify([state.phase,state.day,state.cash,state.actions,state.batches,state.friends,state.promises,state.upgrades,state.hops,state.music,state.brew,state.night?.orders.map(o=>[o.id,o.status]),state.night?.pours.map(p=>[p.customerId,p.beer,p.price]),state.night?.earned,state.night?.event,state.forage&&[state.forage.lane,state.forage.haul,state.forage.items.map(i=>i.status)],state.reports.length]);}
   function updateMeters(){
+    if(state.phase==='prep'){const note=$('city-route-note');if(note&&ui.cityPath.length){let total=0,prev=ui.city;for(const point of ui.cityPath){total+=Math.hypot(point.x-prev.x,point.y-prev.y);prev=point;}note.textContent=`沿虚线前往 · 约 ${Math.ceil(total/240)} 秒 · 途中可点其他地点改道`;}}
     if(state.phase==='brew'){const needle=$('brew-meter')?.querySelector('.needle');if(needle)needle.style.left=Math.min(.995,ui.brewElapsed/6)*100+'%';}
     if(state.phase==='night'){
       const left=Math.max(0,state.night.duration-state.night.elapsed),mm=Math.floor(left/60),ss=Math.floor(left%60);
@@ -245,6 +320,11 @@
     const data=button.dataset;
     switch(data.action){
       case 'start':{const n=Number($('seed-input')?.value);if(!Number.isInteger(n)||n<1||n>2147483647){notify('顾客安排请输入 1 到 2147483647 的整数。',true);return;}state=R.createGame(n);dispatch({type:'start'});break;}
+      case 'city-travel':travelTo(data.place);break;
+      case 'city-map':ui.cityMode='map';ui.cityKeys.clear();render();break;
+      case 'city-enter':enterCityPlace();break;
+      case 'city-zoom':ui.cityZoom=ui.cityZoom===1?2:1;renderCityToolbar();break;
+      case 'city-stop':ui.cityPath=[];ui.cityTarget=null;render();save();break;
       case 'brew':dispatch({type:'prepare',kind:'brew',beer:data.beer});break;
       case 'prepare':dispatch({type:'prepare',kind:data.kind});break;
       case 'brew-hit':brewHit();break;
@@ -282,10 +362,12 @@
       return;
     }
     if(e.target.matches('input,textarea,select')){if(e.key==='Enter'&&e.target.id==='seed-input'){e.preventDefault();handleAction($board.querySelector('[data-action="start"]'));}return;}
-    if(e.repeat)return;
     const key=e.key.toLowerCase();
+    if(state.phase==='prep'&&ui.cityMode==='map'&&['w','a','s','d','arrowup','arrowleft','arrowdown','arrowright'].includes(key)){e.preventDefault();const canceledRoute=ui.cityPath.length>0||ui.cityTarget!==null;ui.cityKeys.add(key);ui.cityPath=[];ui.cityTarget=null;if(canceledRoute)render();return;}
+    if(e.repeat)return;
     if(key==='p'||key==='escape'){e.preventDefault();pause();return;}
     if(key==='h'){e.preventDefault();showHelp();return;}
+    if(state.phase==='prep'){if(key==='m'){e.preventDefault();ui.cityMode='map';render();return;}if(key==='e'&&ui.cityMode==='map'){e.preventDefault();enterCityPlace();return;}}
     if(state.phase==='brew'&&key===' '){e.preventDefault();brewHit();return;}
     if(state.phase==='forage'){
       if(['a','d','arrowleft','arrowright'].includes(key)){e.preventDefault();dispatch({type:'forageMove',direction:['a','arrowleft'].includes(key)?-1:1});return;}
@@ -297,10 +379,15 @@
       if(key===' '){e.preventDefault();const pour=selectedPour()||state.night.pours[0];if(pour)dispatch({type:'serve',customerId:pour.customerId});return;}
     }
   });
-  document.addEventListener('visibilitychange',()=>{if(document.hidden){save();if(['night','brew','forage'].includes(state.phase))pause('你离开了一会儿，酒吧已自动暂停。');}ui.lastFrame=performance.now();});
+  document.addEventListener('keyup',e=>ui.cityKeys.delete(e.key.toLowerCase()));
+  window.addEventListener('blur',()=>ui.cityKeys.clear());
+  $('pub-canvas').addEventListener('click',e=>{if(state.phase!=='prep'||ui.cityMode!=='map'||ui.modal)return;const box=e.currentTarget.getBoundingClientRect(),point=scene.cityWorldPoint((e.clientX-box.left)*1100/box.width,(e.clientY-box.top)*640/box.height);const place=C.near(point,85);if(place)travelTo(place.id);else travelTo(null,point);});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){ui.cityKeys.clear();save();if(['night','brew','forage'].includes(state.phase)||state.phase==='prep'&&ui.cityPath.length)pause('你离开了一会儿，酒吧已自动暂停。');}ui.lastFrame=performance.now();});
   window.addEventListener('pagehide',save);
   function frame(now){
-    scene.draw(state,now,ui.selected);updateMeters();requestAnimationFrame(frame);
+    const seconds=Math.min(.1,Math.max(0,(now-ui.cityFrame)/1000));ui.cityFrame=now;
+    if(state.phase==='prep'&&ui.cityMode==='map'&&!ui.modal&&!document.hidden)stepCity(seconds);
+    scene.draw(state,now,ui.selected,cityView());updateMeters();requestAnimationFrame(frame);
   }
   setInterval(()=>{
     const now=performance.now(),seconds=Math.min(1,Math.max(0,(now-ui.lastFrame)/1000));ui.lastFrame=now;

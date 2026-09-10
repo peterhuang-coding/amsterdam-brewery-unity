@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // Phase E regression gate — run: node tools/prototype/test-phase-e.js
-// Extracts the Phase E data pools + factor helpers out of index.html and asserts
+// Extracts the Phase E data pools + factor helpers out of legacy.html and asserts
 // they are actually wired (real multipliers, not flavor text), balanced, and seed-deterministic.
 // Round 2 adds Phase E2 (Faction System).
 const fs = require('fs');
 const path = require('path');
-const HTML = path.join(__dirname, 'index.html');
+const HTML = path.join(__dirname, 'legacy.html');
 const h = fs.readFileSync(HTML, 'utf8');
 
 // ── Round 8: localStorage stub for Phase C relationship chain tests ──
@@ -586,7 +586,7 @@ B5.SHMROOM_RECIPES = undefined; // not exposed
 G.factions = {heineken:0,coffee:0,smartshop:0};
 const beerRecipeMap = {IPA:'immune_broth',Stout:'amazonian_chocolate',Lager:'lionsmane_pilsner',Pilsner:'pilsner_goldenTeacher',Sour:'sour_philosopher',BelgianTripel:'tripel_cordyceps'};
 for (const beerId of Object.keys(beerRecipeMap)) {
-  // verify a recipe exists by scanning SHROOM_RECIPES in the index.html source (rough)
+  // verify a recipe exists by scanning SHROOM_RECIPES in the legacy.html source (rough)
   const needle = `brewBarrel:'${beerId}'`;
   t(`Round7: SHROOM_RECIPES has cross-recipe for ${beerId} → ${beerRecipeMap[beerId]}`, h.indexOf(needle) > -1);
 }
@@ -697,7 +697,7 @@ t('Round8: newRun calls showOpeningCardIfFresh', /showOpeningCardIfFresh\(\)/.te
 t('Round8: renderAll updates plot-banner via todayTip', /plot-banner[\s\S]*todayTip\(\)/.test(h));
 
 // ── 26. funify-v3 Round 23 — Surf 巨浪知识打捞 (knowledge-salvage) gate ──
-// 用与游戏内同构的最小桩数据喂给从 index.html 切出的纯函数块 (与 B4 抽取方式一致)
+// 用与游戏内同构的最小桩数据喂给从 legacy.html 切出的纯函数块 (与 B4 抽取方式一致)
 const W23_WAVES=[{id:'beginner_bay',item:'贝壳',special:'海鸥群'},{id:'pier_break',item:'海星',special:'钓鱼人'},{id:'reef_left',item:'珍珠',special:'海龟'},{id:'canal_wave',item:'贝壳',special:'桥下阴影'},{id:'sand_bar',item:'古硬币',special:'隐藏洞穴'},{id:'storm_pier',item:'古罗盘',special:'雷暴'},{id:'lighthouse',item:'珍珠',special:'灯塔回声'}];
 const W23_CAT=[{id:'贝壳',kind:'词条'},{id:'海星',kind:'词条'},{id:'珍珠',kind:'词条'},{id:'古硬币',kind:'记忆'},{id:'古罗盘',kind:'记忆'},{id:'古地图',kind:'配方'},{id:'鱼钩',kind:'配方'},{id:'宝石',kind:'记忆'},{id:'闪电石',kind:'回声'},{id:'回声瓶',kind:'回声'},{id:'羽毛',kind:'回声'},{id:'稀有遗物',kind:'回声'}];
 const s23Start=h.indexOf('// funify-v3 Round 23 — Surf 巨浪知识打捞');

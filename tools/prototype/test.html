@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Amsterdam Brewery Web Demo Tests</title>
 <style>body{font:16px system-ui;background:#0a0c14;color:#e0d8c8;padding:24px}h2.pass{color:#78c878}h2.fail{color:#f05050}.row{margin:6px 0;font-family:monospace}.pass{color:#78c878}.fail{color:#f05050}iframe{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}</style></head>
-<body><h1>Web Demo contract tests</h1><div id="results">正在加载…</div><iframe id="demo" src="index.html?seed=42"></iframe>
+<body><h1>Web Demo contract tests</h1><div id="results">正在加载…</div><iframe id="demo" src="legacy.html?seed=42"></iframe>
 <script>
 const results=document.getElementById('results'),frame=document.getElementById('demo');
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
@@ -116,7 +116,7 @@ frame.addEventListener('load',async()=>{
       }
     }return false
   });
-  check('index.html 源含 6 个新 seed URL 函数定义',()=>{
+  check('legacy.html 源含 6 个新 seed URL 函数定义',()=>{
     const ifr=frame;
     const src=ifr.contentDocument.documentElement.outerHTML;
     return ['buildSeedUrl(','copySeedUrl(','parseSeedFromUrl(','flashSeedCopied(','copySeedUrlFromModal(','SEED_COPY_HINT'].every(s=>src.includes(s));
@@ -157,11 +157,11 @@ frame.addEventListener('load',async()=>{
   check('barPourState 暴露并返回 cursor',()=>{const ps=win.barPourState({pour:{active:true,drinkId:'martini',drinkObj:{pourZone:[0.4,0.6]},startedAt:Date.now()-300}});return ps&&typeof ps.cursor==='number'&&ps.cursor>=0&&ps.cursor<=1});
   check('barPourState 不可超过 1',()=>{const ps=win.barPourState({pour:{active:true,drinkId:'negroni',drinkObj:{pourZone:[0.45,0.55]},startedAt:Date.now()}});return ps&&ps.cursor>=0&&ps.cursor<=1});
   check('startBar 启动后 mg=bar 且 s.cs 至少 1',()=>{const st=t.state;const cs=st.upgrades.slice();try{st.upgrades=[];st.ti=Math.max(st.ti,2);win.startBar();const ok=win.MG&&win.MG.bar&&win.MG.bar.cs.length>=1&&st.mg==='bar';return ok}finally{st.upgrades=cs;st.mg=null;if(win.MG)win.MG.bar=null;return undefined}});
-  check('index.html 源含 Amsterdam 窗字串',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /Uitzicht op de Gracht/.test(src)||/阿姆斯特丹/.test(src)});
-  check('index.html 源含 酒杯挂架标签',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /酒杯挂架/.test(src)});
-  check('index.html 源含 暖光吊灯(_bnow)',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /_bnow|_halo|_flicker/.test(src)});
-  check('index.html 源含 倒酒动画 ctx.createRadialGradient',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /createRadialGradient/.test(src)});
-  check('index.html 源含顾客 speech bubble',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /speech bubble|气泡|酒气泡|_bubbleW/.test(src)});
+  check('legacy.html 源含 Amsterdam 窗字串',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /Uitzicht op de Gracht/.test(src)||/阿姆斯特丹/.test(src)});
+  check('legacy.html 源含 酒杯挂架标签',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /酒杯挂架/.test(src)});
+  check('legacy.html 源含 暖光吊灯(_bnow)',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /_bnow|_halo|_flicker/.test(src)});
+  check('legacy.html 源含 倒酒动画 ctx.createRadialGradient',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /createRadialGradient/.test(src)});
+  check('legacy.html 源含顾客 speech bubble',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /speech bubble|气泡|酒气泡|_bubbleW/.test(src)});
   check('barPourState 在 updateBar 内被调用 (cursor 实时推进)',async()=>{
     t.state.mg='bar';
     if(!win.MG)win.MG={};
@@ -208,17 +208,17 @@ frame.addEventListener('load',async()=>{
   });
   check('barPourProgress poured 后立即 0.95',()=>win.eval('barPourProgress({pour:null,poured:true})')===0.95);
   check('barPourProgress null/undefined 安全',()=>win.eval('barPourProgress(null)===0&&barPourProgress(undefined)===0'));
-  check('index.html 源含 ceiling shadow 渐变',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /_ceilingG|_ceilingShadow|ceilingG/.test(src)});
-  check('index.html 源含 pendant light cone 锥光',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /warm cone|_cone|warm cone of light/.test(src)});
-  check('index.html 源含 shelf shadow strip',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /_rackShadow|shelf shadow|back-bar shelf/.test(src)});
-  check('index.html 源含 drink preference bubble 偏好气泡',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /drink preference|_prefIc|_prefCol|preference bubble/.test(src)});
-  check('index.html 源含 liquid surface foam 液面泡沫',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /liquid surface|foam blob|_liquidH|foam on top/.test(src)});
+  check('legacy.html 源含 ceiling shadow 渐变',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /_ceilingG|_ceilingShadow|ceilingG/.test(src)});
+  check('legacy.html 源含 pendant light cone 锥光',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /warm cone|_cone|warm cone of light/.test(src)});
+  check('legacy.html 源含 shelf shadow strip',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /_rackShadow|shelf shadow|back-bar shelf/.test(src)});
+  check('legacy.html 源含 drink preference bubble 偏好气泡',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /drink preference|_prefIc|_prefCol|preference bubble/.test(src)});
+  check('legacy.html 源含 liquid surface foam 液面泡沫',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /liquid surface|foam blob|_liquidH|foam on top/.test(src)});
   // Phase D2 coffee canvas tests
-  check('coffee index.html 源含 windowsill plants 窗台绿植',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /WINDOWSILL PLANTS|windowsill plants|窗台绿植/.test(src)});
-  check('coffee index.html 源含 3 段工艺 dials',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /3 STAGE PROCESS|3 段流程|3-stage|stage.process/.test(src)});
-  check('coffee index.html 源含 latte art trail 拉花',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /LATTE ART|latte art trail|拉花/.test(src)});
-  check('coffee index.html 源含 steam particles 蒸汽粒子',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /steam from machine|steam particles|蒸汽粒子/.test(src)});
-  check('coffee index.html 源含 patience breath ring',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /patience breath|_patRing|breath ring/.test(src)});
+  check('coffee legacy.html 源含 windowsill plants 窗台绿植',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /WINDOWSILL PLANTS|windowsill plants|窗台绿植/.test(src)});
+  check('coffee legacy.html 源含 3 段工艺 dials',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /3 STAGE PROCESS|3 段流程|3-stage|stage.process/.test(src)});
+  check('coffee legacy.html 源含 latte art trail 拉花',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /LATTE ART|latte art trail|拉花/.test(src)});
+  check('coffee legacy.html 源含 steam particles 蒸汽粒子',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /steam from machine|steam particles|蒸汽粒子/.test(src)});
+  check('coffee legacy.html 源含 patience breath ring',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /patience breath|_patRing|breath ring/.test(src)});
 
   // ═══ funify-v3 Round 12 (Phase D5) — 酿酒内景 canvas runtime tests ═══
   check('BREW_BOTTLE_COLORS 暴露且含 6 个啤酒 id',()=>{const c=win.eval('BREW_BOTTLE_COLORS');return c&&Object.keys(c).length===6});
@@ -229,18 +229,18 @@ frame.addEventListener('load',async()=>{
   check('brewYeastMutationFlag({}) → false',()=>win.eval('brewYeastMutationFlag({})')===false);
   check('brewYeastMutationFlag({_yeastMutation:true}) → true',()=>win.eval('brewYeastMutationFlag({_yeastMutation:true})')===true);
   check('brewSetYeastMutation 切换 flag 可逆',()=>{win.eval('window.__bm={};brewSetYeastMutation(window.__bm,true)');const a=win.eval('window.__bm._yeastMutation');win.eval('brewSetYeastMutation(window.__bm,false)');const b=win.eval('window.__bm._yeastMutation');win.eval('delete window.__bm');return a===true&&b===false});
-  check('brew index.html 源含 6 beer bottle selection strip',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /6 beer bottle|_b6|BREW_BOTTLE_COLORS|beer bottle selection|6 beer/i.test(src)});
-  check('brew index.html 源含 3 wood barrel rack 陈化桶',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /wood barrel rack|3 wood barrels|_wb|wood barrel|barrel body/i.test(src)});
-  check('brew index.html 源含 3-stage progress ring mash/boil/ferment',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /3-stage progress ring|stage progress|3 段节奏|mash.*boil.*ferment|_ringCX|stage progress ring/i.test(src)});
-  check('brew index.html 源含 4 yeast glass jars 右栏',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /4 yeast glass jars|YEAST_CATALOG|yeast jar.*right|4 yeast|4 罐.*酵母/i.test(src)});
-  check('brew index.html 源含 yeast mutation red glow 变异警告红光',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /yeast mutation|酵母变异|brewYeastMutationFlag|mutation red glow/i.test(src)});
-  check('brew index.html 源含 digital thermometer readout + needle swing',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /digital thermometer|_dgtX|needle swing|temp.*digital/i.test(src)});
-  check('brew index.html 源含 enhanced steam wisps 6 缕蒸汽',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /enhanced steam|_stN|steam wisps|6 wisps|enhanced steam wisps/i.test(src)});
+  check('brew legacy.html 源含 6 beer bottle selection strip',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /6 beer bottle|_b6|BREW_BOTTLE_COLORS|beer bottle selection|6 beer/i.test(src)});
+  check('brew legacy.html 源含 3 wood barrel rack 陈化桶',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /wood barrel rack|3 wood barrels|_wb|wood barrel|barrel body/i.test(src)});
+  check('brew legacy.html 源含 3-stage progress ring mash/boil/ferment',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /3-stage progress ring|stage progress|3 段节奏|mash.*boil.*ferment|_ringCX|stage progress ring/i.test(src)});
+  check('brew legacy.html 源含 4 yeast glass jars 右栏',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /4 yeast glass jars|YEAST_CATALOG|yeast jar.*right|4 yeast|4 罐.*酵母/i.test(src)});
+  check('brew legacy.html 源含 yeast mutation red glow 变异警告红光',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /yeast mutation|酵母变异|brewYeastMutationFlag|mutation red glow/i.test(src)});
+  check('brew legacy.html 源含 digital thermometer readout + needle swing',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /digital thermometer|_dgtX|needle swing|temp.*digital/i.test(src)});
+  check('brew legacy.html 源含 enhanced steam wisps 6 缕蒸汽',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /enhanced steam|_stN|steam wisps|6 wisps|enhanced steam wisps/i.test(src)});
 
   // ═══ funify-v3 Round 13 (Phase D5+D6) — 火焰/蒸汽柱 + 跨游戏 link runtime tests ═══
-  check('R13: index.html 源含 wood fire / gas burner 火焰渲染',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /wood pile|heat source|gas burner|_flameH|flame tongues|_boilPct/i.test(src)});
-  check('R13: index.html 源含 rising steam column 上升蒸汽柱',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /rising column|_sw3|tall rising|上升蒸汽|rising steam/i.test(src)});
-  check('R13: index.html 源含 heat shimmer ellipse + spigot',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /heat shimmer|spigot|tap on right|_shimP/i.test(src)});
+  check('R13: legacy.html 源含 wood fire / gas burner 火焰渲染',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /wood pile|heat source|gas burner|_flameH|flame tongues|_boilPct/i.test(src)});
+  check('R13: legacy.html 源含 rising steam column 上升蒸汽柱',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /rising column|_sw3|tall rising|上升蒸汽|rising steam/i.test(src)});
+  check('R13: legacy.html 源含 heat shimmer ellipse + spigot',()=>{const src=frame.contentDocument.documentElement.outerHTML;return /heat shimmer|spigot|tap on right|_shimP/i.test(src)});
   // D6 — cross-game link helpers exposed
   check('R13: COFFEE_BEAN_FROM_SHROOM 暴露且 ≥2 个 key',()=>{const m=win.eval('COFFEE_BEAN_FROM_SHROOM');return m&&m.coffeebean_truffle==='amazonian'&&m.coffeebean_cordyceps==='cordyceps'});
   check('R13: coffeebeanFromShroom 双向映射',()=>{const fn=win.eval('coffeebeanFromShroom');return fn('coffeebean_truffle')==='amazonian'&&fn('coffeebean_cordyceps')==='cordyceps'&&fn('notreal')===null});
@@ -503,8 +503,8 @@ frame.addEventListener('load',async()=>{
   check('t-explore 渲染后不含 ?',()=>{const t2=doc.getElementById('t-explore');return t2&&!t2.textContent.includes('?');});
   check('t-explore 渲染后含 "完美抓 +50★"',()=>{const t2=doc.getElementById('t-explore');return t2&&t2.textContent.includes('完美抓 +50★');});
   // 视觉动效 #2 — target arrow/ring dash 偏移动画 (通过同步 XHR 拉源验证)
-  check('index.html 源含 lineDashOffset=-Date.now() 目标线/环动画',()=>{
-    let src='';const x=new XMLHttpRequest();x.open('GET','index.html',false);try{x.send();src=x.responseText}catch(_){return false}
+  check('legacy.html 源含 lineDashOffset=-Date.now() 目标线/环动画',()=>{
+    let src='';const x=new XMLHttpRequest();x.open('GET','legacy.html',false);try{x.send();src=x.responseText}catch(_){return false}
     return src.includes('lineDashOffset=-Date.now()/200%9')&&src.includes('lineDashOffset=-Date.now()/300%5');
   });
 
@@ -535,17 +535,17 @@ frame.addEventListener('load',async()=>{
   check('endGame 后 G._run.streakBest 是数字',()=>typeof _r5snap.streakBest==='number'&&_r5snap.streakBest>=0);
   check('endGame 后 G._run.lastObjDone/total 是数字',()=>typeof _r5snap.lastObjDone==='number'&&typeof _r5snap.lastObjTotal==='number'&&_r5snap.lastObjDone>=0&&_r5snap.lastObjDone<=_r5snap.lastObjTotal);
   check('endGame 后 G._run.lastTier 是 gold/silver/bronze/fail',()=>['gold','silver','bronze','fail'].includes(_r5snap.lastTier));
-  // Source verification — index.html has new helper
-  check('index.html 源含 endGameTier 函数',()=>{let src='';const x=new XMLHttpRequest();x.open('GET','index.html',false);try{x.send();src=x.responseText}catch(_){return false}return src.includes('function endGameTier')&&src.includes('streakBest=G.shop.streakBest')&&src.includes('legacyObjBonus')});
+  // Source verification — legacy.html has new helper
+  check('legacy.html 源含 endGameTier 函数',()=>{let src='';const x=new XMLHttpRequest();x.open('GET','legacy.html',false);try{x.send();src=x.responseText}catch(_){return false}return src.includes('function endGameTier')&&src.includes('streakBest=G.shop.streakBest')&&src.includes('legacyObjBonus')});
 
   // ═══ funify-v3 Round 6 — D-zone 音效反馈层: wire 5 missing SFX + M-key mute ═══
   // Source-level audit: each of the 5 previously-unwired presets must now appear in source.
-  let _r6src='';const _r6x=new XMLHttpRequest();_r6x.open('GET','index.html',false);try{_r6x.send();_r6src=_r6x.responseText}catch(_){}
-  check('index.html 源含 AUDIO.play(\'shroom_pick\') 蘑菇收获',()=>/AUDIO\.play\(['"]shroom_pick['"]\)/.test(_r6src));
-  check('index.html 源含 AUDIO.play(\'bar_clink\') 调价反馈',()=>/AUDIO\.play\(['"]bar_clink['"]\)/.test(_r6src));
-  check('index.html 源含 AUDIO.play(\'bar_sale\') 酒吧成交',()=>/AUDIO\.play\(['"]bar_sale['"]\)/.test(_r6src));
-  check('index.html 源含 AUDIO.play(\'raid_alarm\') 突袭警报',()=>/AUDIO\.play\(['"]raid_alarm['"]\)/.test(_r6src));
-  check('index.html 源含 AUDIO.play(\'click\') 按钮点击',()=>/AUDIO\.play\(['"]click['"]\)/.test(_r6src));
+  let _r6src='';const _r6x=new XMLHttpRequest();_r6x.open('GET','legacy.html',false);try{_r6x.send();_r6src=_r6x.responseText}catch(_){}
+  check('legacy.html 源含 AUDIO.play(\'shroom_pick\') 蘑菇收获',()=>/AUDIO\.play\(['"]shroom_pick['"]\)/.test(_r6src));
+  check('legacy.html 源含 AUDIO.play(\'bar_clink\') 调价反馈',()=>/AUDIO\.play\(['"]bar_clink['"]\)/.test(_r6src));
+  check('legacy.html 源含 AUDIO.play(\'bar_sale\') 酒吧成交',()=>/AUDIO\.play\(['"]bar_sale['"]\)/.test(_r6src));
+  check('legacy.html 源含 AUDIO.play(\'raid_alarm\') 突袭警报',()=>/AUDIO\.play\(['"]raid_alarm['"]\)/.test(_r6src));
+  check('legacy.html 源含 AUDIO.play(\'click\') 按钮点击',()=>/AUDIO\.play\(['"]click['"]\)/.test(_r6src));
   // Toggle mute surface
   check('AUDIO.toggleMute 函数存在',()=>t.AUDIO&&typeof t.AUDIO.toggleMute==='function');
   check('AUDIO.toggleMute 翻位 (off→on→off)',()=>{
@@ -562,9 +562,9 @@ frame.addEventListener('load',async()=>{
     t.AUDIO.muted=had;return ok;
   });
   // Source-level: mute persists via localStorage
-  check('index.html 源含 ab_mute_v1 持久化',()=>_r6src.includes('ab_mute_v1')||(_r6src.includes('localStorage')&&_r6src.includes('muted')));
+  check('legacy.html 源含 ab_mute_v1 持久化',()=>_r6src.includes('ab_mute_v1')||(_r6src.includes('localStorage')&&_r6src.includes('muted')));
   // Source-level: M key handler
-  check('index.html 源含 M 键切换静默 (mute 路由)',()=>_r6src.includes("e.key.toLowerCase()==='m'")||_r6src.includes("key==='m'"));
+  check('legacy.html 源含 M 键切换静默 (mute 路由)',()=>_r6src.includes("e.key.toLowerCase()==='m'")||_r6src.includes("key==='m'"));
 
   // ═══ funify-v3 Round 7 — Roguelike 仪式感: phase flash overlay (BACKLOG #11) ═══
   // phaseNarr pure function contract
@@ -584,10 +584,10 @@ frame.addEventListener('load',async()=>{
   check('showPhaseFlash 重入安全 (多次调用不抛错)',()=>{let ok=true;try{for(let i=0;i<5;i++)win.showPhaseFlash(i%7+1,i%6)}catch(_){ok=false}return ok});
   check('phase-flash 内含 .pf-d / .pf-t / .pf-n 3 个子节点',()=>{const el=doc.getElementById('phase-flash');return el&&!!el.querySelector('.pf-d')&&!!el.querySelector('.pf-t')&&!!el.querySelector('.pf-n')});
   // Source-level: hook in advanceTimeAuto
-  check('index.html 源含 PHASE_NARR 24+ 条 (6 phase × 4)',()=>(_r6src.match(/n:['"][^'"]+['"]/g)||[]).length>=20);
-  check('index.html 源含 showPhaseFlash(G.day,0) 钩入',()=>_r6src.includes('showPhaseFlash(G.day,0'));
-  check('index.html 源含 showPhaseFlash(1,0, 新 run 仪式',()=>_r6src.includes("showPhaseFlash(1,0,{titleOverride:'🌅 Day 1"));
-  check('index.html 源含 #phase-flash DOM 元素 + .pf-d / .pf-t / .pf-n',()=>_r6src.includes('id="phase-flash"')&&_r6src.includes('class="pf-d"')&&_r6src.includes('class="pf-t"')&&_r6src.includes('class="pf-n"'));
+  check('legacy.html 源含 PHASE_NARR 24+ 条 (6 phase × 4)',()=>(_r6src.match(/n:['"][^'"]+['"]/g)||[]).length>=20);
+  check('legacy.html 源含 showPhaseFlash(G.day,0) 钩入',()=>_r6src.includes('showPhaseFlash(G.day,0'));
+  check('legacy.html 源含 showPhaseFlash(1,0, 新 run 仪式',()=>_r6src.includes("showPhaseFlash(1,0,{titleOverride:'🌅 Day 1"));
+  check('legacy.html 源含 #phase-flash DOM 元素 + .pf-d / .pf-t / .pf-n',()=>_r6src.includes('id="phase-flash"')&&_r6src.includes('class="pf-d"')&&_r6src.includes('class="pf-t"')&&_r6src.includes('class="pf-n"'));
 
   // ═══ funify-v3 Round 8 — confetti 庆祝粒子 (BACKLOG #7 反馈感) ═══
   // Pure fn surface
@@ -3115,27 +3115,27 @@ frame.addEventListener('load',async()=>{
 
   // 4. 源代码层面验收:tier-aware 文案 + tier 成就解锁已接入 endGame
   const _fetchIndexSrc = () => {
-    let src='';const x=new XMLHttpRequest();x.open('GET','index.html',false);try{x.send();src=x.responseText}catch(_){return ''}
+    let src='';const x=new XMLHttpRequest();x.open('GET','legacy.html',false);try{x.send();src=x.responseText}catch(_){return ''}
     return src;
   };
-  check('Round 41: index.html endGame 体应用 tier.mult 乘 G.metaPending',()=>{
+  check('Round 41: legacy.html endGame 体应用 tier.mult 乘 G.metaPending',()=>{
     const src = _fetchIndexSrc();
     return /objReward[\s\S]{0,200}=Math\.round\(objRewardRaw\*objRewardMult\)/.test(src);
   });
-  check('Round 41: index.html endGame tier-aware gold/silver/bronze 状态标题',()=>{
+  check('Round 41: legacy.html endGame tier-aware gold/silver/bronze 状态标题',()=>{
     const src = _fetchIndexSrc();
     // Three independent literal substring checks (avoid regex surrogate-pair friction with _tierTitle=...)
     return src.indexOf('_tierTitle=tier.tier===\'gold\'?\'🎉 完美通关！') !== -1
       && src.indexOf('tier.tier===\'silver\'?\'✨ 优秀') !== -1
       && src.indexOf('tier.tier===\'bronze\'?\'✅ 达标') !== -1;
   });
-  check('Round 41: index.html endGame 体接入 3 条 tier 成就 tryUnlock',()=>{
+  check('Round 41: legacy.html endGame 体接入 3 条 tier 成就 tryUnlock',()=>{
     const src = _fetchIndexSrc();
     return src.indexOf("if(tier.tier==='gold')tryUnlock('gold_run')") !== -1
       && src.indexOf("else if(tier.tier==='silver')tryUnlock('silver_run')") !== -1
       && src.indexOf("else if(tier.tier==='bronze')tryUnlock('bronze_run')") !== -1;
   });
-  check('Round 41: index.html ACH_POOL 含 3 条新 tier 成就',()=>{
+  check('Round 41: legacy.html ACH_POOL 含 3 条新 tier 成就',()=>{
     const src = _fetchIndexSrc();
     return src.indexOf("{id:'gold_run',ic:'🥇',n:'金牌 Run'") !== -1
       && src.indexOf("{id:'silver_run',ic:'🥈',n:'银牌 Run'") !== -1
@@ -3345,15 +3345,15 @@ frame.addEventListener('load',async()=>{
     t.BAR_SOUL_EVENTS.every(e=>typeof e.ic==='string'&&typeof e.n==='string'&&typeof e.desc==='string'&&e.effect&&typeof e.effect.kind==='string'));
   // 4. Source-level wiring (pour mechanic + new drink catalog hooked in)
   const _fetchIndex3 = () => {
-    let src='';const x=new XMLHttpRequest();x.open('GET','index.html',false);try{x.send();src=x.responseText}catch(_){return ''}
+    let src='';const x=new XMLHttpRequest();x.open('GET','legacy.html',false);try{x.send();src=x.responseText}catch(_){return ''}
     return src;
   };
-  check('R3: index.html 引入 BAR_DRINK_CATALOG (12 个 id)',()=>{
+  check('R3: legacy.html 引入 BAR_DRINK_CATALOG (12 个 id)',()=>{
     const src = _fetchIndex3();
     return /const BAR_DRINK_CATALOG=\[[\s\S]*?\];/.test(src) &&
       ['lager','stout','wine','cider','kombucha','sour','mojito','martini','spritz','julep','old_fash','negroni'].every(id=>src.indexOf("id:'"+id+"'") !== -1);
   });
-  check('R3: index.html 引入 BAR_MIXERS (none + 4 配料)',()=>{
+  check('R3: legacy.html 引入 BAR_MIXERS (none + 4 配料)',()=>{
     const src = _fetchIndex3();
     return src.indexOf("const BAR_MIXERS=[") !== -1 &&
       src.indexOf("id:'none'") !== -1 &&
@@ -3362,27 +3362,27 @@ frame.addEventListener('load',async()=>{
       src.indexOf("id:'herb'") !== -1 &&
       src.indexOf("id:'honey'") !== -1;
   });
-  check("R3: index.html barIn 处理 'e' 倒酒键 (s.pour.startedAt)",()=>{
+  check("R3: legacy.html barIn 处理 'e' 倒酒键 (s.pour.startedAt)",()=>{
     const src = _fetchIndex3();
     return /if\(k==='e'\)/.test(src) && /s\.pour=\{active:true,drinkId:cur\.drinkId/.test(src);
   });
-  check('R3: index.html barIn SPACE 应用 baseMult*mixMult*(1+pourBonus)',()=>{
+  check('R3: legacy.html barIn SPACE 应用 baseMult*mixMult*(1+pourBonus)',()=>{
     const src = _fetchIndex3();
     return /baseMult\*mixMult\*\(1\+pourBonus\)/.test(src);
   });
-  check('R3: index.html barIn SPACE 应用 soul cocktailBonus/earnMul/tipBoost',()=>{
+  check('R3: legacy.html barIn SPACE 应用 soul cocktailBonus/earnMul/tipBoost',()=>{
     const src = _fetchIndex3();
     return /soulCocktailBonus\*soulEarnMul\*tipBoost/.test(src);
   });
-  check('R3: index.html 引入 4 个 soul event barRollSoulEvent + barApplySoul',()=>{
+  check('R3: legacy.html 引入 4 个 soul event barRollSoulEvent + barApplySoul',()=>{
     const src = _fetchIndex3();
     return /function barRollSoulEvent/.test(src) && /function barApplySoul/.test(src);
   });
-  check('R3: index.html render bar 显示倒酒计时条 (s.pour.cursor pourZone)',()=>{
+  check('R3: legacy.html render bar 显示倒酒计时条 (s.pour.cursor pourZone)',()=>{
     const src = _fetchIndex3();
     return /s\.pour\.cursor/.test(src) && /drinkObj\.pourZone/.test(src);
   });
-  check('R3: index.html BAR_DRINK_STOCK_BY_ID 含 12 个 drinkId 映射',()=>{
+  check('R3: legacy.html BAR_DRINK_STOCK_BY_ID 含 12 个 drinkId 映射',()=>{
     const src = _fetchIndex3();
     return /const BAR_DRINK_STOCK_BY_ID=/.test(src) &&
       ['lager','stout','wine','cider','kombucha','sour','mojito','martini','spritz','julep','old_fash','negroni'].every(id=>src.indexOf("'"+id+"':") !== -1);
@@ -3448,27 +3448,27 @@ frame.addEventListener('load',async()=>{
     const st=t.coffeePourState(s);
     return st&&typeof st.progress==='number'&&st.progress>0;
   });
-  check('R4: index.html startCoffee 初始化 beanQuality+dailyBeanMult+stage',()=>{
+  check('R4: legacy.html startCoffee 初始化 beanQuality+dailyBeanMult+stage',()=>{
     const src=_fetchIndex3();
     return /coffeeBeanQualityMult/.test(src)&&/dailyBeanMult:coffeeBeanMult\(dailyBean\.id\)/.test(src)&&/beanQuality/.test(src)&&/stage:\{idx:0/.test(src);
   });
-  check('R4: index.html coffeeIn SPACE 应用 beanQ*specialMult*vipMult*tipBoost',()=>{
+  check('R4: legacy.html coffeeIn SPACE 应用 beanQ*specialMult*vipMult*tipBoost',()=>{
     const src=_fetchIndex3();
     return /beanQ\*specialMult\*vipMult\*tipBoost/.test(src);
   });
-  check('R4: index.html coffeeIn SPACE 检查 inspector 隐藏分支',()=>{
+  check('R4: legacy.html coffeeIn SPACE 检查 inspector 隐藏分支',()=>{
     const src=_fetchIndex3();
     return /inspectorActive&&s\.inspectorRounds>0/.test(src)&&/coffeeInspectorHide/.test(src);
   });
-  check('R4: index.html sCoffeeC 末尾调用 coffeeRollSoulEvent + 重置 stage',()=>{
+  check('R4: legacy.html sCoffeeC 末尾调用 coffeeRollSoulEvent + 重置 stage',()=>{
     const src=_fetchIndex3();
     return /coffeeRollSoulEvent\(s,s\.sd\)/.test(src)&&/stage=\{idx:0,startedAt:Date\.now\(\)/.test(src);
   });
-  check('R4: index.html newRunInner 调用 coffeeAgeBeans',()=>{
+  check('R4: legacy.html newRunInner 调用 coffeeAgeBeans',()=>{
     const src=_fetchIndex3();
     return /coffeeAgeBeans\(\)/.test(src);
   });
-  check('R4: index.html 暴露 coffeeBeanMult/coffeeBeanQualityMult/coffeeRollSoulEvent/coffeeApplySoul/coffeePourState/coffeeInspectorHide',()=>{
+  check('R4: legacy.html 暴露 coffeeBeanMult/coffeeBeanQualityMult/coffeeRollSoulEvent/coffeeApplySoul/coffeePourState/coffeeInspectorHide',()=>{
     const src=_fetchIndex3();
     return ['coffeeBeanMult','coffeePickDailyBean','coffeeAgeBeans','coffeeBeanQualityMult','coffeeRollSoulEvent','coffeeApplySoul','coffeePourState','coffeeInspectorHide'].every(fn=>new RegExp('\\b'+fn+'\\b').test(src));
   });
@@ -3608,31 +3608,31 @@ frame.addEventListener('load',async()=>{
       t.MG.surf=null;
     }
   });
-  check('R25: index.html pickWavePoint 初始化骑浪状态 + rescueActive/sharkActive/...',()=>{
+  check('R25: legacy.html pickWavePoint 初始化骑浪状态 + rescueActive/sharkActive/...',()=>{
     const src=_fetchIndex3();
     return /h:0\.5,pumpT:0/.test(src)&&/barrel:false,bal:0,balHealth:100/.test(src)&&/rescueActive:false/.test(src)&&/sharkActive:false/.test(src)&&/surfApplyUpgradeBoosts\(session\)/.test(src);
   });
-  check('R5: index.html surfIn SPACE 末尾调用 surfRollSoulEvent',()=>{
+  check('R5: legacy.html surfIn SPACE 末尾调用 surfRollSoulEvent',()=>{
     const src=_fetchIndex3();
     return /surfRollSoulEvent\(s,s\.wave\)/.test(src)&&/surfApplySoul\(evt\)/.test(src);
   });
-  check('R25: index.html surfIn A/D carve 沿浪面切高度 (SURF_CARVE_STEP)',()=>{
+  check('R25: legacy.html surfIn A/D carve 沿浪面切高度 (SURF_CARVE_STEP)',()=>{
     const src=_fetchIndex3();
     return /k==='a'\|\|k==='arrowleft'/.test(src)&&/k==='d'\|\|k==='arrowright'/.test(src)&&/SURF_CARVE_STEP/.test(src);
   });
-  check('R5: index.html surfIn shark/rescue/pollution 三个 soul 分支存在',()=>{
+  check('R5: legacy.html surfIn shark/rescue/pollution 三个 soul 分支存在',()=>{
     const src=_fetchIndex3();
     return /s\.sharkActive&&/.test(src)&&/s\.rescueActive&&!s\.rescueResolved/.test(src)&&/s\.pollutionActive&&/.test(src);
   });
-  check('R5: index.html surfIn tidal perfect*=3 + pollution catch-=5',()=>{
+  check('R5: legacy.html surfIn tidal perfect*=3 + pollution catch-=5',()=>{
     const src=_fetchIndex3();
     return /s\.tidalActive&&band===2\)sc\*=3/.test(src)&&/s\.pollutionActive\)sc=Math\.max\(0,sc-5\)/.test(src);
   });
-  check('R5: index.html newRunInner 重置 G._surfSoul + 初始化 G.surfUpgrades',()=>{
+  check('R5: legacy.html newRunInner 重置 G._surfSoul + 初始化 G.surfUpgrades',()=>{
     const src=_fetchIndex3();
     return /G\._surfSoul\.fired=false/.test(src)&&/G\._surfSoul\.picked=null/.test(src)&&/if\(!G\.surfUpgrades\)G\.surfUpgrades=\[\]/.test(src);
   });
-  check('R25: index.html 暴露 SURF_SOUL_EVENTS/SURF_UPGRADES/surfRollSoulEvent/surfApplySoul/surfBandAt/surfBalVerdict/surfFragCollect/surfApplyUpgradeBoosts',()=>{
+  check('R25: legacy.html 暴露 SURF_SOUL_EVENTS/SURF_UPGRADES/surfRollSoulEvent/surfApplySoul/surfBandAt/surfBalVerdict/surfFragCollect/surfApplyUpgradeBoosts',()=>{
     const src=_fetchIndex3();
     return ['SURF_SOUL_EVENTS','SURF_UPGRADES','surfRollSoulEvent','surfApplySoul','surfBandAt','surfBalVerdict','surfFragCollect','surfApplyUpgradeBoosts'].every(fn=>new RegExp('\\b'+fn+'\\b').test(src));
   });
@@ -3719,23 +3719,23 @@ frame.addEventListener('load',async()=>{
     const v=win.AB_TEST.validate();
     return v.brewBeerCount===true&&v.brewYeastCount===true&&v.brewSoulCount===true&&v.brewUpgradeCount===true;
   });
-  check('R7: index.html 暴露 BEER_CATALOG/YEAST_CATALOG/BREW_SOUL_EVENTS/BREW_UPGRADES/brewRollSoulEvent/brewApplySoul/brewApplyUpgradeBoosts/brewPickRecipe',()=>{
+  check('R7: legacy.html 暴露 BEER_CATALOG/YEAST_CATALOG/BREW_SOUL_EVENTS/BREW_UPGRADES/brewRollSoulEvent/brewApplySoul/brewApplyUpgradeBoosts/brewPickRecipe',()=>{
     const src=_fetchIndex3();
     return ['BEER_CATALOG','YEAST_CATALOG','BREW_SOUL_EVENTS','BREW_UPGRADES','brewRollSoulEvent','brewApplySoul','brewApplyUpgradeBoosts','brewPickRecipe'].every(fn=>new RegExp('\\b'+fn+'\\b').test(src));
   });
-  check('R7: index.html startBrew 用 BEER_CATALOG + brewApplyUpgradeBoosts + G._brewSoul 重置',()=>{
+  check('R7: legacy.html startBrew 用 BEER_CATALOG + brewApplyUpgradeBoosts + G._brewSoul 重置',()=>{
     const src=_fetchIndex3();
     return /Math\.floor\(seeded\(41\)\*BEER_CATALOG\.length\)/.test(src)&&/brewApplyUpgradeBoosts\(MG\.brew\)/.test(src)&&/G\._brewSoul=\{picked:null,fired:false/.test(src);
   });
-  check('R7: index.html brewIn 调 brewRollSoulEvent + brewApplySoul',()=>{
+  check('R7: legacy.html brewIn 调 brewRollSoulEvent + brewApplySoul',()=>{
     const src=_fetchIndex3();
     return /const soulEvt=brewRollSoulEvent\(s\)/.test(src)&&/if\(soulEvt\)brewApplySoul\(soulEvt\)/.test(src);
   });
-  check('R7: index.html brewNotes ledger 覆盖 6 啤酒 (IPA/Stout/Lager/Pilsner/Sour/BelgianTripel)',()=>{
+  check('R7: legacy.html brewNotes ledger 覆盖 6 啤酒 (IPA/Stout/Lager/Pilsner/Sour/BelgianTripel)',()=>{
     const src=_fetchIndex3();
     return /'IPA','Stout','Lager','Pilsner','Sour','BelgianTripel'/.test(src);
   });
-  check('R7: index.html brew 选择 y∈0..3 (4 酵母)',()=>{
+  check('R7: legacy.html brew 选择 y∈0..3 (4 酵母)',()=>{
     const src=_fetchIndex3();
     return /s\.y=\(s\.y\+1\)%4/.test(src);
   });

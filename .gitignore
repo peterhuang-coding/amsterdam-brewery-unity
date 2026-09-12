@@ -24,3 +24,5 @@ __pycache__/
 *.pyc
 *.pyo
 node_modules/
+.playwright-cli/
+output/playwright/

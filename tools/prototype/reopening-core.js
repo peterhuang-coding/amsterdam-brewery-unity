@@ -1,9 +1,9 @@
 (function (root, factory) {
   'use strict';
-  const api = factory();
+  const api = factory(typeof module === 'object' && module.exports ? require('./backstage-core.js') : root.Backstage);
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (root) root.Reopening = api;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (B) {
   'use strict';
 
   const BEERS = Object.freeze({
@@ -73,7 +73,7 @@
       friends: { lotte: 0, bram: 0, marta: 0 }, promises: { lotte: false },
       upgrades: [], hops: 0, music: false, log: [], totalSatisfied: 0, totalServed: 0,
       brew: null, forage: null, night: null, reports: [], lastMessage: '三天试营业。房东称这叫扶持创业，因为账单用了绿色纸。',
-      result: null, prepared: []
+      result: null, prepared: [], backstage: { run: null, discovered: [], resolution: null, trips: 0 }
     };
   }
   function stock(state, beer) {
@@ -131,6 +131,11 @@
         status: 'future', portrait: person === 'lotte' ? '👩🏻‍🎤' : person === 'bram' ? '🧔🏼' : person === 'marta' ? '👩🏼‍🦳' : portraits[Math.floor(rand() * portraits.length)],
         quote: person ? PEOPLE[person].quote : beer === 'stout' ? '一杯黑啤。论文还在返修，我先完成这一杯。' : '一杯金色艾尔。老板说公司是家，所以加班费算亲情。'
       });
+    }
+    if (state.backstage.resolution === 'returned') {
+      Object.assign(orders[1], { name: 'Noor', quote: '谢谢你把箱子送回来。老板把违禁品写成酵母，工资倒是从来不多写一个零。', budget: 14, patience: 38 });
+    } else if (state.backstage.resolution === 'kept') {
+      Object.assign(orders[1], { name: '穿灰外套的人', quote: '冷藏箱在你这里？我只喝正常的啤酒。其他事情，等你忙完再说。', budget: 10, patience: 18 });
     }
     return { elapsed: 0, duration, orders, pours: [], earned: 0, served: 0, satisfied: 0, lost: 0, promiseKept: false, promiseBroken: false, event: null, rentAdjustment: 0 };
   }
@@ -210,6 +215,24 @@
       case 'start':
         if (state.phase !== 'welcome') return fail('酒馆已经开始营业准备了。');
         state.phase = 'prep'; say(state, '先备酒，再开门。工商表格没有“暂时还不会倒酒”这一栏。'); break;
+      case 'explore':
+        if (!B || state.phase !== 'prep' || state.actions < 1 || state.prepared.includes('explore')) return fail('每天可探险一次，需要一次准备机会。');
+        if (!owns(B.KITS, action.kit)) return fail('先选一套出门工具。');
+        state.actions--; state.prepared.push('explore'); state.phase = 'explore';
+        state.backstage.run = B.create(state.seed, state.day, action.kit, state.backstage.discovered);
+        say(state, '城市背面的门开着。去夜店找冷藏箱，或者沿着陌生的灯走。'); break;
+      case 'returnExplore': {
+        if (!B || state.phase !== 'explore' || state.backstage.run.status === 'active') return fail('先抵达回店口，或者轻装撤回。');
+        const reward = B.rewards(state.backstage.run);
+        state.cash += reward.cash; state.hops = Math.min(15, state.hops + reward.hops);
+        for (let cups = reward.cups, index = 0; cups > 0; cups -= 6, index++) {
+          state.batches.push({ id: 'd' + state.day + '-backstage-' + index, beer: 'blond', cups: Math.min(6, cups), quality: 2, madeDay: state.day, aged: false });
+        }
+        state.backstage.discovered = [...new Set([...state.backstage.discovered, ...reward.discovered])];
+        if (['returned', 'kept'].includes(reward.parcel)) state.backstage.resolution = reward.parcel;
+        state.backstage.trips++; state.backstage.run = null; state.phase = 'prep';
+        say(state, '探险归来：' + reward.cups + ' 杯艾尔，' + reward.hops + ' 份酒花，€' + reward.cash + '。' + (reward.parcel === 'returned' ? 'Noor 说今晚来喝一杯，冷藏箱的人情记下了。' : reward.parcel === 'kept' ? '月雾箱单独封存，绝不入酒。有人可能会找上门。' : '家里的库存和钱都还在。')); break;
+      }
       case 'prepare': {
         if (state.phase !== 'prep' || state.actions < 1) return fail('今天的行动已用完，可以开门迎客了。');
         const kind = action.kind;
@@ -424,16 +447,20 @@
   const string = value => typeof value === 'string' && value.length <= 2000;
   const unique = array => new Set(array).size === array.length;
   function validState(s) {
-    if (!shape(s, 'version seed day phase cash actions batches friends promises upgrades hops music log totalSatisfied totalServed brew forage night reports lastMessage result prepared')) return false;
+    if (!shape(s, 'version seed day phase cash actions batches friends promises upgrades hops music log totalSatisfied totalServed brew forage night reports lastMessage result prepared backstage')) return false;
     if (s.version !== 1 || !integer(s.seed, 0, 4294967295) || !integer(s.day, 1, 3) || !integer(s.cash, 0, 1000000) || !integer(s.actions, 0, 2)) return false;
-    if (!['welcome', 'prep', 'brew', 'forage', 'night', 'summary', 'ending'].includes(s.phase)) return false;
+    if (!['welcome', 'prep', 'brew', 'forage', 'explore', 'night', 'summary', 'ending'].includes(s.phase)) return false;
+    if (!shape(s.backstage, 'run discovered resolution trips') || !Array.isArray(s.backstage.discovered) || !unique(s.backstage.discovered) || !s.backstage.discovered.every(id => ['greenhouse', 'noor'].includes(id)) || ![null, 'returned', 'kept'].includes(s.backstage.resolution) || !integer(s.backstage.trips, 0, 3)) return false;
+    if (s.phase === 'explore') {
+      if (!B || !B.restore(s.backstage.run) || s.backstage.run.seed !== s.seed || s.backstage.run.day !== s.day || !s.prepared.includes('explore')) return false;
+    } else if (s.backstage.run !== null) return false;
     if (!shape(s.friends, 'lotte bram marta') || !Object.values(s.friends).every(n => integer(n, 0, 20))) return false;
     if (!shape(s.promises, 'lotte') || typeof s.promises.lotte !== 'boolean') return false;
     if (!Array.isArray(s.upgrades) || s.upgrades.length > 2 || !unique(s.upgrades) || !s.upgrades.every(id => owns(UPGRADES, id))) return false;
     if (!integer(s.hops, 0, 15) || typeof s.music !== 'boolean' || !integer(s.totalSatisfied, 0, 30) || !integer(s.totalServed, s.totalSatisfied, 30)) return false;
     if (!Array.isArray(s.log) || s.log.length > 12 || !s.log.every(string) || !string(s.lastMessage)) return false;
-    if (!Array.isArray(s.prepared) || !unique(s.prepared) || !s.prepared.every(kind => ['coffee', 'visit', 'surf', 'market', 'lab'].includes(kind))) return false;
-    if (!Array.isArray(s.batches) || s.batches.length < 2 || s.batches.length > 17 || !unique(s.batches.map(b => b && b.id))) return false;
+    if (!Array.isArray(s.prepared) || !unique(s.prepared) || !s.prepared.every(kind => ['coffee', 'visit', 'surf', 'market', 'lab', 'explore'].includes(kind))) return false;
+    if (!Array.isArray(s.batches) || s.batches.length < 2 || s.batches.length > 32 || !unique(s.batches.map(b => b && b.id))) return false;
     if (!s.batches.every(b => shape(b, 'id beer cups quality madeDay aged') && string(b.id) && b.id.length > 0 && owns(BEERS, b.beer) && integer(b.cups, 0, 6) && integer(b.quality, 1, 3) && integer(b.madeDay, 1, s.day) && typeof b.aged === 'boolean')) return false;
     if (s.phase === 'brew') {
       if (!shape(s.brew, 'beer hits') || !owns(BEERS, s.brew.beer) || !Array.isArray(s.brew.hits) || s.brew.hits.length > 2 || !s.brew.hits.every(n => number(n, 0, 1))) return false;
@@ -483,8 +510,11 @@
   }
   function restore(value) {
     try {
-      if (!safeData(value, new Set(), 0, { count: 0 }) || !validState(value)) return null;
-      return clone(value);
+      if (!safeData(value, new Set(), 0, { count: 0 })) return null;
+      const restored = clone(value);
+      if (restored && !owns(restored, 'backstage')) restored.backstage = { run: null, discovered: [], resolution: null, trips: 0 };
+      if (!validState(restored)) return null;
+      return restored;
     } catch (_) { return null; }
   }
 

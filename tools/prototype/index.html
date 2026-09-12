@@ -5,10 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#173c49">
   <title>Tweede Kans · 运河边的第二次机会</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='8' fill='%23233943'/%3E%3Ctext x='24' y='32' text-anchor='middle' font-family='Georgia' font-size='24' fill='%23edbd79'%3ETK%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="reopening.css">
+  <link rel="stylesheet" href="backstage.css">
+  <script src="backstage-core.js" defer></script>
   <script src="reopening-core.js" defer></script>
   <script src="reopening-city.js" defer></script>
   <script src="reopening-scene.js" defer></script>
+  <script src="backstage-scene.js" defer></script>
+  <script src="backstage-ui.js" defer></script>
   <script src="reopening-ui.js" defer></script>
 </head>
 <body>
@@ -33,6 +38,11 @@
             <div class="room-label"><span class="live-dot"></span><span id="room-time">门口的灯，还亮着</span></div>
             <div class="room-caption" id="room-caption">这家店，值得再来一次。</div>
             <div class="equipment" id="equipment"></div>
+          </div>
+          <div id="backstage-controls" class="backstage-controls" hidden aria-label="城市背面探险操作">
+            <div class="exp-status"><div><span>收班前</span><strong id="exp-clock">180s</strong></div><div><span>背包</span><strong id="exp-load">0 / 8</strong></div><div><span>状态</span><strong id="exp-health">●●●</strong></div><button data-action="exp-command" data-verb="map">地图 · M</button></div>
+            <div class="exp-controls-row"><div class="exp-dpad" aria-label="按住移动"><button data-exp-move="w" aria-label="向上移动">↑</button><button data-exp-move="a" aria-label="向左移动">←</button><button data-exp-move="s" aria-label="向下移动">↓</button><button data-exp-move="d" aria-label="向右移动">→</button></div><div class="exp-tools"><button id="exp-hook" data-action="exp-command" data-verb="hook">钩拉 · J</button><button id="exp-foam" data-action="exp-command" data-verb="foam">泡沫 · F</button><button id="exp-dash" data-action="exp-command" data-verb="dash">闪避 · Space</button><button data-action="exp-command" data-verb="drop">扔下 · Q</button><button id="exp-context" data-action="exp-command" data-verb="interact">靠近后互动 · E</button></div></div>
+            <p class="exp-controls-note">WASD / 方向键移动 · 鼠标瞄准，点击下钩 / 右键泡沫 · 纯键盘时朝行走方向使用工具 · P 暂停</p>
           </div>
           <div id="city-toolbar" class="city-toolbar" hidden></div>
           <div class="queue-heading"><h2 id="queue-title">门口的留言</h2><span id="night-clock"></span></div>

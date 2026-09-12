@@ -1,9 +1,10 @@
 (function (root, factory) {
   'use strict';
-  const api = factory(typeof module === 'object' && module.exports ? require('./backstage-core.js') : root.Backstage);
+  const common = typeof module === 'object' && module.exports;
+  const api = factory(common ? require('./backstage-core.js') : root.Backstage, common ? require('./backstage-auto.js') : root.BackstageAuto);
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (root) root.Reopening = api;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (B) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (B, A) {
   'use strict';
 
   const BEERS = Object.freeze({
@@ -218,8 +219,10 @@
       case 'explore':
         if (!B || state.phase !== 'prep' || state.actions < 1 || state.prepared.includes('explore')) return fail('每天可探险一次，需要一次准备机会。');
         if (!owns(B.KITS, action.kit)) return fail('先选一套出门工具。');
+        if (![undefined, 'auto', 'manual'].includes(action.mode)) return fail('请选择自动探索或手动操作。');
         state.actions--; state.prepared.push('explore'); state.phase = 'explore';
         state.backstage.run = B.create(state.seed, state.day, action.kit, state.backstage.discovered);
+        if (action.mode !== 'manual') A.enable(state.backstage.run);
         say(state, '城市背面的门开着。去夜店找冷藏箱，或者沿着陌生的灯走。'); break;
       case 'returnExplore': {
         if (!B || state.phase !== 'explore' || state.backstage.run.status === 'active') return fail('先抵达回店口，或者轻装撤回。');
@@ -452,7 +455,7 @@
     if (!['welcome', 'prep', 'brew', 'forage', 'explore', 'night', 'summary', 'ending'].includes(s.phase)) return false;
     if (!shape(s.backstage, 'run discovered resolution trips') || !Array.isArray(s.backstage.discovered) || !unique(s.backstage.discovered) || !s.backstage.discovered.every(id => ['greenhouse', 'noor'].includes(id)) || ![null, 'returned', 'kept'].includes(s.backstage.resolution) || !integer(s.backstage.trips, 0, 3)) return false;
     if (s.phase === 'explore') {
-      if (!B || !B.restore(s.backstage.run) || s.backstage.run.seed !== s.seed || s.backstage.run.day !== s.day || !s.prepared.includes('explore')) return false;
+      if (!B || !B.restore(s.backstage.run) || !A.valid(s.backstage.run) || s.backstage.run.seed !== s.seed || s.backstage.run.day !== s.day || !s.prepared.includes('explore')) return false;
     } else if (s.backstage.run !== null) return false;
     if (!shape(s.friends, 'lotte bram marta') || !Object.values(s.friends).every(n => integer(n, 0, 20))) return false;
     if (!shape(s.promises, 'lotte') || typeof s.promises.lotte !== 'boolean') return false;

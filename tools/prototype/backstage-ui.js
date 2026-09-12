@@ -1,5 +1,5 @@
 (function(root){
-  'use strict';const B=root.Backstage;
+  'use strict';const B=root.Backstage,A=root.BackstageAuto;
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   class BackstageUI{
     constructor(options){
@@ -8,13 +8,13 @@
       this.canvas.addEventListener('pointermove',e=>{if(this.run()){this.trackPointer(e);}});
       this.canvas.addEventListener('pointerleave',()=>{this.pointer=null;this.aim=null;});
       this.canvas.addEventListener('pointerdown',e=>{
-        if(!this.run()||this.isPaused())return;e.preventDefault();this.canvas.focus({preventScroll:true});
+        if(!this.run()||this.isPaused()||this.run().auto?.enabled)return;e.preventDefault();this.canvas.focus({preventScroll:true});
         this.trackPointer(e);
         this.perform(e.button===2?'foam':'hook');
       });
       this.canvas.addEventListener('contextmenu',e=>{if(this.run())e.preventDefault();});
       document.addEventListener('pointerdown',e=>{
-        const button=e.target.closest('[data-exp-move]');if(!button||!this.run()||this.isPaused())return;
+        const button=e.target.closest('[data-exp-move]');if(!button||!this.run()||this.isPaused()||this.run().auto?.enabled)return;
         e.preventDefault();button.setPointerCapture(e.pointerId);this.keys.add(button.dataset.expMove);this.aim=null;this.pointer=null;
       });
       for(const type of ['pointerup','pointercancel','lostpointercapture'])document.addEventListener(type,e=>{const button=e.target.closest('[data-exp-move]');if(button)this.keys.delete(button.dataset.expMove);});
@@ -23,11 +23,16 @@
     }
     run(){return this.getState().phase==='explore'?this.getState().backstage.run:null;}
     trackPointer(e){const box=this.canvas.getBoundingClientRect();this.pointer={x:(e.clientX-box.left)*1100/box.width,y:(e.clientY-box.top)*640/box.height};this.updateAim();}
-    updateAim(){this.aim=this.pointer?this.scene.worldPoint(this.pointer.x,this.pointer.y,this.run(),this.overview):null;}
+    updateAim(){this.aim=this.pointer&&!this.run()?.auto?.enabled?this.scene.worldPoint(this.pointer.x,this.pointer.y,this.run(),this.overview):null;}
     clear(){this.keys.clear();this.aim=null;this.pointer=null;}
     key(e){
       if(!this.run()||this.isPaused())return false;
       const k=e.key.toLowerCase();
+      if(this.run().auto?.enabled&&k!=='m'){
+        if(['1','2','3'].includes(k)){e.preventDefault();const choice=A.view(this.run()).choices[Number(k)-1];if(choice&&!e.repeat)this.perform('choice:'+choice.id);return true;}
+        if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright','e','j','f','q',' '].includes(k)){e.preventDefault();return true;}
+        return false;
+      }
       if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)){e.preventDefault();this.keys.add(k);return true;}
       const verb={e:'interact',j:'hook',f:'foam',q:'drop',' ':'dash',m:'map'}[k];
       if(verb){e.preventDefault();if(!e.repeat)this.perform(verb);return true;}return false;
@@ -37,26 +42,38 @@
       this.updateAim();
       if(verb==='map'){this.overview=!this.overview;this.render();return;}
       if(verb==='return'){this.clear();this.dispatch({type:'returnExplore'});return;}
+      if(verb==='mode'||verb==='reroute'||verb==='speed'||verb.startsWith('choice:')){
+        this.clear();
+        if(verb==='mode'){if(r.auto?.enabled)A.disable(r);else A.enable(r);}
+        else if(verb==='reroute')A.enable(r);
+        else if(verb==='speed'&&r.auto?.enabled)r.auto.speed=r.auto.speed===1?2:1;
+        else if(verb.startsWith('choice:'))A.choose(r,verb.slice(7));
+        this.signature='';this.save();this.render();return;
+      }
       if(verb==='bail'){
         this.showModal('轻装撤回','放下背包，先回家？','<p>本趟尚未带回的物品会留在街区。已经交给 Noor 的箱子、发现的地点和家中积累都会保留。</p>',[
           {label:'继续探险'},{label:'放下背包，撤回',secondary:true,run:()=>this.perform('confirm-bail')}
         ]);return;
       }
+      if(r.auto?.enabled&&verb!=='confirm-bail')return;
       B.command(r,verb==='confirm-bail'?'bail':verb,this.aim);this.signature='';this.save();this.render();
     }
     step(seconds){
       const r=this.run();if(!r)return;
       this.updateAim();
       if(!this.isPaused()&&!document.hidden&&r.status==='active'){
-        const dx=Number(this.keys.has('d')||this.keys.has('arrowright'))-Number(this.keys.has('a')||this.keys.has('arrowleft'));
-        const dy=Number(this.keys.has('s')||this.keys.has('arrowdown'))-Number(this.keys.has('w')||this.keys.has('arrowup'));
-        B.step(r,{dx,dy,aim:this.aim},seconds);
+        if(r.auto?.enabled){const before=[r.auto.event,r.status].join('|');A.step(r,seconds);if(before!==[r.auto.event,r.status].join('|'))this.save();}
+        else{
+          const dx=Number(this.keys.has('d')||this.keys.has('arrowright'))-Number(this.keys.has('a')||this.keys.has('arrowleft'));
+          const dy=Number(this.keys.has('s')||this.keys.has('arrowdown'))-Number(this.keys.has('w')||this.keys.has('arrowup'));
+          B.step(r,{dx,dy,aim:this.aim},seconds);
+        }
       }
-      this.updateAim();this.render();this.scene.draw(r,{overview:this.overview,aim:this.aim,moving:this.keys.size>0&&!this.isPaused()});
+      this.updateAim();this.render();this.scene.draw(r,{overview:this.overview,aim:this.aim,moving:(r.auto?.enabled?!r.auto.event:this.keys.size>0)&&!this.isPaused()&&r.status==='active'});
     }
     render(){
       const r=this.run();if(!r)return;
-      const z=B.zone(r),near=B.nearest(r),signature=[r.sequence,z.id,near?.id,r.status,this.overview].join('|');
+      const auto=r.auto?.enabled,z=B.zone(r),near=B.nearest(r),signature=[r.sequence,z.id,near?.id,r.status,this.overview,auto,r.auto?.event,r.auto?.goal,r.auto?.speed].join('|');
       const board=document.getElementById('action-content');
       document.getElementById('exp-clock').textContent=Math.ceil(180-r.time)+'s';
       document.getElementById('exp-load').textContent=B.load(r)+' / '+B.KITS[r.kit].capacity;
@@ -69,10 +86,22 @@
       document.getElementById('exp-dash').disabled=r.p.dash>0||r.status!=='active';
       document.getElementById('night-clock').textContent=r.discovered.includes('greenhouse')?'西南入口 / 温室后门都能回家':'回店口在西南 · 时间到保住半包';
       if(signature===this.signature)return;this.signature=signature;
+      document.body.classList.toggle('is-auto-expedition',Boolean(auto));
+      this.canvas.setAttribute('aria-label',auto?'城市背面自动探索场景：在行动区选择下一步，阅读选项时时间暂停。':'城市背面手动探险：WASD 移动，J 钩拉，F 泡沫，E 互动，M 地图。');
+      document.getElementById('control-hint').textContent=auto?'点击选项 / 1 · 2 · 3 做选择 · M 地图 · P 暂停 · H 帮助':'WASD 移动 · J 钩拉 · F 泡沫 · Space 闪避 · E 互动 · M 地图 · P 暂停';
+      document.getElementById('exp-mode').textContent=auto?'切换手动操作':'切换自动探索';
+      document.getElementById('exp-mode').disabled=r.status!=='active';
+      document.getElementById('exp-speed').hidden=!auto;document.getElementById('exp-speed').textContent=(r.auto?.speed||1)+'× 播放';
+      document.getElementById('exp-play-state').textContent=r.status!=='active'?'这一趟已结束':auto?(r.auto.event?'Ⅱ 等你选择 · 时间暂停':'▶ 自动探索中'):'手动操作';
       if(r.status!=='active'){
         this.clear();const reward=B.rewards(r);
         board.innerHTML=`<p class="board-eyebrow">BACK ON THE STREET</p><h2>${r.status==='extracted'?'人和东西，都回来了。':r.status==='rescued'?'人先回来。<br>东西下次再说。':'今天就到这里。'}</h2><p class="board-copy">${esc(r.message)}</p><div class="exp-receipt"><div><span>带回艾尔</span><strong>${reward.cups} 杯</strong></div><div><span>密封酒花</span><strong>${reward.hops} 份</strong></div><div><span>零件 / 跑腿费</span><strong>€${reward.cash}</strong></div><div><span>月雾箱</span><strong>${({returned:'交回 Noor',kept:'单独封存',ground:'留在街区',lost:'遗失'})[reward.parcel]||'未取得'}</strong></div></div><p class="exp-consequence">${reward.parcel==='returned'?'Noor 今晚会到酒馆。她记住的是你把箱子还了，不是你跑得有多快。':reward.parcel==='kept'?'这只箱子不会成为酒或原料。今晚，一位打听箱子的人会进店。':'家中的现金和库存未受损。'}${reward.discovered.includes('greenhouse')?'<br>温室捷径已记住，下次出门仍然打开。':''}</p><button class="primary" data-action="exp-command" data-verb="return">回酒馆，收好这一趟 →</button>`;
         this.save();return;
+      }
+      if(auto){
+        const v=A.view(r);
+        board.innerHTML=`<p class="board-eyebrow">${r.auto.event?'YOUR CALL · 等你决定':'ON THE WAY · 自动探索'}</p><h2>${esc(v.title)}</h2><p class="board-copy">${esc(v.copy)}</p><div class="exp-choices">${v.choices.map((c,i)=>`<button data-action="exp-command" data-verb="choice:${c.id}"><span class="exp-choice-key">${i+1}</span><span><strong>${esc(c.label)}</strong><small>${esc(c.detail)}</small></span><span aria-hidden="true">↗</span></button>`).join('')}</div>${r.auto.event?'<p class="exp-choice-note">阅读时整条街暂停。点击选项，或按 1 / 2 / 3。</p>':'<div class="exp-travelling"><span class="live-dot"></span>正在执行你的选择…<button class="text-button" data-action="exp-command" data-verb="reroute">停下来，重新选路</button></div>'}<div class="exp-auto-bag"><span>已装包 · ${B.load(r)} / ${B.KITS[r.kit].capacity} 格</span><p>${r.bag.length?r.bag.map(id=>esc(B.TYPES[r.items.find(i=>i.id===id).kind].name)).join(' / '):'沿途遇到普通货物会自动收好。'}</p></div><p class="exp-feed" role="status">${esc(r.message)}</p><button class="text-button" data-action="exp-command" data-verb="bail">放下背包，轻装撤回</button>`;
+        document.getElementById('story-line').innerHTML='<span class="quote-mark">“</span><p>本店支持自主决策。责任也会自主地找到你。</p><span class="story-author">— 后门员工手册</span>';return;
       }
       const parcelText=({ground:'夜店的冷藏箱还在那里',carried:'箱内是月雾 · 可交回 Noor',returned:'已交回 Noor · €14 待结算',lost:'冷藏箱落在街区'})[r.parcel];
       board.innerHTML=`<p class="board-eyebrow">CITY BACKSTAGE / 第 ${r.day} 趟</p><h2>跟着灯走。<br>留条路回来。</h2><p class="board-copy">${esc(B.KITS[r.kit].name)} · 普通货物靠近装包。<br>点向目标下钩，闪避和泡沫可以救场。</p><div class="exp-objectives"><div class="${r.parcel==='returned'?'done':''}"><span>◇</span><div><strong>一箱“进口酵母”</strong><p>${parcelText}。${r.parcel==='returned'?'今晚会在酒馆再见。':r.parcel==='carried'?'交回她，或带到出口自行保留。':'占 3 格，靠近按 E。'}</p></div></div><div class="${r.discovered.includes('noor')?'done':''}"><span>♧</span><div><strong>红灯街的 Noor</strong><p>西北运河边，她刚下夜班。带箱子过去，或先问问她。</p></div></div><div class="${r.discovered.includes('greenhouse')?'done':''}"><span>✧</span><div><strong>玻璃后面，有人在生活</strong><p>${r.discovered.includes('greenhouse')?'温室捷径已记住。下次也能进去。':'东北的温室亮着灯。拉开外面的维护拉杆，找路进去。'}</p></div></div></div><div class="exp-bag"><div class="exp-bag-title"><strong>背包</strong><span>Q 扔下最后一件</span></div>${r.bag.length?r.bag.map(id=>{const i=r.items.find(x=>x.id===id),t=B.TYPES[i.kind];return `<span class="exp-cargo" style="--cargo:${t.color}">${esc(t.name)}<small>${t.weight} 格</small></span>`;}).join(''):'<p>先拿附近的封口瓶试试手。<br>价值更高的东西，不一定更好带。</p>'}</div><p class="exp-feed" role="status">${esc(r.message)}</p><div class="exp-board-actions"><button class="secondary" data-action="exp-command" data-verb="map">${this.overview?'返回跟随视角':'看看全图'} · M</button><button class="text-button" data-action="exp-command" data-verb="bail">放下背包，轻装撤回</button></div>`;

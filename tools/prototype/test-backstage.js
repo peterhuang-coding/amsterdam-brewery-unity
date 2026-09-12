@@ -60,7 +60,7 @@ test('discovering the greenhouse opens a second safe extraction route',()=>{
 test('Noor receives a physically carried parcel only once',()=>{
   const r=fresh(), item=r.items.find(i=>i.kind==='parcel');Object.assign(r.p,{x:item.x,y:item.y});B.command(r,'interact');
   Object.assign(r.p,B.NOOR);B.command(r,'interact');assert.equal(r.parcel,'returned');assert.ok(!r.bag.includes(item.id));
-  B.command(r,'interact');Object.assign(r.p,B.EXIT);B.command(r,'interact');assert.equal(B.rewards(r).cash,14);
+  B.command(r,'interact');assert.ok(r.message.includes('今晚'),'Noor remembers receiving the parcel on repeat visits');Object.assign(r.p,B.EXIT);B.command(r,'interact');assert.equal(B.rewards(r).cash,14);
 });
 test('safe extraction preserves cargo; bailout loses cargo but preserves discoveries',()=>{
   const r=fresh();r.discovered.push('greenhouse');const item=r.items.find(i=>i.kind==='hops');Object.assign(item,{x:r.p.x,y:r.p.y});advance(r,.05);

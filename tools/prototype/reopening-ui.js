@@ -97,7 +97,7 @@
   function showHelp(){
     if(ui.modal)return;
     if(state.phase==='explore'){
-      modal('CITY BACKSTAGE · 阅读时暂停','同一套工具，钻进城市背面。','<p><kbd>WASD</kbd> / 方向键移动；鼠标瞄准，左键或 <kbd>J</kbd> 下钩，右键或 <kbd>F</kbd> 喷泡沫，<kbd>Space</kbd> 朝当前方向闪避。纯键盘操作会朝行走方向使用工具。</p><p>普通货物靠近自动装包，冷藏箱要靠近按 <kbd>E</kbd>。<kbd>Q</kbd> 扔下最后一件物品，腾出空间。红灯街的 Noor 在西北，夜店在东侧，温室在东北。</p><p>机器头上的惊叹号预告冲撞，可以闪避、钩住或用泡沫打断。墙体会挡住工具；泡沫也会让你的脚步打滑。</p><p><kbd>M</kbd> 看全图。西南的回店口按 <kbd>E</kbd> 安全撤回，带走全包。收班或受伤过多只保住半包；轻装撤回放弃背包。已交付的箱子和发现的地方会保留。月雾不会成为酒或原料。</p>',[{label:'回到街区'}]);return;
+      modal('CITY BACKSTAGE · 阅读时暂停','自动探索，重要的事你来选。','<p><b>自动模式：</b>点选项或按 1 / 2 / 3，角色会走到目的地、拾取和使用工具。拿箱子、交还人物、进入温室前会停下来；阅读时整条街和倒计时暂停。地图下方可切换 1× / 2× 播放或手动操作，途中可点“停下来，重新选路”。</p><p><b>手动模式：</b><kbd>WASD</kbd> / 方向键移动；鼠标瞄准，左键或 <kbd>J</kbd> 下钩，右键或 <kbd>F</kbd> 喷泡沫，<kbd>Space</kbd> 朝当前方向闪避。纯键盘操作会朝行走方向使用工具。</p><p>普通货物靠近自动装包，冷藏箱要靠近按 <kbd>E</kbd>。<kbd>Q</kbd> 扔下最后一件物品，腾出空间。红灯街的 Noor 在西北，夜店在东侧，温室在东北。</p><p>机器头上的惊叹号预告冲撞，可以闪避、钩住或用泡沫打断。墙体会挡住工具；泡沫也会让你的脚步打滑。</p><p><kbd>M</kbd> 看全图。西南的回店口按 <kbd>E</kbd> 安全撤回，带走全包。收班或受伤过多只保住半包；轻装撤回放弃背包。已交付的箱子和发现的地方会保留。月雾不会成为酒或原料。</p>',[{label:'回到街区'}]);return;
     }
     modal('HOW TO PLAY · 阅读时暂停','照顾好今天，也准备好明天。',
       '<p><b>先逛城市。</b>WASD / 方向键移动，点击地点自动绕过运河和建筑，E 进入附近地点。去北岸走渡轮。逛地图免费，办事才花行动。市场 €8 买 3 杯现货，实验室 €6 买 2 份酒花。</p><p><b>白天两次行动。</b>酿酒花 €12，得到 6 杯；帮咖啡店赚 €18；去北岸运河打捞酒花和押金瓶，躲开需要清运费的单车残骸；拜访 Lotte，答应今晚留给她一杯黑啤。</p>'+
@@ -117,12 +117,12 @@
   function cityView(){return {position:ui.city,path:ui.cityPath,target:ui.cityTarget,zoom:ui.cityZoom,mode:ui.cityMode,place:ui.cityPlace};}
   function expeditionInvitation(){
     const used=state.prepared.includes('explore'),blocked=state.actions<=0||used;
-    return `<div class="expedition-invitation"><p class="board-eyebrow">CITY BACKSTAGE · 连续探险</p><h3>城市背面，刚刚开门。</h3><p>超市后场、红灯运河街、夜店。去找一箱“进口酵母”，或看看玻璃后面住着谁。<br>3 分钟 · 自由取货与撤回 · 1 次准备</p><button class="primary" data-action="expedition-launch" ${blocked?'disabled':''}>${used?'这一趟已经回来，明天再出门':blocked?'今天准备机会已用完':'带上工具，钻进城市背面 →'}</button></div>`;
+    return `<div class="expedition-invitation"><p class="board-eyebrow">CITY BACKSTAGE · 连续探险</p><h3>城市背面，刚刚开门。</h3><p>超市后场、红灯运河街、夜店。去找一箱“进口酵母”，或看看玻璃后面住着谁。<br>自动探索 · 关键事件由你选 · 1 次准备</p><button class="primary" data-action="expedition-launch" ${blocked?'disabled':''}>${used?'这一趟已经回来，明天再出门':blocked?'今天准备机会已用完':'带上工具，钻进城市背面 →'}</button></div>`;
   }
   function chooseExpedition(){
     if(state.phase==='welcome'){const n=Number($('seed-input')?.value);if(Number.isInteger(n)&&n>0)state=R.createGame(n);dispatch({type:'start'});}
     if(state.phase!=='prep'||state.actions<1||state.prepared.includes('explore'))return;
-    modal('出门前 · 工具免费借用','今天带哪一套？','<p>有人在 NO SIGNAL 夜店落下一箱“进口酵母”。红灯街的 Noor 知道来历。去找箱子，也可以走自己的路。</p><p>WASD 移动 · 鼠标点击下钩 · Space 闪避 · F 泡沫 · E 互动。3 分钟后收班，随时可以从西南入口带货回家。</p>',[...Object.entries(Backstage.KITS).map(([id,k])=>({label:k.name,description:k.detail,run:()=>dispatch({type:'explore',kit:id})})),{label:'先留在酒馆',secondary:true}]);
+    modal('出门前 · 工具免费借用','今天带哪一套？','<p>有人在 NO SIGNAL 夜店落下一箱“进口酵母”。红灯街的 Noor 知道来历。去找箱子，也可以走自己的路。</p><p>角色会自动探索和使用工具，你只需要在关键时刻选怎么做。阅读选项时时间暂停；途中可以切换 2× 播放或手动操作。实际行动时间 3 分钟，选择回家后自动走到出口。</p>',[...Object.entries(Backstage.KITS).map(([id,k])=>({label:k.name,description:k.detail,run:()=>dispatch({type:'explore',kit:id})})),{label:'先留在酒馆',secondary:true}]);
   }
   function renderCityToolbar(){
     const toolbar=$('city-toolbar');toolbar.hidden=state.phase!=='prep';
@@ -202,7 +202,7 @@
     return [`DAY ${state.day} / 3 · ${state.phase==='night'?'营业中':'白天的准备'}`,DAYS[state.day-1]];
   }
   function render(){
-    document.body.classList.toggle('is-expedition',state.phase==='explore');$('backstage-controls').hidden=state.phase!=='explore';
+    document.body.classList.toggle('is-expedition',state.phase==='explore');document.body.classList.toggle('is-auto-expedition',state.phase==='explore'&&Boolean(state.backstage.run.auto?.enabled));$('backstage-controls').hidden=state.phase!=='explore';
     const oldFocus=document.activeElement?.dataset?.focus;
     const [kicker,title]=topCopy();$('chapter-kicker').textContent=kicker;$('chapter-title').textContent=title;
     $('pub-canvas').setAttribute('aria-label',state.phase==='prep'&&(ui.cityMode==='map'||ui.cityPlace!=='pub')?'阿姆斯特丹六地点城市地图，点击地点规划步行路线；WASD 移动，桥和渡轮可过河':state.phase==='forage'?'北岸运河三航道打捞场景，小船和漂浮物随行动变化；右侧有完整文字信息和操作按钮':'运河边的 Tweede Kans 酒吧，酒瓶随库存变化，顾客和升级出现在柜台前');
@@ -219,7 +219,7 @@
     const log=(state.log||[]).slice(0,3);
     $('journal-entries').innerHTML=log.length?log.map(line=>`<li>${esc(line)}</li>`).join(''):'<li>房东说钥匙免费，保管钥匙的杯垫另算。</li><li>三天后开业。许可证需要营业流水，营业需要许可证。</li><li>街坊只想喝杯好酒。他们的要求居然最合理。</li>';
     $('control-hint').textContent=state.phase==='prep'?'WASD / 方向键移动 · 点击地点自动寻路 · E 进入 · M 地图 · P 暂停':state.phase==='forage'?'A / D 换航道 · Space 打捞 · P 暂停':state.phase==='brew'?'Space 确认工艺 · P 暂停 · H 帮助':state.phase==='night'?'1 / 2 / 3 选客 · E 倒酒 · Space 收杯 · P 暂停':'鼠标或键盘操作 · H 帮助 · P 暂停';
-    if(state.phase==='explore')$('control-hint').textContent='WASD 移动 · J 钩拉 · F 泡沫 · Space 闪避 · E 互动 · M 地图 · P 暂停';
+    if(state.phase==='explore')$('control-hint').textContent=state.backstage.run.auto?.enabled?'点击选项 / 1 · 2 · 3 做选择 · M 地图 · P 暂停 · H 帮助':'WASD 移动 · J 钩拉 · F 泡沫 · Space 闪避 · E 互动 · M 地图 · P 暂停';
     ui.signature=signature();updateMeters();if(state.phase==='explore')backstage.step(0);else scene.draw(state,performance.now(),ui.selected,cityView());
     if(oldFocus){const next=document.querySelector(`[data-focus="${CSS.escape(oldFocus)}"]`);if(next&&!next.disabled)next.focus({preventScroll:true});}
   }

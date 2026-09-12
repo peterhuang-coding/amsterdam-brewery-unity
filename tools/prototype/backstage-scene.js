@@ -137,7 +137,7 @@
       this.miniMap(r);
       const near=B.nearest(r);
       this.rect(22,586,1056,38,'#172c3cea');
-      this.text(near?near.label:narrow?'WASD 移动 · E 互动 · M 地图':r.message,40,610,narrow?26:14,near?'#e4d29c':'#c1cbd0','left');
+      this.text(r.auto?.enabled?(r.status!=='active'?'这一趟已结束':r.auto.event?'时间暂停 · 选择下一步行动':'自动探索中 · 重要的事会停下来问你'):near?near.label:narrow?'WASD 移动 · E 互动 · M 地图':r.message,40,610,narrow?26:14,near?'#e4d29c':'#c1cbd0','left');
       if(options.overview){this.rect(360,19,380,34,'#172a38ee');this.text('城市背面 · M 返回跟随视角',550,42,15,'#e6d5b9');}
     }
     miniMap(r){

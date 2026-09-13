@@ -40,6 +40,11 @@
     perform(verb){
       const r=this.run();if(!r||this.isPaused())return;
       this.updateAim();
+      if(verb==='play'){
+        if(r.auto?.event){const choice=document.querySelector('.exp-choices button');choice?.scrollIntoView({block:'center',behavior:'auto'});choice?.focus({preventScroll:true});}
+        else this.showModal('PAUSED · 探索已暂停','先停在这里。','<p>角色、街区和倒计时都暂停了。继续后沿原来的路线走。</p>',[{label:'继续探索'}]);
+        return;
+      }
       if(verb==='map'){this.overview=!this.overview;this.render();return;}
       if(verb==='return'){this.clear();this.dispatch({type:'returnExplore'});return;}
       if(verb==='mode'||verb==='reroute'||verb==='speed'||verb.startsWith('choice:')){
@@ -73,7 +78,7 @@
     }
     render(){
       const r=this.run();if(!r)return;
-      const auto=r.auto?.enabled,z=B.zone(r),near=B.nearest(r),signature=[r.sequence,z.id,near?.id,r.status,this.overview,auto,r.auto?.event,r.auto?.goal,r.auto?.speed].join('|');
+      const auto=r.auto?.enabled,z=B.zone(r),near=B.nearest(r),signature=[r.sequence,z.id,near?.id,r.status,this.overview,auto,r.auto?.event,r.auto?.goal,r.auto?.speed,this.isPaused()].join('|');
       const board=document.getElementById('action-content');
       document.getElementById('exp-clock').textContent=Math.ceil(180-r.time)+'s';
       document.getElementById('exp-load').textContent=B.load(r)+' / '+B.KITS[r.kit].capacity;
@@ -91,11 +96,13 @@
       document.getElementById('control-hint').textContent=auto?'点击选项 / 1 · 2 · 3 做选择 · M 地图 · P 暂停 · H 帮助':'WASD 移动 · J 钩拉 · F 泡沫 · Space 闪避 · E 互动 · M 地图 · P 暂停';
       document.getElementById('exp-mode').textContent=auto?'切换手动操作':'切换自动探索';
       document.getElementById('exp-mode').disabled=r.status!=='active';
-      document.getElementById('exp-speed').hidden=!auto;document.getElementById('exp-speed').textContent=(r.auto?.speed||1)+'× 播放';
-      document.getElementById('exp-play-state').textContent=r.status!=='active'?'这一趟已结束':auto?(r.auto.event?'Ⅱ 等你选择 · 时间暂停':'▶ 自动探索中'):'手动操作';
+      document.getElementById('exp-speed').hidden=!auto;document.getElementById('exp-speed').textContent='速度 '+(r.auto?.speed||1)+'×';
+      document.getElementById('exp-play').hidden=!auto;document.getElementById('exp-play').disabled=r.status!=='active';
+      document.getElementById('exp-play').textContent=r.auto?.event?(r.auto.event==='route'?'选择路线，开始探索 ↓':'查看下一步选择 ↓'):'暂停探索 Ⅱ';
+      document.getElementById('exp-play-state').textContent=r.status!=='active'?'这一趟已结束':this.isPaused()?'Ⅱ 已暂停':auto?(r.auto.event?'Ⅱ 等你选择 · 时间暂停':'▶ 自动探索中'):'手动操作';
       if(r.status!=='active'){
         this.clear();const reward=B.rewards(r);
-        board.innerHTML=`<p class="board-eyebrow">BACK ON THE STREET</p><h2>${r.status==='extracted'?'人和东西，都回来了。':r.status==='rescued'?'人先回来。<br>东西下次再说。':'今天就到这里。'}</h2><p class="board-copy">${esc(r.message)}</p><div class="exp-receipt"><div><span>带回艾尔</span><strong>${reward.cups} 杯</strong></div><div><span>密封酒花</span><strong>${reward.hops} 份</strong></div><div><span>零件 / 跑腿费</span><strong>€${reward.cash}</strong></div><div><span>月雾箱</span><strong>${({returned:'交回 Noor',kept:'单独封存',ground:'留在街区',lost:'遗失'})[reward.parcel]||'未取得'}</strong></div></div><p class="exp-consequence">${reward.parcel==='returned'?'Noor 今晚会到酒馆。她记住的是你把箱子还了，不是你跑得有多快。':reward.parcel==='kept'?'这只箱子不会成为酒或原料。今晚，一位打听箱子的人会进店。':'家中的现金和库存未受损。'}${reward.discovered.includes('greenhouse')?'<br>温室捷径已记住，下次出门仍然打开。':''}</p><button class="primary" data-action="exp-command" data-verb="return">回酒馆，收好这一趟 →</button>`;
+        board.innerHTML=`<p class="board-eyebrow">BACK ON THE STREET</p><h2>${r.status==='extracted'?'人和东西，都回来了。':r.status==='rescued'?'人先回来。<br>东西下次再说。':'今天就到这里。'}</h2><p class="board-copy">${esc(r.message)}</p><div class="exp-receipt"><div><span>带回艾尔</span><strong>${reward.cups} 杯</strong></div><div><span>密封酒花</span><strong>${reward.hops} 份</strong></div><div><span>零件 / 跑腿费</span><strong>€${reward.cash}</strong></div><div><span>月雾箱</span><strong>${({returned:'交回 Noor',kept:'单独封存',ground:'留在街区',lost:'遗失'})[reward.parcel]||'未取得'}</strong></div></div><p class="exp-consequence">${reward.parcel==='returned'?'Noor 下次营业会到酒馆。她记住的是你把箱子还了，不是你跑得有多快。':reward.parcel==='kept'?'这只箱子不会成为酒或原料。下次营业，一位打听箱子的人会进店。':'家中的现金和库存未受损。'}${reward.discovered.includes('greenhouse')?'<br>温室捷径已记住，下次出门仍然打开。':''}</p><button class="primary" data-action="exp-command" data-verb="return">回酒馆，收好这一趟 →</button>`;
         this.save();return;
       }
       if(auto){
@@ -104,7 +111,7 @@
         document.getElementById('story-line').innerHTML='<span class="quote-mark">“</span><p>本店支持自主决策。责任也会自主地找到你。</p><span class="story-author">— 后门员工手册</span>';return;
       }
       const parcelText=({ground:'夜店的冷藏箱还在那里',carried:'箱内是月雾 · 可交回 Noor',returned:'已交回 Noor · €14 待结算',lost:'冷藏箱落在街区'})[r.parcel];
-      board.innerHTML=`<p class="board-eyebrow">CITY BACKSTAGE / 第 ${r.day} 趟</p><h2>跟着灯走。<br>留条路回来。</h2><p class="board-copy">${esc(B.KITS[r.kit].name)} · 普通货物靠近装包。<br>点向目标下钩，闪避和泡沫可以救场。</p><div class="exp-objectives"><div class="${r.parcel==='returned'?'done':''}"><span>◇</span><div><strong>一箱“进口酵母”</strong><p>${parcelText}。${r.parcel==='returned'?'今晚会在酒馆再见。':r.parcel==='carried'?'交回她，或带到出口自行保留。':'占 3 格，靠近按 E。'}</p></div></div><div class="${r.discovered.includes('noor')?'done':''}"><span>♧</span><div><strong>红灯街的 Noor</strong><p>西北运河边，她刚下夜班。带箱子过去，或先问问她。</p></div></div><div class="${r.discovered.includes('greenhouse')?'done':''}"><span>✧</span><div><strong>玻璃后面，有人在生活</strong><p>${r.discovered.includes('greenhouse')?'温室捷径已记住。下次也能进去。':'东北的温室亮着灯。拉开外面的维护拉杆，找路进去。'}</p></div></div></div><div class="exp-bag"><div class="exp-bag-title"><strong>背包</strong><span>Q 扔下最后一件</span></div>${r.bag.length?r.bag.map(id=>{const i=r.items.find(x=>x.id===id),t=B.TYPES[i.kind];return `<span class="exp-cargo" style="--cargo:${t.color}">${esc(t.name)}<small>${t.weight} 格</small></span>`;}).join(''):'<p>先拿附近的封口瓶试试手。<br>价值更高的东西，不一定更好带。</p>'}</div><p class="exp-feed" role="status">${esc(r.message)}</p><div class="exp-board-actions"><button class="secondary" data-action="exp-command" data-verb="map">${this.overview?'返回跟随视角':'看看全图'} · M</button><button class="text-button" data-action="exp-command" data-verb="bail">放下背包，轻装撤回</button></div>`;
+      board.innerHTML=`<p class="board-eyebrow">CITY BACKSTAGE / 第 ${r.day} 趟</p><h2>跟着灯走。<br>留条路回来。</h2><p class="board-copy">${esc(B.KITS[r.kit].name)} · 普通货物靠近装包。<br>点向目标下钩，闪避和泡沫可以救场。</p><div class="exp-objectives"><div class="${r.parcel==='returned'?'done':''}"><span>◇</span><div><strong>一箱“进口酵母”</strong><p>${parcelText}。${r.parcel==='returned'?'下次营业会在酒馆再见。':r.parcel==='carried'?'交回她，或带到出口自行保留。':'占 3 格，靠近按 E。'}</p></div></div><div class="${r.discovered.includes('noor')?'done':''}"><span>♧</span><div><strong>红灯街的 Noor</strong><p>西北运河边，她刚下夜班。带箱子过去，或先问问她。</p></div></div><div class="${r.discovered.includes('greenhouse')?'done':''}"><span>✧</span><div><strong>玻璃后面，有人在生活</strong><p>${r.discovered.includes('greenhouse')?'温室捷径已记住。下次也能进去。':'东北的温室亮着灯。拉开外面的维护拉杆，找路进去。'}</p></div></div></div><div class="exp-bag"><div class="exp-bag-title"><strong>背包</strong><span>Q 扔下最后一件</span></div>${r.bag.length?r.bag.map(id=>{const i=r.items.find(x=>x.id===id),t=B.TYPES[i.kind];return `<span class="exp-cargo" style="--cargo:${t.color}">${esc(t.name)}<small>${t.weight} 格</small></span>`;}).join(''):'<p>先拿附近的封口瓶试试手。<br>价值更高的东西，不一定更好带。</p>'}</div><p class="exp-feed" role="status">${esc(r.message)}</p><div class="exp-board-actions"><button class="secondary" data-action="exp-command" data-verb="map">${this.overview?'返回跟随视角':'看看全图'} · M</button><button class="text-button" data-action="exp-command" data-verb="bail">放下背包，轻装撤回</button></div>`;
       document.getElementById('story-line').innerHTML='<span class="quote-mark">“</span><p>本店坚决反对违法交易。具体定义请咨询本店法务。</p><span class="story-author">— 夜店后门告示</span>';
     }
   }

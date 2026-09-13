@@ -6,16 +6,16 @@
   <meta name="theme-color" content="#173c49">
   <title>Tweede Kans · 运河边的第二次机会</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='8' fill='%23233943'/%3E%3Ctext x='24' y='32' text-anchor='middle' font-family='Georgia' font-size='24' fill='%23edbd79'%3ETK%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="reopening.css">
-  <link rel="stylesheet" href="backstage.css">
-  <script src="backstage-core.js" defer></script>
-  <script src="backstage-auto.js" defer></script>
-  <script src="reopening-core.js" defer></script>
-  <script src="reopening-city.js" defer></script>
-  <script src="reopening-scene.js" defer></script>
-  <script src="backstage-scene.js" defer></script>
-  <script src="backstage-ui.js" defer></script>
-  <script src="reopening-ui.js" defer></script>
+  <link rel="stylesheet" href="reopening.css?v=20260913-daynight">
+  <link rel="stylesheet" href="backstage.css?v=20260913-daynight">
+  <script src="backstage-core.js?v=20260913-daynight" defer></script>
+  <script src="backstage-auto.js?v=20260913-daynight" defer></script>
+  <script src="reopening-core.js?v=20260913-daynight" defer></script>
+  <script src="reopening-city.js?v=20260913-daynight" defer></script>
+  <script src="reopening-scene.js?v=20260913-daynight" defer></script>
+  <script src="backstage-scene.js?v=20260913-daynight" defer></script>
+  <script src="backstage-ui.js?v=20260913-daynight" defer></script>
+  <script src="reopening-ui.js?v=20260913-daynight" defer></script>
 </head>
 <body>
   <div class="game-shell">
@@ -42,7 +42,7 @@
           </div>
           <div id="backstage-controls" class="backstage-controls" hidden aria-label="城市背面探险操作">
             <div class="exp-status"><div><span>收班前</span><strong id="exp-clock">180s</strong></div><div><span>背包</span><strong id="exp-load">0 / 8</strong></div><div><span>状态</span><strong id="exp-health">●●●</strong></div><button data-action="exp-command" data-verb="map">地图 · M</button></div>
-            <div class="exp-playback"><span id="exp-play-state">手动操作</span><button id="exp-speed" data-action="exp-command" data-verb="speed" hidden>1× 播放</button><button id="exp-mode" data-action="exp-command" data-verb="mode">切换自动探索</button></div>
+            <div class="exp-playback"><span id="exp-play-state" role="status">手动操作</span><button id="exp-play" data-action="exp-command" data-verb="play">选择路线，开始探索</button><button id="exp-speed" data-action="exp-command" data-verb="speed" hidden>速度 1×</button><button id="exp-mode" data-action="exp-command" data-verb="mode">切换自动探索</button></div>
             <div class="exp-controls-row"><div class="exp-dpad" aria-label="按住移动"><button data-exp-move="w" aria-label="向上移动">↑</button><button data-exp-move="a" aria-label="向左移动">←</button><button data-exp-move="s" aria-label="向下移动">↓</button><button data-exp-move="d" aria-label="向右移动">→</button></div><div class="exp-tools"><button id="exp-hook" data-action="exp-command" data-verb="hook">钩拉 · J</button><button id="exp-foam" data-action="exp-command" data-verb="foam">泡沫 · F</button><button id="exp-dash" data-action="exp-command" data-verb="dash">闪避 · Space</button><button data-action="exp-command" data-verb="drop">扔下 · Q</button><button id="exp-context" data-action="exp-command" data-verb="interact">靠近后互动 · E</button></div></div>
             <p class="exp-controls-note">WASD / 方向键移动 · 鼠标瞄准，点击下钩 / 右键泡沫 · 纯键盘时朝行走方向使用工具 · P 暂停</p>
           </div>

@@ -5,9 +5,10 @@ let count = 0;
 function test(name, fn) { fn(); console.log('✓ ' + name); count++; }
 function act(s, a) { const before=JSON.stringify(s), r=R.act(s,a); assert.ok(r.ok,r.message); assert.equal(JSON.stringify(s),before); assert.ok(R.restore(r.state)); return r.state; }
 function prep() { return act(R.createGame(42),{type:'start'}); }
-test('expedition enters from preparation, spends one action and preserves pub stock',()=>{
-  const s=prep(), next=act(s,{type:'explore',kit:'hook'});
-  assert.equal(next.phase,'explore'); assert.equal(next.actions,1); assert.deepEqual(next.batches,s.batches);
+function closed() { return act(act(prep(),{type:'open'}),{type:'close'}); }
+test('expedition enters after closing and preserves pub stock',()=>{
+  const s=closed(), next=act(s,{type:'explore',kit:'hook'});
+  assert.equal(next.phase,'explore'); assert.equal(next.actions,0); assert.deepEqual(next.batches,s.batches);
 });
 const B = require('./backstage-core.js');
 function fresh(kit='hook') { return B.create(42,1,kit,[]); }
@@ -60,7 +61,7 @@ test('discovering the greenhouse opens a second safe extraction route',()=>{
 test('Noor receives a physically carried parcel only once',()=>{
   const r=fresh(), item=r.items.find(i=>i.kind==='parcel');Object.assign(r.p,{x:item.x,y:item.y});B.command(r,'interact');
   Object.assign(r.p,B.NOOR);B.command(r,'interact');assert.equal(r.parcel,'returned');assert.ok(!r.bag.includes(item.id));
-  B.command(r,'interact');assert.ok(r.message.includes('今晚'),'Noor remembers receiving the parcel on repeat visits');Object.assign(r.p,B.EXIT);B.command(r,'interact');assert.equal(B.rewards(r).cash,14);
+  B.command(r,'interact');assert.ok(r.message.includes('下次营业'),'Noor remembers receiving the parcel on repeat visits');Object.assign(r.p,B.EXIT);B.command(r,'interact');assert.equal(B.rewards(r).cash,14);
 });
 test('safe extraction preserves cargo; bailout loses cargo but preserves discoveries',()=>{
   const r=fresh();r.discovered.push('greenhouse');const item=r.items.find(i=>i.kind==='hops');Object.assign(item,{x:r.p.x,y:r.p.y});advance(r,.05);
@@ -68,23 +69,23 @@ test('safe extraction preserves cargo; bailout loses cargo but preserves discove
   B.command(r,'bail');assert.equal(B.rewards(r).hops,0);assert.ok(B.rewards(r).discovered.includes('greenhouse'));
 });
 test('time expiration ends a run with recoverable partial cargo, never touches home funds',()=>{
-  let s=act(prep(),{type:'explore',kit:'hook'});s.backstage.run.time=179.95;
+  let s=act(closed(),{type:'explore',kit:'hook'});s.backstage.run.time=179.95;
   B.step(s.backstage.run,{},.1);assert.equal(s.backstage.run.status,'rescued');
-  s=act(s,{type:'returnExplore'});assert.equal(s.cash,45);assert.equal(s.phase,'prep');
+  s=act(s,{type:'returnExplore'});assert.equal(s.cash,27);assert.equal(s.phase,'summary');
   assert.equal(R.act(s,{type:'returnExplore'}).ok,false);assert.equal(R.act(s,{type:'explore',kit:'hook'}).ok,false);
 });
 test('returning cargo settles once and Noor becomes a recognizable evening guest',()=>{
-  let s=act(prep(),{type:'explore',kit:'hook'}),r=s.backstage.run,item=r.items.find(i=>i.kind==='parcel');
+  let s=act(closed(),{type:'explore',kit:'hook'}),r=s.backstage.run,item=r.items.find(i=>i.kind==='parcel');
   Object.assign(r.p,{x:item.x,y:item.y});B.command(r,'interact');Object.assign(r.p,B.NOOR);B.command(r,'interact');Object.assign(r.p,B.EXIT);B.command(r,'interact');
-  s=act(s,{type:'returnExplore'});assert.equal(s.cash,59);assert.equal(s.backstage.resolution,'returned');
-  s=act(s,{type:'open'});assert.ok(s.night.orders.some(o=>o.name==='Noor'&&o.quote.includes('箱子')));
+  s=act(s,{type:'returnExplore'});assert.equal(s.cash,41);assert.equal(s.backstage.resolution,'returned');
+  s=act(act(s,{type:'next'}),{type:'open'});assert.ok(s.night.orders.some(o=>o.name==='Noor'&&o.quote.includes('箱子')));
 });
 test('older saves migrate without losing cash, batches, day or relationships',()=>{
   const old=prep();delete old.backstage;const restored=R.restore(old);assert.ok(restored);
   assert.equal(restored.cash,old.cash);assert.deepEqual(restored.batches,old.batches);assert.deepEqual(restored.friends,old.friends);
 });
 test('refresh roundtrips a running expedition; malformed coordinates and cargo reject',()=>{
-  const s=act(prep(),{type:'explore',kit:'hook'});advance(s.backstage.run,.3,{dx:1});assert.deepEqual(R.restore(s),s);
+  const s=act(closed(),{type:'explore',kit:'hook'});advance(s.backstage.run,.3,{dx:1});assert.deepEqual(R.restore(s),s);
   const bad=structuredClone(s);bad.backstage.run.p.x=Infinity;assert.equal(R.restore(bad),null);
   const forged=structuredClone(s);forged.backstage.run.bag.push('nonexistent');assert.equal(R.restore(forged),null);
 });

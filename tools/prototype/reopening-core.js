@@ -42,6 +42,14 @@
   const has = (state, upgrade) => state.upgrades.includes(upgrade);
   const clone = value => JSON.parse(JSON.stringify(value));
   const seats = state => has(state, 'stage') ? 2 : 3;
+  const freshLife = () => ({ arrangement: null, bouquet: null, flowersDay: 0, display: null, gifts: 0, morning: [] });
+  const FLOWERS = Object.freeze([
+    { name: '红郁金香', color: '#c86162', tone: 'warm' }, { name: '橙郁金香', color: '#d78d51', tone: 'warm' },
+    { name: '黄郁金香', color: '#d9bb69', tone: 'warm' }, { name: '白郁金香', color: '#f1ecdd', tone: 'cool' },
+    { name: '淡紫郁金香', color: '#b7a0c7', tone: 'cool' }, { name: '粉郁金香', color: '#d4a6b8', tone: 'cool' }
+  ].map(Object.freeze));
+  function flowerPalette(stems) { const warm=stems.filter(i=>FLOWERS[i].tone==='warm').length; return warm===3?'warm':warm===0?'cool':'mixed'; }
+  function flowerFit(bouquet, target) { return Boolean(bouquet && (target==='lotte' ? bouquet.palette==='warm'&&bouquet.wrap==='ribbon' : bouquet.palette==='cool'&&bouquet.wrap==='paper')); }
 
   function seedNumber(value) {
     if (typeof value === 'number' && Number.isFinite(value)) return value >>> 0;
@@ -74,7 +82,7 @@
       friends: { lotte: 0, bram: 0, marta: 0 }, promises: { lotte: false },
       upgrades: [], hops: 0, music: false, log: [], totalSatisfied: 0, totalServed: 0,
       brew: null, forage: null, night: null, reports: [], lastMessage: '三天试营业。房东称这叫扶持创业，因为账单用了绿色纸。',
-      result: null, prepared: [], backstage: { run: null, discovered: [], resolution: null, trips: 0 }
+      result: null, prepared: [], backstage: { run: null, discovered: [], resolution: null, trips: 0, from: null, cashAfterClose: 0 }, life: freshLife()
     };
   }
   function stock(state, beer) {
@@ -125,7 +133,7 @@
       const person = i === 0 ? 'marta' : i === Math.floor(count / 2) ? 'bram' : i === count - 2 ? 'lotte' : null;
       const beer = person === 'lotte' || (person !== 'marta' && i % 3 === 2) ? 'stout' : 'blond';
       const arrival = i === 0 ? 0 : state.day > 1 && i === 3 ? orders[2].arrival : Math.round(i * (duration - 18) / (count - 1) + (rand() - 0.5) * 4);
-      const patience = 23 + Math.floor(rand() * 5) + (has(state, 'stage') ? 12 : 0) + (state.music ? 8 : 0) + (person === 'bram' && state.friends.bram > 0 ? 10 : 0);
+      const patience = 23 + Math.floor(rand() * 5) + (has(state, 'stage') ? 12 : 0) + (state.music ? 8 : 0) + (person === 'bram' && state.friends.bram > 0 ? 10 : 0) + (state.life.display ? flowerFit(state.life.display,'display') ? 6 : 3 : 0);
       orders.push({ id: 'd' + state.day + '-guest' + i,
         name: person ? PEOPLE[person].name : names[Math.floor(rand() * names.length)], person,
         beer, budget: BEERS[beer].price + Math.floor(rand() * 6), arrival, patience,
@@ -202,8 +210,9 @@
     state.brew = null;
     state.forage = null;
     state.night = null;
+    state.backstage.cashAfterClose = 0;
     if (has(state, 'cellar')) for (const batch of state.batches) if (batch.cups > 0) batch.aged = true;
-    say(state, '第 ' + state.day + ' 天，有两次白天行动。房租不需要行动，也会自己增长。' + (state.music ? 'Lotte 今晚带吉他，演出不用你先填申请表。' : ''));
+    say(state, '第 ' + state.day + ' 天，游客又把昨天的街道拍成了全新的城市。两次白天行动已经恢复。' + (state.life.morning[0] || '') + (state.music ? 'Lotte 今晚带吉他。' : ''));
   }
 
   function act(original, action) {
@@ -211,30 +220,70 @@
     const state = restore(original);
     if (!state) return fail('存档不完整，请重新开一局。');
     if (!action || typeof action !== 'object' || typeof action.type !== 'string') return fail('这个操作无法执行。');
+    if (state.life.arrangement && !['flowerPick','flowerWrap','flowerFinish','flowerCancel'].includes(action.type)) return fail('先包好这束花，或免费取消配花。');
     if (state.phase === 'night' && state.night.event && state.night.event.status === 'pending' && !['event', 'close'].includes(action.type)) return fail('先处理眼前的突发事件。时间和酒杯都暂停了。');
     switch (action.type) {
       case 'start':
         if (state.phase !== 'welcome') return fail('酒馆已经开始营业准备了。');
         state.phase = 'prep'; say(state, '先备酒，再开门。工商表格没有“暂时还不会倒酒”这一栏。'); break;
       case 'explore':
-        if (!B || state.phase !== 'prep' || state.actions < 1 || state.prepared.includes('explore')) return fail('每天可探险一次，需要一次准备机会。');
+        if (!B || state.phase !== 'summary' || state.prepared.includes('explore')) return fail('酒馆打烊后才能出门探险，每夜一次。');
         if (!owns(B.KITS, action.kit)) return fail('先选一套出门工具。');
         if (![undefined, 'auto', 'manual'].includes(action.mode)) return fail('请选择自动探索或手动操作。');
-        state.actions--; state.prepared.push('explore'); state.phase = 'explore';
+        state.backstage.from = state.phase; state.prepared.push('explore'); state.phase = 'explore';
         state.backstage.run = B.create(state.seed, state.day, action.kit, state.backstage.discovered);
         if (action.mode !== 'manual') A.enable(state.backstage.run);
         say(state, '城市背面的门开着。去夜店找冷藏箱，或者沿着陌生的灯走。'); break;
       case 'returnExplore': {
         if (!B || state.phase !== 'explore' || state.backstage.run.status === 'active') return fail('先抵达回店口，或者轻装撤回。');
         const reward = B.rewards(state.backstage.run);
+        const afterClose = state.backstage.from === 'summary';
         state.cash += reward.cash; state.hops = Math.min(15, state.hops + reward.hops);
+        if (afterClose) state.backstage.cashAfterClose += reward.cash;
         for (let cups = reward.cups, index = 0; cups > 0; cups -= 6, index++) {
           state.batches.push({ id: 'd' + state.day + '-backstage-' + index, beer: 'blond', cups: Math.min(6, cups), quality: 2, madeDay: state.day, aged: false });
         }
         state.backstage.discovered = [...new Set([...state.backstage.discovered, ...reward.discovered])];
         if (['returned', 'kept'].includes(reward.parcel)) state.backstage.resolution = reward.parcel;
-        state.backstage.trips++; state.backstage.run = null; state.phase = 'prep';
-        say(state, '探险归来：' + reward.cups + ' 杯艾尔，' + reward.hops + ' 份酒花，€' + reward.cash + '。' + (reward.parcel === 'returned' ? 'Noor 说今晚来喝一杯，冷藏箱的人情记下了。' : reward.parcel === 'kept' ? '月雾箱单独封存，绝不入酒。有人可能会找上门。' : '家里的库存和钱都还在。')); break;
+        state.life.morning = ['第 '+state.day+' 夜带回 '+reward.cups+' 杯艾尔、'+reward.hops+' 份酒花和 €'+reward.cash+'，已经收进酒馆。'];
+        if (reward.parcel==='returned') state.life.morning.push('Noor 留了张字条：下次营业来喝一杯。箱子还了，人情还在。');
+        if (reward.parcel==='kept') state.life.morning.push('有人打听你带回的冷藏箱。月雾单独封存，不进入酒和原料。');
+        if (reward.discovered.includes('greenhouse')) state.life.morning.push('温室后门已画在地图背面；花店老板认出了你鞋上的泥。');
+        state.backstage.trips++; state.backstage.run = null; state.phase = state.backstage.from; state.backstage.from = null;
+        say(state, '探险归来：' + reward.cups + ' 杯艾尔，' + reward.hops + ' 份酒花，€' + reward.cash + '。' + (afterClose ? '收好东西，睡醒后再开门。' : '旧行程已经接回白天。')); break;
+      }
+      case 'flowerStart':
+        if(state.phase!=='prep'||state.actions<1||state.cash<4||state.life.flowersDay===state.day||state.life.bouquet) return fail('配花需要 €4 和一次白天行动，每天一束；先安置手里的花。');
+        state.life.arrangement={stems:[],wrap:null};say(state,'选三枝花，再选包装。冷色配纸适合窗台，暖色配丝带适合 Lotte。');break;
+      case 'flowerPick': {
+        if(!state.life.arrangement||!integer(action.stem,0,FLOWERS.length-1)) return fail('请从花架选一枝。');
+        const stems=state.life.arrangement.stems,index=stems.indexOf(action.stem);
+        if(index>=0)stems.splice(index,1);else if(stems.length<3)stems.push(action.stem);else return fail('手里已有三枝，先点一枝放回。');
+        break;
+      }
+      case 'flowerWrap':
+        if(!state.life.arrangement||!['paper','ribbon'].includes(action.wrap))return fail('请选择牛皮纸或丝带。');
+        state.life.arrangement.wrap=action.wrap;break;
+      case 'flowerCancel':
+        if(!state.life.arrangement)return fail('现在没有正在配的花。');
+        state.life.arrangement=null;say(state,'把花放回架上。审美咨询暂时免费。');break;
+      case 'flowerFinish': {
+        const a=state.life.arrangement;
+        if(!a||a.stems.length!==3||!a.wrap)return fail('先选满三枝并选好包装。');
+        state.cash-=4;state.actions--;state.life.flowersDay=state.day;
+        state.life.bouquet={palette:flowerPalette(a.stems),wrap:a.wrap,stored:false};state.life.arrangement=null;
+        say(state,'花包好了。可以送给 Lotte，或带回酒馆布置窗台；自行车前篮也空着。');break;
+      }
+      case 'flowerStore':
+        if(!['prep','summary'].includes(state.phase)||!state.life.bouquet||typeof action.stored!=='boolean')return fail('现在没有可以取放的花。');
+        state.life.bouquet.stored=action.stored;say(state,action.stored?'花放进前篮了。车停在哪里，花就在哪里。':'把花从前篮取回手里。');break;
+      case 'flowerUse': {
+        const b=state.life.bouquet;
+        if(state.phase!=='prep'||!b||b.stored||!['lotte','display'].includes(action.target))return fail('白天把花拿在手里，再送人或布置酒馆。');
+        if(action.target==='lotte') {const points=flowerFit(b,'lotte')?2:1;state.friends.lotte=Math.min(20,state.friends.lotte+points);state.life.gifts++;
+          say(state,points===2?'Lotte 喜欢这束暖色丝带花：“终于有报酬不能写进房东的账。” 好感 +2。':'Lotte 收下花：“比演出曝光券香。” 好感 +1。');}
+        else {state.life.display=b;say(state,'花摆上酒馆窗台。以后客人多等 '+(flowerFit(b,'display')?6:3)+' 秒，直到你换一束。');}
+        state.life.bouquet=null;break;
       }
       case 'prepare': {
         if (state.phase !== 'prep' || state.actions < 1) return fail('今天的行动已用完，可以开门迎客了。');
@@ -450,10 +499,17 @@
   const string = value => typeof value === 'string' && value.length <= 2000;
   const unique = array => new Set(array).size === array.length;
   function validState(s) {
-    if (!shape(s, 'version seed day phase cash actions batches friends promises upgrades hops music log totalSatisfied totalServed brew forage night reports lastMessage result prepared backstage')) return false;
+    if (!shape(s, 'version seed day phase cash actions batches friends promises upgrades hops music log totalSatisfied totalServed brew forage night reports lastMessage result prepared backstage life')) return false;
     if (s.version !== 1 || !integer(s.seed, 0, 4294967295) || !integer(s.day, 1, 3) || !integer(s.cash, 0, 1000000) || !integer(s.actions, 0, 2)) return false;
     if (!['welcome', 'prep', 'brew', 'forage', 'explore', 'night', 'summary', 'ending'].includes(s.phase)) return false;
-    if (!shape(s.backstage, 'run discovered resolution trips') || !Array.isArray(s.backstage.discovered) || !unique(s.backstage.discovered) || !s.backstage.discovered.every(id => ['greenhouse', 'noor'].includes(id)) || ![null, 'returned', 'kept'].includes(s.backstage.resolution) || !integer(s.backstage.trips, 0, 3)) return false;
+    if (!shape(s.backstage, 'run discovered resolution trips from cashAfterClose') || !Array.isArray(s.backstage.discovered) || !unique(s.backstage.discovered) || !s.backstage.discovered.every(id => ['greenhouse', 'noor'].includes(id)) || ![null, 'returned', 'kept'].includes(s.backstage.resolution) || !integer(s.backstage.trips, 0, 3) || !integer(s.backstage.cashAfterClose,0,1000000)) return false;
+    if(s.phase==='explore' ? !['prep','summary'].includes(s.backstage.from) : s.backstage.from!==null) return false;
+    const afterClose=['summary','ending'].includes(s.phase)||s.phase==='explore'&&s.backstage.from==='summary';
+    if(!afterClose&&s.backstage.cashAfterClose!==0)return false;
+    const life=s.life,validBouquet=b=>shape(b,'palette wrap stored')&&['warm','cool','mixed'].includes(b.palette)&&['paper','ribbon'].includes(b.wrap)&&typeof b.stored==='boolean';
+    if(!shape(life,'arrangement bouquet flowersDay display gifts morning')||!integer(life.flowersDay,0,s.day)||!integer(life.gifts,0,3)||!Array.isArray(life.morning)||life.morning.length>4||!life.morning.every(string))return false;
+    if(life.bouquet!==null&&!validBouquet(life.bouquet)||life.display!==null&&(!validBouquet(life.display)||life.display.stored))return false;
+    if(life.arrangement!==null){const a=life.arrangement;if(s.phase!=='prep'||s.actions<1||s.cash<4||life.flowersDay===s.day||life.bouquet||!shape(a,'stems wrap')||!Array.isArray(a.stems)||a.stems.length>3||!unique(a.stems)||!a.stems.every(i=>integer(i,0,5))||![null,'paper','ribbon'].includes(a.wrap))return false;}
     if (s.phase === 'explore') {
       if (!B || !B.restore(s.backstage.run) || !A.valid(s.backstage.run) || s.backstage.run.seed !== s.seed || s.backstage.run.day !== s.day || !s.prepared.includes('explore')) return false;
     } else if (s.backstage.run !== null) return false;
@@ -479,9 +535,9 @@
       }
       if (f.haul !== f.items.filter(item => item.status === 'caught' && item.kind !== 'junk').length) return false;
     } else if (s.forage !== null) return false;
-    if (!Array.isArray(s.reports) || s.reports.length !== (['summary', 'ending'].includes(s.phase) ? s.day : s.day - 1)) return false;
+    if (!Array.isArray(s.reports) || s.reports.length !== (afterClose ? s.day : s.day - 1)) return false;
     if (!s.reports.every((r, i) => shape(r, 'day earned served satisfied lost rent cash promiseKept promiseBroken note') && r.day === i + 1 && integer(r.earned, 0, 1000000) && integer(r.satisfied, 0, 6 + 2 * r.day) && integer(r.served, r.satisfied, 6 + 2 * r.day) && integer(r.lost, 0, 6 + 2 * r.day) && r.served + r.lost === 6 + 2 * r.day && [12, 18, 21, 24].includes(r.rent) && integer(r.cash, 0, 1000000) && typeof r.promiseKept === 'boolean' && typeof r.promiseBroken === 'boolean' && !(r.promiseKept && r.promiseBroken) && string(r.note))) return false;
-    if (['night', 'summary', 'ending'].includes(s.phase)) {
+    if (s.phase==='night' || afterClose) {
       const n = s.night;
       if (!shape(n, 'elapsed duration orders pours earned served satisfied lost promiseKept promiseBroken event rentAdjustment') || n.duration !== 150 + 15 * s.day || !number(n.elapsed, 0, n.duration) || !integer(n.earned, 0, 1000000) || !integer(n.satisfied, 0, 30) || !integer(n.served, n.satisfied, 30) || !integer(n.lost, 0, 30) || typeof n.promiseKept !== 'boolean' || typeof n.promiseBroken !== 'boolean' || (n.promiseKept && n.promiseBroken)) return false;
       if (n.event !== null) {
@@ -499,7 +555,7 @@
       if (s.actions !== 0) return false;
       if (s.phase !== 'night') {
         const report = s.reports[s.reports.length - 1];
-        if (report.cash !== s.cash || report.rent !== 18 + n.rentAdjustment || ['earned', 'served', 'satisfied', 'lost', 'promiseKept', 'promiseBroken'].some(key => report[key] !== n[key])) return false;
+        if (report.cash + s.backstage.cashAfterClose !== s.cash || report.rent !== 18 + n.rentAdjustment || ['earned', 'served', 'satisfied', 'lost', 'promiseKept', 'promiseBroken'].some(key => report[key] !== n[key])) return false;
       }
     } else if (s.night !== null) return false;
     const reportedServed = s.reports.reduce((sum, report) => sum + report.served, 0);
@@ -516,10 +572,14 @@
       if (!safeData(value, new Set(), 0, { count: 0 })) return null;
       const restored = clone(value);
       if (restored && !owns(restored, 'backstage')) restored.backstage = { run: null, discovered: [], resolution: null, trips: 0 };
+      if(restored&&!owns(restored,'life'))restored.life=freshLife();
+      if(restored?.backstage&&!owns(restored.backstage,'from')&&!owns(restored.backstage,'cashAfterClose')){
+        restored.backstage.from=restored.phase==='explore'?'prep':null;restored.backstage.cashAfterClose=0;
+      }
       if (!validState(restored)) return null;
       return restored;
     } catch (_) { return null; }
   }
 
-  return Object.freeze({ createGame, act, stock, customers, pourProgress, forageProgress, restore, BEERS, UPGRADES, PEOPLE, NIGHT_EVENTS });
+  return Object.freeze({ createGame, act, stock, customers, pourProgress, forageProgress, restore, flowerPalette, flowerFit, FLOWERS, BEERS, UPGRADES, PEOPLE, NIGHT_EVENTS });
 });

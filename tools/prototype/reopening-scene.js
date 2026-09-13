@@ -16,16 +16,45 @@
     line(points,color,width=1) { const c=this.ctx;c.strokeStyle=color;c.lineWidth=width;c.beginPath();points.forEach((p,i)=>i?c.lineTo(...p):c.moveTo(...p));c.stroke(); }
     text(value,x,y,size,color,font='Georgia',align='center') { const c=this.ctx;c.font=`${size}px ${font}`;c.fillStyle=color;c.textAlign=align;c.fillText(value,x,y); }
     bottle(x,y,color,scale=1) { const c=this.ctx;c.save();c.translate(x,y);c.scale(scale,scale);this.rect(-5,-43,10,13,color);this.rect(-9,-31,18,31,color);this.rect(-4,-44,8,3,'#cfa762');this.rect(-7,-20,14,13,'#ddcf98');this.rect(-4,-36,2,9,'#ffffff25');this.rect(-6,-27,2,21,'#ffffff15');this.text('TK',0,-10,7,'#3e4933');c.restore(); }
+    tulips(x,y,bouquet,size=1) {
+      const colors=bouquet.palette==='cool'?['#aa9dc4','#c7c0d6','#897aa7']:bouquet.palette==='warm'?['#ce815d','#e2b864','#bf6555']:['#cc8068','#b6a4c4','#dfbb6d'];
+      for(let i=0;i<5;i++){
+        const fx=x+(i-2)*5*size,fy=y-(21+i%3*4)*size;
+        this.line([[x,y],[fx,fy]],'#52724c',1.6*size);
+        this.ellipse(fx-3*size,fy+9*size,3*size,6*size,'#729363');
+        this.ellipse(fx,fy,4*size,5*size,colors[i%3]);
+        this.ellipse(fx-2.5*size,fy-2*size,2*size,4*size,colors[i%3]);
+        this.ellipse(fx+2.5*size,fy-2*size,2*size,4*size,colors[i%3]);
+      }
+      if(bouquet.wrap==='paper'){
+        const c=this.ctx;c.fillStyle='#dcc7a0';c.beginPath();c.moveTo(x-11*size,y-12*size);c.lineTo(x+11*size,y-12*size);c.lineTo(x+4*size,y+4*size);c.lineTo(x-4*size,y+4*size);c.closePath();c.fill();
+        this.line([[x-10*size,y-11*size],[x+3*size,y+3*size]],'#ae9976',size);
+      }else{
+        this.line([[x-5*size,y-4*size],[x+5*size,y-4*size]],'#be846f',3*size);
+        this.line([[x,y-4*size],[x-7*size,y+3*size],[x-8*size,y-3*size],[x,y-4*size],[x+8*size,y-3*size],[x+7*size,y+3*size]],'#dfb19a',1.5*size);
+      }
+    }
+    bicycle(bike,bouquet) {
+      const x=bike.x,y=bike.y;
+      this.ellipse(x,y+11,30,6,'#1c434044');
+      for(const wx of [x-15,x+15]){this.ellipse(wx,y+7,10,10,'#283f3d');this.ellipse(wx,y+7,7,7,'#a8b6a0');this.ellipse(wx,y+7,5.5,5.5,'#657d70');}
+      this.line([[x-15,y+7],[x-6,y-7],[x+3,y+7],[x-15,y+7],[x+8,y-8],[x+15,y+7]],'#bb8254',3);
+      this.line([[x+8,y-8],[x+9,y-16],[x+17,y-16]],'#d7c49b',2);
+      this.line([[x-11,y-9],[x-2,y-9]],'#35433b',3);
+      this.rect(x+16,y-12,16,11,'#b2986e');this.line([[x+16,y-12],[x+32,y-12],[x+29,y-1],[x+18,y-1],[x+16,y-12]],'#dec89a',1.5);
+      for(let i=0;i<3;i++)this.line([[x+19+i*4,y-11],[x+20+i*3,y-2]],'#7f7857',1);
+      if(bouquet&&bouquet.stored)this.tulips(x+24,y-8,bouquet,.65);
+    }
     cityWorldPoint(x,y) {
       const view=this.cityTransform||{scale:1,tx:0,ty:0};
       return {x:(x-view.tx)/view.scale,y:(y-view.ty)/view.scale};
     }
     drawCity(view,time) {
-      const C=window.City,c=this.ctx,scale=Math.min(1100/C.WIDTH,640/C.HEIGHT)*(view.zoom||1);
+      const C=window.City,c=this.ctx,night=!!view.afterHours,scale=Math.min(1100/C.WIDTH,640/C.HEIGHT)*(view.zoom||1);
       const tx=scale*C.WIDTH<=1100?(1100-scale*C.WIDTH)/2:-Math.max(0,Math.min(C.WIDTH-1100/scale,view.position.x-550/scale))*scale;
       const ty=scale*C.HEIGHT<=640?(640-scale*C.HEIGHT)/2:-Math.max(0,Math.min(C.HEIGHT-640/scale,view.position.y-320/scale))*scale;
       this.cityTransform={scale,tx,ty};
-      c.clearRect(0,0,1100,640);this.rect(0,0,1100,640,'#204d58');
+      c.clearRect(0,0,1100,640);this.rect(0,0,1100,640,night?'#112e3c':'#204d58');
       c.save();c.translate(tx,ty);c.scale(scale,scale);
       this.rect(0,0,C.WIDTH,C.HEIGHT,'#2c6470');
       for(let i=0;i<80;i++)this.rect((i*139+time*9)%C.WIDTH,(i*83)%C.HEIGHT,20+i%4*13,2,'#b9d6bd20');
@@ -77,6 +106,16 @@
         }
         if(b.id==='lab'){for(let wx=b.x+10;wx<b.x+b.w-10;wx+=24)this.rect(wx,b.y+9,15,b.h-38,'#cbd8c0');this.text('UvA',b.x+b.w/2,b.y+b.h-7,12,'#344f43','monospace');}
         if(b.id==='pub'){this.rect(b.x+22,b.y+b.h-30,56,14,'#2b5949');this.text('TWEEDE KANS',b.x+50,b.y+b.h-19,7,'#ead29c','Georgia');}
+        if(b.id==='flowers'){
+          this.rect(b.x-3,b.y+b.h-31,b.w+6,17,'#718469');
+          for(let stripe=0;stripe<8;stripe++)this.rect(b.x-3+stripe*14,b.y+b.h-31,7,17,'#e1d0a8');
+          this.rect(b.x+16,b.y+b.h-51,68,16,'#365744');this.text('BLOEMEN',b.x+50,b.y+b.h-39,10,'#eed9a9','Georgia');
+          for(let bunch=0;bunch<3;bunch++){
+            const fx=b.x+13+bunch*35,fy=b.y+b.h+8;
+            this.rect(fx-10,fy-3,20,12,'#9b8057');this.tulips(fx,fy,{palette:['warm','cool','mixed'][bunch],wrap:'ribbon'},.85);
+          }
+        }
+        if(b.id==='pub'&&view.display)this.tulips(b.x+15,b.y+b.h-5,view.display,.5);
       });
       // Working boats and cranes distinguish the north bank from the café streets.
       this.line([[1310,285],[1310,209],[1370,209]],'#b99756',7);this.line([[1310,234],[1360,209]],'#b99756',3);this.line([[1368,211],[1368,250]],'#405d51',2);
@@ -85,7 +124,17 @@
       // Market awnings and café tables identify working destinations at a glance.
       for(let i=0;i<4;i++){const x=840+i*48,y=1070;this.rect(x,y,40,16,'#615d42');this.rect(x-3,y-20,46,22,i%2?'#bd8b59':'#668568');for(let k=0;k<4;k++)this.rect(x-3+k*12,y-20,6,22,'#e3d0a3');}
       for(const x of [685,775]){this.ellipse(x,956,12,8,'#755f3f');this.ellipse(x,956,10,6,'#d6bd84');for(const dx of [-18,18])this.rect(x+dx-3,953,6,8,'#646a48');}
-      if(view.path.length){c.setLineDash([10,9]);c.lineDashOffset=this.reduced.matches?0:-time*12;this.line([[view.position.x,view.position.y],...view.path.map(p=>[p.x,p.y])],'#f5d48e',5);c.setLineDash([]);c.lineDashOffset=0;}
+      if(night){
+        this.rect(0,0,C.WIDTH,C.HEIGHT,'#091c3d83');
+        for(const b of C.BUILDINGS){
+          for(let wx=b.x+9;wx<b.x+b.w-10;wx+=29)if((Math.floor(wx)+b.y)%3!==0)this.rect(wx,b.y+b.h-18,8,10,'#dfb66a');
+        }
+        for(const lamp of [{x:335,y:610},{x:566,y:705},{x:867,y:473},{x:777,y:923},{x:1293,y:1030},{x:1535,y:934}]){
+          const glow=c.createRadialGradient(lamp.x,lamp.y,0,lamp.x,lamp.y,66);glow.addColorStop(0,'#eab85a3d');glow.addColorStop(1,'#eab85a00');
+          this.rect(lamp.x-66,lamp.y-66,132,132,glow);this.line([[lamp.x,lamp.y+9],[lamp.x,lamp.y-14]],'#293e3e',3);this.ellipse(lamp.x,lamp.y-16,5,6,'#f0cd84');
+        }
+      }
+      if(view.path&&view.path.length){c.setLineDash([10,9]);c.lineDashOffset=this.reduced.matches?0:-time*12;this.line([[view.position.x,view.position.y],...view.path.map(p=>[p.x,p.y])],'#f5d48e',5);c.setLineDash([]);c.lineDashOffset=0;}
       for(const place of Object.values(C.PLACES)){
         const active=view.target===place.id||view.mode==='place'&&view.place===place.id,known=view.position.visited.includes(place.id);
         this.ellipse(place.x,place.y,active?27:20,active?27:20,active?'#f0cd82':'#214a48');
@@ -95,13 +144,27 @@
         this.rect(place.x-labelWidth/2,labelY-18,labelWidth,29,active?'#edd5a0':'#ece0bfec');
         this.text(place.name,place.x,labelY+2,16,active?'#244334':'#3e5647','sans-serif');
       }
-      const p=view.position,isFerry=C.onFerry(p.x,p.y);
+      const p=view.position,isFerry=C.onFerry(p.x,p.y),mounted=p.bike&&p.bike.mounted;
+      if(p.bike&&!mounted)this.bicycle(p.bike,view.bouquet);
       this.ellipse(p.x,p.y+9,isFerry?25:15,isFerry?12:7,'#1c434060');
       if(isFerry){this.ellipse(p.x,p.y+6,21,32,'#b9945a');this.rect(p.x-12,p.y-9,24,26,'#e4cd9b');}
       this.ellipse(p.x,p.y,10,14,'#1d4140');this.ellipse(p.x,p.y-15,9,9,'#d4aa73');this.rect(p.x-9,p.y-22,18,6,'#ce8e4c');
-      this.line([[p.x-4,p.y+11],[p.x-5,p.y+19],[p.x-8,p.y+19]],'#253d37',4);this.line([[p.x+4,p.y+11],[p.x+5,p.y+19],[p.x+8,p.y+19]],'#253d37',4);
+      if(mounted){
+        this.bicycle(p.bike,view.bouquet);
+        this.line([[p.x-4,p.y+2],[p.x-9,p.y+8],[p.x,p.y+10]],'#253d37',4);this.line([[p.x+4,p.y+2],[p.x+9,p.y+6],[p.x+4,p.y+13]],'#253d37',4);
+        this.line([[p.x+6,p.y-8],[p.x+15,p.y-14]],'#d4aa73',3);
+      }else{
+        this.line([[p.x-4,p.y+11],[p.x-5,p.y+19],[p.x-8,p.y+19]],'#253d37',4);this.line([[p.x+4,p.y+11],[p.x+5,p.y+19],[p.x+8,p.y+19]],'#253d37',4);
+      }
+      if(view.bouquet&&!view.bouquet.stored)this.tulips(p.x+16,p.y+3,view.bouquet,.7);
       this.text('你',p.x,p.y-35,16,'#fff1c8','sans-serif');
       c.restore();
+      this.rect(22,18,240,34,night?'#132e3aed':'#e4d6afea');this.text(night?'深夜 · 街灯仍亮着':'白天 · 自由漫游',36,40,15,night?'#e6c784':'#355749','sans-serif','left');
+      const notes=Array.isArray(view.notes)?view.notes.filter(note=>typeof note==='string').slice(-3):[];
+      if(notes.length){
+        this.rect(22,62,322,39+notes.length*23,night?'#183038ed':'#e9dcb9ed');this.text('地图笔记',36,85,12,night?'#dabc82':'#5c6b4e','sans-serif','left');
+        notes.forEach((note,i)=>this.text(note.length>21?note.slice(0,20)+'…':note,36,109+i*23,13,night?'#d9d1ae':'#465c4c','sans-serif','left'));
+      }
       this.text('N',1068,43,13,'#e6d5a9','monospace');this.line([[1068,52],[1068,78]],'#e6d5a9',2);this.line([[1062,58],[1068,50],[1074,58]],'#e6d5a9',2);
       this.text('AMSTERDAM / 游戏街区示意',1072,621,10,'#d4d6b4','monospace','right');
     }
@@ -148,7 +211,7 @@
     draw(state, timestamp, selectedId, cityView) {
       const c=this.ctx;
       const time=this.reduced.matches?0:timestamp/1000;
-      if(state.phase==='prep'&&cityView&&(cityView.mode==='map'||cityView.place!=='pub')){this.drawCity(cityView,time);return;}
+      if(['prep','summary'].includes(state.phase)&&cityView&&(cityView.mode==='map'||cityView.place!=='pub')){this.drawCity(cityView,time);return;}
       if(state.phase==='forage'){this.drawCanal(state,time);return;}
       const night=['night','summary','ending'].includes(state.phase);
       c.clearRect(0,0,1100,640);
@@ -182,6 +245,7 @@
       this.rect(53,186,374,9,'#334d3c');this.rect(35,368,412,16,'#4c5540');this.rect(38,369,403,3,'#a8986d');
       // Plants on the sill, with three visible stems for quiet city life.
       for(const x of [91,385]){this.rect(x-15,348,30,20,'#9d7650');for(let k=0;k<5;k++){this.line([[x,350],[x+(k-2)*9,321-(k%2)*10]],'#345542',2);this.ellipse(x+(k-2)*10,323-(k%2)*9,7,13,k%2?'#759174':'#3c6851');}}
+      if(cityView&&cityView.display){this.rect(237,348,26,21,'#bb9670');this.tulips(250,351,cityView.display,1.5);}
 
       // The old enamel sign stays the visual centre as the shop improves.
       this.rect(480,64,296,100,'#172f2e');this.rect(487,71,282,86,'#a77f49');this.rect(490,74,276,80,'#263b32');

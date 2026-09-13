@@ -135,7 +135,7 @@
         if(r.parcel==='carried'){
           const item=r.items.find(i=>i.kind==='parcel');item.state='delivered';r.bag=r.bag.filter(id=>id!==item.id);r.parcel='returned';
           note(r,'Noor 收回月雾箱，答应付 €14 跑腿费：“酵母是老板写的。我只是来收拾他的烂摊子。”');
-        }else note(r,r.parcel==='returned'?'Noor：“箱子已经收好了。今晚去你店里，给我留杯来历正常的酒。”':'Noor：“夜店那箱‘酵母’是月雾。别倒进酒里。找到了带来，东边温室的闸门也值得看看。”');
+        }else note(r,r.parcel==='returned'?'Noor：“箱子已经收好了。下次营业去你店里，给我留杯来历正常的酒。”':'Noor：“夜店那箱‘酵母’是月雾。别倒进酒里。找到了带来，东边温室的闸门也值得看看。”');
         return true;
       }
       const item=r.items.find(i=>i.id===near.id);if(!stow(r,item)){note(r,'冷藏箱需要 3 格。按 Q 扔下背包里最后一件物品。');return false;}return true;
@@ -241,5 +241,7 @@
       return r;
     }catch{return null;}
   }
-  return Object.freeze({WIDTH,HEIGHT,EXIT,NOOR,LEVER,GARDEN_EXIT,GATE,KITS,TYPES,ZONES,WALLS,create,step,command,restore,rewards,load,zone,nearest,solid,clear});
+  // Ambient route uses expedition time, so the worker also stops for choices and saves.
+  function flowerCart(r){return {x:1100+Math.sin(r.time/7)*40,y:1030};}
+  return Object.freeze({WIDTH,HEIGHT,EXIT,NOOR,LEVER,GARDEN_EXIT,GATE,KITS,TYPES,ZONES,WALLS,create,step,command,restore,rewards,load,zone,nearest,solid,clear,flowerCart});
 });

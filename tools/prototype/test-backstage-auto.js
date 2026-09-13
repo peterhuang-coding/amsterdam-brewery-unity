@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const R=require('./reopening-core.js'),B=require('./backstage-core.js');
 let count=0;
 function test(name,fn){fn();console.log('✓ '+name);count++;}
-function enter(mode){let s=R.act(R.createGame(42),{type:'start'}).state;return R.act(s,{type:'explore',kit:'hook',mode}).state;}
+function enter(mode){let s=R.act(R.createGame(42),{type:'start'}).state;s=R.act(R.act(s,{type:'open'}).state,{type:'close'}).state;return R.act(s,{type:'explore',kit:'hook',mode}).state;}
 test('new expeditions default to a paused automatic choice while manual stays available',()=>{
   assert.equal(enter().backstage.run.auto?.enabled,true);
   assert.equal(enter().backstage.run.auto.event,'route');
@@ -11,7 +11,7 @@ test('new expeditions default to a paused automatic choice while manual stays av
 });
 const A=require('./backstage-auto.js');
 function next(r){for(let n=0;n<4000&&r.status==='active'&&!r.auto.event;n++){A.step(r,.05);assert.equal(B.solid(r,r.p.x,r.p.y),false,'automatic movement stays outside walls');}assert.ok(r.auto.event||r.status!=='active','journey reaches a choice or actual ending');}
-function pick(r,id){assert.ok(A.choose(r,id),'choice is available: '+id);next(r);}
+function pick(r,id){assert.ok(A.choose(r,id),'choice is available: '+id);next(r);if(r.auto.event==='glimpse'){assert.ok(A.choose(r,'continue'));next(r);}}
 test('reading choices freezes actors, cargo, cooldowns and expedition time',()=>{
   const r=enter().backstage.run,before=structuredClone(r);for(let i=0;i<100;i++)A.step(r,.1);assert.deepEqual(r,before);
   assert.equal(A.choose(r,'invent-money'),false);assert.deepEqual(r,before);
@@ -64,5 +64,21 @@ test('delivered parcels are not offered again as a destination that secretly goe
   const r=enter().backstage.run;pick(r,'club');pick(r,'take-foam');pick(r,'noor');pick(r,'handover');
   A.enable(r);assert.ok(!A.view(r).choices.some(c=>c.id==='club'));
   pick(r,'noor');pick(r,'garden');pick(r,'open-hand');assert.ok(!A.view(r).choices.some(c=>c.id==='club'));
+});
+
+
+test('a real journey can reveal a greenhouse detour without discarding the original route',()=>{
+  const r=enter().backstage.run;pick(r,'club');pick(r,'take-foam');assert.ok(A.choose(r,'noor'));next(r);
+  assert.equal(r.auto.event,'glimpse');assert.equal(r.auto.goal,'noor');assert.ok(r.p.y<1120&&r.p.y>1000);
+  assert.ok(Math.hypot(r.p.x-B.flowerCart(r).x,r.p.y-B.flowerCart(r).y)<150,'the worker is physically nearby');
+  const before=structuredClone(r);A.step(r,.1);assert.deepEqual(r,before);assert.ok(A.valid(r));assert.ok(R.restore({...enter(),backstage:{...enter().backstage,run:r}}));
+  assert.ok(A.choose(r,'continue'));next(r);assert.equal(r.auto.event,'noor');
+});
+
+test('following the flower worker replaces the route with an actual greenhouse visit',()=>{
+  const r=enter().backstage.run;pick(r,'club');pick(r,'take-foam');A.choose(r,'noor');next(r);
+  assert.equal(r.auto.event,'glimpse');assert.ok(A.choose(r,'garden'));next(r);
+  assert.equal(r.auto.event,'gate');assert.ok(!r.auto.visited.includes('noor'));
+  pick(r,'open-hook');assert.equal(r.auto.event,'garden');assert.ok(r.discovered.includes('greenhouse'));
 });
 console.log(count+' automatic exploration behavioral tests passed.');

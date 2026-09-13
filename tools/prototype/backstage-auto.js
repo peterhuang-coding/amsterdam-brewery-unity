@@ -5,7 +5,7 @@
 })(typeof globalThis!=='undefined'?globalThis:this,function(B){
   'use strict';
   const GOALS=['market','club','parcel','noor','gate','garden','sorting','exit'];
-  const EVENTS=['route','market','club','parcel','noor','gate','garden','sorting','capacity','stuck'];
+  const EVENTS=['route','market','club','parcel','noor','gate','garden','sorting','capacity','stuck','glimpse'];
   const NAMES={market:'超市后场',club:'夜店后门',parcel:'冷藏箱',noor:'红灯街的 Noor',gate:'温室维护闸门',garden:'玻璃后的温室',sorting:'失物分拣场',exit:'回酒馆的出口'};
   const routes=new WeakMap(),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
   const option=(id,label,detail)=>({id,label,detail});
@@ -19,21 +19,22 @@
     if(r.auto===undefined)return true;const a=r.auto;
     return a&&Object.keys(a).length===8&&typeof a.enabled==='boolean'&&[null,...GOALS].includes(a.goal)&&[null,...EVENTS].includes(a.event)&&
       [1,2].includes(a.speed)&&['foam','hook'].includes(a.approach)&&Number.isFinite(a.legTime)&&a.legTime>=0&&a.legTime<=45&&
-      Array.isArray(a.visited)&&a.visited.length<=GOALS.length&&new Set(a.visited).size===a.visited.length&&a.visited.every(x=>GOALS.includes(x))&&
+      Array.isArray(a.visited)&&a.visited.length<=GOALS.length+1&&new Set(a.visited).size===a.visited.length&&a.visited.every(x=>[...GOALS,'glimpse'].includes(x))&&
       Array.isArray(a.history)&&a.history.length<=12&&a.history.every(x=>typeof x==='string'&&x.length<=80)&&
-      !(a.goal&&a.event)&&(!a.enabled||r.status!=='active'||Boolean(a.goal||a.event));
+      (a.event==='glimpse'?Boolean(a.goal):!(a.goal&&a.event))&&(!a.enabled||r.status!=='active'||Boolean(a.goal||a.event));
   }
   function view(r){
     const a=r.auto;if(!a?.enabled)return null;
+    if(a.event==='glimpse')return {title:'等一下，那辆花车去哪儿？',copy:'搬花工推着空车走过。车轮上有泥，车头朝着东北亮灯的温室。你原本要去'+NAMES[a.goal]+'，要不要顺着花车的方向拐个弯？',choices:[option('continue','继续去'+NAMES[a.goal],'记住刚才的方向，沿原路线继续'),destination('garden')]};
     if(!a.event)return {title:'正在前往'+NAMES[a.goal],copy:'角色自动走路、收取沿途普通货物，并用工具应对机器。到地方后，重要的事留给你决定。',choices:[]};
-    const intro={route:['这条街，先从哪里开始？','腿脚交给我。碰到麻烦和好奇的事，你来拿主意。'],market:['货拿到了，还想往哪走？','超市把这些叫“库存优化”。今晚我们把它叫酒。'],club:['箱子旁边，有个不太困的保安。','标签写着“进口酵母”。酵母通常不配私人保安。'],parcel:['箱子在包里。接下来呢？','月雾占了 3 格。交还 Noor，或者带回去，今晚会遇到不同的人。'],noor:[r.parcel==='carried'?'Noor 看见了你手里的箱子。':r.parcel==='returned'?'“今晚到你店里再聊。”':'Noor 刚下夜班。',r.parcel==='carried'?'“标签是老板写的。我只是来收拾他的烂摊子。”交还可得 €14 跑腿费。':r.parcel==='returned'?'她收回箱子，答应付 €14。东北温室还亮着灯。':'“夜店有箱月雾，写着酵母。真找到了，先别发明新酒款。”'],gate:['玻璃后面，居然是绿色的。','维护闸门还关着。拉杆上写着：非工作人员请成为工作人员。'],garden:['这里有人种薄荷，也给你留了门。','温室捷径已记住。后门通向酒馆屋顶，现在回去能带走全部收获。'],sorting:['失物没有消失，只是换了部门。','拿得走的零件可以修。清扫机只关心这里看起来是不是少了点东西。'],capacity:['箱子需要 3 格，背包装不下了。','你来决定要放下什么。已经拿到的东西不会被悄悄丢掉。'],stuck:['这条路暂时不好走。','先停在这里。可以换个目的地，或切回手动处理眼前的状况。']};
+    const intro={route:['这条街，先从哪里开始？','腿脚交给我。碰到麻烦和好奇的事，你来拿主意。'],market:['货拿到了，还想往哪走？','超市把这些叫“库存优化”。今晚我们把它叫酒。'],club:['箱子旁边，有个不太困的保安。','标签写着“进口酵母”。酵母通常不配私人保安。'],parcel:['箱子在包里。接下来呢？','月雾占了 3 格。交还 Noor，或者带回去，下次营业会遇到不同的人。'],noor:[r.parcel==='carried'?'Noor 看见了你手里的箱子。':r.parcel==='returned'?'“下次营业到你店里再聊。”':'Noor 刚下夜班。',r.parcel==='carried'?'“标签是老板写的。我只是来收拾他的烂摊子。”交还可得 €14 跑腿费。':r.parcel==='returned'?'她收回箱子，答应付 €14。东北温室还亮着灯。':'“夜店有箱月雾，写着酵母。真找到了，先别发明新酒款。”'],gate:['玻璃后面，居然是绿色的。','维护闸门还关着。拉杆上写着：非工作人员请成为工作人员。'],garden:['这里有人种薄荷，也给你留了门。','温室捷径已记住。后门通向酒馆屋顶，现在回去能带走全部收获。'],sorting:['失物没有消失，只是换了部门。','拿得走的零件可以修。清扫机只关心这里看起来是不是少了点东西。'],capacity:['箱子需要 3 格，背包装不下了。','你来决定要放下什么。已经拿到的东西不会被悄悄丢掉。'],stuck:['这条路暂时不好走。','先停在这里。可以换个目的地，或切回手动处理眼前的状况。']};
     let choices;
     switch(a.event){
       case 'route':choices=['market',r.parcel==='ground'?'club':'sorting','noor'].map(destination);break;
       case 'market':choices=[r.parcel==='ground'?'club':'garden','noor','exit'].map(destination);break;
       case 'club':choices=[option('take-foam','拿箱子，用泡沫掩护','自动靠近并拾取 · 占 3 格，泡沫打断保安'),option('take-hook','用钩索把箱子拉过来','先尝试从远处钩取 · 占 3 格'),option('noor','先不碰，去找 Noor','离开箱子，听听她知道什么')];break;
       case 'parcel':choices=['noor','garden','exit'].map(destination);break;
-      case 'noor':choices=r.parcel==='carried'?[option('handover','把月雾箱交还 Noor','空出 3 格 · €14 跑腿费，今晚她会来店里'),destination('garden'),destination('exit')]:[destination(r.parcel==='ground'?'club':'garden'),destination('sorting'),destination('exit')];break;
+      case 'noor':choices=r.parcel==='carried'?[option('handover','把月雾箱交还 Noor','空出 3 格 · €14 跑腿费，下次营业她会来店里'),destination('garden'),destination('exit')]:[destination(r.parcel==='ground'?'club':'garden'),destination('sorting'),destination('exit')];break;
       case 'gate':choices=[option('open-hook','用钩索拉开闸门','打开通道，自动进入温室'),option('open-hand','走近拉开维护杆','打开通道，自动进入温室'),destination('exit')];break;
       case 'garden':choices=[option('exit','从温室后门回家','保住全部收获 · 捷径下次仍然开放'),destination('sorting'),destination(r.parcel==='ground'?'club':'noor')];break;
       case 'sorting':choices=['garden','noor','exit'].map(destination);break;
@@ -48,6 +49,7 @@
     if(!r||r.status!=='active'||!r.auto?.enabled||!r.auto.event)return false;
     const choice=view(r).choices.find(c=>c.id===id);if(!choice)return false;
     r.auto.history.push(choice.label);r.auto.history=r.auto.history.slice(-12);
+    if(id==='continue'){r.auto.event=null;return true;}
     if(['take-foam','take-hook','drop-last'].includes(id)){
       if(id==='drop-last')B.command(r,'drop',{x:r.p.x-100,y:r.p.y});else r.auto.approach=id==='take-hook'?'hook':'foam';
       if(B.load(r)+3>B.KITS[r.kit].capacity){stop(r,'capacity');return true;}
@@ -97,6 +99,7 @@
     if(a.goal==='club'&&r.parcel!=='ground'){stop(r,'route');return;}
     if(a.goal==='parcel'&&r.parcel!=='ground'){stop(r,r.parcel==='carried'?'parcel':'route');return;}
     if(dist(r.p,to)<(a.goal==='parcel'?35:18)){arrived(r);return;}
+    if(['noor','sorting'].includes(a.goal)&&a.legTime>.5&&!r.discovered.includes('greenhouse')&&!a.visited.includes('glimpse')&&dist(r.p,B.flowerCart(r))<150&&B.clear(r,r.p,B.flowerCart(r))){a.visited.push('glimpse');a.event='glimpse';return;}
     const threat=r.actors.filter(o=>['cleaner','guard'].includes(o.type)&&o.stun<=.1&&dist(r.p,o)<185&&B.clear(r,r.p,o)).sort((x,y)=>dist(r.p,x)-dist(r.p,y))[0];
     if(threat){
       if(a.approach==='hook'&&r.p.hook===0)B.command(r,'hook',threat);

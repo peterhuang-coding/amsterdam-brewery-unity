@@ -39,7 +39,7 @@ test('CommonJS and browser expose the same public contract', () => {
   const context = {};
   vm.runInNewContext(fs.readFileSync(cityPath, 'utf8'), context);
   assert.deepEqual(Object.keys(context.City).sort(), Object.keys(City).sort());
-  for (const key of ['walkable', 'onFerry', 'route', 'move', 'moveAlong', 'near', 'create', 'restore']) {
+  for (const key of ['walkable', 'onFerry', 'route', 'move', 'moveAlong', 'near', 'create', 'restore', 'toggleBike', 'parkBike', 'rideable']) {
     assert.equal(typeof City[key], 'function');
   }
   for (const key of ['LAND', 'WATERS', 'CROSSINGS', 'PLACES', 'BUILDINGS']) assert.ok(City[key]);
@@ -61,7 +61,7 @@ test('map geometry and named destinations match the shared scene contract', () =
     { x: 1030, y: 630, w: 100, h: 80, kind: 'bridge' },
     { x: 1030, y: 950, w: 100, h: 70, kind: 'bridge' },
     { x: 660, y: 750, w: 100, h: 100, kind: 'bridge' },
-    { x: 1430, y: 750, w: 100, h: 100, kind: 'bridge' },
+    { x: 1410, y: 750, w: 100, h: 100, kind: 'bridge' },
     { x: 860, y: 280, w: 80, h: 200, kind: 'ferry' }
   ]);
 
@@ -71,6 +71,7 @@ test('map geometry and named destinations match the shared scene contract', () =
     coffee: ['Bram \u5496\u5561\u9986', 'De Pijp', 730, 930, 'coffee', '\u2615'],
     noord: ['\u5317\u5cb8\u7801\u5934', 'Noord', 1230, 170, 'surf', '\u2693'],
     market: ['Albert Cuyp \u5e02\u573a', 'De Pijp', 930, 1010, 'market', '\u25a5'],
+    flowers: ['南街花店', 'De Pijp', 1240, 1040, 'flowers', '⚘'],
     lab: ['Chen \u5b9e\u9a8c\u5ba4', 'Science Park', 1490, 910, 'lab', '\u2697']
   };
   assert.deepEqual(Object.keys(City.PLACES), Object.keys(expected));
@@ -82,8 +83,8 @@ test('map geometry and named destinations match the shared scene contract', () =
 });
 
 test('facades use fixed positions and decorative buildings stay on dry land', () => {
-  assert.equal(City.BUILDINGS.length, 25);
-  for (const id of ['pub', 'coffee', 'noord', 'market', 'lab']) {
+  assert.equal(City.BUILDINGS.length, 26);
+  for (const id of ['pub', 'coffee', 'noord', 'market', 'flowers', 'lab']) {
     const place = City.PLACES[id];
     const facade = City.BUILDINGS.find(building => building.id === id);
     assert.deepEqual(facade, { id, kind: 'facade', x: place.x - 50, y: place.y - 110, w: 100, h: 80 });
@@ -120,7 +121,7 @@ test('walkability keeps an eight-unit safety margin from bounds, water, and buil
   assert.equal(City.walkable(100, Infinity), false);
 });
 
-test('all 36 ordered destination routes are reachable and every segment is safe', () => {
+test('all 49 ordered destination routes are reachable and every segment is safe', () => {
   const places = Object.values(City.PLACES);
   for (const from of places) {
     for (const to of places) {
@@ -174,11 +175,14 @@ test('routing safely joins exact positions and snaps blocked targets', () => {
 });
 
 test('movement normalizes diagonals, clamps elapsed time, and cannot cross obstacles', () => {
-  const source = { x: 300, y: 650 };
-  assert.deepEqual(City.move(source, 3, 4, 1), { x: 314.4, y: 669.2 });
-  assert.deepEqual(source, { x: 300, y: 650 });
-  assert.deepEqual(City.move({ x: 300, y: 650 }, 0, 0, 0.1), { x: 300, y: 650 });
-  assert.deepEqual(City.move({ x: 300, y: 650 }, 1, 0, -5), { x: 300, y: 650 });
+  const source = { ...City.create(), x: 300, y: 650 };
+  const diagonal = City.move(source, 3, 4, 1);
+  assert.ok(Math.hypot(diagonal.x - 314.4, diagonal.y - 669.2) < 1e-7);
+  assert.deepEqual(diagonal.visited, source.visited);
+  assert.deepEqual(diagonal.bike, source.bike);
+  assert.deepEqual(source, { ...City.create(), x: 300, y: 650 });
+  assert.deepEqual(City.move({ x: 300, y: 650 }, 0, 0, 0.1), { ...City.create(), x: 300, y: 650 });
+  assert.deepEqual(City.move({ x: 300, y: 650 }, 1, 0, -5), { ...City.create(), x: 300, y: 650 });
   const againstCanal = City.move({ x: 430, y: 550 }, 1, 0, 0.1);
   assert.ok(againstCanal.x <= 442);
   assert.equal(againstCanal.y, 550);
@@ -191,16 +195,16 @@ test('movement normalizes diagonals, clamps elapsed time, and cannot cross obsta
 });
 
 test('moveAlong advances at walking speed without mutating its inputs', () => {
-  const position = { x: 290, y: 590 };
+  const position = City.create();
   const path = [{ x: 310, y: 590 }, { x: 330, y: 590 }];
   const before = JSON.stringify({ position, path });
   const partial = City.moveAlong(position, path, 0.05);
-  assert.deepEqual(partial, { position: { x: 302, y: 590 }, path: [{ x: 310, y: 590 }, { x: 330, y: 590 }], arrived: false });
+  assert.deepEqual(partial, { position: { ...position, x: 302, y: 590 }, path: [{ x: 310, y: 590 }, { x: 330, y: 590 }], arrived: false });
   assert.equal(JSON.stringify({ position, path }), before);
   const advanced = City.moveAlong(position, path, 0.1);
-  assert.deepEqual(advanced, { position: { x: 314, y: 590 }, path: [{ x: 330, y: 590 }], arrived: false });
+  assert.deepEqual(advanced, { position: { ...position, x: 314, y: 590 }, path: [{ x: 330, y: 590 }], arrived: false });
   const arrived = City.moveAlong({ x: 329, y: 590 }, [{ x: 330, y: 590 }], 0.1);
-  assert.deepEqual(arrived, { position: { x: 330, y: 590 }, path: [], arrived: true });
+  assert.deepEqual(arrived, { position: { ...position, x: 330, y: 590 }, path: [], arrived: true });
 });
 
 test('near selects the closest destination within the requested radius', () => {
@@ -211,8 +215,8 @@ test('near selects the closest destination within the requested radius', () => {
 });
 
 test('city state creation and restoration are strict, cloned, and independent', () => {
-  assert.deepEqual(City.create(), { x: 290, y: 590, visited: ['pub'] });
-  const source = { x: 306.5, y: 608.5, visited: ['pub', 'coffee'] };
+  assert.deepEqual(City.create(), { x: 290, y: 590, visited: ['pub'], bike: { x: 290, y: 590, mounted: false } });
+  const source = { ...City.create(), x: 306.5, y: 608.5, visited: ['pub', 'coffee'] };
   const restored = City.restore(source);
   assert.deepEqual(restored, source);
   assert.notEqual(restored, source);

@@ -122,6 +122,14 @@
       const objects=B.WALLS.map(w=>({y:w.y+w.h,draw:()=>this.block(w)}));
       for(const item of r.items)if(item.state==='world')objects.push({y:item.y,draw:()=>this.item(item,time)});
       for(const a of r.actors)objects.push({y:a.y,draw:()=>this.actor(a,time)});
+      const cart=B.flowerCart(r);
+      objects.push({y:cart.y,draw:()=>{
+        this.person(cart.x-29,cart.y,'#8ca88b',time);
+        this.rect(cart.x-8,cart.y-23,44,25,'#9f855e');this.rect(cart.x-5,cart.y-20,38,17,'#263f3f');
+        this.line([[cart.x-24,cart.y-17],[cart.x-8,cart.y-10]],'#b4c4ae',4);
+        for(const xx of [cart.x,cart.x+29])this.ellipse(xx,cart.y+5,6,7,'#172c35');
+        this.text('↗ 温室搬花车',cart.x,cart.y-53,14,'#d5d9af');
+      }});
       objects.push({y:B.NOOR.y,draw:()=>{this.person(B.NOOR.x,B.NOOR.y,'#aa7d9d');this.text('Noor',B.NOOR.x,B.NOOR.y-56,15,'#edd3db');this.text('夜班刚结束',B.NOOR.x,B.NOOR.y+30,12,'#bbacbb');}});
       objects.push({y:405,draw:()=>{this.person(1990,405,'#8dba9c');this.text('温室住客',1990,345,14,'#d0e1c0');}});
       objects.push({y:265,draw:()=>{this.rect(1985,213,50,45,'#354d48');this.rect(1989,217,42,35,'#c1c398');this.glow(2010,260,45,27,'#decc8c50');this.text('↗ 酒馆屋顶',2010,287,13,'#ded3a0');}});

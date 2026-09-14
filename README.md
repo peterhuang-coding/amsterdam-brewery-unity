@@ -32,6 +32,14 @@ The playable prototype screen is divided into clear zones:
 4. At Tweede Kans, press **B** to open the bar, **S** to serve customers (+$6 each), **C** to close and collect earnings.
 5. Reach Day 5 evening at Tweede Kans to trigger Erik's dialogue.
 
+## Web Gameplay Prototype
+
+The browser prototype includes a focused three-day validation mode for the production-to-sales loop:
+
+- Open `tools/prototype/index.html` and choose **三日核心试玩**.
+- Or open `tools/prototype/core-loop.html?seed=42` directly.
+- The focused mode uses isolated save data and does not inherit the seven-day prototype's Meta upgrades.
+
 ## Open In Unity
 
 Install Unity Hub and a recent LTS editor, then open:

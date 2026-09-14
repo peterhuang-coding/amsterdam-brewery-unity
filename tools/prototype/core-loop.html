@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Amsterdam Brewery — 三日核心试玩</title>
+<style>
+:root{--bg:#0c1018;--panel:#151b27;--card:#1c2433;--line:#303b50;--text:#f2eadc;--muted:#9fa8b8;--gold:#f0b95b;--green:#78cf91;--red:#ef7474;--blue:#6fa8ff;--violet:#ae8cff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -20%,#263b57 0,#0c1018 48%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}.shell{max-width:1260px;margin:auto;padding:22px}.top{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}.title h1{font-size:24px;margin:0}.title p{color:var(--muted);margin:5px 0 0;font-size:13px}.toolbar{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:var(--card);color:var(--text);padding:9px 12px;border-radius:10px;cursor:pointer;font-weight:700}.btn:hover{border-color:var(--gold);transform:translateY(-1px)}.btn.primary{background:#6e511c;border-color:var(--gold)}.btn.danger{border-color:#713f46}.hud{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}.pill{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px}.pill small{display:block;color:var(--muted);font-size:10px}.pill b{display:block;margin-top:3px}.layout{display:grid;grid-template-columns:260px minmax(0,1fr) 300px;gap:12px}.panel{background:rgba(21,27,39,.96);border:1px solid var(--line);border-radius:16px;padding:15px}.panel h2{font-size:14px;margin:0 0 12px;color:var(--gold)}.calendar{display:grid;gap:8px}.day{border-left:3px solid var(--line);background:#111722;border-radius:8px;padding:10px}.day.current{border-left-color:var(--green);background:#17241e}.day b{font-size:12px}.day p{font-size:11px;color:var(--muted);line-height:1.5;margin:5px 0 0}.order{margin-top:12px;padding:11px;border:1px solid #7a5929;background:#2b2114;border-radius:10px;font-size:12px;line-height:1.55}.section{margin-bottom:16px}.section:last-child{margin-bottom:0}.notice{padding:12px;border:1px solid var(--line);border-radius:11px;background:#111722;color:var(--muted);font-size:12px;line-height:1.55}.notice.warn{border-color:#8c642a;color:#f4cf8b;background:#2b2114}.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.action{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:12px;text-align:left;color:var(--text);cursor:pointer}.action:hover{border-color:var(--blue)}.action:disabled{opacity:.45;cursor:not-allowed}.action strong{display:block;margin-bottom:5px}.action span{display:block;color:var(--muted);font-size:11px;line-height:1.45}.batches{display:grid;gap:9px}.batch{border:1px solid var(--line);border-radius:12px;padding:12px;background:#111722}.batch-head{display:flex;justify-content:space-between;gap:8px}.batch-title{font-weight:800}.tags{display:flex;gap:5px;flex-wrap:wrap;margin:7px 0}.tag{font-size:10px;padding:3px 6px;border-radius:999px;background:#263249;color:#cbd8ee}.tag.ready{background:#193725;color:#9be2ac}.tag.wait{background:#3b2e17;color:#e8c47d}.tag.bad{background:#442329;color:#f5a3ac}.batch p{font-size:11px;color:var(--muted);margin:5px 0}.batch-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.batch-actions .btn{font-size:11px;padding:7px 9px}.materials{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.mat{background:#111722;border-radius:9px;padding:9px;text-align:center}.mat b{display:block;font-size:18px}.log{display:grid;gap:6px;max-height:420px;overflow:auto}.event{font-size:11px;line-height:1.5;border-bottom:1px solid #263044;padding-bottom:6px}.event small{color:var(--muted)}.summary{border:1px solid var(--gold);background:#2b2114;border-radius:14px;padding:15px}.summary h2{font-size:19px}.score{font-size:31px;font-weight:900;color:var(--gold)}.empty{color:var(--muted);font-size:12px;padding:14px 0}.footer{color:var(--muted);font-size:11px;text-align:center;margin-top:14px}@media(max-width:920px){.layout{grid-template-columns:1fr}.hud{grid-template-columns:repeat(2,1fr)}.actions{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <div class="top"><div class="title"><h1>🍺 三日核心试玩</h1><p>先验证：未来需求 → 有限时间 → 批次选择 → 真实销售 → 跨日后果</p></div><div class="toolbar"><button class="btn" id="back">返回七日原型</button><button class="btn danger" id="reset">重开当前 Seed</button><button class="btn" id="new-seed">换一个 Seed</button></div></div>
+  <div class="hud" id="hud"></div>
+  <div class="layout">
+    <aside class="panel"><h2>公开日历</h2><div class="calendar" id="calendar"></div><div class="order" id="order"></div></aside>
+    <section class="panel"><div id="main"></div></section>
+    <aside class="panel"><div class="section"><h2>原料库存</h2><div class="materials" id="materials"></div></div><div class="section"><h2>因果记录</h2><div class="log" id="log"></div></div></aside>
+  </div>
+  <div class="footer">独立试玩存档只保存在当前浏览器，不读取七日模式的 Meta、升级或经济加成。</div>
+</main>
+<script src="core-loop.js"></script>
+<script>
+(function(){
+  'use strict';
+  const C=window.AmsterdamCoreLoop;
+  const params=new URLSearchParams(location.search);
+  const seed=Number.isFinite(parseInt(params.get('seed'),10))?parseInt(params.get('seed'),10):42;
+  const saveKey='ab_core_loop_v1_'+Math.abs(seed||42);
+  let state=C.restore(localStorage.getItem(saveKey),seed);
+  const $=id=>document.getElementById(id);
+  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const flavorName={crisp:'清爽',wild:'野性',toasted:'烘烤'};
+  function save(){if(state.ended)localStorage.removeItem(saveKey);else localStorage.setItem(saveKey,JSON.stringify(state))}
+  function act(fn){const r=fn();if(!r.ok)alert(r.message);save();render()}
+  function actionButton(icon,title,desc,action,arg,extra){return`<button class="action" data-action="${action}" data-arg="${arg||''}" ${extra||''}><strong>${icon} ${title}</strong><span>${desc}</span></button>`}
+  function renderHud(){
+    $('hud').innerHTML=[['⏰ 当前',C.phaseLabel(state)],['💰 现金','$'+state.money],['🎓 学业',state.attendance?'已出勤':state.classResolved?'已缺席':'待决定'],['📈 今日需求',flavorName[C.currentTrend(state)]+'风味'],['🎲 Seed',state.seed]].map(x=>`<div class="pill"><small>${x[0]}</small><b>${x[1]}</b></div>`).join('');
+  }
+  function renderCalendar(){
+    const days=[['Day 1','订单公开；选择快熟或慢熟路线'],['Day 2','上午可能救酒；下午课程展示'],['Day 3','晚上节庆摊位订单截止']];
+    $('calendar').innerHTML=days.map((d,i)=>`<div class="day ${state.day===i+1?'current':''}"><b>${d[0]}</b><p>${d[1]}<br>散客偏好：${flavorName[C.trendForDay(state,i+1)]}</p></div>`).join('');
+    const o=state.order,status={open:'待交付',fulfilled:'按约完成',substituted:'替代完成',missed:'已违约'}[o.status];
+    $('order').innerHTML=`<b>🤝 ${o.title}</b><br>截止：Day 3 晚上<br>需要：${o.qty} 份 · ${flavorName[o.flavor]} · 品质 ≥ ${o.minQuality}<br>基础报酬：$${o.reward}<br><b>状态：${status}</b>`;
+  }
+  function renderMaterials(){$('materials').innerHTML=[['🌾','麦芽',state.materials.malt],['🌿','啤酒花',state.materials.hops],['🧫','酵母',state.materials.yeast]].map(x=>`<div class="mat"><span>${x[0]} ${x[1]}</span><b>${x[2]}</b></div>`).join('')}
+  function renderLog(){$('log').innerHTML=state.log.map(e=>`<div class="event"><small>Day ${e.day} · ${e.phase}</small><br>${esc(e.text)}</div>`).join('')}
+  function batchCard(batch){
+    const ready=C.isReady(state,batch),expired=C.isExpired(state,batch),eligible=ready&&!expired&&batch.flavor===state.order.flavor&&batch.quality>=state.order.minQuality&&batch.qty>=state.order.qty;
+    const status=expired?'<span class="tag bad">已过期</span>':ready?'<span class="tag ready">已成熟</span>':`<span class="tag wait">Day ${batch.readyDay} 成熟</span>`;
+    let actions='';
+    if(ready&&!expired&&batch.qty>0&&!state.pendingRescue&&!C.needsClassDecision(state)&&!state.ended){
+      actions+=`<button class="btn" data-action="sell" data-arg="${batch.id}">卖 2 份 · 单价 $${C.marketPrice(state,batch)}</button>`;
+      if(state.day===3&&state.phase===2&&state.order.status==='open'){
+        if(eligible)actions+=`<button class="btn primary" data-action="deliver" data-arg="${batch.id}">按约交付</button>`;
+        if(batch.qty>=3)actions+=`<button class="btn" data-action="substitute" data-arg="${batch.id}">替代交付</button>`;
+      }
+    }
+    return`<div class="batch"><div class="batch-head"><span class="batch-title">${batch.id} · ${esc(batch.name)}</span><b>${batch.qty} 份</b></div><div class="tags">${status}<span class="tag">品质 ${batch.quality}</span><span class="tag">${flavorName[batch.flavor]}风味</span><span class="tag">${esc(batch.source)}</span></div><p>${batch.history.map(esc).join('<br>')}</p><div class="batch-actions">${actions}</div></div>`;
+  }
+  function normalActions(){
+    const fast=C.ROUTES.fast,slow=C.ROUTES.slow;
+    return`<div class="section"><h2>当前选择</h2><div class="actions">
+      ${actionButton('⚡',fast.name,fast.description+'；消耗麦芽2/花1/酵母1','brew','fast')}
+      ${actionButton('🛢️',slow.name,slow.description+'；消耗麦芽2/花2/酵母1','brew','slow',state.day>1?'disabled':'')}
+      ${actionButton('🧺','采购原料','花 $8，补麦芽2/花1/酵母1','buy')}
+      ${actionButton('⏭️','放弃时段','不做经营动作，直接进入下一时段','rest')}
+    </div></div>`;
+  }
+  function renderMain(){
+    if(state.ended){
+      const s=state.summary;
+      $('main').innerHTML=`<div class="summary"><h2>三日回顾</h2><div class="score">${s.score} 分</div><p>经营：$${s.money}<br>订单：${s.order}<br>学业：${s.school}<br>关系：${s.relation>=0?'+':''}${s.relation}</p><button class="btn primary" data-action="reset">用同一 Seed 再试一次</button></div>`;
+      return;
+    }
+    let html=`<div class="section"><h2>${C.phaseLabel(state)}</h2><div class="notice">所有操作都会消耗一个时段。酿酒不直接给钱；只有出售或交付批次才产生收入。</div></div>`;
+    if(state.pendingRescue){
+      const p=state.pendingRescue;
+      html+=`<div class="section"><h2>批次偏差：${esc(p.deviation.name)}</h2><div class="notice warn">${esc(p.deviation.detail)}。这次处理会消耗当前时段。</div><div class="actions" style="margin-top:9px">${actionButton('🧪','减量保质','损失 2 份，品质 +1，保留清爽风味与原订单资格','rescue','preserve')}${actionButton('🎨','转向风味','保留数量并提前成熟，改成野性风味，失去原订单资格','rescue','pivot')}</div></div>`;
+    }else if(C.needsClassDecision(state)){
+      html+=`<div class="section"><h2>课程展示</h2><div class="notice">学业只共享这个时段，不会给酿酒品质、收入或材料加成。</div><div class="actions" style="margin-top:9px">${actionButton('🎓','参加展示','占用下午，获得独立的学业完成结果','class','attend')}${actionButton('🏃','缺席展示','记为缺席，但下午仍可继续经营','class','skip')}</div></div>`;
+    }else html+=normalActions();
+    html+=`<div class="section"><h2>真实批次库存</h2><div class="batches">${state.batches.length?state.batches.map(batchCard).join(''):'<div class="empty">还没有批次。先选择一条酿造路线。</div>'}</div></div>`;
+    if(state.day===3&&state.phase===2&&state.order.status==='open')html+=`<div class="notice warn">订单今晚到期。请从成熟批次中按约交付、替代交付，或放弃时段承担违约。</div>`;
+    $('main').innerHTML=html;
+  }
+  function render(){renderHud();renderCalendar();renderMaterials();renderLog();renderMain()}
+  document.addEventListener('click',e=>{
+    const b=e.target.closest('[data-action]');if(!b)return;
+    const a=b.dataset.action,arg=b.dataset.arg;
+    if(a==='brew')act(()=>C.brew(state,arg));
+    else if(a==='buy')act(()=>C.buySupplies(state));
+    else if(a==='rest')act(()=>C.rest(state));
+    else if(a==='rescue')act(()=>C.resolveRescue(state,arg));
+    else if(a==='class')act(()=>C.attendClass(state,arg==='attend'));
+    else if(a==='sell')act(()=>C.sellWalkIn(state,arg,2));
+    else if(a==='deliver')act(()=>C.fulfillOrder(state,arg,false));
+    else if(a==='substitute')act(()=>C.fulfillOrder(state,arg,true));
+    else if(a==='reset')reset();
+  });
+  function reset(){localStorage.removeItem(saveKey);state=C.fresh(seed);save();render()}
+  $('reset').onclick=reset;
+  $('back').onclick=()=>{location.href='index.html?seed='+encodeURIComponent(seed)};
+  $('new-seed').onclick=()=>{location.href='core-loop.html?seed='+(42+Math.floor(Math.random()*900000))};
+  render();
+})();
+</script>
+</body>
+</html>

@@ -423,6 +423,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <button class="btn" onclick="G.advanceTime()">⏭ 推进时间</button>
 <button class="btn" onclick="enterBldg()">🚪 进入建筑</button>
 <button class="btn" onclick="workInd()">🔧 快速经营</button>
+<button class="btn" onclick="startCoreLoopFromModal()">🧪 三日核心试玩</button>
 <button class="btn" onclick="newRun()">🔄 新游戏</button>
 <button class="btn" id="speed-btn" onclick="cycleSpeed()" aria-label="切换游戏速度 1×/2×/4×" title="切换 1×/2×/4× 步速 (越快越省时)">▶▶ 1×</button>
 <button class="btn" id="mute-btn" onclick="toggleMuteBtn()" aria-label="切换音频" title="静音开关 (地图上 M 键 = 小地图)">🔊</button>
@@ -531,7 +532,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 <div class="key-card"><kbd>W</kbd><span>向上移动</span></div><div class="key-card"><kbd>A</kbd><span>向左移动</span></div><div class="key-card"><kbd>S</kbd><span>向下移动</span></div>
 <div class="key-card"><kbd>D</kbd><span>向右移动</span></div><div class="key-card"><kbd>E</kbd><span>进入建筑</span></div><div class="key-card"><kbd>Space</kbd><span>推进时间</span></div>
 </div>
-<form class="seed-form" onsubmit="event.preventDefault();startFromModal()"><input id="start-seed" type="number" placeholder="Seed（数字，可留空随机）" autocomplete="off" autofocus><button type="submit" class="btn btn-go">▶ Start</button><button type="button" class="btn seed-share" onclick="copySeedUrlFromModal()" title="📋 复制带 seed 的分享链接">📋 分享</button></form>
+<form class="seed-form" onsubmit="event.preventDefault();startFromModal()"><input id="start-seed" type="number" placeholder="Seed（数字，可留空随机）" autocomplete="off" autofocus><button type="submit" class="btn btn-go">▶ 七日原型</button><button type="button" class="btn btn-go" onclick="startCoreLoopFromModal()">🧪 三日核心试玩</button><button type="button" class="btn seed-share" onclick="copySeedUrlFromModal()" title="📋 复制带 seed 的分享链接">📋 分享</button></form>
 <!-- funify-v3 Round 30 — 🎲 Recent seeds picker (BACKLOG #10 配对): 玩家最近 5 个 seed 一键回放 -->
 <!-- 与 Round 29 URL share 互补:朋友发来 URL,玩家可将目标 seed 输进这里再按 ▶ -->
 <div class="recent-seeds" id="recent-seeds"><span class="recent-seeds-title">🎲 最近 Seeds</span><span class="recent-seeds-empty">（尚无历史 — 开始新 Run 后这里会记录最近 5 个）</span></div>
@@ -3572,6 +3573,12 @@ function startFromModal(){
   const qp=new URLSearchParams(location.search),qseed=parseInt(qp.get('seed'),10);
   const seed=v?parseInt(v,10):(Number.isFinite(qseed)?qseed:42+Math.floor(Math.random()*900000));
   document.getElementById('start-modal').classList.add('hidden');newRun(seed);
+}
+function startCoreLoopFromModal(){
+  const v=document.getElementById('start-seed').value.trim();
+  const qp=new URLSearchParams(location.search),qseed=parseInt(qp.get('seed'),10);
+  const seed=v?parseInt(v,10):(Number.isFinite(qseed)?qseed:42+Math.floor(Math.random()*900000));
+  location.href='core-loop.html?seed='+encodeURIComponent(seed);
 }
 function skipTutorial(){try{localStorage.setItem('ab_skip_tutorial','1')}catch(e){console.warn('ab_skip_tutorial save failed',e)};document.getElementById('start-modal').classList.add('hidden');startFromModal()}
 // funify-v3 Round 21 — slot picker UI (BACKLOG #10 #1 closure):渲染 3 槽摘要,点击切换或开始新 Run

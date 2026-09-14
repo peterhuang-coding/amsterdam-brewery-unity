@@ -28,6 +28,17 @@ http://127.0.0.1:18765/?seed=42
 
 `seed` 可替换为任意整数；相同 Seed 和相同操作应得到相同的玩法结果。
 
+开始页提供两个入口：
+
+- **三日核心试玩**：独立验证“公开订单 → 有限时间 → 快熟/慢熟酿造 → 批次补救 → 真实销售”的最小闭环。
+- **七日原型**：保留原有城市地图、产业、事件与 Meta 循环，作为内容和系统资产库。
+
+也可以直接打开三日核心试玩：
+
+```text
+http://127.0.0.1:18765/core-loop.html?seed=42
+```
+
 ## 操作
 
 - `W/A/S/D` 或方向键：移动（按下持续移动）
@@ -63,7 +74,14 @@ localStorage.removeItem('ab_speed_v1')
 
 ## 验证
 
-打开 `test.html`，页面顶部会显示当前动态断言计数；另可运行 `node test-phase-e.js`（当前 **168/168 PASS**）。覆盖：
+打开 `test.html`，页面顶部会显示当前动态断言计数；另可运行：
+
+```bash
+node test-phase-e.js
+node test-core-loop.js
+```
+
+`test-core-loop.js` 覆盖三日试玩的 Seed 确定性、真实批次、两条酿造路线、救酒分支、独立学业结果、按约/替代交付和违约结局。原有 `test-phase-e.js` 覆盖：
 
 - 数据契约（5 产业、事件 ID 唯一、升级 ID 唯一、modifier 都有 effect、冲浪入口、Seed 稳定）
 - 运行时契约（目标生成数量、必须含 Explore/Talk、升级包含三张死亡升级）

@@ -64,8 +64,28 @@ test('按约交付必须使用满足数量品质风味的成熟批次',()=>{
   if(C.needsClassDecision(s))C.attendClass(s,true);
   advanceTo(s,3,2);
   const b=s.batches[0],before=s.money;
+  assert.deepEqual(C.orderFit(s,b),{eligible:true,reasons:[]});
   assert.equal(C.fulfillOrder(s,b.id,false).ok,true);
   assert.equal(s.order.status,'fulfilled');assert.equal(s.order.relation,2);assert.equal(b.qty,0);assert.ok(s.money>before);assert.equal(s.ended,true);
+});
+
+test('订单差距能解释数量、品质、风味和成熟时间',()=>{
+  const s=C.fresh(141);C.brew(s,'slow');const b=s.batches[0];
+  b.qty=2;b.quality=1;b.flavor='wild';
+  const fit=C.orderFit(s,b);
+  assert.equal(fit.eligible,false);
+  assert.equal(fit.reasons.length,4);
+  assert.ok(fit.reasons.some(x=>x.includes('成熟')));
+  assert.ok(fit.reasons.some(x=>x.includes('还缺')));
+  assert.ok(fit.reasons.some(x=>x.includes('品质')));
+  assert.ok(fit.reasons.some(x=>x.includes('需要 crisp')));
+});
+
+test('中途存档可恢复且不会重复结算',()=>{
+  const s=C.fresh(142);C.brew(s,'fast');const b=s.batches[0];C.sellWalkIn(s,b.id,2);
+  const money=s.money,qty=b.qty,restored=C.restore(JSON.stringify(s),999);
+  assert.equal(restored.seed,142);assert.equal(restored.money,money);assert.equal(restored.batches[0].qty,qty);
+  assert.equal(restored.log.length,s.log.length);
 });
 
 test('替代交付降低关系并以较低报酬结束',()=>{

@@ -11,7 +11,7 @@
 </head>
 <body>
 <main class="shell">
-  <div class="top"><div class="title"><h1>🍺 三日核心试玩</h1><p>先验证：未来需求 → 有限时间 → 批次选择 → 真实销售 → 跨日后果</p></div><div class="toolbar"><button class="btn" id="back">返回七日原型</button><button class="btn danger" id="reset">重开当前 Seed</button><button class="btn" id="new-seed">换一个 Seed</button></div></div>
+  <div class="top"><div class="title"><h1>🍺 三日核心试玩</h1><p>先验证：未来需求 → 有限时间 → 批次选择 → 真实销售 → 跨日后果</p></div><div class="toolbar"><button class="btn" id="back">返回七日原型</button><button class="btn" id="export">导出试玩记录</button><button class="btn danger" id="reset">重开当前 Seed</button><button class="btn" id="new-seed">换一个 Seed</button></div></div>
   <div class="hud" id="hud"></div>
   <div class="layout">
     <aside class="panel"><h2>公开日历</h2><div class="calendar" id="calendar"></div><div class="order" id="order"></div></aside>
@@ -47,7 +47,7 @@
   function renderMaterials(){$('materials').innerHTML=[['🌾','麦芽',state.materials.malt],['🌿','啤酒花',state.materials.hops],['🧫','酵母',state.materials.yeast]].map(x=>`<div class="mat"><span>${x[0]} ${x[1]}</span><b>${x[2]}</b></div>`).join('')}
   function renderLog(){$('log').innerHTML=state.log.map(e=>`<div class="event"><small>Day ${e.day} · ${e.phase}</small><br>${esc(e.text)}</div>`).join('')}
   function batchCard(batch){
-    const ready=C.isReady(state,batch),expired=C.isExpired(state,batch),eligible=ready&&!expired&&batch.flavor===state.order.flavor&&batch.quality>=state.order.minQuality&&batch.qty>=state.order.qty;
+    const ready=C.isReady(state,batch),expired=C.isExpired(state,batch),fit=C.orderFit(state,batch),eligible=fit.eligible;
     const status=expired?'<span class="tag bad">已过期</span>':ready?'<span class="tag ready">已成熟</span>':`<span class="tag wait">Day ${batch.readyDay} 成熟</span>`;
     let actions='';
     if(ready&&!expired&&batch.qty>0&&!state.pendingRescue&&!C.needsClassDecision(state)&&!state.ended){
@@ -57,7 +57,8 @@
         if(batch.qty>=3)actions+=`<button class="btn" data-action="substitute" data-arg="${batch.id}">替代交付</button>`;
       }
     }
-    return`<div class="batch"><div class="batch-head"><span class="batch-title">${batch.id} · ${esc(batch.name)}</span><b>${batch.qty} 份</b></div><div class="tags">${status}<span class="tag">品质 ${batch.quality}</span><span class="tag">${flavorName[batch.flavor]}风味</span><span class="tag">${esc(batch.source)}</span></div><p>${batch.history.map(esc).join('<br>')}</p><div class="batch-actions">${actions}</div></div>`;
+    const fitText=state.order.status!=='open'?'订单已结算':eligible?'✅ 满足节庆订单':`订单差距：${fit.reasons.map(esc).join('；')}`;
+    return`<div class="batch"><div class="batch-head"><span class="batch-title">${batch.id} · ${esc(batch.name)}</span><b>${batch.qty} 份</b></div><div class="tags">${status}<span class="tag">品质 ${batch.quality}</span><span class="tag">${flavorName[batch.flavor]}风味</span><span class="tag">${esc(batch.source)}</span></div><p><b>${fitText}</b><br>${batch.history.map(esc).join('<br>')}</p><div class="batch-actions">${actions}</div></div>`;
   }
   function normalActions(){
     const fast=C.ROUTES.fast,slow=C.ROUTES.slow;
@@ -100,7 +101,15 @@
     else if(a==='reset')reset();
   });
   function reset(){localStorage.removeItem(saveKey);state=C.fresh(seed);save();render()}
+  function exportRecord(){
+    const payload={schema:'amsterdam-core-loop-playtest-v1',exportedAt:new Date().toISOString(),state:C.clone(state)};
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download=`amsterdam-core-loop-seed-${state.seed}.json`;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
   $('reset').onclick=reset;
+  $('export').onclick=exportRecord;
   $('back').onclick=()=>{location.href='index.html?seed='+encodeURIComponent(seed)};
   $('new-seed').onclick=()=>{location.href='core-loop.html?seed='+(42+Math.floor(Math.random()*900000))};
   render();

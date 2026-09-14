@@ -3577,7 +3577,9 @@ function startFromModal(){
 function startCoreLoopFromModal(){
   const v=document.getElementById('start-seed').value.trim();
   const qp=new URLSearchParams(location.search),qseed=parseInt(qp.get('seed'),10);
-  const seed=v?parseInt(v,10):(Number.isFinite(qseed)?qseed:42+Math.floor(Math.random()*900000));
+  const modal=document.getElementById('start-modal'),fromStart=modal&&!modal.classList.contains('hidden');
+  const activeSeed=!fromStart&&G&&Number.isFinite(G.seed)?G.seed:null;
+  const seed=v?parseInt(v,10):(Number.isFinite(activeSeed)?activeSeed:(Number.isFinite(qseed)?qseed:42+Math.floor(Math.random()*900000)));
   location.href='core-loop.html?seed='+encodeURIComponent(seed);
 }
 function skipTutorial(){try{localStorage.setItem('ab_skip_tutorial','1')}catch(e){console.warn('ab_skip_tutorial save failed',e)};document.getElementById('start-modal').classList.add('hidden');startFromModal()}

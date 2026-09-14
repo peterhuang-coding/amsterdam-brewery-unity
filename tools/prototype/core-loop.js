@@ -161,6 +161,16 @@
     const match=batch.flavor===trend?3:0;
     return Math.max(4,4+batch.quality*2+match);
   }
+  function orderFit(state,batch){
+    const reasons=[];
+    if(!batch)return{eligible:false,reasons:['批次不存在']};
+    if(!isReady(state,batch))reasons.push(`Day ${batch.readyDay} 才成熟`);
+    if(isExpired(state,batch))reasons.push('已过最佳售卖期');
+    if(batch.qty<state.order.qty)reasons.push(`还缺 ${state.order.qty-batch.qty} 份`);
+    if(batch.quality<state.order.minQuality)reasons.push(`品质需 ≥ ${state.order.minQuality}`);
+    if(batch.flavor!==state.order.flavor)reasons.push(`需要 ${state.order.flavor}，当前为 ${batch.flavor}`);
+    return{eligible:reasons.length===0,reasons};
+  }
   function sellWalkIn(state,batchId,qty){
     const guard=guardNormalAction(state);if(!guard.ok)return guard;
     const batch=state.batches.find(b=>b.id===batchId);if(!batch)return result(false,'批次不存在');
@@ -179,7 +189,7 @@
     if(state.order.status!=='open')return result(false,'订单已经结算');
     const batch=state.batches.find(b=>b.id===batchId);if(!batch)return result(false,'批次不存在');
     if(!isReady(state,batch)||isExpired(state,batch))return result(false,'该批次当前不可交付');
-    const exact=batch.flavor===state.order.flavor&&batch.quality>=state.order.minQuality&&batch.qty>=state.order.qty;
+    const fit=orderFit(state,batch),exact=fit.eligible;
     if(!substitute&&!exact)return result(false,'该批次不满足数量、品质或风味要求');
     if(substitute){
       if(batch.qty<3)return result(false,'替代交付至少需要 3 份');
@@ -205,5 +215,5 @@
     }catch(_err){return fresh(seed)}
   }
 
-  return {PHASES,ROUTES,DEVIATIONS,fresh,restore,clone,phaseLabel,trendForDay,currentTrend,isReady,isExpired,needsClassDecision,buySupplies,brew,resolveRescue,attendClass,sellWalkIn,fulfillOrder,rest,marketPrice};
+  return {PHASES,ROUTES,DEVIATIONS,fresh,restore,clone,phaseLabel,trendForDay,currentTrend,isReady,isExpired,needsClassDecision,buySupplies,brew,resolveRescue,attendClass,sellWalkIn,fulfillOrder,rest,marketPrice,orderFit};
 });

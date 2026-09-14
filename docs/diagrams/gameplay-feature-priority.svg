@@ -1,0 +1,187 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="980" viewBox="0 0 1400 980" role="img" aria-labelledby="diagram-title diagram-description" font-family="Noto Sans SC, Noto Sans CJK SC, WenQuanYi Zen Hei, PingFang SC, Microsoft YaHei, sans-serif" font-size="22">
+  <title id="diagram-title">玩法差距与优先功能关系画板</title>
+  <desc id="diagram-description">Amsterdam Brewery 游戏调研报告的建议依赖图，游戏代码尚未改造。优先主链为：主题周与课表、原料与批次、菜单与销售、跨日后果。跨日后果反馈到日程与批次。规则构筑以少量有代价的规则卡修改酿酒与销售；因果回顾解释哪次选择造成哪个结果。学业只共享日程并拥有独立学校结局；冲浪只共享日历并拥有独立技巧收藏，两者都没有接入经营的资源箭头。交付基础为暂停与续玩、固定规则版本与Seed。</desc>
+
+  <defs>
+    <marker id="arrow-main" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#2f74ff"/>
+    </marker>
+    <marker id="arrow-rule" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#735ed3"/>
+    </marker>
+    <marker id="arrow-cause" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#666666"/>
+    </marker>
+  </defs>
+
+  <rect width="1400" height="980" fill="#f7f7f9"/>
+  <path d="M 0 0 H 1400 V 176 H 0 Z" fill="#ffffff"/>
+
+  <!-- 标题与建议状态 -->
+  <g id="heading">
+    <circle cx="65" cy="42" r="9" fill="#f2a90c"/>
+    <text x="86" y="50" font-size="22" font-weight="600" fill="#666666">玩法差距与优先功能关系画板</text>
+    <text x="1340" y="50" text-anchor="end" font-size="22" font-weight="600" fill="#666666">Amsterdam Brewery</text>
+    <text x="56" y="112" font-size="38" font-weight="700" fill="#1a1a1a">从已有原型到可反复游玩的经营循环</text>
+    <text x="56" y="155" font-size="24" fill="#666666">建议路线 · 游戏代码尚未改造</text>
+    <rect x="1076" y="116" width="264" height="44" rx="22" fill="#389efe1f"/>
+    <text x="1208" y="145" text-anchor="middle" font-size="20" font-weight="600" fill="#1a1a1a">建议优先级 · 待验证</text>
+  </g>
+
+  <!-- 主链图例 -->
+  <g id="legend">
+    <text x="56" y="214" font-size="24" font-weight="700" fill="#1a1a1a">经营主循环</text>
+    <text x="205" y="214" font-size="20" fill="#666666">优先功能 1—4</text>
+    <line x1="784" y1="207" x2="818" y2="207" stroke="#2f74ff" stroke-width="3"/>
+    <text x="830" y="214" font-size="20" fill="#666666">依赖 / 回流</text>
+    <line x1="984" y1="207" x2="1018" y2="207" stroke="#735ed3" stroke-width="2.5" stroke-dasharray="7 5"/>
+    <text x="1030" y="214" font-size="20" fill="#666666">规则修改</text>
+    <line x1="1176" y1="207" x2="1210" y2="207" stroke="#666666" stroke-width="2"/>
+    <text x="1222" y="214" font-size="20" fill="#666666">因果说明</text>
+  </g>
+
+  <!-- 反馈通道：第四步从顶边出发，回到第一、二步顶边 -->
+  <g id="feedback" fill="none" stroke="#2f74ff" stroke-width="2.5" stroke-linejoin="round">
+    <polyline id="consequences-to-calendar" points="1208,300 1208,261 188,261 188,300" marker-end="url(#arrow-main)"/>
+    <polyline id="consequences-to-batches" points="528,261 528,300" marker-end="url(#arrow-main)"/>
+    <circle cx="528" cy="261" r="4" stroke="none" fill="#2f74ff"/>
+  </g>
+  <text x="790" y="249" text-anchor="middle" font-size="20" font-weight="600" fill="#666666">跨日后果反馈到日程与批次</text>
+
+  <!-- 主链节点 -->
+  <g id="calendar-node" data-card="main" data-box="56 300 264 222">
+    <rect x="56" y="300" width="264" height="222" rx="22" fill="#389efe1f" stroke="#389efe4d" stroke-width="2"/>
+    <circle cx="90" cy="341" r="20" fill="#2f74ff"/>
+    <text x="90" y="349" text-anchor="middle" font-size="24" font-weight="700" fill="#ffffff">1</text>
+    <text x="124" y="349" font-size="25" font-weight="700" fill="#1a1a1a">主题周与课表</text>
+    <text x="80" y="394" font-size="22" fill="#1a1a1a">日历公开机会</text>
+    <text x="80" y="432" font-size="22" fill="#1a1a1a">行动消耗时间</text>
+    <g fill="none" stroke="#2f74ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="80" y="462" width="32" height="31" rx="5"/>
+      <path d="M 80 472 H 112 M 88 458 V 467 M 104 458 V 467 M 89 481 H 93 M 100 481 H 104"/>
+    </g>
+    <text x="126" y="486" font-size="20" fill="#666666">安排下一次行动</text>
+  </g>
+
+  <g id="batch-node" data-card="main" data-box="396 300 264 222">
+    <rect x="396" y="300" width="264" height="222" rx="22" fill="#ffffff" stroke="#389efe4d" stroke-width="2"/>
+    <circle cx="430" cy="341" r="20" fill="#2f74ff"/>
+    <text x="430" y="349" text-anchor="middle" font-size="24" font-weight="700" fill="#ffffff">2</text>
+    <text x="464" y="349" font-size="25" font-weight="700" fill="#1a1a1a">原料与批次</text>
+    <text x="420" y="394" font-size="22" fill="#1a1a1a">批次ID · 风味 · 数量</text>
+    <text x="420" y="432" font-size="22" fill="#1a1a1a">完成时段 · 来源</text>
+    <g fill="none" stroke="#2f74ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 429 459 H 443 M 432 459 V 470 L 426 478 V 493 H 446 V 478 L 440 470 V 459 M 426 482 H 446"/>
+    </g>
+    <text x="466" y="486" font-size="20" fill="#666666">追踪酿酒产出</text>
+  </g>
+
+  <g id="sales-node" data-card="main" data-box="736 300 264 222">
+    <rect x="736" y="300" width="264" height="222" rx="22" fill="#ffffff" stroke="#389efe4d" stroke-width="2"/>
+    <circle cx="770" cy="341" r="20" fill="#2f74ff"/>
+    <text x="770" y="349" text-anchor="middle" font-size="24" font-weight="700" fill="#ffffff">3</text>
+    <text x="804" y="349" font-size="25" font-weight="700" fill="#1a1a1a">菜单与销售</text>
+    <text x="760" y="394" font-size="22" fill="#1a1a1a">顾客需求</text>
+    <text x="760" y="432" font-size="22" fill="#1a1a1a">保留 / 出售 / 替代</text>
+    <g fill="none" stroke="#2f74ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 763 487 H 792 M 767 487 V 460 H 788 V 487 M 773 469 H 782 M 773 477 H 782 M 763 491 H 792"/>
+    </g>
+    <text x="806" y="486" font-size="20" fill="#666666">作出取舍</text>
+  </g>
+
+  <g id="consequences-node" data-card="main" data-box="1076 300 264 222">
+    <rect x="1076" y="300" width="264" height="222" rx="22" fill="#389efe1f" stroke="#2f74ff" stroke-width="2"/>
+    <circle cx="1110" cy="341" r="20" fill="#2f74ff"/>
+    <text x="1110" y="349" text-anchor="middle" font-size="24" font-weight="700" fill="#ffffff">4</text>
+    <text x="1144" y="349" font-size="25" font-weight="700" fill="#1a1a1a">跨日后果</text>
+    <text x="1100" y="394" font-size="22" fill="#1a1a1a">订单 · 欠款</text>
+    <text x="1100" y="432" font-size="22" fill="#1a1a1a">常客反馈</text>
+    <g fill="none" stroke="#2f74ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 1103 461 H 1128 V 493 L 1122 489 L 1116 493 L 1110 489 L 1103 493 Z M 1110 469 H 1121 M 1110 477 H 1119"/>
+    </g>
+    <text x="1146" y="486" font-size="20" fill="#666666">结果进入下一轮</text>
+  </g>
+
+  <!-- 主链正交箭头，端点位于卡片左右边缘 -->
+  <g id="main-chain" fill="none" stroke="#2f74ff" stroke-width="3">
+    <polyline id="calendar-to-batch" points="320,411 396,411" marker-end="url(#arrow-main)"/>
+    <polyline id="batch-to-sales" points="660,411 736,411" marker-end="url(#arrow-main)"/>
+    <polyline id="sales-to-consequences" points="1000,411 1076,411" marker-end="url(#arrow-main)"/>
+  </g>
+
+  <!-- 规则构筑只修改第二、三步 -->
+  <g id="rule-connections" fill="none" stroke="#735ed3" stroke-width="2.5" stroke-dasharray="7 5" stroke-linejoin="round">
+    <polyline id="rules-to-batch" points="578,590 578,554 528,554 528,522" marker-end="url(#arrow-rule)"/>
+    <polyline id="rules-to-sales" points="578,554 868,554 868,522" marker-end="url(#arrow-rule)"/>
+  </g>
+  <circle cx="578" cy="554" r="4" fill="#735ed3"/>
+
+  <!-- 回顾承接选择与结果；与规则箭头分道布置 -->
+  <g id="review-connections" fill="none" stroke="#666666" stroke-width="2" stroke-linejoin="round">
+    <polyline id="choices-to-review" points="940,522 940,566 1048,566 1048,590" marker-end="url(#arrow-cause)"/>
+    <polyline id="results-to-review" points="1208,522 1208,590" marker-end="url(#arrow-cause)"/>
+  </g>
+  <text x="967" y="552" font-size="20" fill="#666666">选择</text>
+  <text x="1220" y="557" font-size="20" fill="#666666">结果</text>
+
+  <!-- 两个单独的增强模块 -->
+  <g id="rules-card" data-card="support" data-box="56 590 624 132">
+    <rect x="56" y="590" width="624" height="132" rx="20" fill="#8b71ff1f" stroke="#8b71ff3d" stroke-width="1.5"/>
+    <g fill="none" stroke="#735ed3" stroke-width="2.5" stroke-linejoin="round">
+      <rect x="86" y="631" width="32" height="42" rx="5" transform="rotate(-9 102 652)"/>
+      <rect x="98" y="623" width="32" height="42" rx="5" fill="#f7f7f9"/>
+      <path d="M 107 637 H 121 M 114 630 V 644 M 107 654 H 121"/>
+    </g>
+    <text x="154" y="628" font-size="25" font-weight="700" fill="#1a1a1a">规则构筑</text>
+    <text x="154" y="664" font-size="22" fill="#1a1a1a">少量有代价的规则卡</text>
+    <text x="154" y="699" font-size="22" fill="#666666">修改酿酒与销售</text>
+  </g>
+
+  <g id="review-card" data-card="support" data-box="716 590 624 132">
+    <rect x="716" y="590" width="624" height="132" rx="20" fill="#ffffff" stroke="#e4e6e8" stroke-width="1.5"/>
+    <g fill="none" stroke="#666666" stroke-width="2.5" stroke-linecap="round">
+      <circle cx="765" cy="643" r="17"/>
+      <path d="M 777 656 L 789 668 M 758 643 H 771 M 765 636 V 650"/>
+    </g>
+    <text x="814" y="628" font-size="25" font-weight="700" fill="#1a1a1a">因果回顾</text>
+    <text x="814" y="664" font-size="22" fill="#1a1a1a">说明哪次选择造成哪个结果</text>
+    <text x="814" y="699" font-size="20" fill="#666666">把选择与跨日后果对应起来</text>
+  </g>
+
+  <!-- 独立活动：只有文字说明时间共享，没有通向经营的资源连线 -->
+  <text x="56" y="761" font-size="22" font-weight="700" fill="#1a1a1a">独立活动</text>
+  <text x="1340" y="761" text-anchor="end" font-size="20" fill="#666666">仅共享时间安排 · 不接入经营资源</text>
+
+  <g id="school-card" data-card="isolated" data-box="56 782 624 96">
+    <rect x="56" y="782" width="624" height="96" rx="18" fill="#ffffff" stroke="#e4e6e8" stroke-width="2" stroke-dasharray="7 5"/>
+    <circle cx="102" cy="830" r="27" fill="#f7f7f9"/>
+    <g fill="none" stroke="#666666" stroke-width="2" stroke-linejoin="round">
+      <path d="M 84 817 Q 93 813 102 819 Q 111 813 120 817 V 840 Q 111 836 102 842 Q 93 836 84 840 Z M 102 819 V 842"/>
+    </g>
+    <text x="148" y="819" font-size="25" font-weight="700" fill="#1a1a1a">学业</text>
+    <text x="148" y="856" font-size="22" fill="#666666">只共享日程 · 独立学校结局</text>
+  </g>
+
+  <g id="surf-card" data-card="isolated" data-box="716 782 624 96">
+    <rect x="716" y="782" width="624" height="96" rx="18" fill="#ffffff" stroke="#e4e6e8" stroke-width="2" stroke-dasharray="7 5"/>
+    <circle cx="762" cy="830" r="27" fill="#f7f7f9"/>
+    <g fill="none" stroke="#666666" stroke-width="2" stroke-linecap="round">
+      <ellipse cx="764" cy="823" rx="6" ry="16" transform="rotate(29 764 823)"/>
+      <path d="M 744 840 Q 750 832 756 839 Q 762 846 770 837 Q 775 833 780 837"/>
+    </g>
+    <text x="808" y="819" font-size="25" font-weight="700" fill="#1a1a1a">冲浪</text>
+    <text x="808" y="856" font-size="22" fill="#666666">只共享日历 · 独立技巧收藏</text>
+  </g>
+
+  <!-- 全图交付基础 -->
+  <g id="delivery-foundation" data-card="foundation" data-box="56 906 1284 54">
+    <rect x="56" y="906" width="1284" height="54" rx="16" fill="#36393d"/>
+    <g fill="#ffffff">
+      <rect x="83" y="924" width="5" height="18" rx="1"/>
+      <rect x="94" y="924" width="5" height="18" rx="1"/>
+      <path d="M 111 924 L 125 933 L 111 942 Z"/>
+    </g>
+    <text x="150" y="942" font-size="24" font-weight="600" fill="#ffffff">交付基础：暂停与续玩 · 固定规则版本与Seed</text>
+    <circle cx="1292" cy="933" r="5" fill="#f2a90c"/>
+  </g>
+</svg>

@@ -47,3 +47,9 @@ python3 tools/validate_unity_project.py
 ```
 
 This checks the Unity scaffold, data references, scene entry point, and core loop script contract.
+
+## 玩法调研与后续规划
+
+- [玩法差距与高价值功能调研](docs/Amsterdam%20Brewery%20玩法差距与高价值功能调研.md)：基于 `12995e2` 的 Web 原型静态盘点，涵盖二十二项玩法、竞品参照、差异化定位和功能优先级；建议不代表已经实现。
+- [玩法机制与优先功能关系图](docs/diagrams/gameplay-feature-priority.svg)
+- [飞书协作版](https://bytedance.larkoffice.com/docx/Bg8ddVmAKohUIFxVKX3codBBnCc)

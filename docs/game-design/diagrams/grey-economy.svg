@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1760" height="1210" viewBox="0 0 1760 1210">
+  <rect width="1760" height="1210" fill="#F7F8FC"/>
+  <text x="75" y="68" font-size="38" font-weight="700" fill="#172033">灰色经济子系统：低成本资源换未来风险</text>
+  <text x="75" y="108" font-size="19" fill="#667188">逃票与偷窃不是独立 QTE，而是跨天改变事件牌组、供应链和终局的风险路线</text>
+
+  <g transform="translate(70,160)">
+    <rect x="0" y="0" width="320" height="210" rx="28" fill="#E8F2FF" stroke="#6798E8" stroke-width="3"/>
+    <text x="28" y="48" font-size="25" font-weight="700" fill="#275DA8">🚇 逃票</text>
+    <text x="28" y="88" font-size="17" fill="#4F6687">选择路线与抽象技巧</text>
+    <text x="28" y="120" font-size="17" fill="#4F6687">节省现金 / 时间</text>
+    <text x="28" y="152" font-size="17" fill="#4F6687">可能留下 fare_record</text>
+    <text x="28" y="184" font-size="16" font-weight="700" fill="#275DA8">携赃物时失败后果放大</text>
+
+    <rect x="0" y="300" width="320" height="245" rx="28" fill="#FFE9E8" stroke="#DB7771" stroke-width="3"/>
+    <text x="28" y="348" font-size="25" font-weight="700" fill="#9B403B">🛒 超市偷窃</text>
+    <text x="28" y="388" font-size="17" fill="#764E4B">观察巡逻与摄像头</text>
+    <text x="28" y="420" font-size="17" fill="#764E4B">有限背包装哪些物品</text>
+    <text x="28" y="452" font-size="17" fill="#764E4B">选择普通 / 掩护 / 接应出口</text>
+    <text x="28" y="486" font-size="16" font-weight="700" fill="#9B403B">输出赃物，不直接输出现金</text>
+    <text x="28" y="516" font-size="15" fill="#764E4B">高价值、高安保、高证据</text>
+
+    <rect x="0" y="650" width="320" height="190" rx="28" fill="#F0E9FF" stroke="#9474D8" stroke-width="3"/>
+    <text x="28" y="698" font-size="25" font-weight="700" fill="#6242A2">🕳️ 黑市 / 销赃</text>
+    <text x="28" y="738" font-size="17" fill="#62557A">快速换钱</text>
+    <text x="28" y="770" font-size="17" fill="#62557A">洗标签 / 拆解</text>
+    <text x="28" y="802" font-size="17" fill="#62557A">换检查情报或地下关系</text>
+  </g>
+
+  <g transform="translate(525,145)">
+    <rect x="0" y="0" width="650" height="770" rx="34" fill="#FFFFFF" stroke="#AAB5C9" stroke-width="3"/>
+    <text x="35" y="55" font-size="27" font-weight="700" fill="#172033">共享风险状态</text>
+    <text x="35" y="88" font-size="16" fill="#667188">犯罪行为持续改写未来，而不是当场结算完毕</text>
+
+    <circle cx="160" cy="190" r="78" fill="#FFF0D4" stroke="#E4A438" stroke-width="3"/>
+    <text x="160" y="182" text-anchor="middle" font-size="23" font-weight="700" fill="#9B5A00">Heat</text>
+    <text x="160" y="212" text-anchor="middle" font-size="14" fill="#745321">总体关注度</text>
+
+    <circle cx="390" cy="190" r="78" fill="#FFE9E8" stroke="#DB7771" stroke-width="3"/>
+    <text x="390" y="182" text-anchor="middle" font-size="23" font-weight="700" fill="#9B403B">证据</text>
+    <text x="390" y="212" text-anchor="middle" font-size="14" fill="#764E4B">可追踪物证</text>
+
+    <circle cx="275" cy="380" r="90" fill="#F0E9FF" stroke="#9474D8" stroke-width="3"/>
+    <text x="275" y="369" text-anchor="middle" font-size="23" font-weight="700" fill="#6242A2">赃物</text>
+    <text x="275" y="399" text-anchor="middle" font-size="14" fill="#62557A">stolen 标签</text>
+
+    <circle cx="505" cy="380" r="90" fill="#E8F2FF" stroke="#6798E8" stroke-width="3"/>
+    <text x="505" y="369" text-anchor="middle" font-size="22" font-weight="700" fill="#275DA8">地区嫌疑</text>
+    <text x="505" y="399" text-anchor="middle" font-size="14" fill="#4F6687">区域独立升级</text>
+
+    <rect x="105" y="535" width="440" height="150" rx="24" fill="#172033"/>
+    <text x="325" y="577" text-anchor="middle" font-size="23" font-weight="700" fill="#FFFFFF">行为修改未来事件 Deck</text>
+    <text x="325" y="613" text-anchor="middle" font-size="16" fill="#D7E0F0">便衣检查 · 搜查 · 地下买家 · 勒索</text>
+    <text x="325" y="642" text-anchor="middle" font-size="16" fill="#D7E0F0">合法采购与补票可以降低风险权重</text>
+    <text x="325" y="669" text-anchor="middle" font-size="14" fill="#D7E0F0">失败改变 Build，不直接结束 Run</text>
+
+    <polyline points="160,268 160,380 185,380" fill="none" stroke="#E4A438" stroke-width="4"/>
+    <polyline points="390,268 390,290 320,290" fill="none" stroke="#DB7771" stroke-width="4"/>
+    <polyline points="365,380 415,380" fill="none" stroke="#9474D8" stroke-width="4"/>
+    <polyline points="275,470 275,535" fill="none" stroke="#9474D8" stroke-width="4"/>
+    <polyline points="505,470 505,500 420,500 420,535" fill="none" stroke="#6798E8" stroke-width="4"/>
+  </g>
+
+  <g transform="translate(1300,160)">
+    <rect x="0" y="0" width="385" height="260" rx="30" fill="#E8F7F1" stroke="#55AD8D" stroke-width="3"/>
+    <text x="30" y="50" font-size="25" font-weight="700" fill="#24745F">合法与地下用途</text>
+    <text x="30" y="92" font-size="17" fill="#476C62">赃物原料 → 酿酒</text>
+    <text x="30" y="127" font-size="17" fill="#476C62">实验批次 → Coffeeshop</text>
+    <text x="30" y="162" font-size="17" fill="#476C62">洗标签 → 正式酒吧 / 啤酒节</text>
+    <text x="30" y="197" font-size="17" fill="#476C62">证据 → Academic / NPC 处理</text>
+    <text x="30" y="232" font-size="16" font-weight="700" fill="#24745F">每份赃物至少两种出路</text>
+
+    <rect x="0" y="350" width="385" height="250" rx="30" fill="#FFE9E8" stroke="#DB7771" stroke-width="3"/>
+    <text x="30" y="400" font-size="25" font-weight="700" fill="#9B403B">🚨 追捕 / 检查</text>
+    <text x="30" y="442" font-size="17" fill="#764E4B">先决定丢什么或找谁帮忙</text>
+    <text x="30" y="477" font-size="17" fill="#764E4B">再选择路线与一次性手段</text>
+    <text x="30" y="512" font-size="17" fill="#764E4B">罚款 · 没收 · 禁入 · 许可证风险</text>
+    <text x="30" y="550" font-size="16" font-weight="700" fill="#9B403B">惩罚迫使 Build 转向</text>
+
+    <rect x="0" y="690" width="385" height="190" rx="30" fill="#FFF0D4" stroke="#E4A438" stroke-width="3"/>
+    <text x="30" y="738" font-size="25" font-weight="700" fill="#9B5A00">🏆 Day 7 读取</text>
+    <text x="30" y="778" font-size="17" fill="#745321">未清证据 · Heat · 酒品来源</text>
+    <text x="30" y="813" font-size="17" fill="#745321">NPC 是否提供掩护</text>
+    <text x="30" y="848" font-size="16" font-weight="700" fill="#9B5A00">合法 / 地下 / 洗白结局</text>
+  </g>
+
+  <polyline points="390,265 460,265 460,360 525,360" fill="none" stroke="#7B879C" stroke-width="5"/>
+  <polygon points="510,350 528,360 510,370" fill="#7B879C"/>
+  <polyline points="390,582 455,582 455,420 525,420" fill="none" stroke="#7B879C" stroke-width="5"/>
+  <polygon points="510,410 528,420 510,430" fill="#7B879C"/>
+  <polyline points="390,755 460,755 460,510 525,510" fill="none" stroke="#9474D8" stroke-width="5"/>
+  <polygon points="510,500 528,510 510,520" fill="#9474D8"/>
+  <polyline points="1175,520 1240,520 1240,290 1300,290" fill="none" stroke="#55AD8D" stroke-width="5"/>
+  <polygon points="1285,280 1303,290 1285,300" fill="#55AD8D"/>
+  <polyline points="1175,620 1240,620 1240,635 1300,635" fill="none" stroke="#DB7771" stroke-width="5"/>
+  <polygon points="1285,625 1303,635 1285,645" fill="#DB7771"/>
+  <polyline points="1492,760 1492,850" fill="none" stroke="#E4A438" stroke-width="5"/>
+
+  <rect x="70" y="1090" width="1615" height="72" rx="22" fill="#172033"/>
+  <text x="878" y="1124" text-anchor="middle" font-size="22" font-weight="700" fill="#FFFFFF">灰色路线的乐趣来自“今天占便宜，未来怎样处理代价”</text>
+  <text x="878" y="1149" text-anchor="middle" font-size="15" fill="#D7E0F0">偷来的东西不立即变钱 · 风险写入未来事件 · 失败改变路线但不直接结束游戏</text>
+</svg>

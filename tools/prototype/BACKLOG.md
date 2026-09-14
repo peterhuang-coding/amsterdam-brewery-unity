@@ -1,5 +1,7 @@
 # Polish Backlog — Web Demo v2（funify-24h-v2）
 
+> 本文件保留旧 Web Demo 多轮工程记录，包含已经完成、重复或过时的条目，不再作为当前产品优先级入口。当前玩法范围与待办请查看 [`docs/game-design/Amsterdam Brewery 当前玩法待办.md`](../../docs/game-design/Amsterdam%20Brewery%20当前玩法待办.md)。
+
 > 每轮 1 改动 1 commit。Claude 每轮从 goal.md 读范围，从本文件读待办。
 > 条目格式：`- [ ] <一句话改动>  [文件:函数/位置]`
 

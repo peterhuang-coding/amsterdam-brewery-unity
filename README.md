@@ -60,4 +60,6 @@ This checks the Unity scaffold, data references, scene entry point, and core loo
 
 - [玩法差距与高价值功能调研](docs/Amsterdam%20Brewery%20玩法差距与高价值功能调研.md)：基于 `12995e2` 的 Web 原型静态盘点，涵盖二十二项玩法、竞品参照、差异化定位和功能优先级；建议不代表已经实现。
 - [玩法机制与优先功能关系图](docs/diagrams/gameplay-feature-priority.svg)
+- [游戏设计文档索引](docs/game-design/Amsterdam%20Brewery%20游戏设计索引.md)：今晚的机制设计、当前待办、二十二项小游戏策划与数据流图。
+- [当前玩法待办](docs/game-design/Amsterdam%20Brewery%20当前玩法待办.md)：区分已完成的三日闭环、待试玩验证和后置候选。
 - [飞书协作版](https://bytedance.larkoffice.com/docx/Bg8ddVmAKohUIFxVKX3codBBnCc)

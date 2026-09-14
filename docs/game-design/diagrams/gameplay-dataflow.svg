@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1220" viewBox="0 0 1800 1220">
+  <rect width="1800" height="1220" fill="#F7F8FC"/>
+  <text x="75" y="68" font-size="38" font-weight="700" fill="#172033">Amsterdam Brewery：活动日历与三条玩法线</text>
+  <text x="75" y="108" font-size="19" fill="#667188">经营线强耦合；学业与冲浪保持独立，只共享日历和可用时间</text>
+
+  <g transform="translate(75,150)">
+    <rect x="0" y="0" width="1650" height="170" rx="30" fill="#F0E9FF" stroke="#9474D8" stroke-width="3"/>
+    <text x="34" y="48" font-size="27" font-weight="700" fill="#6242A2">🎲 Run Seed → 七天城市活动日历</text>
+    <text x="34" y="82" font-size="16" fill="#62557A">大型活动与课表开局可见；天气、客群和检查风险逐日补充</text>
+    <rect x="34" y="105" width="210" height="42" rx="16" fill="#FFE9E8" stroke="#DB7771"/>
+    <text x="139" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#9B403B">🏳️‍🌈 Pride / LGBTQ+</text>
+    <rect x="264" y="105" width="180" height="42" rx="16" fill="#FFF0D4" stroke="#E4A438"/>
+    <text x="354" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#9B5A00">👑 国王节</text>
+    <rect x="464" y="105" width="180" height="42" rx="16" fill="#E8F7F1" stroke="#55AD8D"/>
+    <text x="554" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#24745F">🍺 啤酒节</text>
+    <rect x="664" y="105" width="190" height="42" rx="16" fill="#E8F2FF" stroke="#6798E8"/>
+    <text x="759" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#275DA8">🏛️ 博物馆夜</text>
+    <rect x="874" y="105" width="180" height="42" rx="16" fill="#FFE9E8" stroke="#DB7771"/>
+    <text x="964" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#9B403B">📚 考试周</text>
+    <rect x="1074" y="105" width="190" height="42" rx="16" fill="#E8F2FF" stroke="#6798E8"/>
+    <text x="1169" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#275DA8">🌧️ 天气变化</text>
+    <rect x="1284" y="105" width="200" height="42" rx="16" fill="#FFF0D4" stroke="#E4A438"/>
+    <text x="1384" y="132" text-anchor="middle" font-size="16" font-weight="700" fill="#9B5A00">🚨 监管与供应</text>
+  </g>
+
+  <g transform="translate(75,370)">
+    <rect x="0" y="0" width="1650" height="170" rx="28" fill="#FFFFFF" stroke="#AAB5C9" stroke-width="3"/>
+    <text x="30" y="45" font-size="24" font-weight="700" fill="#172033">工作日固定节奏</text>
+    <rect x="30" y="72" width="240" height="66" rx="18" fill="#E8F2FF" stroke="#6798E8"/>
+    <text x="150" y="99" text-anchor="middle" font-size="18" font-weight="700" fill="#275DA8">早晨 · 通勤</text>
+    <text x="150" y="123" text-anchor="middle" font-size="14" fill="#4F6687">买票 / 逃票 / 骑车</text>
+    <rect x="320" y="72" width="240" height="66" rx="18" fill="#F0E9FF" stroke="#9474D8"/>
+    <text x="440" y="99" text-anchor="middle" font-size="18" font-weight="700" fill="#6242A2">白天 · 上学</text>
+    <text x="440" y="123" text-anchor="middle" font-size="14" fill="#62557A">课程 / 作业 / 考试</text>
+    <rect x="610" y="72" width="260" height="66" rx="18" fill="#FFF0D4" stroke="#E4A438"/>
+    <text x="740" y="99" text-anchor="middle" font-size="18" font-weight="700" fill="#9B5A00">课余 · 采购与办事</text>
+    <text x="740" y="123" text-anchor="middle" font-size="14" fill="#745321">买原料 / 偷窃 / NPC</text>
+    <rect x="920" y="72" width="270" height="66" rx="18" fill="#E8F7F1" stroke="#55AD8D"/>
+    <text x="1055" y="99" text-anchor="middle" font-size="18" font-weight="700" fill="#24745F">下班后 · 酒吧</text>
+    <text x="1055" y="123" text-anchor="middle" font-size="14" fill="#476C62">处理批次 / 配菜单 / 营业</text>
+    <rect x="1240" y="72" width="270" height="66" rx="18" fill="#172033"/>
+    <text x="1375" y="99" text-anchor="middle" font-size="18" font-weight="700" fill="#FFFFFF">深夜 · 结算</text>
+    <text x="1375" y="123" text-anchor="middle" font-size="14" fill="#D7E0F0">付账 / 看预报 / 排明日</text>
+    <polyline points="270,105 320,105" fill="none" stroke="#7B879C" stroke-width="4"/>
+    <polyline points="560,105 610,105" fill="none" stroke="#7B879C" stroke-width="4"/>
+    <polyline points="870,105 920,105" fill="none" stroke="#7B879C" stroke-width="4"/>
+    <polyline points="1190,105 1240,105" fill="none" stroke="#7B879C" stroke-width="4"/>
+  </g>
+
+  <g transform="translate(75,590)">
+    <rect x="0" y="0" width="970" height="355" rx="30" fill="#FFFFFF" stroke="#E4A438" stroke-width="3"/>
+    <text x="32" y="50" font-size="26" font-weight="700" fill="#9B5A00">核心经营线 · 强耦合</text>
+    <text x="32" y="82" font-size="16" fill="#667188">课余得到什么，决定晚上能卖什么</text>
+    <rect x="35" y="125" width="235" height="110" rx="22" fill="#FFF0D4" stroke="#E4A438" stroke-width="2"/>
+    <text x="152" y="166" text-anchor="middle" font-size="21" font-weight="700" fill="#9B5A00">🛒 采购 / 灰色获取</text>
+    <text x="152" y="199" text-anchor="middle" font-size="15" fill="#745321">原料 · 工具 · 来源标签</text>
+    <rect x="365" y="125" width="235" height="110" rx="22" fill="#FFF7E5" stroke="#E4A438" stroke-width="2"/>
+    <text x="482" y="166" text-anchor="middle" font-size="21" font-weight="700" fill="#9B5A00">🍺 酿酒 / 发酵管理</text>
+    <text x="482" y="199" text-anchor="middle" font-size="15" fill="#745321">原料 → 带标签批次</text>
+    <rect x="695" y="125" width="235" height="110" rx="22" fill="#E8F7F1" stroke="#55AD8D" stroke-width="2"/>
+    <text x="812" y="166" text-anchor="middle" font-size="21" font-weight="700" fill="#24745F">🍻 晚间酒吧</text>
+    <text x="812" y="199" text-anchor="middle" font-size="15" fill="#476C62">批次 → 现金与客群情报</text>
+    <polyline points="270,180 365,180" fill="none" stroke="#7B879C" stroke-width="5"/>
+    <polygon points="347,169 367,180 347,191" fill="#7B879C"/>
+    <polyline points="600,180 695,180" fill="none" stroke="#7B879C" stroke-width="5"/>
+    <polygon points="677,169 697,180 677,191" fill="#7B879C"/>
+    <rect x="210" y="275" width="550" height="48" rx="16" fill="#172033"/>
+    <text x="485" y="305" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">活动日历同时改变原料、客群、营业时间与风险</text>
+  </g>
+
+  <g transform="translate(1090,590)">
+    <rect x="0" y="0" width="635" height="160" rx="28" fill="#F0E9FF" stroke="#9474D8" stroke-width="3"/>
+    <text x="30" y="47" font-size="24" font-weight="700" fill="#6242A2">📚 学业线 · 独立生活压力</text>
+    <text x="30" y="84" font-size="17" fill="#62557A">出勤 · 作业 · Presentation · 考试 · 学校关系</text>
+    <text x="30" y="116" font-size="16" fill="#62557A">只与经营共享时间冲突，不检测啤酒、不解锁配方</text>
+    <text x="30" y="143" font-size="15" font-weight="700" fill="#6242A2">忽略它只影响学业线与对应结局</text>
+    <rect x="0" y="205" width="635" height="160" rx="28" fill="#E7F6FB" stroke="#5EA8C5" stroke-width="3"/>
+    <text x="30" y="252" font-size="24" font-weight="700" fill="#2D708A">🏄 冲浪线 · 独立技巧玩法</text>
+    <text x="30" y="289" font-size="17" fill="#4D6D78">周末 / 假期 / 空闲日开放 · 浪点 · 技巧 · 装备 · 收藏</text>
+    <text x="30" y="321" font-size="16" fill="#4D6D78">不产学术资源、酿酒材料、酒吧库存或经营收入</text>
+    <text x="30" y="348" font-size="15" font-weight="700" fill="#2D708A">只共享活动日历，不共享资源图</text>
+  </g>
+
+  <polyline points="900,320 900,350 440,350 440,370" fill="none" stroke="#9474D8" stroke-width="5"/>
+  <polyline points="900,320 900,560 1407,560 1407,590" fill="none" stroke="#9474D8" stroke-width="5"/>
+  <rect x="75" y="1010" width="1650" height="80" rx="22" fill="#172033"/>
+  <text x="900" y="1047" text-anchor="middle" font-size="23" font-weight="700" fill="#FFFFFF">活动负责打乱日程；经营、学业、冲浪各自保持清楚的机制边界</text>
+  <text x="900" y="1074" text-anchor="middle" font-size="15" fill="#D7E0F0">不是所有系统都要互相喂资源，时间冲突本身就是有效连接</text>
+</svg>

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1220" viewBox="0 0 1600 1220">
+  <rect width="1600" height="1220" fill="#F7F8FC"/>
+  <text x="75" y="70" font-size="38" font-weight="700" fill="#172033">Run Seed 如何生成一周生活</text>
+  <text x="75" y="110" font-size="19" fill="#667188">大型活动与课表先公开，随机性再逐层补充，不把所有系统强行联动</text>
+
+  <g transform="translate(90,160)">
+    <polygon points="0,0 1260,0 1150,160 110,160" fill="#F0E9FF" stroke="#9474D8" stroke-width="3"/>
+    <text x="630" y="48" text-anchor="middle" font-size="27" font-weight="700" fill="#6242A2">第一层 · 七天活动日历与学校课表</text>
+    <text x="630" y="89" text-anchor="middle" font-size="17" fill="#62557A">Pride / 国王节 / 啤酒节 / 博物馆夜 / 考试周</text>
+    <text x="630" y="122" text-anchor="middle" font-size="16" fill="#62557A">停课、早放、活动时段和固定课程开局可见</text>
+    <text x="630" y="147" text-anchor="middle" font-size="14" fill="#62557A">玩家先看到一周骨架，再制定准备计划</text>
+
+    <polygon points="110,195 1150,195 1050,355 210,355" fill="#E8F2FF" stroke="#6798E8" stroke-width="3"/>
+    <text x="630" y="245" text-anchor="middle" font-size="27" font-weight="700" fill="#275DA8">第二层 · 每日动态预告</text>
+    <text x="630" y="286" text-anchor="middle" font-size="17" fill="#4F6687">天气 · 客群范围 · 供应价格 · 交通 · 检查风险</text>
+    <text x="630" y="320" text-anchor="middle" font-size="15" fill="#4F6687">城市情报与 NPC 关系提高准确度，Academic 不参与经营预测</text>
+
+    <polygon points="210,390 1050,390 955,565 305,565" fill="#FFF7E5" stroke="#E4A438" stroke-width="3"/>
+    <text x="630" y="445" text-anchor="middle" font-size="27" font-weight="700" fill="#9B5A00">第三层 · 固定节奏中的玩家选择</text>
+    <text x="630" y="487" text-anchor="middle" font-size="17" fill="#745321">通勤方式 · 课余采购 · 是否缺课 · 晚间菜单 · 是否走灰色路线</text>
+    <text x="630" y="525" text-anchor="middle" font-size="15" fill="#745321">工作日上学、课余采购、下班去酒吧；活动日改变可用窗口</text>
+
+    <polygon points="305,600 955,600 870,755 390,755" fill="#FFE9E8" stroke="#DB7771" stroke-width="3"/>
+    <text x="630" y="652" text-anchor="middle" font-size="27" font-weight="700" fill="#9B403B">第四层 · 局部意外</text>
+    <text x="630" y="694" text-anchor="middle" font-size="17" fill="#764E4B">临时活动 · 特殊顾客 · 供应延误 · 检查 · 酿造事故</text>
+    <text x="630" y="728" text-anchor="middle" font-size="15" fill="#764E4B">只占少数，且有止损与后续修复路线</text>
+
+    <polygon points="390,790 870,790 790,920 470,920" fill="#E8F7F1" stroke="#55AD8D" stroke-width="3"/>
+    <text x="630" y="842" text-anchor="middle" font-size="27" font-weight="700" fill="#24745F">结果回到所属玩法线</text>
+    <text x="630" y="884" text-anchor="middle" font-size="17" fill="#476C62">经营归经营 · 学业归学业 · 冲浪归冲浪</text>
+  </g>
+
+  <g transform="translate(1380,205)">
+    <rect x="0" y="0" width="175" height="600" rx="26" fill="#172033"/>
+    <text x="88" y="48" text-anchor="middle" font-size="21" font-weight="700" fill="#FFFFFF">边界规则</text>
+    <text x="22" y="96" font-size="15" fill="#D7E0F0">✓ 活动改日程</text>
+    <text x="22" y="134" font-size="15" fill="#D7E0F0">✓ 日程造冲突</text>
+    <text x="22" y="172" font-size="15" fill="#D7E0F0">✓ 经营强闭环</text>
+    <text x="22" y="210" font-size="15" fill="#D7E0F0">✓ 学业独立结算</text>
+    <text x="22" y="248" font-size="15" fill="#D7E0F0">✓ 冲浪独立成长</text>
+    <text x="22" y="314" font-size="16" font-weight="700" fill="#FFB3AE">禁止</text>
+    <text x="22" y="356" font-size="14" fill="#D7E0F0">冲浪掉论文</text>
+    <text x="22" y="389" font-size="14" fill="#D7E0F0">冲浪掉酵母</text>
+    <text x="22" y="422" font-size="14" fill="#D7E0F0">上课修复啤酒</text>
+    <text x="22" y="455" font-size="14" fill="#D7E0F0">所有活动只乘钱</text>
+    <text x="22" y="488" font-size="14" fill="#D7E0F0">所有系统互喂资源</text>
+    <text x="22" y="548" font-size="14" fill="#D7E0F0">只共享时间和</text>
+    <text x="22" y="575" font-size="14" fill="#D7E0F0">角色生活叙事</text>
+  </g>
+
+  <text x="800" y="1160" text-anchor="middle" font-size="22" font-weight="700" fill="#172033">活动让相同的一周拥有不同节奏；边界让每个小游戏保留自己的味道</text>
+</svg>

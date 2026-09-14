@@ -1,5 +1,13 @@
 # Amsterdam Brewery Unity
 
+## 产品方向与夜间执行
+
+- [Notion 产品工作台](https://app.notion.com/p/3db3285284df81038056e2dfe875e700)：白天选择方向与批准阶段，夜间回填结果。
+- [7 项产品方向调研与修复候选](docs/product-research/README.md)：统一夜探、昼夜城市、经营连接、人物、自行车/地图、自动播放、Web/Unity。
+- [白天决策 / 夜间执行流程](docs/product-research/nightshift.md) · [当前执行主线](.claude/autopilot/mainline.md)。
+
+候选初始均未批准；每次只推进一个已批准阶段。当前工作台分支基于三日经营版，昼夜探索版仍在另一条开发线上。
+
 Unity rebuild of the Amsterdam Brewery playable prototype.
 
 The previous Godot project remains at:

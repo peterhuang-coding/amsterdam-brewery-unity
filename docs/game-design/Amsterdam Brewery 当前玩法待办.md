@@ -1,6 +1,8 @@
 # Amsterdam Brewery 当前玩法待办
 
-> 本清单是当前产品优先级的唯一入口。`tools/prototype/BACKLOG.md` 保留过去多轮工程记录，不代表现在仍应继续逐项开发。
+> 本清单记录三日经营原型的实现与验证候选。`tools/prototype/BACKLOG.md` 保留过去工程记录。跨玩法的产品方向改由 [调研工作台](../product-research/README.md) 汇总，并由用户白天在 [Notion](https://app.notion.com/p/3db3285284df81038056e2dfe875e700) 选择；下方条目不是夜班的默认授权。夜班读取 [当前主线](../../.claude/autopilot/mainline.md)，只推进已批准阶段。
+
+2026-09-14 审查补充：已实现的课程选择仍存在双慢熟批次占用下午后被跳过的问题，局内三日入口也可能读取隐藏的旧 Seed；两项已列入 [E01 修复候选](../product-research/README.md#e01)，尚未修复。
 
 ## P0：先验证三日核心闭环
 

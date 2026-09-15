@@ -50,6 +50,13 @@
     {x:80,y:640,w:510,h:70,kind:'water'},
     {x:710,y:640,w:90,h:70,kind:'water'}
   ]);
+  const STREETS=Object.freeze({
+    delivery:{id:'delivery',title:'夜间补货',description:'超市卸货占了巷子，清洁车照常上班。',hint:'货堆堵住近路；从南侧绕行，空桶可以挡住清洁车。',walls:[{x:500,y:1060,w:175,h:65,kind:'delivery'}]},
+    works:{id:'works',title:'运河抢修',description:'市政围起了夹道。牌子写着：预计昨天完工。',hint:'中间通路封了一段，留意围挡上下两头的出口。',walls:[{x:790,y:890,w:190,h:70,kind:'works'}]},
+    closing:{id:'closing',title:'夜店散场',description:'人群还没散，门口先开始排明天的队。',hint:'南门多了排队栏和散场客；空瓶能把守卫引离冷藏箱。',walls:[{x:1070,y:1100,w:80,h:26,kind:'closing'}]},
+    legacy:{id:'legacy',title:'熟悉的夜路',description:'继续上次出门的路线。',hint:'这一趟保留原来的街道；下次出门会遇到新的局势。',walls:[]}
+  });
+  function streetInfo(r){return STREETS[r.street?.situation]||STREETS.legacy;}
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
   const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
   const finite=(n,a,b)=>typeof n==='number'&&Number.isFinite(n)&&n>=a&&n<=b;
@@ -65,23 +72,44 @@
     add('hops',1960,480);add('bottle',1840,440);
     for(let i=0;i<4;i++)add(i%2?'salvage':'bottle',850+random()*70,280+i*230);
     const actor=(id,type,x,y)=>({id,type,x,y,homeX:x,homeY:y,dir:random()>.5?1:-1,mode:'patrol',timer:0,vx:0,vy:0,stun:0});
-    return {version:1,seed:seed>>>0,day,kit:Object.hasOwn(KITS,kit)?kit:'hook',time:0,duration:180,status:'active',
+    const situation=['delivery','works','closing'][((seed>>>0)+day-1)%3];
+    const r={version:2,seed:seed>>>0,day,kit:Object.hasOwn(KITS,kit)?kit:'hook',time:0,duration:180,status:'active',
       p:{x:EXIT.x,y:EXIT.y,fx:1,fy:0,hp:3,inv:0,dash:0,hook:0,foam:0},items,
       actors:[actor('cleaner1','cleaner',680,1090),actor('guard','guard',1330,1000),actor('cleaner2','cleaner',1840,840),actor('gull','gull',730,480),...Array.from({length:5},(_,i)=>actor('dancer'+i,'dancer',1130+(i%3)*70,905+Math.floor(i/3)*180))],
+      street:{situation,baits:3,lureCooldown:0,noise:null,barrels:[{id:'street-market',x:500,y:1160},{id:'street-club',x:1230,y:1100}],dragging:null},
       bag:[],discovered:discoveries.filter(x=>['greenhouse','noor'].includes(x)),opened:discoveries.includes('greenhouse'),parcel:'ground',patches:[],fx:[],sequence:0,log:[],message:'去东边的夜店找冷藏箱。也可以先逛逛，回店口一直在身后。',hits:0};
+    if(situation==='delivery')Object.assign(r.actors[0],{x:720,homeX:720});
+    if(situation==='closing')r.actors.filter(a=>a.type==='dancer').forEach((a,i)=>Object.assign(a,{x:1165+(i%3)*70,y:870+Math.floor(i/3)*230,homeX:1165+(i%3)*70,homeY:870+Math.floor(i/3)*230}));
+    return r;
   }
-  function solid(r,x,y,radius=13){
+  function solid(r,x,y,radius=13,ignore=null){
     if(x<50+radius||x>WIDTH-50-radius||y<70+radius||y>HEIGHT-70-radius)return true;
-    return [...WALLS,...(r.opened?[]:[GATE])].some(w=>x+radius>w.x&&x-radius<w.x+w.w&&y+radius>w.y&&y-radius<w.y+w.h);
+    return [...WALLS,...streetInfo(r).walls,...(r.opened?[]:[GATE])].some(w=>x+radius>w.x&&x-radius<w.x+w.w&&y+radius>w.y&&y-radius<w.y+w.h)||(r.street?.barrels||[]).some(b=>b.id!==ignore&&Math.hypot(x-b.x,y-b.y)<radius+22);
   }
-  function clear(r,a,b){const n=Math.max(1,Math.ceil(distance(a,b)/8));for(let i=1;i<=n;i++)if(solid(r,a.x+(b.x-a.x)*i/n,a.y+(b.y-a.y)*i/n,2))return false;return true;}
+  function clear(r,a,b,ignore=null){const n=Math.max(1,Math.ceil(distance(a,b)/8));for(let i=1;i<=n;i++)if(solid(r,a.x+(b.x-a.x)*i/n,a.y+(b.y-a.y)*i/n,2,ignore))return false;return true;}
   function move(r,o,dx,dy,radius=13){
     const steps=Math.max(1,Math.ceil(Math.hypot(dx,dy)/8));let hit=false;
     for(let i=0;i<steps;i++){
-      if(!solid(r,o.x+dx/steps,o.y,radius))o.x+=dx/steps;else hit=true;
-      if(!solid(r,o.x,o.y+dy/steps,radius))o.y+=dy/steps;else hit=true;
+      if(!solid(r,o.x+dx/steps,o.y,radius,o.id))o.x+=dx/steps;else hit=true;
+      if(!solid(r,o.x,o.y+dy/steps,radius,o.id))o.y+=dy/steps;else hit=true;
     }
     return hit;
+  }
+  function dragTarget(r){
+    if(!r?.street)return null;
+    if(r.street.dragging)return r.street.barrels.find(b=>b.id===r.street.dragging)||null;
+    return r.street.barrels.filter(b=>distance(r.p,b)<=65&&clear(r,r.p,b,b.id)).sort((a,b)=>distance(r.p,a)-distance(r.p,b))[0]||null;
+  }
+  function walk(r,dx,dy){
+    const barrel=r.street?.dragging?dragTarget(r):null,p=r.p;
+    if(!barrel){move(r,p,dx,dy);return;}
+    const before={x:p.x,y:p.y,bx:barrel.x,by:barrel.y};
+    move(r,p,dx,dy);
+    const d=distance(p,barrel);
+    if(d>44)move(r,barrel,(p.x-barrel.x)/d*(d-44),(p.y-barrel.y)/d*(d-44),22);
+    if(distance(p,barrel)>65||!clear(r,p,barrel,barrel.id)){
+      p.x=before.x;p.y=before.y;barrel.x=before.bx;barrel.y=before.by;
+    }
   }
   function load(r){return r.bag.reduce((n,id)=>n+TYPES[r.items.find(i=>i.id===id).kind].weight,0);}
   function zone(r){return ZONES.find(z=>r.p.x>=z.x&&r.p.x<=z.x+z.w&&r.p.y>=z.y&&r.p.y<=z.y+z.h)||{id:'street',name:'城市夹道',sub:'跟着灯走，也留意没有招牌的门。'};}
@@ -119,7 +147,24 @@
     const p=r.p,dir=aimAt(r,aim);
     if(verb==='bail'){finish(r,'bailed');return true;}
     if(verb==='dash'){
+      if(r.street?.dragging){note(r,'先按 R 放下空桶，再闪避。');return false;}
       if(p.dash>0)return false;p.dash=.95;p.inv=Math.max(p.inv,.22);move(r,p,dir.x*110,dir.y*110);r.fx.push({kind:'dash',x:p.x,y:p.y,x2:p.x-dir.x*90,y2:p.y-dir.y*90,life:.3});return true;
+    }
+    if(verb==='drag'){
+      if(!r.street)return false;
+      if(r.street.dragging){r.street.dragging=null;note(r,'空桶放好了。机器撞上会停，自己也要绕过去。');return true;}
+      const barrel=dragTarget(r);if(!barrel){note(r,'靠近街边空桶再按 R。');return false;}
+      r.street.dragging=barrel.id;note(r,'拖住空桶了。移动慢一些，再按 R 放下；它不占背包。');return true;
+    }
+    if(verb==='lure'){
+      const st=r.street;if(!st||st.baits<=0||st.lureCooldown>0)return false;
+      const range=Math.min(240,aim&&finite(aim.x,-10000,10000)&&finite(aim.y,-10000,10000)?distance(p,aim):240);
+      const noise={x:p.x,y:p.y,life:5};
+      for(let d=8;d<=range;d+=8){const x=p.x+dir.x*d,y=p.y+dir.y*d;if(solid(r,x,y,5))break;noise.x=x;noise.y=y;}
+      if(distance(p,noise)<8){note(r,'前面没有扔瓶子的空间。');return false;}
+      st.baits--;st.lureCooldown=2;st.noise=noise;
+      for(const a of r.actors)if(['guard','cleaner'].includes(a.type)&&distance(a,noise)<380&&clear(r,a,noise)){a.mode='investigate';a.timer=5;}
+      note(r,'空瓶落地。附近机器和守卫去查声源；离得太近，仍会被盯上。');return true;
     }
     if(verb==='drop'){
       const id=r.bag.pop();if(!id){note(r,'背包还是空的。');return false;}
@@ -178,11 +223,12 @@
     if(!r||r.status!=='active'||!finite(seconds,0,1))return;
     let remain=Math.min(seconds,.1);
     while(remain>1e-8){const dt=Math.min(remain,.025);remain-=dt;r.time=Math.min(r.duration,r.time+dt);
+      if(r.street){r.street.lureCooldown=Math.max(0,r.street.lureCooldown-dt);if(r.street.noise){r.street.noise.life-=dt;if(r.street.noise.life<=0)r.street.noise=null;}}
       const p=r.p;for(const key of ['inv','dash','hook','foam'])p[key]=Math.max(0,p[key]-dt);
       const dx=clamp(Number(input.dx)||0,-1,1),dy=clamp(Number(input.dy)||0,-1,1),n=Math.hypot(dx,dy);
       if(input.aim)aimAt(r,input.aim);else if(n){p.fx=dx/n;p.fy=dy/n;}
-      const slick=r.patches.some(a=>distance(p,a)<85),speed=KITS[r.kit].speed*(1-load(r)*.018);
-      if(n)move(r,p,dx/n*speed*dt+(slick?25*dt:0),dy/n*speed*dt+(slick?16*dt:0));
+      const slick=r.patches.some(a=>distance(p,a)<85),speed=KITS[r.kit].speed*(1-load(r)*.018)*(r.street?.dragging ? .55 : 1);
+      if(n)walk(r,dx/n*speed*dt+(slick?25*dt:0),dy/n*speed*dt+(slick?16*dt:0));
       r.patches=r.patches.map(a=>({...a,life:a.life-dt})).filter(a=>a.life>0);
       r.fx=r.fx.map(a=>({...a,life:a.life-dt})).filter(a=>a.life>0);
       for(const item of r.items){
@@ -201,7 +247,12 @@
         }
         if(r.patches.some(f=>distance(a,f)<85)){a.stun=1;a.mode='patrol';continue;}
         const near=distance(a,p),sees=near<(a.type==='guard'?r.parcel==='carried'?290:95:175)&&clear(r,a,p);
-        if(a.mode==='windup'){
+        if(a.mode==='investigate'){
+          a.timer-=dt;
+          if(near<45&&clear(r,a,p)){a.mode='windup';a.timer=.8;}
+          else if(!r.street?.noise||a.timer<=0){a.mode='patrol';}
+          else{const noise=r.street.noise,d=distance(a,noise);if(d>12)move(r,a,(noise.x-a.x)/d*95*dt,(noise.y-a.y)/d*95*dt,16);}
+        }else if(a.mode==='windup'){
           a.timer-=dt;if(a.timer<=0){a.mode='charge';a.timer=.65;const d=Math.max(1,near);a.vx=(p.x-a.x)/d*380;a.vy=(p.y-a.y)/d*380;}
         }else if(a.mode==='charge'){
           a.timer-=dt;const blocked=move(r,a,a.vx*dt,a.vy*dt,16);if(distance(a,p)<35)hit(r,a);
@@ -209,6 +260,7 @@
         }else if(sees){a.mode='windup';a.timer=.8;}
         else{const direction=a.type==='guard'?0:a.dir;if(move(r,a,direction*48*dt,a.type==='guard'?a.dir*42*dt:0,16)||Math.abs(a.x-a.homeX)>130||Math.abs(a.y-a.homeY)>105)a.dir*=-1;}
       }
+      if(r.street?.dragging){const barrel=dragTarget(r);if(distance(p,barrel)>65||!clear(r,p,barrel,barrel.id))r.street.dragging=null;}
       if(p.x>1645&&p.x<2080&&p.y>205&&p.y<530&&!r.discovered.includes('greenhouse')){
         r.discovered.push('greenhouse');note(r,'发现温室捷径。明天这里仍然开着；有人把整座城市的噪声留在玻璃外。');
       }
@@ -225,12 +277,12 @@
   function restore(value){
     try{
       const r=JSON.parse(JSON.stringify(value));
-      if(!r||r.version!==1||!Number.isInteger(r.seed)||!finite(r.seed,0,4294967295)||!Number.isInteger(r.day)||!finite(r.day,1,3)||!Object.hasOwn(KITS,r.kit)||r.duration!==180||!finite(r.time,0,180)||!['active','extracted','bailed','rescued'].includes(r.status))return null;
+      if(!r||![1,2].includes(r.version)||!Number.isInteger(r.seed)||!finite(r.seed,0,4294967295)||!Number.isInteger(r.day)||!finite(r.day,1,3)||!Object.hasOwn(KITS,r.kit)||r.duration!==180||!finite(r.time,0,180)||!['active','extracted','bailed','rescued'].includes(r.status))return null;
       if(!r.p||!['x','y','fx','fy','hp','inv','dash','hook','foam'].every(k=>finite(r.p[k],k==='fx'||k==='fy'?-1:0,k==='x'?WIDTH:k==='y'?HEIGHT:k==='fx'||k==='fy'?1:10)))return null;
       if(!Array.isArray(r.items)||r.items.length!==17||!r.items.every((i,n)=>i.id==='item'+n&&Object.hasOwn(TYPES,i.kind)&&finite(i.x,0,WIDTH)&&finite(i.y,0,HEIGHT)&&finite(i.vx,-1000,1000)&&finite(i.vy,-1000,1000)&&finite(i.lock,0,2)&&['world','bag','delivered','lost'].includes(i.state)))return null;
       const template=create(r.seed,r.day,r.kit,[]);if(r.items.some((i,n)=>i.kind!==template.items[n].kind))return null;
       if(!Array.isArray(r.bag)||new Set(r.bag).size!==r.bag.length||r.bag.some(id=>!r.items.some(i=>i.id===id&&i.state==='bag'))||r.items.filter(i=>i.state==='bag').length!==r.bag.length||load(r)>KITS[r.kit].capacity)return null;
-      if(!Array.isArray(r.actors)||r.actors.length>9||new Set(r.actors.map(a=>a.id)).size!==r.actors.length||!r.actors.every(a=>template.actors.some(t=>t.id===a.id&&t.type===a.type)&&['patrol','windup','charge'].includes(a.mode)&&['x','y','homeX','homeY','dir','timer','vx','vy','stun'].every(k=>finite(a[k],-1000,3000))))return null;
+      if(!Array.isArray(r.actors)||r.actors.length>9||new Set(r.actors.map(a=>a.id)).size!==r.actors.length||!r.actors.every(a=>template.actors.some(t=>t.id===a.id&&t.type===a.type)&&['patrol','windup','charge','investigate'].includes(a.mode)&&['x','y','homeX','homeY','dir','timer','vx','vy','stun'].every(k=>finite(a[k],-1000,3000))))return null;
       if(!Array.isArray(r.discovered)||r.discovered.length>2||new Set(r.discovered).size!==r.discovered.length||!r.discovered.every(x=>['greenhouse','noor'].includes(x))||typeof r.opened!=='boolean')return null;
       if(!['ground','carried','returned','lost'].includes(r.parcel))return null;
       const parcel=r.items.find(i=>i.kind==='parcel');if(parcel.state!==({ground:'world',carried:'bag',returned:'delivered',lost:'lost'})[r.parcel])return null;
@@ -238,10 +290,18 @@
       if(!Array.isArray(r.fx)||r.fx.length>12||!r.fx.every(f=>['dash','hook'].includes(f.kind)&&['x','y','x2','y2','life'].every(k=>finite(f[k],-1000,4000))))return null;
       if(!Number.isInteger(r.sequence)||!finite(r.sequence,0,10000)||!Number.isInteger(r.hits)||!finite(r.hits,0,3)||!Array.isArray(r.log)||r.log.length>5||!r.log.every(t=>typeof t==='string'&&t.length<500)||typeof r.message!=='string'||r.message.length>500)return null;
       if(r.status==='active'&&(r.time>=180||r.p.hp<=0))return null;
+      if(r.version===1){r.version=2;r.street={situation:'legacy',baits:3,lureCooldown:0,noise:null,barrels:[],dragging:null};}
+      const st=r.street;
+      if(!st||!Object.hasOwn(STREETS,st.situation)||!Number.isInteger(st.baits)||!finite(st.baits,0,3)||!finite(st.lureCooldown,0,2))return null;
+      if(st.noise!==null&&(!st.noise||!finite(st.noise.x,0,WIDTH)||!finite(st.noise.y,0,HEIGHT)||!finite(st.noise.life,0,5)))return null;
+      if(!Array.isArray(st.barrels)||st.barrels.length!==(st.situation==='legacy'?0:2)||new Set(st.barrels.map(b=>b.id)).size!==st.barrels.length||!st.barrels.every(b=>['street-market','street-club'].includes(b.id)&&finite(b.x,72,WIDTH-72)&&finite(b.y,92,HEIGHT-92)))return null;
+      if(st.barrels.some(b=>solid(r,b.x,b.y,22,b.id)))return null;
+      if(st.noise&&solid({...r,street:{...st,barrels:[]}},st.noise.x,st.noise.y,5))return null;
+      if(st.dragging!==null&&(!st.barrels.some(b=>b.id===st.dragging)||distance(r.p,st.barrels.find(b=>b.id===st.dragging))>65||!clear(r,r.p,st.barrels.find(b=>b.id===st.dragging),st.dragging)))return null;
       return r;
     }catch{return null;}
   }
   // Ambient route uses expedition time, so the worker also stops for choices and saves.
   function flowerCart(r){return {x:1100+Math.sin(r.time/7)*40,y:1030};}
-  return Object.freeze({WIDTH,HEIGHT,EXIT,NOOR,LEVER,GARDEN_EXIT,GATE,KITS,TYPES,ZONES,WALLS,create,step,command,restore,rewards,load,zone,nearest,solid,clear,flowerCart});
+  return Object.freeze({WIDTH,HEIGHT,EXIT,NOOR,LEVER,GARDEN_EXIT,GATE,KITS,TYPES,ZONES,WALLS,create,step,command,restore,rewards,load,zone,nearest,solid,clear,flowerCart,streetInfo,dragTarget});
 });

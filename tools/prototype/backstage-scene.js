@@ -6,6 +6,7 @@
     rect(x,y,w,h,color){this.c.fillStyle=color;this.c.fillRect(x,y,w,h);}
     line(points,color,width=1){const c=this.c;c.strokeStyle=color;c.lineWidth=width;c.beginPath();points.forEach((p,i)=>i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]));c.stroke();}
     ellipse(x,y,rx,ry,color){const c=this.c;c.fillStyle=color;c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.fill();}
+    ring(x,y,rx,ry,color,width=2){const c=this.c;c.strokeStyle=color;c.lineWidth=width;c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.stroke();}
     text(t,x,y,size=16,color='#e9dfd1',align='center',font='sans-serif'){const c=this.c;c.fillStyle=color;c.font=`${size}px ${font}`;c.textAlign=align;c.fillText(t,x,y);}
     polygon(points,color){const c=this.c;c.fillStyle=color;c.beginPath();points.forEach((p,i)=>i?c.lineTo(...p):c.moveTo(...p));c.closePath();c.fill();}
     glow(x,y,rx,ry,color){const c=this.c;c.save();c.translate(x,y);c.scale(1,ry/rx);const g=c.createRadialGradient(0,0,0,0,0,rx);g.addColorStop(0,color);g.addColorStop(1,'transparent');c.fillStyle=g;c.fillRect(-rx,-rx,rx*2,rx*2);c.restore();}
@@ -33,6 +34,20 @@
         for(let i=0;i<width;i+=40)this.rect(x+i,y+27+(i%3)*10,24,2,'#bc7d9644');return;
       }
       const c=this.c;
+      if(['delivery','works','closing'].includes(w.kind)){
+        const works=w.kind==='works',color=works?'#b99368':w.kind==='delivery'?'#8b8270':'#83798c';
+        this.rect(x+5,y+h-4,width,9,'#091b2855');this.rect(x,y,width,h,'#263e49');
+        c.strokeStyle=color;c.lineWidth=2;c.strokeRect(x,y,width,h);
+        if(w.kind==='delivery'){
+          for(let xx=x+5;xx<x+width-10;xx+=36){const boxWidth=Math.min(30,x+width-5-xx);this.rect(xx,y-10,boxWidth,h+5,color);this.rect(xx+boxWidth/2-2,y-10,4,h+5,'#c0b390');this.line([[xx,y-10],[xx+boxWidth,y-10]],'#ded0a5',2);}
+        }else{
+          for(const xx of [x+8,x+width-8])this.line([[xx,y+h-2],[xx,y-18]],color,5);
+          this.rect(x,y-16,width,14,color);
+          for(let xx=x+5;xx<x+width-5;xx+=22)this.line([[xx,y-14],[Math.min(x+width-2,xx+10),y-4]],works?'#343c3c':'#cbbdca',5);
+          if(works){this.ellipse(x+width/2,y-21,5,5,'#efc183');this.glow(x+width/2,y-21,20,15,'#efc18338');}
+        }
+        return;
+      }
       if(w.kind==='glass'){
         this.rect(x+6,y+8,width,h,'#07232c55');this.rect(x,y-28,width,h+28,'#8fc8b733');
         c.strokeStyle='#acd8c0';c.lineWidth=2;c.strokeRect(x,y-28,width,h+28);
@@ -87,17 +102,38 @@
     }
     actor(a,time){
       const {x,y}=a;
+      if(a.mode==='investigate'){
+        this.ring(x,y+3,29,17,'#e7c080',2);
+        this.text('听声追查',x,y-49,13,'#edcd93');
+        if(this.noise){const d=Math.hypot(this.noise.x-x,this.noise.y-y);if(d>1){const dx=(this.noise.x-x)/d,dy=(this.noise.y-y)/d;this.line([[x+dx*32,y+dy*32],[x+dx*50,y+dy*50]],'#edcd93',3);}}
+      }
       if(a.mode==='windup'){this.glow(x,y,110,65,'#db786c38');this.c.setLineDash([6,5]);this.line([[x,y],[this.player.x,this.player.y]],'#f59b83',3);this.c.setLineDash([]);this.text('!',x,y-49,25,'#ffb292');}
       if(a.type==='cleaner'){
-        this.ellipse(x,y+6,23,13,'#0b22307c');this.rect(x-22,y-20,44,28,'#678394');this.ellipse(x,y-19,22,12,'#98acac');this.rect(x-13,y-19,26,6,a.mode==='patrol'?'#d9bc7c':'#ed8a86');
+        this.ellipse(x,y+6,23,13,'#0b22307c');this.rect(x-22,y-20,44,28,'#678394');this.ellipse(x,y-19,22,12,'#98acac');this.rect(x-13,y-19,26,6,a.mode==='investigate'?'#edcd93':a.mode==='patrol'?'#d9bc7c':'#ed8a86');
         this.ellipse(x-22,y+4,7,7,'#233544');this.ellipse(x+22,y+4,7,7,'#233544');this.text('失物',x,y+3,9,'#e0d5b3');
       }else if(a.type==='gull'){
         const flap=this.reduced?0:Math.sin(time*10)*6;this.ellipse(x,y,12,5,'#cfd4cc');this.line([[x-25,y-9-flap],[x,y],[x+25,y-9-flap]],'#e0e5d6',4);this.rect(x+9,y-2,10,3,'#dfba6f');
       }else this.person(x,y,a.type==='guard'?'#596e83':['#ad759b','#a6a277','#7ba9af'][Math.floor(a.homeX)%3],time);
       if(a.stun>0){this.text('✦',x-19,y-38,16,'#a6dbd1');this.text('✧',x+18,y-29,14,'#eed099');}
     }
+    streetBarrel(barrel,r){
+      const {x,y}=barrel,held=r.street.dragging===barrel.id,near=this.dragTarget===barrel.id,color=held?'#d7efd3':'#96d6cb';
+      this.ellipse(x,y+5,25,12,'#0b22309c');this.ring(x,y,28,28,color,held?3:2);
+      this.rect(x-18,y-32,36,36,'#467a79');this.ellipse(x,y-32,18,9,'#8ab7ac');this.ellipse(x,y-32,12,5,'#264d54');
+      this.rect(x-19,y-25,38,4,'#b1d1bd');this.rect(x-19,y-2,38,4,'#b1d1bd');
+      this.line([[x-17,y-24],[x-25,y-24],[x-25,y-13],[x-17,y-13]],color,3);this.line([[x+17,y-24],[x+25,y-24],[x+25,y-13],[x+17,y-13]],color,3);
+      this.text('空',x,y-9,13,'#e0e3c6');
+      this.text(held?'拖行中 · R 放下':near&&!r.auto?.enabled?'空桶 · R 拖动':'可拖空桶',x,y+45,held||near?14:12,color);
+    }
+    sound(noise,time){
+      const pulse=this.reduced?0:(time*1.4)%1;
+      this.glow(noise.x,noise.y,65,45,'#e7c08030');
+      for(let i=0;i<3;i++){const radius=22+(i+pulse)*20;this.ring(noise.x,noise.y,radius,radius*.7,['#e7c080a0','#e7c08075','#e7c08040'][i],2);}
+      this.line([[noise.x-10,noise.y-2],[noise.x+9,noise.y-9]],'#e4d3ab',6);this.line([[noise.x+8,noise.y-9],[noise.x+17,noise.y-13]],'#afc8b7',4);
+      this.text('空瓶声 · '+Math.ceil(noise.life)+'s',noise.x,noise.y-65,14,'#f1d199');
+    }
     draw(r,options={}){
-      const c=this.c,p=r.p,time=this.reduced?0:r.time;this.player=p;
+      const c=this.c,p=r.p,time=this.reduced?0:r.time,street=B.streetInfo?.(r);this.player=p;this.noise=r.street?.noise;this.dragTarget=B.dragTarget?.(r)?.id;
       const narrow=this.canvas.getBoundingClientRect().width<600;
       this.view=this.camera(r,options.overview);const {scale,x:tx,y:ty}=this.view;
       c.clearRect(0,0,1100,640);this.rect(0,0,1100,640,'#142e3b');c.save();c.translate(tx,ty);c.scale(scale,scale);
@@ -115,11 +151,15 @@
       for(let x=1110;x<1380;x+=54)for(let y=830;y<1150;y+=54)this.rect(x,y,49,49,((x+y)/54|0)%2?'#ad84c912':'#a791b815');
       this.rect(1645,205,435,335,'#9ac8a524');this.glow(1820,440,240,130,'#acc69a28');
       for(const f of r.patches){this.ellipse(f.x,f.y,86,57,'#a8d6d465');for(let i=0;i<8;i++)this.ellipse(f.x+Math.cos(i*2.1)*55,f.y+Math.sin(i*2.1)*28,12,8,'#d9f0df80');}
+      if(this.noise)this.sound(this.noise,time);
+      const held=r.street?.barrels?.find(b=>b.id===r.street.dragging);
+      if(held)this.line([[held.x,held.y-19],[p.x,p.y-15]],'#b5dfca',4);
       this.glow(B.EXIT.x,B.EXIT.y,76,48,'#dbbf8d3d');this.ellipse(B.EXIT.x,B.EXIT.y,40,22,'#244838');this.line([[B.EXIT.x-27,B.EXIT.y],[B.EXIT.x+27,B.EXIT.y]],'#d3d49a',3);this.text('↖ 回酒馆',B.EXIT.x,B.EXIT.y+44,16,'#e5d2a9');
       this.rect(B.LEVER.x-10,B.LEVER.y-21,20,32,'#596e74');this.line([[B.LEVER.x,B.LEVER.y-7],[B.LEVER.x+12,B.LEVER.y-28]],r.opened?'#a2d3a5':'#e6bd7e',5);
       this.text(r.opened?'闸门已开':'维护拉杆',B.LEVER.x,B.LEVER.y+28,13,'#c5c5ac');
       if(!r.opened){this.rect(B.GATE.x,B.GATE.y-32,B.GATE.w,54,'#566773');for(let x=B.GATE.x+6;x<B.GATE.x+B.GATE.w;x+=14)this.line([[x,B.GATE.y-31],[x,B.GATE.y+21]],'#9daba6',3);}
-      const objects=B.WALLS.map(w=>({y:w.y+w.h,draw:()=>this.block(w)}));
+      const objects=[...B.WALLS,...(street?.walls||[])].map(w=>({y:w.y+w.h,draw:()=>this.block(w)}));
+      for(const barrel of r.street?.barrels||[])objects.push({y:barrel.y,draw:()=>this.streetBarrel(barrel,r)});
       for(const item of r.items)if(item.state==='world')objects.push({y:item.y,draw:()=>this.item(item,time)});
       for(const a of r.actors)objects.push({y:a.y,draw:()=>this.actor(a,time)});
       const cart=B.flowerCart(r);
@@ -140,18 +180,27 @@
       if(options.aim&&!options.overview){c.strokeStyle='#e7c897aa';c.lineWidth=1.5;c.beginPath();c.arc(options.aim.x,options.aim.y,13,0,Math.PI*2);c.stroke();this.line([[options.aim.x-20,options.aim.y],[options.aim.x-8,options.aim.y]],'#e7c897aa',1.5);}
       c.restore();
       // Fixed HUD is separate from the moving world.
-      const gradient=c.createLinearGradient(0,0,0,100);gradient.addColorStop(0,'#101e2bd9');gradient.addColorStop(1,'transparent');c.fillStyle=gradient;c.fillRect(0,0,1100,100);
-      const z=B.zone(r);this.text(z.name,28,narrow?53:38,narrow?38:24,'#f2dfc3','left','Georgia');if(!narrow)this.text(z.sub,29,64,12,'#b8bab6','left');
+      const gradient=c.createLinearGradient(0,0,0,street?140:100);gradient.addColorStop(0,'#101e2bf0');gradient.addColorStop(1,'transparent');c.fillStyle=gradient;c.fillRect(0,0,1100,street?140:100);
+      const z=B.zone(r);this.text(z.name,28,narrow?49:38,narrow?34:24,'#f2dfc3','left','Georgia');
+      if(street){
+        this.text('今晚 · '+street.title,29,narrow?83:64,narrow?26:15,'#edc997','left');
+        if(!narrow)this.text(street.hint,29,88,12,'#b8c9c5','left');
+        if(r.street&&street.id!=='legacy')this.text(`空瓶 ${r.street.baits}/3${r.street.lureCooldown>0?' · '+r.street.lureCooldown.toFixed(1)+'s':''} · ${held?'拖桶中 · 步速降低':'青环 = 可拖空桶'}`,29,112,narrow?23:12,'#b9d9c8','left');
+      }
+      else if(!narrow)this.text(z.sub,29,64,12,'#b8bab6','left');
       this.miniMap(r);
       const near=B.nearest(r);
       this.rect(22,586,1056,38,'#172c3cea');
       this.text(r.auto?.enabled?(r.status!=='active'?'这一趟已结束':r.auto.event?'时间暂停 · 选择下一步行动':'自动探索中 · 重要的事会停下来问你'):near?near.label:narrow?'WASD 移动 · E 互动 · M 地图':r.message,40,610,narrow?26:14,near?'#e4d29c':'#c1cbd0','left');
-      if(options.overview){this.rect(360,19,380,34,'#172a38ee');this.text('城市背面 · M 返回跟随视角',550,42,15,'#e6d5b9');}
+      if(options.overview){this.rect(360,19,380,34,'#172a38ee');this.text(r.street?.barrels?.length?'全图 · 青环为空桶 · M 返回':'城市背面 · M 返回跟随视角',550,42,15,'#e6d5b9');}
     }
     miniMap(r){
       const x=900,y=20,w=172,h=109,s=w/B.WIDTH;
       this.rect(x-6,y-6,w+12,h+12,'#102431dc');
       for(const z of B.ZONES)this.rect(x+z.x*s,y+z.y*s,z.w*s,z.h*s,z.color);
+      for(const wall of B.streetInfo?.(r)?.walls||[])this.rect(x+wall.x*s,y+wall.y*s,Math.max(2,wall.w*s),Math.max(2,wall.h*s),'#d4b382');
+      for(const barrel of r.street?.barrels||[])this.ring(x+barrel.x*s,y+barrel.y*s,3,3,'#a6e1cd',1.5);
+      if(r.street?.noise)this.ring(x+r.street.noise.x*s,y+r.street.noise.y*s,5,5,'#edcd93',1.5);
       this.ellipse(x+B.EXIT.x*s,y+B.EXIT.y*s,3,3,'#e0c485');
       this.ellipse(x+B.NOOR.x*s,y+B.NOOR.y*s,3,3,'#e2a1c2');
       if(!r.discovered.includes('greenhouse'))this.text('?',x+1850*s,y+390*s,13,'#e0e4ba');

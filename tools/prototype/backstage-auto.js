@@ -4,9 +4,9 @@
   if(root)root.BackstageAuto=api;
 })(typeof globalThis!=='undefined'?globalThis:this,function(B){
   'use strict';
-  const GOALS=['market','club','parcel','noor','gate','garden','sorting','exit'];
+  const GOALS=['market','club','parcel','noor','gate','garden','sorting','exit','barricade'];
   const EVENTS=['route','market','club','parcel','noor','gate','garden','sorting','capacity','stuck','glimpse'];
-  const NAMES={market:'超市后场',club:'夜店后门',parcel:'冷藏箱',noor:'红灯街的 Noor',gate:'温室维护闸门',garden:'玻璃后的温室',sorting:'失物分拣场',exit:'回酒馆的出口'};
+  const NAMES={barricade:'后门摆放空桶的位置',market:'超市后场',club:'夜店后门',parcel:'冷藏箱',noor:'红灯街的 Noor',gate:'温室维护闸门',garden:'玻璃后的温室',sorting:'失物分拣场',exit:'回酒馆的出口'};
   const routes=new WeakMap(),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
   const option=(id,label,detail)=>({id,label,detail});
   const destination=id=>option(id,({market:'先去超市捡点货',club:'去夜店找冷藏箱',noor:'去找 Noor',garden:'看看玻璃后面的灯',sorting:'去失物分拣场看看',exit:'带着收获回家'})[id],({market:'封口酒与酒花 · 路近，收获直接入包',club:'箱子占 3 格 · 有保安，拿不拿由你决定',noor:'先听她说 · 交还箱子前会再问你',garden:'新空间与回家捷径 · 路更远',sorting:'可修零件 · 清扫机还在加班',exit:'自动走到出口，安全撤离才会结算'})[id]);
@@ -18,7 +18,7 @@
   function valid(r){
     if(r.auto===undefined)return true;const a=r.auto;
     return a&&Object.keys(a).length===8&&typeof a.enabled==='boolean'&&[null,...GOALS].includes(a.goal)&&[null,...EVENTS].includes(a.event)&&
-      [1,2].includes(a.speed)&&['foam','hook'].includes(a.approach)&&Number.isFinite(a.legTime)&&a.legTime>=0&&a.legTime<=45&&
+      [1,2].includes(a.speed)&&['foam','hook','lure','barrel'].includes(a.approach)&&Number.isFinite(a.legTime)&&a.legTime>=0&&a.legTime<=45&&
       Array.isArray(a.visited)&&a.visited.length<=GOALS.length+1&&new Set(a.visited).size===a.visited.length&&a.visited.every(x=>[...GOALS,'glimpse'].includes(x))&&
       Array.isArray(a.history)&&a.history.length<=12&&a.history.every(x=>typeof x==='string'&&x.length<=80)&&
       (a.event==='glimpse'?Boolean(a.goal):!(a.goal&&a.event))&&(!a.enabled||r.status!=='active'||Boolean(a.goal||a.event));
@@ -32,7 +32,7 @@
     switch(a.event){
       case 'route':choices=['market',r.parcel==='ground'?'club':'sorting','noor'].map(destination);break;
       case 'market':choices=[r.parcel==='ground'?'club':'garden','noor','exit'].map(destination);break;
-      case 'club':choices=[option('take-foam','拿箱子，用泡沫掩护','自动靠近并拾取 · 占 3 格，泡沫打断保安'),option('take-hook','用钩索把箱子拉过来','先尝试从远处钩取 · 占 3 格'),option('noor','先不碰，去找 Noor','离开箱子，听听她知道什么')];break;
+      case 'club':choices=[...(r.street?.situation!=='legacy'&&r.street?.baits>0&&r.street.lureCooldown===0?[option('take-lure','扔空瓶引开保安，绕过去取箱','消耗 1 瓶 · 声源持续 5 秒，靠得太近仍有危险')]:[]),...(B.dragTarget(r)?[option('take-barrel','先摆空桶，再绕过去取箱','拖到后门留一道屏障 · 空桶也会挡住自己的路')]:[]),option('take-foam','拿箱子，用泡沫掩护','自动靠近并拾取 · 占 3 格，泡沫打断保安'),option('take-hook','用钩索把箱子拉过来','先尝试从远处钩取 · 占 3 格'),option('noor','先不碰，去找 Noor','离开箱子，听听她知道什么')];break;
       case 'parcel':choices=['noor','garden','exit'].map(destination);break;
       case 'noor':choices=r.parcel==='carried'?[option('handover','把月雾箱交还 Noor','空出 3 格 · €14 跑腿费，下次营业她会来店里'),destination('garden'),destination('exit')]:[destination(r.parcel==='ground'?'club':'garden'),destination('sorting'),destination('exit')];break;
       case 'gate':choices=[option('open-hook','用钩索拉开闸门','打开通道，自动进入温室'),option('open-hand','走近拉开维护杆','打开通道，自动进入温室'),destination('exit')];break;
@@ -45,15 +45,23 @@
   }
   function stop(r,event){r.auto.event=event;r.auto.goal=null;r.auto.legTime=0;routes.delete(r);}
   function go(r,goal){r.auto.goal=goal==='garden'&&!r.opened?'gate':goal;r.auto.event=null;r.auto.legTime=0;routes.delete(r);}
+  function take(r){
+    if(B.load(r)+3>B.KITS[r.kit].capacity){stop(r,'capacity');return;}
+    if(r.auto.approach==='lure'&&!B.command(r,'lure',{x:1320,y:1100})){stop(r,'club');return;}
+    if(r.auto.approach==='barrel'){
+      if(!r.street.dragging&&!B.command(r,'drag')){stop(r,'club');return;}
+      go(r,'barricade');return;
+    }
+    go(r,'parcel');
+  }
   function choose(r,id){
     if(!r||r.status!=='active'||!r.auto?.enabled||!r.auto.event)return false;
     const choice=view(r).choices.find(c=>c.id===id);if(!choice)return false;
     r.auto.history.push(choice.label);r.auto.history=r.auto.history.slice(-12);
     if(id==='continue'){r.auto.event=null;return true;}
-    if(['take-foam','take-hook','drop-last'].includes(id)){
-      if(id==='drop-last')B.command(r,'drop',{x:r.p.x-100,y:r.p.y});else r.auto.approach=id==='take-hook'?'hook':'foam';
-      if(B.load(r)+3>B.KITS[r.kit].capacity){stop(r,'capacity');return true;}
-      go(r,'parcel');return true;
+    if(['take-foam','take-hook','take-lure','take-barrel','drop-last'].includes(id)){
+      if(id==='drop-last')B.command(r,'drop',{x:r.p.x-100,y:r.p.y});else r.auto.approach=id.slice(5);
+      take(r);return true;
     }
     if(id==='leave-box'){stop(r,'route');return true;}
     if(id==='handover'){B.command(r,'interact');stop(r,r.parcel==='returned'?'noor':'stuck');return true;}
@@ -61,10 +69,11 @@
       B.command(r,id==='open-hook'?'hook':'interact',B.LEVER);
       if(r.opened)go(r,'garden');else stop(r,'stuck');return true;
     }
+    if(r.street?.dragging)B.command(r,'drag');
     go(r,id);return true;
   }
   function target(r){
-    return ({market:{x:405,y:1030},club:{x:1230,y:1135},parcel:r.items.find(i=>i.kind==='parcel'),noor:B.NOOR,gate:{x:B.LEVER.x,y:B.LEVER.y+55},garden:{x:1960,y:480},sorting:{x:2000,y:1020},exit:r.discovered.includes('greenhouse')&&dist(r.p,B.GARDEN_EXIT)<dist(r.p,B.EXIT)?B.GARDEN_EXIT:B.EXIT})[r.auto.goal];
+    return ({barricade:{x:1270,y:1170},market:{x:405,y:1030},club:{x:1230,y:1135},parcel:r.items.find(i=>i.kind==='parcel'),noor:B.NOOR,gate:{x:B.LEVER.x,y:B.LEVER.y+55},garden:{x:1960,y:480},sorting:{x:2000,y:1020},exit:r.discovered.includes('greenhouse')&&dist(r.p,B.GARDEN_EXIT)<dist(r.p,B.EXIT)?B.GARDEN_EXIT:B.EXIT})[r.auto.goal];
   }
   // Navigation uses the same collision map and player radius as actual walking.
   function clearWalk(r,a,b){const n=Math.ceil(dist(a,b)/8);for(let i=0;i<=n;i++){const t=n?i/n:0;if(B.solid(r,a.x+(b.x-a.x)*t,a.y+(b.y-a.y)*t,15))return false;}return true;}
@@ -86,6 +95,10 @@
   }
   function arrived(r){
     const goal=r.auto.goal;if(!r.auto.visited.includes(goal))r.auto.visited.push(goal);
+    if(goal==='barricade'){
+      if(!r.street.dragging){stop(r,'stuck');return;}
+      B.command(r,'drag');go(r,'parcel');return;
+    }
     if(goal==='exit'){B.command(r,'interact');if(r.status==='active')stop(r,'stuck');return;}
     if(goal==='parcel'){
       if(r.parcel==='ground')B.command(r,'interact');
@@ -98,9 +111,9 @@
     const a=r.auto,to=target(r);
     if(a.goal==='club'&&r.parcel!=='ground'){stop(r,'route');return;}
     if(a.goal==='parcel'&&r.parcel!=='ground'){stop(r,r.parcel==='carried'?'parcel':'route');return;}
-    if(dist(r.p,to)<(a.goal==='parcel'?35:18)){arrived(r);return;}
+    if(dist(r.p,to)<(a.goal==='parcel'?35:a.goal==='barricade'?7:18)){arrived(r);return;}
     if(['noor','sorting'].includes(a.goal)&&a.legTime>.5&&!r.discovered.includes('greenhouse')&&!a.visited.includes('glimpse')&&dist(r.p,B.flowerCart(r))<150&&B.clear(r,r.p,B.flowerCart(r))){a.visited.push('glimpse');a.event='glimpse';return;}
-    const threat=r.actors.filter(o=>['cleaner','guard'].includes(o.type)&&o.stun<=.1&&dist(r.p,o)<185&&B.clear(r,r.p,o)).sort((x,y)=>dist(r.p,x)-dist(r.p,y))[0];
+    const threat=r.actors.filter(o=>['cleaner','guard'].includes(o.type)&&o.stun<=.1&&(a.approach!=='lure'||o.mode!=='investigate')&&dist(r.p,o)<185&&B.clear(r,r.p,o)).sort((x,y)=>dist(r.p,x)-dist(r.p,y))[0];
     if(threat){
       if(a.approach==='hook'&&r.p.hook===0)B.command(r,'hook',threat);
       else if(r.p.foam===0)B.command(r,'foam',threat);

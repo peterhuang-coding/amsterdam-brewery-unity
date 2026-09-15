@@ -29,12 +29,12 @@
       if(!this.run()||this.isPaused())return false;
       const k=e.key.toLowerCase();
       if(this.run().auto?.enabled&&k!=='m'){
-        if(['1','2','3'].includes(k)){e.preventDefault();const choice=A.view(this.run()).choices[Number(k)-1];if(choice&&!e.repeat)this.perform('choice:'+choice.id);return true;}
-        if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright','e','j','f','q',' '].includes(k)){e.preventDefault();return true;}
+        if(/^[1-9]$/.test(k)){e.preventDefault();const choice=A.view(this.run()).choices[Number(k)-1];if(choice&&!e.repeat)this.perform('choice:'+choice.id);return true;}
+        if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright','e','j','f','n','r','q',' '].includes(k)){e.preventDefault();return true;}
         return false;
       }
       if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)){e.preventDefault();this.keys.add(k);return true;}
-      const verb={e:'interact',j:'hook',f:'foam',q:'drop',' ':'dash',m:'map'}[k];
+      const verb={e:'interact',j:'hook',f:'foam',n:'lure',r:'drag',q:'drop',' ':'dash',m:'map'}[k];
       if(verb){e.preventDefault();if(!e.repeat)this.perform(verb);return true;}return false;
     }
     perform(verb){
@@ -78,7 +78,10 @@
     }
     render(){
       const r=this.run();if(!r)return;
-      const auto=r.auto?.enabled,z=B.zone(r),near=B.nearest(r),signature=[r.sequence,z.id,near?.id,r.status,this.overview,auto,r.auto?.event,r.auto?.goal,r.auto?.speed,this.isPaused()].join('|');
+      const auto=r.auto?.enabled,z=B.zone(r),near=B.nearest(r),street=B.streetInfo?.(r),tools=Boolean(r.street&&street&&street.id!=='legacy'),dragTarget=B.dragTarget?.(r);
+      const signature=[r.sequence,z.id,near?.id,r.status,this.overview,auto,r.auto?.event,r.auto?.goal,r.auto?.speed,r.street?.situation,r.street?.dragging,this.isPaused()].join('|');
+      const toolState=tools?`空瓶 ${r.street.baits} / 3${r.street.lureCooldown>0?' · 恢复 '+r.street.lureCooldown.toFixed(1)+'s':''} · ${r.street.dragging?'正在拖桶 · 步速降低':'青环空桶可拖动'}`:'';
+      const situation=street?`<div class="exp-situation"><strong>${esc(street.title)}</strong><p>${esc(street.hint)}</p>${tools?`<span id="exp-street-tools">${esc(toolState)}</span>`:''}</div>`:'';
       const board=document.getElementById('action-content');
       document.getElementById('exp-clock').textContent=Math.ceil(180-r.time)+'s';
       document.getElementById('exp-load').textContent=B.load(r)+' / '+B.KITS[r.kit].capacity;
@@ -88,12 +91,26 @@
       document.getElementById('exp-foam').textContent=r.p.foam>0?'泡沫 '+r.p.foam.toFixed(1)+'s':'泡沫 · F';
       document.getElementById('exp-foam').disabled=r.p.foam>0||r.status!=='active';
       document.getElementById('exp-hook').disabled=r.p.hook>0||r.status!=='active';
-      document.getElementById('exp-dash').disabled=r.p.dash>0||r.status!=='active';
+      document.getElementById('exp-dash').disabled=r.p.dash>0||Boolean(r.street?.dragging)||r.status!=='active';
+      document.getElementById('exp-dash').title=r.street?.dragging?'先按 R 放下空桶，再闪避':'';
+      const lure=document.getElementById('exp-lure'),drag=document.getElementById('exp-drag'),streetTools=document.getElementById('exp-street-tools');
+      if(streetTools)streetTools.textContent=toolState;
+      if(lure){
+        lure.hidden=!tools;lure.disabled=!tools||auto||this.isPaused()||r.status!=='active'||r.street.baits<=0||r.street.lureCooldown>0;
+        lure.textContent=!tools?'空瓶引声 · N':r.street.lureCooldown>0?`空瓶 ${r.street.baits}/3 · ${r.street.lureCooldown.toFixed(1)}s`:`空瓶 ${r.street.baits}/3 · N`;
+        lure.setAttribute('aria-label',!tools?'本趟未携带空瓶':`投空瓶引开巡查，剩余 ${r.street.baits} 瓶${r.street.lureCooldown>0?'，冷却 '+r.street.lureCooldown.toFixed(1)+' 秒':''}，快捷键 N`);
+      }
+      if(drag){
+        drag.hidden=!tools;drag.disabled=!tools||auto||this.isPaused()||r.status!=='active'||!dragTarget;
+        drag.textContent=r.street?.dragging?'放下空桶 · R':dragTarget?'拖动空桶 · R':'靠近青环桶 · R';
+        drag.setAttribute('aria-pressed',String(Boolean(r.street?.dragging)));
+        drag.setAttribute('aria-label',r.street?.dragging?'正在拖动空桶，步速降低；按 R 放下':dragTarget?'按 R 抓住面前的空桶，再移动拖行':'靠近带青色圆环的空桶，按 R 抓住');
+      }
       document.getElementById('night-clock').textContent=r.discovered.includes('greenhouse')?'西南入口 / 温室后门都能回家':'回店口在西南 · 时间到保住半包';
       if(signature===this.signature)return;this.signature=signature;
       document.body.classList.toggle('is-auto-expedition',Boolean(auto));
-      this.canvas.setAttribute('aria-label',auto?'城市背面自动探索场景：在行动区选择下一步，阅读选项时时间暂停。':'城市背面手动探险：WASD 移动，J 钩拉，F 泡沫，E 互动，M 地图。');
-      document.getElementById('control-hint').textContent=auto?'点击选项 / 1 · 2 · 3 做选择 · M 地图 · P 暂停 · H 帮助':'WASD 移动 · J 钩拉 · F 泡沫 · Space 闪避 · E 互动 · M 地图 · P 暂停';
+      this.canvas.setAttribute('aria-label',(street?street.title+'。'+street.hint+'。':'')+(auto?'城市背面自动探索场景：在行动区选择下一步，阅读选项时时间暂停。':'城市背面手动探险：WASD 移动，J 钩拉，F 泡沫，'+(tools?'N 空瓶引声，R 拖动或放下空桶，':'')+'E 互动，M 地图。'));
+      document.getElementById('control-hint').textContent=auto?'点击选项 / 数字键做选择 · M 地图 · P 暂停 · H 帮助':'WASD 移动 · J 钩拉 · F 泡沫 · '+(tools?'N 引声 · R 拖桶 · ':'')+'Space 闪避 · E 互动 · M 地图 · P 暂停';
       document.getElementById('exp-mode').textContent=auto?'切换手动操作':'切换自动探索';
       document.getElementById('exp-mode').disabled=r.status!=='active';
       document.getElementById('exp-speed').hidden=!auto;document.getElementById('exp-speed').textContent='速度 '+(r.auto?.speed||1)+'×';
@@ -107,11 +124,11 @@
       }
       if(auto){
         const v=A.view(r);
-        board.innerHTML=`<p class="board-eyebrow">${r.auto.event?'YOUR CALL · 等你决定':'ON THE WAY · 自动探索'}</p><h2>${esc(v.title)}</h2><p class="board-copy">${esc(v.copy)}</p><div class="exp-choices">${v.choices.map((c,i)=>`<button data-action="exp-command" data-verb="choice:${c.id}"><span class="exp-choice-key">${i+1}</span><span><strong>${esc(c.label)}</strong><small>${esc(c.detail)}</small></span><span aria-hidden="true">↗</span></button>`).join('')}</div>${r.auto.event?'<p class="exp-choice-note">阅读时整条街暂停。点击选项，或按 1 / 2 / 3。</p>':'<div class="exp-travelling"><span class="live-dot"></span>正在执行你的选择…<button class="text-button" data-action="exp-command" data-verb="reroute">停下来，重新选路</button></div>'}<div class="exp-auto-bag"><span>已装包 · ${B.load(r)} / ${B.KITS[r.kit].capacity} 格</span><p>${r.bag.length?r.bag.map(id=>esc(B.TYPES[r.items.find(i=>i.id===id).kind].name)).join(' / '):'沿途遇到普通货物会自动收好。'}</p></div><p class="exp-feed" role="status">${esc(r.message)}</p><button class="text-button" data-action="exp-command" data-verb="bail">放下背包，轻装撤回</button>`;
+        board.innerHTML=`<p class="board-eyebrow">${r.auto.event?'YOUR CALL · 等你决定':'ON THE WAY · 自动探索'}</p><h2>${esc(v.title)}</h2><p class="board-copy">${esc(v.copy)}</p><div class="exp-choices">${v.choices.map((c,i)=>`<button data-action="exp-command" data-verb="choice:${c.id}"><span class="exp-choice-key">${i+1}</span><span><strong>${esc(c.label)}</strong><small>${esc(c.detail)}</small></span><span aria-hidden="true">↗</span></button>`).join('')}</div>${r.auto.event?'<p class="exp-choice-note">阅读时整条街暂停。点击选项，或按对应数字键。</p>':'<div class="exp-travelling"><span class="live-dot"></span>正在执行你的选择…<button class="text-button" data-action="exp-command" data-verb="reroute">停下来，重新选路</button></div>'}${situation}<div class="exp-auto-bag"><span>已装包 · ${B.load(r)} / ${B.KITS[r.kit].capacity} 格</span><p>${r.bag.length?r.bag.map(id=>esc(B.TYPES[r.items.find(i=>i.id===id).kind].name)).join(' / '):'沿途遇到普通货物会自动收好。'}</p></div><p class="exp-feed" role="status">${esc(r.message)}</p><button class="text-button" data-action="exp-command" data-verb="bail">放下背包，轻装撤回</button>`;
         document.getElementById('story-line').innerHTML='<span class="quote-mark">“</span><p>本店支持自主决策。责任也会自主地找到你。</p><span class="story-author">— 后门员工手册</span>';return;
       }
       const parcelText=({ground:'夜店的冷藏箱还在那里',carried:'箱内是月雾 · 可交回 Noor',returned:'已交回 Noor · €14 待结算',lost:'冷藏箱落在街区'})[r.parcel];
-      board.innerHTML=`<p class="board-eyebrow">CITY BACKSTAGE / 第 ${r.day} 趟</p><h2>跟着灯走。<br>留条路回来。</h2><p class="board-copy">${esc(B.KITS[r.kit].name)} · 普通货物靠近装包。<br>点向目标下钩，闪避和泡沫可以救场。</p><div class="exp-objectives"><div class="${r.parcel==='returned'?'done':''}"><span>◇</span><div><strong>一箱“进口酵母”</strong><p>${parcelText}。${r.parcel==='returned'?'下次营业会在酒馆再见。':r.parcel==='carried'?'交回她，或带到出口自行保留。':'占 3 格，靠近按 E。'}</p></div></div><div class="${r.discovered.includes('noor')?'done':''}"><span>♧</span><div><strong>红灯街的 Noor</strong><p>西北运河边，她刚下夜班。带箱子过去，或先问问她。</p></div></div><div class="${r.discovered.includes('greenhouse')?'done':''}"><span>✧</span><div><strong>玻璃后面，有人在生活</strong><p>${r.discovered.includes('greenhouse')?'温室捷径已记住。下次也能进去。':'东北的温室亮着灯。拉开外面的维护拉杆，找路进去。'}</p></div></div></div><div class="exp-bag"><div class="exp-bag-title"><strong>背包</strong><span>Q 扔下最后一件</span></div>${r.bag.length?r.bag.map(id=>{const i=r.items.find(x=>x.id===id),t=B.TYPES[i.kind];return `<span class="exp-cargo" style="--cargo:${t.color}">${esc(t.name)}<small>${t.weight} 格</small></span>`;}).join(''):'<p>先拿附近的封口瓶试试手。<br>价值更高的东西，不一定更好带。</p>'}</div><p class="exp-feed" role="status">${esc(r.message)}</p><div class="exp-board-actions"><button class="secondary" data-action="exp-command" data-verb="map">${this.overview?'返回跟随视角':'看看全图'} · M</button><button class="text-button" data-action="exp-command" data-verb="bail">放下背包，轻装撤回</button></div>`;
+      board.innerHTML=`<p class="board-eyebrow">CITY BACKSTAGE / 第 ${r.day} 趟</p><h2>跟着灯走。<br>留条路回来。</h2><p class="board-copy">${esc(B.KITS[r.kit].name)} · 普通货物靠近装包。<br>点向目标下钩，闪避和泡沫可以救场。</p>${situation}<div class="exp-objectives"><div class="${r.parcel==='returned'?'done':''}"><span>◇</span><div><strong>一箱“进口酵母”</strong><p>${parcelText}。${r.parcel==='returned'?'下次营业会在酒馆再见。':r.parcel==='carried'?'交回她，或带到出口自行保留。':'占 3 格，靠近按 E。'}</p></div></div><div class="${r.discovered.includes('noor')?'done':''}"><span>♧</span><div><strong>红灯街的 Noor</strong><p>西北运河边，她刚下夜班。带箱子过去，或先问问她。</p></div></div><div class="${r.discovered.includes('greenhouse')?'done':''}"><span>✧</span><div><strong>玻璃后面，有人在生活</strong><p>${r.discovered.includes('greenhouse')?'温室捷径已记住。下次也能进去。':'东北的温室亮着灯。拉开外面的维护拉杆，找路进去。'}</p></div></div></div><div class="exp-bag"><div class="exp-bag-title"><strong>背包</strong><span>Q 扔下最后一件</span></div>${r.bag.length?r.bag.map(id=>{const i=r.items.find(x=>x.id===id),t=B.TYPES[i.kind];return `<span class="exp-cargo" style="--cargo:${t.color}">${esc(t.name)}<small>${t.weight} 格</small></span>`;}).join(''):'<p>先拿附近的封口瓶试试手。<br>价值更高的东西，不一定更好带。</p>'}</div><p class="exp-feed" role="status">${esc(r.message)}</p><div class="exp-board-actions"><button class="secondary" data-action="exp-command" data-verb="map">${this.overview?'返回跟随视角':'看看全图'} · M</button><button class="text-button" data-action="exp-command" data-verb="bail">放下背包，轻装撤回</button></div>`;
       document.getElementById('story-line').innerHTML='<span class="quote-mark">“</span><p>本店坚决反对违法交易。具体定义请咨询本店法务。</p><span class="story-author">— 夜店后门告示</span>';
     }
   }

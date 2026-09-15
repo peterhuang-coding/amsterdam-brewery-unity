@@ -99,7 +99,9 @@
   function showHelp(){
     if(ui.modal)return;
     if(state.phase==='explore'){
-      modal('CITY BACKSTAGE · 阅读时暂停','自动探索，重要的事你来选。','<p><b>自动模式：</b>点选项或按 1 / 2 / 3，角色会走到目的地、拾取和使用工具。拿箱子、交还人物、进入温室前会停下来；阅读时整条街和倒计时暂停。地图下方可切换 1× / 2× 播放或手动操作，途中可点“停下来，重新选路”。</p><p><b>手动模式：</b><kbd>WASD</kbd> / 方向键移动；鼠标瞄准，左键或 <kbd>J</kbd> 下钩，右键或 <kbd>F</kbd> 喷泡沫，<kbd>Space</kbd> 朝当前方向闪避。纯键盘操作会朝行走方向使用工具。</p><p>普通货物靠近自动装包，冷藏箱要靠近按 <kbd>E</kbd>。<kbd>Q</kbd> 扔下最后一件物品，腾出空间。红灯街的 Noor 在西北，夜店在东侧，温室在东北。</p><p>机器头上的惊叹号预告冲撞，可以闪避、钩住或用泡沫打断。墙体会挡住工具；泡沫也会让你的脚步打滑。</p><p><kbd>M</kbd> 看全图。西南的回店口按 <kbd>E</kbd> 安全撤回，带走全包。收班或受伤过多只保住半包；轻装撤回放弃背包。已交付的箱子和发现的地方会保留。月雾不会成为酒或原料。</p>',[{label:'回到街区'}]);return;
+      const street=Backstage.streetInfo?.(state.backstage.run);
+      const streetHelp=street?`<p><b>今晚 · ${esc(street.title)}</b><br>${esc(street.description)} ${esc(street.hint)}</p>`:'';
+      modal('CITY BACKSTAGE · 阅读时暂停','自动探索，重要的事你来选。',streetHelp+'<p><b>自动模式：</b>点选项或按对应数字键，角色会走到目的地、拾取和使用工具。拿箱子、交还人物、进入温室前会停下来；阅读时整条街和倒计时暂停。地图下方可切换 1× / 2× 播放或手动操作，途中可点“停下来，重新选路”。</p><p><b>手动模式：</b><kbd>WASD</kbd> / 方向键移动；鼠标瞄准，左键或 <kbd>J</kbd> 下钩，右键或 <kbd>F</kbd> 喷泡沫，<kbd>Space</kbd> 朝当前方向闪避。纯键盘和触屏操作会朝行走方向使用工具；方向按钮按住移动。</p>'+((street&&street.id!=="legacy")?'<p><b>空瓶引声：</b><kbd>N</kbd> 或空瓶按钮投向瞄准方向，每趟 3 瓶、间隔 2 秒。琥珀色声纹持续 5 秒，巡查和机器会循声过去；贴得太近仍会被追。<b>拖动空桶：</b>靠近青色圆环的空桶，按 <kbd>R</kbd> 抓住，再移动拖行；再按一次放下。拖桶会降速，先放下才可闪避。空桶挡路但不装进背包。木质酒桶仍是普通货物。</p>':'')+'<p>普通货物靠近自动装包，冷藏箱要靠近按 <kbd>E</kbd>。<kbd>Q</kbd> 扔下最后一件物品，腾出空间。红灯街的 Noor 在西北，夜店在东侧，温室在东北。</p><p>机器头上的惊叹号预告冲撞，可以闪避、钩住或用泡沫打断。墙体会挡住工具；泡沫也会让你的脚步打滑。</p><p><kbd>M</kbd> 看全图。西南的回店口按 <kbd>E</kbd> 安全撤回，带走全包。收班或受伤过多只保住半包；轻装撤回放弃背包。已交付的箱子和发现的地方会保留。月雾不会成为酒或原料。</p>',[{label:'回到街区'}]);return;
     }
     modal('HOW TO PLAY · 阅读时暂停','照顾好今天，也准备好明天。',
       '<p><b>先逛城市。</b>WASD / 方向键移动，点击地点自动绕过运河和建筑，E 进入附近地点。B 在车旁骑车；窄桥和渡轮前自动下车，车留原地。花店可花 €4 和一次准备包三枝花，礼物和窗台都有用。去北岸走渡轮。逛地图免费，办事才花行动。市场 €8 买 3 杯现货，实验室 €6 买 2 份酒花。</p><p><b>白天两次行动。</b>酿酒花 €12，得到 6 杯；帮咖啡店赚 €18；去北岸运河打捞酒花和押金瓶，躲开需要清运费的单车残骸；拜访 Lotte，答应今晚留给她一杯黑啤。</p>'+
@@ -128,7 +130,9 @@
   }
   function chooseExpedition(){
     if(state.phase!=='summary'||state.prepared.includes('explore'))return;
-    modal('出门前 · 工具免费借用','今晚带哪一套？','<p>有人在 NO SIGNAL 夜店落下一箱“进口酵母”。红灯街的 Noor 知道来历。去找箱子，也可以走自己的路。</p><p>角色会自动探索和使用工具，你只需要在关键时刻选怎么做。阅读选项时时间暂停；途中可以切换 2× 播放或手动操作。实际行动时间 3 分钟，选择回家后自动走到出口。</p>',[...Object.entries(Backstage.KITS).map(([id,k])=>({label:k.name,description:k.detail,run:()=>dispatch({type:'explore',kit:id})})),{label:'先留在酒馆',secondary:true}]);
+    const street=Backstage.streetInfo?.(Backstage.create(state.seed,state.day));
+    const streetIntro=street?`<p><b>今晚 · ${esc(street.title)}</b><br>${esc(street.description)} ${esc(street.hint)}</p><p>每套工具都附带 3 只空瓶。引声带开巡查，或拖动青环空桶挡住冲撞；自动探索也能选择这两种做法。</p>`:'';
+    modal('出门前 · 工具免费借用','今晚带哪一套？',streetIntro+'<p>有人在 NO SIGNAL 夜店落下一箱“进口酵母”。红灯街的 Noor 知道来历。去找箱子，也可以走自己的路。</p><p>角色会自动探索和使用工具，你只需要在关键时刻选怎么做。阅读选项时时间暂停；途中可以切换 2× 播放或手动操作。实际行动时间 3 分钟，选择回家后自动走到出口。</p>',[...Object.entries(Backstage.KITS).map(([id,k])=>({label:k.name,description:k.detail,run:()=>dispatch({type:'explore',kit:id})})),{label:'先留在酒馆',secondary:true}]);
   }
   function renderCityToolbar(){
     const toolbar=$('city-toolbar');toolbar.hidden=!inCity();if(!inCity())return;
@@ -249,11 +253,11 @@
     $('room-time').textContent=state.phase==='summary'?'AFTER HOURS · 游客睡了，街道还醒着':state.phase==='night'?'OPEN · '+DAYS[state.day-1]:state.phase==='forage'?'NOORD · 城市把利润扔进了水里':state.phase==='brew'?'BREWING · 比创业鸡汤有营养':state.phase==='prep'?(ui.cityMode==='map'?'AMSTERDAM · 白天属于你，晚上属于账单':C.PLACES[ui.cityPlace].district+' · '+C.PLACES[ui.cityPlace].name):'TWEEDE KANS · 运河边';
     $('room-caption').textContent=state.phase==='summary'?'前门打烊，后门开场。':state.phase==='prep'?(ui.cityMode==='map'?'过桥别走水里。房东不报销打捞自己。':PLACE_COPY[ui.cityPlace].quote):state.phase==='forage'?'环保与盈利偶尔顺路。单车除外。':['summary','ending'].includes(state.phase)&&state.reports[state.reports.length-1]?.promiseBroken?'没有罚单的人情债，也会被记住。':state.music?'至少今晚，音乐比催租声大。':state.promises.lotte?'给 Lotte 留一杯黑啤。信誉比许可证便宜。':state.day===3?'今晚的目标：灯亮着，门没被封。':'这家店，还没倒。';
     renderQueue();renderBoard();renderPours();renderStory();renderCityToolbar();
-    if(state.phase==='explore'){$('pub-canvas').setAttribute('aria-label','城市背面：连续工具探险。WASD 移动，J 钩拉，F 泡沫，Space 闪避，E 互动，M 地图。');$('queue-title').textContent='西北：Noor · 东侧：夜店 · 东北：温室';backstage.signature='';backstage.render();}
+    if(state.phase==='explore'){$('pub-canvas').setAttribute('aria-label','城市背面：连续工具探险。WASD 移动，J 钩拉，F 泡沫，N 空瓶引声，R 拖动空桶，Space 闪避，E 互动，M 地图。');$('queue-title').textContent='西北：Noor · 东侧：夜店 · 东北：温室';backstage.signature='';backstage.render();}
     const log=(state.log||[]).slice(0,3);
     $('journal-entries').innerHTML=log.length?log.map(line=>`<li>${esc(line)}</li>`).join(''):'<li>房东说钥匙免费，保管钥匙的杯垫另算。</li><li>三天后开业。许可证需要营业流水，营业需要许可证。</li><li>街坊只想喝杯好酒。他们的要求居然最合理。</li>';
     $('control-hint').textContent=inCity()?'WASD 移动 · 点击地点自动寻路 · B 骑车 · E 进入 · M 地图 · P 暂停':state.phase==='forage'?'A / D 换航道 · Space 打捞 · P 暂停':state.phase==='brew'?'Space 确认工艺 · P 暂停 · H 帮助':state.phase==='night'?'1 / 2 / 3 选客 · E 倒酒 · Space 收杯 · P 暂停':'鼠标或键盘操作 · H 帮助 · P 暂停';
-    if(state.phase==='explore')$('control-hint').textContent=state.backstage.run.auto?.enabled?'点击选项 / 1 · 2 · 3 做选择 · M 地图 · P 暂停 · H 帮助':'WASD 移动 · J 钩拉 · F 泡沫 · Space 闪避 · E 互动 · M 地图 · P 暂停';
+    if(state.phase==='explore')$('control-hint').textContent=state.backstage.run.auto?.enabled?'点击选项 / 数字键做选择 · M 地图 · P 暂停 · H 帮助':'WASD 移动 · J 钩拉 · F 泡沫 · '+(state.backstage.run.street&&state.backstage.run.street.situation!=='legacy'?'N 引声 · R 拖桶 · ':'')+'Space 闪避 · E 互动 · M 地图 · P 暂停';
     ui.signature=signature();updateMeters();if(state.phase==='explore')backstage.step(0);else scene.draw(state,performance.now(),ui.selected,cityView());
     if(oldFocus){const next=document.querySelector(`[data-focus="${CSS.escape(oldFocus)}"]`);if(next&&!next.disabled)next.focus({preventScroll:true});}
   }

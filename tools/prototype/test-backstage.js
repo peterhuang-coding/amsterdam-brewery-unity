@@ -97,7 +97,7 @@ test('stationary pointer stays aimed to the right as the camera follows a moving
   const window={Backstage:B,addEventListener:noop},document={addEventListener:noop,hidden:false};
   const context=vm.createContext({window,document,matchMedia:()=>({matches:false})});
   for(const file of ['backstage-scene.js','backstage-ui.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,file),'utf8'),context);
-  const r=fresh();r.actors=[];Object.assign(r.p,{x:1000,y:1130});
+  const r=fresh();r.actors=[];Object.assign(r.p,{x:1000,y:1160}); // Open aisle, away from the new physical street barrel.
   const ui=new window.BackstageUI({canvas,getState:()=>({phase:'explore',backstage:{run:r}}),isPaused:()=>false,save:noop});
   ui.render=noop;ui.scene.draw(r);events.pointermove({clientX:820,clientY:340});ui.keys.add('d');
   for(let i=0;i<50;i++)ui.step(.05);

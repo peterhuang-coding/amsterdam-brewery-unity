@@ -576,6 +576,7 @@
       if(restored?.backstage&&!owns(restored.backstage,'from')&&!owns(restored.backstage,'cashAfterClose')){
         restored.backstage.from=restored.phase==='explore'?'prep':null;restored.backstage.cashAfterClose=0;
       }
+      if(restored.backstage.run){restored.backstage.run=B.restore(restored.backstage.run);if(!restored.backstage.run)return null;}
       if (!validState(restored)) return null;
       return restored;
     } catch (_) { return null; }

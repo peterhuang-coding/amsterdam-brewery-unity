@@ -8,7 +8,7 @@
 
 白天在 Notion 选择一项，将「夜班许可」改为「仅调研」，可在「白天决定」补充侧重点；夜间只推进该阶段。要做原型需再次明确选定方案、范围、执行基线和验收标准，再批准「原型实现」。已有 bug 可批准「修复」。
 
-本文件保存初始候选与版本化研究结论；**审批状态以 Notion 的最新用户决定为输入，开工前落到 Git 主线**。下面是建表时的快照，不是自动同步的当前状态。所有候选初始为「待决策 / 未批准」。2026-09-16 用户批准 R01 夜探 2 切片，现已交付待验收；其余候选仍未批准。
+本文件保存初始候选与版本化研究结论；**审批状态以 Notion 的最新用户决定为输入，开工前落到 Git 主线**。下面是建表时的快照，不是自动同步的当前状态。所有候选初始为「待决策 / 未批准」。2026-09-18 用户批准 R01 地点深化切片，现已交付待验收；其余候选仍未批准。
 
 推荐先研究 **R01：统一探索操作**，再看 **R03：探索与经营连接**。推荐不是批准。E01 是独立修复候选。
 
@@ -16,7 +16,7 @@
 
 - 用户目标：白天旅游城市、傍晚经营、深夜出门探险；统一可重复探索优先，店内小游戏、社交、自行车、花与景点支持这条主线。
 - 经营内核：远端 `407697b`，独立三日批次/订单原型。
-- 昼夜探索：`fe36319` 为上一版；夜探 2 已 push 至 `codex/night-exploration-2 @ d10778f`，仍与经营内核分支独立。本机18767服务该玩法worktree。
+- 昼夜探索：`fe36319` 为上一版；夜探 2 为 `codex/night-exploration-2 @ d10778f`，地点深化已 push 至 `codex/location-depth @ c7b4a27`，仍与经营内核分支独立。本机18767服务该玩法worktree。
 - 两版相对公共祖先 `12995e2` 有 11 / 4 个独有提交；试合并已发现两个 README 与 prototype/index.html 冲突。本工作台分支从 `407697b` 建立，未合并玩法。
 - 2026-09-14 对 `407697b` 的审查中，12 项核心检查与 410 项旧 Phase E 检查通过；仍复现 E01 的两个问题。测试通过不等于长期耐玩。
 
@@ -24,7 +24,7 @@
 
 | 编号 | 方向 | 最近记录状态 | Notion |
 | --- | --- | --- | --- |
-| [R01](#r01) | 城市下潜：找到可以反复玩的统一探索操作 | 夜探 2 待验收 / 原型实现 | [打开任务](https://app.notion.com/p/3db3285284df81e683bac3a0cb9140d5?pvs=204) |
+| [R01](#r01) | 城市下潜：找到可以反复玩的统一探索操作 | 地点深化待验收 / 原型实现 | [打开任务](https://app.notion.com/p/3db3285284df81e683bac3a0cb9140d5?pvs=204) |
 | [R02](#r02) | 同一座城的白天与深夜：让世界记得玩家 | 待决策 / 未批准 | [打开任务](https://app.notion.com/p/3db3285284df8175a2e3c9daeb516cd8?pvs=204) |
 | [R03](#r03) | 探索与酿酒的关系：让订单产生出门的理由 | 待决策 / 未批准 | [打开任务](https://app.notion.com/p/3db3285284df8125918edf904c701552?pvs=204) |
 | [R04](#r04) | 人物与黑色幽默：让关系改变下一次探索 | 待决策 / 未批准 | [打开任务](https://app.notion.com/p/3db3285284df81699deffe5f76728f23?pvs=204) |
@@ -37,7 +37,9 @@
 
 **城市下潜：找到可以反复玩的统一探索操作** · [Notion 任务](https://app.notion.com/p/3db3285284df81e683bac3a0cb9140d5?pvs=204)
 
-**2026-09-16 阶段进展：** 用户在夜探 2 提案后回复“开干”，先实施街况与环境互动。已交付三夜局势、3瓶引诱、拖桶阻挡及自动取箱策略；[玩法提交 d10778f](https://github.com/peterhuang-coding/amsterdam-brewery-unity/commit/d10778f) · [规格](https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/codex/night-exploration-2/docs/superpowers/specs/2026-09-16-night-exploration-2.md) · [验证记录](../../.claude/autopilot/rounds/2026-09-16-night2.md)。下列是原始研究清单；本轮采用已批准切片验收，不声称完成A/B/C玩家比较。Notion当前待验收，下一步等试玩判断。
+**2026-09-18 阶段进展：** 用户试玩反馈「挺好玩」，随后「你就做吧」批准超市内部、夜店音乐/人群、自行车过桥及白天线索/次日后果。已交付 [c7b4a27](https://github.com/peterhuang-coding/amsterdam-brewery-unity/commit/c7b4a27)；[规格](https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/codex/location-depth/docs/superpowers/specs/2026-09-18-location-depth-design.md) · [验收证据](../../.claude/autopilot/rounds/2026-09-18-location-depth.md)。63 条目测试、独立审查与浏览器闭环通过，保持待验收。其他地点深度、工具成长和人物链未自动批准。
+
+**2026-09-16 历史阶段进展：** 用户在夜探 2 提案后回复“开干”，先实施街况与环境互动。已交付三夜局势、3瓶引诱、拖桶阻挡及自动取箱策略；[玩法提交 d10778f](https://github.com/peterhuang-coding/amsterdam-brewery-unity/commit/d10778f) · [规格](https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/codex/night-exploration-2/docs/superpowers/specs/2026-09-16-night-exploration-2.md) · [验证记录](../../.claude/autopilot/rounds/2026-09-16-night2.md)。下列是原始研究清单；本轮采用已批准切片验收，不声称完成A/B/C玩家比较。Notion当前待验收，下一步等试玩判断。
 
 **要回答的问题：** 玩家在街头探险时反复做什么，为什么第二次还想出门？
 

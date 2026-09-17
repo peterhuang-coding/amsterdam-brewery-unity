@@ -12,16 +12,16 @@
     if(saved){const valid=R.restore(saved.game||saved);if(valid){state=valid;ui.city=C.restore(saved.city);restored=state.phase!=='welcome';ui.tutorialSeen=Boolean(saved.tutorialSeen);ui.sound=saved.sound!==false;ui.brewElapsed=state.phase==='brew'&&Number.isFinite(saved.brewElapsed)?Math.max(0,Math.min(6,saved.brewElapsed)):0;}else saveError=true;}
   } catch {saveError=true;}
   const scene=new PubScene($('pub-canvas'));
-  const backstage=new BackstageUI({canvas:$('pub-canvas'),getState:()=>state,dispatch,save,isPaused:()=>Boolean(ui.modal),showModal:modal});
+  const backstage=new BackstageUI({canvas:$('pub-canvas'),getState:()=>state,dispatch,save,isPaused:()=>Boolean(ui.modal),showModal:modal,playBeat:()=>sound('beat')});
   $('pub-canvas').tabIndex=0;
   const DAYS=['试营业，试着活着','好评与坏账','合法地重新开业'];
   const PORTRAITS={lotte:'👩🏻',bram:'🧔🏽',marta:'👩🏼‍🍳'};
   const PLACE_COPY={
     pub:{brief:'酿酒 / 开门',quote:'这块招牌归你。招牌下面的土地，房东说另谈。',detail:'回到自家柜台。酿一批新酒，或者翻开营业牌。'},
     lotte:{brief:'留酒约定',quote:'桥不收过路费，所以大家还能在桥上碰面。',detail:'Lotte 在桥边排练。给她留一杯今晚的黑啤，她会在下一晚带来乐队。'},
-    coffee:{brief:'帮工 +€18',quote:'招聘联合创始人。工作内容：洗杯子。工资照付。',detail:'Bram 的午市缺人。帮完这半天，拿 €18 现金，他今晚也愿意多等你一会儿。'},
+    coffee:{brief:'帮工 / 夜店线索',quote:'招聘联合创始人。工作内容：洗杯子。工资照付。',detail:'Bram 的午市缺人。帮完这半天，拿 €18 现金，他今晚也愿意多等你一会儿。'},
     noord:{brief:'限时打捞',quote:'城市更新的意思是：旧东西先扔进水里。',detail:'渡轮尽头是北岸旧码头。借条船，30 秒打捞酒花和密封瓶；捞到单车得付清运费。'},
-    market:{brief:'3 杯 / €8',quote:'没有滞销，只有尚未被发现的限量款。',detail:'收摊前买一箱现货：2 杯金色艾尔、1 杯黑啤，品质 1。比酿造少花 €4，也少拿 3 杯。'},
+    market:{brief:'现货 / 卸货路线',quote:'没有滞销，只有尚未被发现的限量款。',detail:'收摊前买一箱现货：2 杯金色艾尔、1 杯黑啤，品质 1。比酿造少花 €4，也少拿 3 杯。'},
     flowers:{brief:'配花 / 礼物 / 窗台',quote:'花保鲜三天。房租每天都很新鲜。',detail:'挑三枝郁金香，选包装。可以送给 Lotte，也可以把酒馆的窗台布置起来。'},
     lab:{brief:'2 酒花 / €6',quote:'论文还在返修，酒花已经通过鼻审。',detail:'Chen 有两份多出来的试验酒花。材料费 €6；之后每酿一批消耗一份，品质提高一级，最高 3。'}
   };
@@ -41,7 +41,7 @@
       ui.audio=ui.audio||new AudioContext();
       if(ui.audio.state==='suspended')ui.audio.resume().catch(()=>{});
       const now=ui.audio.currentTime;
-      const notes=kind==='good'?[523.25,659.25,783.99]:kind==='bad'?[196,164.81]:[392];
+      const notes=kind==='beat'?[70,105]:kind==='good'?[523.25,659.25,783.99]:kind==='bad'?[196,164.81]:[392];
       notes.forEach((freq,i)=>{const osc=ui.audio.createOscillator(),gain=ui.audio.createGain();osc.type='sine';osc.frequency.value=freq;gain.gain.setValueAtTime(0,now+i*.07);gain.gain.linearRampToValueAtTime(.04,now+i*.07+.012);gain.gain.exponentialRampToValueAtTime(.0001,now+i*.07+.21);osc.connect(gain);gain.connect(ui.audio.destination);osc.start(now+i*.07);osc.stop(now+i*.07+.23);});
     }catch{/* Audio never blocks game actions. */}
   }
@@ -104,7 +104,7 @@
       modal('CITY BACKSTAGE · 阅读时暂停','自动探索，重要的事你来选。',streetHelp+'<p><b>自动模式：</b>点选项或按对应数字键，角色会走到目的地、拾取和使用工具。拿箱子、交还人物、进入温室前会停下来；阅读时整条街和倒计时暂停。地图下方可切换 1× / 2× 播放或手动操作，途中可点“停下来，重新选路”。</p><p><b>手动模式：</b><kbd>WASD</kbd> / 方向键移动；鼠标瞄准，左键或 <kbd>J</kbd> 下钩，右键或 <kbd>F</kbd> 喷泡沫，<kbd>Space</kbd> 朝当前方向闪避。纯键盘和触屏操作会朝行走方向使用工具；方向按钮按住移动。</p>'+((street&&street.id!=="legacy")?'<p><b>空瓶引声：</b><kbd>N</kbd> 或空瓶按钮投向瞄准方向，每趟 3 瓶、间隔 2 秒。琥珀色声纹持续 5 秒，巡查和机器会循声过去；贴得太近仍会被追。<b>拖动空桶：</b>靠近青色圆环的空桶，按 <kbd>R</kbd> 抓住，再移动拖行；再按一次放下。拖桶会降速，先放下才可闪避。空桶挡路但不装进背包。木质酒桶仍是普通货物。</p>':'')+'<p>普通货物靠近自动装包，冷藏箱要靠近按 <kbd>E</kbd>。<kbd>Q</kbd> 扔下最后一件物品，腾出空间。红灯街的 Noor 在西北，夜店在东侧，温室在东北。</p><p>机器头上的惊叹号预告冲撞，可以闪避、钩住或用泡沫打断。墙体会挡住工具；泡沫也会让你的脚步打滑。</p><p><kbd>M</kbd> 看全图。西南的回店口按 <kbd>E</kbd> 安全撤回，带走全包。收班或受伤过多只保住半包；轻装撤回放弃背包。已交付的箱子和发现的地方会保留。月雾不会成为酒或原料。</p>',[{label:'回到街区'}]);return;
     }
     modal('HOW TO PLAY · 阅读时暂停','照顾好今天，也准备好明天。',
-      '<p><b>先逛城市。</b>WASD / 方向键移动，点击地点自动绕过运河和建筑，E 进入附近地点。B 在车旁骑车；窄桥和渡轮前自动下车，车留原地。花店可花 €4 和一次准备包三枝花，礼物和窗台都有用。去北岸走渡轮。逛地图免费，办事才花行动。市场 €8 买 3 杯现货，实验室 €6 买 2 份酒花。</p><p><b>白天两次行动。</b>酿酒花 €12，得到 6 杯；帮咖啡店赚 €18；去北岸运河打捞酒花和押金瓶，躲开需要清运费的单车残骸；拜访 Lotte，答应今晚留给她一杯黑啤。</p>'+
+      '<p><b>先逛城市。</b>WASD / 方向键移动，点击地点自动绕过运河和建筑，E 进入附近地点。B 在车旁骑车；宽桥直接骑，窄桥和渡轮推车过去，上岸后继续骑。花店可花 €4 和一次准备包三枝花，礼物和窗台都有用。去北岸走渡轮。逛地图免费，市场和咖啡馆可免费踩点，记下当晚路线与节拍。办事才花行动。市场 €8 买 3 杯现货，实验室 €6 买 2 份酒花。</p><p><b>白天两次行动。</b>酿酒花 €12，得到 6 杯；帮咖啡店赚 €18；去北岸运河打捞酒花和押金瓶，躲开需要清运费的单车残骸；拜访 Lotte，答应今晚留给她一杯黑啤。</p>'+
       '<p><b>夜晚接待客人。</b>点击想先服务的人，核对口味和预算。每次开始倒酒消耗一杯库存；指针进入绿色区域再收杯。价格超过预算、口味不对或倒得太差，客人不会满意。</p>'+
       '<p><b>打烊后可以探险。每夜一趟，夜里的货留给下次营业；早上看景点手册背面的笔记。每晚都有麻烦。</b>房东、网红、检查员会提出要求。先看成本，再选应对方式；这时游戏暂停。基础租金 €18，事件会影响实际账单。</p><p><b>第三晚重开。</b>前两晚可选一件设备。最后留下至少 €100，并累计让 12 位客人满意。</p>'+
       '<p><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> 选客人 · <kbd>E</kbd> 开始倒酒 · <kbd>Space</kbd> 收杯 / 酿造确认 / 打捞 · <kbd>A</kbd><kbd>D</kbd> 移动小船 · <kbd>P</kbd> 暂停 · <kbd>H</kbd> 帮助。所有操作也有可点击按钮。</p>'+
@@ -120,7 +120,7 @@
   function restart(seed){state=R.createGame(seed);ui.selected=null;ui.beer='blond';ui.premium=false;ui.brewElapsed=0;ui.tutorialSeen=false;ui.city=C.create();ui.cityMode='map';ui.cityPlace='pub';ui.cityPath=[];ui.cityTarget=null;save();render();window.scrollTo({top:0,behavior:'auto'});}
   const inCity=()=>['prep','summary'].includes(state.phase);
   const nearBike=()=>Math.hypot(ui.city.x-ui.city.bike.x,ui.city.y-ui.city.bike.y)<=42;
-  function cityView(){return {position:ui.city,path:ui.cityPath,target:ui.cityTarget,zoom:ui.cityZoom,mode:ui.cityMode,place:ui.cityPlace,afterHours:state.phase==='summary',notes:state.life.morning,bouquet:state.life.bouquet,display:state.life.display};}
+  function cityView(){return {position:ui.city,path:ui.cityPath,target:ui.cityTarget,zoom:ui.cityZoom,mode:ui.cityMode,place:ui.cityPlace,afterHours:state.phase==='summary',notes:mapNotes(),bouquet:state.life.bouquet,display:state.life.display};}
   function homeOnFoot(){const fresh=C.create();ui.city={...fresh,visited:ui.city.visited,bike:C.parkBike(ui.city).bike};ui.cityKeys.clear();ui.cityPath=[];ui.cityTarget=null;ui.cityPlace='pub';}
 
   function expeditionInvitation(){
@@ -131,14 +131,14 @@
   function chooseExpedition(){
     if(state.phase!=='summary'||state.prepared.includes('explore'))return;
     const street=Backstage.streetInfo?.(Backstage.create(state.seed,state.day));
-    const streetIntro=street?`<p><b>今晚 · ${esc(street.title)}</b><br>${esc(street.description)} ${esc(street.hint)}</p><p>每套工具都附带 3 只空瓶。引声带开巡查，或拖动青环空桶挡住冲撞；自动探索也能选择这两种做法。</p>`:'';
+    const streetIntro=street?`<p><b>今晚 · ${esc(street.title)}</b><br>${esc(street.description)} ${esc(street.hint)}</p><p>超市有货架、冷库与可打开的卸货捷径；夜店有六秒鼓点掩护。每套工具都附带 3 只空瓶。引声带开巡查，或拖动青环空桶挡住冲撞；自动探索也能选择这两种做法。</p>`:'';
     modal('出门前 · 工具免费借用','今晚带哪一套？',streetIntro+'<p>有人在 NO SIGNAL 夜店落下一箱“进口酵母”。红灯街的 Noor 知道来历。去找箱子，也可以走自己的路。</p><p>角色会自动探索和使用工具，你只需要在关键时刻选怎么做。阅读选项时时间暂停；途中可以切换 2× 播放或手动操作。实际行动时间 3 分钟，选择回家后自动走到出口。</p>',[...Object.entries(Backstage.KITS).map(([id,k])=>({label:k.name,description:k.detail,run:()=>dispatch({type:'explore',kit:id})})),{label:'先留在酒馆',secondary:true}]);
   }
   function renderCityToolbar(){
     const toolbar=$('city-toolbar');toolbar.hidden=!inCity();if(!inCity())return;
     const near=C.near(ui.city),busy=Boolean(state.life.arrangement),bike=ui.city.bike;
-    toolbar.innerHTML=`<span>${state.phase==='summary'?'深夜':'白天'} · ${bike.mounted?'骑行中':'步行'} · 已发现 ${ui.city.visited.length}/${Object.keys(C.PLACES).length}</span>`+
-      `<button data-action="city-bike" ${busy||!nearBike()?'disabled':''}>${bike.mounted?'下车':'骑上自行车'} · B</button>`+
+    toolbar.innerHTML=`<span>${state.phase==='summary'?'深夜':'白天'} · ${bike.pushing?'推车过桥':bike.mounted?'骑行中':'步行'} · 已发现 ${ui.city.visited.length}/${Object.keys(C.PLACES).length}</span>`+
+      `<button data-action="city-bike" ${busy||!nearBike()?'disabled':''}>${bike.mounted||bike.pushing?'停好自行车':C.rideable(ui.city.x,ui.city.y)?'骑上自行车':'推着自行车走'} · B</button>`+
       (!nearBike()?'<button data-action="city-bike-find" '+(busy?'disabled':'')+'>去取停好的车</button>':'')+
       `<button data-action="city-notebook" ${busy?'disabled':''}>${ui.notebook?'收起':'打开'}景点手册</button>`+
       (ui.cityMode==='place'?`<button data-action="city-map" ${busy?'disabled':''}>← 出去逛逛 · M</button>`:
@@ -157,9 +157,16 @@
       `<button class="secondary" data-action="flower-store" ${nearBike()?'':'disabled'}>${b.stored?'从前篮拿回花':'把花放进前篮'}</button>`+
       (state.phase==='prep'&&!b.stored&&['pub','lotte'].includes(place)?`<button class="primary" data-action="flower-use" data-target="${place==='pub'?'display':'lotte'}">${place==='pub'?'布置酒馆窗台':'把花送给 Lotte'} · ${R.flowerFit(b,place==='pub'?'display':'lotte')?'很合适':'自由搭配'}</button>`:'')+'</div>';
   }
+  const clueCopy={market:'超市：绕货架北侧进冷库；东墙卸货门能从里面打开，记住后下次还在。',club:'夜店：六秒静音、六秒鼓点。鼓点掩盖动静；静音时空瓶能引开更远的保安。'};
+  function mapNotes(){return [...state.life.morning,...state.life.clues.map(id=>clueCopy[id])];}
+  function scoutPanel(place){
+    const id=place==='market'?'market':place==='coffee'?'club':null;if(!id)return '';
+    const known=state.life.clues.includes(id);
+    return `<div class="scout-note"><span class="board-eyebrow">白天踩点 / 今夜可用</span><h3>${id==='market'?'卸货单的背面':'Bram 听过的下一首歌'}</h3><p>${known?esc(clueCopy[id]):id==='market'?'搬货工把一张旧路线图压在空箱底下。货物的出口，有时也是人的入口。':'Bram 下午给夜店送咖啡。他记得的不光是欠款，还有后台的音乐间歇。'}</p><button class="secondary" data-action="scout" data-place="${place}" ${known?'disabled':''}>${known?'已记进地图背面':id==='market'?'看看卸货路线 · 免费':'打听夜店节拍 · 免费'}</button></div>`;
+  }
   function cityNotebook(){
     if(!ui.notebook)return '';
-    return `<div class="city-notebook"><p class="board-eyebrow">景点手册 / 正面给游客，背面留给自己</p><p>北岸渡轮 · 运河桥 · 南街花市。点击下方地点就能实际走过去。窄桥和渡轮前自动下车，车会停在入口，记得回来取。</p><strong>地图背面的笔记</strong><ul>${state.life.morning.length?state.life.morning.map(n=>'<li>'+esc(n)+'</li>').join(''):'<li>夜里亲自走过的地方，才会写在这里。</li>'}</ul></div>`;
+    return `<div class="city-notebook"><p class="board-eyebrow">景点手册 / 正面给游客，背面留给自己</p><p>北岸渡轮 · 运河桥 · 南街花市。点击下方地点就能实际走过去。宽桥可以骑；窄桥和渡轮推车通过，上岸后继续骑。按 B 或进店才会停好车。</p><strong>地图背面的笔记</strong><ul>${mapNotes().length?mapNotes().map(n=>'<li>'+esc(n)+'</li>').join(''):'<li>夜里亲自走过的地方，才会写在这里。</li>'}</ul></div>`;
   }
   function sleepPanel(){
     const report=state.reports[state.reports.length-1];
@@ -175,7 +182,7 @@
     if(ui.cityMode==='map'){
       const destination=ui.cityTarget&&C.PLACES[ui.cityTarget];
       $board.innerHTML+=`<h2>${late?'明信片拍不到的时间。':'骑慢点。<br>这座城值得拐个弯。'}</h2>`+budget+
-        `<p class="board-copy">${late?'白天的商店拉下卷帘，后门的故事刚开始。你可以继续逛，也可以带工具出门。':'逛街、骑车、进店。小游戏由你决定要不要玩。你的车在酒馆门口，按 B 上车。'}</p>`+
+        `<p class="board-copy">${late?'白天的商店拉下卷帘，后门的故事刚开始。你可以继续逛，也可以带工具出门。':'逛街、骑车、进店。'+(ui.city.bike.pushing?'正推着车过桥，上岸后继续骑。':ui.city.bike.mounted?'骑着车，看到感兴趣的地方就停下来。':nearBike()?'自行车就在身边，按 B 带上它。':'自行车停在地图上，点「去取停好的车」就能找到。')}</p>`+
         (ui.cityPath.length?`<div class="city-route"><strong>↝ ${destination?esc(destination.name):'沿街走走'}</strong><p id="city-route-note">沿虚线前往</p><button class="text-button" data-action="city-stop">停下来看看</button></div>`:
         `<div class="city-nearby"><h3>${near?esc(near.name):'运河街道'}</h3><p>${near?esc(PLACE_COPY[near.id].quote):'河边有路，过河找桥。'}</p>${near?'<button class="primary" data-action="city-enter">进去看看 · E</button>':''}</div>`)+bouquetPanel(null)+expeditionInvitation();
       if(late)$board.innerHTML+=sleepPanel();return;
@@ -195,6 +202,8 @@
       $board.innerHTML+=`<button class="primary" data-action="prepare" data-kind="${p.kind}" ${blocked||used.includes(p.kind)||state.cash<cost?'disabled':''}>${used.includes(p.kind)?'今天已经办过了':labels[p.id]}</button><p class="small-note">1 次准备机会 · 每天一次</p>`;
       if(p.id==='lotte'&&state.life.gifts)$board.innerHTML+='<p class="promise-note">Lotte 把你送的花带回了排练室。好印象 '+state.friends.lotte+'。</p>';
     }
+    if(!late)$board.innerHTML+=scoutPanel(p.id);
+    if(p.id==='market'&&state.backstage.discovered.includes('market-shortcut'))$board.innerHTML+='<p class="promise-note">卸货门上的告示改成了：请最后离开的非员工关灯。你开的捷径还在。</p>';
     $board.innerHTML+=bouquetPanel(p.id)+'<div class="board-bottom"><button class="text-button" data-action="city-map">← 出去逛逛 · M</button></div>';
   }
   function travelTo(id,point){
@@ -220,8 +229,8 @@
     const wasNearBike=nearBike();let position=ui.city,arrived=false;
     if(ui.cityKeys.size){const held=ui.cityKeys;position=C.move(ui.city,Number(held.has('d')||held.has('arrowright'))-Number(held.has('a')||held.has('arrowleft')),Number(held.has('s')||held.has('arrowdown'))-Number(held.has('w')||held.has('arrowup')),seconds);}
     else{const result=C.moveAlong(ui.city,ui.cityPath,seconds);position=result.position;ui.cityPath=result.path;arrived=result.arrived;}
-    const wasMounted=ui.city.bike.mounted;ui.city=position;
-    if(wasMounted&&!ui.city.bike.mounted){notify('窄桥 / 渡轮要步行。自行车停在入口，可点“去取停好的车”返回。');save();renderCityToolbar();}
+    const wasPushing=Boolean(ui.city.bike.pushing);ui.city=position;
+    if(wasPushing!==Boolean(ui.city.bike.pushing)){notify(ui.city.bike.pushing?'窄桥 / 渡轮慢一点，推着车一起过去。':'已经过桥，继续骑行。');save();renderCityToolbar();}
     const near=C.near(ui.city),nextNear=near?.id||null,onFerry=C.onFerry(ui.city.x,ui.city.y);
     if(near&&!ui.city.visited.includes(near.id)){ui.city.visited.push(near.id);save();}
     if(arrived){const target=ui.cityTarget;ui.cityTarget=null;if(target){enterCityPlace(target);return;}save();render();}
@@ -379,7 +388,7 @@
       case 'exp-command':backstage.perform(data.verb);break;
       case 'start':{const n=Number($('seed-input')?.value);if(!Number.isInteger(n)||n<1||n>2147483647){notify('顾客安排请输入 1 到 2147483647 的整数。',true);return;}state=R.createGame(n);dispatch({type:'start'});break;}
       case 'city-travel':travelTo(data.place);break;
-      case 'city-bike':if(inCity()&&!state.life.arrangement){const mounted=ui.city.bike.mounted;ui.city=C.toggleBike(ui.city);ui.cityMode='map';notify(ui.city.bike.mounted?'骑上车了。窄桥前自动下车，车留在入口。':mounted?'车停好了。':'先靠近自行车，桥上也不能上车。');save();render();}break;
+      case 'city-bike':if(inCity()&&!state.life.arrangement){const carrying=ui.city.bike.mounted||ui.city.bike.pushing;ui.city=C.toggleBike(ui.city);ui.cityMode='map';notify(ui.city.bike.pushing?'推着车过桥，到宽路上继续骑。':ui.city.bike.mounted?'骑上车了。宽桥直接过，窄桥自动推车。':carrying?'车停好了。回来按 B 就能带走。':'先靠近自行车。');save();render();}break;
       case 'city-bike-find':travelTo(null,ui.city.bike);break;
       case 'city-notebook':ui.notebook=!ui.notebook;render();break;
       case 'flower-start':dispatch({type:'flowerStart'});break;
@@ -394,6 +403,7 @@
       case 'city-zoom':ui.cityZoom=ui.cityZoom===1?2:1;renderCityToolbar();break;
       case 'city-stop':ui.cityPath=[];ui.cityTarget=null;render();save();break;
       case 'brew':dispatch({type:'prepare',kind:'brew',beer:data.beer});break;
+      case 'scout':if(inCity()&&ui.cityMode==='place'&&ui.cityPlace===data.place)dispatch({type:'scout',place:data.place});break;
       case 'prepare':dispatch({type:'prepare',kind:data.kind});break;
       case 'brew-hit':brewHit();break;
       case 'forage-move':dispatch({type:'forageMove',direction:Number(data.direction)});break;

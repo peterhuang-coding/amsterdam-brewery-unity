@@ -69,7 +69,7 @@ test('safe extraction preserves cargo; bailout loses cargo but preserves discove
   B.command(r,'bail');assert.equal(B.rewards(r).hops,0);assert.ok(B.rewards(r).discovered.includes('greenhouse'));
 });
 test('time expiration ends a run with recoverable partial cargo, never touches home funds',()=>{
-  let s=act(closed(),{type:'explore',kit:'hook'});s.backstage.run.time=179.95;
+  let s=act(closed(),{type:'explore',kit:'hook'});s.backstage.run.time=179.95;require('./backstage-auto.js').disable(s.backstage.run); // Expiry runs only while the player is not reading a choice.
   B.step(s.backstage.run,{},.1);assert.equal(s.backstage.run.status,'rescued');
   s=act(s,{type:'returnExplore'});assert.equal(s.cash,27);assert.equal(s.phase,'summary');
   assert.equal(R.act(s,{type:'returnExplore'}).ok,false);assert.equal(R.act(s,{type:'explore',kit:'hook'}).ok,false);

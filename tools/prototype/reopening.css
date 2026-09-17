@@ -37,3 +37,6 @@
 .night-place-note{padding:18px;background:#263f42;color:#e9e1c9;border-radius:6px;line-height:1.8;font-size:14px}
 #city-toolbar{flex-wrap:wrap}#city-toolbar button{min-height:36px}#exp-play{background:#dfe8c9;color:#26362e;font-weight:700}
 @media(max-width:600px){.flower-bench{gap:6px}.flower-stem{padding:10px 3px}.flower-stem.chosen{padding:9px 2px}.city-notebook,.morning-post,.bouquet-card{padding:13px}#city-toolbar>span{flex-basis:100%}}
+
+/* Daylight discoveries stay next to the place where the player finds them. */
+.scout-note{margin:20px 0;padding:15px;border:1px dashed #849384;background:#dce3ce70}.scout-note h3{font:18px/1.5 var(--serif);margin:7px 0}.scout-note p{font-size:12px;line-height:1.8;margin:8px 0 14px}.scout-note button{width:100%;min-height:44px}.scout-note button:disabled{opacity:.7}

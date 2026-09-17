@@ -128,10 +128,10 @@
     return true;
   }
 
-  // Every existing bridge is narrow. Leave the bicycle on the quay before
-  // the player's safety circle enters a bridge or the ferry corridor.
+  // Wider bridges allow riding. On narrow bridges and the ferry, walk with
+  // the bicycle; the same collision map still constrains both modes.
   function rideable(x, y) {
-    return walkable(x, y) && !CROSSINGS.some(crossing => circleHits(crossing, x, y));
+    return walkable(x, y) && !CROSSINGS.some(crossing => (crossing.kind === 'ferry' || crossing.h < 80) && circleHits(crossing, x, y));
   }
 
   const gridNodes = [];
@@ -258,20 +258,25 @@
 
   function relocate(position, point) {
     return { ...position, x: point.x, y: point.y,
-      bike: position.bike.mounted ? { x: point.x, y: point.y, mounted: true } : position.bike };
+      bike: position.bike.mounted || position.bike.pushing ? carriedBike(point) : position.bike };
+  }
+
+  function carriedBike(point) {
+    return rideable(point.x, point.y) ? { x: point.x, y: point.y, mounted: true } :
+      { x: point.x, y: point.y, mounted: false, pushing: true };
   }
 
   function toggleBike(position) {
     const current = movementState(position);
-    if (current.bike.mounted) return parkBike(current);
+    if (current.bike.mounted || current.bike.pushing) return parkBike(current);
     if (Math.hypot(current.x - current.bike.x, current.y - current.bike.y) > 42 ||
-        !rideable(current.x, current.y) || !safeSegment(current, current.bike)) return current;
-    return { ...current, bike: { x: current.x, y: current.y, mounted: true } };
+        !safeSegment(current, current.bike)) return current;
+    return { ...current, bike: carriedBike(current) };
   }
 
   function parkBike(position) {
     const current = movementState(position);
-    if (current.bike.mounted) current.bike = { x: current.x, y: current.y, mounted: false };
+    if (current.bike.mounted || current.bike.pushing) current.bike = { x: current.x, y: current.y, mounted: false };
     return current;
   }
 
@@ -280,14 +285,11 @@
     let current = position, remaining = elapsed, covered = 0;
     if (!magnitude || !Number.isFinite(magnitude)) return { position: current, used: 0 };
     while (remaining > 1e-10 && covered < limit - 1e-10) {
-      const speed = current.bike.mounted ? BIKE_SPEED : SPEED;
+      const carrying = current.bike.mounted || current.bike.pushing;
+      const speed = carrying && rideable(current.x + dx / magnitude * 4, current.y + dy / magnitude * 4) ? BIKE_SPEED : SPEED;
       const distance = Math.min(4, speed * remaining, limit - covered);
       const stepX = dx / magnitude * distance, stepY = dy / magnitude * distance;
       const target = { x: current.x + stepX, y: current.y + stepY };
-      if (current.bike.mounted && CROSSINGS.some(crossing => circleHits(crossing, target.x, target.y))) {
-        current = { ...current, bike: { x: current.x, y: current.y, mounted: false } };
-        continue;
-      }
       let point = { x: current.x, y: current.y };
       if (safeSegment(point, target)) point = target;
       else {
@@ -371,10 +373,11 @@
     }
     const bicycle = value.bike;
     const validBike = finitePoint(bicycle) && typeof bicycle.mounted === 'boolean' &&
-      rideable(bicycle.x, bicycle.y) && (!bicycle.mounted ||
-        (bicycle.x === value.x && bicycle.y === value.y));
+      [undefined, true, false].includes(bicycle.pushing) && !(bicycle.mounted && bicycle.pushing) &&
+      walkable(bicycle.x, bicycle.y) && (!bicycle.mounted || rideable(bicycle.x, bicycle.y)) &&
+      (!(bicycle.mounted || bicycle.pushing) || (bicycle.x === point.x && bicycle.y === point.y));
     return { x: point.x, y: point.y, visited: value.visited.slice(),
-      bike: validBike ? { x: bicycle.x, y: bicycle.y, mounted: bicycle.mounted } : { ...createPoint(), mounted: false } };
+      bike: validBike ? { x: bicycle.x, y: bicycle.y, mounted: bicycle.mounted, ...(bicycle.pushing ? { pushing: true } : {}) } : { ...createPoint(), mounted: false } };
   }
 
   return Object.freeze({

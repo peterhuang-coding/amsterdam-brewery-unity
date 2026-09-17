@@ -42,7 +42,7 @@
   const has = (state, upgrade) => state.upgrades.includes(upgrade);
   const clone = value => JSON.parse(JSON.stringify(value));
   const seats = state => has(state, 'stage') ? 2 : 3;
-  const freshLife = () => ({ arrangement: null, bouquet: null, flowersDay: 0, display: null, gifts: 0, morning: [] });
+  const freshLife = () => ({ arrangement: null, bouquet: null, flowersDay: 0, display: null, gifts: 0, morning: [], clues: [] });
   const FLOWERS = Object.freeze([
     { name: '红郁金香', color: '#c86162', tone: 'warm' }, { name: '橙郁金香', color: '#d78d51', tone: 'warm' },
     { name: '黄郁金香', color: '#d9bb69', tone: 'warm' }, { name: '白郁金香', color: '#f1ecdd', tone: 'cool' },
@@ -207,6 +207,7 @@
     state.actions = 2;
     state.promises.lotte = false;
     state.prepared = [];
+    state.life.clues = [];
     state.brew = null;
     state.forage = null;
     state.night = null;
@@ -226,12 +227,19 @@
       case 'start':
         if (state.phase !== 'welcome') return fail('酒馆已经开始营业准备了。');
         state.phase = 'prep'; say(state, '先备酒，再开门。工商表格没有“暂时还不会倒酒”这一栏。'); break;
+      case 'scout': {
+        if (state.phase !== 'prep' || !['market', 'coffee'].includes(action.place)) return fail('白天到市场或咖啡馆，才有机会打听夜里的事。');
+        const clue = action.place === 'market' ? 'market' : 'club';
+        if (!state.life.clues.includes(clue)) state.life.clues.push(clue);
+        say(state, clue === 'market' ? '卸货单背面画着路：货架北侧通冷库，东墙卸货门能从里面打开。销毁食品需要审批，拯救食品需要偷偷摸摸。' : 'Bram 说：NO SIGNAL 每隔六秒会停一阵音乐。鼓点响时保安听不清，音乐一停，连空瓶都像在做自我介绍。');
+        break;
+      }
       case 'explore':
         if (!B || state.phase !== 'summary' || state.prepared.includes('explore')) return fail('酒馆打烊后才能出门探险，每夜一次。');
         if (!owns(B.KITS, action.kit)) return fail('先选一套出门工具。');
         if (![undefined, 'auto', 'manual'].includes(action.mode)) return fail('请选择自动探索或手动操作。');
         state.backstage.from = state.phase; state.prepared.push('explore'); state.phase = 'explore';
-        state.backstage.run = B.create(state.seed, state.day, action.kit, state.backstage.discovered);
+        state.backstage.run = B.create(state.seed, state.day, action.kit, state.backstage.discovered, {clues: state.life.clues});
         if (action.mode !== 'manual') A.enable(state.backstage.run);
         say(state, '城市背面的门开着。去夜店找冷藏箱，或者沿着陌生的灯走。'); break;
       case 'returnExplore': {
@@ -249,6 +257,12 @@
         if (reward.parcel==='returned') state.life.morning.push('Noor 留了张字条：下次营业来喝一杯。箱子还了，人情还在。');
         if (reward.parcel==='kept') state.life.morning.push('有人打听你带回的冷藏箱。月雾单独封存，不进入酒和原料。');
         if (reward.discovered.includes('greenhouse')) state.life.morning.push('温室后门已画在地图背面；花店老板认出了你鞋上的泥。');
+        const consequences = {
+          'market-salvaged': '超市今日告示：昨夜库存不翼而飞，销毁指标被迫下调。你认得那片货架。',
+          'market-shortcut': '卸货门留了一道缝。你记下的超市捷径，下次夜里仍然能走。',
+          'club-backstage': 'Bram 听说有人取走了后台的冷藏箱：保安建议降低音量，经理建议提高票价。'
+        };
+        for (const outcome of reward.outcomes || []) if (consequences[outcome]) state.life.morning.push(consequences[outcome]);
         state.backstage.trips++; state.backstage.run = null; state.phase = state.backstage.from; state.backstage.from = null;
         say(state, '探险归来：' + reward.cups + ' 杯艾尔，' + reward.hops + ' 份酒花，€' + reward.cash + '。' + (afterClose ? '收好东西，睡醒后再开门。' : '旧行程已经接回白天。')); break;
       }
@@ -502,12 +516,13 @@
     if (!shape(s, 'version seed day phase cash actions batches friends promises upgrades hops music log totalSatisfied totalServed brew forage night reports lastMessage result prepared backstage life')) return false;
     if (s.version !== 1 || !integer(s.seed, 0, 4294967295) || !integer(s.day, 1, 3) || !integer(s.cash, 0, 1000000) || !integer(s.actions, 0, 2)) return false;
     if (!['welcome', 'prep', 'brew', 'forage', 'explore', 'night', 'summary', 'ending'].includes(s.phase)) return false;
-    if (!shape(s.backstage, 'run discovered resolution trips from cashAfterClose') || !Array.isArray(s.backstage.discovered) || !unique(s.backstage.discovered) || !s.backstage.discovered.every(id => ['greenhouse', 'noor'].includes(id)) || ![null, 'returned', 'kept'].includes(s.backstage.resolution) || !integer(s.backstage.trips, 0, 3) || !integer(s.backstage.cashAfterClose,0,1000000)) return false;
+    if (!shape(s.backstage, 'run discovered resolution trips from cashAfterClose') || !Array.isArray(s.backstage.discovered) || !unique(s.backstage.discovered) || !s.backstage.discovered.every(id => ['greenhouse', 'noor', 'market-shortcut'].includes(id)) || ![null, 'returned', 'kept'].includes(s.backstage.resolution) || !integer(s.backstage.trips, 0, 3) || !integer(s.backstage.cashAfterClose,0,1000000)) return false;
     if(s.phase==='explore' ? !['prep','summary'].includes(s.backstage.from) : s.backstage.from!==null) return false;
     const afterClose=['summary','ending'].includes(s.phase)||s.phase==='explore'&&s.backstage.from==='summary';
     if(!afterClose&&s.backstage.cashAfterClose!==0)return false;
     const life=s.life,validBouquet=b=>shape(b,'palette wrap stored')&&['warm','cool','mixed'].includes(b.palette)&&['paper','ribbon'].includes(b.wrap)&&typeof b.stored==='boolean';
-    if(!shape(life,'arrangement bouquet flowersDay display gifts morning')||!integer(life.flowersDay,0,s.day)||!integer(life.gifts,0,3)||!Array.isArray(life.morning)||life.morning.length>4||!life.morning.every(string))return false;
+    if(!shape(life,'arrangement bouquet flowersDay display gifts morning clues')||!integer(life.flowersDay,0,s.day)||!integer(life.gifts,0,3)||!Array.isArray(life.morning)||life.morning.length>8||!life.morning.every(string))return false;
+    if(!Array.isArray(life.clues)||life.clues.length>2||!unique(life.clues)||!life.clues.every(id=>['market','club'].includes(id)))return false;
     if(life.bouquet!==null&&!validBouquet(life.bouquet)||life.display!==null&&(!validBouquet(life.display)||life.display.stored))return false;
     if(life.arrangement!==null){const a=life.arrangement;if(s.phase!=='prep'||s.actions<1||s.cash<4||life.flowersDay===s.day||life.bouquet||!shape(a,'stems wrap')||!Array.isArray(a.stems)||a.stems.length>3||!unique(a.stems)||!a.stems.every(i=>integer(i,0,5))||![null,'paper','ribbon'].includes(a.wrap))return false;}
     if (s.phase === 'explore') {
@@ -573,6 +588,7 @@
       const restored = clone(value);
       if (restored && !owns(restored, 'backstage')) restored.backstage = { run: null, discovered: [], resolution: null, trips: 0 };
       if(restored&&!owns(restored,'life'))restored.life=freshLife();
+      if(restored?.life&&!owns(restored.life,'clues'))restored.life.clues=[];
       if(restored?.backstage&&!owns(restored.backstage,'from')&&!owns(restored.backstage,'cashAfterClose')){
         restored.backstage.from=restored.phase==='explore'?'prep':null;restored.backstage.cashAfterClose=0;
       }

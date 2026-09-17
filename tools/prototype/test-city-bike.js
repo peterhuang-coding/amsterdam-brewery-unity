@@ -111,46 +111,60 @@ test('automatic movement uses bicycle speed and retains the complete city state'
   assert.equal(JSON.stringify({ source, route }), before);
 });
 
-test('a bicycle automatically parks before every narrow bridge or ferry in both directions', () => {
+test('bicycles cross every bridge and ferry both ways without being left behind', () => {
   const passages = [
-    [position(414, 640, true), { x: 550, y: 640 }],
-    [position(414, 965, true), { x: 538, y: 965 }],
-    [position(1014, 670, true), { x: 1150, y: 670 }],
-    [position(1014, 985, true), { x: 1150, y: 985 }],
-    [position(670, 734, true), { x: 670, y: 870 }],
-    [position(1430, 734, true), { x: 1430, y: 890 }],
-    [position(890, 496, true), { x: 890, y: 260 }]
+    [position(414, 640, true), { x: 550, y: 640 }, false],
+    [position(414, 965, true), { x: 538, y: 965 }, true],
+    [position(1014, 670, true), { x: 1150, y: 670 }, false],
+    [position(1014, 985, true), { x: 1150, y: 985 }, true],
+    [position(670, 734, true), { x: 670, y: 870 }, false],
+    [position(1430, 734, true), { x: 1430, y: 890 }, false],
+    [position(890, 496, true), { x: 890, y: 260 }, true]
   ];
-  for (const [from, to] of passages) for (const reverse of [false, true]) {
+  for (const [from, to, narrow] of passages) for (const reverse of [false, true]) {
     let current = reverse ? position(to.x, to.y, true) : from;
     const target = reverse ? { x: from.x, y: from.y } : to;
-    let path = [{ ...target }];
-    let parked = null;
-    for (let step = 0; step < 30 && path.length; step++) {
+    let path = [{ ...target }], pushed = false;
+    for (let step = 0; step < 40 && path.length; step++) {
       const result = City.moveAlong(current, path, 0.1);
-      current = result.position;
-      path = result.path;
+      current = result.position; path = result.path;
       assert.equal(City.walkable(current.x, current.y), true);
-      if (!current.bike.mounted) {
-        assert.equal(City.rideable(current.bike.x, current.bike.y), true, 'bike parks outside the crossing');
-        if (parked) assert.deepEqual(current.bike, parked, 'walking does not ferry the bike');
-        parked = { ...current.bike };
-      }
+      assert.deepEqual({ x: current.bike.x, y: current.bike.y }, { x: current.x, y: current.y }, 'bike stays with player');
+      if (current.bike.pushing) { pushed = true; assert.equal(current.bike.mounted, false); }
+      assert.deepEqual(City.restore(current), current, 'mid-crossing save restores exactly');
     }
-    assert.ok(parked, 'the crossing forces dismounting');
-    assert.equal(path.length, 0, 'the player can finish crossing on foot');
-    assert.deepEqual({ x: current.x, y: current.y }, target);
+    assert.equal(pushed, narrow, 'wide bridges ride; narrow bridges and ferry push');
+    assert.equal(path.length, 0, JSON.stringify({from,to,reverse,current}));
+    assert.equal(current.bike.mounted, true, 'resume riding on the opposite bank');
   }
 });
 
-test('manual movement cannot ride or remount across a bridge entrance', () => {
-  let current = position(414, 640, true);
-  for (let i = 0; i < 4; i++) current = City.move(current, 1, 0, 0.1);
-  assert.ok(current.x > 450, 'walking enters the bridge');
+test('manual narrow-bridge movement pushes the bicycle, can park, and can take it again', () => {
+  let current = position(414, 965, true);
+  for (let i = 0; i < 3; i++) current = City.move(current, 1, 0, 0.1);
+  assert.ok(current.x > 450 && current.x < 530);
+  assert.equal(current.bike.pushing, true);
+  const carried = structuredClone(current);
+  current = City.toggleBike(current);
+  assert.equal(Boolean(current.bike.pushing), false);
   assert.equal(current.bike.mounted, false);
-  assert.ok(current.bike.x <= 422);
-  const atEntrance = { ...current, x: current.bike.x + 10 };
-  assert.deepEqual(City.toggleBike(atEntrance), atEntrance, 'cannot mount inside a no-riding region');
+  const parked = structuredClone(current.bike);
+  current = City.move(current, 1, 0, .1);
+  assert.deepEqual(current.bike, parked);
+  current = City.toggleBike(current);
+  assert.equal(current.bike.pushing, true, 'can pick up a parked bike on the bridge');
+  assert.equal(current.bike.x, current.x);
+  assert.deepEqual(City.restore(carried), carried);
+  assert.equal(City.parkBike(carried).bike.pushing, undefined);
+});
+
+test('manual riding crosses a wide bridge and parked bicycles never follow automatically', () => {
+  let current = position(414, 640, true);
+  for(let i=0;i<4;i++) current=City.move(current,1,0,.1);
+  assert.ok(current.x>550);assert.equal(current.bike.mounted,true);
+  const parked=City.parkBike(position(470,640,true));
+  assert.deepEqual(City.restore(parked),parked);
+  assert.deepEqual(City.move(parked,1,0,.1).bike,parked.bike);
 });
 
 test('bicycle speed never tunnels through a canal or facade', () => {

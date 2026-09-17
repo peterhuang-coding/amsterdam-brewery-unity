@@ -132,8 +132,32 @@
       this.line([[noise.x-10,noise.y-2],[noise.x+9,noise.y-9]],'#e4d3ab',6);this.line([[noise.x+8,noise.y-9],[noise.x+17,noise.y-13]],'#afc8b7',4);
       this.text('空瓶声 · '+Math.ceil(noise.life)+'s',noise.x,noise.y-65,14,'#f1d199');
     }
+    locationFloors(info){
+      if(!info?.enabled)return;
+      for(const room of info.rooms){
+        this.rect(room.x,room.y,room.w,room.h,room.color+'50');
+        for(let yy=room.y+12;yy<room.y+room.h;yy+=24)this.line([[room.x+8,yy],[room.x+room.w-8,yy]],'#aac1b31c');
+      }
+      const club=info.club;
+      this.rect(1100,808,280,28,club.loud?'#755b84':'#23333e');
+      this.text((club.loud?'♪ 鼓点掩护':'· 音乐间歇')+' · '+Math.ceil(club.remaining)+'s',1240,828,15,club.loud?'#f1d1e7':'#b2c9c8');
+      for(let i=0;i<12;i++)this.rect(1100+i*24,840,18,club.loud?7:2,club.loud?'#c495bf':'#6c7d83');
+    }
+    locationDoor(door){
+      const color=door.open?'#a3d6b7':'#debf87';
+      if(!door.open){
+        this.rect(door.x,door.y,door.w,door.h,'#59717a');
+        for(let y=door.y+6;y<door.y+door.h;y+=12)this.line([[door.x,y],[door.x+door.w,y]],'#b0b7a3',3);
+      }else{
+        this.line([[door.x,door.y],[door.x,door.y+door.h]],'#8ebba460',2);
+        this.text('→',door.x+door.w/2,door.y+door.h/2+6,22,color);
+      }
+      this.ellipse(door.interact.x,door.interact.y,12,12,'#20433c');
+      this.ring(door.interact.x,door.interact.y,18,18,color,2);
+      this.text(door.open?'卸货捷径已开':'卸货开关 · E',door.interact.x-8,door.y+door.h+27,13,color);
+    }
     draw(r,options={}){
-      const c=this.c,p=r.p,time=this.reduced?0:r.time,street=B.streetInfo?.(r);this.player=p;this.noise=r.street?.noise;this.dragTarget=B.dragTarget?.(r)?.id;
+      const c=this.c,p=r.p,time=this.reduced?0:r.time,street=B.streetInfo?.(r),location=B.locationInfo?.(r);this.player=p;this.noise=r.street?.noise;this.dragTarget=B.dragTarget?.(r)?.id;
       const narrow=this.canvas.getBoundingClientRect().width<600;
       this.view=this.camera(r,options.overview);const {scale,x:tx,y:ty}=this.view;
       c.clearRect(0,0,1100,640);this.rect(0,0,1100,640,'#142e3b');c.save();c.translate(tx,ty);c.scale(scale,scale);
@@ -141,6 +165,7 @@
       for(const z of B.ZONES){this.rect(z.x,z.y,z.w,z.h,z.color+'38');this.line([[z.x,z.y+z.h],[z.x+z.w,z.y+z.h]],z.color,2);}
       for(let y=80;y<1340;y+=30)for(let x=60+(y%60);x<2160;x+=60){this.line([[x,y],[x+52,y],[x+52,y+23]],'#60747d26',1);}
       for(let i=0;i<35;i++){const x=110+(i*199)%1980,y=300+(i*127)%950;this.ellipse(x,y,38+i%3*17,8,'#132e3f50');this.line([[x-20,y],[x+17,y]],'#87969428',1);}
+      this.locationFloors(location);
       // A bridge and wayfinding remain fixed even when cargo patterns change.
       this.rect(590,631,120,87,'#887f72');for(let x=596;x<710;x+=18)this.line([[x,635],[x,714]],'#b5a38b',3);
       for(const x of [590,710])this.line([[x,627],[x,721]],'#cfbd9c',5);
@@ -148,7 +173,7 @@
       this.text('后场入口',225,1265,15,'#9aacaa');
       for(const light of [{x:465,y:265,color:'#d5798c48'},{x:1150,y:820,color:'#ad84c948'},{x:1480,y:1160,color:'#e8b97538'},{x:650,y:800,color:'#f4bc8145'}])this.glow(light.x,light.y,190,100,light.color);
       // Nightclub floor uses light and moving bodies as readable spatial obstacles.
-      for(let x=1110;x<1380;x+=54)for(let y=830;y<1150;y+=54)this.rect(x,y,49,49,((x+y)/54|0)%2?'#ad84c912':'#a791b815');
+      for(let x=1110;x<1380;x+=54)for(let y=830;y<1150;y+=54)this.rect(x,y,49,49,location?.club?.loud?(((x+y)/54|0)%2?'#ad84c94a':'#a791b82b'):(((x+y)/54|0)%2?'#ad84c912':'#a791b815'));
       this.rect(1645,205,435,335,'#9ac8a524');this.glow(1820,440,240,130,'#acc69a28');
       for(const f of r.patches){this.ellipse(f.x,f.y,86,57,'#a8d6d465');for(let i=0;i<8;i++)this.ellipse(f.x+Math.cos(i*2.1)*55,f.y+Math.sin(i*2.1)*28,12,8,'#d9f0df80');}
       if(this.noise)this.sound(this.noise,time);
@@ -158,7 +183,9 @@
       this.rect(B.LEVER.x-10,B.LEVER.y-21,20,32,'#596e74');this.line([[B.LEVER.x,B.LEVER.y-7],[B.LEVER.x+12,B.LEVER.y-28]],r.opened?'#a2d3a5':'#e6bd7e',5);
       this.text(r.opened?'闸门已开':'维护拉杆',B.LEVER.x,B.LEVER.y+28,13,'#c5c5ac');
       if(!r.opened){this.rect(B.GATE.x,B.GATE.y-32,B.GATE.w,54,'#566773');for(let x=B.GATE.x+6;x<B.GATE.x+B.GATE.w;x+=14)this.line([[x,B.GATE.y-31],[x,B.GATE.y+21]],'#9daba6',3);}
-      const objects=[...B.WALLS,...(street?.walls||[])].map(w=>({y:w.y+w.h,draw:()=>this.block(w)}));
+      const objects=[...B.WALLS,...(street?.walls||[])].map(w=>({y:w.y+w.h,draw:()=>{c.save();if(['shop','club'].includes(w.kind)&&p.x>w.x-20&&p.x<w.x+w.w+20&&p.y>w.y-100&&p.y<w.y)c.globalAlpha=.4;this.block(w);c.restore();}}));
+      for(const w of location?.walls||[])objects.push({y:w.y+w.h,draw:()=>{this.rect(w.x,w.y-12,w.w,w.h+12,'#526b70');this.rect(w.x,w.y-12,w.w,5,'#b7baa1');}});
+      if(location?.door)objects.push({y:location.door.y+location.door.h,draw:()=>this.locationDoor(location.door)});
       for(const barrel of r.street?.barrels||[])objects.push({y:barrel.y,draw:()=>this.streetBarrel(barrel,r)});
       for(const item of r.items)if(item.state==='world')objects.push({y:item.y,draw:()=>this.item(item,time)});
       for(const a of r.actors)objects.push({y:a.y,draw:()=>this.actor(a,time)});
@@ -175,6 +202,7 @@
       objects.push({y:265,draw:()=>{this.rect(1985,213,50,45,'#354d48');this.rect(1989,217,42,35,'#c1c398');this.glow(2010,260,45,27,'#decc8c50');this.text('↗ 酒馆屋顶',2010,287,13,'#ded3a0');}});
       objects.push({y:p.y,draw:()=>{if(p.inv===0||Math.sin(r.time*30)>-.3){this.glow(p.x,p.y,36,22,'#e8c58d37');this.person(p.x,p.y,'#d4a969',options.moving?time:0,true);this.line([[p.x+8,p.y-15],[p.x+8+p.fx*23,p.y-15+p.fy*23]],'#e3cda6',4);}}});
       objects.sort((a,b)=>a.y-b.y).forEach(o=>o.draw());
+      for(const room of location?.rooms||[]){this.rect(room.x+10,room.y+room.h-31,Math.min(room.w-20,168),25,'#17323ddd');this.text(room.label,room.x+19,room.y+room.h-13,14,'#dce2ce','left');}
       for(const f of r.fx){c.globalAlpha=Math.min(1,f.life*5);this.line([[f.x,f.y-12],[f.x2,f.y2-12]],f.kind==='hook'?'#f0cf93':'#95cfcc',f.kind==='hook'?3:14);this.ellipse(f.x2,f.y2-12,7,7,'#f4d896');c.globalAlpha=1;}
       for(const z of B.ZONES){this.text(z.name,z.x+z.w/2,z.y+z.h-18,options.overview?25:17,'#d0c5b780','center','Georgia');}
       if(options.aim&&!options.overview){c.strokeStyle='#e7c897aa';c.lineWidth=1.5;c.beginPath();c.arc(options.aim.x,options.aim.y,13,0,Math.PI*2);c.stroke();this.line([[options.aim.x-20,options.aim.y],[options.aim.x-8,options.aim.y]],'#e7c897aa',1.5);}
@@ -199,6 +227,9 @@
       this.rect(x-6,y-6,w+12,h+12,'#102431dc');
       for(const z of B.ZONES)this.rect(x+z.x*s,y+z.y*s,z.w*s,z.h*s,z.color);
       for(const wall of B.streetInfo?.(r)?.walls||[])this.rect(x+wall.x*s,y+wall.y*s,Math.max(2,wall.w*s),Math.max(2,wall.h*s),'#d4b382');
+      const location=B.locationInfo?.(r);
+      for(const w of location?.walls||[])this.rect(x+w.x*s,y+w.y*s,Math.max(1,w.w*s),Math.max(1,w.h*s),'#d1d5b5');
+      if(location?.door)this.ellipse(x+location.door.x*s,y+(location.door.y+location.door.h/2)*s,2,3,location.door.open?'#9cdfb6':'#e8b684');
       for(const barrel of r.street?.barrels||[])this.ring(x+barrel.x*s,y+barrel.y*s,3,3,'#a6e1cd',1.5);
       if(r.street?.noise)this.ring(x+r.street.noise.x*s,y+r.street.noise.y*s,5,5,'#edcd93',1.5);
       this.ellipse(x+B.EXIT.x*s,y+B.EXIT.y*s,3,3,'#e0c485');

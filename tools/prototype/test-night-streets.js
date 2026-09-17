@@ -50,7 +50,7 @@ test('a barrel blocks a charging machine in actual movement',()=>{
   r.street.barrels[0].x=850;r.street.barrels[0].y=1100;
   Object.assign(r.p,{x:925,y:1100});
   const bot=r.actors.find(a=>a.type==='cleaner');r.actors=[bot];
-  Object.assign(bot,{x:750,y:1100,mode:'charge',timer:1,vx:380,vy:0});
+  Object.assign(bot,{x:800,y:1100,mode:'charge',timer:1,vx:380,vy:0});
   const without=structuredClone(r);Object.assign(without.street.barrels[0],{x:600,y:1200});
   advance(r,.65);advance(without,.65);
   assert.equal(r.p.hp,3);assert.ok(bot.x<850);assert.ok(bot.stun>0);
@@ -126,8 +126,9 @@ test('changing kits and seeds keeps the night routes and extraction reachable',(
 });
 test('dragging around a worksite never clips the barrel through a corner',()=>{
   const r=B.create(42,2);r.actors=[];r.items.forEach(i=>i.lock=2);
-  Object.assign(r.p,{x:740,y:970});Object.assign(r.street.barrels[0],{x:795,y:1000});
-  assert.ok(B.command(r,'drag'));assert.equal(B.command(r,'dash',{x:740,y:800}),false);
+  // Use the worksite's east corner; the west side is now separated by the real market wall.
+  Object.assign(r.p,{x:1000,y:970});Object.assign(r.street.barrels[0],{x:945,y:1000});
+  assert.ok(B.command(r,'drag'));assert.equal(B.command(r,'dash',{x:1000,y:800}),false);
   for(let i=0;i<80;i++){B.step(r,{dy:-1},.05);const b=r.street.barrels[0];assert.ok(!B.solid(r,b.x,b.y,22,b.id));assert.ok(Math.hypot(r.p.x-b.x,r.p.y-b.y)<=65);assert.ok(B.restore(r));}
 });
 test('being knocked around a corner releases the tether and keeps the save recoverable',()=>{

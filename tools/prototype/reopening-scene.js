@@ -145,7 +145,7 @@
         this.text(place.name,place.x,labelY+2,16,active?'#244334':'#3e5647','sans-serif');
       }
       const p=view.position,isFerry=C.onFerry(p.x,p.y),mounted=p.bike&&p.bike.mounted;
-      if(p.bike&&!mounted)this.bicycle(p.bike,view.bouquet);
+      if(p.bike&&!mounted)this.bicycle(p.bike.pushing?{...p.bike,x:p.bike.x+19,y:p.bike.y+5}:p.bike,view.bouquet);
       this.ellipse(p.x,p.y+9,isFerry?25:15,isFerry?12:7,'#1c434060');
       if(isFerry){this.ellipse(p.x,p.y+6,21,32,'#b9945a');this.rect(p.x-12,p.y-9,24,26,'#e4cd9b');}
       this.ellipse(p.x,p.y,10,14,'#1d4140');this.ellipse(p.x,p.y-15,9,9,'#d4aa73');this.rect(p.x-9,p.y-22,18,6,'#ce8e4c');
@@ -156,6 +156,7 @@
       }else{
         this.line([[p.x-4,p.y+11],[p.x-5,p.y+19],[p.x-8,p.y+19]],'#253d37',4);this.line([[p.x+4,p.y+11],[p.x+5,p.y+19],[p.x+8,p.y+19]],'#253d37',4);
       }
+      if(p.bike?.pushing){this.line([[p.x+6,p.y-7],[p.x+27,p.y-9]],'#d4aa73',3);this.text('推行',p.x,p.y-51,11,'#eee1b3','sans-serif');}
       if(view.bouquet&&!view.bouquet.stored)this.tulips(p.x+16,p.y+3,view.bouquet,.7);
       this.text('你',p.x,p.y-35,16,'#fff1c8','sans-serif');
       c.restore();

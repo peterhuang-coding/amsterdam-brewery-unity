@@ -71,9 +71,9 @@ Scope: new `tools/prototype/bench-algorithms*.js` / replay helpers and focused t
 
 ## Initial sequence
 
-- [ ] Confirm clean isolated baseline and run `node --test tools/prototype/test-*.js`.
-- [ ] Batch 01: A route harness draft and B physics invariant harness draft, concurrency 2; store real results and review both.
-- [ ] Apply accepted new harness files sequentially and run them; separate generator mistakes from genuine defects.
+- [x] Confirm clean isolated baseline and run `node --test tools/prototype/test-*.js`.
+- [x] Batch 01: A route harness draft and B physics invariant harness draft, concurrency 2; store real results and review both.
+- [x] Apply accepted new harness files sequentially and run them; separate generator mistakes from genuine defects.
 - [ ] Batch 02 only after Batch 01 is known: independent C save cases, D replay helper, and up to two confirmed focused fixes. Raise to 4 only when all four jobs are independent and the first two calls succeeded.
 - [ ] Continue evidence-led reproduction, smallest fixes and measurement within the four-hour window.
 - [ ] Deadline checkpoint, final verification, push and Notion/Hub handoff.

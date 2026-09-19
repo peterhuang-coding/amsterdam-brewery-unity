@@ -1,0 +1,948 @@
+{
+  "sourceCommit": "d10778f",
+  "actions": [
+    {
+      "type": "start"
+    },
+    {
+      "type": "open"
+    },
+    {
+      "type": "close"
+    },
+    {
+      "type": "explore",
+      "kit": "hook"
+    }
+  ],
+  "travel": {
+    "choice": "market",
+    "steps": 10,
+    "dt": 0.05
+  },
+  "continuation": {
+    "steps": 30,
+    "dt": 0.05
+  },
+  "game": {
+    "version": 1,
+    "seed": 42,
+    "day": 1,
+    "phase": "explore",
+    "cash": 27,
+    "actions": 0,
+    "batches": [
+      {
+        "id": "starter-blond",
+        "beer": "blond",
+        "cups": 6,
+        "quality": 1,
+        "madeDay": 1,
+        "aged": false
+      },
+      {
+        "id": "starter-stout",
+        "beer": "stout",
+        "cups": 2,
+        "quality": 1,
+        "madeDay": 1,
+        "aged": false
+      }
+    ],
+    "friends": {
+      "lotte": 0,
+      "bram": 0,
+      "marta": 0
+    },
+    "promises": {
+      "lotte": false
+    },
+    "upgrades": [],
+    "hops": 0,
+    "music": false,
+    "log": [
+      "城市背面的门开着。去夜店找冷藏箱，或者沿着陌生的灯走。",
+      "第 1 夜收店：0 位满意的客人，支付租金 €18。",
+      "Marta推门进来，点了金色艾尔。",
+      "门灯亮了。欢迎点酒，创业故事免费，但不能抵酒钱。",
+      "先备酒，再开门。工商表格没有“暂时还不会倒酒”这一栏。"
+    ],
+    "totalSatisfied": 0,
+    "totalServed": 0,
+    "brew": null,
+    "forage": null,
+    "night": {
+      "elapsed": 0,
+      "duration": 165,
+      "orders": [
+        {
+          "id": "d1-guest0",
+          "name": "Marta",
+          "person": "marta",
+          "beer": "blond",
+          "budget": 8,
+          "arrival": 0,
+          "patience": 24,
+          "status": "lost",
+          "portrait": "👩🏼‍🦳",
+          "quote": "先倒一杯。商业计划晚点再说，泡沫已经在杯子里了。"
+        },
+        {
+          "id": "d1-guest1",
+          "name": "苏菲",
+          "person": null,
+          "beer": "blond",
+          "budget": 10,
+          "arrival": 19,
+          "patience": 25,
+          "status": "lost",
+          "portrait": "👩🏽",
+          "quote": "一杯金色艾尔。老板说公司是家，所以加班费算亲情。"
+        },
+        {
+          "id": "d1-guest2",
+          "name": "尤斯特",
+          "person": null,
+          "beer": "stout",
+          "budget": 12,
+          "arrival": 42,
+          "patience": 23,
+          "status": "lost",
+          "portrait": "👨🏾",
+          "quote": "一杯黑啤。论文还在返修，我先完成这一杯。"
+        },
+        {
+          "id": "d1-guest3",
+          "name": "伊萨",
+          "person": null,
+          "beer": "blond",
+          "budget": 8,
+          "arrival": 65,
+          "patience": 24,
+          "status": "lost",
+          "portrait": "👨🏾",
+          "quote": "一杯金色艾尔。老板说公司是家，所以加班费算亲情。"
+        },
+        {
+          "id": "d1-guest4",
+          "name": "Bram",
+          "person": "bram",
+          "beer": "blond",
+          "budget": 9,
+          "arrival": 85,
+          "patience": 24,
+          "status": "lost",
+          "portrait": "🧔🏼",
+          "quote": "来帮个午市，工钱当天结。理想我也有，不拿它抵工资。"
+        },
+        {
+          "id": "d1-guest5",
+          "name": "苏菲",
+          "person": null,
+          "beer": "stout",
+          "budget": 12,
+          "arrival": 104,
+          "patience": 23,
+          "status": "lost",
+          "portrait": "🧑🏼",
+          "quote": "一杯黑啤。论文还在返修，我先完成这一杯。"
+        },
+        {
+          "id": "d1-guest6",
+          "name": "Lotte",
+          "person": "lotte",
+          "beer": "stout",
+          "budget": 15,
+          "arrival": 127,
+          "patience": 26,
+          "status": "lost",
+          "portrait": "👩🏻‍🎤",
+          "quote": "留杯黑啤给我。我带吉他来，房东的独奏已经够多了。"
+        },
+        {
+          "id": "d1-guest7",
+          "name": "诺拉",
+          "person": null,
+          "beer": "blond",
+          "budget": 13,
+          "arrival": 147,
+          "patience": 25,
+          "status": "lost",
+          "portrait": "👩🏽",
+          "quote": "一杯金色艾尔。老板说公司是家，所以加班费算亲情。"
+        }
+      ],
+      "pours": [],
+      "earned": 0,
+      "served": 0,
+      "satisfied": 0,
+      "lost": 8,
+      "promiseKept": false,
+      "promiseBroken": false,
+      "event": null,
+      "rentAdjustment": 0
+    },
+    "reports": [
+      {
+        "day": 1,
+        "earned": 0,
+        "served": 0,
+        "satisfied": 0,
+        "lost": 8,
+        "rent": 18,
+        "cash": 27,
+        "promiseKept": false,
+        "promiseBroken": false,
+        "note": "椅子比客人待得久。会计说这是沉淀，你决定先把杯子洗了。"
+      }
+    ],
+    "lastMessage": "城市背面的门开着。去夜店找冷藏箱，或者沿着陌生的灯走。",
+    "result": null,
+    "prepared": [
+      "explore"
+    ],
+    "backstage": {
+      "run": {
+        "version": 2,
+        "seed": 42,
+        "day": 1,
+        "kit": "hook",
+        "time": 0.5000000000000001,
+        "duration": 180,
+        "status": "active",
+        "p": {
+          "x": 299.2752929436503,
+          "y": 1089.6395783394792,
+          "fx": 0.8709784677429295,
+          "fy": -0.4913211869319077,
+          "hp": 3,
+          "inv": 0,
+          "dash": 0,
+          "hook": 0,
+          "foam": 0
+        },
+        "items": [
+          {
+            "id": "item0",
+            "kind": "bottle",
+            "x": 320,
+            "y": 1130,
+            "vx": 0,
+            "vy": 0,
+            "state": "world",
+            "lock": 0
+          },
+          {
+            "id": "item1",
+            "kind": "hops",
+            "x": 405,
+            "y": 1030,
+            "vx": 0,
+            "vy": 0,
+            "state": "world",
+            "lock": 0
+          },
+          {
+            "id": "item2",
+            "kind": "barrel",
+            "x": 451.8640207790304,
+            "y": 1120,
+            "vx": 63.728041558060795,
+            "vy": 0,
+            "state": "world",
+            "lock": 0
+          },
+          {
+            "id": "item3",
+            "kind": "salvage",
+            "x": 660,
+            "y": 1180,
+            "vx": 0,
+            "vy": 0,
+            "state": "world",
+            "lock": 0
+          },
+          {
+            "id": "item4",
+            "kind": "bottle",
+            "x": 610,
+            "y": 540,
+            "vx": 0,
+            "vy": 0,
+            "state": "world",
+            "lock": 0
+          },
+          {
+            "id": "item5",
+            "kind": "hops",
+            "x": 430,
+            "y": 370,
+            "vx": 0,
+            "vy": 0,
+            "state": "world",
+            "lock": 0
+          },
+          {
+            "id": "item6",
+            "kind": "parcel",
+            "x": 1230,
+            "y": 1050,
+            "vx": 0,
+            "vy": 0,
+            "state": "world",
+            "lock": 0
+          },
+          {
+            "id": "item7",
+            "kind": "bottle",
+            "x": 1300,
+            "y": 875,
+            "vx": 0,
+            "vy": 0,
+            "state": "world",
+            "lock": 0
+          },
+          {
+            "id": "item8",
+            "kind": "salvage",
+            "x": 1430,
+            "y": 1130,
+            "vx": 0,
+            "vy": 0,
+            "state": "world",
+            "lock": 0
+          },
+          {
+            "id": "item9",
+            "kind": "barrel",
+            "x": 1754.000000000001,
+            "y": 1020,
+            "vx": -72,
+            "vy": 0,
+            "state": "world",
+            "lock": 0
+          },
+          {
+            "id": "item10",
+            "kind": "salvage",
+            "x": 2000,
+            "y": 1020,
+            "vx": 0,
+            "vy": 0,
+            "state": "world",
+            "lock": 0
+          },
+          {
+            "id": "item11",
+            "kind": "hops",
+            "x": 1960,
+            "y": 480,
+            "vx": 0,
+            "vy": 0,
+            "state": "world",
+            "lock": 0
+          },
+          {
+            "id": "item12",
+            "kind": "bottle",
+            "x": 1840,
+            "y": 440,
+            "vx": 0,
+            "vy": 0,
+            "state": "world",
+            "lock": 0
+          },
+          {
+            "id": "item13",
+            "kind": "bottle",
+            "x": 899.5026522129774,
+            "y": 280,
+            "vx": 0,
+            "vy": 0,
+            "state": "world",
+            "lock": 0
+          },
+          {
+            "id": "item14",
+            "kind": "salvage",
+            "x": 868.6995643214323,
+            "y": 510,
+            "vx": 0,
+            "vy": 0,
+            "state": "world",
+            "lock": 0
+          },
+          {
+            "id": "item15",
+            "kind": "bottle",
+            "x": 908.8268901361153,
+            "y": 740,
+            "vx": 0,
+            "vy": 0,
+            "state": "world",
+            "lock": 0
+          },
+          {
+            "id": "item16",
+            "kind": "salvage",
+            "x": 895.8285753405653,
+            "y": 970,
+            "vx": 0,
+            "vy": 0,
+            "state": "world",
+            "lock": 0
+          }
+        ],
+        "actors": [
+          {
+            "id": "cleaner1",
+            "type": "cleaner",
+            "x": 744.0000000000009,
+            "y": 1090,
+            "homeX": 720,
+            "homeY": 1090,
+            "dir": 1,
+            "mode": "patrol",
+            "timer": 0,
+            "vx": 0,
+            "vy": 0,
+            "stun": 0
+          },
+          {
+            "id": "guard",
+            "type": "guard",
+            "x": 1330,
+            "y": 1020.9999999999991,
+            "homeX": 1330,
+            "homeY": 1000,
+            "dir": 1,
+            "mode": "patrol",
+            "timer": 0,
+            "vx": 0,
+            "vy": 0,
+            "stun": 0
+          },
+          {
+            "id": "cleaner2",
+            "type": "cleaner",
+            "x": 1864.000000000001,
+            "y": 840,
+            "homeX": 1840,
+            "homeY": 840,
+            "dir": 1,
+            "mode": "patrol",
+            "timer": 0,
+            "vx": 0,
+            "vy": 0,
+            "stun": 0
+          },
+          {
+            "id": "gull",
+            "type": "gull",
+            "x": 755.9774157217249,
+            "y": 526.9686356423689,
+            "homeX": 730,
+            "homeY": 480,
+            "dir": -1,
+            "mode": "patrol",
+            "timer": 0,
+            "vx": 0,
+            "vy": 0,
+            "stun": 0
+          },
+          {
+            "id": "dancer0",
+            "type": "dancer",
+            "x": 1156.7811850634614,
+            "y": 931.7013111962492,
+            "homeX": 1130,
+            "homeY": 905,
+            "dir": -1,
+            "mode": "patrol",
+            "timer": 0,
+            "vx": 0,
+            "vy": 0,
+            "stun": 0
+          },
+          {
+            "id": "dancer1",
+            "type": "dancer",
+            "x": 1226.7811850634614,
+            "y": 932.4943802680785,
+            "homeX": 1200,
+            "homeY": 905,
+            "dir": 1,
+            "mode": "patrol",
+            "timer": 0,
+            "vx": 0,
+            "vy": 0,
+            "stun": 0
+          },
+          {
+            "id": "dancer2",
+            "type": "dancer",
+            "x": 1296.7811850634614,
+            "y": 913.1241268052131,
+            "homeX": 1270,
+            "homeY": 905,
+            "dir": -1,
+            "mode": "patrol",
+            "timer": 0,
+            "vx": 0,
+            "vy": 0,
+            "stun": 0
+          },
+          {
+            "id": "dancer3",
+            "type": "dancer",
+            "x": 1095.9195882629047,
+            "y": 1111.7013111962492,
+            "homeX": 1130,
+            "homeY": 1085,
+            "dir": -1,
+            "mode": "patrol",
+            "timer": 0,
+            "vx": 0,
+            "vy": 0,
+            "stun": 0
+          },
+          {
+            "id": "dancer4",
+            "type": "dancer",
+            "x": 1165.9195882629047,
+            "y": 1112.4943802680787,
+            "homeX": 1200,
+            "homeY": 1085,
+            "dir": -1,
+            "mode": "patrol",
+            "timer": 0,
+            "vx": 0,
+            "vy": 0,
+            "stun": 0
+          }
+        ],
+        "street": {
+          "situation": "delivery",
+          "baits": 3,
+          "lureCooldown": 0,
+          "noise": null,
+          "barrels": [
+            {
+              "id": "street-market",
+              "x": 500,
+              "y": 1160
+            },
+            {
+              "id": "street-club",
+              "x": 1230,
+              "y": 1100
+            }
+          ],
+          "dragging": null
+        },
+        "bag": [],
+        "discovered": [],
+        "opened": false,
+        "parcel": "ground",
+        "patches": [],
+        "fx": [],
+        "sequence": 0,
+        "log": [],
+        "message": "去东边的夜店找冷藏箱。也可以先逛逛，回店口一直在身后。",
+        "hits": 0,
+        "auto": {
+          "enabled": true,
+          "goal": "market",
+          "event": null,
+          "visited": [],
+          "history": [
+            "先去超市捡点货"
+          ],
+          "speed": 1,
+          "approach": "foam",
+          "legTime": 0.5000000000000001
+        }
+      },
+      "discovered": [],
+      "resolution": null,
+      "trips": 0,
+      "from": "summary",
+      "cashAfterClose": 0
+    },
+    "life": {
+      "arrangement": null,
+      "bouquet": null,
+      "flowersDay": 0,
+      "display": null,
+      "gifts": 0,
+      "morning": []
+    }
+  },
+  "expectedRun": {
+    "version": 2,
+    "seed": 42,
+    "day": 1,
+    "kit": "hook",
+    "time": 1.0250000000000004,
+    "duration": 180,
+    "status": "active",
+    "p": {
+      "x": 392.77330724353556,
+      "y": 1036.897108734416,
+      "fx": 0.8709784677429284,
+      "fy": -0.4913211869319094,
+      "hp": 3,
+      "inv": 0,
+      "dash": 0,
+      "hook": 0,
+      "foam": 0
+    },
+    "items": [
+      {
+        "id": "item0",
+        "kind": "bottle",
+        "x": 320,
+        "y": 1130,
+        "vx": 0,
+        "vy": 0,
+        "state": "world",
+        "lock": 0
+      },
+      {
+        "id": "item1",
+        "kind": "hops",
+        "x": 405,
+        "y": 1030,
+        "vx": 0,
+        "vy": 0,
+        "state": "bag",
+        "lock": 0
+      },
+      {
+        "id": "item2",
+        "kind": "barrel",
+        "x": 485.3212425970123,
+        "y": 1120,
+        "vx": 63.728041558060795,
+        "vy": 0,
+        "state": "world",
+        "lock": 0
+      },
+      {
+        "id": "item3",
+        "kind": "salvage",
+        "x": 660,
+        "y": 1180,
+        "vx": 0,
+        "vy": 0,
+        "state": "world",
+        "lock": 0
+      },
+      {
+        "id": "item4",
+        "kind": "bottle",
+        "x": 610,
+        "y": 540,
+        "vx": 0,
+        "vy": 0,
+        "state": "world",
+        "lock": 0
+      },
+      {
+        "id": "item5",
+        "kind": "hops",
+        "x": 430,
+        "y": 370,
+        "vx": 0,
+        "vy": 0,
+        "state": "world",
+        "lock": 0
+      },
+      {
+        "id": "item6",
+        "kind": "parcel",
+        "x": 1230,
+        "y": 1050,
+        "vx": 0,
+        "vy": 0,
+        "state": "world",
+        "lock": 0
+      },
+      {
+        "id": "item7",
+        "kind": "bottle",
+        "x": 1300,
+        "y": 875,
+        "vx": 0,
+        "vy": 0,
+        "state": "world",
+        "lock": 0
+      },
+      {
+        "id": "item8",
+        "kind": "salvage",
+        "x": 1430,
+        "y": 1130,
+        "vx": 0,
+        "vy": 0,
+        "state": "world",
+        "lock": 0
+      },
+      {
+        "id": "item9",
+        "kind": "barrel",
+        "x": 1716.2000000000019,
+        "y": 1020,
+        "vx": -72,
+        "vy": 0,
+        "state": "world",
+        "lock": 0
+      },
+      {
+        "id": "item10",
+        "kind": "salvage",
+        "x": 2000,
+        "y": 1020,
+        "vx": 0,
+        "vy": 0,
+        "state": "world",
+        "lock": 0
+      },
+      {
+        "id": "item11",
+        "kind": "hops",
+        "x": 1960,
+        "y": 480,
+        "vx": 0,
+        "vy": 0,
+        "state": "world",
+        "lock": 0
+      },
+      {
+        "id": "item12",
+        "kind": "bottle",
+        "x": 1840,
+        "y": 440,
+        "vx": 0,
+        "vy": 0,
+        "state": "world",
+        "lock": 0
+      },
+      {
+        "id": "item13",
+        "kind": "bottle",
+        "x": 899.5026522129774,
+        "y": 280,
+        "vx": 0,
+        "vy": 0,
+        "state": "world",
+        "lock": 0
+      },
+      {
+        "id": "item14",
+        "kind": "salvage",
+        "x": 868.6995643214323,
+        "y": 510,
+        "vx": 0,
+        "vy": 0,
+        "state": "world",
+        "lock": 0
+      },
+      {
+        "id": "item15",
+        "kind": "bottle",
+        "x": 908.8268901361153,
+        "y": 740,
+        "vx": 0,
+        "vy": 0,
+        "state": "world",
+        "lock": 0
+      },
+      {
+        "id": "item16",
+        "kind": "salvage",
+        "x": 895.8285753405653,
+        "y": 970,
+        "vx": 0,
+        "vy": 0,
+        "state": "world",
+        "lock": 0
+      }
+    ],
+    "actors": [
+      {
+        "id": "cleaner1",
+        "type": "cleaner",
+        "x": 769.2000000000019,
+        "y": 1090,
+        "homeX": 720,
+        "homeY": 1090,
+        "dir": 1,
+        "mode": "patrol",
+        "timer": 0,
+        "vx": 0,
+        "vy": 0,
+        "stun": 0
+      },
+      {
+        "id": "guard",
+        "type": "guard",
+        "x": 1330,
+        "y": 1043.0499999999981,
+        "homeX": 1330,
+        "homeY": 1000,
+        "dir": 1,
+        "mode": "patrol",
+        "timer": 0,
+        "vx": 0,
+        "vy": 0,
+        "stun": 0
+      },
+      {
+        "id": "cleaner2",
+        "type": "cleaner",
+        "x": 1889.2000000000019,
+        "y": 840,
+        "homeX": 1840,
+        "homeY": 840,
+        "dir": 1,
+        "mode": "patrol",
+        "timer": 0,
+        "vx": 0,
+        "vy": 0,
+        "stun": 0
+      },
+      {
+        "id": "gull",
+        "type": "gull",
+        "x": 781.4875459342456,
+        "y": 517.6725919855999,
+        "homeX": 730,
+        "homeY": 480,
+        "dir": -1,
+        "mode": "patrol",
+        "timer": 0,
+        "vx": 0,
+        "vy": 0,
+        "stun": 0
+      },
+      {
+        "id": "dancer0",
+        "type": "dancer",
+        "x": 1164.994954181041,
+        "y": 934.9600012540313,
+        "homeX": 1130,
+        "homeY": 905,
+        "dir": -1,
+        "mode": "patrol",
+        "timer": 0,
+        "vx": 0,
+        "vy": 0,
+        "stun": 0
+      },
+      {
+        "id": "dancer1",
+        "type": "dancer",
+        "x": 1234.994954181041,
+        "y": 922.7757563068158,
+        "homeX": 1200,
+        "homeY": 905,
+        "dir": 1,
+        "mode": "patrol",
+        "timer": 0,
+        "vx": 0,
+        "vy": 0,
+        "stun": 0
+      },
+      {
+        "id": "dancer2",
+        "type": "dancer",
+        "x": 1304.994954181041,
+        "y": 897.5554543829463,
+        "homeX": 1270,
+        "homeY": 905,
+        "dir": -1,
+        "mode": "patrol",
+        "timer": 0,
+        "vx": 0,
+        "vy": 0,
+        "stun": 0
+      },
+      {
+        "id": "dancer3",
+        "type": "dancer",
+        "x": 1108.5807994531147,
+        "y": 1114.9600012540313,
+        "homeX": 1130,
+        "homeY": 1085,
+        "dir": -1,
+        "mode": "patrol",
+        "timer": 0,
+        "vx": 0,
+        "vy": 0,
+        "stun": 0
+      },
+      {
+        "id": "dancer4",
+        "type": "dancer",
+        "x": 1178.5807994531147,
+        "y": 1102.7757563068158,
+        "homeX": 1200,
+        "homeY": 1085,
+        "dir": -1,
+        "mode": "patrol",
+        "timer": 0,
+        "vx": 0,
+        "vy": 0,
+        "stun": 0
+      }
+    ],
+    "street": {
+      "situation": "delivery",
+      "baits": 3,
+      "lureCooldown": 0,
+      "noise": null,
+      "barrels": [
+        {
+          "id": "street-market",
+          "x": 500,
+          "y": 1160
+        },
+        {
+          "id": "street-club",
+          "x": 1230,
+          "y": 1100
+        }
+      ],
+      "dragging": null
+    },
+    "bag": [
+      "item1"
+    ],
+    "discovered": [],
+    "opened": false,
+    "parcel": "ground",
+    "patches": [],
+    "fx": [],
+    "sequence": 1,
+    "log": [
+      "收好密封酒花。"
+    ],
+    "message": "收好密封酒花。",
+    "hits": 0,
+    "auto": {
+      "enabled": true,
+      "goal": null,
+      "event": "market",
+      "visited": [
+        "market"
+      ],
+      "history": [
+        "先去超市捡点货"
+      ],
+      "speed": 1,
+      "approach": "foam",
+      "legTime": 0
+    }
+  }
+}

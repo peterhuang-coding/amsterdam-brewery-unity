@@ -209,13 +209,11 @@
     let appendTarget = false;
 
     if (walkable(to.x, to.y)) {
-      let bestSteps = Infinity;
+      // FIFO BFS order already ranks nodes by path length and preserves ties.
       for (const node of found.nodes) {
-        if (!safeSegment(node, to)) continue;
-        const steps = pathLength(found.previous, node);
-        if (steps < bestSteps) {
+        if (safeSegment(node, to)) {
           end = node;
-          bestSteps = steps;
+          break;
         }
       }
       appendTarget = true;
@@ -237,15 +235,6 @@
     return path;
   }
 
-  function pathLength(previous, end) {
-    let length = 0;
-    let current = end;
-    while (previous[key(current.x, current.y)] !== null) {
-      length++;
-      current = previous[key(current.x, current.y)];
-    }
-    return length;
-  }
 
   function seconds(value) {
     return typeof value === 'number' && Number.isFinite(value) ? Math.max(0, Math.min(0.1, value)) : 0;

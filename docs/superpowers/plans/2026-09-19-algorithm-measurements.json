@@ -1,0 +1,310 @@
+{
+  "city": {
+    "workloadVersion": 1,
+    "baseline": "78b13c06a5df7914fbbb4eb404bec6489b7376cb",
+    "node": "v22.22.1",
+    "platform": "darwin",
+    "arch": "arm64",
+    "cpu": "Apple M4 Pro",
+    "warmup": 2,
+    "samples": 7,
+    "method": "interleaved before/after, alternating order, no profiler",
+    "rows": [
+      {
+        "from": "pub",
+        "to": "lab",
+        "before": {
+          "samples": [
+            110.117167,
+            108.32233300000007,
+            110.66491700000006,
+            111.63225000000011,
+            113.41654199999994,
+            130.7455,
+            116.21858300000008
+          ],
+          "median": 111.63225000000011,
+          "p95": 130.7455
+        },
+        "after": {
+          "samples": [
+            91.02674999999999,
+            88.86862499999995,
+            96.63337499999989,
+            97.16379200000006,
+            91.85329199999978,
+            92.51987500000018,
+            91.27704200000016
+          ],
+          "median": 91.85329199999978,
+          "p95": 97.16379200000006
+        },
+        "identicalPaths": true
+      },
+      {
+        "from": "pub",
+        "to": "noord",
+        "before": {
+          "samples": [
+            125.86104100000011,
+            119.01312499999995,
+            123.16879100000006,
+            122.93262500000037,
+            121.37904200000003,
+            118.65995900000007,
+            118.18549999999959
+          ],
+          "median": 121.37904200000003,
+          "p95": 125.86104100000011
+        },
+        "after": {
+          "samples": [
+            66.12699999999995,
+            66.19250000000011,
+            79.77941699999974,
+            74.177459,
+            64.63004200000023,
+            65.70520800000031,
+            65.89100000000008
+          ],
+          "median": 66.12699999999995,
+          "p95": 79.77941699999974
+        },
+        "identicalPaths": true
+      },
+      {
+        "from": "coffee",
+        "to": "flowers",
+        "before": {
+          "samples": [
+            101.27649999999994,
+            101.53520799999933,
+            102.04962500000056,
+            103.35041600000022,
+            103.06229199999962,
+            103.69300000000021,
+            104.66099999999915
+          ],
+          "median": 103.06229199999962,
+          "p95": 104.66099999999915
+        },
+        "after": {
+          "samples": [
+            60.818709000000126,
+            61.257791,
+            60.82745800000066,
+            62.01308399999925,
+            63.265832999999475,
+            61.50287499999922,
+            60.35541699999976
+          ],
+          "median": 61.257791,
+          "p95": 63.265832999999475
+        },
+        "identicalPaths": true
+      },
+      {
+        "from": "noord",
+        "to": "market",
+        "before": {
+          "samples": [
+            90.56574999999975,
+            92.3358330000001,
+            91.52066699999978,
+            91.2672079999993,
+            91.76566600000024,
+            91.64687500000036,
+            90.97716700000001
+          ],
+          "median": 91.52066699999978,
+          "p95": 92.3358330000001
+        },
+        "after": {
+          "samples": [
+            64.79991700000028,
+            66.22470800000065,
+            64.3105830000004,
+            65.06924999999956,
+            64.43920899999921,
+            63.92000000000007,
+            64.78958299999977
+          ],
+          "median": 64.78958299999977,
+          "p95": 66.22470800000065
+        },
+        "identicalPaths": true
+      }
+    ]
+  },
+  "nightReplay": {
+    "ok": true,
+    "workloadVersion": 1,
+    "platform": {
+      "platform": "darwin",
+      "arch": "arm64",
+      "node": "v22.22.1"
+    },
+    "warmup": 2,
+    "samples": 7,
+    "correctness": [
+      {
+        "name": "exit",
+        "ok": true,
+        "status": "extracted",
+        "checksum": "193283da",
+        "checksum2": "193283da",
+        "event": null,
+        "time": 0,
+        "failure": null
+      },
+      {
+        "name": "sorting-stop-exit",
+        "ok": true,
+        "status": "extracted",
+        "checksum": "25c5931f",
+        "checksum2": "25c5931f",
+        "event": null,
+        "time": 15.25000000000015,
+        "failure": null
+      },
+      {
+        "name": "sorting-take-exit",
+        "ok": true,
+        "status": "extracted",
+        "checksum": "96c2701c",
+        "checksum2": "96c2701c",
+        "event": null,
+        "time": 18.675000000000008,
+        "failure": null
+      },
+      {
+        "name": "garden-valve-harvest",
+        "ok": true,
+        "status": "extracted",
+        "checksum": "949a6d82",
+        "checksum2": "949a6d82",
+        "event": null,
+        "time": 12.675000000000113,
+        "failure": null
+      },
+      {
+        "name": "market",
+        "ok": true,
+        "status": "extracted",
+        "checksum": "1613afbb",
+        "checksum2": "1613afbb",
+        "event": null,
+        "time": 1.7749999999999977,
+        "failure": null
+      },
+      {
+        "name": "noor",
+        "ok": true,
+        "status": "extracted",
+        "checksum": "d8d8247b",
+        "checksum2": "d8d8247b",
+        "event": null,
+        "time": 11.12500000000009,
+        "failure": null
+      }
+    ],
+    "performance": [
+      {
+        "name": "exit",
+        "samples": [
+          0.092,
+          0.092,
+          0.092,
+          0.095,
+          0.096,
+          0.098,
+          0.117
+        ],
+        "median": 0.095,
+        "p95": 0.117,
+        "checksum": "193283da",
+        "checksumConsistent": true
+      },
+      {
+        "name": "sorting-stop-exit",
+        "samples": [
+          40.944,
+          41.051,
+          41.279,
+          41.352,
+          41.553,
+          42.465,
+          52.586
+        ],
+        "median": 41.352,
+        "p95": 52.586,
+        "checksum": "25c5931f",
+        "checksumConsistent": true
+      },
+      {
+        "name": "sorting-take-exit",
+        "samples": [
+          61.073,
+          62.148,
+          62.306,
+          62.718,
+          65.723,
+          65.948,
+          67.367
+        ],
+        "median": 62.718,
+        "p95": 67.367,
+        "checksum": "96c2701c",
+        "checksumConsistent": true
+      },
+      {
+        "name": "garden-valve-harvest",
+        "samples": [
+          30.058,
+          30.193,
+          30.215,
+          30.329,
+          30.957,
+          31.201,
+          31.371
+        ],
+        "median": 30.329,
+        "p95": 31.371,
+        "checksum": "949a6d82",
+        "checksumConsistent": true
+      },
+      {
+        "name": "market",
+        "samples": [
+          2.4,
+          2.514,
+          2.542,
+          2.543,
+          2.64,
+          2.689,
+          2.872
+        ],
+        "median": 2.543,
+        "p95": 2.872,
+        "checksum": "1613afbb",
+        "checksumConsistent": true
+      },
+      {
+        "name": "noor",
+        "samples": [
+          26.126,
+          26.156,
+          26.21,
+          26.66,
+          26.727,
+          26.854,
+          27.333
+        ],
+        "median": 26.66,
+        "p95": 27.333,
+        "checksum": "d8d8247b",
+        "checksumConsistent": true
+      }
+    ]
+  }
+}

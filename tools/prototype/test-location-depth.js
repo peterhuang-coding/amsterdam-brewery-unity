@@ -6,9 +6,9 @@ function walk(r,to){for(let n=0;n<3000&&Math.hypot(to.x-r.p.x,to.y-r.p.y)>5;n++)
 function next(r){for(let n=0;n<4000&&r.status==='active'&&!r.auto.event;n++){A.step(r,.05);assert.ok(!B.solid(r,r.p.x,r.p.y));}assert.notEqual(r.auto.event,'stuck');assert.ok(r.auto.event||r.status!=='active');}
 function choose(r,id){assert.ok(A.choose(r,id),'available '+id);next(r);if(r.auto.event==='glimpse'){assert.ok(A.choose(r,'continue'));next(r);}}
 
-test('v3 has three real market spaces, world loot, and a context snapshot',()=>{
+test('v4 retains three real market spaces, world loot, and a context snapshot',()=>{
   const context={clues:['market','club']},r=B.create(42,1,'hook',[],context);
-  assert.equal(r.version,3);assert.equal(typeof B.locationInfo,'function');
+  assert.equal(r.version,4);assert.equal(typeof B.locationInfo,'function');
   const info=B.locationInfo(r);assert.ok(info.enabled);assert.equal(info.rooms.length,3);
   assert.ok(info.market.clued&&info.club.clued);context.clues.length=0;assert.ok(B.locationInfo(r).market.clued);
   for(const room of info.rooms){assert.ok(room.label);assert.ok(r.items.some(i=>i.state==='world'&&i.x>room.x&&i.x<room.x+room.w&&i.y>room.y&&i.y<room.y+room.h));}

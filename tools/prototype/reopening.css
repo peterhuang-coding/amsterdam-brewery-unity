@@ -40,3 +40,8 @@
 
 /* Daylight discoveries stay next to the place where the player finds them. */
 .scout-note{margin:20px 0;padding:15px;border:1px dashed #849384;background:#dce3ce70}.scout-note h3{font:18px/1.5 var(--serif);margin:7px 0}.scout-note p{font-size:12px;line-height:1.8;margin:8px 0 14px}.scout-note button{width:100%;min-height:44px}.scout-note button:disabled{opacity:.7}
+
+.city-notebook .trip-log{padding-left:18px;margin:10px 0}
+.city-notebook .trip-log li{margin:7px 0;font-size:14px;line-height:1.55}
+.city-notebook .trip-log span{color:#665d4a}
+@media(max-width:390px){.city-notebook{padding:12px;font-size:14px}.city-notebook .trip-log li{font-size:14px}}

@@ -69,8 +69,14 @@
   ]);
   const MARKET_DOOR=Object.freeze({id:'market-shortcut',x:760,y:1060,w:12,h:90});
   const MARKET_POINTS=Object.freeze({entry:{x:405,y:1085},stock:{x:405,y:990},cold:{x:740,y:850},shortcut:{x:735,y:1105}});
-  const OUTCOMES=['market-salvaged','market-shortcut','club-backstage'];
-  const locations=r=>r.version===3&&Boolean(r.location);
+  const OUTCOMES=['market-salvaged','market-shortcut','club-backstage','sorting-stopped','sorting-reversed','greenhouse-valve','greenhouse-repaired'];
+  const BELT=Object.freeze({x:1690,y:990,w:280,h:80}),SWITCH=Object.freeze({x:1600,y:890});
+  const WATER=Object.freeze({x:1840,y:440,w:200,h:75}),VALVE=Object.freeze({x:1680,y:470});
+  const locations=r=>r.version>=3&&Boolean(r.location);
+  const districts=r=>r.version>=4&&Boolean(r.district);
+  const inside=(o,rect)=>o.x>=rect.x&&o.x<=rect.x+rect.w&&o.y>=rect.y&&o.y<=rect.y+rect.h;
+  const beltSpeed=r=>r.district.belt==='east'?60:r.district.belt==='west'?-60:0;
+  const wetGround=r=>districts(r)&&r.time%10<6&&r.district.irrigation===0&&!r.district.repaired;
   const musicLoud=r=>locations(r)&&r.time%12>=6;
   const inClub=o=>o.x>=960&&o.x<=1515&&o.y>=790&&o.y<=1280;
   function outcome(r,id){if(locations(r)&&!r.location.outcomes.includes(id))r.location.outcomes.push(id);}
@@ -83,6 +89,10 @@
       club:{label:'NO SIGNAL 夜店',clued:r.location.clues.includes('club'),phase:loud?'loud':'quiet',loud,remaining:(loud?12:6)-phase,cycle:12,loudDuration:6,guardRange:loud?60:r.parcel==='carried'?290:95,hearingRange:loud?120:380,crowdLabel:loud?'人群向舞池聚拢':'散场客向走道散开'}};
   }
   function streetInfo(r){return STREETS[r.street?.situation]||STREETS.legacy;}
+  function districtInfo(r){
+    if(!districts(r))return {enabled:false};
+    return {enabled:true,belt:{...BELT,direction:r.district.belt,speed:beltSpeed(r)},switch:{...SWITCH},water:{...WATER,wet:wetGround(r)},valve:{...VALVE},repaired:r.district.repaired,irrigation:r.district.irrigation};
+  }
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
   const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
   const finite=(n,a,b)=>typeof n==='number'&&Number.isFinite(n)&&n>=a&&n<=b;
@@ -94,16 +104,16 @@
     add('bottle',320,1130);add('hops',405,1030);add('barrel',420,1120,55+random()*35,0);
     add('salvage',660,1180);add('bottle',610,540);add('hops',430,370);
     add('parcel',1230,1050);add('bottle',1300,875);add('salvage',1430,1130);
-    add('barrel',1790,1020,random()>.5?72:-72,0);add('salvage',2000,1020);
+    add('barrel',1790,1020,random()>.5?72:-72,0);add('salvage',1920,1020);
     add('hops',1960,480);add('bottle',1840,440);
     for(let i=0;i<4;i++)add(i%2?'salvage':'bottle',850+random()*70,280+i*230);
     const actor=(id,type,x,y)=>({id,type,x,y,homeX:x,homeY:y,dir:random()>.5?1:-1,mode:'patrol',timer:0,vx:0,vy:0,stun:0});
     const situation=['delivery','works','closing'][((seed>>>0)+day-1)%3];
-    const r={version:3,location:{clues:[...new Set((context.clues||[]).filter(x=>['market','club'].includes(x)))],marketOpen:discoveries.includes('market-shortcut'),outcomes:[]},seed:seed>>>0,day,kit:Object.hasOwn(KITS,kit)?kit:'hook',time:0,duration:180,status:'active',
+    const r={version:4,location:{clues:[...new Set((context.clues||[]).filter(x=>['market','club','greenhouse'].includes(x)))],marketOpen:discoveries.includes('market-shortcut'),outcomes:[]},district:{belt:'east',irrigation:0,repaired:discoveries.includes('greenhouse-pump'),visited:[]},seed:seed>>>0,day,kit:Object.hasOwn(KITS,kit)?kit:'hook',time:0,duration:180,status:'active',
       p:{x:EXIT.x,y:EXIT.y,fx:1,fy:0,hp:3,inv:0,dash:0,hook:0,foam:0},items,
       actors:[actor('cleaner1','cleaner',680,1090),actor('guard','guard',1330,1000),actor('cleaner2','cleaner',1840,840),actor('gull','gull',730,480),...Array.from({length:5},(_,i)=>actor('dancer'+i,'dancer',1130+(i%3)*70,905+Math.floor(i/3)*180))],
       street:{situation,baits:3,lureCooldown:0,noise:null,barrels:[{id:'street-market',x:500,y:1160},{id:'street-club',x:1230,y:1100}],dragging:null},
-      bag:[],discovered:discoveries.filter(x=>['greenhouse','noor','market-shortcut'].includes(x)),opened:discoveries.includes('greenhouse'),parcel:'ground',patches:[],fx:[],sequence:0,log:[],message:'去东边的夜店找冷藏箱。也可以先逛逛，回店口一直在身后。',hits:0};
+      bag:[],discovered:[...new Set(discoveries.filter(x=>['greenhouse','noor','market-shortcut','greenhouse-pump'].includes(x)))],opened:discoveries.includes('greenhouse'),parcel:'ground',patches:[],fx:[],sequence:0,log:[],message:'去东边的夜店找冷藏箱。也可以先逛逛，回店口一直在身后。',hits:0};
     if(situation==='delivery')Object.assign(r.actors[0],{x:720,homeX:720});
     Object.assign(items[0],MARKET_POINTS.stock);Object.assign(items[1],MARKET_POINTS.cold);
     r.actors.filter(a=>a.type==='dancer').forEach((a,i)=>{const x=i<3?1170+i*80:i===3?1170:1340,y=i<3?880:1080;Object.assign(a,{x,y,homeX:x,homeY:y});});
@@ -145,9 +155,17 @@
     if(r.discovered.includes('greenhouse')&&distance(r.p,GARDEN_EXIT)<72)return {id:'garden-exit',label:'温室后门通向酒馆屋顶 · E 回家'};
     if(distance(r.p,NOOR)<76)return {id:'noor',label:r.parcel==='carried'?'把冷藏箱交给 Noor · E':'和 Noor 聊聊 · E'};
     if(locations(r)&&!r.location.marketOpen&&distance(r.p,MARKET_POINTS.shortcut)<65&&clear(r,r.p,MARKET_POINTS.shortcut))return {id:'market-shortcut',label:'打开卸货卷门 · E / 记住捷径'};
+    if(districts(r)){
+      if(distance(r.p,SWITCH)<=65&&clear(r,r.p,SWITCH))return {id:'conveyor-switch',label:'切换传送带开关 · E / 钩绳反转'};
+      if(distance(r.p,VALVE)<=65&&clear(r,r.p,VALVE))return {id:'garden-valve',label:r.district.repaired?'灌溉泵已修好':'关闭喷淋 12 秒 · E / 零件修泵'};
+    }
     const parcel=r.items.find(i=>i.kind==='parcel'&&i.state==='world'&&distance(r.p,i)<60&&(!locations(r)||clear(r,r.p,i)));
     if(parcel)return {id:parcel.id,label:'拿起冷藏箱 / 3 格 · E'};
     if(!r.opened&&distance(r.p,LEVER)<75)return {id:'lever',label:'拉开维护闸门 · E'};
+    if(districts(r)){
+      const item=r.items.filter(i=>collectable(r,i)).sort((a,b)=>distance(r.p,a)-distance(r.p,b))[0];
+      if(item)return {id:item.id,label:'收好'+TYPES[item.kind].name+' · E'};
+    }
     return null;
   }
   function aimAt(r,aim){
@@ -162,6 +180,8 @@
     if(['item0','item1','item2','item3'].includes(item.id))outcome(r,'market-salvaged');
     note(r,item.kind==='parcel'?'箱里是虚构违禁品“月雾”。标签写着酵母，酵母没有这么多人关心。':'收好'+TYPES[item.kind].name+'。'+(item.kind==='barrel'?'整桶占 3 格；可以用 Q 扔下。':''));return true;
   }
+  function collectable(r,item){return districts(r)&&item&&item.kind!=='parcel'&&item.state==='world'&&item.lock===0&&distance(r.p,item)<=45&&clear(r,r.p,item);}
+  function closeValve(r){r.district.irrigation=12;outcome(r,'greenhouse-valve');note(r,'喷淋停下了。接下来 12 秒，地面不再湿滑。');}
   function finish(r,status){
     r.status=status;
     if(status!=='extracted'){
@@ -174,6 +194,16 @@
   function command(r,verb,aim){
     if(!r||r.status!=='active')return false;
     const p=r.p,dir=aimAt(r,aim);
+    if(verb==='collect'){
+      const item=r.items.find(i=>i.id===aim?.itemId);return Boolean(collectable(r,item)&&stow(r,item));
+    }
+    if(verb==='repair'){
+      if(!districts(r)||r.district.repaired||distance(p,VALVE)>65||!clear(r,p,VALVE))return false;
+      const item=r.items.find(i=>i.kind==='salvage'&&i.state==='bag'&&r.bag.includes(i.id));if(!item)return false;
+      item.state='delivered';r.bag=r.bag.filter(id=>id!==item.id);r.district.repaired=true;
+      if(!r.discovered.includes('greenhouse-pump'))r.discovered.push('greenhouse-pump');
+      outcome(r,'greenhouse-repaired');note(r,'用一个零件修好了灌溉泵。以后来温室，脚下也不会再打滑。');return true;
+    }
     if(verb==='bail'){finish(r,'bailed');return true;}
     if(verb==='dash'){
       if(r.street?.dragging){note(r,'先按 R 放下空桶，再闪避。');return false;}
@@ -196,7 +226,9 @@
       note(r,musicLoud(r)&&inClub(noise)?'重拍盖住远处的碎瓶声。120 步内仍听得见；近身仍会被盯上。':'空瓶落地。附近机器和守卫去查声源；离得太近，仍会被盯上。');return true;
     }
     if(verb==='drop'){
-      const id=r.bag.pop();if(!id){note(r,'背包还是空的。');return false;}
+      const selected=aim&&Object.hasOwn(aim,'itemId'),id=selected?aim.itemId:r.bag[r.bag.length-1];
+      if(!r.bag.includes(id)){if(!selected)note(r,'背包还是空的。');return false;}
+      r.bag.splice(r.bag.indexOf(id),1);
       const item=r.items.find(i=>i.id===id);Object.assign(item,{state:'world',x:p.x,y:p.y,vx:dir.x*420,vy:dir.y*420,lock:1.2});
       if(item.kind==='parcel')r.parcel='ground';note(r,'扔下'+TYPES[item.kind].name+'。空出 '+TYPES[item.kind].weight+' 格。');return true;
     }
@@ -205,6 +237,11 @@
       if(near.id==='exit'||near.id==='garden-exit'){finish(r,'extracted');return true;}
       if(near.id==='market-shortcut'){r.location.marketOpen=true;if(!r.discovered.includes('market-shortcut'))r.discovered.push('market-shortcut');outcome(r,'market-shortcut');note(r,'卸货卷门升起来了。记住这个出口，明晚还能从这里进。');return true;}
       if(near.id==='lever'){r.opened=true;note(r,'维护闸门开了。里面好像有人种东西。');return true;}
+      if(near.id==='conveyor-switch'){
+        r.district.belt=r.district.belt==='off'?'east':'off';if(r.district.belt==='off')outcome(r,'sorting-stopped');
+        note(r,r.district.belt==='off'?'传送带停下了。再按 E 向东运行，钩绳可以反转。':'传送带开始向东运行。');return true;
+      }
+      if(near.id==='garden-valve'){closeValve(r);return true;}
       if(near.id==='noor'){
         if(!r.discovered.includes('noor'))r.discovered.push('noor');
         if(r.parcel==='carried'){
@@ -213,18 +250,20 @@
         }else note(r,r.parcel==='returned'?'Noor：“箱子已经收好了。下次营业去你店里，给我留杯来历正常的酒。”':'Noor：“夜店那箱‘酵母’是月雾。别倒进酒里。找到了带来，东边温室的闸门也值得看看。”');
         return true;
       }
-      const item=r.items.find(i=>i.id===near.id);if(!stow(r,item)){note(r,'冷藏箱需要 3 格。按 Q 扔下背包里最后一件物品。');return false;}return true;
+      const item=r.items.find(i=>i.id===near.id);if(!stow(r,item)){note(r,'背包空位不够。按 Q 扔下最后一件物品，或在背包里选择。');return false;}return true;
     }
     if(verb==='hook'){
       if(p.hook>0)return false;p.hook=.48;
       const range=KITS[r.kit].range,point={x:p.x+dir.x*range,y:p.y+dir.y*range};
       let target=null,best=range+1;
-      const targets=[...r.items.filter(i=>i.state==='world'),...r.actors.filter(a=>a.type!=='dancer'),...(!r.opened?[{...LEVER,id:'lever'}]:[])];
+      const targets=[...r.items.filter(i=>i.state==='world'),...r.actors.filter(a=>a.type!=='dancer'),...(!r.opened?[{...LEVER,id:'lever'}]:[]),...(districts(r)?[{...SWITCH,id:'conveyor-switch'},{...VALVE,id:'garden-valve'}]:[])];
       for(const o of targets){const dx=o.x-p.x,dy=o.y-p.y,d=distance(p,o),along=dx*dir.x+dy*dir.y;
         if(along>0&&d<=range&&Math.abs(dx*dir.y-dy*dir.x)<30&&d<best&&clear(r,p,o)){target=o;best=d;}}
       if(target){
         point.x=target.x;point.y=target.y;
         if(target.id==='lever'){r.opened=true;note(r,'钩绳拉开了维护闸门。去看看玻璃后面。');}
+        else if(target.id==='conveyor-switch'){r.district.belt=r.district.belt==='west'?'east':'west';outcome(r,'sorting-reversed');note(r,'钩绳扳动了开关，传送带反转了。');}
+        else if(target.id==='garden-valve')closeValve(r);
         else if(target.type){target.stun=1.2;target.mode='patrol';move(r,target,dir.x*-45,dir.y*-45);note(r,target.type==='gull'?'鸟松开了爪子，零件掉在附近。':'钩住了它的底盘。趁现在通过。');}
         else{target.vx=-dir.x*550;target.vy=-dir.y*550;target.lock=0;}
       }
@@ -253,19 +292,22 @@
     if(!r||r.status!=='active'||!finite(seconds,0,1)||(r.auto?.enabled&&r.auto.event))return;
     let remain=Math.min(seconds,.1);
     while(remain>1e-8){const dt=Math.min(remain,.025);remain-=dt;r.time=Math.min(r.duration,r.time+dt);
+      if(districts(r))r.district.irrigation=Math.max(0,r.district.irrigation-dt);
       if(r.street){r.street.lureCooldown=Math.max(0,r.street.lureCooldown-dt);if(r.street.noise){r.street.noise.life-=dt;if(r.street.noise.life<=0)r.street.noise=null;}}
       const p=r.p;for(const key of ['inv','dash','hook','foam'])p[key]=Math.max(0,p[key]-dt);
       const dx=clamp(Number(input.dx)||0,-1,1),dy=clamp(Number(input.dy)||0,-1,1),n=Math.hypot(dx,dy);
       if(input.aim)aimAt(r,input.aim);else if(n){p.fx=dx/n;p.fy=dy/n;}
-      const slick=r.patches.some(a=>distance(p,a)<85),speed=KITS[r.kit].speed*(1-load(r)*.018)*(r.street?.dragging ? .55 : 1);
+      const wet=wetGround(r)&&inside(p,WATER),slick=wet||r.patches.some(a=>distance(p,a)<85),speed=KITS[r.kit].speed*(1-load(r)*.018)*(r.street?.dragging ? .55 : 1)*(wet?.65:1);
       if(n)walk(r,dx/n*speed*dt+(slick?25*dt:0),dy/n*speed*dt+(slick?16*dt:0));
+      if(districts(r)&&inside(p,BELT)&&!r.patches.some(a=>distance(p,a)<85))walk(r,beltSpeed(r)*dt,0);
       r.patches=r.patches.map(a=>({...a,life:a.life-dt})).filter(a=>a.life>0);
       r.fx=r.fx.map(a=>({...a,life:a.life-dt})).filter(a=>a.life>0);
       for(const item of r.items){
         if(item.state!=='world')continue;item.lock=Math.max(0,item.lock-dt);
         if(move(r,item,item.vx*dt,item.vy*dt,8)){item.vx*=-.65;item.vy*=-.65;}
+        if(districts(r)&&inside(item,BELT)&&!r.patches.some(a=>distance(item,a)<85))move(r,item,beltSpeed(r)*dt,0,8);
         if(item.kind!=='barrel'||Math.hypot(item.vx,item.vy)>105){item.vx*=Math.exp(-3.5*dt);item.vy*=Math.exp(-3.5*dt);}
-        if(item.kind!=='parcel'&&item.lock===0&&distance(p,item)<31)stow(r,item);
+        if(item.kind!=='parcel'&&item.lock===0&&distance(p,item)<31&&(!districts(r)||clear(r,p,item)))stow(r,item);
       }
       for(const a of r.actors){
         if(a.stun>0){a.stun=Math.max(0,a.stun-dt);continue;}
@@ -295,6 +337,7 @@
         else{const direction=a.type==='guard'?0:a.dir;if(move(r,a,direction*48*dt,a.type==='guard'?a.dir*42*dt:0,16)||Math.abs(a.x-a.homeX)>130||Math.abs(a.y-a.homeY)>105)a.dir*=-1;}
       }
       if(r.street?.dragging){const barrel=dragTarget(r);if(distance(p,barrel)>65||!clear(r,p,barrel,barrel.id))r.street.dragging=null;}
+      if(districts(r)){const id=zone(r).id;if(id!=='street'&&!r.district.visited.includes(id))r.district.visited.push(id);}
       if(p.x>1645&&p.x<2080&&p.y>205&&p.y<530&&!r.discovered.includes('greenhouse')){
         r.discovered.push('greenhouse');note(r,'发现温室捷径。明天这里仍然开着；有人把整座城市的噪声留在玻璃外。');
       }
@@ -304,31 +347,39 @@
   }
   function rewards(r){
     if(!r||r.status==='active')return null;
-    const result={cups:0,hops:0,cash:r.parcel==='returned'?14:0,parcel:r.parcel==='carried'?'kept':r.parcel,discovered:[...r.discovered],status:r.status,outcomes:locations(r)?[...r.location.outcomes]:[]};
+    const result={cups:0,hops:0,cash:r.parcel==='returned'?14:0,parcel:r.parcel==='carried'?'kept':r.parcel,discovered:[...r.discovered],status:r.status,outcomes:locations(r)?[...r.location.outcomes]:[],visited:districts(r)?[...r.district.visited]:[]};
     for(const id of r.bag){const type=TYPES[r.items.find(i=>i.id===id).kind];result.cups+=type.cups;result.hops+=type.hops;result.cash+=type.cash;}
     return result;
   }
   function restore(value){
     try{
       const r=JSON.parse(JSON.stringify(value));
-      if(!r||![1,2,3].includes(r.version)||!Number.isInteger(r.seed)||!finite(r.seed,0,4294967295)||!Number.isInteger(r.day)||!finite(r.day,1,3)||!Object.hasOwn(KITS,r.kit)||r.duration!==180||!finite(r.time,0,180)||!['active','extracted','bailed','rescued'].includes(r.status))return null;
+      if(!r||![1,2,3,4].includes(r.version)||!Number.isInteger(r.seed)||!finite(r.seed,0,4294967295)||!Number.isInteger(r.day)||!finite(r.day,1,3)||!Object.hasOwn(KITS,r.kit)||r.duration!==180||!finite(r.time,0,180)||!['active','extracted','bailed','rescued'].includes(r.status))return null;
       if(!r.p||!['x','y','fx','fy','hp','inv','dash','hook','foam'].every(k=>finite(r.p[k],k==='fx'||k==='fy'?-1:0,k==='x'?WIDTH:k==='y'?HEIGHT:k==='fx'||k==='fy'?1:10)))return null;
       if(!Array.isArray(r.items)||r.items.length!==17||!r.items.every((i,n)=>i.id==='item'+n&&Object.hasOwn(TYPES,i.kind)&&finite(i.x,0,WIDTH)&&finite(i.y,0,HEIGHT)&&finite(i.vx,-1000,1000)&&finite(i.vy,-1000,1000)&&finite(i.lock,0,2)&&['world','bag','delivered','lost'].includes(i.state)))return null;
       const template=create(r.seed,r.day,r.kit,[]);if(r.items.some((i,n)=>i.kind!==template.items[n].kind))return null;
       if(!Array.isArray(r.bag)||new Set(r.bag).size!==r.bag.length||r.bag.some(id=>!r.items.some(i=>i.id===id&&i.state==='bag'))||r.items.filter(i=>i.state==='bag').length!==r.bag.length||load(r)>KITS[r.kit].capacity)return null;
       if(!Array.isArray(r.actors)||r.actors.length>9||new Set(r.actors.map(a=>a.id)).size!==r.actors.length||!r.actors.every(a=>template.actors.some(t=>t.id===a.id&&t.type===a.type)&&['patrol','windup','charge','investigate'].includes(a.mode)&&['x','y','homeX','homeY','dir','timer','vx','vy','stun'].every(k=>finite(a[k],-1000,3000))))return null;
-      if(!Array.isArray(r.discovered)||r.discovered.length>3||new Set(r.discovered).size!==r.discovered.length||!r.discovered.every(x=>['greenhouse','noor','market-shortcut'].includes(x))||typeof r.opened!=='boolean')return null;
+      if(!Array.isArray(r.discovered)||r.discovered.length>(r.version>=4?4:3)||new Set(r.discovered).size!==r.discovered.length||!r.discovered.every(x=>['greenhouse','noor','market-shortcut',...(r.version>=4?['greenhouse-pump']:[])].includes(x))||typeof r.opened!=='boolean')return null;
       if(!['ground','carried','returned','lost'].includes(r.parcel))return null;
       const parcel=r.items.find(i=>i.kind==='parcel');if(parcel.state!==({ground:'world',carried:'bag',returned:'delivered',lost:'lost'})[r.parcel])return null;
       if(!Array.isArray(r.patches)||r.patches.length>5||!r.patches.every(f=>finite(f.x,0,WIDTH)&&finite(f.y,0,HEIGHT)&&finite(f.life,0,4)))return null;
       if(!Array.isArray(r.fx)||r.fx.length>12||!r.fx.every(f=>['dash','hook'].includes(f.kind)&&['x','y','x2','y2','life'].every(k=>finite(f[k],-1000,4000))))return null;
       if(!Number.isInteger(r.sequence)||!finite(r.sequence,0,10000)||!Number.isInteger(r.hits)||!finite(r.hits,0,3)||!Array.isArray(r.log)||r.log.length>5||!r.log.every(t=>typeof t==='string'&&t.length<500)||typeof r.message!=='string'||r.message.length>500)return null;
       if(r.status==='active'&&(r.time>=180||r.p.hp<=0))return null;
+      if(r.version<4)delete r.district;
+      else{
+        const d=r.district;
+        if(!d||Object.keys(d).length!==4||!['belt','irrigation','repaired','visited'].every(k=>Object.hasOwn(d,k))||!['east','west','off'].includes(d.belt)||!finite(d.irrigation,0,12)||typeof d.repaired!=='boolean'||!Array.isArray(d.visited)||d.visited.length>5||new Set(d.visited).size!==d.visited.length||!d.visited.every(id=>ZONES.some(z=>z.id===id)))return null;
+        if(d.repaired!==r.discovered.includes('greenhouse-pump'))return null;
+      }
       if(r.version<3)delete r.location;
       else{
         const l=r.location;
-        if(!l||typeof l.marketOpen!=='boolean'||!Array.isArray(l.clues)||l.clues.length>2||new Set(l.clues).size!==l.clues.length||!l.clues.every(x=>['market','club'].includes(x))||!Array.isArray(l.outcomes)||l.outcomes.length>3||new Set(l.outcomes).size!==l.outcomes.length||!l.outcomes.every(x=>OUTCOMES.includes(x)))return null;
+        const clues=r.version>=4?['market','club','greenhouse']:['market','club'],outcomes=r.version>=4?OUTCOMES:OUTCOMES.slice(0,3);
+        if(!l||typeof l.marketOpen!=='boolean'||!Array.isArray(l.clues)||l.clues.length>clues.length||new Set(l.clues).size!==l.clues.length||!l.clues.every(x=>clues.includes(x))||!Array.isArray(l.outcomes)||l.outcomes.length>outcomes.length||new Set(l.outcomes).size!==l.outcomes.length||!l.outcomes.every(x=>outcomes.includes(x)))return null;
         if(l.marketOpen!==r.discovered.includes('market-shortcut')||(l.outcomes.includes('market-shortcut')&&!l.marketOpen))return null;
+        if(l.outcomes.includes('greenhouse-repaired')&&!r.district?.repaired)return null;
       }
       if(r.version===1){r.version=2;r.street={situation:'legacy',baits:3,lureCooldown:0,noise:null,barrels:[],dragging:null};}
       const st=r.street;
@@ -343,5 +394,5 @@
   }
   // Ambient route uses expedition time, so the worker also stops for choices and saves.
   function flowerCart(r){return {x:1100+Math.sin(r.time/7)*40,y:1030};}
-  return Object.freeze({WIDTH,HEIGHT,EXIT,NOOR,LEVER,GARDEN_EXIT,GATE,KITS,TYPES,ZONES,WALLS,create,step,command,restore,rewards,load,zone,nearest,solid,clear,flowerCart,streetInfo,locationInfo,dragTarget});
+  return Object.freeze({WIDTH,HEIGHT,EXIT,NOOR,LEVER,GARDEN_EXIT,GATE,KITS,TYPES,ZONES,WALLS,create,step,command,restore,rewards,load,zone,nearest,solid,clear,flowerCart,streetInfo,locationInfo,districtInfo,dragTarget});
 });

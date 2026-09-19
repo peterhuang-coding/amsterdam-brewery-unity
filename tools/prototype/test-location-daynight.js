@@ -10,7 +10,7 @@ test('daytime scouting is free, repeatable without duplication, and only works b
   s=act(s,{type:'scout',place:'market'});s=act(s,{type:'scout',place:'coffee'});
   assert.deepEqual(s.life.clues,['market','club']);assert.equal(s.cash,cash);assert.equal(s.actions,actions);
   s=act(s,{type:'scout',place:'market'});assert.deepEqual(s.life.clues,['market','club']);
-  assert.equal(R.act(s,{type:'scout',place:'lab'}).ok,false);
+  assert.equal(R.act(s,{type:'scout',place:'unknown'}).ok,false);
   s=close(s);assert.equal(R.act(s,{type:'scout',place:'market'}).ok,false);assert.ok(R.restore(s));
 });
 test('known clues enter the actual expedition, survive a save, then reset for the next day',()=>{

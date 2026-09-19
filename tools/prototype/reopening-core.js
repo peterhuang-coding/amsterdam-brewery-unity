@@ -82,7 +82,7 @@
       friends: { lotte: 0, bram: 0, marta: 0 }, promises: { lotte: false },
       upgrades: [], hops: 0, music: false, log: [], totalSatisfied: 0, totalServed: 0,
       brew: null, forage: null, night: null, reports: [], lastMessage: '三天试营业。房东称这叫扶持创业，因为账单用了绿色纸。',
-      result: null, prepared: [], backstage: { run: null, discovered: [], resolution: null, trips: 0, from: null, cashAfterClose: 0 }, life: freshLife()
+      result: null, prepared: [], backstage: { run: null, discovered: [], resolution: null, trips: 0, from: null, cashAfterClose: 0, journal: [] }, life: freshLife()
     };
   }
   function stock(state, beer) {
@@ -228,10 +228,10 @@
         if (state.phase !== 'welcome') return fail('酒馆已经开始营业准备了。');
         state.phase = 'prep'; say(state, '先备酒，再开门。工商表格没有“暂时还不会倒酒”这一栏。'); break;
       case 'scout': {
-        if (state.phase !== 'prep' || !['market', 'coffee'].includes(action.place)) return fail('白天到市场或咖啡馆，才有机会打听夜里的事。');
-        const clue = action.place === 'market' ? 'market' : 'club';
+        if (state.phase !== 'prep' || !['market', 'coffee', 'lab'].includes(action.place)) return fail('白天到市场、咖啡馆或实验室，才有机会打听夜里的事。');
+        const clue = ({market:'market',coffee:'club',lab:'greenhouse'})[action.place];
         if (!state.life.clues.includes(clue)) state.life.clues.push(clue);
-        say(state, clue === 'market' ? '卸货单背面画着路：货架北侧通冷库，东墙卸货门能从里面打开。销毁食品需要审批，拯救食品需要偷偷摸摸。' : 'Bram 说：NO SIGNAL 每隔六秒会停一阵音乐。鼓点响时保安听不清，音乐一停，连空瓶都像在做自我介绍。');
+        say(state, clue === 'market' ? '卸货单背面画着路：货架北侧通冷库，东墙卸货门能从里面打开。销毁食品需要审批，拯救食品需要偷偷摸摸。' : clue === 'greenhouse' ? 'Chen 指着灌溉图：每十秒洒六秒水。西侧阀门能关十二秒；带一件可修零件过去，才不用每晚修同一条漏水的承诺。' : 'Bram 说：NO SIGNAL 每隔六秒会停一阵音乐。鼓点响时保安听不清，音乐一停，连空瓶都像在做自我介绍。');
         break;
       }
       case 'explore':
@@ -260,9 +260,17 @@
         const consequences = {
           'market-salvaged': '超市今日告示：昨夜库存不翼而飞，销毁指标被迫下调。你认得那片货架。',
           'market-shortcut': '卸货门留了一道缝。你记下的超市捷径，下次夜里仍然能走。',
-          'club-backstage': 'Bram 听说有人取走了后台的冷藏箱：保安建议降低音量，经理建议提高票价。'
+          'club-backstage': 'Bram 听说有人取走了后台的冷藏箱：保安建议降低音量，经理建议提高票价。',
+          'sorting-stopped': '分拣场告示：输送带停过机，失物未能按时失踪。',
+          'sorting-reversed': '分拣员发现昨夜输送带反着走：被退回的东西，终于退回了自己。',
+          'greenhouse-valve': '温室住客记得有人临时关过灌溉阀。那十二秒，鞋比植物先得救。',
+          'greenhouse-repaired': '温室水泵已改成滴灌。住客留下字条：从此路面干燥，维修申请仍在漏水。'
         };
-        for (const outcome of reward.outcomes || []) if (consequences[outcome]) state.life.morning.push(consequences[outcome]);
+        const outcomes=reward.outcomes||[];
+        for (const outcome of ['greenhouse-repaired',...outcomes.filter(id=>id!=='greenhouse-repaired')]) if(outcomes.includes(outcome)&&consequences[outcome]) state.life.morning.push(consequences[outcome]);
+        state.life.morning=state.life.morning.slice(0,8);
+        state.backstage.journal.push({day:state.day,status:reward.status,cups:reward.cups,hops:reward.hops,cash:reward.cash,visited:[...(reward.visited||[])],outcomes:[...outcomes]});
+        state.backstage.journal=state.backstage.journal.slice(-3);
         state.backstage.trips++; state.backstage.run = null; state.phase = state.backstage.from; state.backstage.from = null;
         say(state, '探险归来：' + reward.cups + ' 杯艾尔，' + reward.hops + ' 份酒花，€' + reward.cash + '。' + (afterClose ? '收好东西，睡醒后再开门。' : '旧行程已经接回白天。')); break;
       }
@@ -512,17 +520,26 @@
   const shape = (value, keys) => value && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).sort().join(',') === keys.split(' ').sort().join(',');
   const string = value => typeof value === 'string' && value.length <= 2000;
   const unique = array => new Set(array).size === array.length;
+  const JOURNAL_ZONES=['market','redlight','club','sorting','greenhouse'];
+  const JOURNAL_OUTCOMES=['market-salvaged','market-shortcut','club-backstage','sorting-stopped','sorting-reversed','greenhouse-valve','greenhouse-repaired'];
+  function validJournal(entries,state){
+    if(!Array.isArray(entries)||entries.length>3||entries.length>state.backstage.trips)return false;
+    return entries.every((e,i)=>shape(e,'day status cups hops cash visited outcomes')&&integer(e.day,1,state.day)&&(i===0||e.day>entries[i-1].day)&&
+      ['extracted','bailed','rescued'].includes(e.status)&&integer(e.cups,0,100)&&integer(e.hops,0,100)&&integer(e.cash,0,1000)&&
+      Array.isArray(e.visited)&&e.visited.length<=5&&unique(e.visited)&&e.visited.every(id=>JOURNAL_ZONES.includes(id))&&
+      Array.isArray(e.outcomes)&&e.outcomes.length<=7&&unique(e.outcomes)&&e.outcomes.every(id=>JOURNAL_OUTCOMES.includes(id)));
+  }
   function validState(s) {
     if (!shape(s, 'version seed day phase cash actions batches friends promises upgrades hops music log totalSatisfied totalServed brew forage night reports lastMessage result prepared backstage life')) return false;
     if (s.version !== 1 || !integer(s.seed, 0, 4294967295) || !integer(s.day, 1, 3) || !integer(s.cash, 0, 1000000) || !integer(s.actions, 0, 2)) return false;
     if (!['welcome', 'prep', 'brew', 'forage', 'explore', 'night', 'summary', 'ending'].includes(s.phase)) return false;
-    if (!shape(s.backstage, 'run discovered resolution trips from cashAfterClose') || !Array.isArray(s.backstage.discovered) || !unique(s.backstage.discovered) || !s.backstage.discovered.every(id => ['greenhouse', 'noor', 'market-shortcut'].includes(id)) || ![null, 'returned', 'kept'].includes(s.backstage.resolution) || !integer(s.backstage.trips, 0, 3) || !integer(s.backstage.cashAfterClose,0,1000000)) return false;
+    if (!shape(s.backstage, 'run discovered resolution trips from cashAfterClose journal') || !Array.isArray(s.backstage.discovered) || !unique(s.backstage.discovered) || !s.backstage.discovered.every(id => ['greenhouse', 'noor', 'market-shortcut', 'greenhouse-pump'].includes(id)) || ![null, 'returned', 'kept'].includes(s.backstage.resolution) || !integer(s.backstage.trips, 0, 3) || !integer(s.backstage.cashAfterClose,0,1000000)||!validJournal(s.backstage.journal,s)) return false;
     if(s.phase==='explore' ? !['prep','summary'].includes(s.backstage.from) : s.backstage.from!==null) return false;
     const afterClose=['summary','ending'].includes(s.phase)||s.phase==='explore'&&s.backstage.from==='summary';
     if(!afterClose&&s.backstage.cashAfterClose!==0)return false;
     const life=s.life,validBouquet=b=>shape(b,'palette wrap stored')&&['warm','cool','mixed'].includes(b.palette)&&['paper','ribbon'].includes(b.wrap)&&typeof b.stored==='boolean';
     if(!shape(life,'arrangement bouquet flowersDay display gifts morning clues')||!integer(life.flowersDay,0,s.day)||!integer(life.gifts,0,3)||!Array.isArray(life.morning)||life.morning.length>8||!life.morning.every(string))return false;
-    if(!Array.isArray(life.clues)||life.clues.length>2||!unique(life.clues)||!life.clues.every(id=>['market','club'].includes(id)))return false;
+    if(!Array.isArray(life.clues)||life.clues.length>3||!unique(life.clues)||!life.clues.every(id=>['market','club','greenhouse'].includes(id)))return false;
     if(life.bouquet!==null&&!validBouquet(life.bouquet)||life.display!==null&&(!validBouquet(life.display)||life.display.stored))return false;
     if(life.arrangement!==null){const a=life.arrangement;if(s.phase!=='prep'||s.actions<1||s.cash<4||life.flowersDay===s.day||life.bouquet||!shape(a,'stems wrap')||!Array.isArray(a.stems)||a.stems.length>3||!unique(a.stems)||!a.stems.every(i=>integer(i,0,5))||![null,'paper','ribbon'].includes(a.wrap))return false;}
     if (s.phase === 'explore') {
@@ -592,6 +609,7 @@
       if(restored?.backstage&&!owns(restored.backstage,'from')&&!owns(restored.backstage,'cashAfterClose')){
         restored.backstage.from=restored.phase==='explore'?'prep':null;restored.backstage.cashAfterClose=0;
       }
+      if(restored?.backstage&&!owns(restored.backstage,'journal'))restored.backstage.journal=[];
       if(restored.backstage.run){restored.backstage.run=B.restore(restored.backstage.run);if(!restored.backstage.run)return null;}
       if (!validState(restored)) return null;
       return restored;

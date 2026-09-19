@@ -156,6 +156,27 @@
       this.ring(door.interact.x,door.interact.y,18,18,color,2);
       this.text(door.open?'卸货捷径已开':'卸货开关 · E',door.interact.x-8,door.y+door.h+27,13,color);
     }
+    districtFloors(info,time){
+      if(!info?.enabled)return;
+      const b=info.belt,w=info.water,dir=b.speed<0?-1:1;
+      this.rect(b.x-6,b.y-6,b.w+12,b.h+12,'#ac9870');this.rect(b.x,b.y,b.w,b.h,'#223b47');
+      const offset=b.speed?((time*30*dir)%28+28)%28:0;
+      for(let x=b.x+offset;x<b.x+b.w;x+=28)this.line([[x,b.y+3],[x,b.y+b.h-3]],'#647c80',4);
+      for(let x=b.x+35;x<b.x+b.w-20;x+=70)this.text(b.speed?(dir>0?'→':'←'):'Ⅱ',x,b.y+46,25,b.speed?'#e4c187':'#afd1b6');
+      this.rect(b.x+25,b.y-30,b.w-50,24,'#152d3ee8');this.text(b.speed?'输送中 · 人和东西都算货':'输送带已停 · 失物暂缓失踪',b.x+b.w/2,b.y-13,12,'#e2d3ad');
+      this.rect(w.x,w.y,w.w,w.h,w.wet?'#91c9cc55':'#7a99772b');
+      for(let x=w.x+12;x<w.x+w.w;x+=26){
+        this.line([[x,w.y+6],[x,w.y+w.h-6]],w.wet?'#b6e1e469':'#abc4a335',2);
+        if(w.wet)for(let y=w.y+10;y<w.y+w.h;y+=23){const yy=y+(this.reduced?0:time*55%18);this.line([[x,yy-5],[x-2,yy+3]],'#c4e9e59a',2);}
+      }
+      this.text(info.repaired?'滴灌已修好 · 路面干燥':w.wet?'洒水中 · 路面湿滑':'洒水暂停 · 趁现在',w.x+w.w/2,w.y+w.h+23,13,w.wet?'#b5dce1':'#c9dfb7');
+    }
+    districtControl(point,label,color){
+      this.ellipse(point.x,point.y+5,22,12,'#102a3680');this.rect(point.x-14,point.y-27,28,32,'#526e73');
+      this.rect(point.x-10,point.y-23,20,12,'#1d3541');this.ellipse(point.x,point.y-17,4,4,color);
+      this.line([[point.x,point.y-1],[point.x+13,point.y-17]],color,4);this.ring(point.x,point.y+4,31,18,color+'80',1.5);
+      this.text(label,point.x,point.y-43,12,color);
+    }
     draw(r,options={}){
       const c=this.c,p=r.p,time=this.reduced?0:r.time,street=B.streetInfo?.(r),location=B.locationInfo?.(r);this.player=p;this.noise=r.street?.noise;this.dragTarget=B.dragTarget?.(r)?.id;
       const narrow=this.canvas.getBoundingClientRect().width<600;
@@ -175,6 +196,7 @@
       // Nightclub floor uses light and moving bodies as readable spatial obstacles.
       for(let x=1110;x<1380;x+=54)for(let y=830;y<1150;y+=54)this.rect(x,y,49,49,location?.club?.loud?(((x+y)/54|0)%2?'#ad84c94a':'#a791b82b'):(((x+y)/54|0)%2?'#ad84c912':'#a791b815'));
       this.rect(1645,205,435,335,'#9ac8a524');this.glow(1820,440,240,130,'#acc69a28');
+      const district=B.districtInfo?.(r);this.districtFloors(district,time);
       for(const f of r.patches){this.ellipse(f.x,f.y,86,57,'#a8d6d465');for(let i=0;i<8;i++)this.ellipse(f.x+Math.cos(i*2.1)*55,f.y+Math.sin(i*2.1)*28,12,8,'#d9f0df80');}
       if(this.noise)this.sound(this.noise,time);
       const held=r.street?.barrels?.find(b=>b.id===r.street.dragging);
@@ -189,6 +211,10 @@
       for(const barrel of r.street?.barrels||[])objects.push({y:barrel.y,draw:()=>this.streetBarrel(barrel,r)});
       for(const item of r.items)if(item.state==='world')objects.push({y:item.y,draw:()=>this.item(item,time)});
       for(const a of r.actors)objects.push({y:a.y,draw:()=>this.actor(a,time)});
+      if(district?.enabled){
+        objects.push({y:district.switch.y,draw:()=>this.districtControl(district.switch,'E 停带 / 钩索反转','#e8c287')});
+        objects.push({y:district.valve.y,draw:()=>this.districtControl(district.valve,district.repaired?'水泵 · 已修复':'灌溉阀 · E / 钩索','#a8d8c0')});
+      }
       const cart=B.flowerCart(r);
       objects.push({y:cart.y,draw:()=>{
         this.person(cart.x-29,cart.y,'#8ca88b',time);

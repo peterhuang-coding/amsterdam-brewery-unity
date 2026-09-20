@@ -24,13 +24,14 @@
 
 ## 当前任务
 
-PLAN01 / 仅需求、任务和验收文档 / D9 用户明确恢复，当前执行中。
+PLAN01 / 仅需求、任务和验收文档 / D9 恢复轮已停止并阻塞；没有完整规格通过验收。
 批准来源：本任务2026-09-20“用 plan 持续细化这里的各种 feature”；阶段仍为文档细化。
 精确输入基线：可玩78b13c06a5df7914fbbb4eb404bec6489b7376cb；ALG01 c764eb0b70564d62a980d3e49c6d405fdbb04765 未合入，仅用历史分支证据。工作台起点c74d55b，codex/product-research-nightshift只改文档。
 范围：先修订上轮两份原稿中的F1–F4及自动行为描述；需求包增加F01–F06夜探/地点/背包/自动/局势卡，任务包增加F07–F12昼夜线索/人物/酿酒/接待/自行车花景点/反馈恢复卡。12张均为候选设计，不是实施许可，不执行游戏测试或玩家研究。
 验收：准确区分已有/候选/未验证；卡片具备真实操作取舍、代价、失败补救、重复变化、昼夜关联、最小范围、≥3条验收和趣味反证。保留REQ-01..06和T01..10，依赖无环；主代理核对事实与原输入哈希，文档结构命令真实执行。仅文档验证不代表玩法验收。
 派发：同一波两个cc-plan进程，固定套餐doubao-seed-evolving，各900秒/24轮上限；任务ID amsterdam-plan01-requirements-r2-20260920、amsterdam-plan01-tasks-r2-20260920。输入仅公开源码/草稿/纠错/最小背景，暂存目录独立。失败/限流/未知停止后续波次并核查；不再次修正、不fallback、不由主代理重写。
 Notion PLAN01：https://app.notion.com/p/3e03285284df81b48c1af3971448cb49 。本轮证据/tmp/amsterdam-plan01-r2-20260920；前轮拒收稿docs/product-research/2026-09-20-plan01保留。
+实际结果：两个CLI启动尝试，仅1个CC工作进程有启动证据。需求包900.144秒超时退出143，留下31947字节requirements部分稿，缺feature JSON与交接报告、未运行文档验证；任务包立即unknown且无启动记录。0份规格采用，1份原稿归档，后续派发已停止，无重试/兜底。原稿仍有音乐生效时序与源码引用偏移问题；详见docs/product-research/2026-09-20-plan01-r2/review.md。用户决定是否先排查交接器再恢复前，不自动重发。
 ALG01线程已确认暂停，amsterdam-2已PAUSED；已提交e740f71/c764eb0与未提交文件保留。其seed6卡住是独立分支实验发现，需在可玩基线复核，当前不修。日常amsterdam不得凭D7恢复已暂停实现。R01既有交付继续待人工验收，其他候选未批准。
 
 ## 已试路径
@@ -53,7 +54,7 @@ ALG01线程已确认暂停，amsterdam-2已PAUSED；已提交e740f71/c764eb0与�
 - [x] 用户给出初步正向反馈并批准地点深化，本轮功能已交付。
 - [x] 本轮分拣场/温室细化已交付并回填Notion。
 - [ ] ALG01已暂停，保留成果待审；无新的实现许可。
-- [ ] PLAN01按D9恢复仅文档修订和12张候选feature卡，验收进行中。
+- [ ] PLAN01 R2已停止：需求包超时、任务包启动unknown；原稿保留，12张完整卡未交付，不再自动修订。
 - [ ] R01人工试玩；其余方向另行决定。
 工作台：[Notion](https://app.notion.com/p/3db3285284df81038056e2dfe875e700)；[候选](../../docs/product-research/README.md)；[执行流程](../../docs/product-research/nightshift.md)。
-最近一轮：[PLAN01验收](rounds/2026-09-20-plan01.md)；[前轮范围](rounds/2026-09-19-night-details.md)；[前轮交付](rounds/2026-09-18-location-depth.md)。夜班每日北京时间22:00，自动化 amsterdam；当前只做PLAN01文档，ALG01已暂停；R01成果待验收，不重复启动，其余候选未批准。工作台只同步文档，未合并两版游戏。
+最近一轮：[PLAN01 R2停止记录](rounds/2026-09-20-plan01-r2.md)；[前轮PLAN01验收](rounds/2026-09-20-plan01.md)；[前轮范围](rounds/2026-09-19-night-details.md)；[前轮交付](rounds/2026-09-18-location-depth.md)。夜班每日北京时间22:00，自动化 amsterdam；当前PLAN01阻塞、仅文档范围不变，ALG01已暂停；R01成果待验收，不重复启动，其余候选未批准。工作台只同步文档，未合并两版游戏。

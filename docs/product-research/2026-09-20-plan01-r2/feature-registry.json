@@ -1,0 +1,98 @@
+[
+  {
+    "id": "F01",
+    "topic": "夜探路线、临时机会与改道",
+    "requirement": "REQ-01",
+    "task_refs": [
+      "T02"
+    ]
+  },
+  {
+    "id": "F02",
+    "topic": "超市多路径搜集与工具复用",
+    "requirement": "REQ-03",
+    "task_refs": [
+      "T06"
+    ]
+  },
+  {
+    "id": "F03",
+    "topic": "夜店、分拣场、温室的环境连动",
+    "requirement": "REQ-03",
+    "task_refs": [
+      "T06"
+    ]
+  },
+  {
+    "id": "F04",
+    "topic": "背包取舍、撤退与可追回损失",
+    "requirement": "REQ-01",
+    "task_refs": [
+      "T04"
+    ]
+  },
+  {
+    "id": "F05",
+    "topic": "自动策略解释与随时手动接管",
+    "requirement": "REQ-06",
+    "task_refs": [
+      "T03"
+    ]
+  },
+  {
+    "id": "F06",
+    "topic": "有限局势组合与重复探索",
+    "requirement": "REQ-01",
+    "task_refs": [
+      "T02"
+    ]
+  },
+  {
+    "id": "F07",
+    "topic": "白天线索到夜间机会的可见因果",
+    "requirement": "REQ-02",
+    "task_refs": [
+      "T05"
+    ]
+  },
+  {
+    "id": "F08",
+    "topic": "熟人承诺、欠情与黑色幽默",
+    "requirement": "REQ-04",
+    "task_refs": [
+      "T07"
+    ]
+  },
+  {
+    "id": "F09",
+    "topic": "酿酒操作与探索材料的选择",
+    "requirement": "REQ-02",
+    "task_refs": [
+      "T05"
+    ]
+  },
+  {
+    "id": "F10",
+    "topic": "接待游客与店内经营的取舍",
+    "requirement": "REQ-02",
+    "task_refs": [
+      "T05"
+    ]
+  },
+  {
+    "id": "F11",
+    "topic": "自行车、花与景点的路线作用",
+    "requirement": "REQ-05",
+    "task_refs": [
+      "T08"
+    ]
+  },
+  {
+    "id": "F12",
+    "topic": "手册、反馈、初次体验与恢复",
+    "requirement": "REQ-06",
+    "task_refs": [
+      "T09"
+    ]
+  }
+]

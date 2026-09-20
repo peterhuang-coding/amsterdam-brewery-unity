@@ -1,0 +1,107 @@
+{
+  "task": "PLAN01",
+  "decision": "D9 explicit user resume; documents only; Coding Plan only; failure stops further dispatch",
+  "status": "blocked",
+  "planned_independent_packages": 2,
+  "cli_launch_attempts": 2,
+  "confirmed_cc_workers": 1,
+  "confirmed_peak_cc_workers": 1,
+  "adopted_packages": 0,
+  "archived_partial_documents": 1,
+  "feature_cards_completed": 0,
+  "quality_revision_index": 1,
+  "logical_attempt_index": 2,
+  "fallbacks": 0,
+  "retries_this_round": 0,
+  "probes": 0,
+  "implementation_changes": 0,
+  "baseline": {
+    "playable": "78b13c06a5df7914fbbb4eb404bec6489b7376cb",
+    "algorithm_unmerged": "c764eb0b70564d62a980d3e49c6d405fdbb04765",
+    "workbench_preflight": "829d434"
+  },
+  "jobs": [
+    {
+      "task_id": "amsterdam-plan01-requirements-r2-20260920",
+      "status": "unknown",
+      "outcome": "timeout",
+      "elapsed_seconds": 900.144,
+      "requested": {
+        "model": "doubao-seed-evolving",
+        "provider_base_url": "https://ark.cn-beijing.volces.com/api/coding"
+      },
+      "observed_models": [
+        "doubao-seed-evolving"
+      ],
+      "returncode": 143,
+      "disallowed_file_changes": [],
+      "output": {
+        "path": "requirements-partial.md",
+        "sha256": "f0199ab4c61e02c73995b6dc0ff1de6b4c5eeee1355cca5d88df20344a623e97",
+        "bytes": 31947
+      },
+      "missing_outputs": [
+        "features-requirements.json",
+        "handoff-result.json"
+      ],
+      "declared_validation_command_observed": false,
+      "usage": null,
+      "usage_note": "no completed final event; do not infer package charge or token totals",
+      "worker_confirmed_stopped": true
+    },
+    {
+      "task_id": "amsterdam-plan01-tasks-r2-20260920",
+      "cli_exit_code": 2,
+      "status": "unknown",
+      "state_directory_exists": false,
+      "launch_receipt_present": false,
+      "cause": "unknown; no retry or model request inferred",
+      "missing_outputs": [
+        "tasks-acceptance.md",
+        "features-tasks.json",
+        "handoff-result.json"
+      ]
+    }
+  ],
+  "verification": {
+    "playable": {
+      "files": 55,
+      "unchanged": true
+    },
+    "algorithm": {
+      "files": 69,
+      "unchanged": true
+    },
+    "source": {
+      "files": 12,
+      "unchanged": true
+    },
+    "worker_inputs": {
+      "files": 11,
+      "unchanged": true
+    },
+    "worker_alive": false,
+    "task2_state_exists": false
+  },
+  "content_review": [
+    {
+      "id": "R2-F1",
+      "finding": "Output package incomplete; six JSON cards and handoff report missing, document validation command not observed. Draft references a nonexistent features JSON."
+    },
+    {
+      "id": "R2-F2",
+      "finding": "Music timing says 再下一晚 at partial draft lines 50/173. Source nextDay sets music and advances day once; effect applies the following evening, not an extra evening later. Lines 204-216,136,453 of reopening-core.js."
+    },
+    {
+      "id": "R2-F3",
+      "finding": "Multiple source references are shifted by the one-line excerpt header, e.g. actual returnExplore245 cited246, actual club-backstage179 cited180/179; exact evidence reference contract not met."
+    }
+  ],
+  "primary_agent_work": [
+    "curated source and correction brief",
+    "fixed requirement/feature registry and validation contract",
+    "launch/status checks and source verification",
+    "artifact review and archival, no substantive rewrite",
+    "Git/Notion/heartbeat/Hub state synchronization"
+  ]
+}

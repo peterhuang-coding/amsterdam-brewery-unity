@@ -13,6 +13,10 @@
   } catch {saveError=true;}
   const scene=new PubScene($('pub-canvas'));
   const backstage=new BackstageUI({canvas:$('pub-canvas'),getState:()=>state,dispatch,save,isPaused:()=>Boolean(ui.modal),showModal:modal,playBeat:()=>sound('beat')});
+  const journey=new JourneyUI({canvas:$('pub-canvas'),getState:()=>state,dispatch,isPaused:()=>Boolean(ui.modal),tick:(seconds,input)=>{
+    const result=R.act(state,{type:'journeyAction',verb:'tick',value:{seconds,...input}});
+    if(result.ok)state=result.state;
+  }});
   $('pub-canvas').tabIndex=0;
   const DAYS=['试营业，试着活着','好评与坏账','合法地重新开业'];
   const PORTRAITS={lotte:'👩🏻',bram:'🧔🏽',marta:'👩🏼‍🍳'};
@@ -56,6 +60,8 @@
     const result=R.act(state,action);
     if(!result.ok){notify(result.message||'现在无法这样操作。',true);return;}
     state=result.state;
+    if(action.type==='journeyStart'){ui.city=C.parkBike(ui.city);ui.cityKeys.clear();ui.cityPath=[];ui.cityTarget=null;journey.clear();}
+    if(action.type==='journeyReturn'){ui.cityMode='place';ui.cityPlace='flowers';journey.clear();}
     if(action.type==='explore'){ui.city=C.parkBike(ui.city);ui.cityKeys.clear();ui.cityPath=[];backstage.clear();backstage.signature='';backstage.overview=false;}
     if(action.type==='returnExplore'){homeOnFoot();ui.cityMode='place';}
     if(action.type==='start'||state.day!==previousDay){homeOnFoot();ui.cityMode='map';}
@@ -66,7 +72,7 @@
     if(result.message)notify(result.message);
     sound(['serve','brewHit','upgrade','finish'].includes(action.type)?'good':'tap');
     save();render();
-    if(action.type==='explore'){$('pub-canvas').scrollIntoView({block:'center',behavior:'auto'});$('pub-canvas').focus({preventScroll:true});}
+    if(action.type==='explore'||action.type==='journeyStart'){$('pub-canvas').scrollIntoView({block:'center',behavior:'auto'});$('pub-canvas').focus({preventScroll:true});}
     if(action.type==='start'||state.day!==previousDay)window.scrollTo({top:0,behavior:'auto'});
     if(previous!==state.phase&&matchMedia('(max-width: 800px)').matches&&['brew','forage','summary','ending'].includes(state.phase))$('action-content').scrollIntoView({behavior:'auto',block:'start'});
     if(action.type==='open'&&state.day===1&&!ui.tutorialSeen)showFirstGuest();
@@ -75,6 +81,7 @@
   function modal(kicker,title,body,buttons,kind='normal'){
     ui.cityKeys.clear();
     backstage.clear();
+    journey.clear();
     ui.returnFocus=document.activeElement;
     ui.modal={kicker,title,body,buttons,kind};
     $('dialog-kicker').textContent=kicker;$('dialog-title').textContent=title;$('dialog-body').innerHTML=body;
@@ -98,6 +105,7 @@
   }
   function showHelp(){
     if(ui.modal)return;
+    if(state.phase==='journey'){modal('城市出行 · 阅读时暂停','带着一件东西和一个约定出门。','<p>花店委托占一次准备，途中不重复扣行动。WASD / 方向键移动，B 在车旁上下车，E 取放花束。自动行进会沿选定路线走，关键选择暂停。</p><p>近路的石板上快骑会伤花，软垫能保护；平路更长。街头冲突可交涉或绕开，选择对抗后用 Space 闪避、J 格挡／硬直时反击。手持花不能格挡。</p><p>列车采用虚构票务规则：每段 €4，无票遇检查另加 €8。返程可以记账买票，不必被迫逃票。票务待付会从委托收入中偿还，并影响最终净余额。</p><p>失败可说明情况或退回花，不能重复领奖。货物与自行车有位置；必须带车回花店才结算。</p>',[{label:'继续这一趟'}]);return;}
     if(state.phase==='explore'){
       const street=Backstage.streetInfo?.(state.backstage.run);
       const streetHelp=street?`<p><b>今晚 · ${esc(street.title)}</b><br>${esc(street.description)} ${esc(street.hint)}</p>`:'';
@@ -185,7 +193,12 @@
       const status=tripWord(t.status||'bailed'), visited=tripList(t.visited), outcomes=tripList(t.outcomes);
       return `<li><strong>第 ${esc(t.day??'?')} 夜 · ${esc(status)}</strong><br>带回 ${esc(t.cups??0)} 杯酒 · ${esc(t.hops??0)} 份酒花 · ${money(Number(t.cash)||0)}<br><span>${visited?visited:'未到地点'}${outcomes?'｜'+outcomes:''}</span></li>`;
     }).join('');
-    return `<div class="city-notebook"><p class="board-eyebrow">景点手册 / 正面给游客，背面留给自己</p><p>北岸渡轮 · 运河桥 · 南街花市。点击下方地点就能实际走过去。宽桥可以骑；窄桥和渡轮推车通过，上岸后继续骑。按 B 或进店才会停好车。</p><strong>地图背面的笔记</strong><ul>${mapNotes().length?mapNotes().map(n=>'<li>'+esc(n)+'</li>').join(''):'<li>夜里亲自走过的地方，才会写在这里。</li>'}</ul><strong>最近几趟夜路</strong><ul class="trip-log">${trips||'<li>还没有夜探记录。打烊后出门，回来把故事写在这里。</li>'}</ul></div>`;
+    return `<div class="city-notebook"><p class="board-eyebrow">景点手册 / 正面给游客，背面留给自己</p><p>北岸渡轮 · 运河桥 · 南街花市。点击下方地点就能实际走过去。宽桥可以骑；窄桥和渡轮推车通过，上岸后继续骑。按 B 或进店才会停好车。</p><strong>地图背面的笔记</strong><ul>${mapNotes().length?mapNotes().map(n=>'<li>'+esc(n)+'</li>').join(''):'<li>夜里亲自走过的地方，才会写在这里。</li>'}</ul><strong>最近几趟夜路</strong><ul class="trip-log">${trips||'<li>还没有夜探记录。打烊后出门，回来把故事写在这里。</li>'}</ul>${journeyHistory()}</div>`;
+  }
+  function journeyHistory(){return '<strong>白天出行后记</strong><ul class="journey-history">'+(state.journeys.history.map(t=>`<li>第 ${t.day} 天 · ${t.kind==='rail'?'远郊展厅':'桥边送花'} · ${Journey.LABELS[t.outcome]}<br>花束 ${t.quality}/100 · 报酬 €${t.reward} · 已付交通 €${t.paid}<br>${esc(t.note)}${t.help?'<br>同行人记得你帮忙收过纸袋。':''}</li>`).join('')||'<li>还没有出行记录。带车去南街花店看看委托。</li>')+'</ul>';}
+  function journeyInvitation(){
+    const disabled=state.actions<1||state.journeys.usedDay===state.day||Boolean(state.life.bouquet)||!nearBike();
+    return `<div class="journey-invitation"><h3>替花店跑一趟</h3><p>每日一份委托，占 1 次准备；花由店主提供。装载、选路、送达后带车返回，不影响原有私人配花。</p><button class="primary" data-action="journey-start" data-kind="delivery" ${disabled?'disabled':''}>桥边送花 · 自行车与街头遭遇</button><button class="secondary" data-action="journey-start" data-kind="rail" ${disabled?'disabled':''}>远郊展厅送花 · 虚构 NS 往返</button><p class="small-note">${!nearBike()?'先把停好的自行车带到花店。':state.life.bouquet?'先送出或布置你自己的花束。':state.journeys.usedDay===state.day?'今天的委托已经接过。':'近路有可绕开的冲突；铁路有买票路线。普通漫游仍免费。'}</p></div>`;
   }
   function sleepPanel(){
     const report=state.reports[state.reports.length-1];
@@ -222,6 +235,11 @@
       if(p.id==='lotte'&&state.life.gifts)$board.innerHTML+='<p class="promise-note">Lotte 把你送的花带回了排练室。好印象 '+state.friends.lotte+'。</p>';
     }
     if(!late)$board.innerHTML+=scoutPanel(p.id);
+    if(!late&&p.id==='flowers')$board.innerHTML+=journeyInvitation();
+    const lastJourney=state.journeys.history.at(-1);
+    if(!late&&lastJourney&&p.id==='flowers')$board.innerHTML+=`<p class="promise-note">店主翻到第 ${lastJourney.day} 天的委托单：“${lastJourney.outcome==='abandoned'||lastJourney.outcome==='returned'?'退回的花收好了。来不及就告诉我，下一次仍可以再安排。':lastJourney.quality<80?'收件人说你说明了包装受损的事，下次多拿一层软垫。':'收件人回过话，花送到了。谢谢你把车也带回来。'}”</p>`;
+    if(!late&&lastJourney?.kind==='delivery'&&['delivered','late','honest'].includes(lastJourney.outcome)&&p.id==='lotte')$board.innerHTML+='<p class="promise-note">Lotte：“上次送来的花还在窗边。今晚的黑啤，我们另外约。”</p>';
+    if(!late&&p.id==='pub'&&state.journeys.debt)$board.innerHTML+=`<p class="risk-note">票务待付 €${state.journeys.debt}，最终按净余额计算。</p><button class="secondary" data-action="journey-debt">支付待付款 · 不花行动</button>`;
     if(p.id==='market'&&state.backstage.discovered.includes('market-shortcut'))$board.innerHTML+='<p class="promise-note">卸货门上的告示改成了：请最后离开的非员工关灯。你开的捷径还在。</p>';
     $board.innerHTML+=bouquetPanel(p.id)+'<div class="board-bottom"><button class="text-button" data-action="city-map">← 出去逛逛 · M</button></div>';
   }
@@ -259,6 +277,7 @@
   function selectedPour(){return state.night?.pours.find(p=>p.customerId===ui.selected)||null;}
   function beerDot(id){return `<i class="beer-dot" style="background:${R.BEERS[id].color}"></i>`;}
   function topCopy(){
+    if(state.phase==='journey')return ['DAY '+state.day+' · 一趟有约定的出门','把人、车和故事带回来。'];
     if(state.phase==='explore')return [`NIGHT ${state.day} · 城市背面 / ${Backstage.KITS[state.backstage.run.kit].name}`,'门面之后，另有生活。'];
     if(state.phase==='welcome')return ['AMSTERDAM · 房东还没来封门','再撑三个晚上。'];
     if(state.phase==='ending')return ['TWEEDE KANS · 三天之后',state.result?.won?'恭喜，还能继续交租。':'店倒了，房租没倒。'];
@@ -268,6 +287,7 @@
     return [`DAY ${state.day} / 3 · ${state.phase==='night'?'营业中':'白天的准备'}`,DAYS[state.day-1]];
   }
   function render(){
+    document.body.classList.toggle('is-journey',state.phase==='journey');
     document.body.classList.toggle('is-expedition',state.phase==='explore');document.body.classList.toggle('is-auto-expedition',state.phase==='explore'&&Boolean(state.backstage.run.auto?.enabled));$('backstage-controls').hidden=state.phase!=='explore';
     const oldFocus=document.activeElement?.dataset?.focus;
     const [kicker,title]=topCopy();$('chapter-kicker').textContent=kicker;$('chapter-title').textContent=title;
@@ -281,12 +301,14 @@
     $('room-time').textContent=state.phase==='summary'?'AFTER HOURS · 游客睡了，街道还醒着':state.phase==='night'?'OPEN · '+DAYS[state.day-1]:state.phase==='forage'?'NOORD · 城市把利润扔进了水里':state.phase==='brew'?'BREWING · 比创业鸡汤有营养':state.phase==='prep'?(ui.cityMode==='map'?'AMSTERDAM · 白天属于你，晚上属于账单':C.PLACES[ui.cityPlace].district+' · '+C.PLACES[ui.cityPlace].name):'TWEEDE KANS · 运河边';
     $('room-caption').textContent=state.phase==='summary'?'前门打烊，后门开场。':state.phase==='prep'?(ui.cityMode==='map'?'过桥别走水里。房东不报销打捞自己。':PLACE_COPY[ui.cityPlace].quote):state.phase==='forage'?'环保与盈利偶尔顺路。单车除外。':['summary','ending'].includes(state.phase)&&state.reports[state.reports.length-1]?.promiseBroken?'没有罚单的人情债，也会被记住。':state.music?'至少今晚，音乐比催租声大。':state.promises.lotte?'给 Lotte 留一杯黑啤。信誉比许可证便宜。':state.day===3?'今晚的目标：灯亮着，门没被封。':'这家店，还没倒。';
     renderQueue();renderBoard();renderPours();renderStory();renderCityToolbar();
+    if(state.phase==='ending')$board.innerHTML+=`<div class="receipt"><div><span>票务待付</span><strong>€${state.journeys.debt}</strong></div><div><span>最终净余额</span><strong>€${state.cash-state.journeys.debt}</strong></div></div>`+journeyHistory();
+    if(state.phase==='journey'){$('pub-canvas').setAttribute('aria-label','城市出行：骑车选路、保护花束、街头冲突与列车旅程。下方有状态和方向按钮，右侧提供完整选项。');$('queue-title').textContent='这一趟的状态与操作';journey.render();$('room-time').textContent='城市出行 · 委托内计时';$('room-caption').textContent='一辆车，一束花，一个约定。';}
     if(state.phase==='explore'){$('pub-canvas').setAttribute('aria-label','城市背面：连续工具探险。WASD 移动，J 钩拉，F 泡沫，N 空瓶引声，R 拖动空桶，Space 闪避，E 互动，M 地图。');$('queue-title').textContent='西北：Noor · 东侧：夜店 · 东北：温室';backstage.signature='';backstage.render();}
     const log=(state.log||[]).slice(0,3);
     $('journal-entries').innerHTML=log.length?log.map(line=>`<li>${esc(line)}</li>`).join(''):'<li>房东说钥匙免费，保管钥匙的杯垫另算。</li><li>三天后开业。许可证需要营业流水，营业需要许可证。</li><li>街坊只想喝杯好酒。他们的要求居然最合理。</li>';
-    $('control-hint').textContent=inCity()?'WASD 移动 · 点击地点自动寻路 · B 骑车 · E 进入 · M 地图 · P 暂停':state.phase==='forage'?'A / D 换航道 · Space 打捞 · P 暂停':state.phase==='brew'?'Space 确认工艺 · P 暂停 · H 帮助':state.phase==='night'?'1 / 2 / 3 选客 · E 倒酒 · Space 收杯 · P 暂停':'鼠标或键盘操作 · H 帮助 · P 暂停';
+    $('control-hint').textContent=state.phase==='journey'?'WASD 移动 · B 骑车 · E 取放／帮助 · J 格挡 · Space 闪避 · P 暂停':inCity()?'WASD 移动 · 点击地点自动寻路 · B 骑车 · E 进入 · M 地图 · P 暂停':state.phase==='forage'?'A / D 换航道 · Space 打捞 · P 暂停':state.phase==='brew'?'Space 确认工艺 · P 暂停 · H 帮助':state.phase==='night'?'1 / 2 / 3 选客 · E 倒酒 · Space 收杯 · P 暂停':'鼠标或键盘操作 · H 帮助 · P 暂停';
     if(state.phase==='explore')$('control-hint').textContent=state.backstage.run.auto?.enabled?'点击选项 / 数字键做选择 · M 地图 · P 暂停 · H 帮助':'WASD 移动 · J 钩拉 · F 泡沫 · '+(state.backstage.run.street&&state.backstage.run.street.situation!=='legacy'?'N 引声 · R 拖桶 · ':'')+'Space 闪避 · E 互动 · M 地图 · P 暂停';
-    ui.signature=signature();updateMeters();if(state.phase==='explore')backstage.step(0);else scene.draw(state,performance.now(),ui.selected,cityView());
+    ui.signature=signature();updateMeters();if(state.phase==='explore')backstage.step(0);else if(state.phase==='journey')journey.draw();else scene.draw(state,performance.now(),ui.selected,cityView());
     if(oldFocus){const next=document.querySelector(`[data-focus="${CSS.escape(oldFocus)}"]`);if(next&&!next.disabled)next.focus({preventScroll:true});}
   }
   function renderQueue(){
@@ -323,6 +345,7 @@
     $('story-line').innerHTML=`<span class="quote-mark">“</span><p>${esc(text)}</p><span class="story-author">— ${esc(R.PEOPLE[person]?.name||person)}</span>`;
   }
   function renderBoard(){
+    if(state.phase==='journey'){journey.render();return;}
     if(state.phase==='explore'){backstage.signature='';backstage.render();return;}
     const headings=`<p class="board-eyebrow">TWEEDE KANS / ${state.phase==='night'?'SERVICE':'REOPENING'}</p>`;
     if(state.phase==='welcome'){
@@ -403,6 +426,10 @@
     if(ui.modal||button.disabled)return;
     const data=button.dataset;
     switch(data.action){
+      case 'journey-start':if(state.phase==='prep'&&ui.cityMode==='place'&&ui.cityPlace==='flowers'&&C.near(ui.city)?.id==='flowers'&&nearBike())dispatch({type:'journeyStart',kind:data.kind});break;
+      case 'journey':{let value=data.value;if(value==='true')value=true;if(value==='false')value=false;if(data.verb==='dash')value=journey.direction();journey.do(data.verb,value);break;}
+      case 'journey-return':dispatch({type:'journeyReturn'});break;
+      case 'journey-debt':dispatch({type:'journeyDebt'});break;
       case 'expedition-launch':chooseExpedition();break;
       case 'exp-command':backstage.perform(data.verb);break;
       case 'start':{const n=Number($('seed-input')?.value);if(!Number.isInteger(n)||n<1||n>2147483647){notify('顾客安排请输入 1 到 2147483647 的整数。',true);return;}state=R.createGame(n);dispatch({type:'start'});break;}
@@ -460,6 +487,7 @@
     }
     if(e.target.matches('input,textarea,select')){if(e.key==='Enter'&&e.target.id==='seed-input'){e.preventDefault();handleAction($board.querySelector('[data-action="start"]'));}return;}
     const key=e.key.toLowerCase();
+    if(journey.key(e))return;
     if(backstage.key(e))return;
     if(inCity()&&!state.life.arrangement&&ui.cityMode==='map'&&['w','a','s','d','arrowup','arrowleft','arrowdown','arrowright'].includes(key)){e.preventDefault();const canceledRoute=ui.cityPath.length>0||ui.cityTarget!==null;ui.cityKeys.add(key);ui.cityPath=[];ui.cityTarget=null;if(canceledRoute)render();return;}
     if(e.repeat)return;
@@ -480,12 +508,12 @@
   document.addEventListener('keyup',e=>ui.cityKeys.delete(e.key.toLowerCase()));
   window.addEventListener('blur',()=>ui.cityKeys.clear());
   $('pub-canvas').addEventListener('click',e=>{if(!inCity()||ui.cityMode!=='map'||ui.modal||state.life.arrangement)return;const box=e.currentTarget.getBoundingClientRect(),point=scene.cityWorldPoint((e.clientX-box.left)*1100/box.width,(e.clientY-box.top)*640/box.height);const place=C.near(point,85);if(place)travelTo(place.id);else travelTo(null,point);});
-  document.addEventListener('visibilitychange',()=>{if(document.hidden){ui.cityKeys.clear();backstage.clear();save();if(['night','brew','forage','explore'].includes(state.phase)||inCity()&&ui.cityPath.length)pause('你离开了一会儿，游戏已自动暂停。');}ui.lastFrame=performance.now();});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){ui.cityKeys.clear();backstage.clear();journey.clear();save();if(['night','brew','forage','explore','journey'].includes(state.phase)||inCity()&&ui.cityPath.length)pause('你离开了一会儿，游戏已自动暂停。');}ui.lastFrame=performance.now();});
   window.addEventListener('pagehide',save);
   function frame(now){
     const seconds=Math.min(.1,Math.max(0,(now-ui.cityFrame)/1000));ui.cityFrame=now;
     if(inCity()&&ui.cityMode==='map'&&!ui.modal&&!document.hidden)stepCity(seconds);
-    if(state.phase==='explore')backstage.step(seconds);else scene.draw(state,now,ui.selected,cityView());updateMeters();requestAnimationFrame(frame);
+    if(state.phase==='explore')backstage.step(seconds);else if(state.phase==='journey')journey.step(seconds);else scene.draw(state,now,ui.selected,cityView());updateMeters();requestAnimationFrame(frame);
   }
   setInterval(()=>{
     const now=performance.now(),seconds=Math.min(1,Math.max(0,(now-ui.lastFrame)/1000));ui.lastFrame=now;
@@ -499,7 +527,7 @@
     if(now-ui.lastSave>5000&&state.phase!=='welcome'){save();ui.lastSave=now;}
   },100);
   render();requestAnimationFrame(frame);
-  if(restored&&['night','brew','forage','explore'].includes(state.phase))pause('上次的进度已恢复。准备好后，从上次停下的地方继续。');
+  if(restored&&['night','brew','forage','explore','journey'].includes(state.phase))pause('上次的进度已恢复。准备好后，从上次停下的地方继续。');
   else if(restored)notify('进度已恢复。打烊后就能进入夜间探险。');
   else if(saveError)notify('上次存档无法读取，已准备好一局新的开始。',true);
 })();

@@ -26,3 +26,5 @@ __pycache__/
 node_modules/
 .playwright-cli/
 output/playwright/
+flux/.local
+flux/changes

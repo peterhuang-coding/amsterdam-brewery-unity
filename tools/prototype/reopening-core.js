@@ -1,10 +1,10 @@
 (function (root, factory) {
   'use strict';
   const common = typeof module === 'object' && module.exports;
-  const api = factory(common ? require('./backstage-core.js') : root.Backstage, common ? require('./backstage-auto.js') : root.BackstageAuto);
+  const api = factory(common ? require('./backstage-core.js') : root.Backstage, common ? require('./backstage-auto.js') : root.BackstageAuto, common ? require('./journey-core.js') : root.Journey);
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (root) root.Reopening = api;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (B, A) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (B, A, J) {
   'use strict';
 
   const BEERS = Object.freeze({
@@ -82,7 +82,7 @@
       friends: { lotte: 0, bram: 0, marta: 0 }, promises: { lotte: false },
       upgrades: [], hops: 0, music: false, log: [], totalSatisfied: 0, totalServed: 0,
       brew: null, forage: null, night: null, reports: [], lastMessage: '三天试营业。房东称这叫扶持创业，因为账单用了绿色纸。',
-      result: null, prepared: [], backstage: { run: null, discovered: [], resolution: null, trips: 0, from: null, cashAfterClose: 0, journal: [] }, life: freshLife()
+      result: null, prepared: [], backstage: { run: null, discovered: [], resolution: null, trips: 0, from: null, cashAfterClose: 0, journal: [] }, life: freshLife(), journeys: {run:null,usedDay:0,debt:0,history:[]}
     };
   }
   function stock(state, beer) {
@@ -224,6 +224,31 @@
     if (state.life.arrangement && !['flowerPick','flowerWrap','flowerFinish','flowerCancel'].includes(action.type)) return fail('先包好这束花，或免费取消配花。');
     if (state.phase === 'night' && state.night.event && state.night.event.status === 'pending' && !['event', 'close'].includes(action.type)) return fail('先处理眼前的突发事件。时间和酒杯都暂停了。');
     switch (action.type) {
+      case 'journeyStart': {
+        if(state.phase!=='prep'||state.actions<1||state.journeys.usedDay===state.day||state.life.bouquet)return fail('委托每天一次，占一次准备；先安置自己的花束。');
+        const run=J.create(state.seed,state.day,action.kind);if(!run)return fail('请选择送花或列车委托。');
+        state.actions--;state.journeys.usedDay=state.day;state.journeys.run=run;state.phase='journey';say(state,run.message);break;
+      }
+      case 'journeyAction': {
+        if(state.phase!=='journey')return fail('现在没有正在进行的出行。');
+        const result=J.act(state.journeys.run,action.verb,action.value,state.cash);
+        if(!result.ok)return fail(result.message);state.cash-=result.cost||0;
+        if(action.verb!=='tick')say(state,state.journeys.run.message);break;
+      }
+      case 'journeyReturn': {
+        const r=state.journeys.run;if(state.phase!=='journey'||r.stage!=='receipt')return fail('先完成交付与返程，或明确结束委托。');
+        const earnings=r.reward,repayment=Math.min(state.cash+earnings,state.journeys.debt+r.fee);
+        state.cash+=earnings-repayment;state.journeys.debt+=r.fee-repayment;
+        const note=J.LABELS[r.outcome]+'。'+(r.help?'同行人记得你帮忙收过纸袋。':'')+(r.streetResult==='talk'?'你说明花有收件人，对方让开了。':r.streetResult==='detour'?'你绕过路口，保住了这趟委托。':r.streetResult==='stood-ground'?'对方退让后，你带着花离开。':'')+(r.outcome==='honest'?'收件人接受了你的说明，下次可以多垫一层。':r.outcome==='delivered'?'收件人说花很好，谢谢你跑这一趟。':'');
+        state.journeys.history.push({day:state.day,kind:r.kind,outcome:r.outcome,quality:Math.round(r.quality),street:r.streetResult,help:r.help,paid:r.paid,reward:earnings,note});
+        state.journeys.history=state.journeys.history.slice(-3);state.journeys.run=null;state.phase='prep';
+        say(state,'这趟已收好：委托报酬 €'+earnings+'，偿还票务待付款 €'+repayment+'。'+r.message);break;
+      }
+      case 'journeyDebt': {
+        if(state.phase!=='prep'||state.journeys.debt<=0)return fail('没有待付票务费用。');
+        const paid=Math.min(state.cash,state.journeys.debt);if(!paid)return fail('手头没有现金，先去咖啡馆帮工也可以。');
+        state.cash-=paid;state.journeys.debt-=paid;say(state,'支付票务待付款 €'+paid+'。不消耗准备次数。');break;
+      }
       case 'start':
         if (state.phase !== 'welcome') return fail('酒馆已经开始营业准备了。');
         state.phase = 'prep'; say(state, '先备酒，再开门。工商表格没有“暂时还不会倒酒”这一栏。'); break;
@@ -483,10 +508,11 @@
         nextDay(state); break;
       case 'finish': {
         if (state.phase !== 'summary' || state.day !== 3) return fail('三晚营业结束后才能揭晓结局。');
-        const won = state.cash >= 100 && state.totalSatisfied >= 12;
+        const won = state.cash - state.journeys.debt >= 100 && state.totalSatisfied >= 12;
         state.phase = 'ending';
         state.result = { won, title: won ? '尚未倒闭，房东表示欣慰' : '创业失败，案例研究成功',
           description: won ? '三晚租金结清，余款 €' + state.cash + '，满意客人 ' + state.totalSatisfied + ' 位。街坊约了下一杯，房东约了下一笔。你终于有资格考虑给自己发工资。' : '三晚后结余 €' + state.cash + '，满意客人 ' + state.totalSatisfied + ' 位。账本没达到续开的门槛。Marta 帮你收椅子；如果商学院来要案例，记得先收咨询费。' };
+        if(state.journeys.debt)state.result.description+=' 另有票务待付 €'+state.journeys.debt+'；净余额 €'+(state.cash-state.journeys.debt)+'，续开门槛按净余额计算。';
         say(state, state.result.title); break;
       }
       default: return fail('没有这种操作。');
@@ -530,9 +556,13 @@
       Array.isArray(e.outcomes)&&e.outcomes.length<=7&&unique(e.outcomes)&&e.outcomes.every(id=>JOURNAL_OUTCOMES.includes(id)));
   }
   function validState(s) {
-    if (!shape(s, 'version seed day phase cash actions batches friends promises upgrades hops music log totalSatisfied totalServed brew forage night reports lastMessage result prepared backstage life')) return false;
+    if (!shape(s, 'version seed day phase cash actions batches friends promises upgrades hops music log totalSatisfied totalServed brew forage night reports lastMessage result prepared backstage life journeys')) return false;
     if (s.version !== 1 || !integer(s.seed, 0, 4294967295) || !integer(s.day, 1, 3) || !integer(s.cash, 0, 1000000) || !integer(s.actions, 0, 2)) return false;
-    if (!['welcome', 'prep', 'brew', 'forage', 'explore', 'night', 'summary', 'ending'].includes(s.phase)) return false;
+    if (!['welcome', 'prep', 'brew', 'forage', 'explore', 'journey', 'night', 'summary', 'ending'].includes(s.phase)) return false;
+    const j=s.journeys;
+    if(!shape(j,'run usedDay debt history')||!integer(j.usedDay,0,s.day)||!integer(j.debt,0,1000)||!Array.isArray(j.history)||j.history.length>3)return false;
+    if(s.phase==='journey'?(!J||!J.valid(j.run)||j.run.seed!==s.seed||j.run.day!==s.day||j.usedDay!==s.day||s.actions>1):j.run!==null)return false;
+    if(!j.history.every((e,i)=>shape(e,'day kind outcome quality street help paid reward note')&&integer(e.day,1,s.day)&&(i===0||e.day>j.history[i-1].day)&&['delivery','rail'].includes(e.kind)&&owns(J.LABELS,e.outcome)&&integer(e.quality,0,100)&&['none','talk','detour','passed','stood-ground','retreated'].includes(e.street)&&typeof e.help==='boolean'&&integer(e.paid,0,100)&&integer(e.reward,0,16)&&string(e.note)))return false;
     if (!shape(s.backstage, 'run discovered resolution trips from cashAfterClose journal') || !Array.isArray(s.backstage.discovered) || !unique(s.backstage.discovered) || !s.backstage.discovered.every(id => ['greenhouse', 'noor', 'market-shortcut', 'greenhouse-pump'].includes(id)) || ![null, 'returned', 'kept'].includes(s.backstage.resolution) || !integer(s.backstage.trips, 0, 3) || !integer(s.backstage.cashAfterClose,0,1000000)||!validJournal(s.backstage.journal,s)) return false;
     if(s.phase==='explore' ? !['prep','summary'].includes(s.backstage.from) : s.backstage.from!==null) return false;
     const afterClose=['summary','ending'].includes(s.phase)||s.phase==='explore'&&s.backstage.from==='summary';
@@ -595,7 +625,7 @@
     if (s.totalServed !== reportedServed + (s.phase === 'night' ? s.night.served : 0) || s.totalSatisfied !== reportedSatisfied + (s.phase === 'night' ? s.night.satisfied : 0)) return false;
     if (s.phase === 'welcome' && s.day !== 1) return false;
     if (s.phase === 'ending') {
-      if (s.day !== 3 || !shape(s.result, 'won title description') || typeof s.result.won !== 'boolean' || s.result.won !== (s.cash >= 100 && s.totalSatisfied >= 12) || !string(s.result.title) || !string(s.result.description)) return false;
+      if (s.day !== 3 || !shape(s.result, 'won title description') || typeof s.result.won !== 'boolean' || s.result.won !== (s.cash-s.journeys.debt >= 100 && s.totalSatisfied >= 12) || !string(s.result.title) || !string(s.result.description)) return false;
     } else if (s.result !== null) return false;
     return true;
   }
@@ -603,6 +633,7 @@
     try {
       if (!safeData(value, new Set(), 0, { count: 0 })) return null;
       const restored = clone(value);
+      if(restored&&!owns(restored,'journeys'))restored.journeys={run:null,usedDay:0,debt:0,history:[]};
       if (restored && !owns(restored, 'backstage')) restored.backstage = { run: null, discovered: [], resolution: null, trips: 0 };
       if(restored&&!owns(restored,'life'))restored.life=freshLife();
       if(restored?.life&&!owns(restored.life,'clues'))restored.life.clues=[];

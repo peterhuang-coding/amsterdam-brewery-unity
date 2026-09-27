@@ -28,11 +28,11 @@
 
 ## 当前任务
 
-SM01 / 超市夜班昼夜闭环 / D13 原型实现，执行中。
-批准来源：2026-09-27当前用户直接请求；不是候选卡自动升级。
-基线5970a022a7502d3075266cbe9051df472b16b852；独立分支codex/supermarket-night-shift，复用city-journey-quality工作树。
-范围与验收：[实现计划](../../docs/superpowers/plans/2026-09-27-supermarket-night-shift.md)。先夜探模拟/自动/界面，核验后接白天后果与存档；每包1800秒/60轮、固定套餐，仅一次，接口依赖故串行。三班次、实物搬桶/修电、次日真实行动和价格、旧档/一次结算、全量回归与独立GUI。
-首包amsterdam-sm01-night-20260927；Notion：https://app.notion.com/p/3e83285284df812bbacad9de929f9828 。源码暂存修改，主代理验收后采用；目前仅登记未派发。
+SM01 / 超市夜班昼夜闭环 / D13 首包失败停止，阻塞。
+批准来源：2026-09-27当前用户直接请求「你让它跑的大 feature 更新迭代」；范围见[计划](../../docs/superpowers/plans/2026-09-27-supermarket-night-shift.md)。基线5970a022a7502d3075266cbe9051df472b16b852，独立codex/supermarket-night-shift，复用city-journey-quality工作树，尚未采用游戏文件。
+实际派发1包amsterdam-sm01-night-20260927，套餐Seed Evolving / thinking enabled / effort high，本项目并发1。1664.863秒触及60轮error_max_turns，缺报告，完整通过0/1。只归档两份生产文件和一份测试的原稿补丁；未改派或主代理补写，依赖的白天阶段未提交。
+最终父代理验证新feature19/20（UI未实现）、既有夜探60/60、语法通过；开工前全量基线281/281。最终停电自动路线已修通，但独立发现新自动目标标题undefined；无GUI或玩家趣味验收。输入/原游戏哈希未变，文件范围通过，7次Bash超出精确命令表已记录，不能称边界全通过。
+[原稿与验收](../../docs/product-research/2026-09-27-sm01/README.md)；本机/tmp/amsterdam-sm01-20260927，稳定状态~/.local/state/taskrouter/claude-plan/amsterdam-sm01-night-20260927。Notion：https://app.notion.com/p/3e83285284df812bbacad9de929f9828 。按用户失败即停立即阻塞，不凭旧D13自动恢复；下一步只等待明确恢复，届时复用现有核心先补界面，不重做整个feature。每日22:00维持检查新批准。
 
 ### OPS01 R2 前项：预跑通过，待验收
 

@@ -1,0 +1,39 @@
+{
+  "baseline": "5970a022a7502d3075266cbe9051df472b16b852",
+  "task_id": "amsterdam-sm01-night-20260927",
+  "inputs_sha256": {
+    "task-spec.md": "403056d285a1e652555568b332a4fe26d1bc22817cd0e036bc475d82150b2fc9",
+    "tools/prototype/backstage-auto.js": "bfcea1f2f8e9c376f1560d5fb0152071f83c1b09c10aee9e9c116b86bf897f0b",
+    "tools/prototype/backstage-core.js": "8630f5078217c36eb5f4d72ae152301bfe786ce06fcb72ac9ed55aeaac7f7154",
+    "tools/prototype/backstage-scene.js": "32e570299830f74a2c8c69abd0f7d3989cfa0a2372c99ccbd38e84adb02e7d87",
+    "tools/prototype/backstage-ui.js": "548a047c706411f90aea2a207dbc958d873ea4562e661109547b71fea2a8c5d0",
+    "tools/prototype/character-stories.js": "3db456b04852929656867925bd35bc73dbe0b6349159708922acab22db1a53bb",
+    "tools/prototype/delivery-orders.js": "62e46bb83f5f8d97a2e7bc0d856484ef978efd2566236ee53304ea5167d3e496",
+    "tools/prototype/flower-network.js": "e6febfd844da0107ca9079251ddbb4fd81e30cc5979f696bdba8f3b493027f80",
+    "tools/prototype/journey-core.js": "1424adad30c587fda0aa49e101336061dd0e0a35587d0c0c998feb804948c963",
+    "tools/prototype/reopening-core.js": "ce7a2965de2e91b952fe256d232a97d929b9faccd7fe08adbd5e80b804e10728",
+    "tools/prototype/test-backstage-auto.js": "04087344a2abf20b761e3c34ff2fff1dfd67efad20e3e1822234b0ece219232f",
+    "tools/prototype/test-backstage.js": "d76e837eb53cd6c09421061011bb4ba993d008e63f1106dd277eae7e331d743c",
+    "tools/prototype/test-district-auto.js": "9e2367373e15750e29f658f882459dda2e4dccc7057a1e5bd82cdc695d8b7437",
+    "tools/prototype/test-district-core.js": "7c24b0f1a9a422ffae5f25c3638e9fe22bf6b0649fa627959d45c882608669e4",
+    "tools/prototype/test-location-depth.js": "3c3a0993336d0cf6a7f6339f27c62cd286c639b9664db7acce35405d8de6ffc7",
+    "tools/prototype/test-night-streets.js": "ed92d6901bfa552fe23a09fe272afcb9c15855735fd52a1cc97e8dccb99befd0"
+  },
+  "write_files": [
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/test-market-shift.js"
+  ],
+  "validation_commands": [
+    "node --test tools/prototype/test-market-shift.js",
+    "node --test --test-concurrency=1 tools/prototype/test-backstage.js tools/prototype/test-backstage-auto.js tools/prototype/test-district-core.js tools/prototype/test-district-auto.js tools/prototype/test-location-depth.js tools/prototype/test-night-streets.js",
+    "node --check tools/prototype/backstage-core.js",
+    "node --check tools/prototype/backstage-auto.js",
+    "node --check tools/prototype/backstage-ui.js",
+    "node --check tools/prototype/backstage-scene.js"
+  ],
+  "timeout_seconds": 1800,
+  "max_turns": 60
+}

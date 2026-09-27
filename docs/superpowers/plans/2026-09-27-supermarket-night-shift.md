@@ -21,7 +21,7 @@
 
 修改 backstage-core.js / backstage-auto.js / backstage-ui.js / backstage-scene.js，新增 test-market-shift.js。测试先红后绿。不改 Reopening、其余地点、经营数值或已有回归断言。
 
-在现有 version4 run 增加可选 `marketShift` 子状态，自身 version1；旧档缺字段保留旧夜探行为，不在旧局中凭空加任务。新局创建该状态。状态需保存班次、单选路线、搬桶交付、是否取过库存、修电消耗的物品 ID；严格检查类型、枚举、物品/背包关联，拒绝伪造交付、重复消耗及不一致存档。不得用宽松 restore 接受任意值。
+在现有 version4 run 增加可选 `marketShift` 子状态，自身 version1；旧档缺字段保留旧夜探行为，不在旧局中凭空加任务。本包由 context.marketShift===true 显式创建该状态；阶段二在新局调用传入开关，旧调用与旧存档不变。状态需保存班次、单选路线、搬桶交付、是否取过库存、修电消耗的物品 ID；严格检查类型、枚举、物品/背包关联，拒绝伪造交付、重复消耗及不一致存档。不得用宽松 restore 接受任意值。
 
 公共接口：`B.marketInfo(run)` 提供 enabled、condition、label、copy、counter、fuse、powered、approach、delivered、stockTaken 和各操作可用性。`B.command` 新动作 `market-salvage` / `market-trade` / `market-deliver` / `market-power`，仍由距离、视线、状态、实物检查决定成功。
 
@@ -41,6 +41,6 @@
 
 ## 执行与采用
 
-阶段有真实接口依赖，本轮串行执行；每包仅一次常规尝试。固定套餐 doubao-seed-evolving，每包最多1800秒/60轮，已提交请求只收取核查；失败/unknown/限流/验收失败立即停止后续。主代理核对输入未漂移、文件与命令边界、真实测试结果，再采用原稿，不把 partial 当完整 feature。
+阶段有真实接口依赖，本轮串行执行；每包仅一次常规尝试。固定套餐 doubao-seed-evolving，显式 thinking enabled / 原生 effort high，每包最多1800秒/60轮，已提交请求只收取核查；失败/unknown/限流/验收失败立即停止后续。主代理核对输入未漂移、文件与命令边界、真实测试结果，再采用原稿，不把 partial 当完整 feature。
 
 完成后推送独立分支与审阅链接，工作台主线/轮次及 Notion 同步待验收。用户试玩回答：更想立即带走酒，还是牺牲一桶换次日机会？不将自动测试当趣味结论。

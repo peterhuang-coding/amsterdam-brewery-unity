@@ -1,0 +1,399 @@
+TAP version 13
+# ✓ new expeditions default to a paused automatic choice while manual stays available
+# ✓ reading choices freezes actors, cargo, cooldowns and expedition time
+# ✓ automatic choices travel through the actual city and settle the Noor and greenhouse loop
+# ✓ choosing to keep the box leads to the kept consequence rather than a fake handover
+# ✓ a full bag pauses for an explicit cargo decision and does not silently discard goods
+# ✓ switching control does not teleport or consume time and invalidates the old route
+# ✓ pending and travelling saves resume valid decisions, legacy runs remain valid, malformed auto state rejects
+# ✓ automatic input leaves global pause, help, Escape and browser navigation shortcuts available
+# ✓ delivered parcels are not offered again as a destination that secretly goes somewhere else
+# ✓ a real journey can reveal a greenhouse detour without discarding the original route
+# ✓ following the flower worker replaces the route with an actual greenhouse visit
+# 11 automatic exploration behavioral tests passed.
+# Subtest: tools/prototype/test-backstage-auto.js
+ok 1 - tools/prototype/test-backstage-auto.js
+  ---
+  duration_ms: 415.656625
+  type: 'test'
+  ...
+# ✓ expedition enters after closing and preserves pub stock
+# ✓ seed/day repeat encounters exactly, with different routes on later visits
+# ✓ walking and dash cannot tunnel through shelving or the greenhouse gate
+# ✓ a directional hook retrieves moving goods but respects walls and range
+# ✓ goods auto-stow, capacity is enforced, and dropping frees the last bag slot
+# ✓ foam interrupts a charging machine and expires after its useful window
+# ✓ the greenhouse lever opens a physical route and discovery survives another run
+# ✓ contraband requires deliberate pickup, never enters beer or ingredient rewards
+# ✓ discovering the greenhouse opens a second safe extraction route
+# ✓ Noor receives a physically carried parcel only once
+# ✓ safe extraction preserves cargo; bailout loses cargo but preserves discoveries
+# ✓ time expiration ends a run with recoverable partial cargo, never touches home funds
+# ✓ returning cargo settles once and Noor becomes a recognizable evening guest
+# ✓ older saves migrate without losing cash, batches, day or relationships
+# ✓ refresh roundtrips a running expedition; malformed coordinates and cargo reject
+# ✓ stationary pointer stays aimed to the right as the camera follows a moving player
+# 16 backstage behavioral tests passed.
+# Subtest: tools/prototype/test-backstage.js
+ok 2 - tools/prototype/test-backstage.js
+  ---
+  duration_ms: 158.162042
+  type: 'test'
+  ...
+# Subtest: new route menu can start with any district or immediately return without losing cargo
+ok 3 - new route menu can start with any district or immediately return without losing cargo
+  ---
+  duration_ms: 2.890625
+  type: 'test'
+  ...
+# Subtest: sorting choices operate the real switch then preserve choice of onward route
+ok 4 - sorting choices operate the real switch then preserve choice of onward route
+  ---
+  duration_ms: 360.399208
+  type: 'test'
+  ...
+# Subtest: three sorting approaches collect physical cargo in every situation and kit, including restored travel
+ok 5 - three sorting approaches collect physical cargo in every situation and kit, including restored travel
+  ---
+  duration_ms: 1611.224916
+  type: 'test'
+  ...
+# Subtest: greenhouse valve and harvest choices really travel to their objects
+ok 6 - greenhouse valve and harvest choices really travel to their objects
+  ---
+  duration_ms: 40.692875
+  type: 'test'
+  ...
+# Subtest: repair choice only appears with a real spare, consumes it once and returns to greenhouse choices
+ok 7 - repair choice only appears with a real spare, consumes it once and returns to greenhouse choices
+  ---
+  duration_ms: 54.064042
+  type: 'test'
+  ...
+# Subtest: capacity chooses which kind to drop and never discards a different last item
+ok 8 - capacity chooses which kind to drop and never discards a different last item
+  ---
+  duration_ms: 0.221875
+  type: 'test'
+  ...
+# Subtest: old v3 keeps its old route and rejects new-only automatic goals
+ok 9 - old v3 keeps its old route and rejects new-only automatic goals
+  ---
+  duration_ms: 0.327417
+  type: 'test'
+  ...
+# Subtest: malformed legacy automatic visits reject cleanly
+ok 10 - malformed legacy automatic visits reject cleanly
+  ---
+  duration_ms: 0.060584
+  type: 'test'
+  ...
+# Subtest: sorting arrival records an actual visit before a player can immediately leave
+ok 11 - sorting arrival records an actual visit before a player can immediately leave
+  ---
+  duration_ms: 36.569833
+  type: 'test'
+  ...
+# Subtest: intercepted switch hook reports failure instead of recording a completed reverse
+ok 12 - intercepted switch hook reports failure instead of recording a completed reverse
+  ---
+  duration_ms: 0.481
+  type: 'test'
+  ...
+# Subtest: dropping the only spare while travelling to repair gives a retryable failure
+ok 13 - dropping the only spare while travelling to repair gives a retryable failure
+  ---
+  duration_ms: 0.943666
+  type: 'test'
+  ...
+# Subtest: new v4 runs retain all 17 item identities and expose exact district geometry
+ok 14 - new v4 runs retain all 17 item identities and expose exact district geometry
+  ---
+  duration_ms: 2.092458
+  type: 'test'
+  ...
+# Subtest: belt moves world loot east or west, and off stops motion
+ok 15 - belt moves world loot east or west, and off stops motion
+  ---
+  duration_ms: 3.794292
+  type: 'test'
+  ...
+# Subtest: foam pauses only objects whose centers are inside the local patch
+ok 16 - foam pauses only objects whose centers are inside the local patch
+  ---
+  duration_ms: 0.579042
+  type: 'test'
+  ...
+# Subtest: belt leaves bagged and delivered items alone and pushes the player through collision movement
+ok 17 - belt leaves bagged and delivered items alone and pushes the player through collision movement
+  ---
+  duration_ms: 2.235958
+  type: 'test'
+  ...
+# Subtest: nearby E toggles the switch and hook reverses it within real range
+ok 18 - nearby E toggles the switch and hook reverses it within real range
+  ---
+  duration_ms: 0.930334
+  type: 'test'
+  ...
+# Subtest: switch LOS and hook range block the effect even though hook firing itself succeeds
+ok 19 - switch LOS and hook range block the effect even though hook firing itself succeeds
+  ---
+  duration_ms: 0.153459
+  type: 'test'
+  ...
+# Subtest: valve closes sprinklers for 12 simulation seconds and auto choice freezes the countdown
+ok 20 - valve closes sprinklers for 12 simulation seconds and auto choice freezes the countdown
+  ---
+  duration_ms: 9.966792
+  type: 'test'
+  ...
+# Subtest: hook can close a visible valve but cannot pass glass or exceed reach
+ok 21 - hook can close a visible valve but cannot pass glass or exceed reach
+  ---
+  duration_ms: 0.185667
+  type: 'test'
+  ...
+# Subtest: wet ground slows walking at a legal y490 route and drift respects the greenhouse wall
+ok 22 - wet ground slows walking at a legal y490 route and drift respects the greenhouse wall
+  ---
+  duration_ms: 1.349042
+  type: 'test'
+  ...
+# Subtest: repair needs a nearby visible valve and salvage, consumes one part exactly once and persists
+ok 23 - repair needs a nearby visible valve and salvage, consumes one part exactly once and persists
+  ---
+  duration_ms: 0.630458
+  type: 'test'
+  ...
+# Subtest: drop selects a bag item, rejects unknown/world ids without inventory mutation, and preserves throw behavior
+ok 24 - drop selects a bag item, rejects unknown/world ids without inventory mutation, and preserves throw behavior
+  ---
+  duration_ms: 0.411875
+  type: 'test'
+  ...
+# Subtest: ordinary E and collect use exact requested item, 45 range, LOS and capacity
+ok 25 - ordinary E and collect use exact requested item, 45 range, LOS and capacity
+  ---
+  duration_ms: 0.311917
+  type: 'test'
+  ...
+# Subtest: ordinary auto pickup checks LOS in v4 while old v3 keeps original pickup behavior
+ok 26 - ordinary auto pickup checks LOS in v4 while old v3 keeps original pickup behavior
+  ---
+  duration_ms: 0.1555
+  type: 'test'
+  ...
+# Subtest: visited records unique entered zones only, survives restore and remains separate from choice intent
+ok 27 - visited records unique entered zones only, survives restore and remains separate from choice intent
+  ---
+  duration_ms: 0.436334
+  type: 'test'
+  ...
+# Subtest: v1/v2/v3 restore without adding district and old v3 retains location behavior only
+ok 28 - v1/v2/v3 restore without adding district and old v3 retains location behavior only
+  ---
+  duration_ms: 2.182708
+  type: 'test'
+  ...
+# Subtest: restore validates district structure, discoveries and all seven outcome ids
+ok 29 - restore validates district structure, discoveries and all seven outcome ids
+  ---
+  duration_ms: 0.86625
+  type: 'test'
+  ...
+# Subtest: v4 snapshots all three daytime clues while v3 keeps its original two-clue schema
+ok 30 - v4 snapshots all three daytime clues while v3 keeps its original two-clue schema
+  ---
+  duration_ms: 0.3075
+  type: 'test'
+  ...
+# Subtest: the promised sorting spare starts on the working conveyor and actually travels
+ok 31 - the promised sorting spare starts on the working conveyor and actually travels
+  ---
+  duration_ms: 0.69525
+  type: 'test'
+  ...
+# Subtest: v4 retains three real market spaces, world loot, and a context snapshot
+ok 32 - v4 retains three real market spaces, world loot, and a context snapshot
+  ---
+  duration_ms: 0.979083
+  type: 'test'
+  ...
+# Subtest: both market aisles are physically walkable to the cold stock in every street situation
+ok 33 - both market aisles are physically walkable to the cold stock in every street situation
+  ---
+  duration_ms: 23.37525
+  type: 'test'
+  ...
+# Subtest: unloading shortcut needs a nearby interaction and stays open on later runs
+ok 34 - unloading shortcut needs a nearby interaction and stays open on later runs
+  ---
+  duration_ms: 2.976792
+  type: 'test'
+  ...
+# Subtest: music actually masks guard perception but never protects someone standing beside him
+ok 35 - music actually masks guard perception but never protects someone standing beside him
+  ---
+  duration_ms: 0.521125
+  type: 'test'
+  ...
+# Subtest: bottle sounds obey the same music zone and audible proximity rule
+ok 36 - bottle sounds obey the same music zone and audible proximity rule
+  ---
+  duration_ms: 4.9795
+  type: 'test'
+  ...
+# Subtest: moving crowds stay outside walls and barrels across cycles and situations
+ok 37 - moving crowds stay outside walls and barrels across cycles and situations
+  ---
+  duration_ms: 173.060708
+  type: 'test'
+  ...
+# Subtest: market choices walk into stock, cold room and shortcut without fake rewards
+ok 38 - market choices walk into stock, cold room and shortcut without fake rewards
+  ---
+  duration_ms: 122.660166
+  type: 'test'
+  ...
+# Subtest: choices freeze every field while explicitly waiting advances the real simulation and restores midwait
+ok 39 - choices freeze every field while explicitly waiting advances the real simulation and restores midwait
+  ---
+  duration_ms: 52.970792
+  type: 'test'
+  ...
+# Subtest: all club strategies survive every situation and kit and save halfway through travel
+ok 40 - all club strategies survive every situation and kit and save halfway through travel
+  ---
+  duration_ms: 2626.425083
+  type: 'test'
+  ...
+# Subtest: v1 and v2 keep original geometry and loot while the next run enables new interiors
+ok 41 - v1 and v2 keep original geometry and loot while the next run enables new interiors
+  ---
+  duration_ms: 0.733541
+  type: 'test'
+  ...
+# Subtest: location state roundtrips and malformed fields reject instead of gaining discoveries
+ok 42 - location state roundtrips and malformed fields reject instead of gaining discoveries
+  ---
+  duration_ms: 0.503792
+  type: 'test'
+  ...
+# Subtest: legacy automatic saves reject new location-only goals and v3 requires its location data
+ok 43 - legacy automatic saves reject new location-only goals and v3 requires its location data
+  ---
+  duration_ms: 0.222292
+  type: 'test'
+  ...
+# Subtest: a complete market detour still permits hooked parcel pickup beside a street barrel, before and after refresh
+ok 44 - a complete market detour still permits hooked parcel pickup beside a street barrel, before and after refresh
+  ---
+  duration_ms: 148.457291
+  type: 'test'
+  ...
+# Subtest: new parcel interaction reach cannot collect through a market wall
+ok 45 - new parcel interaction reach cannot collect through a market wall
+  ---
+  duration_ms: 0.180375
+  type: 'test'
+  ...
+# Subtest: three nights rotate real, deterministic street situations
+ok 46 - three nights rotate real, deterministic street situations
+  ---
+  duration_ms: 1.9255
+  type: 'test'
+  ...
+# Subtest: limited decoys draw a patrol to the sound instead of the player
+ok 47 - limited decoys draw a patrol to the sound instead of the player
+  ---
+  duration_ms: 11.819625
+  type: 'test'
+  ...
+# Subtest: a bottle lands before a shelf rather than creating sound behind the wall
+ok 48 - a bottle lands before a shelf rather than creating sound behind the wall
+  ---
+  duration_ms: 0.2175
+  type: 'test'
+  ...
+# Subtest: dragging moves a nearby physical barrel, then leaves it where released
+ok 49 - dragging moves a nearby physical barrel, then leaves it where released
+  ---
+  duration_ms: 1.486542
+  type: 'test'
+  ...
+# Subtest: a barrel blocks a charging machine in actual movement
+ok 50 - a barrel blocks a charging machine in actual movement
+  ---
+  duration_ms: 2.210166
+  type: 'test'
+  ...
+# Subtest: new street state roundtrips and malformed interactions reject
+ok 51 - new street state roundtrips and malformed interactions reject
+  ---
+  duration_ms: 1.06125
+  type: 'test'
+  ...
+# Subtest: legacy expeditions keep geometry, inventory and position through nested restore
+ok 52 - legacy expeditions keep geometry, inventory and position through nested restore
+  ---
+  duration_ms: 2.632291
+  type: 'test'
+  ...
+# Subtest: automatic lure is a physical strategy in every street situation
+ok 53 - automatic lure is a physical strategy in every street situation
+  ---
+  duration_ms: 127.970042
+  type: 'test'
+  ...
+# Subtest: automatic barrel is a physical strategy in every street situation
+ok 54 - automatic barrel is a physical strategy in every street situation
+  ---
+  duration_ms: 114.631292
+  type: 'test'
+  ...
+# Subtest: decoy and dragging state freeze at choices and unavailable equipment is not offered
+ok 55 - decoy and dragging state freeze at choices and unavailable equipment is not offered
+  ---
+  duration_ms: 16.4855
+  type: 'test'
+  ...
+# Subtest: new props restore only in walkable geometry, including tether line of sight
+ok 56 - new props restore only in walkable geometry, including tether line of sight
+  ---
+  duration_ms: 0.530417
+  type: 'test'
+  ...
+# Subtest: street layouts start with the player and threatening actors outside solid geometry
+ok 57 - street layouts start with the player and threatening actors outside solid geometry
+  ---
+  duration_ms: 0.1095
+  type: 'test'
+  ...
+# Subtest: changing kits and seeds keeps the night routes and extraction reachable
+ok 58 - changing kits and seeds keeps the night routes and extraction reachable
+  ---
+  duration_ms: 1609.580291
+  type: 'test'
+  ...
+# Subtest: dragging around a worksite never clips the barrel through a corner
+ok 59 - dragging around a worksite never clips the barrel through a corner
+  ---
+  duration_ms: 5.479292
+  type: 'test'
+  ...
+# Subtest: being knocked around a corner releases the tether and keeps the save recoverable
+ok 60 - being knocked around a corner releases the tether and keeps the save recoverable
+  ---
+  duration_ms: 0.2175
+  type: 'test'
+  ...
+1..60
+# tests 60
+# suites 0
+# pass 60
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8044.164167

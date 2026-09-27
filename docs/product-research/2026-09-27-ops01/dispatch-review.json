@@ -1,0 +1,59 @@
+{
+  "parent_task": "OPS01",
+  "scope": "operating-model design only",
+  "authorized_by": "D11 user request 2026-09-27",
+  "source_sha256": "e90c080750d0b4d3870d971cbde6cd168d73da9b02b15f82bf19e75c8c390d86",
+  "delegable_packages": 2,
+  "requested_model": "doubao-seed-evolving",
+  "route": "cc-plan fixed subscription",
+  "backlog_task": "amsterdam-ops01-backlog-20260927",
+  "protocol_task": "amsterdam-ops01-protocol-20260927",
+  "dispatch_policy": "Single logical wave, global observed capacity<=2. One other project runner present; backlog submitted into one free slot, protocol pending until capacity. Do not cancel others or create another wave.",
+  "adopted": [
+    "Six candidate categories usable for discussion only; raw draft archived, not executable or accepted full specification."
+  ],
+  "scheduled_changes": false,
+  "status": "blocked",
+  "dispatched_count": 1,
+  "complete_packages_passed": 0,
+  "partial_drafts_archived": 1,
+  "protocol_status": "not_submitted_stop_on_failure",
+  "project_peak_in_flight": 1,
+  "observed_other_project_overlap": "Other projects started two further requests after our capacity check. This confirms no atomic global gate.",
+  "elapsed_seconds": 493.709,
+  "failure": "error_max_turns",
+  "draft_sha256": "af0b613e89a234d2273f1a9e27be9760cba42f8480edea7d3dee96fd908e7c3d",
+  "draft_bytes": 6999,
+  "source_unchanged": true,
+  "game_changes": false,
+  "game_tests_this_turn": false,
+  "commands_allowlist_conformance": false,
+  "nonallowlisted_bash_calls": 4,
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 167272,
+    "inference_geo": "",
+    "input_tokens": 30904,
+    "iterations": [],
+    "output_tokens": 23815,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_fetch_requests": 0,
+      "web_search_requests": 0
+    },
+    "service_tier": "standard",
+    "speed": "standard"
+  },
+  "cost_basis": "Client estimate is not Coding Plan charge; no cash charge inferred.",
+  "notes": [
+    "12-turn ceiling reached before handoff-result.json.",
+    "A mechanical byte cap caused repeated truncation edits; smaller input alone did not ensure delivery.",
+    "Card3 design -> card5 persistence contract -> card3 implementation, not an implicit cyclic dependency."
+  ]
+}

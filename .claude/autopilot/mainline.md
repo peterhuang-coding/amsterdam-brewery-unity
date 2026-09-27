@@ -26,12 +26,12 @@
 
 ## 当前任务
 
-CJ01 / 新分支城市出行与昼夜联动打磨 / 交接准备中。
+CJ01 / 新分支城市出行与昼夜联动打磨 / 两路套餐超时，已停止并阻塞；部分回归采用，不是修复交付。
 批准来源：本任务 2026-09-27 用户直接要求，D10；必要工程审查、修复与验证已获准。
 基线：origin/codex/city-journey @ 80da568c4c574c54800c9a814ceb90c5238e4e1e；独立工作分支 codex/city-journey-quality，worktree .claude/worktrees/city-journey-quality。新分支已包含 c764eb0 的历史算法提交；这是上游已有关系，不是本轮自动合并。
 范围：同一波两个独立 cc-plan 包；A 负责 journey-core/UI、货物与暂停恢复，B 负责订单/人物/经营联动。每包最多修两个证实缺陷；禁止改利润设计、凭空奖励、瞬移与放宽全部校验。后续新玩法需先确定独立验收范围；不自动消费全部旧候选。
-验收：真实动作触发的先红后绿回归、旧档兼容、一次结算、精确输入输出哈希、全量串行测试及相关独立浏览器操作。267/267 是本轮原始基线测试，GUI 尚未验收。
-套餐：固定 doubao-seed-evolving，各 1200 秒/32轮；任务 ID amsterdam-cj01-journey-20260927、amsterdam-cj01-consequences-20260927。只复制已公开且审查过的必要代码。发现其他项目两路在运行，当前仅准备，待空位才正式派发；任何失败立即停止后续波次。
+验收：真实动作触发的先红后绿回归、旧档兼容、一次结算、精确输入输出哈希、全量串行测试及相关独立浏览器操作。本轮基线 267/267；采用两份测试后全量 281/281、0失败/跳过。独立GUI完成温室送花→次晚供酒、Ada对话与未招待后果、列车记账返程和暂停刷新；不代表所有分支或趣味验收。
+套餐：固定 doubao-seed-evolving，各 1200 秒/32轮；任务 ID amsterdam-cj01-journey-20260927、amsterdam-cj01-consequences-20260927。只复制已公开且审查过的必要代码。等待其他两路进程结束后实际并发2；两包均1200秒超时（143 / unknown），缺完整报告与handoff-result。源码无改动；仅两份测试草稿经主代理8/8与6/6及全量验证后原样采用。完整任务通过0/2，部分产物采用2；停止后续派发，不改派或自行接管。
 Notion：https://app.notion.com/p/3e83285284df81b7bbecdf3a63b5c92c 。本机证据 /tmp/amsterdam-city-journey-20260927；基线日志 /tmp/amsterdam-city-journey-baseline-20260927.log。旧试玩服务与旧算法未提交文件不动。
 
 ## 前项保留：PLAN01 已阻塞，不重发
@@ -69,4 +69,4 @@ ALG01线程已确认暂停，amsterdam-2已PAUSED；已提交e740f71/c764eb0与�
 - [ ] PLAN01 R2已停止：需求包超时、任务包启动unknown；原稿保留，12张完整卡未交付，不再自动修订。
 - [ ] R01人工试玩；其余方向另行决定。
 工作台：[Notion](https://app.notion.com/p/3db3285284df81038056e2dfe875e700)；[候选](../../docs/product-research/README.md)；[执行流程](../../docs/product-research/nightshift.md)。
-最近一轮：[PLAN01 R2停止记录](rounds/2026-09-20-plan01-r2.md)；[前轮PLAN01验收](rounds/2026-09-20-plan01.md)；[前轮范围](rounds/2026-09-19-night-details.md)；[前轮交付](rounds/2026-09-18-location-depth.md)。夜班每日北京时间22:00，自动化 amsterdam；当前执行 D10/CJ01 新分支工程审查与修复；旧 PLAN01 阻塞历史保留，ALG01旧循环暂停；R01成果待验收，其余候选未自动批准。工作台只同步文档，未合并两版游戏。
+最近一轮：[CJ01部分回归与停止记录](rounds/2026-09-27-cj01.md)；[PLAN01 R2停止记录](rounds/2026-09-20-plan01-r2.md)；[前轮PLAN01验收](rounds/2026-09-20-plan01.md)；[前轮范围](rounds/2026-09-19-night-details.md)；[前轮交付](rounds/2026-09-18-location-depth.md)。夜班每日北京时间22:00，自动化 amsterdam；D10/CJ01 本轮因两路超时已停止，继续需要新的明确恢复决定，不能凭旧D10自动重发；旧 PLAN01 阻塞历史保留，ALG01旧循环暂停；R01成果待验收，其余候选未自动批准。工作台只同步文档，未合并两版游戏。

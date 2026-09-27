@@ -1,0 +1,48 @@
+{
+  "task": "CJ01",
+  "baseline": "80da568c4c574c54800c9a814ceb90c5238e4e1e",
+  "delegable_packages": 2,
+  "attempted": 2,
+  "accepted": 0,
+  "status": "stopped_after_two_timeouts",
+  "previous_plan01_attempts_preserved": true,
+  "actual_concurrency": 2,
+  "task_ids": [
+    "amsterdam-cj01-journey-20260927",
+    "amsterdam-cj01-consequences-20260927"
+  ],
+  "accepted_partial_artifacts": 2,
+  "implementation_changes": 0,
+  "no_fallback": true,
+  "models": [
+    "doubao-seed-evolving"
+  ],
+  "parent_new_tests": {
+    "journey": {
+      "pass": 8,
+      "fail": 0
+    },
+    "consequences": {
+      "pass": 6,
+      "fail": 0
+    }
+  },
+  "retained_by_main": [
+    "scope and necessary operational work",
+    "independent source/log and regression review",
+    "real browser acceptance and archival"
+  ],
+  "limits": [
+    "Full task reports and handoff-result.json missing",
+    "Full repair delivery 0/2; partial regression adoption does not mark the task complete",
+    "No new wave without explicit restart"
+  ],
+  "parent_full_suite": {
+    "pass": 281,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "duration_ms": 34609.166875
+  },
+  "code_commit": "5970a02"
+}

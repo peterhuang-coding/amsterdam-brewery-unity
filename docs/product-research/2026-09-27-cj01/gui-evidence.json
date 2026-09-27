@@ -1,0 +1,135 @@
+{
+  "gui-settlement": {
+    "saved": {
+      "cash": 59,
+      "trade": {
+        "rulesFromDay": 1,
+        "contracts": [
+          {
+            "id": "bridge-d1",
+            "sourceDay": 1,
+            "dueDay": 2,
+            "status": "offered",
+            "reservedBatch": null,
+            "customerId": null,
+            "settledDay": null
+          }
+        ]
+      },
+      "history": [
+        {
+          "day": 1,
+          "kind": "delivery",
+          "outcome": "redirected",
+          "quality": 100,
+          "street": "none",
+          "help": false,
+          "paid": 0,
+          "reward": 14,
+          "note": "按改约交到后台。你在原时限内联系了 Lotte，约定改在桥边后台交接，时限 80 秒、完好报酬 €12。你绕进了温室侧门。花束重新包扎一次，花了 8 秒，凭 Ada 的介绍免材料费。入口仍在漏水，进出要慢一些。 急件迟到交付，€2。"
+        }
+      ],
+      "valid": true
+    }
+  },
+  "gui-ada": {
+    "beforeCups": 5,
+    "afterCups": 4,
+    "reserved": "d1-batch2",
+    "thread": [
+      {
+        "id": "ada",
+        "day": 1,
+        "status": "resolved",
+        "choice": "round",
+        "customerId": "d1-guest3",
+        "service": null
+      }
+    ]
+  },
+  "gui-close": {
+    "state": {
+      "thread": [
+        {
+          "id": "ada",
+          "day": 1,
+          "status": "resolved",
+          "choice": "round",
+          "customerId": "d1-guest3",
+          "service": "lost"
+        }
+      ],
+      "reserved": {
+        "id": "bridge-d1",
+        "sourceDay": 1,
+        "dueDay": 2,
+        "status": "accepted",
+        "reservedBatch": "d1-batch2",
+        "customerId": null,
+        "settledDay": null
+      },
+      "cash": 29,
+      "valid": true
+    }
+  },
+  "garden_and_refresh": {
+    "source": "earlier run-code assertions in this session and cj01-garden-mobile.png",
+    "wrap_seconds": 8,
+    "cash_unchanged": true,
+    "quality_preserved_at_100": true,
+    "parcel_stays_bike": true,
+    "paused_reload_exact_game": true,
+    "restore_valid": true,
+    "viewport_width": 390,
+    "horizontal_overflow": false
+  },
+  "limitations": [
+    "Baseline GUI acceptance uses real UI path on isolated port 18779; no save injection.",
+    "The first night pour attempt used an obsolete changing button label and overflowed; no successful Marta-service claim.",
+    "No human enjoyment test, no exhaustive GUI coverage."
+  ],
+  "gui-fulfilled": {
+    "cash": 49,
+    "contract": {
+      "id": "bridge-d1",
+      "sourceDay": 1,
+      "dueDay": 2,
+      "status": "fulfilled",
+      "reservedBatch": null,
+      "customerId": "d2-guest1",
+      "settledDay": 2
+    },
+    "cups": 5,
+    "valid": true
+  },
+  "gui-order-reload": {
+    "exactOrderReload": true
+  },
+  "console": {
+    "errors": 0,
+    "warnings": 0,
+    "source": "isolated Playwright console at end of baseline walkthrough"
+  },
+  "gui-rail": {
+    "cash": 51,
+    "debt": 0,
+    "trade": {
+      "rulesFromDay": 1,
+      "contracts": []
+    },
+    "history": [
+      {
+        "day": 1,
+        "kind": "rail",
+        "outcome": "delivered",
+        "quality": 100,
+        "street": "none",
+        "help": false,
+        "paid": 4,
+        "reward": 14,
+        "note": "完好交付。收件人说花很好，谢谢你跑这一趟。"
+      }
+    ],
+    "valid": true
+  }
+}

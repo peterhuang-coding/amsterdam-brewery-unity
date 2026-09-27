@@ -1,8 +1,11 @@
 # 白天决策 / 夜间执行
 
-更新：2026-09-27。适用仓库：`peterhuang-coding/amsterdam-brewery-unity`。
+更新：2026-09-28。适用仓库：`peterhuang-coding/amsterdam-brewery-unity`。
 
 [Notion 工作台](https://app.notion.com/p/3db3285284df81038056e2dfe875e700) · [任务表](https://app.notion.com/p/f73277914eef4344a853d7de3ffa2b92) · [调研目录](README.md) · [当前主线](../../.claude/autopilot/mainline.md)
+
+## D15今日限时执行
+2026-09-28用户明确恢复CC推进至北京时间21:00并要求可玩更新说明。先复用SM01候选补两个UI缺陷，独立验收通过才接既定白天闭环；只用套餐、失败即停。20:00停止新派发，21:00报告实际已采用/未完成/验证和试玩入口。临时调整现有amsterdam心跳，无重复循环；期限后恢复每日22:00新审批检查。旧失败/暂停任务不自动恢复。详细范围和精确基线见主线。
 
 ## 状态从哪里恢复
 

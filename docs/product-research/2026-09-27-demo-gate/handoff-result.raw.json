@@ -1,0 +1,26 @@
+{
+  "status": "completed",
+  "summary": "新建 demo-acceptance.json：含产品目标、已确认决策、未验证假设、7 个 demo 门（G1–G5 为软件行为，G6 为用户明确人类批准，G7 为市场假设隔离）、5 个有序建议增量（核心闭环→探索差异→选择后果→可读性/容错→用户试玩批准门）、5 步非引导试玩脚本、6 条停止规则与引擎门。各门均有可观察通过条件、反例与诚实的 pending/partial 现状；未编造试玩结果，未写入定价规则、发行日期或收入承诺；门与增量均标注为建议工作标准。python3 verify.py 通过（仅结构层面）。",
+  "changed_files": [
+    "demo-acceptance.json",
+    "handoff-result.json"
+  ],
+  "tests": [
+    {
+      "command": "python3 verify.py",
+      "exit_code": 0,
+      "summary": "输出 PASS: structure only; semantic and user review required：必需字段、7 个门及其键、5 个增量、5 步试玩脚本等结构断言全部通过；语义与用户批准仍需另行评审。"
+    }
+  ],
+  "blockers": [],
+  "memory_delta": [
+    "demo-acceptance.json 已建立 7 门 5 增量：G1–G5 软件行为、G6 用户显式批准、G7 市场假设隔离；全部为建议标准，待用户审阅。",
+    "引擎门已显式绑定：仅当 G1–G5 在同一构建达成且用户对该版本明确批准后，才进入引擎选型评估，沉默不算批准。",
+    "SM01（19/20 测试、缺 UI/目标标签）被记为在途并行工作：增量 1 要求未落地则隐藏入口，任何门均不依赖其成功。"
+  ],
+  "next_steps": [
+    "请用户审阅 demo-acceptance.json，确认或调整门定义与 5 个增量的排序。",
+    "批准后按建议增量 1 收尾三天核心闭环，并对当前候选版本做一次完整手动通关。",
+    "达到 G6 前置条件后按 playtest_script 组织用户试玩，取得针对具体版本的明确批准。"
+  ]
+}

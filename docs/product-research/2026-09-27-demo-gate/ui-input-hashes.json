@@ -1,0 +1,19 @@
+{
+  "tools/prototype/backstage-core.js": "6be58761629feb345d0872c3de3ec08b9d34bb6ea575bf10ab1eda3e1e48a4cb",
+  "tools/prototype/backstage-auto.js": "7d5d2350d4d6daba07ec28d0dbbb9987dc43aa8f35b59a4a39b6244f8655b883",
+  "tools/prototype/backstage-ui.js": "548a047c706411f90aea2a207dbc958d873ea4562e661109547b71fea2a8c5d0",
+  "tools/prototype/backstage-scene.js": "32e570299830f74a2c8c69abd0f7d3989cfa0a2372c99ccbd38e84adb02e7d87",
+  "tools/prototype/reopening-core.js": "ce7a2965de2e91b952fe256d232a97d929b9faccd7fe08adbd5e80b804e10728",
+  "tools/prototype/journey-core.js": "1424adad30c587fda0aa49e101336061dd0e0a35587d0c0c998feb804948c963",
+  "tools/prototype/delivery-orders.js": "62e46bb83f5f8d97a2e7bc0d856484ef978efd2566236ee53304ea5167d3e496",
+  "tools/prototype/character-stories.js": "3db456b04852929656867925bd35bc73dbe0b6349159708922acab22db1a53bb",
+  "tools/prototype/flower-network.js": "e6febfd844da0107ca9079251ddbb4fd81e30cc5979f696bdba8f3b493027f80",
+  "tools/prototype/test-backstage.js": "d76e837eb53cd6c09421061011bb4ba993d008e63f1106dd277eae7e331d743c",
+  "tools/prototype/test-backstage-auto.js": "04087344a2abf20b761e3c34ff2fff1dfd67efad20e3e1822234b0ece219232f",
+  "tools/prototype/test-district-core.js": "7c24b0f1a9a422ffae5f25c3638e9fe22bf6b0649fa627959d45c882608669e4",
+  "tools/prototype/test-district-auto.js": "9e2367373e15750e29f658f882459dda2e4dccc7057a1e5bd82cdc695d8b7437",
+  "tools/prototype/test-location-depth.js": "3c3a0993336d0cf6a7f6339f27c62cd286c639b9664db7acce35405d8de6ffc7",
+  "tools/prototype/test-night-streets.js": "ed92d6901bfa552fe23a09fe272afcb9c15855735fd52a1cc97e8dccb99befd0",
+  "tools/prototype/test-market-shift.js": "be3a70f2b9460694e7f781aa22855aa69bdbaeb9f585574316069863c41d23fe",
+  "task-spec.md": "3f94e3203c754c36aef02f366d9f9df40a449c1350e2fdb1360a508119cb9a46"
+}

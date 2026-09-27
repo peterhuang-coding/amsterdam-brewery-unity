@@ -1,0 +1,840 @@
+--- a/tools/prototype/backstage-core.js
++++ b/tools/prototype/backstage-core.js
+@@ -71,0 +72,7 @@
++  const MARKET_COUNTER=Object.freeze({x:405,y:1085}),MARKET_FUSE=Object.freeze({x:735,y:1105});
++  const SHIFT_CONDITIONS=Object.freeze(['staffed','restock','blackout']);
++  const SHIFT_COPY=Object.freeze({
++    staffed:{label:'值班夜 · 清扫机更警觉',copy:'清扫机今晚多看 60 步。货架照常缺货，机器照常上班，还加了班。'},
++    restock:{label:'补货夜 · 酒桶更难控制',copy:'补货的滚动酒桶不会自己进包：靠近后亲手收。库存制度鼓励滚动，不鼓励停下来。'},
++    blackout:{label:'停电夜 · 冷库上锁',copy:'冷库黑着，冷库存货拿不出。拿一件可卖 €5 的可修零件，到卸货门开关旁修电。'}
++  });
+@@ -76,0 +84,12 @@
++  // Shift formula: cast seed to uint first, then add day-1.
++  const shiftCondition=(seed,day)=>SHIFT_CONDITIONS[((seed>>>0)+day-1)%3];
++  const market=r=>r&&r.version>=4?r.marketShift||null:null;
++  const coldLocked=r=>{const m=market(r);return Boolean(m&&m.condition==='blackout'&&m.powerItem===null);};
++  // Item ids item0/item1 can only be taken on the salvage route; item1 also waits for power.
++  const marketStowBlocked=(r,item)=>{
++    const m=market(r);if(!m)return false;
++    if(item.id==='item1'&&coldLocked(r))return true;
++    return m.approach==='trade'&&(item.id==='item0'||item.id==='item1');
++  };
++  // On restock night the rolling barrel ignores proximity auto-stow; deliberate collect still works.
++  const marketAutoStowBlocked=(r,item)=>marketStowBlocked(r,item)||(market(r)?.condition==='restock'&&item.id==='item2');
+@@ -118,0 +138,5 @@
++    if(context&&context.marketShift===true){
++      const condition=shiftCondition(r.seed,r.day);
++      r.marketShift={version:1,condition,approach:null,delivered:false,stockTaken:false,powerItem:null};
++      if(condition==='restock')items[2].vx=130;
++    }
+@@ -177,0 +202 @@
++    if(marketStowBlocked(r,item))return false;
+@@ -179,0 +205,4 @@
++    const m=market(r);
++    if(m&&(item.id==='item0'||item.id==='item1')){
++      m.stockTaken=true;if(m.approach===null)m.approach='salvage';
++    }
+@@ -183 +212 @@
+-  function collectable(r,item){return districts(r)&&item&&item.kind!=='parcel'&&item.state==='world'&&item.lock===0&&distance(r.p,item)<=45&&clear(r,r.p,item);}
++  function collectable(r,item){return districts(r)&&item&&item.kind!=='parcel'&&item.state==='world'&&item.lock===0&&distance(r.p,item)<=45&&clear(r,r.p,item)&&!marketStowBlocked(r,item);}
+@@ -205,0 +235,24 @@
++    }
++
++    if(verb==='market-salvage'||verb==='market-trade'){
++      const m=market(r);if(!m||m.approach!==null)return false;
++      if(distance(p,MARKET_COUNTER)>60||!clear(r,p,MARKET_COUNTER))return false;
++      m.approach=verb==='market-salvage'?'salvage':'trade';
++      note(r,verb==='market-salvage'?'选了直接取库存：货架与冷库的货，拿了就是你的。':'选了帮忙搬货：把滚动酒桶实送到柜台。没安全撤离，就没有回执。');
++      return true;
++    }
++    if(verb==='market-deliver'){
++      const m=market(r);if(!m||m.approach!=='trade'||m.delivered)return false;
++      if(distance(p,MARKET_COUNTER)>60||!clear(r,p,MARKET_COUNTER))return false;
++      const barrel=r.items[2];
++      if(barrel.state!=='bag'||!r.bag.includes('item2'))return false;
++      barrel.state='delivered';r.bag=r.bag.filter(id=>id!=='item2');m.delivered=true;
++      note(r,'酒桶交到柜台上，回执先欠着：安全回到街面才算数。');return true;
++    }
++    if(verb==='market-power'){
++      const m=market(r);if(!m||m.condition!=='blackout'||m.powerItem!==null)return false;
++      if(distance(p,MARKET_FUSE)>55||!clear(r,p,MARKET_FUSE))return false;
++      const part=r.bag.map(id=>r.items.find(i=>i.id===id)).find(i=>i.kind==='salvage');
++      if(!part)return false;
++      part.state='delivered';r.bag=r.bag.filter(id=>id!==part.id);m.powerItem=part.id;
++      note(r,'用一个零件修好了电。冷库解锁；这件 €5 的零件已经用掉。');return true;
+@@ -310 +363 @@
+-        if(item.kind!=='parcel'&&item.lock===0&&distance(p,item)<31&&(!districts(r)||clear(r,p,item)))stow(r,item);
++        if(item.kind!=='parcel'&&item.lock===0&&distance(p,item)<31&&(!districts(r)||clear(r,p,item))&&!marketAutoStowBlocked(r,item))stow(r,item);
+@@ -325 +378,2 @@
+-        const near=distance(a,p),sees=near<(a.type==='guard'?musicLoud(r)&&inClub(a)&&inClub(p)?60:r.parcel==='carried'?290:95:175)&&clear(r,a,p);
++        const near=distance(a,p),cleanerRange=market(r)?.condition==='staffed'?235:175;
++        const sees=near<(a.type==='guard'?musicLoud(r)&&inClub(a)&&inClub(p)?60:r.parcel==='carried'?290:95:cleanerRange)&&clear(r,a,p);
+@@ -347,0 +402,26 @@
++  function marketInfo(r){
++    const m=market(r);if(!m)return {enabled:false};
++    const nearCounter=distance(r.p,MARKET_COUNTER)<=60&&clear(r,r.p,MARKET_COUNTER);
++    const nearFuse=distance(r.p,MARKET_FUSE)<=55&&clear(r,r.p,MARKET_FUSE);
++    const barrel=r.items[2],hasBarrel=barrel.state==='bag'&&r.bag.includes('item2');
++    const part=r.bag.map(id=>r.items.find(i=>i.id===id)).find(i=>i.kind==='salvage');
++    const shift=SHIFT_COPY[m.condition],powered=m.condition!=='blackout'||m.powerItem!==null;
++    const chooseReason=m.approach!==null
++      ?'路线已经选定：'+(m.approach==='salvage'?'直接取库存':'帮忙搬货')+'。'
++      :nearCounter?'':'靠近超市柜台再表态。';
++    const deliverReason=m.approach!=='trade'?'只有「帮忙搬货」路线才能交付酒桶。'
++      :m.delivered?'酒桶已经交付过，一次就够。'
++      :!nearCounter?'走到柜台旁边，再交付酒桶。'
++      :!hasBarrel?'包里需要有滚动酒桶 item2（占 3 格）。':'';
++    const powerReason=m.condition!=='blackout'?'今夜没有停电，冷库有电。'
++      :powered?'电已经修好，冷库开着。'
++      :!nearFuse?'走到卸货门开关旁的修电点再修电。'
++      :!part?'包里需要一件可修零件（可卖 €5）。':'';
++    return {enabled:true,version:1,condition:m.condition,label:shift.label,copy:shift.copy,
++      counter:{...MARKET_COUNTER},fuse:{...MARKET_FUSE},powered,approach:m.approach,
++      delivered:m.delivered,stockTaken:m.stockTaken,
++      canSalvage:m.approach===null&&nearCounter,canTrade:m.approach===null&&nearCounter,
++      canDeliver:m.approach==='trade'&&!m.delivered&&nearCounter&&hasBarrel,
++      canPower:m.condition==='blackout'&&!powered&&nearFuse&&Boolean(part),
++      reasons:{salvage:chooseReason,trade:chooseReason,deliver:deliverReason,power:powerReason}};
++  }
+@@ -351,0 +432,2 @@
++    const m=market(r);
++    if(m)result.market={condition:m.condition,approach:m.approach,delivered:m.delivered,stockTaken:m.stockTaken,powerRestored:m.powerItem!==null};
+@@ -391,0 +474,27 @@
++      if(Object.hasOwn(r,'marketShift')){
++        const m=r.marketShift;
++        if(r.version!==4||!m||Object.keys(m).length!==6||m.version!==1||
++          !SHIFT_CONDITIONS.includes(m.condition)||m.condition!==shiftCondition(r.seed,r.day)||
++          ![null,'salvage','trade'].includes(m.approach)||
++          typeof m.delivered!=='boolean'||typeof m.stockTaken!=='boolean'||
++          (m.powerItem!==null&&typeof m.powerItem!=='string'))return null;
++        if(m.stockTaken&&m.approach===null)return null;
++        if(m.approach==='trade'){
++          if(m.stockTaken)return null;
++          if(r.items.slice(0,2).some(i=>['bag','lost','delivered'].includes(i.state)))return null;
++        }
++        if(m.delivered&&(m.approach!=='trade'||r.items[2].state!=='delivered'))return null;
++        if(!m.delivered&&r.items[2].state==='delivered')return null;
++        if(m.condition!=='blackout'&&m.powerItem!==null)return null;
++        if(m.powerItem!==null){
++          const pi=r.items.find(i=>i.id===m.powerItem);
++          if(!pi||pi.kind!=='salvage'||pi.state!=='delivered'||r.bag.includes(pi.id))return null;
++        }
++        if(coldLocked(r)&&['bag','lost','delivered'].includes(r.items[1].state))return null;
++        if(m.stockTaken){
++          const spawn=i=>({x:i.id==='item0'?405:740,y:i.id==='item0'?990:850});
++          const evidence=i=>i.state==='bag'||i.state==='lost'||i.lock>0||
++            (i.state==='world'&&(Math.abs(i.x-spawn(i).x)>4||Math.abs(i.y-spawn(i).y)>4));
++          if(![r.items[0],r.items[1]].some(evidence))return null;
++        }else if(r.items.slice(0,2).some(i=>['bag','lost','delivered'].includes(i.state)))return null;
++      }
+@@ -397 +506 @@
+-  return Object.freeze({WIDTH,HEIGHT,EXIT,NOOR,LEVER,GARDEN_EXIT,GATE,KITS,TYPES,ZONES,WALLS,create,step,command,restore,rewards,load,zone,nearest,solid,clear,flowerCart,streetInfo,locationInfo,districtInfo,dragTarget});
++  return Object.freeze({WIDTH,HEIGHT,EXIT,NOOR,LEVER,GARDEN_EXIT,GATE,KITS,TYPES,ZONES,WALLS,MARKET_COUNTER,MARKET_FUSE,create,step,command,restore,rewards,marketInfo,load,zone,nearest,solid,clear,flowerCart,streetInfo,locationInfo,districtInfo,dragTarget});
+--- /dev/null
++++ b/tools/prototype/test-market-shift.js
+@@ -0,0 +1,373 @@
++'use strict';
++const test=require('node:test'),assert=require('node:assert/strict');
++const B=require('./backstage-core.js'),A=require('./backstage-auto.js');
++
++const shift=(day=1,kit='hook',seed=42)=>B.create(seed,day,kit,[],{marketShift:true});
++function advance(r,seconds,input={}){for(let t=0;t<seconds-1e-8;t+=.025)B.step(r,input,Math.min(.025,seconds-t));}
++function walkTo(r,to){
++  for(let n=0;n<6000&&Math.hypot(to.x-r.p.x,to.y-r.p.y)>6;n++){
++    const d=Math.hypot(to.x-r.p.x,to.y-r.p.y);
++    B.step(r,{dx:(to.x-r.p.x)/d,dy:(to.y-r.p.y)/d},.025);
++    assert.ok(!B.solid(r,r.p.x,r.p.y));
++  }
++  assert.ok(Math.hypot(to.x-r.p.x,to.y-r.p.y)<8,JSON.stringify({p:r.p,to}));
++}
++function autoNext(r){
++  for(let n=0;n<8000&&r.status==='active'&&!r.auto.event;n++){
++    A.step(r,.05);assert.ok(!B.solid(r,r.p.x,r.p.y));
++  }
++  assert.notEqual(r.auto.event,'stuck',JSON.stringify({p:r.p,time:r.time}));
++  assert.ok(r.auto.event||r.status!=='active');
++}
++function autoPick(r,id){
++  if(!r.auto?.enabled)A.enable(r);
++  assert.ok(A.choose(r,id),'choice available: '+id);autoNext(r);
++}
++
++test('marketShift is strict opt-in: old create calls keep the old night run',()=>{
++  const legacy=B.create(42,1);
++  assert.equal(Object.hasOwn(legacy,'marketShift'),false);
++  assert.equal(B.marketInfo(legacy).enabled,false);
++  assert.deepEqual(B.restore(legacy),legacy);
++  const enabled=shift(1);
++  assert.equal(enabled.marketShift.version,1);
++  assert.equal(B.marketInfo(enabled).enabled,true);
++});
++
++test('the same seed/day reproduces the shift and three nights cover all conditions',()=>{
++  const runs=[1,2,3].map(d=>shift(d));
++  assert.deepEqual(runs[0],shift(1));
++  assert.deepEqual(runs,JSON.parse(JSON.stringify(runs)));
++  assert.deepEqual(runs.map(r=>r.marketShift.condition),['staffed','restock','blackout']);
++  // Formula: cast seed to uint first, then add day-1.
++  for(const [seed,day,cond] of [[42,1,'staffed'],[42,2,'restock'],[42,3,'blackout'],[7,1,'restock'],[1,1,'restock']]){
++    assert.equal(shift(day,'hook',seed).marketShift.condition,cond,seed+'/'+day);
++  }
++});
++
++test('marketInfo exposes labels, copy, points, facts and operation availability',()=>{
++  const r=shift(1),info=B.marketInfo(r);
++  for(const key of ['condition','label','copy','counter','fuse','powered','approach','delivered','stockTaken','canSalvage','canTrade','canDeliver','canPower','reasons'])
++    assert.ok(Object.hasOwn(info,key),key);
++  assert.equal(info.counter.x,405);assert.equal(info.counter.y,1085);
++  assert.equal(info.fuse.x,735);assert.equal(info.fuse.y,1105);
++  assert.equal(info.approach,null);assert.equal(info.powered,true,'no blackout means the cold room is powered');
++  assert.ok(info.label.length&&info.copy.length);
++  assert.equal(info.canDeliver,false);
++  assert.ok(info.reasons.deliver.length);
++});
++
++test('choosing a route needs a physical approach to the counter; remote commands are rejected',()=>{
++  const far=shift(1);Object.assign(far.p,B.EXIT); // ~200px from the counter
++  assert.equal(B.command(far,'market-salvage'),false);
++  assert.equal(B.command(far,'market-trade'),false);
++  assert.equal(B.marketInfo(far).canTrade,false);
++  assert.ok(B.marketInfo(far).reasons.trade.includes('柜台'));
++  assert.equal(far.marketShift.approach,null,'rejected commands do not mutate state');
++  // A position north of the cold-room wall cannot see the fuse and is also far away.
++  const blocked=shift(3);Object.assign(blocked.p,{x:600,y:1020});
++  assert.equal(B.clear(blocked,blocked.p,B.marketInfo(blocked).fuse),false);
++  assert.equal(B.command(blocked,'market-power'),false);
++  assert.equal(blocked.marketShift.powerItem,null);
++});
++
++test('salvage choice at the counter locks the single route; trade can never follow',()=>{
++  const r=shift(1);Object.assign(r.p,{x:405,y:1110});
++  assert.equal(B.command(r,'market-salvage'),true);
++  assert.equal(r.marketShift.approach,'salvage');
++  assert.equal(B.command(r,'market-trade'),false);
++  assert.equal(B.command(r,'market-salvage'),false,'route is chosen once');
++  assert.equal(B.marketInfo(r).canSalvage,false);
++});
++
++test('picking up item0/item1 without a choice is implicitly the salvage route',()=>{
++  const r=shift(1);r.actors=[];
++  assert.equal(r.marketShift.approach,null);
++  walkTo(r,B.marketInfo(r).counter);
++  walkTo(r,{x:405,y:990});
++  assert.ok(r.bag.includes('item0'));
++  assert.equal(r.marketShift.stockTaken,true);
++  assert.equal(r.marketShift.approach,'salvage','old grab-first intuition is preserved');
++});
++
++test('trade route physically blocks shelf and cold goods, which stay in the world',()=>{
++  const r=shift(1);r.actors=[];Object.assign(r.p,{x:405,y:1110});
++  assert.equal(B.command(r,'market-trade'),true);
++  assert.equal(B.command(r,'collect',{itemId:'item0'}),false);
++  assert.equal(r.items[0].state,'world');
++  walkTo(r,{x:405,y:990});
++  assert.equal(r.items[0].state,'world','no auto-stow of shelf goods on trade route');
++  walkTo(r,{x:740,y:850});
++  assert.equal(r.items[1].state,'world','cold goods also stay put on trade route');
++  assert.equal(r.marketShift.stockTaken,false);
++});
++
++test('delivered barrel is consumed once at the counter and never becomes four cups',()=>{
++  const r=shift(1);r.actors=[];Object.assign(r.p,{x:405,y:1110});
++  assert.equal(B.command(r,'market-trade'),true);
++  assert.equal(B.command(r,'collect',{itemId:'item2'}),true,'barrel is actually stowed (3 slots)');
++  assert.ok(r.bag.includes('item2'));
++  assert.equal(B.command(r,'market-power'),false,'power command is meaningless outside blackout');
++  assert.equal(B.command(r,'market-deliver'),true);
++  assert.equal(r.items[2].state,'delivered');
++  assert.ok(!r.bag.includes('item2'));
++  assert.equal(r.marketShift.delivered,true);
++  assert.equal(B.command(r,'market-deliver'),false,'the same barrel cannot be delivered twice');
++  assert.equal(B.command(r,'collect',{itemId:'item2'}),false);
++  Object.assign(r.p,B.EXIT);B.command(r,'interact');
++  const reward=B.rewards(r);
++  assert.equal(reward.status,'extracted');
++  assert.equal(reward.cups,0,'delivered barrel cannot be turned into its 4 cups');
++  assert.deepEqual(reward.market,{condition:'staffed',approach:'trade',delivered:true,stockTaken:false,powerRestored:false});
++});
++
++test('a delivered barrel yields no receipt fact after bailout or rescue',()=>{
++  const bailed=shift(1);Object.assign(bailed.p,{x:405,y:1110});
++  B.command(bailed,'market-trade');B.command(bailed,'collect',{itemId:'item2'});B.command(bailed,'market-deliver');
++  B.command(bailed,'bail');
++  assert.equal(B.rewards(bailed).status,'bailed');
++  assert.equal(B.rewards(bailed).market.delivered,true,'physical fact stays recorded');
++  // Stage two must additionally require status extracted; bailed is not.
++  assert.notEqual(B.rewards(bailed).status,'extracted');
++});
++
++test('staffed nights make cleaners actually see farther, other shifts do not',()=>{
++  function modeFor(day){
++    const r=shift(day);r.actors=r.actors.filter(a=>a.type==='cleaner');
++    Object.assign(r.p,{x:730,y:1180});
++    Object.assign(r.actors[0],{x:730,y:955,homeX:730,homeY:955,mode:'patrol',stun:0});
++    assert.ok(B.clear(r,r.p,r.actors[0]),'LOS is open at the test range');
++    advance(r,.025);return r.actors[0].mode;
++  }
++  assert.equal(modeFor(1),'windup','225px away: staffed cleaner spots the player');
++  assert.equal(modeFor(2),'patrol','restock night uses the old 175 range');
++  assert.equal(modeFor(3),'patrol','blackout night uses the old 175 range');
++});
++
++test('restock nights keep the boosted rolling barrel out of the proximity auto-stow',()=>{
++  const r=shift(2);r.actors=[];
++  assert.ok(r.items[2].vx>100,'restock barrel starts rolling faster');
++  Object.assign(r.items[2],{x:r.p.x+25,y:r.p.y,vx:0,vy:0,lock:0});
++  advance(r,.025);
++  assert.equal(r.items[2].state,'world','rolling barrel does not jump into the bag by itself');
++  // Deliberate collection at the same distance still works.
++  assert.equal(B.command(r,'collect',{itemId:'item2'}),true);
++  assert.ok(r.bag.includes('item2'));
++  const normal=shift(1);normal.actors=[];
++  Object.assign(normal.items[2],{x:normal.p.x+25,y:normal.p.y,vx:0,vy:0,lock:0});
++  advance(normal,.025);
++  assert.equal(normal.items[2].state,'bag','on staffed night the old auto-stow intuition holds');
++});
++
++test('blackout locks the cold stock until a real part is consumed at the fuse',()=>{
++  const r=shift(3);r.actors=[];
++  assert.equal(B.marketInfo(r).powered,false);
++  assert.equal(B.command(r,'collect',{itemId:'item1'}),false,'cannot grab cold goods from afar either');
++  Object.assign(r.p,{x:740,y:850});
++  assert.equal(B.command(r,'collect',{itemId:'item1'}),false,'cold stock refuses even when standing on it');
++  assert.notEqual(B.nearest(r)?.id,'item1','locked item is not advertised as an interaction');
++  // Fuse repair without a carried part fails and consumes nothing.
++  Object.assign(r.p,{x:700,y:1105});
++  assert.equal(B.command(r,'market-power'),false);
++  assert.equal(r.marketShift.powerItem,null);
++  // Bring the existing salvage part from the unloading area: approach collinearly and stop
++  // at 43px, outside the 31px proximity auto-stow.
++  walkTo(r,{x:680,y:1142});
++  assert.equal(B.command(r,'collect',{itemId:'item3'}),true);
++  walkTo(r,{x:700,y:1105});
++  assert.equal(B.command(r,'market-power'),true);
++  assert.equal(r.marketShift.powerItem,'item3');
++  assert.equal(r.items[3].state,'delivered');
++  assert.equal(B.marketInfo(r).powered,true);
++  assert.equal(B.command(r,'market-power'),false,'no free second repair');
++  // Cold goods can now be collected.
++  walkTo(r,{x:740,y:850});
++  assert.ok(r.bag.includes('item1'));
++  assert.equal(r.marketShift.stockTaken,true);
++});
++
++test('fuse repair consumes exactly one salvage and never swallows unrelated items',()=>{
++  const r=shift(3);r.actors=[];
++  for(const id of ['item3','item8']){r.items.find(i=>i.id===id).state='bag';r.bag.push(id);}
++  Object.assign(r.p,{x:700,y:1105});
++  assert.equal(B.command(r,'market-power'),true);
++  assert.equal(r.bag.length,1,'only one part is consumed');
++  assert.ok(r.bag.includes('item8'),'the other part stays in the bag');
++  assert.equal(r.items[3].state,'delivered');
++  const bottles=shift(3);
++  Object.assign(bottles.p,{x:700,y:1105});
++  assert.equal(B.command(bottles,'market-power'),false,'a bag without salvage cannot repair');
++});
++
++test('automatic trade route completes with real steps in all three conditions',()=>{
++  for(const day of [1,2,3]){
++    let r=shift(day);
++    autoPick(r,'market');assert.equal(r.auto.event,'market');
++    autoPick(r,'mkt-trade');
++    assert.equal(r.marketShift.approach,'trade');
++    assert.equal(r.marketShift.delivered,true,'barrel physically delivered via shared commands');
++    assert.equal(r.items[2].state,'delivered');
++    assert.equal(r.auto.event,'market');
++    autoPick(r,'exit');
++    assert.equal(r.status,'extracted',day);
++    const m=B.rewards(r).market;
++    assert.equal(m.approach,'trade');assert.equal(m.delivered,true);assert.equal(m.stockTaken,false);
++  }
++});
++
++test('automatic salvage route in a blackout fetches a part, restores power and takes cold stock',()=>{
++  let r=shift(3);
++  autoPick(r,'market');
++  autoPick(r,'mkt-salvage');
++  assert.equal(r.marketShift.approach,'salvage');
++  assert.ok(A.view(r).choices.some(c=>c.id==='market-fuse'),'fuse errand is offered instead of cold room');
++  assert.ok(!A.view(r).choices.some(c=>c.id==='market-cold'),'locked cold room is not offered');
++  autoPick(r,'market-fuse');
++  assert.equal(r.marketShift.powerRestored??(r.marketShift.powerItem!==null),true);
++  assert.equal(r.marketShift.powerItem,'item3');
++  assert.equal(r.auto.event,'market');
++  autoPick(r,'market-cold');
++  assert.ok(r.bag.includes('item1'));
++  autoPick(r,'exit');
++  assert.equal(r.status,'extracted');
++  assert.equal(B.rewards(r).market.powerRestored,true);
++});
++
++test('automatic salvage route on a staffed night takes shelf stock and extracts',()=>{
++  let r=shift(1);
++  autoPick(r,'market');autoPick(r,'mkt-salvage');autoPick(r,'market-stock');
++  assert.ok(r.bag.includes('item0'));
++  autoPick(r,'exit');
++  assert.equal(r.status,'extracted');
++  assert.equal(B.rewards(r).market.stockTaken,true);
++});
++
++test('reading an automatic choice pauses the whole city',()=>{
++  const r=shift(1);A.enable(r);
++  assert.ok(r.auto.event,'route choice is shown immediately');
++  const before=structuredClone(r);
++  for(let i=0;i<20;i++){A.step(r,.1);B.step(r,{},.1);}
++  assert.deepEqual(r,before);
++});
++
++test('marketShift state roundtrips at every stage; tampered saves are rejected',()=>{
++  const fresh=shift(2);assert.deepEqual(B.restore(fresh),fresh);
++  const r=shift(3);Object.assign(r.p,{x:405,y:1110});
++  B.command(r,'market-salvage');
++  assert.deepEqual(B.restore(r),r);
++  const done=shift(1);Object.assign(done.p,{x:405,y:1110});
++  B.command(done,'market-trade');B.command(done,'collect',{itemId:'item2'});B.command(done,'market-deliver');
++  assert.deepEqual(B.restore(done),done);
++  const powered=shift(3);
++  Object.assign(powered.p,{x:700,y:1105});
++  powered.items[3].state='bag';powered.bag=['item3'];
++  B.command(powered,'market-power');
++  assert.deepEqual(B.restore(powered),powered);
++  function rejects(patch,base=r){
++    const bad=structuredClone(base);patch(bad.marketShift);
++    assert.equal(B.restore(bad),null,JSON.stringify(bad.marketShift));
++  }
++  rejects(m=>{m.version=2;});
++  rejects(m=>{m.condition='festival';});
++  rejects(m=>{m.approach='steal';});
++  rejects(m=>{m.delivered='true';});
++  rejects(m=>{m.stockTaken='no';});
++  rejects(m=>{m.powerItem=99;});
++  rejects(m=>{m.extra=true;});
++  rejects(m=>{m.condition='blackout';},shift(1)); // condition mismatch with seed/day
++  // Forged delivery without the physical barrel fact.
++  rejects(m=>{m.approach='trade';m.delivered=true;},shift(1));
++  // Salvage claim with a delivery flag is internally inconsistent.
++  rejects(m=>{m.approach='salvage';m.delivered=true;});
++  // Fuse facts must reference a real salvage item already consumed.
++  rejects(m=>{m.powerItem='item99';},shift(3));
++  rejects(m=>{m.powerItem='item0';},shift(3)); // wrong kind
++  function powerItemInBag(){
++    const bad=structuredClone(shift(3));
++    bad.items[3].state='bag';bad.bag=['item3'];bad.marketShift.powerItem='item3';
++    assert.equal(B.restore(bad),null);
++  }
++  powerItemInBag();
++  function powerOutsideBlackout(){
++    const bad=structuredClone(shift(1));
++    bad.items[3].state='delivered';bad.marketShift.powerItem='item3';
++    assert.equal(B.restore(bad),null);
++  }
++  powerOutsideBlackout();
++  function tradeLoot(){
++    const bad=structuredClone(shift(1));
++    bad.marketShift.approach='trade';bad.items[0].state='bag';bad.bag=['item0'];
++    assert.equal(B.restore(bad),null);
++  }
++  tradeLoot();
++  function missingField(){
++    const bad=structuredClone(shift(1));delete bad.marketShift.delivered;
++    assert.equal(B.restore(bad),null);
++  }
++  missingField();
++});
++
++test('legacy runs and old versions never gain a marketShift through restore',()=>{
++  const legacy=B.create(42,1);
++  assert.equal(Object.hasOwn(B.restore(legacy),'marketShift'),false);
++  const old=B.create(42,2);old.version=2;delete old.location;
++  const restored=B.restore(old);assert.ok(restored);
++  assert.equal(Object.hasOwn(restored,'marketShift'),false);
++});
++
++test('UI renders real manual market controls and failure reasons; scene draws markers',()=>{
++  const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
++  const noop=()=>{},gradient={addColorStop:noop};
++  const context2d=new Proxy({createLinearGradient:()=>gradient,createRadialGradient:()=>gradient},{get:(o,k)=>k in o?o[k]:noop});
++  const canvas={getContext:()=>context2d,addEventListener:noop,getBoundingClientRect:()=>({left:0,top:0,width:1100,height:640}),setAttribute:noop};
++  const mkEl=()=>({textContent:'',hidden:false,disabled:false,innerHTML:'',setAttribute:noop,classList:{toggle:noop},style:{},title:'',focus:noop,scrollIntoView:noop});
++  const els=new Map();
++  const document={
++    addEventListener:noop,hidden:false,body:{classList:{toggle:noop}},
++    getElementById:id=>{if(!els.has(id))els.set(id,mkEl());return els.get(id);},
++    querySelector:()=>null
++  };
++  const window={Backstage:B,BackstageAuto:A,addEventListener:noop};
++  const sandbox={window,document,matchMedia:()=>({matches:false})};
++  window.window=window;
++  vm.createContext(sandbox);
++  vm.runInContext(fs.readFileSync(path.join(__dirname,'backstage-scene.js'),'utf8'),sandbox);
++  vm.runInContext(fs.readFileSync(path.join(__dirname,'backstage-ui.js'),'utf8'),sandbox);
++  const ui=new window.BackstageUI({canvas,getState:()=>({phase:'explore',backstage:{run:rState.run}}),isPaused:()=>false,save:noop,dispatch:noop,showModal:noop});
++  // Staffed night, standing near the counter: both route buttons are live.
++  const rState={run:shift(1)};rState.run.actors=[];
++  Object.assign(rState.run.p,{x:405,y:1110});
++  ui.render();
++  let html=els.get('action-content').innerHTML;
++  assert.match(html,/data-verb="market-salvage"/);
++  assert.match(html,/data-verb="market-trade"/);
++  assert.ok(!/data-verb="market-trade"[^>]*disabled/.test(html),'trade button enabled at the counter');
++  assert.match(html,/值班/);
++  // Far from the counter: controls disable with a visible reason.
++  Object.assign(rState.run.p,B.EXIT);ui.signature='';ui.render();
++  html=els.get('action-content').innerHTML;
++  assert.ok(/data-verb="market-trade"[^>]*disabled/.test(html));
++  assert.match(html,/柜台/);
++  // Blackout near the fuse without a part shows the disabled power control and reason.
++  rState.run=shift(3);rState.run.actors=[];Object.assign(rState.run.p,{x:700,y:1105});
++  ui.signature='';ui.render();
++  html=els.get('action-content').innerHTML;
++  assert.match(html,/data-verb="market-power"[^>]*disabled/);
++  assert.match(html,/零件/);
++  // With a real part carried, the power control is live.
++  rState.run.items[3].state='bag';rState.run.bag=['item3'];
++  ui.signature='';ui.render();
++  html=els.get('action-content').innerHTML;
++  assert.ok(!/data-verb="market-power"[^>]*disabled/.test(html));
++  // Canvas markers and condition signs draw without errors at all three conditions.
++  for(const day of [1,2,3]){
++    rState.run=shift(day);
++    ui.scene.draw(rState.run);
++  }
++  // Final receipt explains the trade consequence.
++  const ended=shift(1);Object.assign(ended.p,{x:405,y:1110});
++  B.command(ended,'market-trade');B.command(ended,'collect',{itemId:'item2'});B.command(ended,'market-deliver');
++  Object.assign(ended.p,B.EXIT);B.command(ended,'interact');
++  rState.run=ended;ui.signature='';ui.render();
++  assert.match(els.get('action-content').innerHTML,/回执/);
++});
+--- a/tools/prototype/backstage-ui.js
++++ b/tools/prototype/backstage-ui.js
+@@ -95,2 +95,2 @@
+-      const auto=r.auto?.enabled,z=B.zone(r),near=B.nearest(r),street=B.streetInfo?.(r),tools=Boolean(r.street&&street&&street.id!=='legacy'),dragTarget=B.dragTarget?.(r),location=B.locationInfo?.(r),district=B.districtInfo?.(r);
+-      const signature=[r.sequence,z.id,near?.id,r.status,this.overview,auto,r.auto?.event,r.auto?.goal,r.auto?.speed,r.street?.situation,r.street?.dragging,location?.club?.phase,location?.door?.open,district?.belt?.direction,district?.water?.wet,district?.repaired,this.isPaused()].join('|');
++      const auto=r.auto?.enabled,z=B.zone(r),near=B.nearest(r),street=B.streetInfo?.(r),tools=Boolean(r.street&&street&&street.id!=='legacy'),dragTarget=B.dragTarget?.(r),location=B.locationInfo?.(r),district=B.districtInfo?.(r),market=B.marketInfo?.(r)||{enabled:false};
++      const signature=[r.sequence,z.id,near?.id,r.status,this.overview,auto,r.auto?.event,r.auto?.goal,r.auto?.speed,r.street?.situation,r.street?.dragging,location?.club?.phase,location?.door?.open,district?.belt?.direction,district?.water?.wet,district?.repaired,market.enabled,market.condition,market.approach,market.delivered,market.stockTaken,market.powered,market.canSalvage,market.canTrade,market.canDeliver,market.canPower,this.isPaused()].join('|');
+@@ -150 +150,2 @@
+-        board.innerHTML=`<p class="board-eyebrow">BACK ON THE STREET</p><h2>${r.status==='extracted'?'人和东西，都回来了。':r.status==='rescued'?'人先回来。<br>东西下次再说。':'今天就到这里。'}</h2><p class="board-copy">${esc(r.message)}</p><div class="exp-receipt"><div><span>带回艾尔</span><strong>${reward.cups} 杯</strong></div><div><span>密封酒花</span><strong>${reward.hops} 份</strong></div><div><span>零件 / 跑腿费</span><strong>€${reward.cash}</strong></div><div><span>月雾箱</span><strong>${({returned:'交回 Noor',kept:'单独封存',ground:'留在街区',lost:'遗失'})[reward.parcel]||'未取得'}</strong></div></div>${visitReceipt}${actionReceipt}<p class="exp-consequence">${reward.parcel==='returned'?'Noor 下次营业会到酒馆。她记住的是你把箱子还了，不是你跑得有多快。':reward.parcel==='kept'?'这只箱子不会成为酒或原料。下次营业，一位打听箱子的人会进店。':'家中的现金和库存未受损。'}${reward.outcomes?.includes('market-shortcut')?'<br>超市卸货门的捷径已记住，明天地图会留下记录。':''}${reward.outcomes?.includes('club-backstage')?'<br>你穿过了夜店后台，明天 Bram 会听到这件事。':''}${reward.outcomes?.includes('greenhouse-repaired')?'<br>温室的水泵修好了。以后洒水不会再淋湿这条路。':''}${reward.outcomes?.some(x=>x.startsWith('sorting-'))?'<br>分拣场的机器按你的方式运转了一回。':''}${reward.discovered.includes('greenhouse')?'<br>温室捷径已记住，下次出门仍然打开。':''}</p><button class="primary" data-action="exp-command" data-verb="return">回酒馆，收好这一趟 →</button>`;
++        const marketReceipt=this.marketReceipt(reward,r);
++        board.innerHTML=`<p class="board-eyebrow">BACK ON THE STREET</p><h2>${r.status==='extracted'?'人和东西，都回来了。':r.status==='rescued'?'人先回来。<br>东西下次再说。':'今天就到这里。'}</h2><p class="board-copy">${esc(r.message)}</p><div class="exp-receipt"><div><span>带回艾尔</span><strong>${reward.cups} 杯</strong></div><div><span>密封酒花</span><strong>${reward.hops} 份</strong></div><div><span>零件 / 跑腿费</span><strong>€${reward.cash}</strong></div><div><span>月雾箱</span><strong>${({returned:'交回 Noor',kept:'单独封存',ground:'留在街区',lost:'遗失'})[reward.parcel]||'未取得'}</strong></div></div>${visitReceipt}${actionReceipt}${marketReceipt}<p class="exp-consequence">${reward.parcel==='returned'?'Noor 下次营业会到酒馆。她记住的是你把箱子还了，不是你跑得有多快。':reward.parcel==='kept'?'这只箱子不会成为酒或原料。下次营业，一位打听箱子的人会进店。':'家中的现金和库存未受损。'}${reward.outcomes?.includes('market-shortcut')?'<br>超市卸货门的捷径已记住，明天地图会留下记录。':''}${reward.outcomes?.includes('club-backstage')?'<br>你穿过了夜店后台，明天 Bram 会听到这件事。':''}${reward.outcomes?.includes('greenhouse-repaired')?'<br>温室的水泵修好了。以后洒水不会再淋湿这条路。':''}${reward.outcomes?.some(x=>x.startsWith('sorting-'))?'<br>分拣场的机器按你的方式运转了一回。':''}${reward.discovered.includes('greenhouse')?'<br>温室捷径已记住，下次出门仍然打开。':''}</p><button class="primary" data-action="exp-command" data-verb="return">回酒馆，收好这一趟 →</button>`;
+@@ -159 +160 @@
+-      board.innerHTML=`<p class="board-eyebrow">CITY BACKSTAGE / 第 ${r.day} 趟</p><h2>跟着灯走。<br>留条路回来。</h2><p class="board-copy">${esc(B.KITS[r.kit].name)} · 普通货物靠近装包。<br>点向目标下钩，闪避和泡沫可以救场。</p>${locationCard}${situation}<div class="exp-objectives"><div class="${r.parcel==='returned'?'done':''}"><span>◇</span><div><strong>一箱“进口酵母”</strong><p>${parcelText}。${r.parcel==='returned'?'下次营业会在酒馆再见。':r.parcel==='carried'?'交回她，或带到出口自行保留。':'占 3 格，靠近按 E。'}</p></div></div><div class="${r.discovered.includes('noor')?'done':''}"><span>♧</span><div><strong>红灯街的 Noor</strong><p>西北运河边，她刚下夜班。带箱子过去，或先问问她。</p></div></div><div class="${r.discovered.includes('greenhouse')?'done':''}"><span>✧</span><div><strong>玻璃后面，有人在生活</strong><p>${r.discovered.includes('greenhouse')?'温室捷径已记住。下次也能进去。':'东北的温室亮着灯。拉开外面的维护拉杆，找路进去。'}</p></div></div></div><div class="exp-bag"><div class="exp-bag-title"><strong>背包</strong><span>Q 扔下最后一件</span></div>${r.bag.length?r.bag.map(id=>{const i=r.items.find(x=>x.id===id),t=B.TYPES[i.kind];return `<span class="exp-cargo" style="--cargo:${t.color}">${esc(t.name)}<small>${t.weight} 格</small></span>`;}).join(''):'<p>先拿附近的封口瓶试试手。<br>价值更高的东西，不一定更好带。</p>'}</div><p class="exp-feed" role="status">${esc(r.message)}</p>${cargoButton}<div class="exp-board-actions"><button class="secondary" data-action="exp-command" data-verb="map">${this.overview?'返回跟随视角':'看看全图'} · M</button><button class="text-button" data-action="exp-command" data-verb="bail">放下背包，轻装撤回</button></div>`;
++      board.innerHTML=`<p class="board-eyebrow">CITY BACKSTAGE / 第 ${r.day} 趟</p><h2>跟着灯走。<br>留条路回来。</h2><p class="board-copy">${esc(B.KITS[r.kit].name)} · 普通货物靠近装包。<br>点向目标下钩，闪避和泡沫可以救场。</p>${locationCard}${this.marketPanel(market)}${situation}<div class="exp-objectives"><div class="${r.parcel==='returned'?'done':''}"><span>◇</span><div><strong>一箱“进口酵母”</strong><p>${parcelText}。${r.parcel==='returned'?'下次营业会在酒馆再见。':r.parcel==='carried'?'交回她，或带到出口自行保留。':'占 3 格，靠近按 E。'}</p></div></div><div class="${r.discovered.includes('noor')?'done':''}"><span>♧</span><div><strong>红灯街的 Noor</strong><p>西北运河边，她刚下夜班。带箱子过去，或先问问她。</p></div></div><div class="${r.discovered.includes('greenhouse')?'done':''}"><span>✧</span><div><strong>玻璃后面，有人在生活</strong><p>${r.discovered.includes('greenhouse')?'温室捷径已记住。下次也能进去。':'东北的温室亮着灯。拉开外面的维护拉杆，找路进去。'}</p></div></div></div><div class="exp-bag"><div class="exp-bag-title"><strong>背包</strong><span>Q 扔下最后一件</span></div>${r.bag.length?r.bag.map(id=>{const i=r.items.find(x=>x.id===id),t=B.TYPES[i.kind];return `<span class="exp-cargo" style="--cargo:${t.color}">${esc(t.name)}<small>${t.weight} 格</small></span>`;}).join(''):'<p>先拿附近的封口瓶试试手。<br>价值更高的东西，不一定更好带。</p>'}</div><p class="exp-feed" role="status">${esc(r.message)}</p>${cargoButton}<div class="exp-board-actions"><button class="secondary" data-action="exp-command" data-verb="map">${this.overview?'返回跟随视角':'看看全图'} · M</button><button class="text-button" data-action="exp-command" data-verb="bail">放下背包，轻装撤回</button></div>`;
+@@ -160,0 +162,34 @@
++    }
++    // Manual market panel. Availability comes straight from B.marketInfo; verbs run through B.command.
++    marketPanel(market){
++      if(!market.enabled)return '';
++      const frozen=this.isPaused()||this.run().status!=='active';
++      let body='';
++      if(market.approach===null){
++        const disabled=frozen||!market.canTrade;
++        body+=`<div class="exp-market-choices"><button class="secondary" data-action="exp-command" data-verb="market-salvage" ${disabled?'disabled':''}>直接取库存 · 柜台表态</button><button class="secondary" data-action="exp-command" data-verb="market-trade" ${disabled?'disabled':''}>帮忙搬货 · 柜台表态</button></div><small>${frozen||market.canTrade?'表态本身不消耗东西；二选一后路线锁定，不能改。':esc(market.reasons.trade)}</small>`;
++      }else{
++        body+=`<p class="exp-market-route">已选路线：<strong>${market.approach==='salvage'?'直接取库存':'帮忙搬货'}</strong> · 不可更改。${market.approach==='trade'?(market.delivered?'酒桶已交付，安全撤离后回执才作数。':'收桶、送到柜台，都要自己走过去。'):'货架与冷库的货，拿到就是你的。'}</p>`;
++        if(market.approach==='trade'){
++          const disabled=frozen||!market.canDeliver;
++          body+=`<button class="secondary" data-action="exp-command" data-verb="market-deliver" ${disabled?'disabled':''}>把酒桶交到柜台 · 交付</button><small>${frozen||market.canDeliver?'交付会消耗包里的滚动酒桶 item2（3 格）；它变不回 4 杯艾尔。':esc(market.reasons.deliver)}</small>`;
++        }
++      }
++      if(market.condition==='blackout'){
++        const disabled=frozen||!market.canPower;
++        body+=`<button class="secondary" data-action="exp-command" data-verb="market-power" ${disabled?'disabled':''}>${market.powered?'电已修好 · 冷库开着':'修好冷库电 · 用 1 件零件'}</button><small>${frozen||market.canPower?'修电会消耗 1 件可修零件（本来能卖 €5），用完冷库解锁。':esc(market.reasons.power)}</small>`;
++      }
++      return `<div class="exp-location exp-market"><strong>超市柜台 · ${esc(market.label)}</strong><p>${esc(market.copy)}</p>${body}${this.isPaused()?'<small>已暂停：市场操作先冻结。</small>':''}</div>`;
++    }
++    marketReceipt(reward,r){
++      const m=reward.market;if(!m)return '';
++      const safe=r.status==='extracted';
++      if(m.approach==='trade'){
++        if(m.delivered&&safe&&r.day<3)return '<p class="small-note">酒桶已实地交付，且安全撤离：拿到超市<strong>回执</strong>，只对次日作数。白天领取功能尚未上线（stage2），回执先记账，现在领不到钱。</p>';
++        if(m.delivered&&safe)return '<p class="small-note">酒桶已实地交付，人也安全撤离；但第 3 夜之后没有下一夜，回执没有可兑现的一天。</p>';
++        if(m.delivered)return '<p class="small-note">酒桶虽已交到柜台，但你没有安全撤离，回执不作数。</p>';
++        return '<p class="small-note">选了「帮忙搬货」，但酒桶没能交付柜台，没有回执。</p>';
++      }
++      let out=m.stockTaken?'<p class="small-note">直接取库存：货架/冷库的货已实际入包，不欠回执。</p>':'';
++      if(m.powerRestored)out+='<p class="small-note">冷库电已用 1 件零件修好，冷库解锁，这件零件没有卖成 €5。</p>';
++      return out;
+--- a/tools/prototype/backstage-scene.js
++++ b/tools/prototype/backstage-scene.js
+@@ -179,0 +180,24 @@
++    // Market-shift signs use B.marketInfo facts and existing primitives; they never touch collision.
++    marketCounterSign(market){
++      const {x,y}=market.counter;
++      const ringColor=market.approach==='trade'?'#e8c287':market.approach==='salvage'?'#9ed7b3':'#d7c49a';
++      this.ellipse(x,y+6,26,12,'#0b22309c');
++      this.rect(x-34,y-14,68,22,'#4e6671');this.rect(x-34,y-16,68,5,'#6e8a90');
++      this.rect(x-29,y-10,15,14,'#2c424d');this.rect(x+14,y-10,15,14,'#2c424d');
++      this.ring(x,y,31,13,ringColor,2);
++      this.text('今晚 · '+market.label,x,y-56,12,'#ecd4a2');
++      this.text(market.approach===null?'柜台 · 靠近后表态':market.approach==='trade'?'柜台 · 已选帮忙搬货':'柜台 · 已选直接取库存',x,y-38,13,ringColor);
++    }
++    marketFuseSign(market){
++      const {x,y}=market.fuse,blackout=market.condition==='blackout';
++      const color=!blackout?'#cfd6c8':market.powered?'#93dd9f':'#e0806e';
++      const label=!blackout?'冷库电箱 · 有电':market.powered?'电已恢复 · 冷库解锁':'停电 · 修电点';
++      // Wall box sits left of the shared door-switch point so the two signs stay legible.
++      const bx=x-36;
++      this.rect(bx,y-26,22,32,'#223843');this.rect(bx-2,y-28,26,5,'#3c5460');
++      this.ellipse(bx+11,y-17,4,4,color);
++      if(blackout){if(market.powered)this.glow(bx+11,y-17,22,16,'#93dd9f55');else this.glow(bx+11,y-17,18,13,'#e0806e33');}
++      this.line([[bx+22,y-17],[x-4,y-8]],color,2);
++      this.ring(x,y,15,9,color,2);
++      this.text(label,bx+11,y-40,12,color);
++    }
+@@ -181,0 +206 @@
++      const market=B.marketInfo?.(r)||{enabled:false};
+@@ -217,0 +243,4 @@
++      if(market.enabled){
++        objects.push({y:market.counter.y,draw:()=>this.marketCounterSign(market)});
++        objects.push({y:market.fuse.y,draw:()=>this.marketFuseSign(market)});
++      }
+--- a/tools/prototype/backstage-auto.js
++++ b/tools/prototype/backstage-auto.js
+@@ -9 +9,3 @@
+-  const GOALS=[...DISTRICT_GOALS,'market','club','parcel','noor','gate','garden','sorting','exit','barricade','market-stock','market-cold','market-shortcut','music'];
++  const MARKET_AUTO_GOALS=['market-barrel','market-counter','market-fuse','market-part'];
++  const marketLootGoal=id=>['market-barrel','market-part'].includes(id);
++  const GOALS=[...DISTRICT_GOALS,'market','club','parcel','noor','gate','garden','sorting','exit','barricade','market-stock','market-cold','market-shortcut','music',...MARKET_AUTO_GOALS];
+@@ -11 +13 @@
+-  const NAMES={'sorting-stop':'分拣带控制台','sorting-reverse':'反转控制台的位置','sorting-take':'分拣场零件','sorting-hook':'钩取零件的位置','sorting-foam':'泡沫掩护的取货点','garden-valve':'温室灌溉阀','garden-repair':'温室水泵','garden-harvest':'温室酒花','market-stock':'退货货架','market-cold':'冷库','market-shortcut':'卸货卷门',music:'等待夜店下一段重拍',barricade:'后门摆放空桶的位置',market:'超市后场',club:'夜店后门',parcel:'冷藏箱',noor:'红灯街的 Noor',gate:'温室维护闸门',garden:'玻璃后的温室',sorting:'失物分拣场',exit:'回酒馆的出口'};
++  const NAMES={'sorting-stop':'分拣带控制台','sorting-reverse':'反转控制台的位置','sorting-take':'分拣场零件','sorting-hook':'钩取零件的位置','sorting-foam':'泡沫掩护的取货点','garden-valve':'温室灌溉阀','garden-repair':'温室水泵','garden-harvest':'温室酒花','market-stock':'退货货架','market-cold':'冷库','market-shortcut':'卸货卷门',music:'等待夜店下一段重拍',barricade:'后门摆放空桶的位置',market:'超市后场',club:'夜店后门',parcel:'冷藏箱',noor:'红灯街的 Noor',gate:'温室维护闸门',garden:'玻璃后的温室',sorting:'失物分拣场',exit:'回酒馆的出口','market-barrel':'滚动酒桶那里','market-counter':'超市收货柜台','market-fuse':'冷库修电开关','market-part':'可修零件那里'};
+@@ -22 +24 @@
+-    if(!B.locationInfo(r).enabled&&(['market-stock','market-cold','market-shortcut','music'].includes(a?.goal)||a?.approach==='music'))return false;
++    if(!B.locationInfo(r).enabled&&(['market-stock','market-cold','market-shortcut','music',...MARKET_AUTO_GOALS].includes(a?.goal)||a?.approach==='music'))return false;
+@@ -39 +41,29 @@
+-      case 'market':choices=[...(location.enabled?[...(r.items[0].state==='world'?[option('market-stock','进入退货货架找封口酒','走入货架区 · 1 格，实际靠近后收取')]:[]),...(r.items[1].state==='world'?[option('market-cold','绕进冷库找密封酒花','沿另一条过道进入冷库 · 1 格')]:[]),...(!location.market.shortcutOpen?[option('market-shortcut','去卸货通道打开卷门','绕到内侧开关 · 记住明晚也能用的捷径')]:[])]:[]),...[r.parcel==='ground'?'club':'garden','noor','exit'].map(destination)];break;
++      case 'market':{
++        const shift=B.marketInfo(r);
++        if(shift.enabled){
++          if(shift.approach===null){
++            choices=[option('mkt-salvage','直接取库存','柜台表态 · 货架/冷库自取即时入包 · 次日市场箱价 €8→€10（仅次日）'),
++              option('mkt-trade','帮忙搬货','收滚动酒桶 item2（占 3 格）实送到柜台 · 仅安全撤离才有次日回执'),
++              ...['club','noor','exit'].map(destination)];
++          }else if(shift.approach==='salvage'){
++            choices=[];
++            if(r.items[0].state==='world')choices.push(option('market-stock','进入退货货架找封口酒','走入货架区 · 1 格，实际靠近后收取'));
++            if(r.items[1].state==='world'){
++              if(shift.condition==='blackout'&&!shift.powered)choices.push(option('market-fuse','先去修电，再进冷库','消耗包内一件可修零件 · 自动先去卸货区找零件'));
++              else choices.push(option('market-cold','绕进冷库找密封酒花','沿过道进入 · 1 格'));
++            }
++            if(!location.market.shortcutOpen)choices.push(option('market-shortcut','去卸货通道打开卷门','绕到内侧开关 · 记住明晚也能用的捷径'));
++            choices.push(...['club','noor','exit'].map(destination));
++          }else{
++            choices=[];
++            if(!shift.delivered){
++              if(r.items[2].state==='world')choices.push(option('market-barrel','去收滚动酒桶','实际走过去收进包 · 占 3 格'+(shift.condition==='restock'?' · 补货夜酒桶不停，靠近后亲手收':'') ));
++              else if(r.bag.includes('item2'))choices.push(option('market-counter','把酒桶送到柜台','走回柜台 · 交付消耗这只桶'));
++            }
++            choices.push(...['club','noor','exit'].map(destination));
++          }
++        }else{
++          choices=[...(location.enabled?[...(r.items[0].state==='world'?[option('market-stock','进入退货货架找封口酒','走入货架区 · 1 格，实际靠近后收取')]:[]),...(r.items[1].state==='world'?[option('market-cold','绕进冷库找密封酒花','沿另一条过道进入冷库 · 1 格')]:[]),...(!location.market.shortcutOpen?[option('market-shortcut','去卸货通道打开卷门','绕到内侧开关 · 记住明晚也能用的捷径')]:[])]:[]),...[r.parcel==='ground'?'club':'garden','noor','exit'].map(destination)];
++        }
++        break;
++      }
+@@ -53 +83,12 @@
+-    if(a.event==='market'&&location.enabled)return {title:'超市里面，想走哪一条？',copy:(location.market.clued?'白天记下的卸货线索：卷门开关在通道内侧。':'货架、冷库和卸货通道各有入口。')+(location.market.shortcutOpen?' 卸货卷门已经打开，可以从东侧穿出去。':' 可从货架北侧或卸货通道绕入冷库。'),choices};
++    if(a.event==='market'&&location.enabled){
++      const shift=B.marketInfo(r);
++      if(shift.enabled){
++        const pair=shift.approach===null
++          ?['超市柜台 · 今晚站哪边？','柜台还没下班。直接取库存，今晚就有收获；帮忙搬货，押一桶酒换明天的机会。']
++          :shift.approach==='salvage'
++          ?['超市里面 · 自取路线','货架、冷库和卸货通道各有入口。'+(shift.condition==='blackout'&&!shift.powered?' 冷库黑着：先修电。':'')]
++          :['超市里面 · 搬货路线',shift.delivered?'酒桶已实地交付。安全撤离后，回执才作数。':'收桶、送柜台，路要自己走。'];
++        return {title:pair[0],copy:pair[1],choices};
++      }
++      return {title:'超市里面，想走哪一条？',copy:(location.market.clued?'白天记下的卸货线索：卷门开关在通道内侧。':'货架、冷库和卸货通道各有入口。')+(location.market.shortcutOpen?' 卸货卷门已经打开，可以从东侧穿出去。':' 可从货架北侧或卸货通道绕入冷库。'),choices};
++    }
+@@ -78,0 +120,9 @@
++    if(id==='mkt-salvage'){
++      if(B.command(r,'market-salvage'))stop(r,'market');else stop(r,'stuck');
++      return true;
++    }
++    if(id==='mkt-trade'){
++      if(!B.command(r,'market-trade')){stop(r,'stuck');return true;}
++      go(r,r.items[2].state==='world'?'market-barrel':'market-counter');return true;
++    }
++    if(['market-barrel','market-counter','market-fuse'].includes(id)){go(r,id);return true;}
+@@ -89,2 +139,6 @@
+-    const market=B.locationInfo(r).market,d=B.districtInfo?.(r);
+-    return ({barricade:{x:1270,y:1170},'market-stock':market?.stock,'market-cold':market?.cold,'market-shortcut':market?.shortcut,music:{x:1230,y:1135},market:market?.entry||{x:405,y:1030},club:{x:1230,y:1135},parcel:r.items.find(i=>i.kind==='parcel'),noor:B.NOOR,gate:{x:B.LEVER.x,y:B.LEVER.y+55},garden:district(r)?{x:1800,y:495}:{x:1960,y:480},sorting:district(r)?{x:1620,y:1020}:{x:2000,y:1020},'sorting-stop':d?.switch,'sorting-reverse':d?.switch?{x:d.switch.x-85,y:d.switch.y}:null,'sorting-take':r.items[10],'sorting-hook':r.items[10],'sorting-foam':r.items[10],'garden-valve':d?.valve?{x:d.valve.x,y:d.valve.y+15}:null,'garden-repair':d?.valve?{x:d.valve.x,y:d.valve.y+15}:null,'garden-harvest':r.items[11],exit:r.discovered.includes('greenhouse')&&dist(r.p,B.GARDEN_EXIT)<dist(r.p,B.EXIT)?B.GARDEN_EXIT:B.EXIT})[r.auto.goal];
++    const market=B.locationInfo(r).market,d=B.districtInfo?.(r),info=B.marketInfo(r);
++    const part=r.items.filter(i=>i.kind==='salvage'&&i.state==='world'&&B.clear(r,r.p,i))
++      .sort((x,y)=>dist(r.p,x)-dist(r.p,y))[0]||null;
++    return ({barricade:{x:1270,y:1170},'market-stock':market?.stock,'market-cold':market?.cold,'market-shortcut':market?.shortcut,music:{x:1230,y:1135},market:market?.entry||{x:405,y:1030},club:{x:1230,y:1135},parcel:r.items.find(i=>i.kind==='parcel'),noor:B.NOOR,gate:{x:B.LEVER.x,y:B.LEVER.y+55},garden:district(r)?{x:1800,y:495}:{x:1960,y:480},sorting:district(r)?{x:1620,y:1020}:{x:2000,y:1020},'sorting-stop':d?.switch,'sorting-reverse':d?.switch?{x:d.switch.x-85,y:d.switch.y}:null,'sorting-take':r.items[10],'sorting-hook':r.items[10],'sorting-foam':r.items[10],'garden-valve':d?.valve?{x:d.valve.x,y:d.valve.y+15}:null,'garden-repair':d?.valve?{x:d.valve.x,y:d.valve.y+15}:null,'garden-harvest':r.items[11],
++      'market-barrel':r.items[2],'market-counter':info.enabled?info.counter:null,'market-fuse':info.enabled?info.fuse:null,'market-part':part,
++      exit:r.discovered.includes('greenhouse')&&dist(r.p,B.GARDEN_EXIT)<dist(r.p,B.EXIT)?B.GARDEN_EXIT:B.EXIT})[r.auto.goal];
+@@ -113 +167,3 @@
+-    const goal=r.auto.goal;if(!DISTRICT_GOALS.includes(goal)&&!r.auto.visited.includes(goal))r.auto.visited.push(goal);
++    const goal=r.auto.goal;
++    if(MARKET_AUTO_GOALS.includes(goal)){stop(r,'market');return;}
++    if(!DISTRICT_GOALS.includes(goal)&&!r.auto.visited.includes(goal))r.auto.visited.push(goal);
+@@ -150,0 +207,33 @@
++    // Market-shift physical legs. Every state change below goes through B.command; no direct mutation.
++    if(a.goal==='market-barrel'){
++      if(r.bag.includes('item2')){go(r,'market-counter');return;}
++      if(r.items[2].state!=='world'){stop(r,'stuck');return;}
++      if(dist(r.p,r.items[2])<45&&B.clear(r,r.p,r.items[2])){
++        if(B.command(r,'collect',{itemId:'item2'})){go(r,'market-counter');return;}
++      }
++    }else if(a.goal==='market-part'){
++      if(B.marketInfo(r).powered){stop(r,'market');return;}
++      if(!to||to.state!=='world'){
++        stop(r,'stuck');r.message='找不到可收的可修零件；去分拣场找一件，或放弃修电。';return;
++      }
++      if(dist(r.p,to)<45&&B.clear(r,r.p,to)){
++        if(B.command(r,'collect',{itemId:to.id})){go(r,'market-fuse');return;}
++        stop(r,'stuck');return;
++      }
++    }else if(a.goal==='market-fuse'){
++      const info=B.marketInfo(r);
++      if(info.powered){stop(r,'market');return;}
++      const hasPart=r.bag.some(id=>r.items.find(i=>i.id===id).kind==='salvage');
++      if(!hasPart){go(r,'market-part');return;}
++      if(dist(r.p,info.fuse)<20){
++        if(B.command(r,'market-power'))stop(r,'market');else stop(r,'stuck');
++        return;
++      }
++      // Carrying a part but still away: fall through to ordinary navigation toward the fuse.
++    }else if(a.goal==='market-counter'){
++      if(!r.bag.includes('item2')){stop(r,'stuck');return;}
++      if(dist(r.p,B.marketInfo(r).counter)<20){
++        if(B.command(r,'market-deliver'))stop(r,'market');else stop(r,'stuck');
++        return;
++      }
++    }
+@@ -161 +250 @@
+-    if(!lootGoal(a.goal)&&(a.goal==='parcel'?B.nearest(r)?.id===to.id:dist(r.p,to)<(a.goal==='barricade'?7:18))){arrived(r);return;}
++    if(!lootGoal(a.goal)&&!MARKET_AUTO_GOALS.includes(a.goal)&&(a.goal==='parcel'?B.nearest(r)?.id===to.id:dist(r.p,to)<(a.goal==='barricade'?7:18))){arrived(r);return;}
+@@ -173 +262 @@
+-      cached={path:route(r,to,lootGoal(a.goal)?40:0),to:{x:to.x,y:to.y},opened:r.opened};routes.set(r,cached);
++      cached={path:route(r,to,lootGoal(a.goal)||marketLootGoal(a.goal)?40:0),to:{x:to.x,y:to.y},opened:r.opened};routes.set(r,cached);
+--- /dev/null
++++ b/tools/prototype/test-market-shift-ui.js
+@@ -0,0 +1,124 @@
++'use strict';
++const test=require('node:test'),assert=require('node:assert/strict');
++const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
++const B=require('./backstage-core.js'),A=require('./backstage-auto.js');
++const shift=(day=1,kit='hook',seed=42)=>B.create(seed,day,kit,[],{marketShift:true});
++const noop=()=>{};
++function harness(run,paused=false){
++  const gradient={addColorStop:noop};
++  const context2d=new Proxy({createLinearGradient:()=>gradient,createRadialGradient:()=>gradient},{get:(o,k)=>k in o?o[k]:noop});
++  const canvas={getContext:()=>context2d,addEventListener:noop,getBoundingClientRect:()=>({left:0,top:0,width:1100,height:640}),setAttribute:noop};
++  const mkEl=()=>({textContent:'',hidden:false,disabled:false,innerHTML:'',setAttribute:noop,classList:{toggle:noop},style:{},title:'',focus:noop,scrollIntoView:noop});
++  const els=new Map();
++  const document={addEventListener:noop,hidden:false,body:{classList:{toggle:noop}},
++    getElementById:id=>{if(!els.has(id))els.set(id,mkEl());return els.get(id);},
++    querySelector:()=>null};
++  const state={run};const flags={paused};
++  const window={Backstage:B,BackstageAuto:A,addEventListener:noop};
++  const sandbox={window,document,matchMedia:()=>({matches:false})};
++  window.window=window;
++  vm.createContext(sandbox);
++  vm.runInContext(fs.readFileSync(path.join(__dirname,'backstage-scene.js'),'utf8'),sandbox);
++  vm.runInContext(fs.readFileSync(path.join(__dirname,'backstage-ui.js'),'utf8'),sandbox);
++  const ui=new window.BackstageUI({canvas,getState:()=>({phase:'explore',backstage:{run:state.run}}),isPaused:()=>flags.paused,save:noop,dispatch:noop,showModal:noop});
++  return {ui,els,state,flags,board:()=>els.get('action-content').innerHTML};
++}
++const disabled=verb=>new RegExp('data-verb="'+verb+'"[^>]*disabled');
++
++test('market controls enable/disable while walking in and out of range without clearing ui.signature',()=>{
++  const r=shift(1);r.actors=[];
++  Object.assign(r.p,{x:B.EXIT.x,y:B.EXIT.y});
++  const h=harness(r);
++  h.ui.render();
++  assert.ok(disabled('market-trade').test(h.board()),'trade disabled far from counter');
++  assert.ok(h.ui.signature.length,'first render computes a signature');
++  // Simulate ui.step frames: movement + render() only; the test never assigns ui.signature itself.
++  let wentLive=false;
++  for(let n=0;n<40;n++){
++    const d=Math.hypot(405-r.p.x,1085-r.p.y);
++    if(d>10){r.p.x+=(405-r.p.x)/d*8;r.p.y+=(1085-r.p.y)/d*8;}
++    h.ui.render();
++    assert.notEqual(h.ui.signature,'','render never leaves an empty signature mid-walk');
++    if(!disabled('market-trade').test(h.board()))wentLive=true;
++  }
++  assert.ok(wentLive,'trade control went live by walking into range');
++  assert.ok(!disabled('market-salvage').test(h.board()),'salvage is live too');
++  h.ui.perform('market-trade');
++  assert.equal(r.marketShift.approach,'trade','real command commits the route');
++  // A real barrel in the bag makes delivery live at the counter.
++  assert.equal(B.command(r,'collect',{itemId:'item2'}),true,'barrel actually collected');
++  h.ui.render();
++  assert.ok(!disabled('market-deliver').test(h.board()),'deliver live with barrel in bag');
++  // Walk back out; core truth must disable delivery again, still no forced signature reset.
++  for(let n=0;n<40;n++){
++    const d=Math.hypot(B.EXIT.x-r.p.x,B.EXIT.y-r.p.y);
++    if(d>10){r.p.x+=(B.EXIT.x-r.p.x)/d*8;r.p.y+=(B.EXIT.y-r.p.y)/d*8;}
++    h.ui.render();
++    assert.notEqual(h.ui.signature,'');
++  }
++  assert.ok(disabled('market-deliver').test(h.board()),'deliver disabled again out of range');
++});
++
++test('paused runs keep every market control frozen and perform changes nothing, even at the points',()=>{
++  const r=shift(1);r.actors=[];Object.assign(r.p,{x:405,y:1110});
++  const h=harness(r,true);h.ui.render();
++  assert.ok(disabled('market-salvage').test(h.board()));
++  assert.ok(disabled('market-trade').test(h.board()));
++  h.ui.perform('market-trade');
++  assert.equal(r.marketShift.approach,null,'paused perform mutates nothing');
++  const rb=shift(3);rb.actors=[];Object.assign(rb.p,{x:700,y:1105});
++  rb.items[3].state='bag';rb.bag=['item3'];
++  const hb=harness(rb,true);hb.ui.render();
++  assert.ok(disabled('market-power').test(hb.board()),'part at fuse still frozen while paused');
++  hb.ui.perform('market-power');
++  assert.equal(rb.marketShift.powerItem,null);
++});
++
++test('old runs without marketShift keep the previous manual board and no market controls',()=>{
++  const r=B.create(42,1);
++  assert.equal(B.marketInfo(r).enabled,false);
++  const h=harness(r);h.ui.render();
++  const html=h.board();
++  for(const verb of ['market-salvage','market-trade','market-deliver','market-power'])
++    assert.ok(!html.includes('data-verb="'+verb+'"'),verb+' absent on old run');
++  assert.match(html,/exp-objectives/,'existing objectives still render');
++});
++
++test('the four new automatic goals render readable Chinese titles with no undefined',()=>{
++  const r=shift(1);A.enable(r);
++  const expected={'market-barrel':'滚动酒桶','market-counter':'收货柜台','market-fuse':'修电','market-part':'零件'};
++  for(const [goal,fragment] of Object.entries(expected)){
++    r.auto.goal=goal;r.auto.event=null;
++    const title=A.view(r).title;
++    assert.match(title,/^正在前往/,'title: '+title);
++    assert.ok(!title.includes('undefined'),'undefined leaked into '+title);
++    assert.ok(title.includes(fragment),'title mentions '+fragment);
++  }
++});
++
++test('the automatic board never double-places manual market buttons',()=>{
++  const r=shift(1);r.actors=[];
++  A.enable(r); // starts at the route event
++  const h=harness(r);h.ui.render();
++  assert.ok(!h.board().includes('data-verb="market-salvage"'),'no manual buttons at route event');
++  assert.ok(A.choose(r,'market'),'route choice accepted');
++  // Real automatic travel to the market, exactly as production drives it.
++  for(let n=0;n<4000&&!r.auto.event;n++)A.step(r,.05);
++  assert.equal(r.auto.event,'market');
++  assert.ok(A.choose(r,'mkt-trade'));
++  h.ui.render();
++  const html=h.board();
++  for(const verb of ['market-salvage','market-trade','market-deliver','market-power'])
++    assert.ok(!html.includes('data-verb="'+verb+'"'),verb+' not placed in automatic UI');
++  assert.match(html,/正在前往滚动酒桶/,'travelling title still names the goal');
++});
++
++test('receipt after a bailed delivery does not grant the safe voucher',()=>{
++  const r=shift(1);Object.assign(r.p,{x:405,y:1110});
++  B.command(r,'market-trade');B.command(r,'collect',{itemId:'item2'});B.command(r,'market-deliver');
++  B.command(r,'bail');
++  const h=harness(r);h.ui.render();
++  const html=h.board();
++  assert.match(html,/没有安全撤离/);
++  assert.ok(!/只对次日作数/.test(html),'safe-voucher wording is withheld after bailout');
++});

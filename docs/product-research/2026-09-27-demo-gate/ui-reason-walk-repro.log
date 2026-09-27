@@ -1,0 +1,21 @@
+{
+  "before": {
+    "p": {
+      "x": 675,
+      "y": 1085
+    },
+    "reason": "走到卸货门开关旁的修电点再修电。",
+    "signature": "0|market|market-shortcut|active|false|||||closing||quiet|false|east|true|false|true|blackout||false|false|false|false|false|false|false|false"
+  },
+  "after": {
+    "p": {
+      "x": 685.25,
+      "y": 1085
+    },
+    "reason": "包里需要一件可修零件（可卖 €5）。",
+    "signature": "0|market|market-shortcut|active|false|||||closing||quiet|false|east|true|false|true|blackout||false|false|false|false|false|false|false|false"
+  },
+  "boardUnchanged": true,
+  "staleReasonShown": true,
+  "newReasonMissing": true
+}

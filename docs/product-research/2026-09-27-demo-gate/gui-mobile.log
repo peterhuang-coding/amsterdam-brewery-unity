@@ -1,0 +1,6 @@
+### Result
+{"width":390,"documentWidth":390,"marketButtons":[{"label":"把酒桶交到柜台 · 交付","disabled":true}],"hasDeveloperText":true}
+### Ran Playwright code
+```js
+await (async(page)=>{return await page.evaluate(()=>({width:innerWidth,documentWidth:document.documentElement.scrollWidth,marketButtons:[...document.querySelectorAll('[data-verb^=market]')].map(b=>({label:b.textContent,disabled:b.disabled})),hasDeveloperText:document.querySelector('#action-content').innerText.includes('item2')}));})(page);
+```

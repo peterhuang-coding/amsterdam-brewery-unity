@@ -1,0 +1,46 @@
+{
+  "task_id": "amsterdam-demo-gate-20260927",
+  "status": "invalid_output",
+  "elapsed_seconds": 312.973,
+  "blockers": [
+    "report.changed_files out of scope"
+  ],
+  "claude": {
+    "returncode": 0,
+    "final_subtype": "success",
+    "outcome": "completed"
+  },
+  "observed_models": [
+    "doubao-seed-evolving"
+  ],
+  "thinking_blocks": 7,
+  "input_hash_mismatches": [],
+  "disallowed_changes": [],
+  "deleted_files": [],
+  "structure_exit": 0,
+  "tool_counts": {
+    "Read": 3,
+    "Write": 0,
+    "Edit": 2,
+    "Bash": 2
+  },
+  "bash_commands": [
+    {
+      "exact_allowed": false,
+      "prefix": "cat > /Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-demo-gate-20260927/workspace/demo-acceptance.json << 'EOF'",
+      "sha256": "16433da051a3b41f0e1ac624d578b6c2de73c971511b1b129c5fc737a0c89f80"
+    },
+    {
+      "exact_allowed": true,
+      "prefix": "python3 verify.py",
+      "sha256": "d8e2bdef6006887c3585942c3a43984eaa7fa903b4292ab8981652eb6ea4eb54"
+    }
+  ],
+  "semantic_findings": [
+    "G5 labels optional minigames as a counterexample; optionality is not evidence of poor design.",
+    "SM01 current draft is not yet adopted in game workspace; G1 wording calls it part of current worktree.",
+    "G3 status conflates planned SM01 compatibility/exactly-once checks with existing tested systems.",
+    "Gate/order are not implementation permission; maintain original user decision rather than adopt blanket price-design separation."
+  ],
+  "adoption": "raw archival only, no accepted full specification; no next wave"
+}

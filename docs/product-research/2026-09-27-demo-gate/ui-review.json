@@ -1,0 +1,154 @@
+{
+  "task_id": "amsterdam-sm01-night-r2-20260927",
+  "logical_attempt": 2,
+  "prior_attempt": "amsterdam-sm01-night-20260927",
+  "launcher_status": "verifying",
+  "elapsed_seconds": 745.308,
+  "observed_models": [
+    "doubao-seed-evolving"
+  ],
+  "thinking_blocks": 25,
+  "requested": {
+    "model": "doubao-seed-evolving",
+    "provider_base_url": "https://ark.cn-beijing.volces.com/api/coding",
+    "thinking_enabled": true,
+    "reasoning_effort": "high"
+  },
+  "disallowed_changes": [],
+  "deleted_files": [],
+  "tests": {
+    "tests": [
+      {
+        "command": "node --test tools/prototype/test-market-shift.js tools/prototype/test-market-shift-ui.js",
+        "exit_code": 0,
+        "tail": [
+          "1..26",
+          "# tests 26",
+          "# suites 0",
+          "# pass 26",
+          "# fail 0",
+          "# cancelled 0",
+          "# skipped 0",
+          "# todo 0",
+          "# duration_ms 276.018625"
+        ]
+      },
+      {
+        "command": "node --test --test-concurrency=1 tools/prototype/test-backstage.js tools/prototype/test-backstage-auto.js tools/prototype/test-district-core.js tools/prototype/test-district-auto.js tools/prototype/test-location-depth.js tools/prototype/test-night-streets.js",
+        "exit_code": 0,
+        "tail": [
+          "1..60",
+          "# tests 60",
+          "# suites 0",
+          "# pass 60",
+          "# fail 0",
+          "# cancelled 0",
+          "# skipped 0",
+          "# todo 0",
+          "# duration_ms 6628.848917"
+        ]
+      },
+      {
+        "command": "node --check tools/prototype/backstage-ui.js",
+        "exit_code": 0,
+        "tail": []
+      },
+      {
+        "command": "node --check tools/prototype/backstage-scene.js",
+        "exit_code": 0,
+        "tail": []
+      },
+      {
+        "command": "node --check tools/prototype/backstage-auto.js",
+        "exit_code": 0,
+        "tail": []
+      }
+    ],
+    "full_exit": 0,
+    "full_files": 29,
+    "full_tail": [
+      "  type: 'test'",
+      "  ...",
+      "1..238",
+      "# tests 307",
+      "# suites 0",
+      "# pass 307",
+      "# fail 0",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0",
+      "# duration_ms 39799.469375"
+    ],
+    "hash_mismatches": []
+  },
+  "bash_calls": 11,
+  "commands_outside_exact_list": [
+    {
+      "first_line": "ls -la tools/prototype/",
+      "sha256": "8391b147b8f9fda1fe62a4b4235c26a82b654a8feec0525d6386909318f4478a"
+    },
+    {
+      "first_line": "node --test tools/prototype/test-market-shift.js 2>&1 | tail -40",
+      "sha256": "2e78fd35e08f8a74e0d46814e0eefa0fcd6fa922e2a2a963fd0cf897f6dbb0da"
+    },
+    {
+      "first_line": "grep -rn \"exp-command\" tools/prototype/ | grep -v test-market-shift.js",
+      "sha256": "e30bef38bbb5704df3d5a7ed2dbced98695a1e75754685fe80c7f4d08c65cbf9"
+    },
+    {
+      "first_line": "grep -n \"data-action\\|dataset.verb\\|\\.perform(\" tools/prototype/reopening-core.js tools/prototype/journey-core.js | head -20",
+      "sha256": "ae32367632694798a6157d3978b74adb5edaa0159941ca5cbfa8a295d59ed131"
+    },
+    {
+      "first_line": "cat > tools/prototype/test-market-shift-ui.js <<'EOF'",
+      "sha256": "49550dddddde05eb0d3eddd9f002edb575b432647dc5fcd400fdfa13909734d4"
+    }
+  ],
+  "actual_files_touched": [
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/test-market-shift-ui.js",
+    "handoff-result.json"
+  ],
+  "acceptance": "rejected pending targeted correction; source game unchanged",
+  "findings": [
+    {
+      "priority": 2,
+      "file": "backstage-ui.js",
+      "issue": "market reasons missing from render signature; all availability flags can remain false while reason changes.",
+      "repro": "seed42/day3, no part, p675,1085 then real B.step dx1 dt0.05 =>p685.25,1085. Core changes reason to missing part; board stays approach fuse.",
+      "evidence": "ui-reason-walk-repro.log"
+    },
+    {
+      "priority": 2,
+      "file": "backstage-ui.js",
+      "issue": "Actual player-facing controls/receipt expose item2 and stage2.",
+      "evidence": "gui-trade-real.log and gui-return-receipt.log"
+    }
+  ],
+  "gui": {
+    "scope": "Temporary snapshot with explicit valid night opt-in fixture; not natural daytime entry or full end-to-end demo",
+    "verified": [
+      "counter trade choice through actual DOM",
+      "barrel consumed on actual delivery",
+      "auto walk to exit and receipt",
+      "pause reload preserves commitment and bag",
+      "390px document width equals viewport",
+      "counter and fuse signs visible"
+    ],
+    "not_verified": [
+      "full three-day playthrough",
+      "new daytime consequence not implemented",
+      "human fun",
+      "all browser paths"
+    ]
+  },
+  "next": "Failure-stop triggered; no day packet submitted, no new model or retry. Keep archived draft, require new explicit recovery."
+}

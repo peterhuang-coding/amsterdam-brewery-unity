@@ -1,0 +1,6 @@
+### Result
+"CITY BACKSTAGE / 第 1 趟\n\n跟着灯走。\n留条路回来。\n\n长钩绳 · 普通货物靠近装包。\n点向目标下钩，闪避和泡沫可以救场。\n\n超市内部 / 货架 · 冷库 · 卸货口\n\n货架北面通冷库，东边卸货门可以从里面打开。\n\n夜店 · ♪ 鼓点掩盖动静 · 2s 后切换\n超市柜台 · 值班夜 · 清扫机更警觉\n\n清扫机今晚多看 60 步。货架照常缺货，机器照常上班，还加了班。\n\n已选路线：帮忙搬货 · 不可更改。收桶、送到柜台，都要自己走过去。\n\n把酒桶交到柜台 · 交付\n交付会消耗包里的滚动酒桶 item2（3 格）；它变不回 4 杯艾尔。\n夜间补货\n\n货堆堵住近路；从南侧绕行，空桶可以挡住清洁车。\n\n空瓶 3 / 3 · 青环空桶可拖动\n◇\n一箱“进口酵母”\n\n夜店的冷藏箱还在那里。占 3 格，靠近按 E。\n\n♧\n红灯街的 Noor\n\n西北运河边，她刚下夜班。带箱子过去，或先问问她。\n\n✧\n玻璃后面，有人在生活\n\n东北的温室亮着灯。拉开外面的维护拉杆，找路进去。\n\n背包\nQ 扔下最后一件\n滚动酒桶\n3 格\n\n选了帮忙搬货：把滚动酒桶实送到柜台。没安全撤离，就没有回执。\n\n整理背包 · 选择放下什么\n看看全图 · M\n放下背包，轻装撤回"
+### Ran Playwright code
+```js
+await (async(page)=>{await page.getByRole('button',{name:'继续播放 / 回到街上',exact:true}).click();await page.getByRole('button',{name:'帮忙搬货 · 柜台表态',exact:true}).click();await page.keyboard.press('p');return await page.locator('#action-content').innerText();})(page);
+```

@@ -32,7 +32,7 @@
 用户本任务明确要求「让 cc 跑 到今晚 9 点我晚上回来验收，告诉我都更新了那些好玩的部分」。这是SM01新的恢复决定，保留D13/D14失败历史。截止2026-09-28 21:00 Asia/Shanghai（13:00 UTC）；20:00停止新派发，留收齐、独立验收、push与试玩说明时间。只用Coding Plan Seed Evolving/thinking enabled/high，失败即停、不换Astra或按量API仍有效。
 先做amsterdam-sm01-night-r3-20260928，逻辑attempt3，复用de92aaa归档完整候选，修真实行走后禁用原因缓存和item2/stage2玩家文案。游戏精确基线5970a022a7502d3075266cbe9051df472b16b852，独立codex/supermarket-night-shift / city-journey-quality；工作台de92aaa4a8554598d528b5924f9fae352b535b1b。允许backstage-ui.js、test-market-shift-ui.js；backstage-core.js仅一条delivery reason文案。1800秒80轮，当前单包，昼夜包有依赖不并行。
 验收：B.step真实移动触发false→false原因变化，不清缓存作弊；交付和回执无开发标记、第三夜/失败事实准确；既有测试不改、全量回归、独立浏览器。通过后才派既定白天免费线索、一次性次日差事/价格后果和存档，精确基线在下一包开工前记录。后续只推进已授权demo主线的小包，不能自动恢复CJ01/PLAN01/ALG01、扩全部候选或迁移引擎。
-每包固定ID先查在途，最多两路真正独立CC，收齐review后续。今日使用现有amsterdam心跳定时检查与21:00汇总，不另建cron/脚本循环；截止后恢复每日22:00检查，不凭D15继续开新包。新授权已准备，尚未派发；证据/tmp/amsterdam-d15-20260928。
+每包固定ID先查在途，最多两路真正独立CC，收齐review后续。今日使用现有amsterdam心跳定时检查与21:00汇总，不另建cron/脚本循环；截止后恢复每日22:00检查，不凭D15继续开新包。第一包已提交且确认实际Seed Evolving/thinking运行，结果待收；独立白天包未提交。Notion已执行中；今日临时08至22点整点心跳已设置，21:00汇总并恢复每日22:00。详见[本轮记录](rounds/2026-09-28-demo-iteration.md)；证据/tmp/amsterdam-d15-20260928。
 
 ### D14历史终态（以下保留）
 

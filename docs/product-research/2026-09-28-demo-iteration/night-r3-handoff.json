@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-sm01-night-r3-20260928",
+  "goal": "Fix two confirmed SM01 night UI defects only, with real-step regressions. Reuse complete candidate; read task-spec.md. Return valid handoff report excluding itself from changed_files.",
+  "workspace": "/tmp/amsterdam-d15-20260928/night-input",
+  "read_files": [
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/reopening-core.js",
+    "tools/prototype/journey-core.js",
+    "tools/prototype/delivery-orders.js",
+    "tools/prototype/character-stories.js",
+    "tools/prototype/flower-network.js",
+    "tools/prototype/test-backstage.js",
+    "tools/prototype/test-backstage-auto.js",
+    "tools/prototype/test-district-core.js",
+    "tools/prototype/test-district-auto.js",
+    "tools/prototype/test-location-depth.js",
+    "tools/prototype/test-night-streets.js",
+    "tools/prototype/test-market-shift.js",
+    "tools/prototype/test-market-shift-ui.js",
+    "task-spec.md"
+  ],
+  "write_files": [
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/test-market-shift-ui.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-market-shift.js tools/prototype/test-market-shift-ui.js",
+    "node --test --test-concurrency=1 tools/prototype/test-backstage.js tools/prototype/test-backstage-auto.js tools/prototype/test-district-core.js tools/prototype/test-district-auto.js tools/prototype/test-location-depth.js tools/prototype/test-night-streets.js",
+    "node --check tools/prototype/backstage-ui.js",
+    "node --check tools/prototype/backstage-scene.js",
+    "node --check tools/prototype/backstage-auto.js",
+    "node --check tools/prototype/backstage-core.js"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 1800,
+  "max_turns": 80,
+  "memory": {
+    "summary": "D15 explicitly resumes SM01 until Sep28 21:00. Fixed Coding Plan Seed Evolving high, failure stops subsequent dispatch. This is targeted night attempt3.",
+    "decisions": [
+      "No core redo; only core delivery-reason text may change.",
+      "Day integration is dependent and not submitted yet."
+    ],
+    "completed": [
+      "Final R2 candidate full307/307; real GUI trade/exit/pause/mobile tested in fixture."
+    ],
+    "known_issues": [
+      "False-to-false unavailable reason cache stale",
+      "item2/stage2 leak into player UI"
+    ]
+  },
+  "tasks": [
+    "Read task-spec and relevant inputs.",
+    "Add failing regressions then minimal fixes.",
+    "Run supplied commands and return honest complete report."
+  ],
+  "acceptance": [
+    "Actual movement changes disabled reason with canPower still false.",
+    "No internal labels in rendered delivery/receipt text.",
+    "All prior tests unchanged and pass; file scope respected."
+  ],
+  "constraints": [
+    "Plan only, no fallback; no git/network/install/subagents.",
+    "Only core string literal may change; all other core logic read-only.",
+    "handoff-result.json is never in report.changed_files."
+  ]
+}

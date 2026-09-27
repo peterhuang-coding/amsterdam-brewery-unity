@@ -1,10 +1,10 @@
 (function (root, factory) {
   'use strict';
   const common = typeof module === 'object' && module.exports;
-  const api = factory(common ? require('./backstage-core.js') : root.Backstage, common ? require('./backstage-auto.js') : root.BackstageAuto, common ? require('./journey-core.js') : root.Journey);
+  const api = factory(common ? require('./backstage-core.js') : root.Backstage, common ? require('./backstage-auto.js') : root.BackstageAuto, common ? require('./journey-core.js') : root.Journey, common ? require('./delivery-orders.js') : root.DeliveryOrders, common ? require('./character-stories.js') : root.CharacterStories, common ? require('./flower-network.js') : root.FlowerNetwork);
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (root) root.Reopening = api;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (B, A, J) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (B, A, J, D, S, G) {
   'use strict';
 
   const BEERS = Object.freeze({
@@ -74,7 +74,7 @@
   }
   function createGame(seed) {
     return {
-      version: 1, seed: seedNumber(seed), day: 1, phase: 'welcome', cash: 45, actions: 2,
+      version: 1, seed: seedNumber(seed), day: 1, phase: 'welcome', cash: 45, actions: 2, trade: D.fresh(), stories: S.fresh(1), garden: G.fresh(),
       batches: [
         { id: 'starter-blond', beer: 'blond', cups: 6, quality: 1, madeDay: 1, aged: false },
         { id: 'starter-stout', beer: 'stout', cups: 2, quality: 1, madeDay: 1, aged: false }
@@ -146,6 +146,8 @@
     } else if (state.backstage.resolution === 'kept') {
       Object.assign(orders[1], { name: '穿灰外套的人', quote: '冷藏箱在你这里？我只喝正常的啤酒。其他事情，等你忙完再说。', budget: 10, patience: 18 });
     }
+    D.open(state,orders);
+    S.open(state,orders);
     return { elapsed: 0, duration, orders, pours: [], earned: 0, served: 0, satisfied: 0, lost: 0, promiseKept: false, promiseBroken: false, event: null, rentAdjustment: 0 };
   }
   function breakPromise(state, order) {
@@ -155,6 +157,8 @@
     }
   }
   function lose(state, order, message) {
+    D.resolve(state,order.id,false);
+    S.service(state,order.id,'lost');
     order.status = 'lost';
     state.night.lost++;
     state.night.pours = state.night.pours.filter(pour => pour.customerId !== order.id);
@@ -165,13 +169,15 @@
     const night = state.night;
     for (const order of night.orders) if (order.status === 'waiting' || order.status === 'future') lose(state, order);
     night.pours = [];
+    D.close(state);
+    S.close(state);
     if (state.promises.lotte && !night.promiseKept) night.promiseBroken = true;
     const rent = 18 + night.rentAdjustment;
     state.cash = Math.max(0, state.cash - rent);
     state.phase = 'summary';
     const note = night.promiseKept ? 'Lotte 说今晚的报酬已到账：一杯黑啤，比“积累曝光”实在。' : night.promiseBroken ? 'Lotte 没收到答应的黑啤。她没开罚单，只说明晚先不带琴了。' : night.satisfied >= 5 ? '街坊们约好再来。没人要求做用户访谈，大家直接付了钱。' : '椅子比客人待得久。会计说这是沉淀，你决定先把杯子洗了。';
     state.reports.push({ day: state.day, earned: night.earned, served: night.served, satisfied: night.satisfied,
-      lost: night.lost, rent, cash: state.cash, promiseKept: night.promiseKept, promiseBroken: night.promiseBroken, note });
+      lost: night.lost, rent, cash: state.cash, promiseKept: night.promiseKept, promiseBroken: night.promiseBroken, note: note+' '+D.notes(state).filter((_,i)=>state.trade.contracts[i].settledDay===state.day).join(' ')+' '+S.notes(state).filter((_,i)=>state.stories.threads[i].day===state.day).join(' ') });
     say(state, '第 ' + state.day + ' 夜收店：' + night.satisfied + ' 位满意的客人，支付租金 €' + rent + '。');
   }
   function updateNight(state) {
@@ -198,6 +204,7 @@
       night.event = { id: eventForDay(state.day), status: 'pending', choice: null };
       say(state, NIGHT_EVENTS[night.event.id].title + '：营业时间暂停，先处理这位不在菜单上的客人。');
     }
+    S.update(state);
     if (night.elapsed >= night.duration || night.orders.every(order => order.status === 'served' || order.status === 'lost')) settle(state);
   }
   function nextDay(state) {
@@ -223,16 +230,34 @@
     if (!action || typeof action !== 'object' || typeof action.type !== 'string') return fail('这个操作无法执行。');
     if (state.life.arrangement && !['flowerPick','flowerWrap','flowerFinish','flowerCancel'].includes(action.type)) return fail('先包好这束花，或免费取消配花。');
     if (state.phase === 'night' && state.night.event && state.night.event.status === 'pending' && !['event', 'close'].includes(action.type)) return fail('先处理眼前的突发事件。时间和酒杯都暂停了。');
+    if (state.phase==='night'&&S.pending(state)&&!['storyNight','close'].includes(action.type))return fail('先回应约好的角色事件。营业、耐心和酒杯都已暂停。');
     switch (action.type) {
+      case 'gardenAsk': {
+        const result=G.ask(state);if(!result.ok)return fail(result.message);say(state,result.message);break;
+      }
+      case 'gardenVisit': {
+        const p=action.position;
+        if(state.phase!=='prep'||!p||!number(p.x,0,1800)||!number(p.y,0,1120)||Math.hypot(p.x-G.ENTRY.x,p.y-G.ENTRY.y)>60||![undefined,'cart'].includes(action.source))return fail('白天亲自走到温室侧门，才算到访。');
+        G.visit(state,action.source==='cart'?'cart':'self');
+        say(state,'你走到温室侧门，认出搬花车留下的车辙。路线已记下：白天可重访，夜里可从温室后门撤离；没有拿走货物或消耗准备次数。');break;
+      }
+      case 'storyDay': {
+        const result=S.talk(state,action.id,action.choice);if(!result.ok)return fail(result.message);say(state,result.message);break;
+      }
+      case 'storyNight': {
+        if(state.phase!=='night')return fail('现在没有夜间角色事件。');
+        const result=S.decide(state,action.choice,D.available);if(!result.ok)return fail(result.message);say(state,result.message);break;
+      }
       case 'journeyStart': {
         if(state.phase!=='prep'||state.actions<1||state.journeys.usedDay===state.day||state.life.bouquet)return fail('委托每天一次，占一次准备；先安置自己的花束。');
-        const run=J.create(state.seed,state.day,action.kind);if(!run)return fail('请选择送花或列车委托。');
+        const run=J.create(state.seed,state.day,action.kind,action.kind==='delivery'?4:1,G.context(state));if(!run)return fail('请选择送花或列车委托。');
         state.actions--;state.journeys.usedDay=state.day;state.journeys.run=run;state.phase='journey';say(state,run.message);break;
       }
       case 'journeyAction': {
         if(state.phase!=='journey')return fail('现在没有正在进行的出行。');
         const result=J.act(state.journeys.run,action.verb,action.value,state.cash);
         if(!result.ok)return fail(result.message);state.cash-=result.cost||0;
+        if(state.journeys.run.garden?.visited)G.visit(state,'self');
         if(action.verb!=='tick')say(state,state.journeys.run.message);break;
       }
       case 'journeyReturn': {
@@ -241,8 +266,15 @@
         state.cash+=earnings-repayment;state.journeys.debt+=r.fee-repayment;
         const note=J.LABELS[r.outcome]+'。'+(r.help?'同行人记得你帮忙收过纸袋。':'')+(r.streetResult==='talk'?'你说明花有收件人，对方让开了。':r.streetResult==='detour'?'你绕过路口，保住了这趟委托。':r.streetResult==='stood-ground'?'对方退让后，你带着花离开。':'')+(r.outcome==='honest'?'收件人接受了你的说明，下次可以多垫一层。':r.outcome==='delivered'?'收件人说花很好，谢谢你跑这一趟。':'');
         state.journeys.history.push({day:state.day,kind:r.kind,outcome:r.outcome,quality:Math.round(r.quality),street:r.streetResult,help:r.help,paid:r.paid,reward:earnings,note});
+        state.journeys.history.at(-1).note+=J.careNote(r);
         state.journeys.history=state.journeys.history.slice(-3);state.journeys.run=null;state.phase='prep';
+        D.offer(state,r);
+        if(r.version>=2&&r.packing==='capacity')state.journeys.history.at(-1).note+=' 急件'+(r.load.parcel==='delivered'?(r.load.onTime?'按时交付，€4。':'迟到交付，€2。'):'已退回，不收报酬。');
         say(state,'这趟已收好：委托报酬 €'+earnings+'，偿还票务待付款 €'+repayment+'。'+r.message);break;
+      }
+      case 'contract': {
+        const result=D.decide(state,action.id,action.choice,action.batchId);
+        if(!result.ok)return fail(result.message);say(state,result.message);break;
       }
       case 'journeyDebt': {
         if(state.phase!=='prep'||state.journeys.debt<=0)return fail('没有待付票务费用。');
@@ -426,17 +458,16 @@
         const future = state.night.orders.filter(order => order.status === 'future').slice(0, 3);
         if (event.id === 'landlord') {
           if (choice.id === 'comp') {
-            const beer = stock(state, 'blond') > 0 ? 'blond' : 'stout';
-            const batch = state.batches.find(item => item.beer === beer && item.cups > 0);
+            const batch = state.batches.find(item => item.beer==='blond'&&D.available(state,item)>0)||state.batches.find(item=>D.available(state,item)>0);
             if (!batch) return fail('没有剩余酒可以招待房东。空气还不限量。');
             batch.cups--; state.night.rentAdjustment = -6;
             say(state, '房东喝掉一杯酒，今晚租金少 €6。原来议价能力是液体。');
           } else { state.night.rentAdjustment = 3; say(state, '房东把拒绝赊酒算成服务费。今晚租金多 €3，措辞非常专业。'); }
         } else if (event.id === 'influencer') {
           if (choice.id === 'samples') {
-            if (stock(state, 'blond') + stock(state, 'stout') < 2) return fail('样品需要 2 杯现酒。曝光量暂时不能兑啤酒。');
+            if (state.batches.reduce((sum,b)=>sum+D.available(state,b),0) < 2) return fail('样品需要 2 杯未预留的现酒。已答应的订单不会被自动送掉。');
             let remaining = 2;
-            for (const batch of state.batches) { const used = Math.min(remaining, batch.cups); batch.cups -= used; remaining -= used; }
+            for (const batch of state.batches) { const used = Math.min(remaining, D.available(state,batch)); batch.cups -= used; remaining -= used; }
             for (const order of future) order.budget += 4;
             say(state, '两杯样品换来愿意加价的游客。接下来三位新客预算各多 €4。');
           } else {
@@ -458,8 +489,12 @@
         if (!owns(BEERS, action.beer) || !integer(action.price, 1, 1000000)) return fail('请选择现有酒款，并设置正整数价格。');
         if (state.night.pours.some(pour => pour.customerId === order.id)) return fail('这位客人的酒已经在倒了。');
         if (state.night.pours.length >= (has(state, 'doubleTap') ? 2 : 1)) return fail('酒头正在使用，请先端出手上的酒。');
-        const batch = state.batches.find(item => item.beer === action.beer && item.cups > 0);
+        const batch = state.batches.find(item => item.beer === action.beer && D.available(state,item,order.id)>0 && (action.batchId===undefined||item.id===action.batchId));
         if (!batch) return fail('这款酒售罄了。可以给客人一杯水。');
+        const contract=D.forGuest(state,order.id);
+        if(state.day>=state.trade.rulesFromDay&&action.price>BEERS[action.beer].price&&batch.quality<2)return fail('品质加价需要至少 2 级；可以换批次或按街坊价出售。');
+        if(contract){const t=D.terms(state,contract);if(action.beer!=='stout'||batch.quality<t.quality||action.price!==t.price)return fail('预订单约定：品质至少 '+t.quality+' 的黑啤，固定 €'+t.price+'。缺货可协商取消。');}
+        if(contract?.reservedBatch===batch.id)contract.reservedBatch=null;
         batch.cups--;
         state.night.pours.push({ customerId: order.id, beer: action.beer, price: action.price,
           quality: batch.quality, aged: batch.aged, startedAt: state.night.elapsed, duration: 4 });
@@ -473,19 +508,23 @@
         const progress = pourProgress(state, pour);
         const satisfied = progress >= 0.45 - 1e-8 && progress <= 0.95 + 1e-8 && pour.beer === order.beer && pour.price <= order.budget;
         const perfect = Math.abs(progress - 0.72) <= 0.09 + 1e-8;
+        const contractBonus=satisfied&&D.forGuest(state,order.id)?2:0;
         let earned = pour.price <= order.budget ? pour.price : 0;
         if (satisfied) {
+          earned += D.resolve(state,order.id,true);
           earned += pour.quality - 1 + (perfect ? 2 : 0) + (pour.aged ? 2 : 0) + (has(state, 'stage') ? 2 : 0) + (state.music ? 1 : 0) + (order.person === 'bram' && state.friends.bram > 0 ? 1 : 0);
           state.night.satisfied++; state.totalSatisfied++;
           if (order.person) state.friends[order.person]++;
           if (order.person === 'lotte' && state.promises.lotte) state.night.promiseKept = true;
         }
         order.status = 'served';
+        S.service(state,order.id,satisfied?'satisfied':'unsatisfied');
         state.night.served++; state.totalServed++;
         state.night.earned += earned; state.cash += earned;
         state.night.pours = state.night.pours.filter(item => item.customerId !== order.id);
         say(state, satisfied ? order.name + (perfect ? '接过漂亮的一杯' : '满意地点点头') + '，收入 €' + earned + '。' : order.name + '收下了酒，但这一杯没有让对方满意。收入 €' + earned + '。');
-        if (!satisfied) breakPromise(state, order);
+        if(contractBonus)say(state,'预订单已兑现：约定价 €'+pour.price+'＋履约奖励 €2＋品质与倒酒等小费 €'+(earned-pour.price-2)+'＝€'+earned+'。管理员：“花和酒都到了，谢谢你记得。”');
+        if (!satisfied) {D.resolve(state,order.id,false);breakPromise(state, order);}
         else if (order.person === 'lotte' && state.promises.lotte) say(state, 'Lotte 尝到了答应的黑啤：明晚带吉他。至少这份口头合同兑付了。');
         updateNight(state); break;
       }
@@ -556,13 +595,16 @@
       Array.isArray(e.outcomes)&&e.outcomes.length<=7&&unique(e.outcomes)&&e.outcomes.every(id=>JOURNAL_OUTCOMES.includes(id)));
   }
   function validState(s) {
-    if (!shape(s, 'version seed day phase cash actions batches friends promises upgrades hops music log totalSatisfied totalServed brew forage night reports lastMessage result prepared backstage life journeys')) return false;
+    if (!shape(s, 'version seed day phase cash actions batches friends promises upgrades hops music log totalSatisfied totalServed brew forage night reports lastMessage result prepared backstage life journeys trade stories garden')) return false;
     if (s.version !== 1 || !integer(s.seed, 0, 4294967295) || !integer(s.day, 1, 3) || !integer(s.cash, 0, 1000000) || !integer(s.actions, 0, 2)) return false;
     if (!['welcome', 'prep', 'brew', 'forage', 'explore', 'journey', 'night', 'summary', 'ending'].includes(s.phase)) return false;
     const j=s.journeys;
     if(!shape(j,'run usedDay debt history')||!integer(j.usedDay,0,s.day)||!integer(j.debt,0,1000)||!Array.isArray(j.history)||j.history.length>3)return false;
     if(s.phase==='journey'?(!J||!J.valid(j.run)||j.run.seed!==s.seed||j.run.day!==s.day||j.usedDay!==s.day||s.actions>1):j.run!==null)return false;
-    if(!j.history.every((e,i)=>shape(e,'day kind outcome quality street help paid reward note')&&integer(e.day,1,s.day)&&(i===0||e.day>j.history[i-1].day)&&['delivery','rail'].includes(e.kind)&&owns(J.LABELS,e.outcome)&&integer(e.quality,0,100)&&['none','talk','detour','passed','stood-ground','retreated'].includes(e.street)&&typeof e.help==='boolean'&&integer(e.paid,0,100)&&integer(e.reward,0,16)&&string(e.note)))return false;
+    if(!j.history.every((e,i)=>shape(e,'day kind outcome quality street help paid reward note')&&integer(e.day,1,s.day)&&(i===0||e.day>j.history[i-1].day)&&['delivery','rail'].includes(e.kind)&&owns(J.LABELS,e.outcome)&&integer(e.quality,0,100)&&['none','talk','detour','passed','stood-ground','retreated'].includes(e.street)&&typeof e.help==='boolean'&&integer(e.paid,0,100)&&integer(e.reward,0,18)&&string(e.note)))return false;
+    if(!D.valid(s))return false;
+    if(!S.valid(s))return false;
+    if(!G.valid(s))return false;
     if (!shape(s.backstage, 'run discovered resolution trips from cashAfterClose journal') || !Array.isArray(s.backstage.discovered) || !unique(s.backstage.discovered) || !s.backstage.discovered.every(id => ['greenhouse', 'noor', 'market-shortcut', 'greenhouse-pump'].includes(id)) || ![null, 'returned', 'kept'].includes(s.backstage.resolution) || !integer(s.backstage.trips, 0, 3) || !integer(s.backstage.cashAfterClose,0,1000000)||!validJournal(s.backstage.journal,s)) return false;
     if(s.phase==='explore' ? !['prep','summary'].includes(s.backstage.from) : s.backstage.from!==null) return false;
     const afterClose=['summary','ending'].includes(s.phase)||s.phase==='explore'&&s.backstage.from==='summary';
@@ -633,6 +675,9 @@
     try {
       if (!safeData(value, new Set(), 0, { count: 0 })) return null;
       const restored = clone(value);
+      if(restored&&!owns(restored,'garden'))restored.garden=G.fresh(restored.backstage?.discovered||[]);
+      if(restored&&!owns(restored,'stories'))restored.stories=S.fresh(['night','summary','ending','explore'].includes(restored.phase)?restored.day+1:restored.day);
+      if(restored&&!owns(restored,'trade'))restored.trade=D.fresh(['night','summary','ending','explore'].includes(restored.phase)?restored.day+1:restored.day);
       if(restored&&!owns(restored,'journeys'))restored.journeys={run:null,usedDay:0,debt:0,history:[]};
       if (restored && !owns(restored, 'backstage')) restored.backstage = { run: null, discovered: [], resolution: null, trips: 0 };
       if(restored&&!owns(restored,'life'))restored.life=freshLife();
@@ -647,5 +692,5 @@
     } catch (_) { return null; }
   }
 
-  return Object.freeze({ createGame, act, stock, customers, pourProgress, forageProgress, restore, flowerPalette, flowerFit, FLOWERS, BEERS, UPGRADES, PEOPLE, NIGHT_EVENTS });
+  return Object.freeze({ createGame, act, stock, customers, pourProgress, forageProgress, restore, flowerPalette, flowerFit, FLOWERS, BEERS, UPGRADES, PEOPLE, NIGHT_EVENTS, trade:D, stories:S, garden:G });
 });

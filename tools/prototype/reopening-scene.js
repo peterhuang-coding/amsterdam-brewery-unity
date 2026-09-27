@@ -135,6 +135,14 @@
         }
       }
       if(view.path&&view.path.length){c.setLineDash([10,9]);c.lineDashOffset=this.reduced.matches?0:-time*12;this.line([[view.position.x,view.position.y],...view.path.map(p=>[p.x,p.y])],'#f5d48e',5);c.setLineDash([]);c.lineDashOffset=0;}
+      if(view.garden&&!night){
+        const e=window.FlowerNetwork.ENTRY;
+        this.rect(e.x-30,e.y-45,60,28,'#72917b');this.rect(e.x-20,e.y-40,40,20,'#b9d6c0');
+        this.line([[e.x-30,e.y-45],[e.x,e.y-59],[e.x+30,e.y-45]],'#3f6350',4);
+        this.text(view.garden.known?'温室侧门':'玻璃屋后的门',e.x,e.y+20,14,'#294b51','sans-serif');
+        if(!view.garden.pump)this.ellipse(e.x+20,e.y-4,20,8,'#527f8b');
+        const cart=view.flowerCart;if(cart){this.rect(cart.x-14,cart.y-7,28,16,'#927752');this.ellipse(cart.x-12,cart.y+10,5,5,'#294b51');this.ellipse(cart.x+12,cart.y+10,5,5,'#294b51');this.tulips(cart.x,cart.y-8,{palette:'mixed',wrap:'paper'},.8);this.text('搬花车',cart.x,cart.y-32,12,'#294b51','sans-serif');}
+      }
       for(const place of Object.values(C.PLACES)){
         const active=view.target===place.id||view.mode==='place'&&view.place===place.id,known=view.position.visited.includes(place.id);
         this.ellipse(place.x,place.y,active?27:20,active?27:20,active?'#f0cd82':'#214a48');

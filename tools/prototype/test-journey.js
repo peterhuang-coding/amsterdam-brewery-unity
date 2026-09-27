@@ -5,7 +5,7 @@ const J=require('./journey-core.js');
 
 function act(r,verb,value,cash=45){const a=J.act(r,verb,value,cash);assert.equal(a.ok,true,a.message);assert.ok(J.valid(r),'reachable state '+r.stage);return a;}
 function tick(r,until,limit=5000){for(let i=0;i<limit&&!until(r);i++){act(r,'tick',{seconds:.1});}assert.ok(until(r),'route must reach '+r.stage+' '+JSON.stringify(r.p));}
-function start(kind='delivery',route='smooth',seed=42,packing='padding'){const r=J.create(seed,1,kind);assert.ok(J.valid(r));act(r,'pack',packing);act(r,'depart',route);return r;}
+function start(kind='delivery',route='smooth',seed=42,packing='padding'){const r=J.create(seed,1,kind,1);assert.ok(J.valid(r));act(r,'pack',packing);act(r,'depart',route);return r;}
 function trainLeg(r,ticket='paid'){
   act(r,'ticket',ticket);
   if(r.leg===0)act(r,'secure');
@@ -17,6 +17,86 @@ function trainLeg(r,ticket='paid'){
   }
 }
 test('journey rules',async t=>{
+  await t.test('garden detour charges time and materials once, keeps parcel and can resume delivery',()=>{
+    for(const introduced of [false,true]){
+      const r=J.create(42,1,'delivery',4,{known:true,introduced});act(r,'pack','capacity');act(r,'depart','smooth');act(r,'garden-route');tick(r,s=>s.stage==='garden');
+      assert.equal(r.garden.visited,true);assert.equal(r.load.parcel,'bike');const time=r.elapsed,position={...r.p};act(r,'tick',{seconds:1});assert.equal(r.elapsed,time);assert.deepEqual(r.p,position);
+      assert.equal(J.act(r,'garden-wrap',undefined,45).ok,false);act(r,'cargo');r.quality=65;const result=act(r,'garden-wrap');assert.equal(result.cost,introduced?0:2);assert.equal(r.quality,90);assert.equal(r.elapsed,time+8);assert.equal(r.packing,'capacity');
+      const saved=JSON.stringify(r);assert.equal(J.act(r,'garden-wrap').ok,false);assert.equal(JSON.stringify(r),saved);
+      act(r,'garden-leave');tick(r,s=>s.stage==='dropoff');act(r,'parcel','take');act(r,'parcel','deliver');tick(r,s=>s.stage==='arrival');act(r,'deliver','accept');tick(r,s=>s.stage==='receipt');assert.match(J.careNote(r),/温室侧门/);
+    }
+  });
+  await t.test('garden routing can be cancelled and ordinary trips keep the direct destination',()=>{
+    const r=J.create(42,1,'delivery',4,{known:true});act(r,'pack','padding');act(r,'depart','smooth');act(r,'garden-route');act(r,'garden-route');assert.equal(r.garden.detour,false);tick(r,s=>s.stage==='arrival');assert.equal(r.garden.visited,false);
+    const old=J.create(42,1,'delivery',3);act(old,'pack','padding');act(old,'depart','smooth');assert.equal(J.act(old,'garden-route').ok,false);assert.equal(old.garden,undefined);
+  });
+  await t.test('a repaired pump changes movement and a stranger can leave without money',()=>{
+    const times=[];for(const pump of [false,true]){const r=J.create(42,1,'delivery',4,{known:true,pump});act(r,'pack','padding');act(r,'depart','smooth');act(r,'garden-route');tick(r,s=>s.stage==='garden');times.push(r.elapsed);act(r,'cargo');const copy=JSON.stringify(r);assert.equal(J.act(r,'garden-wrap',undefined,0).ok,false);assert.equal(JSON.stringify(r),copy);act(r,'garden-leave');tick(r,s=>s.stage==='arrival');}
+    assert.ok(times[0]>times[1]);
+  });
+  await t.test('healthy flowers never lose quality at the table and remote cargo stays remote',()=>{
+    const r=J.create(42,1,'delivery',4,{known:true});act(r,'pack','padding');act(r,'depart','smooth');act(r,'garden-route');tick(r,s=>s.stage==='garden');
+    const remote={x:600,y:330,mounted:false};r.bike=remote;const before=JSON.stringify(r);assert.equal(J.act(r,'cargo').ok,false);assert.equal(J.act(r,'garden-wrap').ok,false);assert.equal(JSON.stringify(r),before);
+    act(r,'garden-leave');act(r,'garden-route');tick(r,s=>s.stage==='garden');act(r,'cargo');act(r,'garden-wrap');assert.equal(r.quality,100);
+    const bad=structuredClone(r);bad.garden.visited=false;assert.equal(J.valid(bad),false);
+  });
+  await t.test('advance notice trades five seconds and two euros for an eighty-second handoff',()=>{
+    const r=J.create(42,1,'delivery');act(r,'pack','padding');act(r,'depart','smooth');
+    act(r,'auto');for(let i=0;i<10;i++)act(r,'tick',{seconds:1});
+    const elapsed=r.elapsed;act(r,'notify');assert.equal(r.elapsed,elapsed+5);assert.equal(J.deadline(r),80);assert.equal(r.auto,false);
+    const copy=JSON.stringify(r);assert.equal(J.act(r,'notify').ok,false);assert.equal(JSON.stringify(r),copy);
+    act(r,'auto');tick(r,s=>s.stage==='arrival');assert.ok(r.elapsed>40&&r.elapsed<80);act(r,'cargo');
+    act(r,'deliver','accept');assert.equal(r.outcome,'redirected');assert.equal(r.reward,12);
+    tick(r,s=>s.stage==='receipt');assert.match(J.careNote(r),/原时限内联系/);
+  });
+  await t.test('notice deadline and late handoff use inclusive boundaries without retroactive extension',()=>{
+    for(const elapsed of [40,40.01]){
+      const r=J.create(42,1,'delivery');act(r,'pack','padding');act(r,'depart','smooth');r.elapsed=elapsed;
+      const before=JSON.stringify(r);assert.equal(J.act(r,'notify').ok,elapsed===40);
+      if(elapsed===40){assert.equal(r.elapsed,45);assert.ok(J.valid(r));}else assert.equal(JSON.stringify(r),before);
+    }
+    for(const elapsed of [80,80.01]){
+      const r=J.create(42,1,'delivery');act(r,'pack','padding');act(r,'depart','smooth');act(r,'notify');act(r,'auto');tick(r,s=>s.stage==='arrival');act(r,'cargo');r.elapsed=elapsed;
+      act(r,'deliver','accept');assert.equal(r.outcome,elapsed===80?'redirected':'late');assert.equal(r.reward,elapsed===80?12:10);
+    }
+  });
+  await t.test('damaged flowers can become table flowers without healing or duplicate payment',()=>{
+    const r=J.create(1,1,'delivery');act(r,'pack','capacity');act(r,'depart','short');act(r,'parcel','return');act(r,'speed');
+    tick(r,s=>s.stage==='conflict');act(r,'street','talk');act(r,'auto');tick(r,s=>s.stage==='arrival');
+    assert.ok(r.quality>=20&&r.quality<80);const quality=r.quality,elapsed=r.elapsed;
+    assert.equal(J.act(r,'deliver','table').ok,false);act(r,'cargo');act(r,'deliver','table');
+    assert.equal(r.quality,quality);assert.equal(r.elapsed,elapsed+10);assert.equal(r.reward,8);assert.equal(r.outcome,'repurposed');
+    const before=JSON.stringify(r);assert.equal(J.act(r,'deliver','table').ok,false);assert.equal(JSON.stringify(r),before);tick(r,s=>s.stage==='receipt');
+    assert.match(J.careNote(r),/排练桌花/);
+  });
+  await t.test('table flower quality boundaries, tidy cost and forged care data are validated',()=>{
+    const base=J.create(42,1,'delivery');act(base,'pack','padding');act(base,'depart','smooth');tick(base,s=>s.stage==='arrival');act(base,'cargo');
+    for(const quality of [19,20,79,80]){const r=structuredClone(base);r.quality=quality;const before=JSON.stringify(r);const allowed=quality>=20&&quality<80;assert.equal(J.act(r,'deliver','table').ok,allowed);if(allowed)assert.ok(J.valid(r));else assert.equal(JSON.stringify(r),before);}
+    const r=structuredClone(base);r.quality=60;const elapsed=r.elapsed;act(r,'tidy');assert.equal(r.quality,80);assert.equal(r.elapsed,elapsed+15);assert.equal(J.act(r,'tidy').ok,false);assert.equal(J.canRepurpose(r),false);
+    for(const care of [{notifiedAt:41,resolution:null},{notifiedAt:null,resolution:'table'},{notifiedAt:null,resolution:null,extra:true}]){const bad=structuredClone(base);bad.care=care;assert.equal(J.valid(bad),false);}
+  });
+  await t.test('v1 and v2 in-flight journeys remain on their original rules',()=>{
+    for(const version of [1,2]){const r=J.create(42,1,'delivery',version);act(r,'pack','padding');act(r,'depart','smooth');assert.equal(J.act(r,'notify').ok,false);tick(r,s=>s.stage==='arrival');act(r,'cargo');r.quality=50;assert.equal(J.act(r,'deliver','table').ok,false);act(r,'deliver','accept');assert.equal(r.outcome,'honest');assert.equal(r.reward,8);assert.equal(r.version,version);assert.equal(r.care,undefined);tick(r,s=>s.stage==='receipt');}
+  });
+  await t.test('new two-slot delivery visits parcel stop and settles each item once',()=>{
+    for(const route of ['short','smooth'])for(const cancel of [false,true]){
+      const r=J.create(42,1,'delivery');act(r,'pack','capacity');assert.equal(J.manifest(r).reduce((n,i)=>n+i.slots,0),2);
+      act(r,'depart',route);
+      tick(r,s=>['conflict','dropoff'].includes(s.stage));
+      if(r.stage==='conflict'){act(r,'street','talk');act(r,'auto');tick(r,s=>s.stage==='dropoff');}
+      const elapsed=r.elapsed;act(r,'tick',{seconds:1});assert.equal(r.elapsed,elapsed);
+      assert.equal(J.act(r,'parcel','deliver').ok,false);
+      if(cancel)act(r,'parcel','return');else{act(r,'parcel','take');act(r,'parcel','deliver');}
+      assert.equal(J.act(r,'parcel','deliver').ok,false);
+      tick(r,s=>s.stage==='arrival');act(r,'cargo');act(r,'deliver','accept');tick(r,s=>s.stage==='receipt');
+      assert.equal(r.reward,(r.elapsed>r.deadline?10:14)+(cancel?0:r.load.onTime?4:2));
+    }
+  });
+  await t.test('packing swaps exactly two slots and cancellation returns undelivered cargo',()=>{
+    const r=J.create(42,1,'delivery');act(r,'pack','capacity');act(r,'pack','padding');assert.equal(r.load.parcel,'none');
+    act(r,'pack','capacity');act(r,'abandon');tick(r,s=>s.stage==='receipt');assert.equal(r.load.parcel,'returned');assert.equal(r.reward,0);
+    const bad=JSON.parse(JSON.stringify(r));bad.load.parcel='bike';assert.equal(J.valid(bad),false);
+  });
   await t.test('both routes complete with cargo, return bicycle and deterministic states',()=>{
     for(const route of ['short','smooth'])for(const pack of ['padding','capacity']){
       const a=start('delivery',route,42,pack),b=start('delivery',route,42,pack);

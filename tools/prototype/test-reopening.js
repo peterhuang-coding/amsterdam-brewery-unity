@@ -488,6 +488,8 @@ test('pour reserves exactly one cup, keeps batch quality, and rejects duplicate 
 test('wrong beer, unaffordable prices, and early pours do not satisfy customers', () => {
   for (const mode of ['wrong', 'expensive', 'early']) {
     let state = doAct(prep(), { type: 'open' });
+    // Isolate budget rejection from the separate quality-premium gate.
+    if(mode==='expensive')state.batches[0].quality=2;
     const order = R.customers(state)[0];
     state = doAct(state, { type: 'pour', customerId: order.id, beer: mode === 'wrong' ? 'stout' : order.beer,
       price: mode === 'expensive' ? 100 : R.BEERS[order.beer].price });

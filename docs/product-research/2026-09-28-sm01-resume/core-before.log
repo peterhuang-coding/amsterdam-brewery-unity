@@ -1,0 +1,171 @@
+TAP version 13
+# Subtest: new and legacy games have an independent empty exploration journal
+ok 1 - new and legacy games have an independent empty exploration journal
+  ---
+  duration_ms: 3.989167
+  type: 'test'
+  ...
+# Subtest: lab clue is free and included in tonight’s expedition; next day clears only clues
+ok 2 - lab clue is free and included in tonight’s expedition; next day clears only clues
+  ---
+  duration_ms: 4.346792
+  type: 'test'
+  ...
+# Subtest: repair consumes a real spare, survives bail and next night, and never rewrites the closed ledger
+ok 3 - repair consumes a real spare, survives bail and next night, and never rewrites the closed ledger
+  ---
+  duration_ms: 4.018708
+  type: 'test'
+  ...
+# Subtest: journal records real district visits and final cargo once, across all three nights
+not ok 4 - journal records real district visits and final cargo once, across all three nights
+  ---
+  duration_ms: 2.446625
+  type: 'test'
+  location: '/private/tmp/amsterdam-d16-20260928/full-preview/tools/prototype/test-district-daynight.js:25:1'
+  failureType: 'testCodeFailure'
+  error: '存档不完整，请重新开一局。'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    act (/private/tmp/amsterdam-d16-20260928/full-preview/tools/prototype/test-district-daynight.js:4:45)
+    TestContext.<anonymous> (/private/tmp/amsterdam-d16-20260928/full-preview/tools/prototype/test-district-daynight.js:28:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: journal rejects impossible day, duplicate visits, inflated values, and unrecognized outcomes
+ok 5 - journal rejects impossible day, duplicate visits, inflated values, and unrecognized outcomes
+  ---
+  duration_ms: 1.936958
+  type: 'test'
+  ...
+# Subtest: new after-hours runs opt into marketShift; seed42 gives staffed/restock/blackout
+ok 6 - new after-hours runs opt into marketShift; seed42 gives staffed/restock/blackout
+  ---
+  duration_ms: 12.997375
+  type: 'test'
+  ...
+# Subtest: R.marketInfo exposes the stable contract reflecting real state
+ok 7 - R.marketInfo exposes the stable contract reflecting real state
+  ---
+  duration_ms: 0.277083
+  type: 'test'
+  ...
+# Subtest: complete automatic trade route really delivers the barrel and extracts
+ok 8 - complete automatic trade route really delivers the barrel and extracts
+  ---
+  duration_ms: 13.681333
+  type: 'test'
+  ...
+# Subtest: complete manual salvage route really takes shelf stock
+ok 9 - complete manual salvage route really takes shelf stock
+  ---
+  duration_ms: 4.302458
+  type: 'test'
+  ...
+# Subtest: two economic choices diverge: trade receipt errand vs salvage next-day price
+ok 10 - two economic choices diverge: trade receipt errand vs salvage next-day price
+  ---
+  duration_ms: 14.37725
+  type: 'test'
+  ...
+# Subtest: route chosen but not completed is recorded without entitlement
+ok 11 - route chosen but not completed is recorded without entitlement
+  ---
+  duration_ms: 1.529417
+  type: 'test'
+  ...
+# Subtest: delivered barrel with rescue or bail gives no claim
+ok 12 - delivered barrel with rescue or bail gives no claim
+  ---
+  duration_ms: 105.323584
+  type: 'test'
+  ...
+# Subtest: stockTaken raises price to 10 even after rescue; route choice alone does not
+ok 13 - stockTaken raises price to 10 even after rescue; route choice alone does not
+  ---
+  duration_ms: 61.763875
+  type: 'test'
+  ...
+# Subtest: raised price expires after exactly one day
+ok 14 - raised price expires after exactly one day
+  ---
+  duration_ms: 3.099709
+  type: 'test'
+  ...
+# Subtest: affordability uses the dynamic price and truthful labels at 8 and 10
+ok 15 - affordability uses the dynamic price and truthful labels at 8 and 10
+  ---
+  duration_ms: 2.7625
+  type: 'test'
+  ...
+# Subtest: unclaimed receipt expires after the next day and can never be claimed
+ok 16 - unclaimed receipt expires after the next day and can never be claimed
+  ---
+  duration_ms: 6.510583
+  type: 'test'
+  ...
+# Subtest: marketErrand with zero actions preserves every resource
+ok 17 - marketErrand with zero actions preserves every resource
+  ---
+  duration_ms: 5.666292
+  type: 'test'
+  ...
+# Subtest: hops at cap still grants 3 cups with a truthful full-cap message; batch cap rejects
+ok 18 - hops at cap still grants 3 cups with a truthful full-cap message; batch cap rejects
+  ---
+  duration_ms: 6.018667
+  type: 'test'
+  ...
+# Subtest: day3 records a final event: no claim, honest warning, no phantom day4
+ok 19 - day3 records a final event: no claim, honest warning, no phantom day4
+  ---
+  duration_ms: 9.611333
+  type: 'test'
+  ...
+# Subtest: blackout salvage with power repair records powerRestored only on that condition
+ok 20 - blackout salvage with power repair records powerRestored only on that condition
+  ---
+  duration_ms: 18.060791
+  type: 'test'
+  ...
+# Subtest: strict malformed market histories are rejected
+ok 21 - strict malformed market histories are rejected
+  ---
+  duration_ms: 8.186708
+  type: 'test'
+  ...
+# Subtest: missing market migrates; old in-progress legacy runs stay exactly legacy
+ok 22 - missing market migrates; old in-progress legacy runs stay exactly legacy
+  ---
+  duration_ms: 0.777375
+  type: 'test'
+  ...
+# Subtest: automatic market choices show readable copy with no internal labels
+ok 23 - automatic market choices show readable copy with no internal labels
+  ---
+  duration_ms: 5.641791
+  type: 'test'
+  ...
+# Subtest: real UI renders the market panel and a claim click produces resources via R.act
+ok 24 - real UI renders the market panel and a claim click produces resources via R.act
+  ---
+  duration_ms: 869.050125
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 23
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1305.803166

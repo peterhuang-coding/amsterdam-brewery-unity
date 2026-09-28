@@ -1,0 +1,172 @@
+TAP version 13
+# Subtest: new after-hours runs opt into marketShift; seed42 gives staffed/restock/blackout
+ok 1 - new after-hours runs opt into marketShift; seed42 gives staffed/restock/blackout
+  ---
+  duration_ms: 14.206959
+  type: 'test'
+  ...
+# Subtest: R.marketInfo exposes the stable contract reflecting real state
+ok 2 - R.marketInfo exposes the stable contract reflecting real state
+  ---
+  duration_ms: 0.256875
+  type: 'test'
+  ...
+# Subtest: complete automatic trade route really delivers the barrel and extracts
+ok 3 - complete automatic trade route really delivers the barrel and extracts
+  ---
+  duration_ms: 14.076083
+  type: 'test'
+  ...
+# Subtest: complete manual salvage route really takes shelf stock
+ok 4 - complete manual salvage route really takes shelf stock
+  ---
+  duration_ms: 4.628375
+  type: 'test'
+  ...
+# Subtest: two economic choices diverge: trade receipt errand vs salvage next-day price
+ok 5 - two economic choices diverge: trade receipt errand vs salvage next-day price
+  ---
+  duration_ms: 15.327709
+  type: 'test'
+  ...
+# Subtest: route chosen but not completed is recorded without entitlement
+ok 6 - route chosen but not completed is recorded without entitlement
+  ---
+  duration_ms: 1.693708
+  type: 'test'
+  ...
+# Subtest: delivered barrel with rescue or bail gives no claim
+ok 7 - delivered barrel with rescue or bail gives no claim
+  ---
+  duration_ms: 104.775959
+  type: 'test'
+  ...
+# Subtest: stockTaken raises price to 10 even after rescue; route choice alone does not
+ok 8 - stockTaken raises price to 10 even after rescue; route choice alone does not
+  ---
+  duration_ms: 61.647708
+  type: 'test'
+  ...
+# Subtest: raised price expires after exactly one day
+ok 9 - raised price expires after exactly one day
+  ---
+  duration_ms: 3.018625
+  type: 'test'
+  ...
+# Subtest: affordability uses the dynamic price and truthful labels at 8 and 10
+ok 10 - affordability uses the dynamic price and truthful labels at 8 and 10
+  ---
+  duration_ms: 2.986167
+  type: 'test'
+  ...
+# Subtest: unclaimed receipt expires after the next day and can never be claimed
+ok 11 - unclaimed receipt expires after the next day and can never be claimed
+  ---
+  duration_ms: 6.489583
+  type: 'test'
+  ...
+# Subtest: marketErrand with zero actions preserves every resource
+ok 12 - marketErrand with zero actions preserves every resource
+  ---
+  duration_ms: 5.932667
+  type: 'test'
+  ...
+# Subtest: hops at cap still grants 3 cups with a truthful full-cap message; batch cap rejects
+ok 13 - hops at cap still grants 3 cups with a truthful full-cap message; batch cap rejects
+  ---
+  duration_ms: 6.045417
+  type: 'test'
+  ...
+# Subtest: day3 records a final event: no claim, honest warning, no phantom day4
+ok 14 - day3 records a final event: no claim, honest warning, no phantom day4
+  ---
+  duration_ms: 9.658333
+  type: 'test'
+  ...
+# Subtest: blackout salvage with power repair records powerRestored only on that condition
+ok 15 - blackout salvage with power repair records powerRestored only on that condition
+  ---
+  duration_ms: 18.516209
+  type: 'test'
+  ...
+# Subtest: strict malformed market histories are rejected
+ok 16 - strict malformed market histories are rejected
+  ---
+  duration_ms: 8.306125
+  type: 'test'
+  ...
+# Subtest: missing market migrates; old in-progress legacy runs stay exactly legacy
+ok 17 - missing market migrates; old in-progress legacy runs stay exactly legacy
+  ---
+  duration_ms: 0.804959
+  type: 'test'
+  ...
+# Subtest: automatic market choices show readable copy with no internal labels
+ok 18 - automatic market choices show readable copy with no internal labels
+  ---
+  duration_ms: 6.03175
+  type: 'test'
+  ...
+# Subtest: real UI renders the market panel and a claim click produces resources via R.act
+ok 19 - real UI renders the market panel and a claim click produces resources via R.act
+  ---
+  duration_ms: 854.651958
+  type: 'test'
+  ...
+# Subtest: free market scout reports the real shift label and clue on all three nights, still free with dedup
+not ok 20 - free market scout reports the real shift label and clue on all three nights, still free with dedup
+  ---
+  duration_ms: 0.627
+  type: 'test'
+  location: '/private/tmp/amsterdam-d16-20260928/red-preview/tools/prototype/test-market-daynight.js:493:1'
+  failureType: 'testCodeFailure'
+  error: 'message carries the real label: 卸货单背面画着路：货架北侧通冷库，东墙卸货门能从里面打开。销毁食品需要审批，拯救食品需要偷偷摸摸。'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-d16-20260928/red-preview/tools/prototype/test-market-daynight.js:513:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: marketInfo eligibility matches the real errand guards: 32-batch cap, duplicate batch id, 15-hop outcome
+not ok 21 - marketInfo eligibility matches the real errand guards: 32-batch cap, duplicate batch id, 15-hop outcome
+  ---
+  duration_ms: 6.21475
+  type: 'test'
+  location: '/private/tmp/amsterdam-d16-20260928/red-preview/tools/prototype/test-market-daynight.js:525:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-d16-20260928/red-preview/tools/prototype/test-market-daynight.js:540:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 19
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1221.384583

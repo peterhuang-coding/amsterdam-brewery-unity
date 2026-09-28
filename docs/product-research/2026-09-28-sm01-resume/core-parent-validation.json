@@ -1,0 +1,69 @@
+{
+  "task_id": "amsterdam-sm01-day-core-r2-20260928",
+  "outcome": "accepted",
+  "adoption_scope": "three corrected files frozen as dependent presentation input; game branch not yet adopted",
+  "receipt_sha256": "ef61426bb5b3151cc9f74381f94f0f3651cbd5a89b02a85603259a17c7f2aa8e",
+  "validation": {
+    "command": [
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "tools/prototype/test-algorithm-city-equivalence.js",
+      "tools/prototype/test-algorithm-city.js",
+      "tools/prototype/test-algorithm-history.js",
+      "tools/prototype/test-algorithm-physics.js",
+      "tools/prototype/test-algorithm-replay.js",
+      "tools/prototype/test-algorithm-routes.js",
+      "tools/prototype/test-algorithm-saves.js",
+      "tools/prototype/test-backstage-auto.js",
+      "tools/prototype/test-backstage.js",
+      "tools/prototype/test-character-stories.js",
+      "tools/prototype/test-city-bike.js",
+      "tools/prototype/test-city-consequence-quality.js",
+      "tools/prototype/test-city-journey-quality.js",
+      "tools/prototype/test-city.js",
+      "tools/prototype/test-daynight.js",
+      "tools/prototype/test-delivery-orders.js",
+      "tools/prototype/test-district-auto.js",
+      "tools/prototype/test-district-core.js",
+      "tools/prototype/test-district-daynight.js",
+      "tools/prototype/test-flower-network.js",
+      "tools/prototype/test-journey-integration.js",
+      "tools/prototype/test-journey.js",
+      "tools/prototype/test-location-daynight.js",
+      "tools/prototype/test-location-depth.js",
+      "tools/prototype/test-market-daynight.js",
+      "tools/prototype/test-market-shift-ui.js",
+      "tools/prototype/test-market-shift.js",
+      "tools/prototype/test-night-streets.js",
+      "tools/prototype/test-phase-e.js",
+      "tools/prototype/test-reopening.js"
+    ],
+    "exit_code": 0,
+    "seconds": 41.395,
+    "summary": [
+      "# tests 334",
+      "# pass 334",
+      "# fail 0",
+      "# skipped 0"
+    ],
+    "input_unchanged": true,
+    "changed_files": [
+      "tools/prototype/reopening-core.js",
+      "tools/prototype/test-district-daynight.js",
+      "tools/prototype/test-market-daynight.js"
+    ],
+    "original19_unchanged": true,
+    "old_assertions_preserved": true
+  },
+  "independent_red": {
+    "tests": 21,
+    "pass": 19,
+    "fail": 2,
+    "expected_failures": [
+      "free market scout reports real shift",
+      "marketInfo eligibility matches errand guards"
+    ]
+  },
+  "inspection": "Only allowed3files; original19tests unchanged; old target-test assertions and all other old tests retained; no night simulation or restore changes. One extra read-only grep command observed, no writes/network or permission denials; all specified validation commands independently rerun. No GUI/fun/full-demo acceptance."
+}

@@ -1,0 +1,163 @@
+--- a/tools/prototype/reopening-core.js
++++ b/tools/prototype/reopening-core.js
+@@ -248,8 +248,20 @@
+       else if (s.phase !== 'prep') { receipt = 'available'; reason = '要在白天准备时段兑现，今晚先记账。'; }
+       else if (s.actions < 1) { receipt = 'available'; reason = '今天的行动已用完，回执只能在今天兑现。'; }
+       else {
+-        receipt = 'available'; canClaim = true;
+-        reason = '兑现回执：花 1 次白天行动、不花钱，拿回 3 杯品质 1 的金色艾尔和 1 份酒花。';
++        receipt = 'available';
++        // These mirror the exact marketErrand guards; eligibility must not
++        // advertise an action the errand would reject.
++        const errandBatchId = 'd' + s.day + '-market-errand';
++        if (s.batches.length + 1 > 32) {
++          reason = '库存批次已满（32 批）：回执的 3 杯需要一个新批次，现在生成不了。先清掉一些批次，回执还在今天，不会丢。';
++        } else if (s.batches.some(b => b.id === errandBatchId)) {
++          reason = '今天的补班批次编号已存在（' + errandBatchId + '）：为避免同编号批次重复，这次不能兑现。';
++        } else {
++          canClaim = true;
++          reason = s.hops >= 15
++            ? '兑现回执：花 1 次白天行动、不花钱，拿回 3 杯品质 1 的金色艾尔。酒花容量已满（15 份）：不补酒花，也不折现金。'
++            : '兑现回执：花 1 次白天行动、不花钱，拿回 3 杯品质 1 的金色艾尔和 1 份酒花。';
++        }
+       }
+     }
+     return Object.freeze({
+@@ -335,7 +347,12 @@
+         if (state.phase !== 'prep' || !['market', 'coffee', 'lab'].includes(action.place)) return fail('白天到市场、咖啡馆或实验室，才有机会打听夜里的事。');
+         const clue = ({market:'market',coffee:'club',lab:'greenhouse'})[action.place];
+         if (!state.life.clues.includes(clue)) state.life.clues.push(clue);
+-        say(state, clue === 'market' ? '卸货单背面画着路：货架北侧通冷库，东墙卸货门能从里面打开。销毁食品需要审批，拯救食品需要偷偷摸摸。' : clue === 'greenhouse' ? 'Chen 指着灌溉图：每十秒洒六秒水。西侧阀门能关十二秒；带一件可修零件过去，才不用每晚修同一条漏水的承诺。' : 'Bram 说：NO SIGNAL 每隔六秒会停一阵音乐。鼓点响时保安听不清，音乐一停，连空瓶都像在做自我介绍。');
++        if (clue === 'market') {
++          // Free intelligence: tonight's real condition/label/clue, plus the
++          // existing route clue. No cash or action cost, outcome is untouched.
++          const view = marketInfo(state);
++          say(state, '今晚的超市情报：' + view.label + ' ' + view.clue + '卸货单背面画着路：货架北侧通冷库，东墙卸货门能从里面打开。销毁食品需要审批，拯救食品需要偷偷摸摸。');
++        } else say(state, clue === 'greenhouse' ? 'Chen 指着灌溉图：每十秒洒六秒水。西侧阀门能关十二秒；带一件可修零件过去，才不用每晚修同一条漏水的承诺。' : 'Bram 说：NO SIGNAL 每隔六秒会停一阵音乐。鼓点响时保安听不清，音乐一停，连空瓶都像在做自我介绍。');
+         break;
+       }
+       case 'explore':
+@@ -429,8 +446,10 @@
+         if (yesterday.claimed) return fail('超市回执已经兑现过，不能重复领取。');
+         if (state.actions < 1) return fail('需要 1 次白天行动，今天已经用完了。');
+         if (state.batches.length + 1 > 32) return fail('库存批次已满（32 批），先用掉一些；回执还在，不会丢。');
++        const errandBatchId = 'd' + state.day + '-market-errand';
++        if (state.batches.some(b => b.id === errandBatchId)) return fail('今天的补班批次编号已存在，为避免同编号批次重复，这次不能兑现。');
+         state.actions--;
+-        state.batches.push({ id: 'd' + state.day + '-market-errand', beer: 'blond', cups: 3, quality: 1, madeDay: state.day, aged: false });
++        state.batches.push({ id: errandBatchId, beer: 'blond', cups: 3, quality: 1, madeDay: state.day, aged: false });
+         yesterday.claimed = true;
+         if (state.hops < 15) {
+           state.hops++;
+--- a/tools/prototype/test-market-daynight.js
++++ b/tools/prototype/test-market-daynight.js
+@@ -488,4 +488,83 @@
+   click({action:'market-errand'});
+   assert.equal(JSON.stringify(capturedSave.game),savedBefore);
+   assert.match(els.get('notice').textContent,/已经|重复|已兑现/);
++});
++
++test('free market scout reports the real shift label and clue on all three nights, still free with dedup',()=>{
++  function prepAt(day){
++    let s=start();
++    for(let d=1;d<day;d++){s=closeNight(s);s=act(s,{type:'next'});}
++    return s;
++  }
++  const cases=[
++    [1,'staffed',/值班/,/235/],
++    [2,'restock',/补货/,/起步更快|亲手/],
++    [3,'blackout',/停电/,/上锁|€5|零件/]
++  ];
++  for(const [day,cond,labelRe,clueRe] of cases){
++    let s=prepAt(day);
++    const view=R.marketInfo(s);
++    assert.equal(view.condition,cond);
++    const money=s.cash,actions=s.actions;
++    s=act(s,{type:'scout',place:'market'});
++    assert.equal(s.cash,money,'scout never costs cash');
++    assert.equal(s.actions,actions,'scout never costs an action');
++    assert.deepEqual(s.life.clues,['market']);
++    assert.ok(s.lastMessage.includes(view.label),'message carries the real label: '+s.lastMessage);
++    assert.ok(s.lastMessage.includes(view.clue),'message carries the real clue: '+s.lastMessage);
++    assert.match(s.lastMessage,labelRe);
++    assert.match(s.lastMessage,clueRe);
++    assert.match(s.lastMessage,/卸货单|卸货门/,'existing route clue is preserved');
++    // Repeated scouting stays deduplicated and free.
++    s=act(s,{type:'scout',place:'market'});
++    assert.deepEqual(s.life.clues,['market']);
++    assert.equal(s.cash,money);assert.equal(s.actions,actions);
++  }
++});
++
++test('marketInfo eligibility matches the real errand guards: 32-batch cap, duplicate batch id, 15-hop outcome',()=>{
++  // Same real day-2 prep baseline as the success case: safe night-1 trade delivery.
++  let s=closeNight(start());
++  s=night(s,run=>{
++    autoPick(run,'market');autoPick(run,'mkt-trade');autoPick(run,'exit');
++  });
++  s=act(s,{type:'next'});
++  assert.equal(R.marketInfo(s).canClaim,true);
++
++  // 32-batch capacity: info must not advertise an errand the action rejects.
++  const full=structuredClone(s);let n=0;
++  while(full.batches.length<32)full.batches.push({id:'fill-'+(n++),beer:'blond',cups:1,quality:1,madeDay:1,aged:false});
++  assert.ok(R.restore(full));
++  let info=R.marketInfo(full);
++  assert.equal(info.receipt,'available');
++  assert.equal(info.canClaim,false);
++  assert.match(info.reason,/32|批次/);
++  reject(full,{type:'marketErrand'});
++  assert.equal(full.hops,s.hops);
++  assert.equal(full.cash,s.cash);
++
++  // A pre-existing batch with the errand's own deterministic id also makes it impossible.
++  const dup=structuredClone(s);
++  dup.batches.push({id:'d2-market-errand',beer:'blond',cups:1,quality:1,madeDay:2,aged:false});
++  assert.ok(R.restore(dup));
++  info=R.marketInfo(dup);
++  assert.equal(info.canClaim,false);
++  assert.match(info.reason,/批次|编号|ID/);
++  reject(dup,{type:'marketErrand'});
++  assert.equal(dup.batches.filter(b=>b.id==='d2-market-errand').length,1);
++  assert.equal(dup.actions,s.actions);
++
++  // Hops already 15: still claimable for the 3 cups, but reason is truthful about
++  // no hop and no replacement cash.
++  const capped=structuredClone(s);capped.hops=15;assert.ok(R.restore(capped));
++  info=R.marketInfo(capped);
++  assert.equal(info.canClaim,true);
++  assert.match(info.reason,/满|15/);
++  assert.match(info.reason,/3\s*杯/);
++  const cashBefore=capped.cash,blondBefore=R.stock(capped,'blond');
++  const done=act(capped,{type:'marketErrand'});
++  assert.equal(done.hops,15);
++  assert.equal(done.cash,cashBefore,'no replacement cash at hop cap');
++  assert.equal(R.stock(done,'blond'),blondBefore+3);
++  assert.equal(entry(done,1).claimed,true);
+ });
+\ No newline at end of file
+--- a/tools/prototype/test-district-daynight.js
++++ b/tools/prototype/test-district-daynight.js
+@@ -5,6 +5,13 @@
+ const start=()=>act(R.createGame(42),{type:'start'});
+ const close=s=>act(act(s,{type:'open'}),{type:'close'});
+ function leave(s){return act(close(s),{type:'explore',kit:'hook',mode:'manual'});}
++function walkTo(r,to){
++ for(let n=0;n<8000&&Math.hypot(to.x-r.p.x,to.y-r.p.y)>6;n++){
++  const d=Math.hypot(to.x-r.p.x,to.y-r.p.y);
++  B.step(r,{dx:(to.x-r.p.x)/d,dy:(to.y-r.p.y)/d},.025);
++ }
++ assert.ok(Math.hypot(to.x-r.p.x,to.y-r.p.y)<8,JSON.stringify({p:r.p,to}));
++}
+ test('new and legacy games have an independent empty exploration journal',()=>{
+  const s=start();assert.deepEqual(s.backstage.journal,[]);delete s.backstage.journal;const before=structuredClone(s),restored=R.restore(s);
+  assert.ok(restored);assert.deepEqual(restored.backstage.journal,[]);assert.deepEqual(s,before);
+@@ -24,7 +31,7 @@
+ });
+ test('journal records real district visits and final cargo once, across all three nights',()=>{
+  let s=start();for(let day=1;day<=3;day++){
+-  s=leave(s);const r=s.backstage.run;B.step(r,{},.05);const item=r.items[0];item.state='bag';r.bag=[item.id];Object.assign(r.p,B.EXIT);assert.ok(B.command(r,'interact'));
++  s=leave(s);const r=s.backstage.run;r.actors=[];walkTo(r,{x:405,y:990});assert.ok(r.bag.includes('item0'));walkTo(r,B.EXIT);assert.ok(B.command(r,'interact'));
+   s=act(s,{type:'returnExplore'});const entry=s.backstage.journal.at(-1);assert.equal(entry.day,day);assert.equal(entry.status,'extracted');assert.equal(entry.cups,2);assert.ok(entry.visited.includes('market'));
+   assert.equal(s.backstage.journal.length,day);assert.equal(R.act(s,{type:'returnExplore'}).ok,false);assert.ok(R.restore(s));if(day<3)s=act(s,{type:'next'});
+  }

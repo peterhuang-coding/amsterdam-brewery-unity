@@ -1,0 +1,10 @@
+{
+  "exit_code": 1,
+  "seconds": 1.443,
+  "summary": [
+    "not ok 4 - journal records real district visits and final cargo once, across all three nights",
+    "# tests 24",
+    "# pass 23",
+    "# fail 1"
+  ]
+}

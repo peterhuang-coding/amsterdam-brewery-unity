@@ -30,6 +30,8 @@
 
 ### D16 2026-09-28：用户明确“继续干”，恢复既定昼夜闭环
 
+最新：首包独立334/334通过，三文件已冻结供界面包复用、游戏尚未采用；准备串行amsterdam-sm01-day-ui-r2-20260928，范围与精确输入见[本轮合同](../../docs/product-research/2026-09-28-sm01-resume/README.md)。只有两阶段与真实自然入口均通过才整体采用。
+
 批准来源：本任务用户在21:00汇总和22:00停止检查后直接回复“继续干”，接受上一回复的集中完成“夜里取舍→次日经营后果”方向。本次明确恢复SM01，保留D13/D14/D15失败；不是延长旧21:00期限、恢复其他任务或新增循环。仍只用Coding Plan Seed Evolving / thinking enabled / high，失败即停，主代理不接管游戏重写。
 
 精确游戏基线c8d36a14cb90aa35c9808145ed40754a47b52b0c，独立codex/supermarket-night-shift / city-journey-quality；文档工作台起点bd922ffc8359904468bbc7f003a43978d798f262。复用该提交归档的白天四文件候选，输入逐文件哈希固定。先包amsterdam-sm01-day-core-r2-20260928（白天逻辑attempt2，2400秒64轮）只改reopening-core、test-market-daynight和旧test-district-daynight中一项测试的取货fixture；该项原断言不删改，改为真实动作，不放宽存档校验。其余旧测试及夜间逻辑只读。

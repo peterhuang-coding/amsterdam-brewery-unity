@@ -69,11 +69,30 @@
   ]);
   const MARKET_DOOR=Object.freeze({id:'market-shortcut',x:760,y:1060,w:12,h:90});
   const MARKET_POINTS=Object.freeze({entry:{x:405,y:1085},stock:{x:405,y:990},cold:{x:740,y:850},shortcut:{x:735,y:1105}});
+  const MARKET_COUNTER=Object.freeze({x:405,y:1085}),MARKET_FUSE=Object.freeze({x:735,y:1105});
+  const SHIFT_CONDITIONS=Object.freeze(['staffed','restock','blackout']);
+  const SHIFT_COPY=Object.freeze({
+    staffed:{label:'值班夜 · 清扫机更警觉',copy:'清扫机今晚多看 60 步。货架照常缺货，机器照常上班，还加了班。'},
+    restock:{label:'补货夜 · 酒桶更难控制',copy:'补货的滚动酒桶不会自己进包：靠近后亲手收。库存制度鼓励滚动，不鼓励停下来。'},
+    blackout:{label:'停电夜 · 冷库上锁',copy:'冷库黑着，冷库存货拿不出。拿一件可卖 €5 的可修零件，到卸货门开关旁修电。'}
+  });
   const OUTCOMES=['market-salvaged','market-shortcut','club-backstage','sorting-stopped','sorting-reversed','greenhouse-valve','greenhouse-repaired'];
   const BELT=Object.freeze({x:1690,y:990,w:280,h:80}),SWITCH=Object.freeze({x:1600,y:890});
   const WATER=Object.freeze({x:1840,y:440,w:200,h:75}),VALVE=Object.freeze({x:1680,y:470});
   const locations=r=>r.version>=3&&Boolean(r.location);
   const districts=r=>r.version>=4&&Boolean(r.district);
+  // Shift formula: cast seed to uint first, then add day-1.
+  const shiftCondition=(seed,day)=>SHIFT_CONDITIONS[((seed>>>0)+day-1)%3];
+  const market=r=>r&&r.version>=4?r.marketShift||null:null;
+  const coldLocked=r=>{const m=market(r);return Boolean(m&&m.condition==='blackout'&&m.powerItem===null);};
+  // Item ids item0/item1 can only be taken on the salvage route; item1 also waits for power.
+  const marketStowBlocked=(r,item)=>{
+    const m=market(r);if(!m)return false;
+    if(item.id==='item1'&&coldLocked(r))return true;
+    return m.approach==='trade'&&(item.id==='item0'||item.id==='item1');
+  };
+  // On restock night the rolling barrel ignores proximity auto-stow; deliberate collect still works.
+  const marketAutoStowBlocked=(r,item)=>marketStowBlocked(r,item)||(market(r)?.condition==='restock'&&item.id==='item2');
   const inside=(o,rect)=>o.x>=rect.x&&o.x<=rect.x+rect.w&&o.y>=rect.y&&o.y<=rect.y+rect.h;
   const beltSpeed=r=>r.district.belt==='east'?60:r.district.belt==='west'?-60:0;
   const wetGround=r=>districts(r)&&r.time%10<6&&r.district.irrigation===0&&!r.district.repaired;
@@ -116,6 +135,11 @@
       bag:[],discovered:[...new Set(discoveries.filter(x=>['greenhouse','noor','market-shortcut','greenhouse-pump'].includes(x)))],opened:discoveries.includes('greenhouse'),parcel:'ground',patches:[],fx:[],sequence:0,log:[],message:'去东边的夜店找冷藏箱。也可以先逛逛，回店口一直在身后。',hits:0};
     if(situation==='delivery')Object.assign(r.actors[0],{x:720,homeX:720});
     Object.assign(items[0],MARKET_POINTS.stock);Object.assign(items[1],MARKET_POINTS.cold);
+    if(context&&context.marketShift===true){
+      const condition=shiftCondition(r.seed,r.day);
+      r.marketShift={version:1,condition,approach:null,delivered:false,stockTaken:false,powerItem:null};
+      if(condition==='restock')items[2].vx=130;
+    }
     r.actors.filter(a=>a.type==='dancer').forEach((a,i)=>{const x=i<3?1170+i*80:i===3?1170:1340,y=i<3?880:1080;Object.assign(a,{x,y,homeX:x,homeY:y});});
     return r;
   }
@@ -175,12 +199,17 @@
     return {x:r.p.fx,y:r.p.fy};
   }
   function stow(r,item){
+    if(marketStowBlocked(r,item))return false;
     if(load(r)+TYPES[item.kind].weight>KITS[r.kit].capacity)return false;
     item.state='bag';r.bag.push(item.id);if(item.kind==='parcel'){r.parcel='carried';outcome(r,'club-backstage');}
+    const m=market(r);
+    if(m&&(item.id==='item0'||item.id==='item1')){
+      m.stockTaken=true;if(m.approach===null)m.approach='salvage';
+    }
     if(['item0','item1','item2','item3'].includes(item.id))outcome(r,'market-salvaged');
     note(r,item.kind==='parcel'?'箱里是虚构违禁品“月雾”。标签写着酵母，酵母没有这么多人关心。':'收好'+TYPES[item.kind].name+'。'+(item.kind==='barrel'?'整桶占 3 格；可以用 Q 扔下。':''));return true;
   }
-  function collectable(r,item){return districts(r)&&item&&item.kind!=='parcel'&&item.state==='world'&&item.lock===0&&distance(r.p,item)<=45&&clear(r,r.p,item);}
+  function collectable(r,item){return districts(r)&&item&&item.kind!=='parcel'&&item.state==='world'&&item.lock===0&&distance(r.p,item)<=45&&clear(r,r.p,item)&&!marketStowBlocked(r,item);}
   function closeValve(r){r.district.irrigation=12;outcome(r,'greenhouse-valve');note(r,'喷淋停下了。接下来 12 秒，地面不再湿滑。');}
   function finish(r,status){
     r.status=status;
@@ -203,6 +232,30 @@
       item.state='delivered';r.bag=r.bag.filter(id=>id!==item.id);r.district.repaired=true;
       if(!r.discovered.includes('greenhouse-pump'))r.discovered.push('greenhouse-pump');
       outcome(r,'greenhouse-repaired');note(r,'用一个零件修好了灌溉泵。以后来温室，脚下也不会再打滑。');return true;
+    }
+
+    if(verb==='market-salvage'||verb==='market-trade'){
+      const m=market(r);if(!m||m.approach!==null)return false;
+      if(distance(p,MARKET_COUNTER)>60||!clear(r,p,MARKET_COUNTER))return false;
+      m.approach=verb==='market-salvage'?'salvage':'trade';
+      note(r,verb==='market-salvage'?'选了直接取库存：货架与冷库的货，拿了就是你的。':'选了帮忙搬货：把滚动酒桶实送到柜台。没安全撤离，就没有回执。');
+      return true;
+    }
+    if(verb==='market-deliver'){
+      const m=market(r);if(!m||m.approach!=='trade'||m.delivered)return false;
+      if(distance(p,MARKET_COUNTER)>60||!clear(r,p,MARKET_COUNTER))return false;
+      const barrel=r.items[2];
+      if(barrel.state!=='bag'||!r.bag.includes('item2'))return false;
+      barrel.state='delivered';r.bag=r.bag.filter(id=>id!=='item2');m.delivered=true;
+      note(r,'酒桶交到柜台上，回执先欠着：安全回到街面才算数。');return true;
+    }
+    if(verb==='market-power'){
+      const m=market(r);if(!m||m.condition!=='blackout'||m.powerItem!==null)return false;
+      if(distance(p,MARKET_FUSE)>55||!clear(r,p,MARKET_FUSE))return false;
+      const part=r.bag.map(id=>r.items.find(i=>i.id===id)).find(i=>i.kind==='salvage');
+      if(!part)return false;
+      part.state='delivered';r.bag=r.bag.filter(id=>id!==part.id);m.powerItem=part.id;
+      note(r,'用一个零件修好了电。冷库解锁；这件 €5 的零件已经用掉。');return true;
     }
     if(verb==='bail'){finish(r,'bailed');return true;}
     if(verb==='dash'){
@@ -307,7 +360,7 @@
         if(move(r,item,item.vx*dt,item.vy*dt,8)){item.vx*=-.65;item.vy*=-.65;}
         if(districts(r)&&inside(item,BELT)&&!r.patches.some(a=>distance(item,a)<85))move(r,item,beltSpeed(r)*dt,0,8);
         if(item.kind!=='barrel'||Math.hypot(item.vx,item.vy)>105){item.vx*=Math.exp(-3.5*dt);item.vy*=Math.exp(-3.5*dt);}
-        if(item.kind!=='parcel'&&item.lock===0&&distance(p,item)<31&&(!districts(r)||clear(r,p,item)))stow(r,item);
+        if(item.kind!=='parcel'&&item.lock===0&&distance(p,item)<31&&(!districts(r)||clear(r,p,item))&&!marketAutoStowBlocked(r,item))stow(r,item);
       }
       for(const a of r.actors){
         if(a.stun>0){a.stun=Math.max(0,a.stun-dt);continue;}
@@ -322,7 +375,8 @@
           if(loose){loose.x=a.x;loose.y=a.y+15;}continue;
         }
         if(r.patches.some(f=>distance(a,f)<85)){a.stun=1;a.mode='patrol';continue;}
-        const near=distance(a,p),sees=near<(a.type==='guard'?musicLoud(r)&&inClub(a)&&inClub(p)?60:r.parcel==='carried'?290:95:175)&&clear(r,a,p);
+        const near=distance(a,p),cleanerRange=market(r)?.condition==='staffed'?235:175;
+        const sees=near<(a.type==='guard'?musicLoud(r)&&inClub(a)&&inClub(p)?60:r.parcel==='carried'?290:95:cleanerRange)&&clear(r,a,p);
         if(a.mode==='investigate'){
           a.timer-=dt;
           if(near<45&&clear(r,a,p)){a.mode='windup';a.timer=.8;}
@@ -345,10 +399,38 @@
       if(r.status!=='active')break;
     }
   }
+  function marketInfo(r){
+    const m=market(r);if(!m)return {enabled:false};
+    const nearCounter=distance(r.p,MARKET_COUNTER)<=60&&clear(r,r.p,MARKET_COUNTER);
+    const nearFuse=distance(r.p,MARKET_FUSE)<=55&&clear(r,r.p,MARKET_FUSE);
+    const barrel=r.items[2],hasBarrel=barrel.state==='bag'&&r.bag.includes('item2');
+    const part=r.bag.map(id=>r.items.find(i=>i.id===id)).find(i=>i.kind==='salvage');
+    const shift=SHIFT_COPY[m.condition],powered=m.condition!=='blackout'||m.powerItem!==null;
+    const chooseReason=m.approach!==null
+      ?'路线已经选定：'+(m.approach==='salvage'?'直接取库存':'帮忙搬货')+'。'
+      :nearCounter?'':'靠近超市柜台再表态。';
+    const deliverReason=m.approach!=='trade'?'只有「帮忙搬货」路线才能交付酒桶。'
+      :m.delivered?'酒桶已经交付过，一次就够。'
+      :!nearCounter?'走到柜台旁边，再交付酒桶。'
+      :!hasBarrel?'包里需要有滚动酒桶（占 3 格）。':'';
+    const powerReason=m.condition!=='blackout'?'今夜没有停电，冷库有电。'
+      :powered?'电已经修好，冷库开着。'
+      :!nearFuse?'走到卸货门开关旁的修电点再修电。'
+      :!part?'包里需要一件可修零件（可卖 €5）。':'';
+    return {enabled:true,version:1,condition:m.condition,label:shift.label,copy:shift.copy,
+      counter:{...MARKET_COUNTER},fuse:{...MARKET_FUSE},powered,approach:m.approach,
+      delivered:m.delivered,stockTaken:m.stockTaken,
+      canSalvage:m.approach===null&&nearCounter,canTrade:m.approach===null&&nearCounter,
+      canDeliver:m.approach==='trade'&&!m.delivered&&nearCounter&&hasBarrel,
+      canPower:m.condition==='blackout'&&!powered&&nearFuse&&Boolean(part),
+      reasons:{salvage:chooseReason,trade:chooseReason,deliver:deliverReason,power:powerReason}};
+  }
   function rewards(r){
     if(!r||r.status==='active')return null;
     const result={cups:0,hops:0,cash:r.parcel==='returned'?14:0,parcel:r.parcel==='carried'?'kept':r.parcel,discovered:[...r.discovered],status:r.status,outcomes:locations(r)?[...r.location.outcomes]:[],visited:districts(r)?[...r.district.visited]:[]};
     for(const id of r.bag){const type=TYPES[r.items.find(i=>i.id===id).kind];result.cups+=type.cups;result.hops+=type.hops;result.cash+=type.cash;}
+    const m=market(r);
+    if(m)result.market={condition:m.condition,approach:m.approach,delivered:m.delivered,stockTaken:m.stockTaken,powerRestored:m.powerItem!==null};
     return result;
   }
   function restore(value){
@@ -389,10 +471,37 @@
       if(st.barrels.some(b=>solid(r,b.x,b.y,22,b.id)))return null;
       if(st.noise&&solid({...r,street:{...st,barrels:[]}},st.noise.x,st.noise.y,5))return null;
       if(st.dragging!==null&&(!st.barrels.some(b=>b.id===st.dragging)||distance(r.p,st.barrels.find(b=>b.id===st.dragging))>65||!clear(r,r.p,st.barrels.find(b=>b.id===st.dragging),st.dragging)))return null;
+      if(Object.hasOwn(r,'marketShift')){
+        const m=r.marketShift;
+        if(r.version!==4||!m||Object.keys(m).length!==6||m.version!==1||
+          !SHIFT_CONDITIONS.includes(m.condition)||m.condition!==shiftCondition(r.seed,r.day)||
+          ![null,'salvage','trade'].includes(m.approach)||
+          typeof m.delivered!=='boolean'||typeof m.stockTaken!=='boolean'||
+          (m.powerItem!==null&&typeof m.powerItem!=='string'))return null;
+        if(m.stockTaken&&m.approach===null)return null;
+        if(m.approach==='trade'){
+          if(m.stockTaken)return null;
+          if(r.items.slice(0,2).some(i=>['bag','lost','delivered'].includes(i.state)))return null;
+        }
+        if(m.delivered&&(m.approach!=='trade'||r.items[2].state!=='delivered'))return null;
+        if(!m.delivered&&r.items[2].state==='delivered')return null;
+        if(m.condition!=='blackout'&&m.powerItem!==null)return null;
+        if(m.powerItem!==null){
+          const pi=r.items.find(i=>i.id===m.powerItem);
+          if(!pi||pi.kind!=='salvage'||pi.state!=='delivered'||r.bag.includes(pi.id))return null;
+        }
+        if(coldLocked(r)&&['bag','lost','delivered'].includes(r.items[1].state))return null;
+        if(m.stockTaken){
+          const spawn=i=>({x:i.id==='item0'?405:740,y:i.id==='item0'?990:850});
+          const evidence=i=>i.state==='bag'||i.state==='lost'||i.lock>0||
+            (i.state==='world'&&(Math.abs(i.x-spawn(i).x)>4||Math.abs(i.y-spawn(i).y)>4));
+          if(![r.items[0],r.items[1]].some(evidence))return null;
+        }else if(r.items.slice(0,2).some(i=>['bag','lost','delivered'].includes(i.state)))return null;
+      }
       return r;
     }catch{return null;}
   }
   // Ambient route uses expedition time, so the worker also stops for choices and saves.
   function flowerCart(r){return {x:1100+Math.sin(r.time/7)*40,y:1030};}
-  return Object.freeze({WIDTH,HEIGHT,EXIT,NOOR,LEVER,GARDEN_EXIT,GATE,KITS,TYPES,ZONES,WALLS,create,step,command,restore,rewards,load,zone,nearest,solid,clear,flowerCart,streetInfo,locationInfo,districtInfo,dragTarget});
+  return Object.freeze({WIDTH,HEIGHT,EXIT,NOOR,LEVER,GARDEN_EXIT,GATE,KITS,TYPES,ZONES,WALLS,MARKET_COUNTER,MARKET_FUSE,create,step,command,restore,rewards,marketInfo,load,zone,nearest,solid,clear,flowerCart,streetInfo,locationInfo,districtInfo,dragTarget});
 });

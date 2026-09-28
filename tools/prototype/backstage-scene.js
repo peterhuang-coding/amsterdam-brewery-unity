@@ -177,8 +177,33 @@
       this.line([[point.x,point.y-1],[point.x+13,point.y-17]],color,4);this.ring(point.x,point.y+4,31,18,color+'80',1.5);
       this.text(label,point.x,point.y-43,12,color);
     }
+    // Market-shift signs use B.marketInfo facts and existing primitives; they never touch collision.
+    marketCounterSign(market){
+      const {x,y}=market.counter;
+      const ringColor=market.approach==='trade'?'#e8c287':market.approach==='salvage'?'#9ed7b3':'#d7c49a';
+      this.ellipse(x,y+6,26,12,'#0b22309c');
+      this.rect(x-34,y-14,68,22,'#4e6671');this.rect(x-34,y-16,68,5,'#6e8a90');
+      this.rect(x-29,y-10,15,14,'#2c424d');this.rect(x+14,y-10,15,14,'#2c424d');
+      this.ring(x,y,31,13,ringColor,2);
+      this.text('今晚 · '+market.label,x,y-56,12,'#ecd4a2');
+      this.text(market.approach===null?'柜台 · 靠近后表态':market.approach==='trade'?'柜台 · 已选帮忙搬货':'柜台 · 已选直接取库存',x,y-38,13,ringColor);
+    }
+    marketFuseSign(market){
+      const {x,y}=market.fuse,blackout=market.condition==='blackout';
+      const color=!blackout?'#cfd6c8':market.powered?'#93dd9f':'#e0806e';
+      const label=!blackout?'冷库电箱 · 有电':market.powered?'电已恢复 · 冷库解锁':'停电 · 修电点';
+      // Wall box sits left of the shared door-switch point so the two signs stay legible.
+      const bx=x-36;
+      this.rect(bx,y-26,22,32,'#223843');this.rect(bx-2,y-28,26,5,'#3c5460');
+      this.ellipse(bx+11,y-17,4,4,color);
+      if(blackout){if(market.powered)this.glow(bx+11,y-17,22,16,'#93dd9f55');else this.glow(bx+11,y-17,18,13,'#e0806e33');}
+      this.line([[bx+22,y-17],[x-4,y-8]],color,2);
+      this.ring(x,y,15,9,color,2);
+      this.text(label,bx+11,y-40,12,color);
+    }
     draw(r,options={}){
       const c=this.c,p=r.p,time=this.reduced?0:r.time,street=B.streetInfo?.(r),location=B.locationInfo?.(r);this.player=p;this.noise=r.street?.noise;this.dragTarget=B.dragTarget?.(r)?.id;
+      const market=B.marketInfo?.(r)||{enabled:false};
       const narrow=this.canvas.getBoundingClientRect().width<600;
       this.view=this.camera(r,options.overview);const {scale,x:tx,y:ty}=this.view;
       c.clearRect(0,0,1100,640);this.rect(0,0,1100,640,'#142e3b');c.save();c.translate(tx,ty);c.scale(scale,scale);
@@ -214,6 +239,10 @@
       if(district?.enabled){
         objects.push({y:district.switch.y,draw:()=>this.districtControl(district.switch,'E 停带 / 钩索反转','#e8c287')});
         objects.push({y:district.valve.y,draw:()=>this.districtControl(district.valve,district.repaired?'水泵 · 已修复':'灌溉阀 · E / 钩索','#a8d8c0')});
+      }
+      if(market.enabled){
+        objects.push({y:market.counter.y,draw:()=>this.marketCounterSign(market)});
+        objects.push({y:market.fuse.y,draw:()=>this.marketFuseSign(market)});
       }
       const cart=B.flowerCart(r);
       objects.push({y:cart.y,draw:()=>{

@@ -92,8 +92,8 @@
     }
     render(){
       const r=this.run();if(!r)return;
-      const auto=r.auto?.enabled,z=B.zone(r),near=B.nearest(r),street=B.streetInfo?.(r),tools=Boolean(r.street&&street&&street.id!=='legacy'),dragTarget=B.dragTarget?.(r),location=B.locationInfo?.(r),district=B.districtInfo?.(r);
-      const signature=[r.sequence,z.id,near?.id,r.status,this.overview,auto,r.auto?.event,r.auto?.goal,r.auto?.speed,r.street?.situation,r.street?.dragging,location?.club?.phase,location?.door?.open,district?.belt?.direction,district?.water?.wet,district?.repaired,this.isPaused()].join('|');
+      const auto=r.auto?.enabled,z=B.zone(r),near=B.nearest(r),street=B.streetInfo?.(r),tools=Boolean(r.street&&street&&street.id!=='legacy'),dragTarget=B.dragTarget?.(r),location=B.locationInfo?.(r),district=B.districtInfo?.(r),market=B.marketInfo?.(r)||{enabled:false};
+      const signature=[r.sequence,z.id,near?.id,r.status,this.overview,auto,r.auto?.event,r.auto?.goal,r.auto?.speed,r.street?.situation,r.street?.dragging,location?.club?.phase,location?.door?.open,district?.belt?.direction,district?.water?.wet,district?.repaired,market.enabled,market.condition,market.approach,market.delivered,market.stockTaken,market.powered,market.canSalvage,market.canTrade,market.canDeliver,market.canPower,market.reasons?.salvage,market.reasons?.trade,market.reasons?.deliver,market.reasons?.power,this.isPaused()].join('|');
       const toolState=tools?`空瓶 ${r.street.baits} / 3${r.street.lureCooldown>0?' · 恢复 '+r.street.lureCooldown.toFixed(1)+'s':''} · ${r.street.dragging?'正在拖桶 · 步速降低':'青环空桶可拖动'}`:'';
       const situation=street?`<div class="exp-situation"><strong>${esc(street.title)}</strong><p>${esc(street.hint)}</p>${tools?`<span id="exp-street-tools">${esc(toolState)}</span>`:''}</div>`:'';
       let locationCard=location?.enabled?`<div class="exp-location"><strong>${z.id==='market'?'超市内部 / 货架 · 冷库 · 卸货口':z.id==='club'?'NO SIGNAL / 听清楚再动身':'地图背面 / 今晚的新路线'}</strong><p>${z.id==='market'?(location.door.open?'东墙卸货门已经打开，能从这里抄近路。':'货架北面通冷库，东边卸货门可以从里面打开。'):'夜店的鼓点与静音每六秒交替。鼓点降低警觉；贴近保安仍会被发现。'}</p><span id="exp-music-state"></span>${location.market.clued||location.club.clued?'<small>白天记下了：'+[location.market.clued?'超市路线':'',location.club.clued?'夜店节拍':''].filter(Boolean).join(' / ')+'</small>':''}</div>`:'';
@@ -147,7 +147,8 @@
         const visitReceipt=reward.visited?.length?'<p class="exp-consequence"><strong>实际走过</strong><br>'+reward.visited.map(id=>esc(B.ZONES.find(z=>z.id===id).name)).join(' → ')+'</p>':'';
         const districtReceipts={'sorting-stopped':'按停了分拣带','sorting-reversed':'钩拉反转了分拣带','greenhouse-valve':'关闭过灌溉阀，争取十二秒干路'};
         const actionReceipt=(reward.outcomes||[]).filter(id=>districtReceipts[id]).map(id=>'<p class="small-note">'+districtReceipts[id]+'</p>').join('');
-        board.innerHTML=`<p class="board-eyebrow">BACK ON THE STREET</p><h2>${r.status==='extracted'?'人和东西，都回来了。':r.status==='rescued'?'人先回来。<br>东西下次再说。':'今天就到这里。'}</h2><p class="board-copy">${esc(r.message)}</p><div class="exp-receipt"><div><span>带回艾尔</span><strong>${reward.cups} 杯</strong></div><div><span>密封酒花</span><strong>${reward.hops} 份</strong></div><div><span>零件 / 跑腿费</span><strong>€${reward.cash}</strong></div><div><span>月雾箱</span><strong>${({returned:'交回 Noor',kept:'单独封存',ground:'留在街区',lost:'遗失'})[reward.parcel]||'未取得'}</strong></div></div>${visitReceipt}${actionReceipt}<p class="exp-consequence">${reward.parcel==='returned'?'Noor 下次营业会到酒馆。她记住的是你把箱子还了，不是你跑得有多快。':reward.parcel==='kept'?'这只箱子不会成为酒或原料。下次营业，一位打听箱子的人会进店。':'家中的现金和库存未受损。'}${reward.outcomes?.includes('market-shortcut')?'<br>超市卸货门的捷径已记住，明天地图会留下记录。':''}${reward.outcomes?.includes('club-backstage')?'<br>你穿过了夜店后台，明天 Bram 会听到这件事。':''}${reward.outcomes?.includes('greenhouse-repaired')?'<br>温室的水泵修好了。以后洒水不会再淋湿这条路。':''}${reward.outcomes?.some(x=>x.startsWith('sorting-'))?'<br>分拣场的机器按你的方式运转了一回。':''}${reward.discovered.includes('greenhouse')?'<br>温室捷径已记住，下次出门仍然打开。':''}</p><button class="primary" data-action="exp-command" data-verb="return">回酒馆，收好这一趟 →</button>`;
+        const marketReceipt=this.marketReceipt(reward,r);
+        board.innerHTML=`<p class="board-eyebrow">BACK ON THE STREET</p><h2>${r.status==='extracted'?'人和东西，都回来了。':r.status==='rescued'?'人先回来。<br>东西下次再说。':'今天就到这里。'}</h2><p class="board-copy">${esc(r.message)}</p><div class="exp-receipt"><div><span>带回艾尔</span><strong>${reward.cups} 杯</strong></div><div><span>密封酒花</span><strong>${reward.hops} 份</strong></div><div><span>零件 / 跑腿费</span><strong>€${reward.cash}</strong></div><div><span>月雾箱</span><strong>${({returned:'交回 Noor',kept:'单独封存',ground:'留在街区',lost:'遗失'})[reward.parcel]||'未取得'}</strong></div></div>${visitReceipt}${actionReceipt}${marketReceipt}<p class="exp-consequence">${reward.parcel==='returned'?'Noor 下次营业会到酒馆。她记住的是你把箱子还了，不是你跑得有多快。':reward.parcel==='kept'?'这只箱子不会成为酒或原料。下次营业，一位打听箱子的人会进店。':'家中的现金和库存未受损。'}${reward.outcomes?.includes('market-shortcut')?'<br>超市卸货门的捷径已记住，明天地图会留下记录。':''}${reward.outcomes?.includes('club-backstage')?'<br>你穿过了夜店后台，明天 Bram 会听到这件事。':''}${reward.outcomes?.includes('greenhouse-repaired')?'<br>温室的水泵修好了。以后洒水不会再淋湿这条路。':''}${reward.outcomes?.some(x=>x.startsWith('sorting-'))?'<br>分拣场的机器按你的方式运转了一回。':''}${reward.discovered.includes('greenhouse')?'<br>温室捷径已记住，下次出门仍然打开。':''}</p><button class="primary" data-action="exp-command" data-verb="return">回酒馆，收好这一趟 →</button>`;
         this.save();return;
       }
       if(auto){
@@ -156,8 +157,42 @@
         document.getElementById('story-line').innerHTML='<span class="quote-mark">“</span><p>本店支持自主决策。责任也会自主地找到你。</p><span class="story-author">— 后门员工手册</span>';return;
       }
       const parcelText=({ground:'夜店的冷藏箱还在那里',carried:'箱内是月雾 · 可交回 Noor',returned:'已交回 Noor · €14 待结算',lost:'冷藏箱落在街区'})[r.parcel];
-      board.innerHTML=`<p class="board-eyebrow">CITY BACKSTAGE / 第 ${r.day} 趟</p><h2>跟着灯走。<br>留条路回来。</h2><p class="board-copy">${esc(B.KITS[r.kit].name)} · 普通货物靠近装包。<br>点向目标下钩，闪避和泡沫可以救场。</p>${locationCard}${situation}<div class="exp-objectives"><div class="${r.parcel==='returned'?'done':''}"><span>◇</span><div><strong>一箱“进口酵母”</strong><p>${parcelText}。${r.parcel==='returned'?'下次营业会在酒馆再见。':r.parcel==='carried'?'交回她，或带到出口自行保留。':'占 3 格，靠近按 E。'}</p></div></div><div class="${r.discovered.includes('noor')?'done':''}"><span>♧</span><div><strong>红灯街的 Noor</strong><p>西北运河边，她刚下夜班。带箱子过去，或先问问她。</p></div></div><div class="${r.discovered.includes('greenhouse')?'done':''}"><span>✧</span><div><strong>玻璃后面，有人在生活</strong><p>${r.discovered.includes('greenhouse')?'温室捷径已记住。下次也能进去。':'东北的温室亮着灯。拉开外面的维护拉杆，找路进去。'}</p></div></div></div><div class="exp-bag"><div class="exp-bag-title"><strong>背包</strong><span>Q 扔下最后一件</span></div>${r.bag.length?r.bag.map(id=>{const i=r.items.find(x=>x.id===id),t=B.TYPES[i.kind];return `<span class="exp-cargo" style="--cargo:${t.color}">${esc(t.name)}<small>${t.weight} 格</small></span>`;}).join(''):'<p>先拿附近的封口瓶试试手。<br>价值更高的东西，不一定更好带。</p>'}</div><p class="exp-feed" role="status">${esc(r.message)}</p>${cargoButton}<div class="exp-board-actions"><button class="secondary" data-action="exp-command" data-verb="map">${this.overview?'返回跟随视角':'看看全图'} · M</button><button class="text-button" data-action="exp-command" data-verb="bail">放下背包，轻装撤回</button></div>`;
+      board.innerHTML=`<p class="board-eyebrow">CITY BACKSTAGE / 第 ${r.day} 趟</p><h2>跟着灯走。<br>留条路回来。</h2><p class="board-copy">${esc(B.KITS[r.kit].name)} · 普通货物靠近装包。<br>点向目标下钩，闪避和泡沫可以救场。</p>${locationCard}${this.marketPanel(market)}${situation}<div class="exp-objectives"><div class="${r.parcel==='returned'?'done':''}"><span>◇</span><div><strong>一箱“进口酵母”</strong><p>${parcelText}。${r.parcel==='returned'?'下次营业会在酒馆再见。':r.parcel==='carried'?'交回她，或带到出口自行保留。':'占 3 格，靠近按 E。'}</p></div></div><div class="${r.discovered.includes('noor')?'done':''}"><span>♧</span><div><strong>红灯街的 Noor</strong><p>西北运河边，她刚下夜班。带箱子过去，或先问问她。</p></div></div><div class="${r.discovered.includes('greenhouse')?'done':''}"><span>✧</span><div><strong>玻璃后面，有人在生活</strong><p>${r.discovered.includes('greenhouse')?'温室捷径已记住。下次也能进去。':'东北的温室亮着灯。拉开外面的维护拉杆，找路进去。'}</p></div></div></div><div class="exp-bag"><div class="exp-bag-title"><strong>背包</strong><span>Q 扔下最后一件</span></div>${r.bag.length?r.bag.map(id=>{const i=r.items.find(x=>x.id===id),t=B.TYPES[i.kind];return `<span class="exp-cargo" style="--cargo:${t.color}">${esc(t.name)}<small>${t.weight} 格</small></span>`;}).join(''):'<p>先拿附近的封口瓶试试手。<br>价值更高的东西，不一定更好带。</p>'}</div><p class="exp-feed" role="status">${esc(r.message)}</p>${cargoButton}<div class="exp-board-actions"><button class="secondary" data-action="exp-command" data-verb="map">${this.overview?'返回跟随视角':'看看全图'} · M</button><button class="text-button" data-action="exp-command" data-verb="bail">放下背包，轻装撤回</button></div>`;
       document.getElementById('story-line').innerHTML='<span class="quote-mark">“</span><p>本店坚决反对违法交易。具体定义请咨询本店法务。</p><span class="story-author">— 夜店后门告示</span>';
+    }
+    // Manual market panel. Availability comes straight from B.marketInfo; verbs run through B.command.
+    marketPanel(market){
+      if(!market.enabled)return '';
+      const frozen=this.isPaused()||this.run().status!=='active';
+      let body='';
+      if(market.approach===null){
+        const disabled=frozen||!market.canTrade;
+        body+=`<div class="exp-market-choices"><button class="secondary" data-action="exp-command" data-verb="market-salvage" ${disabled?'disabled':''}>直接取库存 · 柜台表态</button><button class="secondary" data-action="exp-command" data-verb="market-trade" ${disabled?'disabled':''}>帮忙搬货 · 柜台表态</button></div><small>${frozen||market.canTrade?'表态本身不消耗东西；二选一后路线锁定，不能改。':esc(market.reasons.trade)}</small>`;
+      }else{
+        body+=`<p class="exp-market-route">已选路线：<strong>${market.approach==='salvage'?'直接取库存':'帮忙搬货'}</strong> · 不可更改。${market.approach==='trade'?(market.delivered?'酒桶已交付，安全撤离后回执才作数。':'收桶、送到柜台，都要自己走过去。'):'货架与冷库的货，拿到就是你的。'}</p>`;
+        if(market.approach==='trade'){
+          const disabled=frozen||!market.canDeliver;
+          body+=`<button class="secondary" data-action="exp-command" data-verb="market-deliver" ${disabled?'disabled':''}>把酒桶交到柜台 · 交付</button><small>${frozen||market.canDeliver?'交付会消耗包里的滚动酒桶（占 3 格）；它变不回 4 杯艾尔。':esc(market.reasons.deliver)}</small>`;
+        }
+      }
+      if(market.condition==='blackout'){
+        const disabled=frozen||!market.canPower;
+        body+=`<button class="secondary" data-action="exp-command" data-verb="market-power" ${disabled?'disabled':''}>${market.powered?'电已修好 · 冷库开着':'修好冷库电 · 用 1 件零件'}</button><small>${frozen||market.canPower?'修电会消耗 1 件可修零件（本来能卖 €5），用完冷库解锁。':esc(market.reasons.power)}</small>`;
+      }
+      return `<div class="exp-location exp-market"><strong>超市柜台 · ${esc(market.label)}</strong><p>${esc(market.copy)}</p>${body}${this.isPaused()?'<small>已暂停：市场操作先冻结。</small>':''}</div>`;
+    }
+    marketReceipt(reward,r){
+      const m=reward.market;if(!m)return '';
+      const safe=r.status==='extracted';
+      if(m.approach==='trade'){
+        if(m.delivered&&safe&&r.day<3)return '<p class="small-note">酒桶已实地交付，且安全撤离：拿到超市<strong>回执</strong>，只对次日白天作数；今夜先记账，领不到钱。</p>';
+        if(m.delivered&&safe)return '<p class="small-note">酒桶已实地交付，人也安全撤离；但第 3 夜之后没有下一夜，回执没有可兑现的一天。</p>';
+        if(m.delivered)return '<p class="small-note">酒桶虽已交到柜台，但你没有安全撤离，回执不作数。</p>';
+        return '<p class="small-note">选了「帮忙搬货」，但酒桶没能交付柜台，没有回执。</p>';
+      }
+      let out=m.stockTaken?'<p class="small-note">直接取库存：货架/冷库的货已实际入包，不欠回执。</p>':'';
+      if(m.powerRestored)out+='<p class="small-note">冷库电已用 1 件零件修好，冷库解锁，这件零件没有卖成 €5。</p>';
+      return out;
     }
   }
   root.BackstageUI=BackstageUI;

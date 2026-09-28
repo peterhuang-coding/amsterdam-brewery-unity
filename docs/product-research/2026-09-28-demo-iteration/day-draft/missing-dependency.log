@@ -1,0 +1,9 @@
+#   throw err;
+#   ^
+# Error: Cannot find module './bench-algorithms.js'
+# Require stack:
+# - /Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-sm01-day-20260928/workspace/tools/prototype/test-algorithm-replay.js
+#     at Module._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+#     at defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+#     at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+#     at Module._load (node:internal/modules/cjs/loader:1192:37)

@@ -1,0 +1,777 @@
+--- a/tools/prototype/backstage-auto.js
++++ b/tools/prototype/backstage-auto.js
+@@ -43,7 +43,7 @@
+         if(shift.enabled){
+           if(shift.approach===null){
+             choices=[option('mkt-salvage','直接取库存','柜台表态 · 货架/冷库自取即时入包 · 次日市场箱价 €8→€10（仅次日）'),
+-              option('mkt-trade','帮忙搬货','收滚动酒桶 item2（占 3 格）实送到柜台 · 仅安全撤离才有次日回执'),
++              option('mkt-trade','帮忙搬货','亲手收滚动酒桶（占 3 格）实送到柜台 · 安全撤离后才有次日回执'),
+               ...['club','noor','exit'].map(destination)];
+           }else if(shift.approach==='salvage'){
+             choices=[];
+--- a/tools/prototype/reopening-core.js
++++ b/tools/prototype/reopening-core.js
+@@ -36,6 +36,13 @@
+     ]) })
+   });
+   const eventForDay = day => ['landlord', 'influencer', 'inspector'][day - 1];
++  const SHIFT_CONDITIONS = Object.freeze(['staffed', 'restock', 'blackout']);
++  const shiftCondition = (seed, day) => SHIFT_CONDITIONS[((seed >>> 0) + day - 1) % 3];
++  const SHIFT_META = Object.freeze({
++    staffed: Object.freeze({ label: '值班夜 · 清扫机看得更远', clue: '清扫机今晚的视野从 175 步加到 235 步：还没走到货架，它可能已经看见你。货架、冷库与卸货门照常。' }),
++    restock: Object.freeze({ label: '补货夜 · 酒桶滚得更快', clue: '补货的滚动酒桶起步更快，且不会靠近自动入包：走到它旁边亲手收进背包，仍占 3 格。' }),
++    blackout: Object.freeze({ label: '停电夜 · 冷库上锁', clue: '冷库断电上锁，冷库里的酒花拿不出。先带一件本来能卖 €5 的可修零件，到卸货门开关旁修好电。' })
++  });
+   const owns = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
+   const integer = (n, min, max) => Number.isSafeInteger(n) && n >= min && n <= max;
+   const number = (n, min, max) => typeof n === 'number' && Number.isFinite(n) && n >= min && n <= max;
+@@ -82,7 +89,8 @@
+       friends: { lotte: 0, bram: 0, marta: 0 }, promises: { lotte: false },
+       upgrades: [], hops: 0, music: false, log: [], totalSatisfied: 0, totalServed: 0,
+       brew: null, forage: null, night: null, reports: [], lastMessage: '三天试营业。房东称这叫扶持创业，因为账单用了绿色纸。',
+-      result: null, prepared: [], backstage: { run: null, discovered: [], resolution: null, trips: 0, from: null, cashAfterClose: 0, journal: [] }, life: freshLife(), journeys: {run:null,usedDay:0,debt:0,history:[]}
++      result: null, prepared: [], backstage: { run: null, discovered: [], resolution: null, trips: 0, from: null, cashAfterClose: 0, journal: [] }, life: freshLife(), journeys: {run:null,usedDay:0,debt:0,history:[]},
++      market: { version: 1, history: [] }
+     };
+   }
+   function stock(state, beer) {
+@@ -223,6 +231,45 @@
+     say(state, '第 ' + state.day + ' 天，游客又把昨天的街道拍成了全新的城市。两次白天行动已经恢复。' + (state.life.morning[0] || '') + (state.music ? 'Lotte 今晚带吉他。' : ''));
+   }
+ 
++  // Read-only day view: tonight's real shift, today's dynamic crate price and the
++  // claim lifecycle. Claims derive from history; no cash or inventory is stored here.
++  function marketInfo(s) {
++    const condition = shiftCondition(s.seed, s.day);
++    const meta = SHIFT_META[condition];
++    const previous = s.market.history.find(e => e.day === s.day - 1);
++    const price = previous && previous.stockTaken ? 10 : 8;
++    const claimEntry = s.market.history.slice().reverse().find(e => e.delivered && e.safe);
++    let receipt = 'none', canClaim = false, reason = '没有可兑现的超市回执。';
++    if (claimEntry) {
++      if (claimEntry.claimed) { receipt = 'claimed'; reason = '超市回执已兑现，不能重复领取。'; }
++      else if (claimEntry.day === 3) { receipt = 'final'; reason = '第 3 夜之后没有下一天，回执无法兑现。'; }
++      else if (s.day === claimEntry.day) { receipt = 'pending'; reason = '回执今晚先记账，明天白天才能兑现。'; }
++      else if (s.day > claimEntry.day + 1) { receipt = 'expired'; reason = '回执只在次日白天有效，已经过期。'; }
++      else if (s.phase !== 'prep') { receipt = 'available'; reason = '要在白天准备时段兑现，今晚先记账。'; }
++      else if (s.actions < 1) { receipt = 'available'; reason = '今天的行动已用完，回执只能在今天兑现。'; }
++      else {
++        receipt = 'available'; canClaim = true;
++        reason = '兑现回执：花 1 次白天行动、不花钱，拿回 3 杯品质 1 的金色艾尔和 1 份酒花。';
++      }
++    }
++    return Object.freeze({
++      condition, label: meta.label, clue: meta.clue, price,
++      priceReason: price > 8 ? '昨夜超市货架或冷库真的被拿走了货：今天这箱贵 €2，只涨今天。' : '',
++      receipt, canClaim, reason
++    });
++  }
++  function recordMarketReturn(state, facts, status) {
++    if (!facts || state.market.history.some(e => e.day === state.day)) return;
++    // Entries are limited to real finished trips: a chosen route or an actual
++    // removed stock / delivered barrel / consumed power part. Visiting does nothing.
++    if (facts.approach === null && !facts.delivered && !facts.stockTaken && !facts.powerRestored) return;
++    state.market.history.push({
++      day: state.day, condition: facts.condition, approach: facts.approach,
++      delivered: facts.delivered, stockTaken: facts.stockTaken, powerRestored: facts.powerRestored,
++      safe: status === 'extracted', claimed: false
++    });
++  }
++
+   function act(original, action) {
+     const fail = message => ({ state: original, ok: false, message });
+     const state = restore(original);
+@@ -296,7 +343,7 @@
+         if (!owns(B.KITS, action.kit)) return fail('先选一套出门工具。');
+         if (![undefined, 'auto', 'manual'].includes(action.mode)) return fail('请选择自动探索或手动操作。');
+         state.backstage.from = state.phase; state.prepared.push('explore'); state.phase = 'explore';
+-        state.backstage.run = B.create(state.seed, state.day, action.kit, state.backstage.discovered, {clues: state.life.clues});
++        state.backstage.run = B.create(state.seed, state.day, action.kit, state.backstage.discovered, {clues: state.life.clues, marketShift: true});
+         if (action.mode !== 'manual') A.enable(state.backstage.run);
+         say(state, '城市背面的门开着。去夜店找冷藏箱，或者沿着陌生的灯走。'); break;
+       case 'returnExplore': {
+@@ -325,7 +372,18 @@
+         };
+         const outcomes=reward.outcomes||[];
+         for (const outcome of ['greenhouse-repaired',...outcomes.filter(id=>id!=='greenhouse-repaired')]) if(outcomes.includes(outcome)&&consequences[outcome]) state.life.morning.push(consequences[outcome]);
++        const marketFacts=reward.market;
++        if(marketFacts){
++          if(marketFacts.stockTaken)state.life.morning.push('超市告示：收摊酒箱今天涨价到 €10。昨夜货架或冷库真少了货；只涨今天这一天。');
++          if(marketFacts.approach==='trade'){
++            if(marketFacts.delivered&&reward.status==='extracted'&&state.day<3)state.life.morning.push('超市回执已记账：明天白天花 1 次行动、不花钱来跑补班，换回 3 杯金色艾尔和 1 份酒花；后天作废。');
++            else if(marketFacts.delivered&&reward.status==='extracted')state.life.morning.push('酒桶送到、人也安全，但第 3 夜之后没有下一天：回执无法兑现。');
++            else if(marketFacts.delivered)state.life.morning.push('酒桶虽已交到柜台，但没有安全撤离：回执不作数，也没有补班。');
++            else state.life.morning.push('选了帮忙搬货，酒桶却没送到柜台：没有回执。');
++          }
++        }
+         state.life.morning=state.life.morning.slice(0,8);
++        recordMarketReturn(state,marketFacts,reward.status);
+         state.backstage.journal.push({day:state.day,status:reward.status,cups:reward.cups,hops:reward.hops,cash:reward.cash,visited:[...(reward.visited||[])],outcomes:[...outcomes]});
+         state.backstage.journal=state.backstage.journal.slice(-3);
+         state.backstage.trips++; state.backstage.run = null; state.phase = state.backstage.from; state.backstage.from = null;
+@@ -363,6 +421,22 @@
+           say(state,points===2?'Lotte 喜欢这束暖色丝带花：“终于有报酬不能写进房东的账。” 好感 +2。':'Lotte 收下花：“比演出曝光券香。” 好感 +1。');}
+         else {state.life.display=b;say(state,'花摆上酒馆窗台。以后客人多等 '+(flowerFit(b,'display')?6:3)+' 秒，直到你换一束。');}
+         state.life.bouquet=null;break;
++      }
++      case 'marketErrand': {
++        if (state.phase !== 'prep') return fail('白天准备时段才能替超市跑这趟补班。');
++        const yesterday = state.market.history.find(e => e.day === state.day - 1 && e.delivered && e.safe);
++        if (!yesterday) return fail('没有昨天安全送达的超市回执。');
++        if (yesterday.claimed) return fail('超市回执已经兑现过，不能重复领取。');
++        if (state.actions < 1) return fail('需要 1 次白天行动，今天已经用完了。');
++        if (state.batches.length + 1 > 32) return fail('库存批次已满（32 批），先用掉一些；回执还在，不会丢。');
++        state.actions--;
++        state.batches.push({ id: 'd' + state.day + '-market-errand', beer: 'blond', cups: 3, quality: 1, madeDay: state.day, aged: false });
++        yesterday.claimed = true;
++        if (state.hops < 15) {
++          state.hops++;
++          say(state, '替超市跑了趟不发工资的补班：花 1 次白天行动，拿回 3 杯品质 1 的金色艾尔，酒花 +1。回执已兑现，再点也不会重复。');
++        } else say(state, '替超市跑了趟不发工资的补班：花 1 次白天行动，拿回 3 杯品质 1 的金色艾尔。酒花容量已满（15 份），没有额外酒花，也不折现金。回执已兑现。');
++        break;
+       }
+       case 'prepare': {
+         if (state.phase !== 'prep' || state.actions < 1) return fail('今天的行动已用完，可以开门迎客了。');
+@@ -377,13 +451,15 @@
+           state.phase = 'brew';
+           say(state, '开酿' + BEERS[action.beer].short + '。把握三次火候，完成一批六杯。');
+         } else {
+-          const outingCost = kind === 'market' ? 8 : kind === 'lab' ? 6 : 0;
++          const marketView = kind === 'market' ? marketInfo(state) : null;
++          const outingCost = kind === 'market' ? marketView.price : kind === 'lab' ? 6 : 0;
++          if (kind === 'market' && state.batches.length + 2 > 32) return fail('库存批次已满（32 批），今天先不进货。');
+           if (state.cash < outingCost) return fail('这趟需要 €' + outingCost + '。Bram 的咖啡馆还在招临时工。');
+           state.cash -= outingCost;
+           state.prepared.push(kind);
+           if (kind === 'market') {
+             for (const beer of ['blond', 'stout']) state.batches.push({ id: 'd' + state.day + '-market-' + beer, beer, cups: beer === 'blond' ? 2 : 1, quality: 1, madeDay: state.day, aged: false });
+-            say(state, '€8 带回收摊酒箱：2 杯艾尔、1 杯黑啤。摊主说没有滞销，只有尚未被发现的限量款。');
++            say(state, '€' + outingCost + ' 带回收摊酒箱：2 杯艾尔、1 杯黑啤。' + (outingCost > 8 ? '摊主把昨夜少掉的货算进今天的价钱，还管这叫风险定价。' : '摊主说没有滞销，只有尚未被发现的限量款。'));
+           }
+           if (kind === 'lab') { state.hops += 2; say(state, 'Chen 收下 €6 材料费，给你两份试验酒花。论文还没发表，香气已经通过鼻审。'); }
+           if (kind === 'coffee') { state.cash += 18; state.friends.bram++; say(state, '帮 Bram 忙过午市：工资 €18，头衔免费。他今晚愿意多等一会儿。'); }
+@@ -594,8 +670,29 @@
+       Array.isArray(e.visited)&&e.visited.length<=5&&unique(e.visited)&&e.visited.every(id=>JOURNAL_ZONES.includes(id))&&
+       Array.isArray(e.outcomes)&&e.outcomes.length<=7&&unique(e.outcomes)&&e.outcomes.every(id=>JOURNAL_OUTCOMES.includes(id)));
+   }
++  function validMarket(m, s) {
++    if (!shape(m, 'version history') || m.version !== 1 || !Array.isArray(m.history) || m.history.length > 3) return false;
++    return m.history.every((e, i) => {
++      if (!shape(e, 'day condition approach delivered stockTaken powerRestored safe claimed')) return false;
++      if (!integer(e.day, 1, s.day) || (i > 0 && e.day <= m.history[i - 1].day)) return false;
++      if (e.condition !== shiftCondition(s.seed, e.day)) return false;
++      if (![null, 'salvage', 'trade'].includes(e.approach)) return false;
++      for (const key of ['delivered', 'stockTaken', 'powerRestored', 'safe', 'claimed'])
++        if (typeof e[key] !== 'boolean') return false;
++      if (e.delivered && e.approach !== 'trade') return false;
++      if (e.stockTaken && e.approach !== 'salvage') return false;
++      if (e.delivered && e.stockTaken) return false; // never both
++      if (e.powerRestored && e.condition !== 'blackout') return false;
++      if (e.claimed && (!e.delivered || !e.safe || e.day >= 3 || s.day < e.day + 1)) return false;
++      // Every entry must correspond to a real finished-trip journal record.
++      const journal = s.backstage.journal.find(j => j.day === e.day);
++      if (!journal) return false;
++      if (e.safe !== (journal.status === 'extracted')) return false;
++      return true;
++    });
++  }
+   function validState(s) {
+-    if (!shape(s, 'version seed day phase cash actions batches friends promises upgrades hops music log totalSatisfied totalServed brew forage night reports lastMessage result prepared backstage life journeys trade stories garden')) return false;
++    if (!shape(s, 'version seed day phase cash actions batches friends promises upgrades hops music log market totalSatisfied totalServed brew forage night reports lastMessage result prepared backstage life journeys trade stories garden')) return false;
+     if (s.version !== 1 || !integer(s.seed, 0, 4294967295) || !integer(s.day, 1, 3) || !integer(s.cash, 0, 1000000) || !integer(s.actions, 0, 2)) return false;
+     if (!['welcome', 'prep', 'brew', 'forage', 'explore', 'journey', 'night', 'summary', 'ending'].includes(s.phase)) return false;
+     const j=s.journeys;
+@@ -606,6 +703,7 @@
+     if(!S.valid(s))return false;
+     if(!G.valid(s))return false;
+     if (!shape(s.backstage, 'run discovered resolution trips from cashAfterClose journal') || !Array.isArray(s.backstage.discovered) || !unique(s.backstage.discovered) || !s.backstage.discovered.every(id => ['greenhouse', 'noor', 'market-shortcut', 'greenhouse-pump'].includes(id)) || ![null, 'returned', 'kept'].includes(s.backstage.resolution) || !integer(s.backstage.trips, 0, 3) || !integer(s.backstage.cashAfterClose,0,1000000)||!validJournal(s.backstage.journal,s)) return false;
++    if (!validMarket(s.market, s)) return false;
+     if(s.phase==='explore' ? !['prep','summary'].includes(s.backstage.from) : s.backstage.from!==null) return false;
+     const afterClose=['summary','ending'].includes(s.phase)||s.phase==='explore'&&s.backstage.from==='summary';
+     if(!afterClose&&s.backstage.cashAfterClose!==0)return false;
+@@ -686,11 +784,19 @@
+         restored.backstage.from=restored.phase==='explore'?'prep':null;restored.backstage.cashAfterClose=0;
+       }
+       if(restored?.backstage&&!owns(restored.backstage,'journal'))restored.backstage.journal=[];
+-      if(restored.backstage.run){restored.backstage.run=B.restore(restored.backstage.run);if(!restored.backstage.run)return null;}
++      if(restored&&!owns(restored,'market'))restored.market={version:1,history:[]};
++      if(restored.backstage.run){
++        // marketShift is defined on v4 runs only (B: market(r) => r.version>=4 ? ...).
++        // A pre-v4 byte stream cannot carry real market facts; normalize legacy
++        // runs by dropping a stray key before B's strict migration.
++        const legacyRun=restored.backstage.run;
++        if(legacyRun&&legacyRun.version<4&&owns(legacyRun,'marketShift'))delete legacyRun.marketShift;
++        restored.backstage.run=B.restore(restored.backstage.run);if(!restored.backstage.run)return null;
++      }
+       if (!validState(restored)) return null;
+       return restored;
+     } catch (_) { return null; }
+   }
+ 
+-  return Object.freeze({ createGame, act, stock, customers, pourProgress, forageProgress, restore, flowerPalette, flowerFit, FLOWERS, BEERS, UPGRADES, PEOPLE, NIGHT_EVENTS, trade:D, stories:S, garden:G });
++  return Object.freeze({ createGame, act, stock, customers, pourProgress, forageProgress, restore, marketInfo, flowerPalette, flowerFit, FLOWERS, BEERS, UPGRADES, PEOPLE, NIGHT_EVENTS, trade:D, stories:S, garden:G });
+ });
+--- a/tools/prototype/reopening-ui.js
++++ b/tools/prototype/reopening-ui.js
+@@ -202,6 +202,43 @@
+     }[id];
+     return `<div class="scout-note"><span class="board-eyebrow">白天踩点 / 今夜可用</span><h3>${copy[0]}</h3><p>${copy[1]}</p><button class="secondary" data-action="scout" data-place="${place}" ${known?'disabled':''}>${known?'已记进地图背面':copy[2]}</button></div>`;
+   }
++  function marketReceiptCard(v){
++    switch(v.receipt){
++      case 'available':
++        return `<div class="upgrade-card" id="market-receipt-card"><strong>超市回执 · 可兑现</strong><p>${esc(v.reason)}</p>`+
++          `<button class="primary" data-action="market-errand" ${v.canClaim?'':'disabled'}>兑现回执 · 1 次行动 · 不花钱 → 3 杯品质 1 金色艾尔 +1 酒花（最多 15）</button></div>`;
++      case 'pending':
++        return `<div class="upgrade-card" id="market-receipt-card"><strong>超市回执 · 今晚先记账</strong><p class="small-note">${esc(v.reason)}</p></div>`;
++      case 'claimed':
++        return `<div class="upgrade-card" id="market-receipt-card"><strong>超市回执 · 已兑现</strong><p class="small-note">回执已经兑现过，不能重复领取。</p></div>`;
++      case 'expired':
++        return `<div class="upgrade-card" id="market-receipt-card"><strong>超市回执 · 已过期</strong><p class="risk-note">${esc(v.reason)}</p></div>`;
++      case 'final':
++        return `<div class="upgrade-card" id="market-receipt-card"><strong>超市回执 · 无法兑现</strong><p class="risk-note">${esc(v.reason)}</p></div>`;
++      default:return '';
++    }
++  }
++  function marketPanel(){
++    const v=R.marketInfo(state);
++    const usedMarket=state.prepared.includes('market');
++    const batchFull=state.batches.length+2>32;
++    const buyDisabled=state.actions<1||usedMarket||state.cash<v.price||batchFull;
++    const buyLabel=usedMarket?'今天已经进过货了':`买收摊酒箱 · ${money(v.price)} · 1 次行动`;
++    let html=`<div class="upgrade-card" id="market-shift-card"><span class="board-eyebrow">免费情报 · 今晚的超市</span>`+
++      `<strong>${esc(v.label)}</strong><p>${esc(v.clue)}</p><p class="small-note">看情报免费，不花行动、不改动今晚的结果；真办事才花钱花行动。</p></div>`;
++    html+=`<div class="upgrade-card" id="market-crate-card"><strong>收摊酒箱 · ${money(v.price)}</strong>`+
++      `<p>2 杯金色艾尔、1 杯运河黑啤，品质 1。比自己酿少花 €4，也少拿 3 杯。</p>`+
++      (v.priceReason?`<p class="risk-note">${esc(v.priceReason)}</p>`:`<p class="small-note">今天是常规收摊价。</p>`)+
++      `<button class="primary" data-action="prepare" data-kind="market" ${buyDisabled?'disabled':''}>${esc(buyLabel)}</button>`+
++      (usedMarket?'<p class="small-note">现货已收进库存，每天只进一次。</p>':
++        batchFull?'<p class="small-note">库存批次已满（32 批），先用掉一些再进货。</p>':
++        state.actions<1?'<p class="small-note">今天的行动已用完，现货只能明天再来。</p>':
++        state.cash<v.price?'<p class="small-note">手头的钱不够；Bram 的咖啡午市还在招临时工。</p>':'')+`</div>`;
++    html+='<p class="promise-note">夜里两条路：直接去货架或冷库拿货，货立刻进背包，但明天这箱涨价 €2（只涨明天）；或者亲手把滚动酒桶送到柜台、安全撤离，不碰库存，明天白天花 1 次行动来跑不发工资的补班，换回 3 杯金色艾尔和 1 份酒花。</p>';
++    html+=marketReceiptCard(v);
++    if(state.day===3)html+='<p class="risk-note">第 3 夜之后没有下一天：今晚再怎么送桶也不会有补班回执；眼前这个价格，就是今夜最后的价格。</p>';
++    return html;
++  }
+   const tripLabel={day:'夜次',status:'结果',cups:'剩杯',hops:'酒花',cash:'现金',visited:'路线',outcomes:'记事',extracted:'安全回店',bailed:'轻装撤回',rescued:'获救，保住半包',market:'超市',redlight:'红灯街',club:'夜店',sorting:'分拣场',greenhouse:'温室','market-salvaged':'收过超市货物','market-shortcut':'打开卸货捷径','club-backstage':'走过夜店后台','sorting-stopped':'传送带停过','sorting-reversed':'倒转分拣带','greenhouse-valve':'阀门关闭十二秒','greenhouse-repaired':'修好水泵，后续夜晚保留'};
+   function tripWord(v){return tripLabel[v]||String(v??'');}
+   function tripList(v){return (Array.isArray(v)?v:[v]).filter(Boolean).map(x=>esc(tripWord(x))).join('、');}
+@@ -276,8 +313,10 @@
+     }else if(p.id==='pub'){
+       $board.innerHTML+=Object.values(R.BEERS).map(b=>`<button class="upgrade-card" data-action="brew" data-beer="${b.id}" ${blocked||state.cash<b.cost?'disabled':''}><strong>酿一桶${esc(b.name)}</strong><small>€12 / 1 次准备 / 6 杯 · 把握三次火候</small></button>`).join('')+
+         `<button class="primary" data-action="open">翻开营业牌，开始今晚营业 →</button><p class="small-note">${state.actions?'剩余准备机会会在开门时结束。':''} 打烊后可出门探险，也可提前收店。</p>`;
++    }else if(p.id==='market'){
++      $board.innerHTML+=marketPanel();
+     }else{
+-      const cost=p.id==='market'?8:p.id==='lab'?6:0,labels={coffee:'帮 Bram 忙过午市 · +€18',lotte:'答应给 Lotte 留黑啤',noord:'借船下运河 · 30 秒',market:'买收摊酒箱 · €8',lab:'领取试验酒花 · €6'};
++      const cost=p.id==='lab'?6:0,labels={coffee:'帮 Bram 忙过午市 · +€18',lotte:'答应给 Lotte 留黑啤',noord:'借船下运河 · 30 秒',lab:'领取试验酒花 · €6'};
+       $board.innerHTML+=`<button class="primary" data-action="prepare" data-kind="${p.kind}" ${blocked||used.includes(p.kind)||state.cash<cost?'disabled':''}>${used.includes(p.kind)?'今天已经办过了':labels[p.id]}</button><p class="small-note">1 次准备机会 · 每天一次</p>`;
+       if(p.id==='lotte'&&state.life.gifts)$board.innerHTML+='<p class="promise-note">Lotte 把你送的花带回了排练室。好印象 '+state.friends.lotte+'。</p>';
+     }
+@@ -517,6 +556,10 @@
+       case 'brew':dispatch({type:'prepare',kind:'brew',beer:data.beer});break;
+       case 'scout':if(inCity()&&ui.cityMode==='place'&&ui.cityPlace===data.place)dispatch({type:'scout',place:data.place});break;
+       case 'prepare':dispatch({type:'prepare',kind:data.kind});break;
++      case 'market-errand':
++        if(state.phase==='prep'&&ui.cityMode==='place'&&ui.cityPlace==='market')dispatch({type:'marketErrand'});
++        else notify('要白天亲自到超市，才能兑现这张回执。',true);
++        break;
+       case 'brew-hit':brewHit();break;
+       case 'forage-move':dispatch({type:'forageMove',direction:Number(data.direction)});break;
+       case 'forage-catch':dispatch({type:'forageCatch'});break;
+--- /dev/null
++++ b/tools/prototype/test-market-daynight.js
+@@ -0,0 +1,491 @@
++'use strict';
++const test=require('node:test'),assert=require('node:assert/strict');
++const R=require('./reopening-core.js'),B=require('./backstage-core.js'),A=require('./backstage-auto.js');
++
++function act(s,a){
++  const before=JSON.stringify(s);
++  const r=R.act(s,a);
++  assert.equal(JSON.stringify(s),before,'act must not mutate its input');
++  assert.ok(r.ok,(r.message||'')+' :: '+JSON.stringify(a));
++  assert.ok(R.restore(r.state),'result must stay a valid save after '+a.type);
++  return r.state;
++}
++function reject(s,a){
++  const before=JSON.stringify(s);
++  const r=R.act(s,a);
++  assert.equal(r.ok,false,'action must be rejected: '+JSON.stringify(a));
++  assert.equal(r.state,s,'rejection returns the original object');
++  assert.equal(JSON.stringify(s),before);
++  assert.equal(typeof r.message,'string');assert.ok(r.message.length);
++}
++const start=(seed=42)=>act(R.createGame(seed),{type:'start'});
++const closeNight=s=>act(act(s,{type:'open'}),{type:'close'});
++function walkTo(run,to){
++  for(let n=0;n<8000&&Math.hypot(to.x-run.p.x,to.y-run.p.y)>6;n++){
++    const d=Math.hypot(to.x-run.p.x,to.y-run.p.y);
++    B.step(run,{dx:(to.x-run.p.x)/d,dy:(to.y-run.p.y)/d},.025);
++  }
++  assert.ok(Math.hypot(to.x-run.p.x,to.y-run.p.y)<8,JSON.stringify({p:run.p,to}));
++}
++function autoIdle(run){
++  for(let n=0;n<30000&&run.status==='active'&&!run.auto.event;n++)A.step(run,.05);
++}
++function autoPick(run,id){
++  if(!run.auto)A.enable(run);
++  assert.ok(A.choose(run,id),'choice available: '+id);
++  autoIdle(run);
++  assert.notEqual(run.auto.event,'stuck',JSON.stringify({p:run.p,time:run.time}));
++}
++function night(s,fn,mode){
++  s=act(s,{type:'explore',kit:'hook',mode});
++  fn(s.backstage.run);
++  return act(s,{type:'returnExplore'});
++}
++function forceRescue(run){
++  while(run.status==='active')B.step(run,{},.1);
++  assert.equal(run.status,'rescued');
++}
++const ENTRY_KEYS=['day','condition','approach','delivered','stockTaken','powerRestored','safe','claimed'];
++const entry=(s,day)=>s.market.history.find(e=>e.day===day);
++function summaryAt(day){
++  let s=start();
++  for(let d=1;d<day;d++){s=closeNight(s);s=act(s,{type:'next'});}
++  return closeNight(s);
++}
++
++test('new after-hours runs opt into marketShift; seed42 gives staffed/restock/blackout',()=>{
++  for(const [day,expected] of [[1,'staffed'],[2,'restock'],[3,'blackout']]){
++    let s=summaryAt(day);
++    s=act(s,{type:'explore',kit:'hook'});
++    const run=s.backstage.run;
++    assert.equal(run.marketShift.version,1);
++    assert.equal(run.marketShift.condition,expected);
++    assert.deepEqual(run.marketShift,{version:1,condition:expected,approach:null,delivered:false,stockTaken:false,powerItem:null});
++    B.command(run,'bail');
++    s=act(s,{type:'returnExplore'});
++    assert.deepEqual(s.market.history,[],'nothing was done, no history entry');
++  }
++  // Direct B.create remains strict opt-in.
++  assert.equal(Object.hasOwn(B.create(42,1),'marketShift'),false);
++});
++
++test('R.marketInfo exposes the stable contract reflecting real state',()=>{
++  const s=start();
++  const info=R.marketInfo(s);
++  for(const key of ['condition','label','clue','price','receipt','canClaim','reason'])
++    assert.ok(Object.hasOwn(info,key),key);
++  assert.equal(info.condition,'staffed');assert.equal(info.price,8);
++  assert.equal(info.receipt,'none');assert.equal(info.canClaim,false);
++  assert.ok(info.label.length>2&&info.clue.length>8);
++  assert.match(info.clue,/235|清扫/);
++});
++
++test('complete automatic trade route really delivers the barrel and extracts',()=>{
++  let s=closeNight(start());
++  s=night(s,run=>{
++    autoPick(run,'market');
++    autoPick(run,'mkt-trade');
++    assert.equal(run.marketShift.approach,'trade');
++    assert.equal(run.marketShift.delivered,true);
++    assert.equal(run.items[2].state,'delivered');
++    assert.equal(run.marketShift.stockTaken,false);
++    autoPick(run,'exit');
++    assert.equal(run.status,'extracted');
++  });
++  const e=entry(s,1);
++  assert.ok(e);
++  assert.deepEqual(Object.keys(e).sort(),ENTRY_KEYS.slice().sort());
++  assert.deepEqual({condition:e.condition,approach:e.approach,delivered:e.delivered,stockTaken:e.stockTaken,powerRestored:e.powerRestored,safe:e.safe,claimed:e.claimed},
++    {condition:'staffed',approach:'trade',delivered:true,stockTaken:false,powerRestored:false,safe:true,claimed:false});
++  assert.ok(s.life.morning.some(n=>n.includes('明天')||n.includes('次日')));
++});
++
++test('complete manual salvage route really takes shelf stock',()=>{
++  let s=closeNight(start());
++  s=night(s,run=>{
++    run.actors=[];
++    walkTo(run,B.marketInfo(run).counter);
++    walkTo(run,{x:405,y:990});
++    assert.ok(run.bag.includes('item0'));
++    assert.equal(run.marketShift.stockTaken,true);
++    assert.equal(run.marketShift.approach,'salvage');
++    walkTo(run,B.EXIT);
++    assert.equal(B.command(run,'interact'),true);
++    assert.equal(run.status,'extracted');
++  },'manual');
++  const e=entry(s,1);
++  assert.equal(e.stockTaken,true);assert.equal(e.approach,'salvage');
++  assert.equal(e.delivered,false);assert.equal(e.safe,true);
++});
++
++test('two economic choices diverge: trade receipt errand vs salvage next-day price',()=>{
++  // Trade path: night1 -> next-day claim.
++  let trade=closeNight(start());
++  trade=night(trade,run=>{
++    autoPick(run,'market');autoPick(run,'mkt-trade');autoPick(run,'exit');
++  });
++  trade=act(trade,{type:'next'});
++  let info=R.marketInfo(trade);
++  assert.equal(info.receipt,'available');assert.equal(info.canClaim,true);
++  assert.equal(info.price,8);
++  const blondBefore=R.stock(trade,'blond'),hopsBefore=trade.hops;
++  trade=act(trade,{type:'marketErrand'});
++  assert.equal(R.stock(trade,'blond'),blondBefore+3);
++  assert.equal(trade.hops,hopsBefore+1);
++  assert.equal(trade.actions,1);
++  const made=trade.batches.find(b=>b.id==='d2-market-errand');
++  assert.deepEqual(made,{id:'d2-market-errand',beer:'blond',cups:3,quality:1,madeDay:2,aged:false});
++  assert.equal(entry(trade,1).claimed,true);
++  assert.equal(R.marketInfo(trade).receipt,'claimed');
++  // Repeated click cannot duplicate, even after a save roundtrip.
++  reject(trade,{type:'marketErrand'});
++  const reloaded=R.restore(structuredClone(trade));
++  reject(reloaded,{type:'marketErrand'});
++  assert.equal(trade.batches.filter(b=>b.id==='d2-market-errand').length,1);
++
++  // Salvage path: night1 stock -> day2 crate costs 10.
++  let salvage=closeNight(start());
++  salvage=night(salvage,run=>{
++    run.actors=[];
++    walkTo(run,{x:405,y:990});
++    walkTo(run,B.EXIT);B.command(run,'interact');
++  },'manual');
++  salvage=act(salvage,{type:'next'});
++  assert.equal(R.marketInfo(salvage).price,10);
++  assert.equal(R.marketInfo(salvage).receipt,'none');
++});
++
++test('route chosen but not completed is recorded without entitlement',()=>{
++  let s=closeNight(start());
++  s=night(s,run=>{
++    Object.assign(run.p,{x:405,y:1110});
++    assert.equal(B.command(run,'market-trade'),true);
++    B.command(run,'bail');
++  },'manual');
++  const e=entry(s,1);
++  assert.ok(e,'route choice itself is recorded');
++  assert.equal(e.approach,'trade');assert.equal(e.delivered,false);assert.equal(e.safe,false);
++  s=act(s,{type:'next'});
++  assert.equal(R.marketInfo(s).receipt,'none');
++  reject(s,{type:'marketErrand'});
++});
++
++test('delivered barrel with rescue or bail gives no claim',()=>{
++  for(const kind of ['rescued','bailed']){
++    let s=closeNight(start());
++    s=night(s,run=>{
++      Object.assign(run.p,{x:405,y:1110});
++      B.command(run,'market-trade');
++      B.command(run,'collect',{itemId:'item2'});
++      B.command(run,'market-deliver');
++      assert.equal(run.marketShift.delivered,true);
++      if(kind==='bailed')B.command(run,'bail');else forceRescue(run);
++    },'manual');
++    const e=entry(s,1);
++    assert.equal(e.delivered,true);assert.equal(e.safe,false);
++    s=act(s,{type:'next'});
++    assert.equal(R.marketInfo(s).canClaim,false);
++    reject(s,{type:'marketErrand'});
++  }
++});
++
++test('stockTaken raises price to 10 even after rescue; route choice alone does not',()=>{
++  // Take then rescue.
++  let s=closeNight(start());
++  s=night(s,run=>{
++    run.actors=[];
++    walkTo(run,{x:405,y:990});
++    assert.equal(run.marketShift.stockTaken,true);
++    forceRescue(run);
++  },'manual');
++  s=act(s,{type:'next'});
++  assert.equal(R.marketInfo(s).price,10);
++  // Salvage declared at counter, nothing taken, bail: price stays 8.
++  let q=closeNight(start());
++  q=night(q,run=>{
++    Object.assign(run.p,{x:405,y:1110});
++    B.command(run,'market-salvage');
++    assert.equal(run.marketShift.stockTaken,false);
++    B.command(run,'bail');
++  },'manual');
++  q=act(q,{type:'next'});
++  assert.equal(R.marketInfo(q).price,8);
++});
++
++test('raised price expires after exactly one day',()=>{
++  let s=closeNight(start());
++  s=night(s,run=>{
++    run.actors=[];walkTo(run,{x:405,y:990});walkTo(run,B.EXIT);B.command(run,'interact');
++  },'manual');
++  s=act(s,{type:'next'});
++  assert.equal(R.marketInfo(s).price,10);
++  // Skip night2 with no market participation.
++  s=closeNight(s);
++  s=act(s,{type:'next'});
++  assert.equal(s.day,3);
++  assert.equal(R.marketInfo(s).price,8);
++});
++
++test('affordability uses the dynamic price and truthful labels at 8 and 10',()=>{
++  const day1=start();
++  reject({...day1,cash:7},{type:'prepare',kind:'market'});
++  let bought=act({...day1,cash:8},{type:'prepare',kind:'market'});
++  assert.equal(bought.cash,0);
++  assert.match(bought.lastMessage,/€8/);
++  // Build a day2 state whose yesterday stock was really taken.
++  let s=closeNight(start());
++  s=night(s,run=>{
++    run.actors=[];walkTo(run,{x:405,y:990});walkTo(run,B.EXIT);B.command(run,'interact');
++  },'manual');
++  s=act(s,{type:'next'});
++  assert.equal(R.marketInfo(s).price,10);
++  reject({...s,cash:9},{type:'prepare',kind:'market'});
++  bought=act({...s,cash:10},{type:'prepare',kind:'market'});
++  assert.equal(bought.cash,0);
++  assert.match(bought.lastMessage,/€10/);
++  assert.equal(R.stock(bought,'blond'),R.stock(s,'blond')+2);
++  assert.equal(R.stock(bought,'stout'),R.stock(s,'stout')+1);
++});
++
++test('unclaimed receipt expires after the next day and can never be claimed',()=>{
++  let s=closeNight(start());
++  s=night(s,run=>{
++    autoPick(run,'market');autoPick(run,'mkt-trade');autoPick(run,'exit');
++  });
++  // Day2 available, but ignore it; close night2 without an expedition.
++  s=act(s,{type:'next'});
++  assert.equal(R.marketInfo(s).receipt,'available');
++  s=closeNight(s);
++  s=act(s,{type:'next'});
++  assert.equal(s.day,3);
++  assert.equal(R.marketInfo(s).receipt,'expired');
++  assert.equal(R.marketInfo(s).canClaim,false);
++  reject(s,{type:'marketErrand'});
++});
++
++test('marketErrand with zero actions preserves every resource',()=>{
++  let s=closeNight(start());
++  s=night(s,run=>{
++    autoPick(run,'market');autoPick(run,'mkt-trade');autoPick(run,'exit');
++  });
++  s=act(s,{type:'next'});
++  const zero={...s,actions:0};
++  zero.market=structuredClone(s.market);
++  reject(zero,{type:'marketErrand'});
++  assert.deepEqual(zero.batches,s.batches);
++  assert.equal(zero.hops,s.hops);
++  assert.equal(entry(zero,1).claimed,false);
++});
++
++test('hops at cap still grants 3 cups with a truthful full-cap message; batch cap rejects',()=>{
++  let s=closeNight(start());
++  s=night(s,run=>{
++    autoPick(run,'market');autoPick(run,'mkt-trade');autoPick(run,'exit');
++  });
++  s=act(s,{type:'next'});
++  const capped=structuredClone(s);
++  capped.hops=15;
++  assert.ok(R.restore(capped));
++  const result=R.act(capped,{type:'marketErrand'});
++  assert.ok(result.ok,result.message);
++  assert.equal(result.state.hops,15);
++  assert.match(result.message,/满|15/);
++  assert.equal(result.state.batches.length,s.batches.length+1);
++  assert.equal(R.stock(result.state,'blond'),R.stock(s,'blond')+3);
++
++  // Batch capacity.
++  const full=structuredClone(s);
++  let n=0;
++  while(full.batches.length<32)full.batches.push({id:'fill-'+(n++),beer:'blond',cups:1,quality:1,madeDay:1,aged:false});
++  assert.equal(R.restore(full)&&full.batches.length,32);
++  reject(full,{type:'marketErrand'});
++  assert.equal(full.hops,s.hops);
++});
++
++test('day3 records a final event: no claim, honest warning, no phantom day4',()=>{
++  let s=start();
++  s=closeNight(s);s=act(s,{type:'next'});
++  s=closeNight(s);s=act(s,{type:'next'});
++  assert.equal(s.day,3);
++  s=closeNight(s);
++  s=night(s,run=>{
++    autoPick(run,'market');autoPick(run,'mkt-trade');autoPick(run,'exit');
++  });
++  const e=entry(s,3);
++  assert.ok(e);assert.equal(e.delivered,true);assert.equal(e.safe,true);assert.equal(e.claimed,false);
++  assert.equal(R.marketInfo(s).receipt,'final');
++  assert.match(R.marketInfo(s).reason,/没有下一天|无法兑现/);
++  assert.ok(s.life.morning.some(x=>x.includes('没有下一天')||x.includes('无法兑现')||x.includes('第 3')));
++  reject(s,{type:'next'});
++  assert.ok(R.act(s,{type:'finish'}).ok);
++});
++
++test('blackout salvage with power repair records powerRestored only on that condition',()=>{
++  let s=start();
++  s=closeNight(s);s=act(s,{type:'next'});
++  s=closeNight(s);s=act(s,{type:'next'});
++  s=closeNight(s);
++  s=night(s,run=>{
++    autoPick(run,'market');
++    autoPick(run,'mkt-salvage');
++    autoPick(run,'market-fuse');
++    assert.equal(run.marketShift.powerItem,'item3');
++    autoPick(run,'market-cold');
++    assert.ok(run.bag.includes('item1'));
++    autoPick(run,'exit');
++  });
++  const e=entry(s,3);
++  assert.equal(e.condition,'blackout');
++  assert.equal(e.powerRestored,true);
++  assert.equal(e.stockTaken,true);
++  assert.equal(e.approach,'salvage');
++  assert.equal(e.delivered,false);
++});
++
++test('strict malformed market histories are rejected',()=>{
++  let base=closeNight(start());
++  base=night(base,run=>{
++    autoPick(run,'market');autoPick(run,'mkt-trade');autoPick(run,'exit');
++  });
++  const goodEntry=()=>structuredClone(entry(base,1));
++  function rejects(fn){
++    const bad=structuredClone(base);
++    fn(bad);
++    assert.equal(R.restore(bad),null);
++  }
++  rejects(s=>{s.market=null;});
++  rejects(s=>{s.market={version:1};});
++  rejects(s=>{s.market={version:2,history:[]};});
++  rejects(s=>{s.market.history=[goodEntry(),goodEntry()];}); // duplicate day
++  rejects(s=>{const e=goodEntry();e.day=4;s.market.history=[e];}); // future
++  rejects(s=>{const e=goodEntry();e.day='1';s.market.history=[e];});
++  rejects(s=>{const e=goodEntry();e.condition='restock';s.market.history=[e];}); // formula mismatch
++  rejects(s=>{const e=goodEntry();e.approach='salvage';s.market.history=[e];}); // delivered needs trade
++  rejects(s=>{const e=goodEntry();e.stockTaken=true;s.market.history=[e];}); // never both
++  rejects(s=>{const e=goodEntry();e.safe=false;s.market.history=[e];}); // safe mismatch w/ journal
++  rejects(s=>{const e=goodEntry();e.powerRestored=true;s.market.history=[e];}); // only blackout
++  rejects(s=>{const e=goodEntry();e.claimed=true;s.market.history=[e];}); // same day cannot claim
++  rejects(s=>{const e=goodEntry();e.extra=1;s.market.history=[e];});
++  rejects(s=>{const e=goodEntry();delete e.safe;s.market.history=[e];});
++  rejects(s=>{const e=goodEntry();e.delivered='true';s.market.history=[e];});
++  // History entries require a finished-trip journal entry on the same day.
++  rejects(s=>{s.backstage.journal=[];});
++  rejects(s=>{s.backstage.journal[0].status='bailed';});
++});
++
++test('missing market migrates; old in-progress legacy runs stay exactly legacy',()=>{
++  const s=start();delete s.market;
++  const restored=R.restore(s);
++  assert.ok(restored);
++  assert.deepEqual(restored.market,{version:1,history:[]});
++  // In-progress run created without marketShift (old save bytes).
++  let old=structuredClone(start());
++  old.phase='explore';old.actions=1;old.prepared=['explore'];
++  old.backstage={run:B.create(42,1,'hook',[]),discovered:[],resolution:null,trips:0,from:'prep',cashAfterClose:0,journal:[]};
++  const legacy=R.restore(old);
++  assert.ok(legacy);assert.equal(legacy.backstage.from,'prep');
++  assert.equal(Object.hasOwn(legacy.backstage.run,'marketShift'),false);
++  B.command(legacy.backstage.run,'bail');
++  const back=R.act(legacy,{type:'returnExplore'});
++  assert.ok(back.ok);assert.equal(back.state.phase,'prep');assert.equal(back.state.actions,1);
++  assert.deepEqual(back.state.market.history,[]);
++});
++
++test('automatic market choices show readable copy with no internal labels',()=>{
++  const run=B.create(42,1,'hook',[],{marketShift:true});
++  A.enable(run);
++  assert.ok(A.choose(run,'market'));
++  autoIdle(run);
++  assert.equal(run.auto.event,'market');
++  const v=A.view(run);
++  const trade=v.choices.find(c=>c.id==='mkt-trade'),salvage=v.choices.find(c=>c.id==='mkt-salvage');
++  assert.ok(trade&&salvage);
++  for(const c of [trade,salvage]){
++    assert.doesNotMatch(c.label,/item\d|stage\d/);
++    assert.doesNotMatch(c.detail,/item\d|stage\d|schema/);
++  }
++  assert.equal(trade.label,'帮忙搬货');
++});
++
++test('real UI renders the market panel and a claim click produces resources via R.act',()=>{
++  const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
++  const City=require('./reopening-city.js');
++  // Build an actual day-2 prep game carrying a safe night-1 delivery.
++  let g=closeNight(start());
++  g=night(g,run=>{
++    autoPick(run,'market');autoPick(run,'mkt-trade');autoPick(run,'exit');
++  });
++  g=act(g,{type:'next'});
++  assert.equal(R.marketInfo(g).receipt,'available');
++
++  const noop=()=>{};
++  const gradient={addColorStop:noop};
++  const ctx=new Proxy({},{get:(o,k)=>k==='createLinearGradient'||k==='createRadialGradient'?()=>gradient:noop,set:()=>true});
++  const mkEl=()=>({textContent:'',hidden:false,disabled:false,innerHTML:'',setAttribute:noop,removeAttribute:noop,addEventListener:noop,removeEventListener:noop,
++    classList:{toggle:noop,add:noop,remove:noop},style:{},title:'',focus:noop,scrollIntoView:noop,
++    querySelector:()=>null,querySelectorAll:()=>[],dataset:{}});
++  const els=new Map();
++  const canvasEl=()=>({...mkEl(),addEventListener:noop,getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:1100,height:640})});
++  const listeners={};
++  const document={
++    addEventListener:(type,cb)=>{(listeners[type]=listeners[type]||[]).push(cb);},
++    hidden:false,activeElement:{isConnected:false},body:{classList:{toggle:noop}},
++    getElementById:id=>{
++      if(id==='pub-canvas'){if(!els.has(id))els.set(id,canvasEl());return els.get(id);}
++      if(!els.has(id))els.set(id,mkEl());return els.get(id);
++    },
++    querySelector:()=>null,querySelectorAll:()=>[]
++  };
++  let capturedSave=null;
++  const localStorage={
++    getItem:()=>JSON.stringify({version:1,game:g,city:City.create(),sound:true}),
++    setItem:(k,v)=>{capturedSave=JSON.parse(v);}
++  };
++  const rafs=[];let nowValue=1000;
++  const sandbox={
++    document,matchMedia:()=>({matches:false}),localStorage,
++    performance:{now:()=>nowValue},setTimeout:()=>0,clearTimeout:noop,
++    setInterval:()=>0,requestAnimationFrame:cb=>rafs.push(cb),
++    devicePixelRatio:1,location:{search:''},scrollTo:noop,addEventListener:noop,
++    URLSearchParams:class{get(){return null;}},navigator:{},AudioContext:undefined
++  };
++  sandbox.window=sandbox;
++  vm.createContext(sandbox);
++  const load=file=>vm.runInContext(fs.readFileSync(path.join(__dirname,file),'utf8'),sandbox);
++  for(const file of ['journey-core.js','backstage-core.js','backstage-auto.js','delivery-orders.js',
++    'character-stories.js','flower-network.js','reopening-core.js','reopening-city.js','reopening-scene.js',
++    'backstage-scene.js','backstage-ui.js','journey-ui.js','reopening-ui.js'])load(file);
++
++  const board=()=>els.get('action-content').innerHTML;
++  const click=dataset=>{
++    const button={dataset,disabled:false};
++    const event={target:{closest:sel=>sel==='button[data-action]'?button:null}};
++    for(const cb of listeners.click)cb(event);
++  };
++  // Travel from the pub to the market using the real city navigation UI.
++  click({action:'city-travel',place:'market'});
++  for(let i=0;i<600;i++){
++    nowValue+=100;
++    const cb=rafs.shift();
++    assert.ok(cb,'frame scheduled');
++    cb(nowValue);
++    if(/market-errand|market-crate-card/.test(board()))break;
++  }
++  const html=board();
++  assert.match(html,/今晚的超市|免费情报/);
++  assert.match(html,/€8/);
++  assert.match(html,/兑现/);
++  assert.doesNotMatch(html,/item\d|stage\d|schema/);
++  // Real claim click goes through dispatch -> R.act -> save.
++  click({action:'market-errand'});
++  assert.ok(capturedSave,'claim produced a durable save');
++  assert.equal(capturedSave.game.market.history[0].claimed,true);
++  assert.ok(capturedSave.game.batches.some(b=>b.id==='d2-market-errand'&&b.cups===3));
++  assert.equal(capturedSave.game.hops,g.hops+1);
++  assert.equal(capturedSave.game.actions,1);
++  // Second click cannot duplicate.
++  const savedBefore=JSON.stringify(capturedSave.game);
++  click({action:'market-errand'});
++  assert.equal(JSON.stringify(capturedSave.game),savedBefore);
++  assert.match(els.get('notice').textContent,/已经|重复|已兑现/);
++});
+\ No newline at end of file

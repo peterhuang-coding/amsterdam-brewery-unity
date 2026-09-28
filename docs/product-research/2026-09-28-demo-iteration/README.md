@@ -1,5 +1,13 @@
 # D15 demo iteration
 
+## 09:00 terminal update — day packet blocked
+
+`amsterdam-sm01-day-20260928` ended at08:53 CST after2337.465 seconds with `error_max_turns` (100 turns), exit1 and no final handoff report. No day code adopted or later task dispatched. Final candidate independently ran19/19 new tests, but full30-file snapshot was331/332 with one existing district-journal regression. The original packet also omitted a required test helper; parent owns this packaging error. Four-file draft, exact hashes, recoverable patch and logs are [archived with the review](day-draft/README.md).
+
+SM01 is blocked under the user's fail-stop rule. Night R3 below remains accepted and pushed; complete natural day/night entry is unfinished. Keep18767 unchanged. No replacement CC request, Astra, metered fallback or parent gameplay rewrite. New explicit recovery is required; the21:00 report and subsequent return to daily22:00 remain scheduled. The following08:00 text is history, not a pending request.
+
+## 08:00 scoped acceptance and dependent dispatch (history)
+
 Night R3 passed its scoped acceptance and was adopted in [c8d36a14](https://github.com/peterhuang-coding/amsterdam-brewery-unity/commit/c8d36a14cb90aa35c9808145ed40754a47b52b0c), pushed to codex/supermarket-night-shift. CC used fixed Coding Plan Seed Evolving/high, completed in 474.094 seconds. Parent independently reproduced four expected failures with new tests against old production files (28/32), then ran the final snapshot: 313/313, zero failures or skips, 29 files, 39.6 seconds. Existing assertions unchanged; original inputs unchanged.
 
 Real browser checks used valid opt-in night fixtures: keyboard movement changed the disabled fuse explanation from approach to missing part; actual trade/collection/delivery consumed the barrel; paused reload preserved delivery; automatic travel reached the exit and displayed a clean receipt; 390px had no horizontal overflow. This is not natural daytime entry or human fun validation. The complete day/night feature remains unfinished.

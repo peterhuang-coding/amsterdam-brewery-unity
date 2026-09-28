@@ -1,0 +1,124 @@
+TAP version 13
+# Subtest: new after-hours runs opt into marketShift; seed42 gives staffed/restock/blackout
+ok 1 - new after-hours runs opt into marketShift; seed42 gives staffed/restock/blackout
+  ---
+  duration_ms: 13.850125
+  type: 'test'
+  ...
+# Subtest: R.marketInfo exposes the stable contract reflecting real state
+ok 2 - R.marketInfo exposes the stable contract reflecting real state
+  ---
+  duration_ms: 0.254333
+  type: 'test'
+  ...
+# Subtest: complete automatic trade route really delivers the barrel and extracts
+ok 3 - complete automatic trade route really delivers the barrel and extracts
+  ---
+  duration_ms: 13.509417
+  type: 'test'
+  ...
+# Subtest: complete manual salvage route really takes shelf stock
+ok 4 - complete manual salvage route really takes shelf stock
+  ---
+  duration_ms: 4.296458
+  type: 'test'
+  ...
+# Subtest: two economic choices diverge: trade receipt errand vs salvage next-day price
+ok 5 - two economic choices diverge: trade receipt errand vs salvage next-day price
+  ---
+  duration_ms: 14.301625
+  type: 'test'
+  ...
+# Subtest: route chosen but not completed is recorded without entitlement
+ok 6 - route chosen but not completed is recorded without entitlement
+  ---
+  duration_ms: 1.46225
+  type: 'test'
+  ...
+# Subtest: delivered barrel with rescue or bail gives no claim
+ok 7 - delivered barrel with rescue or bail gives no claim
+  ---
+  duration_ms: 101.140292
+  type: 'test'
+  ...
+# Subtest: stockTaken raises price to 10 even after rescue; route choice alone does not
+ok 8 - stockTaken raises price to 10 even after rescue; route choice alone does not
+  ---
+  duration_ms: 60.379959
+  type: 'test'
+  ...
+# Subtest: raised price expires after exactly one day
+ok 9 - raised price expires after exactly one day
+  ---
+  duration_ms: 3.158125
+  type: 'test'
+  ...
+# Subtest: affordability uses the dynamic price and truthful labels at 8 and 10
+ok 10 - affordability uses the dynamic price and truthful labels at 8 and 10
+  ---
+  duration_ms: 2.823625
+  type: 'test'
+  ...
+# Subtest: unclaimed receipt expires after the next day and can never be claimed
+ok 11 - unclaimed receipt expires after the next day and can never be claimed
+  ---
+  duration_ms: 6.314167
+  type: 'test'
+  ...
+# Subtest: marketErrand with zero actions preserves every resource
+ok 12 - marketErrand with zero actions preserves every resource
+  ---
+  duration_ms: 5.667875
+  type: 'test'
+  ...
+# Subtest: hops at cap still grants 3 cups with a truthful full-cap message; batch cap rejects
+ok 13 - hops at cap still grants 3 cups with a truthful full-cap message; batch cap rejects
+  ---
+  duration_ms: 5.912
+  type: 'test'
+  ...
+# Subtest: day3 records a final event: no claim, honest warning, no phantom day4
+ok 14 - day3 records a final event: no claim, honest warning, no phantom day4
+  ---
+  duration_ms: 10.09475
+  type: 'test'
+  ...
+# Subtest: blackout salvage with power repair records powerRestored only on that condition
+ok 15 - blackout salvage with power repair records powerRestored only on that condition
+  ---
+  duration_ms: 19.165541
+  type: 'test'
+  ...
+# Subtest: strict malformed market histories are rejected
+ok 16 - strict malformed market histories are rejected
+  ---
+  duration_ms: 8.053375
+  type: 'test'
+  ...
+# Subtest: missing market migrates; old in-progress legacy runs stay exactly legacy
+ok 17 - missing market migrates; old in-progress legacy runs stay exactly legacy
+  ---
+  duration_ms: 0.9375
+  type: 'test'
+  ...
+# Subtest: automatic market choices show readable copy with no internal labels
+ok 18 - automatic market choices show readable copy with no internal labels
+  ---
+  duration_ms: 6.6905
+  type: 'test'
+  ...
+# Subtest: real UI renders the market panel and a claim click produces resources via R.act
+ok 19 - real UI renders the market panel and a claim click produces resources via R.act
+  ---
+  duration_ms: 886.97975
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1234.385667

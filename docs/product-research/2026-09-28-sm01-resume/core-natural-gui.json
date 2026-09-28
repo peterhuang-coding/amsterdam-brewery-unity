@@ -1,0 +1,29 @@
+{
+  "scope": "pre-presentation natural browser check only; not final GUI acceptance",
+  "url": "http://127.0.0.1:18816/?seed=42",
+  "source": "c8d36a14 + D15draft + accepted D16core3files",
+  "flow": "new game -> walk to daytime market/scout -> return pub -> open -> tutorial -> close -> explore hook auto -> market -> trade -> exit -> return -> next -> walk market -> claim -> reload",
+  "mutations": "only visible UI controls; localStorage only read and browser state saved; no injected game fixture",
+  "before": {
+    "day": 2,
+    "cash": 27,
+    "actions": 2,
+    "hops": 0,
+    "claimed": false
+  },
+  "after": {
+    "day": 2,
+    "cash": 27,
+    "actions": 1,
+    "hops": 1,
+    "claimed": true,
+    "blond_cups_added": 3,
+    "quality": 1,
+    "receipt_batch_count_after_reload": 1
+  },
+  "copy_findings": [
+    "generic market-salvaged narrative alleges theft despite stockTaken=false after trade",
+    "persisted next-day receipt notice still says tomorrow on entitlement day"
+  ],
+  "resolution": "Included precise narrative strings in UNDISPATCHED presentation packet; no core economics/outcome changes authorized."
+}

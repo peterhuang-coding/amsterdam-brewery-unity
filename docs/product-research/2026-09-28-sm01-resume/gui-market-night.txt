@@ -1,0 +1,137 @@
+### Page
+- Page URL: http://127.0.0.1:18816/?seed=42
+- Page Title: Tweede Kans · 运河边的第二次机会
+### Snapshot
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - link "Tweede Kans 首页" [ref=e4] [cursor=pointer]:
+        - /url: index.html
+        - generic [ref=e5]: TK
+        - generic [ref=e6]:
+          - text: Tweede Kans
+          - generic [ref=e7]: AMSTERDAM · SINDS 1986
+      - generic "三天重开进度" [ref=e8]:
+        - generic [ref=e700]:
+          - generic [ref=e701]: "1"
+          - generic [ref=e702]: 试营业，试着活着
+        - generic [ref=e703]:
+          - generic [ref=e704]: "2"
+          - generic [ref=e705]: 好评与坏账
+        - generic [ref=e706]:
+          - generic [ref=e707]: "3"
+          - generic [ref=e708]: 合法地重新开业
+      - navigation "游戏工具" [ref=e18]:
+        - button "关闭声音" [ref=e19] [cursor=pointer]: ♪
+        - button "查看玩法帮助" [ref=e20] [cursor=pointer]: "?"
+        - button "暂停游戏" [ref=e21] [cursor=pointer]: Ⅱ
+    - main [ref=e22]:
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - paragraph [ref=e25]: NIGHT 1 · 城市背面 / 长钩绳
+          - heading "门面之后，另有生活。" [level=1] [ref=e709]
+        - generic "店铺资源" [ref=e27]:
+          - generic [ref=e28]:
+            - generic [ref=e29]: 手头现金
+            - strong [ref=e30]: €27
+          - generic [ref=e31]:
+            - generic [ref=e32]: 金色艾尔
+            - strong [ref=e33]: 6 杯
+          - generic [ref=e34]:
+            - generic [ref=e35]: 运河黑啤
+            - strong [ref=e36]: 2 杯
+      - generic [ref=e37]:
+        - region "酒吧与顾客" [ref=e38]:
+          - img "夜间补货。货堆堵住近路；从南侧绕行，空桶可以挡住清洁车。。城市背面自动探索场景：在行动区选择下一步，阅读选项时时间暂停。" [ref=e710]
+          - generic "城市背面探险操作" [ref=e711]:
+            - generic [ref=e712]:
+              - generic [ref=e713]:
+                - generic [ref=e714]: 收班前
+                - strong [ref=e715]: 180s
+              - generic [ref=e716]:
+                - generic [ref=e717]: 背包
+                - strong [ref=e718]: 0 / 8
+              - generic [ref=e719]:
+                - generic [ref=e720]: 状态
+                - strong [ref=e721]: ●●●
+              - button "地图 · M" [ref=e722] [cursor=pointer]
+            - generic [ref=e723]:
+              - status [ref=e724]: Ⅱ 等你选择 · 时间暂停
+              - button "查看下一步选择 ↓" [ref=e813] [cursor=pointer]
+              - button "速度 1×" [ref=e726] [cursor=pointer]
+              - button "切换手动操作" [ref=e727] [cursor=pointer]
+          - generic [ref=e45]:
+            - heading "西北：Noor · 东侧：夜店 · 东北：温室" [level=2] [ref=e728]
+            - generic [ref=e124]: 回店口在西南 · 时间到保住半包
+          - generic [ref=e69]:
+            - generic [ref=e814]: “
+            - paragraph [ref=e815]: 本店支持自主决策。责任也会自主地找到你。
+            - generic [ref=e816]: — 后门员工手册
+        - complementary "当前行动" [ref=e73]:
+          - generic [ref=e74]:
+            - paragraph [ref=e817]: YOUR CALL · 等你决定
+            - heading "超市柜台 · 今晚站哪边？" [level=2] [ref=e818]
+            - paragraph [ref=e819]: 柜台还没下班。直接取库存，今晚就有收获；帮忙搬货，押一桶酒换明天的机会。
+            - generic [ref=e820]:
+              - strong [ref=e821]: 超市内部 / 货架 · 冷库 · 卸货口
+              - paragraph [ref=e822]: 货架北面通冷库，东边卸货门可以从里面打开。
+              - generic [ref=e823]: 夜店 · · 静音，空瓶更容易被听见 · 6s 后切换
+              - generic [ref=e824]: 白天记下了：超市路线
+            - generic [ref=e825]:
+              - button "1 直接取库存 柜台表态 · 货架/冷库自取即时入包 · 次日市场箱价 €8→€10（仅次日）" [ref=e826] [cursor=pointer]:
+                - generic [ref=e827]: "1"
+                - generic [ref=e828]:
+                  - strong [ref=e829]: 直接取库存
+                  - generic [ref=e830]: 柜台表态 · 货架/冷库自取即时入包 · 次日市场箱价 €8→€10（仅次日）
+                - generic [aria-hidden] [ref=e831]: ↗
+              - button "2 帮忙搬货 亲手收滚动酒桶（占 3 格）实送到柜台 · 安全撤离后才有次日回执" [ref=e832] [cursor=pointer]:
+                - generic [ref=e833]: "2"
+                - generic [ref=e834]:
+                  - strong [ref=e835]: 帮忙搬货
+                  - generic [ref=e836]: 亲手收滚动酒桶（占 3 格）实送到柜台 · 安全撤离后才有次日回执
+                - generic [aria-hidden] [ref=e837]: ↗
+              - button "3 去夜店找冷藏箱 箱子占 3 格 · 有保安，拿不拿由你决定" [ref=e838] [cursor=pointer]:
+                - generic [ref=e839]: "3"
+                - generic [ref=e840]:
+                  - strong [ref=e841]: 去夜店找冷藏箱
+                  - generic [ref=e842]: 箱子占 3 格 · 有保安，拿不拿由你决定
+                - generic [aria-hidden] [ref=e843]: ↗
+              - button "4 去找 Noor 先听她说 · 交还箱子前会再问你" [ref=e844] [cursor=pointer]:
+                - generic [ref=e845]: "4"
+                - generic [ref=e846]:
+                  - strong [ref=e847]: 去找 Noor
+                  - generic [ref=e848]: 先听她说 · 交还箱子前会再问你
+                - generic [aria-hidden] [ref=e849]: ↗
+              - button "5 带着收获回家 自动走到出口，安全撤离才会结算" [ref=e850] [cursor=pointer]:
+                - generic [ref=e851]: "5"
+                - generic [ref=e852]:
+                  - strong [ref=e853]: 带着收获回家
+                  - generic [ref=e854]: 自动走到出口，安全撤离才会结算
+                - generic [aria-hidden] [ref=e855]: ↗
+            - paragraph [ref=e856]: 阅读时整条街暂停。点击选项，或按对应数字键。
+            - generic [ref=e857]:
+              - strong [ref=e858]: 夜间补货
+              - paragraph [ref=e859]: 货堆堵住近路；从南侧绕行，空桶可以挡住清洁车。
+              - generic [ref=e860]: 空瓶 3 / 3 · 青环空桶可拖动
+            - button "整理背包 · 选择放下什么" [disabled] [ref=e861]
+            - generic [ref=e862]:
+              - text: 已装包 · 0 / 8 格
+              - paragraph [ref=e863]: 沿途遇到普通货物会自动收好。
+            - status [ref=e864]: 去东边的夜店找冷藏箱。也可以先逛逛，回店口一直在身后。
+            - button "放下背包，轻装撤回" [ref=e865] [cursor=pointer]
+      - region "营业记录" [ref=e94]:
+        - generic [ref=e95]:
+          - heading "柜台记事" [level=2] [ref=e96]
+          - generic [ref=e97]: 进度已保存在这台设备
+        - list [ref=e98]:
+          - listitem [ref=e787]: 城市背面的门开着。去夜店找冷藏箱，或者沿着陌生的灯走。
+          - listitem [ref=e788]: 第 1 夜收店：0 位满意的客人，支付租金 €18。
+          - listitem [ref=e789]: Marta推门进来，点了金色艾尔。
+    - contentinfo [ref=e102]:
+      - generic [ref=e103]: TWEEDE KANS 意为「第二次机会」
+      - generic [ref=e104]: 点击选项 / 数字键做选择 · M 地图 · P 暂停 · H 帮助
+      - link "旧版实验室 ↗" [ref=e105] [cursor=pointer]:
+        - /url: legacy.html
+  - status: 城市背面的门开着。去夜店找冷藏箱，或者沿着陌生的灯走。
+```

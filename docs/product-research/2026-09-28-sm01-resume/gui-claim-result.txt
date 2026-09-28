@@ -1,0 +1,32 @@
+### Result
+{
+  "day": 2,
+  "phase": "prep",
+  "history": [
+    {
+      "day": 1,
+      "condition": "staffed",
+      "approach": "trade",
+      "delivered": true,
+      "stockTaken": false,
+      "powerRestored": false,
+      "safe": true,
+      "claimed": true
+    }
+  ],
+  "cash": 27,
+  "actions": 1,
+  "hops": 1,
+  "batch": {
+    "id": "d2-market-errand",
+    "beer": "blond",
+    "cups": 3,
+    "quality": 1,
+    "madeDay": 2,
+    "aged": false
+  }
+}
+### Ran Playwright code
+```js
+await page.evaluate('() => {const s=JSON.parse(localStorage.getItem("ab_reopening_v1")).game;return {day:s.day,phase:s.phase,history:s.market.history,cash:s.cash,actions:s.actions,hops:s.hops,batch:s.batches.find(b=>b.id==="d2-market-errand")};}');
+```

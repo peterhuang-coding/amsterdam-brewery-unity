@@ -1,0 +1,112 @@
+### Page
+- Page URL: http://127.0.0.1:18816/?seed=42
+- Page Title: Tweede Kans · 运河边的第二次机会
+### Snapshot
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - link "Tweede Kans 首页" [ref=e4] [cursor=pointer]:
+        - /url: index.html
+        - generic [ref=e5]: TK
+        - generic [ref=e6]:
+          - text: Tweede Kans
+          - generic [ref=e7]: AMSTERDAM · SINDS 1986
+      - generic "三天重开进度" [ref=e8]:
+        - generic [ref=e700]:
+          - generic [ref=e701]: "1"
+          - generic [ref=e702]: 试营业，试着活着
+        - generic [ref=e703]:
+          - generic [ref=e704]: "2"
+          - generic [ref=e705]: 好评与坏账
+        - generic [ref=e706]:
+          - generic [ref=e707]: "3"
+          - generic [ref=e708]: 合法地重新开业
+      - navigation "游戏工具" [ref=e18]:
+        - button "关闭声音" [ref=e19] [cursor=pointer]: ♪
+        - button "查看玩法帮助" [ref=e20] [cursor=pointer]: "?"
+        - button "暂停游戏" [ref=e21] [cursor=pointer]: Ⅱ
+    - main [ref=e22]:
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - paragraph [ref=e25]: NIGHT 1 · 城市背面 / 长钩绳
+          - heading "门面之后，另有生活。" [level=1] [ref=e709]
+        - generic "店铺资源" [ref=e27]:
+          - generic [ref=e28]:
+            - generic [ref=e29]: 手头现金
+            - strong [ref=e30]: €27
+          - generic [ref=e31]:
+            - generic [ref=e32]: 金色艾尔
+            - strong [ref=e33]: 6 杯
+          - generic [ref=e34]:
+            - generic [ref=e35]: 运河黑啤
+            - strong [ref=e36]: 2 杯
+      - generic [ref=e37]:
+        - region "酒吧与顾客" [ref=e38]:
+          - img "夜间补货。货堆堵住近路；从南侧绕行，空桶可以挡住清洁车。。城市背面自动探索场景：在行动区选择下一步，阅读选项时时间暂停。" [ref=e710]
+          - generic "城市背面探险操作" [ref=e711]:
+            - generic [ref=e712]:
+              - generic [ref=e713]:
+                - generic [ref=e714]: 收班前
+                - strong [ref=e715]: 178s
+              - generic [ref=e716]:
+                - generic [ref=e717]: 背包
+                - strong [ref=e718]: 0 / 8
+              - generic [ref=e719]:
+                - generic [ref=e720]: 状态
+                - strong [ref=e721]: ●●●
+              - button "地图 · M" [ref=e722] [cursor=pointer]
+            - generic [ref=e723]:
+              - status [ref=e724]: 这一趟已结束
+              - button "暂停探索 Ⅱ" [disabled] [ref=e906]
+              - button "速度 1×" [ref=e726] [cursor=pointer]
+              - button "切换手动操作" [disabled] [ref=e727]
+          - generic [ref=e45]:
+            - heading "西北：Noor · 东侧：夜店 · 东北：温室" [level=2] [ref=e728]
+            - generic [ref=e124]: 回店口在西南 · 时间到保住半包
+          - generic [ref=e69]:
+            - generic [ref=e929]: “
+            - paragraph [ref=e930]: 本店支持自主决策。责任也会自主地找到你。
+            - generic [ref=e931]: — 后门员工手册
+        - complementary "当前行动" [ref=e73]:
+          - generic [ref=e74]:
+            - paragraph [ref=e932]: BACK ON THE STREET
+            - heading "人和东西，都回来了。" [level=2] [ref=e933]
+            - paragraph [ref=e934]: 带着收获回到街面。酒馆的灯在等你。
+            - generic [ref=e935]:
+              - generic [ref=e936]:
+                - generic [ref=e937]: 带回艾尔
+                - strong [ref=e938]: 0 杯
+              - generic [ref=e939]:
+                - generic [ref=e940]: 密封酒花
+                - strong [ref=e941]: 0 份
+              - generic [ref=e942]:
+                - generic [ref=e943]: 零件 / 跑腿费
+                - strong [ref=e944]: €0
+              - generic [ref=e945]:
+                - generic [ref=e946]: 月雾箱
+                - strong [ref=e947]: 留在街区
+            - paragraph [ref=e948]:
+              - strong [ref=e949]: 实际走过
+              - text: 超市后场
+            - paragraph [ref=e950]:
+              - text: 酒桶已实地交付，且安全撤离：拿到超市
+              - strong [ref=e951]: 回执
+              - text: ，只对次日白天作数；今夜先记账，领不到钱。
+            - paragraph [ref=e952]: 家中的现金和库存未受损。
+            - button "回酒馆，收好这一趟 →" [ref=e953] [cursor=pointer]
+      - region "营业记录" [ref=e94]:
+        - generic [ref=e95]:
+          - heading "柜台记事" [level=2] [ref=e96]
+          - generic [ref=e97]: 进度已保存在这台设备
+        - list [ref=e98]:
+          - listitem [ref=e787]: 城市背面的门开着。去夜店找冷藏箱，或者沿着陌生的灯走。
+          - listitem [ref=e788]: 第 1 夜收店：0 位满意的客人，支付租金 €18。
+          - listitem [ref=e789]: Marta推门进来，点了金色艾尔。
+    - contentinfo [ref=e102]:
+      - generic [ref=e103]: TWEEDE KANS 意为「第二次机会」
+      - generic [ref=e104]: 点击选项 / 数字键做选择 · M 地图 · P 暂停 · H 帮助
+      - link "旧版实验室 ↗" [ref=e105] [cursor=pointer]:
+        - /url: legacy.html
+  - status: 城市背面的门开着。去夜店找冷藏箱，或者沿着陌生的灯走。
+```

@@ -1,0 +1,13 @@
+### Result
+{
+  "heading": "今天，去哪儿找生意？",
+  "day": 2,
+  "actions": 1,
+  "hops": 1,
+  "claimed": true,
+  "count": 1
+}
+### Ran Playwright code
+```js
+await page.evaluate('() => {const s=JSON.parse(localStorage.getItem("ab_reopening_v1")).game;return {heading:document.querySelector("h1").textContent,day:s.day,actions:s.actions,hops:s.hops,claimed:s.market.history[0].claimed,count:s.batches.filter(b=>b.id==="d2-market-errand").length};}');
+```

@@ -1,0 +1,152 @@
+### Page
+- Page URL: http://127.0.0.1:18816/?seed=42
+- Page Title: Tweede Kans · 运河边的第二次机会
+### Snapshot
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - link "Tweede Kans 首页" [ref=e4] [cursor=pointer]:
+        - /url: index.html
+        - generic [ref=e5]: TK
+        - generic [ref=e6]:
+          - text: Tweede Kans
+          - generic [ref=e7]: AMSTERDAM · SINDS 1986
+      - generic "三天重开进度" [ref=e8]:
+        - generic [ref=e1178]:
+          - generic [ref=e1179]: ✓
+          - generic [ref=e1180]: 试营业，试着活着
+        - generic [ref=e1181]:
+          - generic [ref=e1182]: "2"
+          - generic [ref=e1183]: 好评与坏账
+        - generic [ref=e1184]:
+          - generic [ref=e1185]: "3"
+          - generic [ref=e1186]: 合法地重新开业
+      - navigation "游戏工具" [ref=e18]:
+        - button "关闭声音" [ref=e19] [cursor=pointer]: ♪
+        - button "查看玩法帮助" [ref=e20] [cursor=pointer]: "?"
+        - button "暂停游戏" [ref=e21] [cursor=pointer]: Ⅱ
+    - main [ref=e22]:
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - paragraph [ref=e25]: DAY 2 / 3 · De Pijp
+          - heading "Albert Cuyp 市场" [level=1] [ref=e1187]
+        - generic "店铺资源" [ref=e27]:
+          - generic [ref=e28]:
+            - generic [ref=e29]: 手头现金
+            - strong [ref=e30]: €27
+          - generic [ref=e31]:
+            - generic [ref=e32]: 金色艾尔
+            - strong [ref=e33]: 6 杯
+          - generic [ref=e34]:
+            - generic [ref=e35]: 运河黑啤
+            - strong [ref=e36]: 2 杯
+      - generic [ref=e37]:
+        - region "酒吧与顾客" [ref=e38]:
+          - generic [ref=e39]:
+            - img "阿姆斯特丹七地点城市地图，点击地点规划步行路线；WASD 移动，桥和渡轮可过河" [ref=e1037]
+            - generic [ref=e41]: De Pijp · Albert Cuyp 市场
+            - generic [ref=e44]: 没有滞销，只有尚未被发现的限量款。
+          - generic [ref=e117]:
+            - generic [ref=e1188]: 白天 · 步行 · 已发现 4/7
+            - button "骑上自行车 · B" [disabled] [ref=e1189]
+            - button "去取停好的车" [ref=e1190] [cursor=pointer]
+            - button "打开景点手册" [ref=e1191] [cursor=pointer]
+            - button "← 出去逛逛 · M" [ref=e1192] [cursor=pointer]
+          - generic [ref=e45]:
+            - heading "城市去处 · 点击规划路线" [level=2] [ref=e969]
+            - generic [ref=e124]: 剩余 2 次准备
+          - generic [ref=e47]:
+            - button "前往Tweede Kans" [ref=e1193] [cursor=pointer]:
+              - generic [ref=e1194]: 🍺
+              - strong [ref=e1195]:
+                - text: Tweede Kans
+                - generic [ref=e1196]: Jordaan · 酿酒 / 开门
+              - generic [ref=e1197]: ✓
+            - button "前往Lotte 的桥" [ref=e1198] [cursor=pointer]:
+              - generic [ref=e1199]: ♫
+              - strong [ref=e1200]:
+                - text: Lotte 的桥
+                - generic [ref=e1201]: 运河带 · 留酒约定
+              - generic [ref=e1202]: ✓
+            - button "前往Bram 咖啡馆" [ref=e1203] [cursor=pointer]:
+              - generic [ref=e1204]: ☕
+              - strong [ref=e1205]:
+                - text: Bram 咖啡馆
+                - generic [ref=e1206]: De Pijp · 帮工 / 夜店线索
+              - generic [ref=e1207]: ✓
+            - button "前往北岸码头" [ref=e1208] [cursor=pointer]:
+              - generic [ref=e1209]: ⚓
+              - strong [ref=e1210]:
+                - text: 北岸码头
+                - generic [ref=e1211]: Noord · 限时打捞
+              - generic [ref=e1212]: ·
+            - button "前往Albert Cuyp 市场" [active] [ref=e1213] [cursor=pointer]:
+              - generic [ref=e1214]: ▥
+              - strong [ref=e1215]:
+                - text: Albert Cuyp 市场
+                - generic [ref=e1216]: De Pijp · 现货 / 卸货路线
+              - generic [ref=e1217]: ✓
+            - button "前往南街花店" [ref=e1218] [cursor=pointer]:
+              - generic [ref=e1219]: ⚘
+              - strong [ref=e1220]:
+                - text: 南街花店
+                - generic [ref=e1221]: De Pijp · 配花 / 礼物 / 窗台
+              - generic [ref=e1222]: ·
+            - button "前往Chen 实验室" [ref=e1223] [cursor=pointer]:
+              - generic [ref=e1224]: ⚗
+              - strong [ref=e1225]:
+                - text: Chen 实验室
+                - generic [ref=e1226]: Science Park · 酒花 / 温室线索
+              - generic [ref=e1227]: ·
+          - generic [ref=e69]:
+            - generic [ref=e1228]: “
+            - paragraph [ref=e1229]: 这条运河连倒影都在涨房租。给我留杯黑的。
+            - generic [ref=e1230]: — Lotte
+        - complementary "当前行动" [ref=e73]:
+          - generic [ref=e74]:
+            - paragraph [ref=e1231]: TWEEDE KANS / REOPENING
+            - generic [ref=e1232]:
+              - strong [ref=e1233]: ☀ 城市又亮了，旧事还在。
+              - paragraph [ref=e1234]: 第 1 夜带回 0 杯艾尔、0 份酒花和 €0，已经收进酒馆。
+              - paragraph [ref=e1235]: 超市今日告示：昨夜库存不翼而飞，销毁指标被迫下调。你认得那片货架。
+              - paragraph [ref=e1236]: 超市回执已记账：明天白天花 1 次行动、不花钱来跑补班，换回 3 杯金色艾尔和 1 份酒花；后天作废。
+            - heading "Albert Cuyp 市场" [level=2] [ref=e1237]
+            - paragraph [ref=e1238]: 收摊前买一箱现货：2 杯金色艾尔、1 杯黑啤，品质 1。比酿造少花 €4，也少拿 3 杯。
+            - generic [ref=e1239]: 白天还可以做 2 件事 · 漫游免费
+            - generic [ref=e1241]:
+              - text: 免费情报 · 今晚的超市
+              - strong [ref=e1242]: 补货夜 · 酒桶滚得更快
+              - paragraph [ref=e1243]: 补货的滚动酒桶起步更快，且不会靠近自动入包：走到它旁边亲手收进背包，仍占 3 格。
+              - paragraph [ref=e1244]: 看情报免费，不花行动、不改动今晚的结果；真办事才花钱花行动。
+            - generic [ref=e1245]:
+              - strong [ref=e1246]: 收摊酒箱 · €8
+              - paragraph [ref=e1247]: 2 杯金色艾尔、1 杯运河黑啤，品质 1。比自己酿少花 €4，也少拿 3 杯。
+              - paragraph [ref=e1248]: 今天是常规收摊价。
+              - button "买收摊酒箱 · €8 · 1 次行动" [ref=e1249] [cursor=pointer]
+            - paragraph [ref=e1250]: 夜里两条路：直接去货架或冷库拿货，货立刻进背包，但明天这箱涨价 €2（只涨明天）；或者亲手把滚动酒桶送到柜台、安全撤离，不碰库存，明天白天花 1 次行动来跑不发工资的补班，换回 3 杯金色艾尔和 1 份酒花。
+            - generic [ref=e1251]:
+              - strong [ref=e1252]: 超市回执 · 可兑现
+              - paragraph [ref=e1253]: 兑现回执：花 1 次白天行动、不花钱，拿回 3 杯品质 1 的金色艾尔和 1 份酒花。
+              - button "兑现回执 · 1 次行动 · 不花钱 → 3 杯品质 1 金色艾尔 +1 酒花（最多 15）" [ref=e1254] [cursor=pointer]
+            - generic [ref=e1255]:
+              - text: 白天踩点 / 今夜可用
+              - heading "卸货单的背面" [level=3] [ref=e1256]
+              - paragraph [ref=e1257]: 搬货工把一张旧路线图压在空箱底下。货物的出口，有时也是人的入口。
+              - button "看看卸货路线 · 免费" [ref=e1258] [cursor=pointer]
+            - button "← 出去逛逛 · M" [ref=e1260] [cursor=pointer]
+      - region "营业记录" [ref=e94]:
+        - generic [ref=e95]:
+          - heading "柜台记事" [level=2] [ref=e96]
+          - generic [ref=e97]: 进度已保存在这台设备
+        - list [ref=e98]:
+          - listitem [ref=e1261]: 第 2 天，游客又把昨天的街道拍成了全新的城市。两次白天行动已经恢复。第 1 夜带回 0 杯艾尔、0 份酒花和 €0，已经收进酒馆。
+          - listitem [ref=e1262]: 探险归来：0 杯艾尔，0 份酒花，€0。收好东西，睡醒后再开门。
+          - listitem [ref=e1263]: 城市背面的门开着。去夜店找冷藏箱，或者沿着陌生的灯走。
+    - contentinfo [ref=e102]:
+      - generic [ref=e103]: TWEEDE KANS 意为「第二次机会」
+      - generic [ref=e104]: WASD 移动 · 点击地点自动寻路 · B 骑车 · E 进入 · M 地图 · P 暂停
+      - link "旧版实验室 ↗" [ref=e105] [cursor=pointer]:
+        - /url: legacy.html
+  - status: 第 2 天，游客又把昨天的街道拍成了全新的城市。两次白天行动已经恢复。第 1 夜带回 0 杯艾尔、0 份酒花和 €0，已经收进酒馆。
+```

@@ -1,0 +1,949 @@
+TAP version 13
+# Subtest: delivery orders
+    # Subtest: table flower agreement becomes a lower-price order fulfilled from ordinary stock
+    ok 1 - table flower agreement becomes a lower-price order fulfilled from ordinary stock
+      ---
+      duration_ms: 41.9105
+      type: 'test'
+      ...
+    # Subtest: order checklist distinguishes missing stock, unprotected stock and a reserved cup
+    ok 2 - order checklist distinguishes missing stock, unprotected stock and a reserved cup
+      ---
+      duration_ms: 0.895459
+      type: 'test'
+      ...
+    # Subtest: advance notice reaches the order as a remembered handoff without changing concert terms
+    ok 3 - advance notice reaches the order as a remembered handoff without changing concert terms
+      ---
+      duration_ms: 91.063625
+      type: 'test'
+      ...
+    # Subtest: successful delivery offers but does not accept or grant music
+    ok 4 - successful delivery offers but does not accept or grant music
+      ---
+      duration_ms: 0.840042
+      type: 'test'
+      ...
+    # Subtest: accepted order protects inventory, uses chosen batch and pays exactly once
+    ok 5 - accepted order protects inventory, uses chosen batch and pays exactly once
+      ---
+      duration_ms: 7.520791
+      type: 'test'
+      ...
+    # Subtest: cancel and release are distinct, missing or closing has a terminal consequence
+    ok 6 - cancel and release are distinct, missing or closing has a terminal consequence
+      ---
+      duration_ms: 1.935583
+      type: 'test'
+      ...
+    # Subtest: third-day invitation resolves that night, never day four
+    ok 7 - third-day invitation resolves that night, never day four
+      ---
+      duration_ms: 98.063333
+      type: 'test'
+      ...
+    # Subtest: forged contracts and missing or oversubscribed reservations are rejected
+    ok 8 - forged contracts and missing or oversubscribed reservations are rejected
+      ---
+      duration_ms: 0.479792
+      type: 'test'
+      ...
+    # Subtest: one remaining reserved cup cannot be sold to another customer or gifted
+    ok 9 - one remaining reserved cup cannot be sold to another customer or gifted
+      ---
+      duration_ms: 7.671417
+      type: 'test'
+      ...
+    1..9
+ok 1 - delivery orders
+  ---
+  duration_ms: 350.203167
+  type: 'test'
+  ...
+# Subtest: new route menu can start with any district or immediately return without losing cargo
+ok 2 - new route menu can start with any district or immediately return without losing cargo
+  ---
+  duration_ms: 2.730333
+  type: 'test'
+  ...
+# Subtest: sorting choices operate the real switch then preserve choice of onward route
+ok 3 - sorting choices operate the real switch then preserve choice of onward route
+  ---
+  duration_ms: 321.986833
+  type: 'test'
+  ...
+# Subtest: three sorting approaches collect physical cargo in every situation and kit, including restored travel
+ok 4 - three sorting approaches collect physical cargo in every situation and kit, including restored travel
+  ---
+  duration_ms: 1506.661958
+  type: 'test'
+  ...
+# Subtest: greenhouse valve and harvest choices really travel to their objects
+ok 5 - greenhouse valve and harvest choices really travel to their objects
+  ---
+  duration_ms: 39.481
+  type: 'test'
+  ...
+# Subtest: repair choice only appears with a real spare, consumes it once and returns to greenhouse choices
+ok 6 - repair choice only appears with a real spare, consumes it once and returns to greenhouse choices
+  ---
+  duration_ms: 53.33625
+  type: 'test'
+  ...
+# Subtest: capacity chooses which kind to drop and never discards a different last item
+ok 7 - capacity chooses which kind to drop and never discards a different last item
+  ---
+  duration_ms: 0.226
+  type: 'test'
+  ...
+# Subtest: old v3 keeps its old route and rejects new-only automatic goals
+ok 8 - old v3 keeps its old route and rejects new-only automatic goals
+  ---
+  duration_ms: 0.323042
+  type: 'test'
+  ...
+# Subtest: malformed legacy automatic visits reject cleanly
+ok 9 - malformed legacy automatic visits reject cleanly
+  ---
+  duration_ms: 0.059667
+  type: 'test'
+  ...
+# Subtest: sorting arrival records an actual visit before a player can immediately leave
+ok 10 - sorting arrival records an actual visit before a player can immediately leave
+  ---
+  duration_ms: 30.714583
+  type: 'test'
+  ...
+# Subtest: intercepted switch hook reports failure instead of recording a completed reverse
+ok 11 - intercepted switch hook reports failure instead of recording a completed reverse
+  ---
+  duration_ms: 0.458667
+  type: 'test'
+  ...
+# Subtest: dropping the only spare while travelling to repair gives a retryable failure
+ok 12 - dropping the only spare while travelling to repair gives a retryable failure
+  ---
+  duration_ms: 0.930708
+  type: 'test'
+  ...
+# Subtest: new v4 runs retain all 17 item identities and expose exact district geometry
+ok 13 - new v4 runs retain all 17 item identities and expose exact district geometry
+  ---
+  duration_ms: 1.967167
+  type: 'test'
+  ...
+# Subtest: belt moves world loot east or west, and off stops motion
+ok 14 - belt moves world loot east or west, and off stops motion
+  ---
+  duration_ms: 3.929584
+  type: 'test'
+  ...
+# Subtest: foam pauses only objects whose centers are inside the local patch
+ok 15 - foam pauses only objects whose centers are inside the local patch
+  ---
+  duration_ms: 0.587833
+  type: 'test'
+  ...
+# Subtest: belt leaves bagged and delivered items alone and pushes the player through collision movement
+ok 16 - belt leaves bagged and delivered items alone and pushes the player through collision movement
+  ---
+  duration_ms: 2.126208
+  type: 'test'
+  ...
+# Subtest: nearby E toggles the switch and hook reverses it within real range
+ok 17 - nearby E toggles the switch and hook reverses it within real range
+  ---
+  duration_ms: 0.888583
+  type: 'test'
+  ...
+# Subtest: switch LOS and hook range block the effect even though hook firing itself succeeds
+ok 18 - switch LOS and hook range block the effect even though hook firing itself succeeds
+  ---
+  duration_ms: 0.171916
+  type: 'test'
+  ...
+# Subtest: valve closes sprinklers for 12 simulation seconds and auto choice freezes the countdown
+ok 19 - valve closes sprinklers for 12 simulation seconds and auto choice freezes the countdown
+  ---
+  duration_ms: 9.708792
+  type: 'test'
+  ...
+# Subtest: hook can close a visible valve but cannot pass glass or exceed reach
+ok 20 - hook can close a visible valve but cannot pass glass or exceed reach
+  ---
+  duration_ms: 0.164792
+  type: 'test'
+  ...
+# Subtest: wet ground slows walking at a legal y490 route and drift respects the greenhouse wall
+ok 21 - wet ground slows walking at a legal y490 route and drift respects the greenhouse wall
+  ---
+  duration_ms: 1.334667
+  type: 'test'
+  ...
+# Subtest: repair needs a nearby visible valve and salvage, consumes one part exactly once and persists
+ok 22 - repair needs a nearby visible valve and salvage, consumes one part exactly once and persists
+  ---
+  duration_ms: 0.634375
+  type: 'test'
+  ...
+# Subtest: drop selects a bag item, rejects unknown/world ids without inventory mutation, and preserves throw behavior
+ok 23 - drop selects a bag item, rejects unknown/world ids without inventory mutation, and preserves throw behavior
+  ---
+  duration_ms: 0.298167
+  type: 'test'
+  ...
+# Subtest: ordinary E and collect use exact requested item, 45 range, LOS and capacity
+ok 24 - ordinary E and collect use exact requested item, 45 range, LOS and capacity
+  ---
+  duration_ms: 0.219375
+  type: 'test'
+  ...
+# Subtest: ordinary auto pickup checks LOS in v4 while old v3 keeps original pickup behavior
+ok 25 - ordinary auto pickup checks LOS in v4 while old v3 keeps original pickup behavior
+  ---
+  duration_ms: 0.137666
+  type: 'test'
+  ...
+# Subtest: visited records unique entered zones only, survives restore and remains separate from choice intent
+ok 26 - visited records unique entered zones only, survives restore and remains separate from choice intent
+  ---
+  duration_ms: 0.4085
+  type: 'test'
+  ...
+# Subtest: v1/v2/v3 restore without adding district and old v3 retains location behavior only
+ok 27 - v1/v2/v3 restore without adding district and old v3 retains location behavior only
+  ---
+  duration_ms: 2.139917
+  type: 'test'
+  ...
+# Subtest: restore validates district structure, discoveries and all seven outcome ids
+ok 28 - restore validates district structure, discoveries and all seven outcome ids
+  ---
+  duration_ms: 0.881042
+  type: 'test'
+  ...
+# Subtest: v4 snapshots all three daytime clues while v3 keeps its original two-clue schema
+ok 29 - v4 snapshots all three daytime clues while v3 keeps its original two-clue schema
+  ---
+  duration_ms: 0.318208
+  type: 'test'
+  ...
+# Subtest: the promised sorting spare starts on the working conveyor and actually travels
+ok 30 - the promised sorting spare starts on the working conveyor and actually travels
+  ---
+  duration_ms: 0.936708
+  type: 'test'
+  ...
+# Subtest: new and legacy games have an independent empty exploration journal
+ok 31 - new and legacy games have an independent empty exploration journal
+  ---
+  duration_ms: 2.760542
+  type: 'test'
+  ...
+# Subtest: lab clue is free and included in tonight’s expedition; next day clears only clues
+ok 32 - lab clue is free and included in tonight’s expedition; next day clears only clues
+  ---
+  duration_ms: 4.175
+  type: 'test'
+  ...
+# Subtest: repair consumes a real spare, survives bail and next night, and never rewrites the closed ledger
+ok 33 - repair consumes a real spare, survives bail and next night, and never rewrites the closed ledger
+  ---
+  duration_ms: 2.397583
+  type: 'test'
+  ...
+# Subtest: journal records real district visits and final cargo once, across all three nights
+ok 34 - journal records real district visits and final cargo once, across all three nights
+  ---
+  duration_ms: 4.834083
+  type: 'test'
+  ...
+# Subtest: journal rejects impossible day, duplicate visits, inflated values, and unrecognized outcomes
+ok 35 - journal rejects impossible day, duplicate visits, inflated values, and unrecognized outcomes
+  ---
+  duration_ms: 1.30825
+  type: 'test'
+  ...
+# Subtest: flower network
+    # Subtest: Ada route is free but learning an address does not claim a visit
+    ok 1 - Ada route is free but learning an address does not claim a visit
+      ---
+      duration_ms: 2.768917
+      type: 'test'
+      ...
+    # Subtest: walking or following reaches a real entry without teleporting the bicycle
+    ok 2 - walking or following reaches a real entry without teleporting the bicycle
+      ---
+      duration_ms: 180.187084
+      type: 'test'
+      ...
+    # Subtest: distant or malformed visits fail and repeat visits grant no resources
+    ok 3 - distant or malformed visits fail and repeat visits grant no resources
+      ---
+      duration_ms: 1.920791
+      type: 'test'
+      ...
+    # Subtest: day discovery unlocks the existing night exit and actual repair returns to the next delivery
+    ok 4 - day discovery unlocks the existing night exit and actual repair returns to the next delivery
+      ---
+      duration_ms: 3.840833
+      type: 'test'
+      ...
+    # Subtest: old current trips are not migrated to v4 and old discoveries seed the network
+    ok 5 - old current trips are not migrated to v4 and old discoveries seed the network
+      ---
+      duration_ms: 0.762666
+      type: 'test'
+      ...
+    # Subtest: network state rejects invented sources and contradictory visits
+    ok 6 - network state rejects invented sources and contradictory visits
+      ---
+      duration_ms: 0.630458
+      type: 'test'
+      ...
+    1..6
+ok 36 - flower network
+  ---
+  duration_ms: 190.893458
+  type: 'test'
+  ...
+# Subtest: journey integration
+    # Subtest: notice persists across restore and settles with unchanged preparation and private inventory
+    ok 1 - notice persists across restore and settles with unchanged preparation and private inventory
+      ---
+      duration_ms: 107.670625
+      type: 'test'
+      ...
+    # Subtest: existing v2 trip restores without adding care rules or changing pending parcel
+    ok 2 - existing v2 trip restores without adding care rules or changing pending parcel
+      ---
+      duration_ms: 89.948292
+      type: 'test'
+      ...
+    # Subtest: quality premium uses an explicitly selected batch, base price remains available
+    ok 3 - quality premium uses an explicitly selected batch, base price remains available
+      ---
+      duration_ms: 1.45
+      type: 'test'
+      ...
+    # Subtest: ongoing legacy night and delivery keep previous rules after migration
+    ok 4 - ongoing legacy night and delivery keep previous rules after migration
+      ---
+      duration_ms: 1.093375
+      type: 'test'
+      ...
+    # Subtest: old saves migrate without changing economic progress
+    ok 5 - old saves migrate without changing economic progress
+      ---
+      duration_ms: 0.110334
+      type: 'test'
+      ...
+    # Subtest: complete trip is immutable, restorable and settles exactly once
+    ok 6 - complete trip is immutable, restorable and settles exactly once
+      ---
+      duration_ms: 84.720208
+      type: 'test'
+      ...
+    # Subtest: invalid and unrelated actions leave journey untouched
+    ok 7 - invalid and unrelated actions leave journey untouched
+      ---
+      duration_ms: 0.511333
+      type: 'test'
+      ...
+    # Subtest: private bouquet cannot be overwritten by a commission
+    ok 8 - private bouquet cannot be overwritten by a commission
+      ---
+      duration_ms: 0.6995
+      type: 'test'
+      ...
+    # Subtest: invalid journey state is rejected on restore
+    ok 9 - invalid journey state is rejected on restore
+      ---
+      duration_ms: 0.527
+      type: 'test'
+      ...
+    # Subtest: rail roundtrip persists all stages and settles reward minus actual fares
+    ok 10 - rail roundtrip persists all stages and settles reward minus actual fares
+      ---
+      duration_ms: 131.447333
+      type: 'test'
+      ...
+    1..10
+ok 37 - journey integration
+  ---
+  duration_ms: 419.576
+  type: 'test'
+  ...
+# Subtest: journey rules
+    # Subtest: garden detour charges time and materials once, keeps parcel and can resume delivery
+    ok 1 - garden detour charges time and materials once, keeps parcel and can resume delivery
+      ---
+      duration_ms: 18.903375
+      type: 'test'
+      ...
+    # Subtest: garden routing can be cancelled and ordinary trips keep the direct destination
+    ok 2 - garden routing can be cancelled and ordinary trips keep the direct destination
+      ---
+      duration_ms: 2.241792
+      type: 'test'
+      ...
+    # Subtest: a repaired pump changes movement and a stranger can leave without money
+    ok 3 - a repaired pump changes movement and a stranger can leave without money
+      ---
+      duration_ms: 6.2485
+      type: 'test'
+      ...
+    # Subtest: healthy flowers never lose quality at the table and remote cargo stays remote
+    ok 4 - healthy flowers never lose quality at the table and remote cargo stays remote
+      ---
+      duration_ms: 3.35225
+      type: 'test'
+      ...
+    # Subtest: advance notice trades five seconds and two euros for an eighty-second handoff
+    ok 5 - advance notice trades five seconds and two euros for an eighty-second handoff
+      ---
+      duration_ms: 5.468292
+      type: 'test'
+      ...
+    # Subtest: notice deadline and late handoff use inclusive boundaries without retroactive extension
+    ok 6 - notice deadline and late handoff use inclusive boundaries without retroactive extension
+      ---
+      duration_ms: 5.132
+      type: 'test'
+      ...
+    # Subtest: damaged flowers can become table flowers without healing or duplicate payment
+    ok 7 - damaged flowers can become table flowers without healing or duplicate payment
+      ---
+      duration_ms: 2.445667
+      type: 'test'
+      ...
+    # Subtest: table flower quality boundaries, tidy cost and forged care data are validated
+    ok 8 - table flower quality boundaries, tidy cost and forged care data are validated
+      ---
+      duration_ms: 3.562834
+      type: 'test'
+      ...
+    # Subtest: v1 and v2 in-flight journeys remain on their original rules
+    ok 9 - v1 and v2 in-flight journeys remain on their original rules
+      ---
+      duration_ms: 11.047125
+      type: 'test'
+      ...
+    # Subtest: new two-slot delivery visits parcel stop and settles each item once
+    ok 10 - new two-slot delivery visits parcel stop and settles each item once
+      ---
+      duration_ms: 19.033959
+      type: 'test'
+      ...
+    # Subtest: packing swaps exactly two slots and cancellation returns undelivered cargo
+    ok 11 - packing swaps exactly two slots and cancellation returns undelivered cargo
+      ---
+      duration_ms: 0.194834
+      type: 'test'
+      ...
+    # Subtest: both routes complete with cargo, return bicycle and deterministic states
+    ok 12 - both routes complete with cargo, return bicycle and deterministic states
+      ---
+      duration_ms: 25.418333
+      type: 'test'
+      ...
+    # Subtest: fast stone route damages flowers, padding limits damage
+    ok 13 - fast stone route damages flowers, padding limits damage
+      ---
+      duration_ms: 1.590292
+      type: 'test'
+      ...
+    # Subtest: detour avoids combat and still reaches delivery
+    ok 14 - detour avoids combat and still reaches delivery
+      ---
+      duration_ms: 2.130625
+      type: 'test'
+      ...
+    # Subtest: conflict warns, allows guard and escape without money reward
+    ok 15 - conflict warns, allows guard and escape without money reward
+      ---
+      duration_ms: 2.264917
+      type: 'test'
+      ...
+    # Subtest: all rail legs return to original bicycle and paid tickets never fined
+    ok 16 - all rail legs return to original bicycle and paid tickets never fined
+      ---
+      duration_ms: 19.353667
+      type: 'test'
+      ...
+    # Subtest: unpaid ticket has one settlement, credit return is a lawful alternative
+    ok 17 - unpaid ticket has one settlement, credit return is a lawful alternative
+      ---
+      duration_ms: 5.18275
+      type: 'test'
+      ...
+    # Subtest: carriage decision pauses travel and help requires actual proximity
+    ok 18 - carriage decision pauses travel and help requires actual proximity
+      ---
+      duration_ms: 2.014459
+      type: 'test'
+      ...
+    # Subtest: abandon before departure is recoverable and grants no reward
+    ok 19 - abandon before departure is recoverable and grants no reward
+      ---
+      duration_ms: 0.133042
+      type: 'test'
+      ...
+    # Subtest: invalid time and direction do not mutate state
+    ok 20 - invalid time and direction do not mutate state
+      ---
+      duration_ms: 0.07275
+      type: 'test'
+      ...
+    1..20
+ok 38 - journey rules
+  ---
+  duration_ms: 137.707209
+  type: 'test'
+  ...
+# Subtest: daytime scouting is free, repeatable without duplication, and only works before closing
+ok 39 - daytime scouting is free, repeatable without duplication, and only works before closing
+  ---
+  duration_ms: 4.243292
+  type: 'test'
+  ...
+# Subtest: known clues enter the actual expedition, survive a save, then reset for the next day
+ok 40 - known clues enter the actual expedition, survive a save, then reset for the next day
+  ---
+  duration_ms: 3.492875
+  type: 'test'
+  ...
+# Subtest: opening the real unloading door records a lasting shortcut and morning consequence
+ok 41 - opening the real unloading door records a lasting shortcut and morning consequence
+  ---
+  duration_ms: 2.004084
+  type: 'test'
+  ...
+# Subtest: legacy city life migrates without losing flowers, money, or night discoveries
+ok 42 - legacy city life migrates without losing flowers, money, or night discoveries
+  ---
+  duration_ms: 0.614625
+  type: 'test'
+  ...
+# Subtest: v4 retains three real market spaces, world loot, and a context snapshot
+ok 43 - v4 retains three real market spaces, world loot, and a context snapshot
+  ---
+  duration_ms: 0.972083
+  type: 'test'
+  ...
+# Subtest: both market aisles are physically walkable to the cold stock in every street situation
+ok 44 - both market aisles are physically walkable to the cold stock in every street situation
+  ---
+  duration_ms: 20.759375
+  type: 'test'
+  ...
+# Subtest: unloading shortcut needs a nearby interaction and stays open on later runs
+ok 45 - unloading shortcut needs a nearby interaction and stays open on later runs
+  ---
+  duration_ms: 1.127916
+  type: 'test'
+  ...
+# Subtest: music actually masks guard perception but never protects someone standing beside him
+ok 46 - music actually masks guard perception but never protects someone standing beside him
+  ---
+  duration_ms: 0.307375
+  type: 'test'
+  ...
+# Subtest: bottle sounds obey the same music zone and audible proximity rule
+ok 47 - bottle sounds obey the same music zone and audible proximity rule
+  ---
+  duration_ms: 0.602083
+  type: 'test'
+  ...
+# Subtest: moving crowds stay outside walls and barrels across cycles and situations
+ok 48 - moving crowds stay outside walls and barrels across cycles and situations
+  ---
+  duration_ms: 39.18425
+  type: 'test'
+  ...
+# Subtest: market choices walk into stock, cold room and shortcut without fake rewards
+ok 49 - market choices walk into stock, cold room and shortcut without fake rewards
+  ---
+  duration_ms: 108.025417
+  type: 'test'
+  ...
+# Subtest: choices freeze every field while explicitly waiting advances the real simulation and restores midwait
+ok 50 - choices freeze every field while explicitly waiting advances the real simulation and restores midwait
+  ---
+  duration_ms: 45.510542
+  type: 'test'
+  ...
+# Subtest: all club strategies survive every situation and kit and save halfway through travel
+ok 51 - all club strategies survive every situation and kit and save halfway through travel
+  ---
+  duration_ms: 1772.194375
+  type: 'test'
+  ...
+# Subtest: v1 and v2 keep original geometry and loot while the next run enables new interiors
+ok 52 - v1 and v2 keep original geometry and loot while the next run enables new interiors
+  ---
+  duration_ms: 0.720708
+  type: 'test'
+  ...
+# Subtest: location state roundtrips and malformed fields reject instead of gaining discoveries
+ok 53 - location state roundtrips and malformed fields reject instead of gaining discoveries
+  ---
+  duration_ms: 0.540292
+  type: 'test'
+  ...
+# Subtest: legacy automatic saves reject new location-only goals and v3 requires its location data
+ok 54 - legacy automatic saves reject new location-only goals and v3 requires its location data
+  ---
+  duration_ms: 0.239375
+  type: 'test'
+  ...
+# Subtest: a complete market detour still permits hooked parcel pickup beside a street barrel, before and after refresh
+ok 55 - a complete market detour still permits hooked parcel pickup beside a street barrel, before and after refresh
+  ---
+  duration_ms: 144.51525
+  type: 'test'
+  ...
+# Subtest: new parcel interaction reach cannot collect through a market wall
+ok 56 - new parcel interaction reach cannot collect through a market wall
+  ---
+  duration_ms: 0.137334
+  type: 'test'
+  ...
+# Subtest: market controls enable/disable while walking in and out of range without clearing ui.signature
+ok 57 - market controls enable/disable while walking in and out of range without clearing ui.signature
+  ---
+  duration_ms: 5.752209
+  type: 'test'
+  ...
+# Subtest: paused runs keep every market control frozen and perform changes nothing, even at the points
+ok 58 - paused runs keep every market control frozen and perform changes nothing, even at the points
+  ---
+  duration_ms: 1.064958
+  type: 'test'
+  ...
+# Subtest: old runs without marketShift keep the previous manual board and no market controls
+ok 59 - old runs without marketShift keep the previous manual board and no market controls
+  ---
+  duration_ms: 0.497959
+  type: 'test'
+  ...
+# Subtest: the four new automatic goals render readable Chinese titles with no undefined
+ok 60 - the four new automatic goals render readable Chinese titles with no undefined
+  ---
+  duration_ms: 0.297333
+  type: 'test'
+  ...
+# Subtest: the automatic board never double-places manual market buttons
+ok 61 - the automatic board never double-places manual market buttons
+  ---
+  duration_ms: 7.766916
+  type: 'test'
+  ...
+# Subtest: receipt after a bailed delivery does not grant the safe voucher
+ok 62 - receipt after a bailed delivery does not grant the safe voucher
+  ---
+  duration_ms: 0.718583
+  type: 'test'
+  ...
+# Subtest: actual walking flips the blackout power reason while canPower stays false the whole time
+ok 63 - actual walking flips the blackout power reason while canPower stays false the whole time
+  ---
+  duration_ms: 0.642458
+  type: 'test'
+  ...
+# Subtest: actual walking flips the delivery reason far-away to no-barrel while the control stays disabled
+ok 64 - actual walking flips the delivery reason far-away to no-barrel while the control stays disabled
+  ---
+  duration_ms: 1.754375
+  type: 'test'
+  ...
+# Subtest: market panel prose uses stock-accounting language with no item or stage labels
+ok 65 - market panel prose uses stock-accounting language with no item or stage labels
+  ---
+  duration_ms: 0.760083
+  type: 'test'
+  ...
+# Subtest: safe first and second night receipts are honest next-day records with no claim button
+ok 66 - safe first and second night receipts are honest next-day records with no claim button
+  ---
+  duration_ms: 0.904166
+  type: 'test'
+  ...
+# Subtest: third night receipt honestly says there is no next day to cash it in
+ok 67 - third night receipt honestly says there is no next day to cash it in
+  ---
+  duration_ms: 0.419708
+  type: 'test'
+  ...
+# Subtest: bailed delivery and undelivered trade produce no entitlement, only an honest record
+ok 68 - bailed delivery and undelivered trade produce no entitlement, only an honest record
+  ---
+  duration_ms: 1.092458
+  type: 'test'
+  ...
+# Subtest: marketShift is strict opt-in: old create calls keep the old night run
+ok 69 - marketShift is strict opt-in: old create calls keep the old night run
+  ---
+  duration_ms: 2.102167
+  type: 'test'
+  ...
+# Subtest: the same seed/day reproduces the shift and three nights cover all conditions
+ok 70 - the same seed/day reproduces the shift and three nights cover all conditions
+  ---
+  duration_ms: 0.46425
+  type: 'test'
+  ...
+# Subtest: marketInfo exposes labels, copy, points, facts and operation availability
+ok 71 - marketInfo exposes labels, copy, points, facts and operation availability
+  ---
+  duration_ms: 0.138292
+  type: 'test'
+  ...
+# Subtest: choosing a route needs a physical approach to the counter; remote commands are rejected
+ok 72 - choosing a route needs a physical approach to the counter; remote commands are rejected
+  ---
+  duration_ms: 0.376792
+  type: 'test'
+  ...
+# Subtest: salvage choice at the counter locks the single route; trade can never follow
+ok 73 - salvage choice at the counter locks the single route; trade can never follow
+  ---
+  duration_ms: 0.095334
+  type: 'test'
+  ...
+# Subtest: picking up item0/item1 without a choice is implicitly the salvage route
+ok 74 - picking up item0/item1 without a choice is implicitly the salvage route
+  ---
+  duration_ms: 3.584166
+  type: 'test'
+  ...
+# Subtest: trade route physically blocks shelf and cold goods, which stay in the world
+ok 75 - trade route physically blocks shelf and cold goods, which stay in the world
+  ---
+  duration_ms: 4.3045
+  type: 'test'
+  ...
+# Subtest: delivered barrel is consumed once at the counter and never becomes four cups
+ok 76 - delivered barrel is consumed once at the counter and never becomes four cups
+  ---
+  duration_ms: 0.27225
+  type: 'test'
+  ...
+# Subtest: a delivered barrel yields no receipt fact after bailout or rescue
+ok 77 - a delivered barrel yields no receipt fact after bailout or rescue
+  ---
+  duration_ms: 0.29325
+  type: 'test'
+  ...
+# Subtest: staffed nights make cleaners actually see farther, other shifts do not
+ok 78 - staffed nights make cleaners actually see farther, other shifts do not
+  ---
+  duration_ms: 0.543833
+  type: 'test'
+  ...
+# Subtest: restock nights keep the boosted rolling barrel out of the proximity auto-stow
+ok 79 - restock nights keep the boosted rolling barrel out of the proximity auto-stow
+  ---
+  duration_ms: 0.178625
+  type: 'test'
+  ...
+# Subtest: blackout locks the cold stock until a real part is consumed at the fuse
+ok 80 - blackout locks the cold stock until a real part is consumed at the fuse
+  ---
+  duration_ms: 3.162
+  type: 'test'
+  ...
+# Subtest: fuse repair consumes exactly one salvage and never swallows unrelated items
+ok 81 - fuse repair consumes exactly one salvage and never swallows unrelated items
+  ---
+  duration_ms: 0.088042
+  type: 'test'
+  ...
+# Subtest: automatic trade route completes with real steps in all three conditions
+ok 82 - automatic trade route completes with real steps in all three conditions
+  ---
+  duration_ms: 85.038709
+  type: 'test'
+  ...
+# Subtest: automatic salvage route in a blackout fetches a part, restores power and takes cold stock
+ok 83 - automatic salvage route in a blackout fetches a part, restores power and takes cold stock
+  ---
+  duration_ms: 60.2605
+  type: 'test'
+  ...
+# Subtest: automatic salvage route on a staffed night takes shelf stock and extracts
+ok 84 - automatic salvage route on a staffed night takes shelf stock and extracts
+  ---
+  duration_ms: 21.222291
+  type: 'test'
+  ...
+# Subtest: reading an automatic choice pauses the whole city
+ok 85 - reading an automatic choice pauses the whole city
+  ---
+  duration_ms: 0.317125
+  type: 'test'
+  ...
+# Subtest: marketShift state roundtrips at every stage; tampered saves are rejected
+ok 86 - marketShift state roundtrips at every stage; tampered saves are rejected
+  ---
+  duration_ms: 2.099625
+  type: 'test'
+  ...
+# Subtest: legacy runs and old versions never gain a marketShift through restore
+ok 87 - legacy runs and old versions never gain a marketShift through restore
+  ---
+  duration_ms: 0.159
+  type: 'test'
+  ...
+# Subtest: UI renders real manual market controls and failure reasons; scene draws markers
+ok 88 - UI renders real manual market controls and failure reasons; scene draws markers
+  ---
+  duration_ms: 7.833666
+  type: 'test'
+  ...
+# Subtest: three nights rotate real, deterministic street situations
+ok 89 - three nights rotate real, deterministic street situations
+  ---
+  duration_ms: 1.80075
+  type: 'test'
+  ...
+# Subtest: limited decoys draw a patrol to the sound instead of the player
+ok 90 - limited decoys draw a patrol to the sound instead of the player
+  ---
+  duration_ms: 11.692791
+  type: 'test'
+  ...
+# Subtest: a bottle lands before a shelf rather than creating sound behind the wall
+ok 91 - a bottle lands before a shelf rather than creating sound behind the wall
+  ---
+  duration_ms: 0.218208
+  type: 'test'
+  ...
+# Subtest: dragging moves a nearby physical barrel, then leaves it where released
+ok 92 - dragging moves a nearby physical barrel, then leaves it where released
+  ---
+  duration_ms: 1.58975
+  type: 'test'
+  ...
+# Subtest: a barrel blocks a charging machine in actual movement
+ok 93 - a barrel blocks a charging machine in actual movement
+  ---
+  duration_ms: 2.194125
+  type: 'test'
+  ...
+# Subtest: new street state roundtrips and malformed interactions reject
+ok 94 - new street state roundtrips and malformed interactions reject
+  ---
+  duration_ms: 1.116334
+  type: 'test'
+  ...
+# Subtest: legacy expeditions keep geometry, inventory and position through nested restore
+ok 95 - legacy expeditions keep geometry, inventory and position through nested restore
+  ---
+  duration_ms: 2.729084
+  type: 'test'
+  ...
+# Subtest: automatic lure is a physical strategy in every street situation
+ok 96 - automatic lure is a physical strategy in every street situation
+  ---
+  duration_ms: 127.09325
+  type: 'test'
+  ...
+# Subtest: automatic barrel is a physical strategy in every street situation
+ok 97 - automatic barrel is a physical strategy in every street situation
+  ---
+  duration_ms: 117.936292
+  type: 'test'
+  ...
+# Subtest: decoy and dragging state freeze at choices and unavailable equipment is not offered
+ok 98 - decoy and dragging state freeze at choices and unavailable equipment is not offered
+  ---
+  duration_ms: 15.435291
+  type: 'test'
+  ...
+# Subtest: new props restore only in walkable geometry, including tether line of sight
+ok 99 - new props restore only in walkable geometry, including tether line of sight
+  ---
+  duration_ms: 0.366709
+  type: 'test'
+  ...
+# Subtest: street layouts start with the player and threatening actors outside solid geometry
+ok 100 - street layouts start with the player and threatening actors outside solid geometry
+  ---
+  duration_ms: 0.093541
+  type: 'test'
+  ...
+# Subtest: changing kits and seeds keeps the night routes and extraction reachable
+ok 101 - changing kits and seeds keeps the night routes and extraction reachable
+  ---
+  duration_ms: 1501.906792
+  type: 'test'
+  ...
+# Subtest: dragging around a worksite never clips the barrel through a corner
+ok 102 - dragging around a worksite never clips the barrel through a corner
+  ---
+  duration_ms: 4.987167
+  type: 'test'
+  ...
+# Subtest: being knocked around a corner releases the tether and keeps the save recoverable
+ok 103 - being knocked around a corner releases the tether and keeps the save recoverable
+  ---
+  duration_ms: 0.208042
+  type: 'test'
+  ...
+# ✓ CommonJS and browser expose the same public contract
+# ✓ new game starts with bounded resources and deterministic fresh state
+# ✓ phase gates and invalid inputs cannot change resources or time
+# ✓ preparation is finite and each non-brewing activity is once per day
+# ✓ brewing pays once, requires three valid hits, and retains batch quality
+# ✓ salvaged hops improve the next completed batch and cancellation forfeits its cost
+# ✓ surf spends one finite daily action and creates a deterministic three-lane salvage route
+# ✓ boat movement clamps to canal lanes and hooks only catch once inside the floating window
+# ✓ salvage bottles become actual two-cup quality-one batches and junk costs at most €2
+# ✓ salvage misses expire, three useful catches auto-dock, and a full thirty seconds always ends
+# ✓ forage saves validate lanes, item states, haul, duration, and phase consistency
+# ✓ three days of bottle salvage preserve valid batch bounds and finite resources
+# ✓ seeded arrivals start with Marta and place Lotte late in the night
+# ✓ later nights include a simultaneous pair so the second tap has a real use
+# ✓ guest budgets include both price-sensitive and premium customers across seeds
+# ✓ ordinary fractional ticks remain valid through a complete unattended night
+# ✓ one deterministic nightly dilemma freezes service and time until a valid choice
+# ✓ a dilemma freezes an already-reserved pour and consumes only remaining stock
+# ✓ landlord comp consumes a real cup and reduces rent; refusal adds a service fee
+# ✓ influencer samples consume exactly two cups and change only the next three future budgets
+# ✓ inspector paperwork buys patience while tasting honestly increases the nightly rent
+# ✓ nightly event saves reject wrong event identities, choices, and rent adjustments
+# ✓ pour reserves exactly one cup, keeps batch quality, and rejects duplicate or invalid prices
+# ✓ wrong beer, unaffordable prices, and early pours do not satisfy customers
+# ✓ tick validates its bound, expires customers, and spills overfilled pours without refunds
+# ✓ water is a free fallback and closing settles unresolved customers once with rent
+# ✓ closing during a pour consumes its cup and sold-out stock cannot be reserved
+# ✓ a promised stout rewards Lotte and gives music next night; skipping her breaks the promise
+# ✓ all upgrades apply a real tradeoff while moving to the next preparation day
+# ✓ double tap has two independent reservations and stage reduces seating to two
+# ✓ cellar bonus is paid on aged stock and newly brewed stock stays fresh
+# ✓ three-day seeded play reaches success with earned cash and satisfied regulars
+# ✓ three-day failure has a real ending, resets daily flags, and cannot farm upgrades
+# ✓ restore clones normal snapshots and rejects malformed, infinite, or polluted data
+# ✓ restoring rejects forged cumulative scores and contradictory completed reports
+# ✓ sparse arrays and hidden array properties cannot enter a restored game
+# ✓ market crate trades one action and €8 for exactly two ales and one stout once a day
+# ✓ lab supplies two stored hops for €6 once a day without bypassing preparation
+# ✓ three days of lab and salvage can retain fifteen hops and remain restorable
+# ✓ three days of market plus sealed bottles fit valid batch bounds
+# 40 reopening behavioral tests passed.
+# Subtest: tools/prototype/test-reopening.js
+ok 13 - tools/prototype/test-reopening.js
+  ---
+  duration_ms: 2070.191959
+  type: 'test'
+  ...
+1..104
+# tests 149
+# suites 0
+# pass 149
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10052.764292

@@ -1,0 +1,117 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-sm01-day-core-r2-20260928",
+  "goal": "Correct the existing SM01 day draft: real free scout feedback, truthful errand eligibility, and real stock-collection setup in the one incompatible old journal test. Preserve all existing assertions. Do not redo working logic or presentation. Read task-spec.md.",
+  "workspace": "<LOCAL_STAGING>/core-input",
+  "read_files": [
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/character-stories.js",
+    "tools/prototype/delivery-orders.js",
+    "tools/prototype/flower-network.js",
+    "tools/prototype/journey-core.js",
+    "tools/prototype/journey-ui.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/reopening-core.js",
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/test-algorithm-city-equivalence.js",
+    "tools/prototype/test-algorithm-city.js",
+    "tools/prototype/test-algorithm-history.js",
+    "tools/prototype/test-algorithm-physics.js",
+    "tools/prototype/test-algorithm-replay.js",
+    "tools/prototype/test-algorithm-routes.js",
+    "tools/prototype/test-algorithm-saves.js",
+    "tools/prototype/test-backstage-auto.js",
+    "tools/prototype/test-backstage.js",
+    "tools/prototype/test-character-stories.js",
+    "tools/prototype/test-city-bike.js",
+    "tools/prototype/test-city-consequence-quality.js",
+    "tools/prototype/test-city-journey-quality.js",
+    "tools/prototype/test-city.js",
+    "tools/prototype/test-daynight.js",
+    "tools/prototype/test-delivery-orders.js",
+    "tools/prototype/test-district-auto.js",
+    "tools/prototype/test-district-core.js",
+    "tools/prototype/test-district-daynight.js",
+    "tools/prototype/test-flower-network.js",
+    "tools/prototype/test-journey-integration.js",
+    "tools/prototype/test-journey.js",
+    "tools/prototype/test-location-daynight.js",
+    "tools/prototype/test-location-depth.js",
+    "tools/prototype/test-market-shift-ui.js",
+    "tools/prototype/test-market-shift.js",
+    "tools/prototype/test-night-streets.js",
+    "tools/prototype/test-reopening.js",
+    "tools/prototype/fixtures/algorithms/city-routes.json",
+    "tools/prototype/fixtures/algorithms/v1.json",
+    "tools/prototype/fixtures/algorithms/v2.json",
+    "tools/prototype/fixtures/algorithms/v3.json",
+    "tools/prototype/index.html",
+    "tools/prototype/reopening.css",
+    "tools/prototype/backstage.css",
+    "tools/prototype/journey.css",
+    "tools/prototype/bench-algorithms.js",
+    "tools/prototype/test-market-daynight.js",
+    "day-contract.md",
+    "task-spec.md"
+  ],
+  "write_files": [
+    "tools/prototype/reopening-core.js",
+    "tools/prototype/test-market-daynight.js",
+    "tools/prototype/test-district-daynight.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-market-daynight.js",
+    "node --test --test-concurrency=1 tools/prototype/test-algorithm-city-equivalence.js tools/prototype/test-algorithm-city.js tools/prototype/test-algorithm-history.js tools/prototype/test-algorithm-physics.js tools/prototype/test-algorithm-replay.js tools/prototype/test-algorithm-routes.js tools/prototype/test-algorithm-saves.js tools/prototype/test-backstage-auto.js tools/prototype/test-backstage.js tools/prototype/test-character-stories.js tools/prototype/test-city-bike.js tools/prototype/test-city-consequence-quality.js tools/prototype/test-city-journey-quality.js tools/prototype/test-city.js tools/prototype/test-daynight.js",
+    "node --test --test-concurrency=1 tools/prototype/test-delivery-orders.js tools/prototype/test-district-auto.js tools/prototype/test-district-core.js tools/prototype/test-district-daynight.js tools/prototype/test-flower-network.js tools/prototype/test-journey-integration.js tools/prototype/test-journey.js tools/prototype/test-location-daynight.js tools/prototype/test-location-depth.js tools/prototype/test-market-shift-ui.js tools/prototype/test-market-shift.js tools/prototype/test-night-streets.js tools/prototype/test-reopening.js tools/prototype/test-market-daynight.js",
+    "node --check tools/prototype/reopening-core.js"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 2400,
+  "max_turns": 64,
+  "memory": {
+    "summary": "D16 user explicitly resumed after D15 failure. Day attempt1 hit100turns; its final19tests passed but one old fixture conflicts with market state. Reuse immutable draft, core correction first; presentation second only after review.",
+    "decisions": [
+      "Only fixed Coding Plan high; failure stops later tasks.",
+      "Game c8d36a1 unchanged until full combined review.",
+      "This correction may repair only the setup of one old test, not its assertions or production invariants."
+    ],
+    "completed": [
+      "Night adopted c8d36a1 with313tests and fixture GUI.",
+      "Day draft has19passing tests and actual route/one-shot/price/migration implementation.",
+      "Parent supplied missing bench dependency and preflighted staged baseline."
+    ],
+    "known_issues": [
+      "Core scout message lacks actual shift; canClaim ignores batch limit.",
+      "Old journal fixture injects inventory without actual collection facts.",
+      "Read-only UI candidate has pending wording work deferred to next stage."
+    ]
+  },
+  "tasks": [
+    "Read task-spec and relevant files.",
+    "Add focused red cases, correct only allowed core behavior and the one fixture setup.",
+    "Run exact authorized commands without shell suffixes.",
+    "Create complete reserved report with Edit empty old_string if Write unavailable."
+  ],
+  "acceptance": [
+    "All original19tests retained, old assertions unchanged; genuine movement/collection fixes the3night journal setup.",
+    "Free clue accurate across3conditions; eligibility/cost/rejection match actual state.",
+    "All supplied regression commands pass with complete dependencies; original inputs untouched.",
+    "Complete report and strict file/command scope, no GUI or full delivery overclaim."
+  ],
+  "constraints": [
+    "Only three write_files; old test edit restricted to fixture setup and necessary movement helper.",
+    "All other old tests and production files read-only.",
+    "Use only Read/Edit and exact Bash commands; newfile/report may use Edit empty old_string.",
+    "No network/install/git/subagents/fallback; no UI redesign; preserve failed attempt history."
+  ],
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "sm01-day",
+    "task_type": "code",
+    "attempt_kind": "correction"
+  }
+}

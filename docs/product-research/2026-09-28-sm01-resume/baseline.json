@@ -1,0 +1,30 @@
+[
+  {
+    "command": "node --test --test-concurrency=1 tools/prototype/test-algorithm-city-equivalence.js tools/prototype/test-algorithm-city.js tools/prototype/test-algorithm-history.js tools/prototype/test-algorithm-physics.js tools/prototype/test-algorithm-replay.js tools/prototype/test-algorithm-routes.js tools/prototype/test-algorithm-saves.js tools/prototype/test-backstage-auto.js tools/prototype/test-backstage.js tools/prototype/test-character-stories.js tools/prototype/test-city-bike.js tools/prototype/test-city-consequence-quality.js tools/prototype/test-city-journey-quality.js tools/prototype/test-city.js tools/prototype/test-daynight.js",
+    "exit": 0,
+    "summary": [
+      "# tests 163",
+      "# suites 0",
+      "# pass 163",
+      "# fail 0",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0",
+      "# duration_ms 29981.186541"
+    ]
+  },
+  {
+    "command": "node --test --test-concurrency=1 tools/prototype/test-delivery-orders.js tools/prototype/test-district-auto.js tools/prototype/test-district-core.js tools/prototype/test-district-daynight.js tools/prototype/test-flower-network.js tools/prototype/test-journey-integration.js tools/prototype/test-journey.js tools/prototype/test-location-daynight.js tools/prototype/test-location-depth.js tools/prototype/test-market-shift-ui.js tools/prototype/test-market-shift.js tools/prototype/test-night-streets.js tools/prototype/test-reopening.js",
+    "exit": 0,
+    "summary": [
+      "# tests 149",
+      "# suites 0",
+      "# pass 149",
+      "# fail 0",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0",
+      "# duration_ms 10052.764292"
+    ]
+  }
+]

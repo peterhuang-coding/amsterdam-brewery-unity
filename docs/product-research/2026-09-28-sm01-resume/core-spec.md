@@ -1,0 +1,22 @@
+# SM01 D16: finish the existing day-state draft, scoped correction
+
+User explicitly resumed this project with "continue" after the D15 failure and expiry. This is logical day attempt2, not a new clean first attempt. Fixed Coding Plan Seed Evolving/high. Failure stops downstream work. Game Git baseline c8d36a14cb90aa35c9808145ed40754a47b52b0c; inputs overlay the immutable four-file D15 day draft archived at bd922ffc8359904468bbc7f003a43978d798f262. Parent verified hashes. Do not rebuild the feature.
+
+The full original requirements are in day-contract.md for context. THIS packet only corrects day state and tests. Existing reopening-ui and backstage-auto drafts are staged read-only to keep their real UI test executable. They remain unaccepted presentation drafts; a later dependent packet will finish them. No game adoption until both stages are reviewed.
+
+## Only these edits
+
+1. reopening-core.js: complete free market scout feedback using the actual condition/label/clue from marketInfo, preserving the existing route clue, deduplication and zero cash/action cost. Three seed42 nights must describe staffed/restock/blackout consistently. Do not change the condition formula or night simulation.
+2. reopening-core.js: marketInfo.canClaim/reason must match marketErrand guards, including32-batch capacity and any duplicate batch ID. At full hop capacity15 the errand still gives3cups, no hop or replacement cash; reason must truthfully describe that. Reject insufficient capacity/action without mutating inputs/resources; eligibility must not advertise an impossible action.
+3. test-district-daynight.js ONLY the setup of the existing "journal records real district visits and final cargo once, across all three nights" test may be corrected. Its setup directly changes item0.state/bag without updating real market facts; the new strict run cannot restore this fabricated state. Replace that setup with real B.step / B.command stock collection/extraction, preserving every existing assertion and all other tests byte-for-byte. Do not set marketShift.stockTaken/delivered/approach to fabricate success, disable the new feature, loosen restore, delete tests or reduce counts. The current new manual salvage test is a working movement reference. Avoid unwanted ambient pickups if preserving the existing2cups assertion. If this needs wider production changes, report blocked instead.
+4. test-market-daynight.js: keep all19 existing tests/intent, including real auto trade and the final real UI VM test. Add behavioral cases for free scout3conditions and capacity/eligibility/rejection/15-hop outcomes. Preserve draft behavior for real return/next-day price8->10 for one day, one-shot safe-delivery errand, third-night final, expiry, journal/cash consistency and old saves. No opportunistic refactor.
+
+The final expected production change in this correction is reopening-core.js only; the other two allowed files are tests. All other inputs are READ-ONLY. Existing backstage-core/auto/UI/scene and reopening UI must not change in this packet. Old test fixture assertions are immutable. New tests should go red before correcting the relevant behavior. Parent independently reviews old assertions and final snapshot.
+
+## Dependency/tool correction from prior attempt
+
+bench-algorithms.js is now included: test-algorithm-replay imports it. Parent runs the staged baseline before overlay; a missing module is not a feature failure. No need to debug that old missing-file incident again. The oversized legacy Phase-E file is intentionally omitted from the CC package; parent runs it later in the full snapshot.
+
+Actual last successful init exposed Read, Edit and Bash, NOT Write. Use Read/Edit for all file edits, including creating handoff-result.json with Edit(file_path, old_string:"", new_string:complete JSON) when absent. This behavior has been observed in this client's other jobs. Do not invoke missing Write or use Bash to write files. Only execute the EXACT listed Bash commands, separately, without pipes/tail/grep/suffixes. Read tool can inspect files. Each final report test entry must cite its exact command and real final exit. Report only3allowed changed files, never handoff-result.json itself.
+
+Return a complete honest handoff promptly after the narrow fixes and commands pass; do not spend the entire limit on redesign. max64turns/2400seconds is a cap, not a target. No network, install, git, subagents or credentials. No GUI/fun/full-SM01 completion claims. If blocked, preserve work and report the precise blocker without expanding scope.

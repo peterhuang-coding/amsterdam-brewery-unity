@@ -28,6 +28,11 @@
 
 ## 当前任务
 
+### D15 08:00：夜间修正已采用，登记白天阶段
+R3指定范围通过：474.094秒完整交回，原稿红灯28/32、最终全量313/313、真实键盘提示刷新/交付/自动撤离/暂停刷新/390px通过。已采用完整夜间候选并push游戏c8d36a14cb90aa35c9808145ed40754a47b52b0c。旧R3文件范围外的自动选择仍有一处item2，纳入下一阶段明确文案权限；不称整个demo已经完成。
+白天首包amsterdam-sm01-day-20260928，授权D15及D13既定昼夜闭环，精确基线c8d36a14cb90aa35c9808145ed40754a47b52b0c，同一codex/supermarket-night-shift。范围reopening-core/UI、新test-market-daynight，以及backstage-auto/UI市场文案，不改夜间核心/寻路/场景或旧测试。新增严格market.history、R.marketInfo、marketErrand；免费线索、新夜opt-in、真实return一次记账，取库存次日箱价8→10，交桶且安全撤离得次日1行动换3杯q1金艾尔+1酒花；过期、第三夜和旧档严格处理。
+验收真实自动路线与R.act昼夜流程、动态价格、一次奖励、资源边界、保存幂等、严格旧档，全量和实际页面。3600秒100轮，依赖串行单包；此处预登记，实际提交/终态以稳定账本为准。详见[本轮证据与交接合同](../../docs/product-research/2026-09-28-demo-iteration/README.md)。下方07:00准备记录保留为历史。
+
 ### D15 / 2026-09-28：CC限时推进至今晚21:00
 用户本任务明确要求「让 cc 跑 到今晚 9 点我晚上回来验收，告诉我都更新了那些好玩的部分」。这是SM01新的恢复决定，保留D13/D14失败历史。截止2026-09-28 21:00 Asia/Shanghai（13:00 UTC）；20:00停止新派发，留收齐、独立验收、push与试玩说明时间。只用Coding Plan Seed Evolving/thinking enabled/high，失败即停、不换Astra或按量API仍有效。
 先做amsterdam-sm01-night-r3-20260928，逻辑attempt3，复用de92aaa归档完整候选，修真实行走后禁用原因缓存和item2/stage2玩家文案。游戏精确基线5970a022a7502d3075266cbe9051df472b16b852，独立codex/supermarket-night-shift / city-journey-quality；工作台de92aaa4a8554598d528b5924f9fae352b535b1b。允许backstage-ui.js、test-market-shift-ui.js；backstage-core.js仅一条delivery reason文案。1800秒80轮，当前单包，昼夜包有依赖不并行。

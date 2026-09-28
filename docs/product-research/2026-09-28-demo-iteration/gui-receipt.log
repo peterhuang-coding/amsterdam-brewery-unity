@@ -1,0 +1,6 @@
+### Result
+"BACK ON THE STREET\n\n人和东西，都回来了。\n\n带着收获回到街面。酒馆的灯在等你。\n\n带回艾尔\n0 杯\n密封酒花\n0 份\n零件 / 跑腿费\n€0\n月雾箱\n留在街区\n\n实际走过\n超市后场\n\n酒桶已实地交付，且安全撤离：拿到超市回执，只对次日白天作数；今夜先记账，领不到钱。\n\n家中的现金和库存未受损。\n\n回酒馆，收好这一趟 →"
+### Ran Playwright code
+```js
+await (async(page)=>{await page.getByRole('button',{name:/带着收获回家/}).click();await page.getByRole('button',{name:/回酒馆，收好这一趟/}).waitFor({state:'visible',timeout:15000});const text=await page.locator('#action-content').innerText();if(/item2|stage2/.test(text)||!text.includes('只对次日白天作数'))throw Error(text);return text;})(page);
+```

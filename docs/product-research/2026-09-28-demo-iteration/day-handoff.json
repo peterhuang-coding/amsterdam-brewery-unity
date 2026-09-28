@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-sm01-day-20260928",
+  "goal": "Implement approved SM01 daytime/night consequences loop against adopted c8d36a1. Read task-spec; preserve night core and old tests. Ship actual UI + strict save + one-shot rewards, complete honest handoff.",
+  "workspace": "/tmp/amsterdam-d15-20260928/day-input",
+  "read_files": [
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/character-stories.js",
+    "tools/prototype/delivery-orders.js",
+    "tools/prototype/flower-network.js",
+    "tools/prototype/journey-core.js",
+    "tools/prototype/journey-ui.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/reopening-core.js",
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/test-algorithm-city-equivalence.js",
+    "tools/prototype/test-algorithm-city.js",
+    "tools/prototype/test-algorithm-history.js",
+    "tools/prototype/test-algorithm-physics.js",
+    "tools/prototype/test-algorithm-replay.js",
+    "tools/prototype/test-algorithm-routes.js",
+    "tools/prototype/test-algorithm-saves.js",
+    "tools/prototype/test-backstage-auto.js",
+    "tools/prototype/test-backstage.js",
+    "tools/prototype/test-character-stories.js",
+    "tools/prototype/test-city-bike.js",
+    "tools/prototype/test-city-consequence-quality.js",
+    "tools/prototype/test-city-journey-quality.js",
+    "tools/prototype/test-city.js",
+    "tools/prototype/test-daynight.js",
+    "tools/prototype/test-delivery-orders.js",
+    "tools/prototype/test-district-auto.js",
+    "tools/prototype/test-district-core.js",
+    "tools/prototype/test-district-daynight.js",
+    "tools/prototype/test-flower-network.js",
+    "tools/prototype/test-journey-integration.js",
+    "tools/prototype/test-journey.js",
+    "tools/prototype/test-location-daynight.js",
+    "tools/prototype/test-location-depth.js",
+    "tools/prototype/test-market-shift-ui.js",
+    "tools/prototype/test-market-shift.js",
+    "tools/prototype/test-night-streets.js",
+    "tools/prototype/test-reopening.js",
+    "tools/prototype/fixtures/algorithms/city-routes.json",
+    "tools/prototype/fixtures/algorithms/v1.json",
+    "tools/prototype/fixtures/algorithms/v2.json",
+    "tools/prototype/fixtures/algorithms/v3.json",
+    "tools/prototype/index.html",
+    "tools/prototype/reopening.css",
+    "tools/prototype/backstage.css",
+    "tools/prototype/journey.css",
+    "task-spec.md"
+  ],
+  "write_files": [
+    "tools/prototype/reopening-core.js",
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/test-market-daynight.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-market-daynight.js",
+    "node --test tools/prototype/test-market-daynight.js tools/prototype/test-market-shift.js tools/prototype/test-market-shift-ui.js tools/prototype/test-location-daynight.js tools/prototype/test-district-daynight.js tools/prototype/test-reopening.js",
+    "node --test --test-concurrency=1 tools/prototype/test-algorithm-city-equivalence.js tools/prototype/test-algorithm-city.js tools/prototype/test-algorithm-history.js tools/prototype/test-algorithm-physics.js tools/prototype/test-algorithm-replay.js tools/prototype/test-algorithm-routes.js tools/prototype/test-algorithm-saves.js tools/prototype/test-backstage-auto.js tools/prototype/test-backstage.js tools/prototype/test-character-stories.js tools/prototype/test-city-bike.js tools/prototype/test-city-consequence-quality.js tools/prototype/test-city-journey-quality.js tools/prototype/test-city.js tools/prototype/test-daynight.js",
+    "node --test --test-concurrency=1 tools/prototype/test-delivery-orders.js tools/prototype/test-district-auto.js tools/prototype/test-district-core.js tools/prototype/test-district-daynight.js tools/prototype/test-flower-network.js tools/prototype/test-journey-integration.js tools/prototype/test-journey.js tools/prototype/test-location-daynight.js tools/prototype/test-location-depth.js tools/prototype/test-market-shift-ui.js tools/prototype/test-market-shift.js tools/prototype/test-night-streets.js tools/prototype/test-reopening.js tools/prototype/test-market-daynight.js",
+    "node --check tools/prototype/reopening-core.js",
+    "node --check tools/prototype/reopening-ui.js",
+    "node --check tools/prototype/backstage-auto.js",
+    "node --check tools/prototype/backstage-ui.js"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 3600,
+  "max_turns": 100,
+  "memory": {
+    "summary": "D15 approved CC demo iteration until21:00 Sep28. This is first dependent day-stage packet; night R3 scoped fixes accepted/adopted, full313/313 and fixture GUI passed.",
+    "decisions": [
+      "Demo first; no engine migration.",
+      "Actual physical night work drives next-day costs/rewards.",
+      "Fixed plan only; failure stops later dispatch."
+    ],
+    "completed": [
+      "Night three conditions, actual commands/auto routes, manual UI, dynamic reason fix."
+    ],
+    "known_issues": [
+      "Day entry still lacks marketShift opt-in and consequence/claim.",
+      "One auto choice internal label is outside R3 scope; allowed copy-only cleanup here."
+    ]
+  },
+  "tasks": [
+    "Read spec and existing state/action/UI architecture.",
+    "Add failing behavioral regressions.",
+    "Implement allowed day flow and presentation glue only.",
+    "Run listed tests then return valid report."
+  ],
+  "acceptance": [
+    "Real scout/explore/return/next-day loop; two different economic choices.",
+    "One-shot claim/expiry and actual dynamic price; strict legacy-safe restore.",
+    "All supplied existing tests unchanged; focused/full staged suite pass.",
+    "Clear player costs, mobile-friendly existing components, no dev labels in market UI."
+  ],
+  "constraints": [
+    "Only write listed files; backside auto/UI are wording-only exceptions.",
+    "No API fallback/network/git/install/subagents; fixed model high.",
+    "Report lists only product changed files, not report itself.",
+    "Do not alter unrelated game economy or acceptance requirements."
+  ]
+}

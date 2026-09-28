@@ -1,0 +1,266 @@
+TAP version 13
+# Subtest: market controls enable/disable while walking in and out of range without clearing ui.signature
+ok 1 - market controls enable/disable while walking in and out of range without clearing ui.signature
+  ---
+  duration_ms: 6.041666
+  type: 'test'
+  ...
+# Subtest: paused runs keep every market control frozen and perform changes nothing, even at the points
+ok 2 - paused runs keep every market control frozen and perform changes nothing, even at the points
+  ---
+  duration_ms: 1.025334
+  type: 'test'
+  ...
+# Subtest: old runs without marketShift keep the previous manual board and no market controls
+ok 3 - old runs without marketShift keep the previous manual board and no market controls
+  ---
+  duration_ms: 0.536667
+  type: 'test'
+  ...
+# Subtest: the four new automatic goals render readable Chinese titles with no undefined
+ok 4 - the four new automatic goals render readable Chinese titles with no undefined
+  ---
+  duration_ms: 0.310708
+  type: 'test'
+  ...
+# Subtest: the automatic board never double-places manual market buttons
+ok 5 - the automatic board never double-places manual market buttons
+  ---
+  duration_ms: 8.193417
+  type: 'test'
+  ...
+# Subtest: receipt after a bailed delivery does not grant the safe voucher
+ok 6 - receipt after a bailed delivery does not grant the safe voucher
+  ---
+  duration_ms: 0.672209
+  type: 'test'
+  ...
+# Subtest: actual walking flips the blackout power reason while canPower stays false the whole time
+not ok 7 - actual walking flips the blackout power reason while canPower stays false the whole time
+  ---
+  duration_ms: 1.107583
+  type: 'test'
+  location: '/private/tmp/amsterdam-d15-20260928/night-red/tools/prototype/test-market-shift-ui.js:128:1'
+  failureType: 'testCodeFailure'
+  error: 'actual movement invalidated the cache'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '0|market|market-shortcut|active|false|||||closing||quiet|false|east|true|false|true|blackout||false|false|false|false|false|false|false|false'
+  actual: '0|market|market-shortcut|active|false|||||closing||quiet|false|east|true|false|true|blackout||false|false|false|false|false|false|false|false'
+  operator: 'notStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-d15-20260928/night-red/tools/prototype/test-market-shift-ui.js:144:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: actual walking flips the delivery reason far-away to no-barrel while the control stays disabled
+not ok 8 - actual walking flips the delivery reason far-away to no-barrel while the control stays disabled
+  ---
+  duration_ms: 2.000417
+  type: 'test'
+  location: '/private/tmp/amsterdam-d15-20260928/night-red/tools/prototype/test-market-shift-ui.js:152:1'
+  failureType: 'testCodeFailure'
+  error: 'core reason now asks for the barrel: 包里需要有滚动酒桶 item2（占 3 格）。'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-d15-20260928/night-red/tools/prototype/test-market-shift-ui.js:174:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: market panel prose uses stock-accounting language with no item or stage labels
+not ok 9 - market panel prose uses stock-accounting language with no item or stage labels
+  ---
+  duration_ms: 0.304042
+  type: 'test'
+  location: '/private/tmp/amsterdam-d15-20260928/night-red/tools/prototype/test-market-shift-ui.js:181:1'
+  failureType: 'testCodeFailure'
+  error: 'core reason names the barrel by its stock label'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-d15-20260928/night-red/tools/prototype/test-market-shift-ui.js:186:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: safe first and second night receipts are honest next-day records with no claim button
+not ok 10 - safe first and second night receipts are honest next-day records with no claim button
+  ---
+  duration_ms: 0.798875
+  type: 'test'
+  location: '/private/tmp/amsterdam-d15-20260928/night-red/tools/prototype/test-market-shift-ui.js:210:1'
+  failureType: 'testCodeFailure'
+  error: 'receipt is valid the next day: night 1'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-d15-20260928/night-red/tools/prototype/test-market-shift-ui.js:217:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: third night receipt honestly says there is no next day to cash it in
+ok 11 - third night receipt honestly says there is no next day to cash it in
+  ---
+  duration_ms: 0.504042
+  type: 'test'
+  ...
+# Subtest: bailed delivery and undelivered trade produce no entitlement, only an honest record
+ok 12 - bailed delivery and undelivered trade produce no entitlement, only an honest record
+  ---
+  duration_ms: 1.007958
+  type: 'test'
+  ...
+# Subtest: marketShift is strict opt-in: old create calls keep the old night run
+ok 13 - marketShift is strict opt-in: old create calls keep the old night run
+  ---
+  duration_ms: 2.462416
+  type: 'test'
+  ...
+# Subtest: the same seed/day reproduces the shift and three nights cover all conditions
+ok 14 - the same seed/day reproduces the shift and three nights cover all conditions
+  ---
+  duration_ms: 0.472125
+  type: 'test'
+  ...
+# Subtest: marketInfo exposes labels, copy, points, facts and operation availability
+ok 15 - marketInfo exposes labels, copy, points, facts and operation availability
+  ---
+  duration_ms: 0.134792
+  type: 'test'
+  ...
+# Subtest: choosing a route needs a physical approach to the counter; remote commands are rejected
+ok 16 - choosing a route needs a physical approach to the counter; remote commands are rejected
+  ---
+  duration_ms: 0.392
+  type: 'test'
+  ...
+# Subtest: salvage choice at the counter locks the single route; trade can never follow
+ok 17 - salvage choice at the counter locks the single route; trade can never follow
+  ---
+  duration_ms: 0.093042
+  type: 'test'
+  ...
+# Subtest: picking up item0/item1 without a choice is implicitly the salvage route
+ok 18 - picking up item0/item1 without a choice is implicitly the salvage route
+  ---
+  duration_ms: 3.705541
+  type: 'test'
+  ...
+# Subtest: trade route physically blocks shelf and cold goods, which stay in the world
+ok 19 - trade route physically blocks shelf and cold goods, which stay in the world
+  ---
+  duration_ms: 4.274542
+  type: 'test'
+  ...
+# Subtest: delivered barrel is consumed once at the counter and never becomes four cups
+ok 20 - delivered barrel is consumed once at the counter and never becomes four cups
+  ---
+  duration_ms: 0.231625
+  type: 'test'
+  ...
+# Subtest: a delivered barrel yields no receipt fact after bailout or rescue
+ok 21 - a delivered barrel yields no receipt fact after bailout or rescue
+  ---
+  duration_ms: 0.251209
+  type: 'test'
+  ...
+# Subtest: staffed nights make cleaners actually see farther, other shifts do not
+ok 22 - staffed nights make cleaners actually see farther, other shifts do not
+  ---
+  duration_ms: 1.021625
+  type: 'test'
+  ...
+# Subtest: restock nights keep the boosted rolling barrel out of the proximity auto-stow
+ok 23 - restock nights keep the boosted rolling barrel out of the proximity auto-stow
+  ---
+  duration_ms: 0.224042
+  type: 'test'
+  ...
+# Subtest: blackout locks the cold stock until a real part is consumed at the fuse
+ok 24 - blackout locks the cold stock until a real part is consumed at the fuse
+  ---
+  duration_ms: 3.299458
+  type: 'test'
+  ...
+# Subtest: fuse repair consumes exactly one salvage and never swallows unrelated items
+ok 25 - fuse repair consumes exactly one salvage and never swallows unrelated items
+  ---
+  duration_ms: 0.089916
+  type: 'test'
+  ...
+# Subtest: automatic trade route completes with real steps in all three conditions
+ok 26 - automatic trade route completes with real steps in all three conditions
+  ---
+  duration_ms: 82.796083
+  type: 'test'
+  ...
+# Subtest: automatic salvage route in a blackout fetches a part, restores power and takes cold stock
+ok 27 - automatic salvage route in a blackout fetches a part, restores power and takes cold stock
+  ---
+  duration_ms: 61.044166
+  type: 'test'
+  ...
+# Subtest: automatic salvage route on a staffed night takes shelf stock and extracts
+ok 28 - automatic salvage route on a staffed night takes shelf stock and extracts
+  ---
+  duration_ms: 21.122625
+  type: 'test'
+  ...
+# Subtest: reading an automatic choice pauses the whole city
+ok 29 - reading an automatic choice pauses the whole city
+  ---
+  duration_ms: 0.303584
+  type: 'test'
+  ...
+# Subtest: marketShift state roundtrips at every stage; tampered saves are rejected
+ok 30 - marketShift state roundtrips at every stage; tampered saves are rejected
+  ---
+  duration_ms: 2.080125
+  type: 'test'
+  ...
+# Subtest: legacy runs and old versions never gain a marketShift through restore
+ok 31 - legacy runs and old versions never gain a marketShift through restore
+  ---
+  duration_ms: 0.151375
+  type: 'test'
+  ...
+# Subtest: UI renders real manual market controls and failure reasons; scene draws markers
+ok 32 - UI renders real manual market controls and failure reasons; scene draws markers
+  ---
+  duration_ms: 7.966667
+  type: 'test'
+  ...
+1..32
+# tests 32
+# suites 0
+# pass 28
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 261.186209

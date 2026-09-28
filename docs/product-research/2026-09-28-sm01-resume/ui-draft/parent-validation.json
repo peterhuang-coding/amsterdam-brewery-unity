@@ -1,0 +1,118 @@
+{
+  "task_id": "amsterdam-sm01-day-ui-r2-20260928",
+  "outcome": "partial",
+  "failure_type": "call_exception",
+  "receipt_sha256": "9261ae1ed6ba82b9788ba9f96bd34186640d2457db2c0924d6f0eadaf9e43a72",
+  "full_task_accepted": false,
+  "game_adoption_files": 0,
+  "core_stage_accepted_as_input": true,
+  "validation": {
+    "exit_code": 1,
+    "seconds": 50.77,
+    "command": [
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "tools/prototype/test-algorithm-city-equivalence.js",
+      "tools/prototype/test-algorithm-city.js",
+      "tools/prototype/test-algorithm-history.js",
+      "tools/prototype/test-algorithm-physics.js",
+      "tools/prototype/test-algorithm-replay.js",
+      "tools/prototype/test-algorithm-routes.js",
+      "tools/prototype/test-algorithm-saves.js",
+      "tools/prototype/test-backstage-auto.js",
+      "tools/prototype/test-backstage.js",
+      "tools/prototype/test-character-stories.js",
+      "tools/prototype/test-city-bike.js",
+      "tools/prototype/test-city-consequence-quality.js",
+      "tools/prototype/test-city-journey-quality.js",
+      "tools/prototype/test-city.js",
+      "tools/prototype/test-daynight.js",
+      "tools/prototype/test-delivery-orders.js",
+      "tools/prototype/test-district-auto.js",
+      "tools/prototype/test-district-core.js",
+      "tools/prototype/test-district-daynight.js",
+      "tools/prototype/test-flower-network.js",
+      "tools/prototype/test-journey-integration.js",
+      "tools/prototype/test-journey.js",
+      "tools/prototype/test-location-daynight.js",
+      "tools/prototype/test-location-depth.js",
+      "tools/prototype/test-market-daynight-ui.js",
+      "tools/prototype/test-market-daynight.js",
+      "tools/prototype/test-market-shift-ui.js",
+      "tools/prototype/test-market-shift.js",
+      "tools/prototype/test-night-streets.js",
+      "tools/prototype/test-phase-e.js",
+      "tools/prototype/test-reopening.js"
+    ],
+    "summary": [
+      "not ok 198 - day 2 after real night 1 theft: €10 crate, €2 saving, real reason; no static €4 claim",
+      "not ok 202 - manual night 3 pre-choice: final night, no day 4, both choices still offered",
+      "not ok 208 - auto after-choice copy through real steps: night 1 barrel route then voucher wording; night 3 final delivery earns no receipt",
+      "# tests 347",
+      "# pass 344",
+      "# fail 3",
+      "# skipped 0"
+    ],
+    "input_unchanged": true,
+    "readonly_changes": []
+  },
+  "new_ui_tests": {
+    "tests": 13,
+    "pass": 10,
+    "fail": 3
+  },
+  "existing_tests": {
+    "tests": 334,
+    "pass": 334,
+    "fail": 0
+  },
+  "failure_analysis": [
+    {
+      "test": 198,
+      "finding": "New assertion incorrectly expects cash9 can buy price10; final UI correctly disabled the button. This is a test defect, not observed purchase bypass."
+    },
+    {
+      "test": 202,
+      "finding": "New regex forbids 次日 even inside 不会产生次日涨价. Actual copy explicitly denies a day4. Test overmatches a negation."
+    },
+    {
+      "test": 208,
+      "finding": "Helper autoPick already advances until next event; mkt-trade completed barrel delivery, yet test expected an intermediate get/deliver instruction. Subsequent explicit market-barrel/counter choices were not reached by this failed test. Fix test sequence based on actual states, do not alter gameplay to satisfy it."
+    }
+  ],
+  "scope": {
+    "allowed_changed_files": [
+      "tools/prototype/reopening-ui.js",
+      "tools/prototype/backstage-ui.js",
+      "tools/prototype/backstage-auto.js",
+      "tools/prototype/reopening-core.js",
+      "tools/prototype/test-market-daynight-ui.js"
+    ],
+    "input_unchanged": true,
+    "readonly_changes": [],
+    "core_diff": "Only approved persisted strings/date branches/comments and duplicate batch friendly copy; no resource or eligibility changes."
+  },
+  "gui": "Accepted core-stage natural UI flow verified before UI revision; no final UI-candidate GUI acceptance or fun approval. Old18767 unchanged.",
+  "patch_checks": [
+    {
+      "patch": "combined-candidate.patch",
+      "exit_code": 0,
+      "apply_exit_code": 0,
+      "recovered_bytes_match_snapshot": true
+    },
+    {
+      "patch": "accepted-core-stage.patch",
+      "exit_code": 0,
+      "apply_exit_code": 0,
+      "recovered_bytes_match_snapshot": true
+    }
+  ],
+  "patch_sha256": {
+    "combined-candidate.patch": "7172ab71bb2274bf94206b3ea668bf36c896d792363b3778a9a009168767d23f",
+    "accepted-core-stage.patch": "2501eecb6b0bc02536b4271266ef419dc7ea9781ed0a2c51ed32af04ac619fd6",
+    "ui-correction.patch": "b32aae70a52da676429b65c33cbeced9e478a649b695df70e93f200fefd10717"
+  },
+  "raw_full_test_log_sha256": "8bfc8b1985e5a21af099696b4dc83771e2cd116e64d820ad5a8f51622a243368",
+  "stop": "error_max_turns at64; no handoff-result. No more dispatch, fallback, parent code repair or game adoption. Await new explicit recovery."
+}

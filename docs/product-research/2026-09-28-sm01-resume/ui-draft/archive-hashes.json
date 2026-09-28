@@ -1,0 +1,23 @@
+[
+  {
+    "archive": "ui-correction.patch.gz",
+    "archive_sha256": "49346a674585b160859c50634e802da84b9d784806240f785c3f5a0d93779b27",
+    "decompressed_name": "ui-correction.patch",
+    "decompressed_sha256": "b32aae70a52da676429b65c33cbeced9e478a649b695df70e93f200fefd10717",
+    "decompressed_bytes": 45833
+  },
+  {
+    "archive": "combined-candidate.patch.gz",
+    "archive_sha256": "1e133c56ea8e1ae8254b3633032d71a58d89c71f0061ba019d038e34e852b492",
+    "decompressed_name": "combined-candidate.patch",
+    "decompressed_sha256": "7172ab71bb2274bf94206b3ea668bf36c896d792363b3778a9a009168767d23f",
+    "decompressed_bytes": 90437
+  },
+  {
+    "archive": "accepted-core-stage.patch.gz",
+    "archive_sha256": "e2904041c65991862f0544f8f70b2a89cceeef483b77ffbcb7c5dd00db1f0a1d",
+    "decompressed_name": "accepted-core-stage.patch",
+    "decompressed_sha256": "2501eecb6b0bc02536b4271266ef419dc7ea9781ed0a2c51ed32af04ac619fd6",
+    "decompressed_bytes": 53539
+  }
+]

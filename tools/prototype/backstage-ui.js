@@ -164,12 +164,24 @@
     marketPanel(market){
       if(!market.enabled)return '';
       const frozen=this.isPaused()||this.run().status!=='active';
+      const day=this.run().day;
       let body='';
       if(market.approach===null){
         const disabled=frozen||!market.canTrade;
-        body+=`<div class="exp-market-choices"><button class="secondary" data-action="exp-command" data-verb="market-salvage" ${disabled?'disabled':''}>直接取库存 · 柜台表态</button><button class="secondary" data-action="exp-command" data-verb="market-trade" ${disabled?'disabled':''}>帮忙搬货 · 柜台表态</button></div><small>${frozen||market.canTrade?'表态本身不消耗东西；二选一后路线锁定，不能改。':esc(market.reasons.trade)}</small>`;
+        body+=`<div class="exp-market-choices"><button class="secondary" data-action="exp-command" data-verb="market-salvage" ${disabled?'disabled':''}>直接取库存 · 柜台表态</button><button class="secondary" data-action="exp-command" data-verb="market-trade" ${disabled?'disabled':''}>帮忙搬货 · 柜台表态</button></div>`;
+        // Before choosing, state the real bargain in full (the explanation is
+        // visible even while far from the counter): choosing is free and only
+        // commits the route; later consequences are dated; the errand is not pay.
+        if(day<3){
+          body+=`<p class="small-note">先把规则看清：<b>站到柜台表态不花钱、不花行动、不占时间</b>，二选一后路线锁定、不能更改；表态不是发薪，也不立即给任何东西。`+
+            `<br>· 选「直接取库存」：只有真的从货架/冷库拿货入包，次日（第 ${day+1} 天）收摊酒箱才 €8→€10，只涨那一天；不拿货就不涨。`+
+            `<br>· 选「帮忙搬货」：要亲手收占 3 格的滚动酒桶、送到柜台；<b>交付会消耗这只桶，它变不回 4 杯艾尔</b>。人安全撤离后，次日（第 ${day+1} 天）才有一张一次性回执：花 <b>1 次白天行动</b>、不花钱，领 <b>3 杯品质 1 的金色艾尔</b>和 <b>1 份酒花</b>（容量 15，满了不补也不折现金），第 ${day+2} 天作废。送桶、表态本身都不发钱；没安全撤离，什么额外的都没有。</p>`;
+        }else{
+          body+='<p class="risk-note">第 3 夜是最后一夜。站到柜台表态仍不花钱、不花行动，二选一后路线锁定；但没有第 4 天：真拿货架/冷库的货不会产生次日涨价，把酒桶送到柜台也换不到可兑现的回执。今夜实际拿走的货、交付时被消耗的桶，就是这趟全部的账。</p>';
+        }
+        if(!frozen&&!market.canTrade)body+=`<small>${esc(market.reasons.trade)}</small>`;
       }else{
-        body+=`<p class="exp-market-route">已选路线：<strong>${market.approach==='salvage'?'直接取库存':'帮忙搬货'}</strong> · 不可更改。${market.approach==='trade'?(market.delivered?'酒桶已交付，安全撤离后回执才作数。':'收桶、送到柜台，都要自己走过去。'):'货架与冷库的货，拿到就是你的。'}</p>`;
+        body+=`<p class="exp-market-route">已选路线：<strong>${market.approach==='salvage'?'直接取库存':'帮忙搬货'}</strong> · 不可更改。${this.marketRouteTail(market,day)}</p>`;
         if(market.approach==='trade'){
           const disabled=frozen||!market.canDeliver;
           body+=`<button class="secondary" data-action="exp-command" data-verb="market-deliver" ${disabled?'disabled':''}>把酒桶交到柜台 · 交付</button><small>${frozen||market.canDeliver?'交付会消耗包里的滚动酒桶（占 3 格）；它变不回 4 杯艾尔。':esc(market.reasons.deliver)}</small>`;
@@ -181,16 +193,35 @@
       }
       return `<div class="exp-location exp-market"><strong>超市柜台 · ${esc(market.label)}</strong><p>${esc(market.copy)}</p>${body}${this.isPaused()?'<small>已暂停：市场操作先冻结。</small>':''}</div>`;
     }
+    // Player-facing after-choice copy, selected by day; no state or routing effects.
+    marketRouteTail(market,day){
+      if(market.approach==='salvage'){
+        return '货架与冷库的货，拿到就是你的。'+(day===3?'第 3 夜是最后一夜，拿货没有次日涨价。':'');
+      }
+      if(market.delivered){
+        return day===3
+          ?'酒桶已交付；但第 3 夜没有下一天，回执无法兑现。'
+          :'酒桶已交付，安全撤离后回执才作数。';
+      }
+      return day===3
+        ?'收桶、送到柜台，都要自己走过去；第 3 夜送桶没有可兑现的回执。'
+        :'收桶、送到柜台，都要自己走过去。';
+    }
     marketReceipt(reward,r){
       const m=reward.market;if(!m)return '';
       const safe=r.status==='extracted';
       if(m.approach==='trade'){
-        if(m.delivered&&safe&&r.day<3)return '<p class="small-note">酒桶已实地交付，且安全撤离：拿到超市<strong>回执</strong>，只对次日白天作数；今夜先记账，领不到钱。</p>';
-        if(m.delivered&&safe)return '<p class="small-note">酒桶已实地交付，人也安全撤离；但第 3 夜之后没有下一夜，回执没有可兑现的一天。</p>';
+        if(m.delivered&&safe&&r.day<3)return '<p class="small-note">酒桶已实地交付，且安全撤离：拿到超市<strong>回执</strong>，只对次日白天作数（第 '+(r.day+1)+' 天），第 '+(r.day+2)+' 天作废；今夜先记账，领不到钱。</p>';
+        if(m.delivered&&safe)return '<p class="small-note">酒桶已实地交付，人也安全撤离；但第 3 夜之后没有下一夜、没有第 4 天，回执没有可兑现的一天。</p>';
         if(m.delivered)return '<p class="small-note">酒桶虽已交到柜台，但你没有安全撤离，回执不作数。</p>';
         return '<p class="small-note">选了「帮忙搬货」，但酒桶没能交付柜台，没有回执。</p>';
       }
-      let out=m.stockTaken?'<p class="small-note">直接取库存：货架/冷库的货已实际入包，不欠回执。</p>':'';
+      let out='';
+      if(m.stockTaken&&r.day<3){
+        out='<p class="small-note">直接取库存：货架/冷库的货已实际入包，不欠回执；次日（第 '+(r.day+1)+' 天）收摊酒箱涨到 €10，只涨那一天。</p>';
+      }else if(m.stockTaken){
+        out='<p class="small-note">直接取库存：货架/冷库的货已实际入包；第 3 夜是最后一夜，没有第 4 天，也没有次日涨价。</p>';
+      }
       if(m.powerRestored)out+='<p class="small-note">冷库电已用 1 件零件修好，冷库解锁，这件零件没有卖成 €5。</p>';
       return out;
     }

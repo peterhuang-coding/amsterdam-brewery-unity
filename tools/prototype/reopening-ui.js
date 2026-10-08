@@ -26,7 +26,7 @@
     lotte:{brief:'留酒约定',quote:'桥不收过路费，所以大家还能在桥上碰面。',detail:'Lotte 在桥边排练。给她留一杯今晚的黑啤，她会在下一晚带来乐队。'},
     coffee:{brief:'帮工 / 夜店线索',quote:'招聘联合创始人。工作内容：洗杯子。工资照付。',detail:'Bram 的午市缺人。帮完这半天，拿 €18 现金，他今晚也愿意多等你一会儿。'},
     noord:{brief:'限时打捞',quote:'城市更新的意思是：旧东西先扔进水里。',detail:'渡轮尽头是北岸旧码头。借条船，30 秒打捞酒花和密封瓶；捞到单车得付清运费。'},
-    market:{brief:'现货 / 卸货路线',quote:'没有滞销，只有尚未被发现的限量款。',detail:'收摊前买一箱现货：2 杯金色艾尔、1 杯黑啤，品质 1。比酿造少花 €4，也少拿 3 杯。'},
+    market:{brief:'现货 / 卸货路线',quote:'没有滞销，只有尚未被发现的限量款。',detail:'收摊前买一箱现货：2 杯金色艾尔、1 杯黑啤，品质 1；比自己酿（€12 / 6 杯）便宜、也少拿 3 杯。当日价格与能省多少，看下面柜台的牌价。'},
     flowers:{brief:'配花 / 礼物 / 窗台',quote:'花保鲜三天。房租每天都很新鲜。',detail:'挑三枝郁金香，选包装。可以送给 Lotte，也可以把酒馆的窗台布置起来。'},
     lab:{brief:'酒花 / 温室线索',quote:'论文还在返修，酒花已经通过鼻审。',detail:'Chen 有两份多出来的试验酒花。材料费 €6；之后每酿一批消耗一份，品质提高一级，最高 3。也可以免费问问他温室漏水的事。'}
   };
@@ -202,6 +202,55 @@
     }[id];
     return `<div class="scout-note"><span class="board-eyebrow">白天踩点 / 今夜可用</span><h3>${copy[0]}</h3><p>${copy[1]}</p><button class="secondary" data-action="scout" data-place="${place}" ${known?'disabled':''}>${known?'已记进地图背面':copy[2]}</button></div>`;
   }
+  function marketReceiptCard(v){
+    switch(v.receipt){
+      case 'available': {
+        const errandLabel=v.canClaim
+          ? (state.hops>=15
+            ? '兑现回执 · 1 次行动 · 不花钱 → 3 杯品质 1 金色艾尔（酒花已满 15，不补、不折现金）'
+            : '兑现回执 · 1 次行动 · 不花钱 → 3 杯品质 1 金色艾尔 +1 酒花（最多 15）')
+          : '兑现回执 · 现在无法办理';
+        return `<div class="upgrade-card" id="market-receipt-card"><strong>超市回执 · 可兑现</strong><p>${esc(v.reason)}</p>`+
+          `<button class="primary" data-action="market-errand" ${v.canClaim?'':'disabled'}>${errandLabel}</button></div>`;
+      }
+      case 'pending':
+        return `<div class="upgrade-card" id="market-receipt-card"><strong>超市回执 · 今晚先记账</strong><p class="small-note">${esc(v.reason)}</p></div>`;
+      case 'claimed':
+        return `<div class="upgrade-card" id="market-receipt-card"><strong>超市回执 · 已兑现</strong><p class="small-note">回执已经兑现过，不能重复领取。</p>`+
+          `<button class="primary" data-action="market-errand" disabled>回执已兑现 · 不能重复领取</button></div>`;
+      case 'expired':
+        return `<div class="upgrade-card" id="market-receipt-card"><strong>超市回执 · 已过期</strong><p class="risk-note">${esc(v.reason)}</p></div>`;
+      case 'final':
+        return `<div class="upgrade-card" id="market-receipt-card"><strong>超市回执 · 无法兑现</strong><p class="risk-note">${esc(v.reason)}</p></div>`;
+      default:return '';
+    }
+  }
+  function marketPanel(){
+    const v=R.marketInfo(state);
+    const usedMarket=state.prepared.includes('market');
+    const batchFull=state.batches.length+2>32;
+    const buyDisabled=state.actions<1||usedMarket||state.cash<v.price||batchFull;
+    const buyLabel=usedMarket?'今天已经进过货了':`买收摊酒箱 · ${money(v.price)} · 1 次行动`;
+    let html=`<div class="upgrade-card" id="market-shift-card"><span class="board-eyebrow">免费情报 · 今晚的超市</span>`+
+      `<strong>${esc(v.label)}</strong><p>${esc(v.clue)}</p><p class="small-note">看情报免费，不花行动、不改动今晚的结果；真办事才花钱花行动。</p></div>`;
+    const savings=12-v.price;
+    html+=`<div class="upgrade-card" id="market-crate-card"><strong>收摊酒箱 · ${money(v.price)}</strong>`+
+      `<p>2 杯金色艾尔、1 杯运河黑啤，品质 1。比自己酿（€12 / 6 杯）少花 €${savings}，也少拿 3 杯。</p>`+
+      (v.priceReason?`<p class="risk-note">${esc(v.priceReason)}</p>`:`<p class="small-note">今天是常规收摊价。</p>`)+
+      `<button class="primary" data-action="prepare" data-kind="market" ${buyDisabled?'disabled':''}>${esc(buyLabel)}</button>`+
+      (usedMarket?'<p class="small-note">现货已收进库存，每天只进一次。</p>':
+        batchFull?'<p class="small-note">库存批次已满（32 批），先用掉一些再进货。</p>':
+        state.actions<1?'<p class="small-note">今天的行动已用完，现货只能明天再来。</p>':
+        state.cash<v.price?'<p class="small-note">手头的钱不够；Bram 的咖啡午市还在招临时工。</p>':'')+`</div>`;
+    if(state.day<3){
+      const nextDay=state.day+1;
+      html+=`<p class="promise-note">夜里两条路：直接去货架或冷库拿货，货立刻进背包，但次日（第 ${nextDay} 天）这箱涨价 €2（只涨第 ${nextDay} 天）；或者亲手把滚动酒桶送到柜台、安全撤离，不碰库存，次日（第 ${nextDay} 天）白天花 1 次行动来跑不发工资的补班，换回 3 杯品质 1 的金色艾尔和 1 份酒花（最多 15）。</p>`;
+    } else {
+      html+='<p class="risk-note">第 3 夜是最后一夜，没有第 4 天：今夜直接去货架/冷库拿货，货入包就是全部收益，价格不会再涨；把酒桶送到柜台，也换不到能兑现的补班回执。眼前这个价格，就是今夜最后的价格。</p>';
+    }
+    html+=marketReceiptCard(v);
+    return html;
+  }
   const tripLabel={day:'夜次',status:'结果',cups:'剩杯',hops:'酒花',cash:'现金',visited:'路线',outcomes:'记事',extracted:'安全回店',bailed:'轻装撤回',rescued:'获救，保住半包',market:'超市',redlight:'红灯街',club:'夜店',sorting:'分拣场',greenhouse:'温室','market-salvaged':'收过超市货物','market-shortcut':'打开卸货捷径','club-backstage':'走过夜店后台','sorting-stopped':'传送带停过','sorting-reversed':'倒转分拣带','greenhouse-valve':'阀门关闭十二秒','greenhouse-repaired':'修好水泵，后续夜晚保留'};
   function tripWord(v){return tripLabel[v]||String(v??'');}
   function tripList(v){return (Array.isArray(v)?v:[v]).filter(Boolean).map(x=>esc(tripWord(x))).join('、');}
@@ -276,8 +325,10 @@
     }else if(p.id==='pub'){
       $board.innerHTML+=Object.values(R.BEERS).map(b=>`<button class="upgrade-card" data-action="brew" data-beer="${b.id}" ${blocked||state.cash<b.cost?'disabled':''}><strong>酿一桶${esc(b.name)}</strong><small>€12 / 1 次准备 / 6 杯 · 把握三次火候</small></button>`).join('')+
         `<button class="primary" data-action="open">翻开营业牌，开始今晚营业 →</button><p class="small-note">${state.actions?'剩余准备机会会在开门时结束。':''} 打烊后可出门探险，也可提前收店。</p>`;
+    }else if(p.id==='market'){
+      $board.innerHTML+=marketPanel();
     }else{
-      const cost=p.id==='market'?8:p.id==='lab'?6:0,labels={coffee:'帮 Bram 忙过午市 · +€18',lotte:'答应给 Lotte 留黑啤',noord:'借船下运河 · 30 秒',market:'买收摊酒箱 · €8',lab:'领取试验酒花 · €6'};
+      const cost=p.id==='lab'?6:0,labels={coffee:'帮 Bram 忙过午市 · +€18',lotte:'答应给 Lotte 留黑啤',noord:'借船下运河 · 30 秒',lab:'领取试验酒花 · €6'};
       $board.innerHTML+=`<button class="primary" data-action="prepare" data-kind="${p.kind}" ${blocked||used.includes(p.kind)||state.cash<cost?'disabled':''}>${used.includes(p.kind)?'今天已经办过了':labels[p.id]}</button><p class="small-note">1 次准备机会 · 每天一次</p>`;
       if(p.id==='lotte'&&state.life.gifts)$board.innerHTML+='<p class="promise-note">Lotte 把你送的花带回了排练室。好印象 '+state.friends.lotte+'。</p>';
     }
@@ -517,6 +568,10 @@
       case 'brew':dispatch({type:'prepare',kind:'brew',beer:data.beer});break;
       case 'scout':if(inCity()&&ui.cityMode==='place'&&ui.cityPlace===data.place)dispatch({type:'scout',place:data.place});break;
       case 'prepare':dispatch({type:'prepare',kind:data.kind});break;
+      case 'market-errand':
+        if(state.phase==='prep'&&ui.cityMode==='place'&&ui.cityPlace==='market')dispatch({type:'marketErrand'});
+        else notify('要白天亲自到超市，才能兑现这张回执。',true);
+        break;
       case 'brew-hit':brewHit();break;
       case 'forage-move':dispatch({type:'forageMove',direction:Number(data.direction)});break;
       case 'forage-catch':dispatch({type:'forageCatch'});break;

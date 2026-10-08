@@ -42,14 +42,20 @@
         const shift=B.marketInfo(r);
         if(shift.enabled){
           if(shift.approach===null){
-            choices=[option('mkt-salvage','直接取库存','柜台表态 · 货架/冷库自取即时入包 · 次日市场箱价 €8→€10（仅次日）'),
-              option('mkt-trade','帮忙搬货','收滚动酒桶 item2（占 3 格）实送到柜台 · 仅安全撤离才有次日回执'),
-              ...['club','noor','exit'].map(destination)];
+            if(r.day<3){
+              choices=[option('mkt-salvage','直接取库存','表态免费、只锁定路线 · 货架/冷库真拿货才入包 · 拿货后次日（第 '+(r.day+1)+' 天）箱价 €8→€10，仅那一天；不拿不涨'),
+                option('mkt-trade','帮忙搬货','表态免费、只锁定路线 · 亲手收滚动酒桶（占 3 格）实送到柜台，交付消耗此桶、变不回 4 杯艾尔 · 仅安全撤离后才有次日（第 '+(r.day+1)+' 天）一次性回执：1 次白天行动、不花钱，换 3 杯品质 1 金色艾尔 +1 酒花（最多 15） · 送桶本身不发钱'),
+                ...['club','noor','exit'].map(destination)];
+            }else{
+              choices=[option('mkt-salvage','直接取库存','表态免费、只锁定路线 · 第 3 夜是最后一夜：拿货入包就是今晚全部收益，没有第 4 天，也没有次日涨价'),
+                option('mkt-trade','帮忙搬货','表态免费、只锁定路线 · 第 3 夜送桶会实付并消耗占 3 格的桶（变不回 4 杯），且没有第 4 天、回执无法兑现 · 送桶本身不发钱'),
+                ...['club','noor','exit'].map(destination)];
+            }
           }else if(shift.approach==='salvage'){
             choices=[];
             if(r.items[0].state==='world')choices.push(option('market-stock','进入退货货架找封口酒','走入货架区 · 1 格，实际靠近后收取'));
             if(r.items[1].state==='world'){
-              if(shift.condition==='blackout'&&!shift.powered)choices.push(option('market-fuse','先去修电，再进冷库','消耗包内一件可修零件 · 自动先去卸货区找零件'));
+              if(shift.condition==='blackout'&&!shift.powered)choices.push(option('market-fuse','先去修电，再进冷库','消耗包内一件本来能卖 €5 的可修零件，用完不能再卖 €5、冷库解锁 · 自动先去卸货区找零件'));
               else choices.push(option('market-cold','绕进冷库找密封酒花','沿过道进入 · 1 格'));
             }
             if(!location.market.shortcutOpen)choices.push(option('market-shortcut','去卸货通道打开卷门','绕到内侧开关 · 记住明晚也能用的捷径'));
@@ -83,11 +89,18 @@
     if(a.event==='market'&&location.enabled){
       const shift=B.marketInfo(r);
       if(shift.enabled){
-        const pair=shift.approach===null
-          ?['超市柜台 · 今晚站哪边？','柜台还没下班。直接取库存，今晚就有收获；帮忙搬货，押一桶酒换明天的机会。']
-          :shift.approach==='salvage'
-          ?['超市里面 · 自取路线','货架、冷库和卸货通道各有入口。'+(shift.condition==='blackout'&&!shift.powered?' 冷库黑着：先修电。':'')]
-          :['超市里面 · 搬货路线',shift.delivered?'酒桶已实地交付。安全撤离后，回执才作数。':'收桶、送柜台，路要自己走。'];
+        let pair;
+        if(shift.approach===null){
+          pair=r.day<3
+            ?['超市柜台 · 今晚站哪边？','柜台还没下班。表态免费、照常锁定路线；直接取库存，今晚就有收获，次日（第 '+(r.day+1)+' 天）箱价变 €10；帮忙搬货，押一桶酒换次日的回执机会。']
+            :['超市柜台 · 最后一夜站哪边？','柜台还没下班，但第 3 夜之后没有第 4 天：表态免费、照常锁定路线，真拿货与送桶都只结今夜，不产生次日涨价或回执。'];
+        }else if(shift.approach==='salvage'){
+          pair=['超市里面 · 自取路线','货架、冷库和卸货通道各有入口。'+(shift.condition==='blackout'&&!shift.powered?' 冷库黑着：先修电。':'')+(r.day===3?' 第 3 夜是最后一夜，拿货没有次日涨价。':'')];
+        }else{
+          pair=['超市里面 · 搬货路线',shift.delivered
+            ?(r.day<3?'酒桶已实地交付。安全撤离后，回执才作数。':'酒桶已实地交付；但第 3 夜之后没有第 4 天，回执无法兑现。')
+            :(r.day<3?'收桶、送柜台，路要自己走。':'收桶、送柜台，路要自己走；第 3 夜送桶没有可兑现的回执。')];
+        }
         return {title:pair[0],copy:pair[1],choices};
       }
       return {title:'超市里面，想走哪一条？',copy:(location.market.clued?'白天记下的卸货线索：卷门开关在通道内侧。':'货架、冷库和卸货通道各有入口。')+(location.market.shortcutOpen?' 卸货卷门已经打开，可以从东侧穿出去。':' 可从货架北侧或卸货通道绕入冷库。'),choices};

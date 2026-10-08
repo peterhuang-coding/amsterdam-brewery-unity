@@ -36,6 +36,13 @@
     ]) })
   });
   const eventForDay = day => ['landlord', 'influencer', 'inspector'][day - 1];
+  const SHIFT_CONDITIONS = Object.freeze(['staffed', 'restock', 'blackout']);
+  const shiftCondition = (seed, day) => SHIFT_CONDITIONS[((seed >>> 0) + day - 1) % 3];
+  const SHIFT_META = Object.freeze({
+    staffed: Object.freeze({ label: '值班夜 · 清扫机看得更远', clue: '清扫机今晚的视野从 175 步加到 235 步：还没走到货架，它可能已经看见你。货架、冷库与卸货门照常。' }),
+    restock: Object.freeze({ label: '补货夜 · 酒桶滚得更快', clue: '补货的滚动酒桶起步更快，且不会靠近自动入包：走到它旁边亲手收进背包，仍占 3 格。' }),
+    blackout: Object.freeze({ label: '停电夜 · 冷库上锁', clue: '冷库断电上锁，冷库里的酒花拿不出。先带一件本来能卖 €5 的可修零件，到卸货门开关旁修好电。' })
+  });
   const owns = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
   const integer = (n, min, max) => Number.isSafeInteger(n) && n >= min && n <= max;
   const number = (n, min, max) => typeof n === 'number' && Number.isFinite(n) && n >= min && n <= max;
@@ -82,7 +89,8 @@
       friends: { lotte: 0, bram: 0, marta: 0 }, promises: { lotte: false },
       upgrades: [], hops: 0, music: false, log: [], totalSatisfied: 0, totalServed: 0,
       brew: null, forage: null, night: null, reports: [], lastMessage: '三天试营业。房东称这叫扶持创业，因为账单用了绿色纸。',
-      result: null, prepared: [], backstage: { run: null, discovered: [], resolution: null, trips: 0, from: null, cashAfterClose: 0, journal: [] }, life: freshLife(), journeys: {run:null,usedDay:0,debt:0,history:[]}
+      result: null, prepared: [], backstage: { run: null, discovered: [], resolution: null, trips: 0, from: null, cashAfterClose: 0, journal: [] }, life: freshLife(), journeys: {run:null,usedDay:0,debt:0,history:[]},
+      market: { version: 1, history: [] }
     };
   }
   function stock(state, beer) {
@@ -223,6 +231,58 @@
     say(state, '第 ' + state.day + ' 天，游客又把昨天的街道拍成了全新的城市。两次白天行动已经恢复。' + (state.life.morning[0] || '') + (state.music ? 'Lotte 今晚带吉他。' : ''));
   }
 
+  // Read-only day view: tonight's real shift, today's dynamic crate price and the
+  // claim lifecycle. Claims derive from history; no cash or inventory is stored here.
+  function marketInfo(s) {
+    const condition = shiftCondition(s.seed, s.day);
+    const meta = SHIFT_META[condition];
+    const previous = s.market.history.find(e => e.day === s.day - 1);
+    const price = previous && previous.stockTaken ? 10 : 8;
+    const claimEntry = s.market.history.slice().reverse().find(e => e.delivered && e.safe);
+    let receipt = 'none', canClaim = false, reason = '没有可兑现的超市回执。';
+    if (claimEntry) {
+      if (claimEntry.claimed) { receipt = 'claimed'; reason = '超市回执已兑现，不能重复领取。'; }
+      else if (claimEntry.day === 3) { receipt = 'final'; reason = '第 3 夜之后没有下一天，回执无法兑现。'; }
+      else if (s.day === claimEntry.day) { receipt = 'pending'; reason = '回执今晚先记账，明天白天才能兑现。'; }
+      else if (s.day > claimEntry.day + 1) { receipt = 'expired'; reason = '回执只在次日白天有效，已经过期。'; }
+      else if (s.phase !== 'prep') { receipt = 'available'; reason = '要在白天准备时段兑现，今晚先记账。'; }
+      else if (s.actions < 1) { receipt = 'available'; reason = '今天的行动已用完，回执只能在今天兑现。'; }
+      else {
+        receipt = 'available';
+        // These mirror the exact marketErrand guards; eligibility must not
+        // advertise an action the errand would reject.
+        const errandBatchId = 'd' + s.day + '-market-errand';
+        if (s.batches.length + 1 > 32) {
+          reason = '库存批次已满（32 批）：回执的 3 杯需要一个新批次，现在生成不了。先清掉一些批次，回执还在今天，不会丢。';
+        } else if (s.batches.some(b => b.id === errandBatchId)) {
+          // Player-facing copy only: never echo the deterministic internal batch id.
+          reason = '这张回执对应的补班批次今天已经登记过一次：同一天不能重复生成，也不能再兑现；若回执显示已兑现，3 杯奖励早已到账。';
+        } else {
+          canClaim = true;
+          reason = s.hops >= 15
+            ? '兑现回执：花 1 次白天行动、不花钱，拿回 3 杯品质 1 的金色艾尔。酒花容量已满（15 份）：不补酒花，也不折现金。'
+            : '兑现回执：花 1 次白天行动、不花钱，拿回 3 杯品质 1 的金色艾尔和 1 份酒花。';
+        }
+      }
+    }
+    return Object.freeze({
+      condition, label: meta.label, clue: meta.clue, price,
+      priceReason: price > 8 ? '昨夜超市货架或冷库真的被拿走了货：今天这箱贵 €2，只涨今天。' : '',
+      receipt, canClaim, reason
+    });
+  }
+  function recordMarketReturn(state, facts, status) {
+    if (!facts || state.market.history.some(e => e.day === state.day)) return;
+    // Entries are limited to real finished trips: a chosen route or an actual
+    // removed stock / delivered barrel / consumed power part. Visiting does nothing.
+    if (facts.approach === null && !facts.delivered && !facts.stockTaken && !facts.powerRestored) return;
+    state.market.history.push({
+      day: state.day, condition: facts.condition, approach: facts.approach,
+      delivered: facts.delivered, stockTaken: facts.stockTaken, powerRestored: facts.powerRestored,
+      safe: status === 'extracted', claimed: false
+    });
+  }
+
   function act(original, action) {
     const fail = message => ({ state: original, ok: false, message });
     const state = restore(original);
@@ -288,7 +348,12 @@
         if (state.phase !== 'prep' || !['market', 'coffee', 'lab'].includes(action.place)) return fail('白天到市场、咖啡馆或实验室，才有机会打听夜里的事。');
         const clue = ({market:'market',coffee:'club',lab:'greenhouse'})[action.place];
         if (!state.life.clues.includes(clue)) state.life.clues.push(clue);
-        say(state, clue === 'market' ? '卸货单背面画着路：货架北侧通冷库，东墙卸货门能从里面打开。销毁食品需要审批，拯救食品需要偷偷摸摸。' : clue === 'greenhouse' ? 'Chen 指着灌溉图：每十秒洒六秒水。西侧阀门能关十二秒；带一件可修零件过去，才不用每晚修同一条漏水的承诺。' : 'Bram 说：NO SIGNAL 每隔六秒会停一阵音乐。鼓点响时保安听不清，音乐一停，连空瓶都像在做自我介绍。');
+        if (clue === 'market') {
+          // Free intelligence: tonight's real condition/label/clue, plus the
+          // existing route clue. No cash or action cost, outcome is untouched.
+          const view = marketInfo(state);
+          say(state, '今晚的超市情报：' + view.label + ' ' + view.clue + '卸货单背面画着路：货架北侧通冷库，东墙卸货门能从里面打开。销毁食品需要审批，拯救食品需要偷偷摸摸。');
+        } else say(state, clue === 'greenhouse' ? 'Chen 指着灌溉图：每十秒洒六秒水。西侧阀门能关十二秒；带一件可修零件过去，才不用每晚修同一条漏水的承诺。' : 'Bram 说：NO SIGNAL 每隔六秒会停一阵音乐。鼓点响时保安听不清，音乐一停，连空瓶都像在做自我介绍。');
         break;
       }
       case 'explore':
@@ -296,7 +361,7 @@
         if (!owns(B.KITS, action.kit)) return fail('先选一套出门工具。');
         if (![undefined, 'auto', 'manual'].includes(action.mode)) return fail('请选择自动探索或手动操作。');
         state.backstage.from = state.phase; state.prepared.push('explore'); state.phase = 'explore';
-        state.backstage.run = B.create(state.seed, state.day, action.kit, state.backstage.discovered, {clues: state.life.clues});
+        state.backstage.run = B.create(state.seed, state.day, action.kit, state.backstage.discovered, {clues: state.life.clues, marketShift: true});
         if (action.mode !== 'manual') A.enable(state.backstage.run);
         say(state, '城市背面的门开着。去夜店找冷藏箱，或者沿着陌生的灯走。'); break;
       case 'returnExplore': {
@@ -315,7 +380,10 @@
         if (reward.parcel==='kept') state.life.morning.push('有人打听你带回的冷藏箱。月雾单独封存，不进入酒和原料。');
         if (reward.discovered.includes('greenhouse')) state.life.morning.push('温室后门已画在地图背面；花店老板认出了你鞋上的泥。');
         const consequences = {
-          'market-salvaged': '超市今日告示：昨夜库存不翼而飞，销毁指标被迫下调。你认得那片货架。',
+          // This generic outcome also fires when a trade-route barrel is handled,
+          // so describe visiting/handling neutrally; stockTaken (the real theft
+          // signal) carries its own dated notice below.
+          'market-salvaged': '超市今日告示：后场被人走动过、货物被搬动过，补货与销毁表重新排了一遍。你认得那片货架。',
           'market-shortcut': '卸货门留了一道缝。你记下的超市捷径，下次夜里仍然能走。',
           'club-backstage': 'Bram 听说有人取走了后台的冷藏箱：保安建议降低音量，经理建议提高票价。',
           'sorting-stopped': '分拣场告示：输送带停过机，失物未能按时失踪。',
@@ -325,7 +393,22 @@
         };
         const outcomes=reward.outcomes||[];
         for (const outcome of ['greenhouse-repaired',...outcomes.filter(id=>id!=='greenhouse-repaired')]) if(outcomes.includes(outcome)&&consequences[outcome]) state.life.morning.push(consequences[outcome]);
+        const marketFacts=reward.market;
+        if(marketFacts){
+          // These notices are recorded tonight but read the next morning (and
+          // persist in saves), so every time reference uses an explicit day
+          // number; they remain true both when written and when re-read.
+          if(marketFacts.stockTaken&&state.day<3)state.life.morning.push('超市告示：第 '+(state.day+1)+' 天收摊酒箱涨价到 €10。今夜货架或冷库真的少了货；只涨第 '+(state.day+1)+' 天这一天。');
+          else if(marketFacts.stockTaken)state.life.morning.push('超市告示：第 3 夜是最后一夜。拿走的货架/冷库货物已经进了背包，就是今夜的实物收益；没有第 4 天，不会产生次日涨价。');
+          if(marketFacts.approach==='trade'){
+            if(marketFacts.delivered&&reward.status==='extracted'&&state.day<3)state.life.morning.push('超市回执已记账：次日（第 '+(state.day+1)+' 天）白天花 1 次行动、不花钱来跑补班，换回 3 杯品质 1 的金色艾尔和 1 份酒花（最多 15）；只在第 '+(state.day+1)+' 天有效，第 '+(state.day+2)+' 天作废。');
+            else if(marketFacts.delivered&&reward.status==='extracted')state.life.morning.push('酒桶送到、人也安全撤离，但第 3 夜是最后一夜、没有第 4 天：回执无法兑现，也没有次日补班。');
+            else if(marketFacts.delivered)state.life.morning.push('酒桶虽已交到柜台，但没有安全撤离：回执不作数，也没有补班。');
+            else state.life.morning.push('选了帮忙搬货，酒桶却没送到柜台：没有回执。');
+          }
+        }
         state.life.morning=state.life.morning.slice(0,8);
+        recordMarketReturn(state,marketFacts,reward.status);
         state.backstage.journal.push({day:state.day,status:reward.status,cups:reward.cups,hops:reward.hops,cash:reward.cash,visited:[...(reward.visited||[])],outcomes:[...outcomes]});
         state.backstage.journal=state.backstage.journal.slice(-3);
         state.backstage.trips++; state.backstage.run = null; state.phase = state.backstage.from; state.backstage.from = null;
@@ -364,6 +447,24 @@
         else {state.life.display=b;say(state,'花摆上酒馆窗台。以后客人多等 '+(flowerFit(b,'display')?6:3)+' 秒，直到你换一束。');}
         state.life.bouquet=null;break;
       }
+      case 'marketErrand': {
+        if (state.phase !== 'prep') return fail('白天准备时段才能替超市跑这趟补班。');
+        const yesterday = state.market.history.find(e => e.day === state.day - 1 && e.delivered && e.safe);
+        if (!yesterday) return fail('没有昨天安全送达的超市回执。');
+        if (yesterday.claimed) return fail('超市回执已经兑现过，不能重复领取。');
+        if (state.actions < 1) return fail('需要 1 次白天行动，今天已经用完了。');
+        if (state.batches.length + 1 > 32) return fail('库存批次已满（32 批），先用掉一些；回执还在，不会丢。');
+        const errandBatchId = 'd' + state.day + '-market-errand';
+        if (state.batches.some(b => b.id === errandBatchId)) return fail('这张回执对应的补班批次今天已经登记过，不能在同一天重复兑现。');
+        state.actions--;
+        state.batches.push({ id: errandBatchId, beer: 'blond', cups: 3, quality: 1, madeDay: state.day, aged: false });
+        yesterday.claimed = true;
+        if (state.hops < 15) {
+          state.hops++;
+          say(state, '替超市跑了趟不发工资的补班：花 1 次白天行动，拿回 3 杯品质 1 的金色艾尔，酒花 +1。回执已兑现，再点也不会重复。');
+        } else say(state, '替超市跑了趟不发工资的补班：花 1 次白天行动，拿回 3 杯品质 1 的金色艾尔。酒花容量已满（15 份），没有额外酒花，也不折现金。回执已兑现。');
+        break;
+      }
       case 'prepare': {
         if (state.phase !== 'prep' || state.actions < 1) return fail('今天的行动已用完，可以开门迎客了。');
         const kind = action.kind;
@@ -377,13 +478,15 @@
           state.phase = 'brew';
           say(state, '开酿' + BEERS[action.beer].short + '。把握三次火候，完成一批六杯。');
         } else {
-          const outingCost = kind === 'market' ? 8 : kind === 'lab' ? 6 : 0;
+          const marketView = kind === 'market' ? marketInfo(state) : null;
+          const outingCost = kind === 'market' ? marketView.price : kind === 'lab' ? 6 : 0;
+          if (kind === 'market' && state.batches.length + 2 > 32) return fail('库存批次已满（32 批），今天先不进货。');
           if (state.cash < outingCost) return fail('这趟需要 €' + outingCost + '。Bram 的咖啡馆还在招临时工。');
           state.cash -= outingCost;
           state.prepared.push(kind);
           if (kind === 'market') {
             for (const beer of ['blond', 'stout']) state.batches.push({ id: 'd' + state.day + '-market-' + beer, beer, cups: beer === 'blond' ? 2 : 1, quality: 1, madeDay: state.day, aged: false });
-            say(state, '€8 带回收摊酒箱：2 杯艾尔、1 杯黑啤。摊主说没有滞销，只有尚未被发现的限量款。');
+            say(state, '€' + outingCost + ' 带回收摊酒箱：2 杯艾尔、1 杯黑啤。' + (outingCost > 8 ? '摊主把昨夜少掉的货算进今天的价钱，还管这叫风险定价。' : '摊主说没有滞销，只有尚未被发现的限量款。'));
           }
           if (kind === 'lab') { state.hops += 2; say(state, 'Chen 收下 €6 材料费，给你两份试验酒花。论文还没发表，香气已经通过鼻审。'); }
           if (kind === 'coffee') { state.cash += 18; state.friends.bram++; say(state, '帮 Bram 忙过午市：工资 €18，头衔免费。他今晚愿意多等一会儿。'); }
@@ -594,8 +697,29 @@
       Array.isArray(e.visited)&&e.visited.length<=5&&unique(e.visited)&&e.visited.every(id=>JOURNAL_ZONES.includes(id))&&
       Array.isArray(e.outcomes)&&e.outcomes.length<=7&&unique(e.outcomes)&&e.outcomes.every(id=>JOURNAL_OUTCOMES.includes(id)));
   }
+  function validMarket(m, s) {
+    if (!shape(m, 'version history') || m.version !== 1 || !Array.isArray(m.history) || m.history.length > 3) return false;
+    return m.history.every((e, i) => {
+      if (!shape(e, 'day condition approach delivered stockTaken powerRestored safe claimed')) return false;
+      if (!integer(e.day, 1, s.day) || (i > 0 && e.day <= m.history[i - 1].day)) return false;
+      if (e.condition !== shiftCondition(s.seed, e.day)) return false;
+      if (![null, 'salvage', 'trade'].includes(e.approach)) return false;
+      for (const key of ['delivered', 'stockTaken', 'powerRestored', 'safe', 'claimed'])
+        if (typeof e[key] !== 'boolean') return false;
+      if (e.delivered && e.approach !== 'trade') return false;
+      if (e.stockTaken && e.approach !== 'salvage') return false;
+      if (e.delivered && e.stockTaken) return false; // never both
+      if (e.powerRestored && e.condition !== 'blackout') return false;
+      if (e.claimed && (!e.delivered || !e.safe || e.day >= 3 || s.day < e.day + 1)) return false;
+      // Every entry must correspond to a real finished-trip journal record.
+      const journal = s.backstage.journal.find(j => j.day === e.day);
+      if (!journal) return false;
+      if (e.safe !== (journal.status === 'extracted')) return false;
+      return true;
+    });
+  }
   function validState(s) {
-    if (!shape(s, 'version seed day phase cash actions batches friends promises upgrades hops music log totalSatisfied totalServed brew forage night reports lastMessage result prepared backstage life journeys trade stories garden')) return false;
+    if (!shape(s, 'version seed day phase cash actions batches friends promises upgrades hops music log market totalSatisfied totalServed brew forage night reports lastMessage result prepared backstage life journeys trade stories garden')) return false;
     if (s.version !== 1 || !integer(s.seed, 0, 4294967295) || !integer(s.day, 1, 3) || !integer(s.cash, 0, 1000000) || !integer(s.actions, 0, 2)) return false;
     if (!['welcome', 'prep', 'brew', 'forage', 'explore', 'journey', 'night', 'summary', 'ending'].includes(s.phase)) return false;
     const j=s.journeys;
@@ -606,6 +730,7 @@
     if(!S.valid(s))return false;
     if(!G.valid(s))return false;
     if (!shape(s.backstage, 'run discovered resolution trips from cashAfterClose journal') || !Array.isArray(s.backstage.discovered) || !unique(s.backstage.discovered) || !s.backstage.discovered.every(id => ['greenhouse', 'noor', 'market-shortcut', 'greenhouse-pump'].includes(id)) || ![null, 'returned', 'kept'].includes(s.backstage.resolution) || !integer(s.backstage.trips, 0, 3) || !integer(s.backstage.cashAfterClose,0,1000000)||!validJournal(s.backstage.journal,s)) return false;
+    if (!validMarket(s.market, s)) return false;
     if(s.phase==='explore' ? !['prep','summary'].includes(s.backstage.from) : s.backstage.from!==null) return false;
     const afterClose=['summary','ending'].includes(s.phase)||s.phase==='explore'&&s.backstage.from==='summary';
     if(!afterClose&&s.backstage.cashAfterClose!==0)return false;
@@ -686,11 +811,19 @@
         restored.backstage.from=restored.phase==='explore'?'prep':null;restored.backstage.cashAfterClose=0;
       }
       if(restored?.backstage&&!owns(restored.backstage,'journal'))restored.backstage.journal=[];
-      if(restored.backstage.run){restored.backstage.run=B.restore(restored.backstage.run);if(!restored.backstage.run)return null;}
+      if(restored&&!owns(restored,'market'))restored.market={version:1,history:[]};
+      if(restored.backstage.run){
+        // marketShift is defined on v4 runs only (B: market(r) => r.version>=4 ? ...).
+        // A pre-v4 byte stream cannot carry real market facts; normalize legacy
+        // runs by dropping a stray key before B's strict migration.
+        const legacyRun=restored.backstage.run;
+        if(legacyRun&&legacyRun.version<4&&owns(legacyRun,'marketShift'))delete legacyRun.marketShift;
+        restored.backstage.run=B.restore(restored.backstage.run);if(!restored.backstage.run)return null;
+      }
       if (!validState(restored)) return null;
       return restored;
     } catch (_) { return null; }
   }
 
-  return Object.freeze({ createGame, act, stock, customers, pourProgress, forageProgress, restore, flowerPalette, flowerFit, FLOWERS, BEERS, UPGRADES, PEOPLE, NIGHT_EVENTS, trade:D, stories:S, garden:G });
+  return Object.freeze({ createGame, act, stock, customers, pourProgress, forageProgress, restore, marketInfo, flowerPalette, flowerFit, FLOWERS, BEERS, UPGRADES, PEOPLE, NIGHT_EVENTS, trade:D, stories:S, garden:G });
 });

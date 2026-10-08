@@ -5,6 +5,13 @@ function act(s,a){const x=R.act(s,a);assert.ok(x.ok,x.message);return x.state;}
 const start=()=>act(R.createGame(42),{type:'start'});
 const close=s=>act(act(s,{type:'open'}),{type:'close'});
 function leave(s){return act(close(s),{type:'explore',kit:'hook',mode:'manual'});}
+function walkTo(r,to){
+ for(let n=0;n<8000&&Math.hypot(to.x-r.p.x,to.y-r.p.y)>6;n++){
+  const d=Math.hypot(to.x-r.p.x,to.y-r.p.y);
+  B.step(r,{dx:(to.x-r.p.x)/d,dy:(to.y-r.p.y)/d},.025);
+ }
+ assert.ok(Math.hypot(to.x-r.p.x,to.y-r.p.y)<8,JSON.stringify({p:r.p,to}));
+}
 test('new and legacy games have an independent empty exploration journal',()=>{
  const s=start();assert.deepEqual(s.backstage.journal,[]);delete s.backstage.journal;const before=structuredClone(s),restored=R.restore(s);
  assert.ok(restored);assert.deepEqual(restored.backstage.journal,[]);assert.deepEqual(s,before);
@@ -24,7 +31,7 @@ test('repair consumes a real spare, survives bail and next night, and never rewr
 });
 test('journal records real district visits and final cargo once, across all three nights',()=>{
  let s=start();for(let day=1;day<=3;day++){
-  s=leave(s);const r=s.backstage.run;B.step(r,{},.05);const item=r.items[0];item.state='bag';r.bag=[item.id];Object.assign(r.p,B.EXIT);assert.ok(B.command(r,'interact'));
+  s=leave(s);const r=s.backstage.run;r.actors=[];walkTo(r,{x:405,y:990});assert.ok(r.bag.includes('item0'));walkTo(r,B.EXIT);assert.ok(B.command(r,'interact'));
   s=act(s,{type:'returnExplore'});const entry=s.backstage.journal.at(-1);assert.equal(entry.day,day);assert.equal(entry.status,'extracted');assert.equal(entry.cups,2);assert.ok(entry.visited.includes('market'));
   assert.equal(s.backstage.journal.length,day);assert.equal(R.act(s,{type:'returnExplore'}).ok,false);assert.ok(R.restore(s));if(day<3)s=act(s,{type:'next'});
  }

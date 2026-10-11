@@ -1,0 +1,16 @@
+{
+  "kind": "synthetic read-only marketInfo predicate check, not natural gameplay or restore acceptance",
+  "baseline": "d89421ef86dda52044c38fab63f71a3f979138ca",
+  "day": 3,
+  "receiptFromDay": 2,
+  "actual": {
+    "condition": "blackout",
+    "label": "停电夜 · 冷库上锁",
+    "clue": "冷库断电上锁，冷库里的酒花拿不出。先带一件本来能卖 €5 的可修零件，到卸货门开关旁修好电。",
+    "price": 8,
+    "priceReason": "",
+    "receipt": "available",
+    "canClaim": true,
+    "reason": "兑现回执：花 1 次白天行动、不花钱，拿回 3 杯品质 1 的金色艾尔和 1 份酒花。"
+  }
+}

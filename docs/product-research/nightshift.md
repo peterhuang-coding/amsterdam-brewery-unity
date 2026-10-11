@@ -1,5 +1,8 @@
 # 白天决策 / 夜间执行
 
+## D18最新终态（2026-10-11，覆盖下文旧轮次状态）
+UPG01整体探索升级获得新授权，首波两路规划/验收已全部结束；完整通过0/2、游戏采用0。规划服务端burst保护失败；验收报告schema无效且第三天回执预期错误。用户仅套餐失败即停规则生效，当前阻塞，不重发或恢复旧任务。新授权后建议缩小输入、实际派发前即时全机容量核对、单路规划、实现依赖串行。[完整记录](2026-10-11-demo-upgrade/README.md)。既有每日22:00不变，无新授权安静结束。
+
 更新：2026-09-28。适用仓库：`peterhuang-coding/amsterdam-brewery-unity`。
 
 [Notion 工作台](https://app.notion.com/p/3db3285284df81038056e2dfe875e700) · [任务表](https://app.notion.com/p/f73277914eef4344a853d7de3ffa2b92) · [调研目录](README.md) · [当前主线](../../.claude/autopilot/mainline.md)

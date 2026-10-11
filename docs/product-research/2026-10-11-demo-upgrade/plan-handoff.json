@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-upg01-plan-20261011",
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "upg01-plan",
+    "task_type": "docs",
+    "attempt_kind": "business"
+  },
+  "goal": "根据实际代码给出完整而克制的三晚城市探索升级实施规划，中文。",
+  "memory": {
+    "summary": "D18新授权整体网页demo升级；先独立规划与验收，再主代理审查后执行代码包。SM01已交付d89421e，人工趣味未验收。",
+    "decisions": [
+      "固定套餐Seed Evolving high，失败停止，无跨平台兜底。",
+      "三晚规模，复用已有城市、经营和人物系统，第一波只写文档。"
+    ],
+    "completed": [
+      "D17超市正常昼夜链与跨日幂等奖励已技术验收并push。"
+    ],
+    "known_issues": [
+      "历史包过大导致轮数耗尽；本包只交一份文档和报告，避免完整代码草稿。"
+    ]
+  },
+  "tasks": [
+    "先读brief.md及必要源码，输出事实盘点：既有系统、实际缺口、代码文件和准确函数名，区别功能存在与趣味未验证。",
+    "选择4-6个包按依赖排序；每包写玩家收益、明确状态/接口/存档策略、允许文件、验收步骤及精确测试命令、失败反例。第一包详细到可直接交接，其余包给完整规则但不复制整套实现代码。",
+    "给出三晚逐段体验、两个不同策略示例、资源代价及避免刷收益规则；列出跨系统数据流与串行/可并行边界。保留已有故事/工具/街头变体，避免空泛把已有特性列新功能。",
+    "明确最终试玩版本如何交付：原服务保留、新提交一致的独立入口、自然入口验证、主观问题；不把计划写成已实现。",
+    "用Edit创建upgrade-plan.md，运行给定验证，再用Edit创建完整handoff-result.json。"
+  ],
+  "acceptance": [
+    "基于代码的中文文档，真实文件/函数引用、明确可观察验收，无凭空已实现或玩家验证结论。",
+    "输出唯一文档；报告changed_files仅含该文档，不能含handoff-result.json。",
+    "必须运行精确命令，测试摘要只记录文档结构校验。"
+  ],
+  "constraints": [
+    "仅Read/Edit/Bash；无安装、网络、git或额外Bash。只改指定输出，不写游戏代码。",
+    "报告按入口给定schema，数组字段不能写字符串；报告不是changed_files。"
+  ],
+  "workspace": "/tmp/amsterdam-d18-20261011/inputs",
+  "read_files": [
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/reopening-core.js",
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/character-stories.js",
+    "tools/prototype/delivery-orders.js",
+    "tools/prototype/flower-network.js",
+    "tools/prototype/journey-core.js",
+    "tools/prototype/journey-ui.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/index.html",
+    "tools/prototype/test-market-daynight.js",
+    "tools/prototype/test-character-stories.js",
+    "tools/prototype/test-district-daynight.js",
+    "tools/prototype/test-night-streets.js",
+    "tools/prototype/test-market-daynight-ui.js",
+    "brief.md",
+    "validate-plan.py"
+  ],
+  "write_files": [
+    "upgrade-plan.md"
+  ],
+  "commands": [
+    "python3 validate-plan.py"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 1500,
+  "max_turns": 60
+}

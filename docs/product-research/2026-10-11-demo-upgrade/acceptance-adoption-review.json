@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-upg01-acceptance-20261011",
+  "receipt_sha256": "3941373ec4787492bb24df92158bc0447d96a824fd0ba3b6bc1c3988efe0340c",
+  "reviewed_at": "2026-10-11T06:21:58Z",
+  "outcome": "rejected",
+  "failure_type": "semantic",
+  "evidence": [
+    {
+      "path": "/tmp/amsterdam-d18-20261011/acceptance-parent-review.txt",
+      "sha256": "572693275b83670e9a879430c60580640374297de094817eed5523eab5263821"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "status": "complete",
+  "summary": "已独立交付中文三晚升级功能与玩家试玩验收协议 playtest-gates.md（基线 d89421e）。文档基于 tools/prototype/ 下现存代码与 node:test 测试锚点，区分代码事实/协议设计/待人工验收，含三晚闭环观测矩阵 O1-O12、seed42 三条自然玩家脚本（获利/关系/撤退失败）、同种子复现与策略分叉及第三晚无第四天专项、G1-G14 功能硬门槛（每条含操作/可见期望/证据/拒收条件）、F1-F10 主观趣味分账、390px 触屏/纯键盘/自动手动/刷新存档/低资源/重复领取反例、试玩反馈字段、范围边界、DoD 与一个最终用户问题。未运行游戏与既有测试套件，未伪造玩家反馈；唯一执行的是 python3 validate-acceptance.py 文档结构校验，退出码 0。",
+  "changed_files": [
+    "playtest-gates.md"
+  ],
+  "tests": [
+    {
+      "command": "python3 validate-acceptance.py",
+      "exit_code": 0,
+      "summary": "文档结构校验通过：长度>1800、含 d89421e、待、验收、tools/prototype/，且无 TODO/TBD。仅为结构校验，不代表功能或玩家趣味验收。"
+    }
+  ],
+  "blockers": [],
+  "memory_delta": [
+    "D18 本包只交付文档：playtest-gates.md 为独立三晚功能与玩家试玩验收协议，不依赖另一包方案。",
+    "验收协议统一以 seed 42 为对照种子：夜班序列 staffed/restock/blackout、街道局势三晚不同、客人 8/10/12、夜长 165/180/195、结局门槛净余额>=100 且满意>=12。",
+    "第三晚无第四天的结构证据：marketInfo 的 final 分支、marketErrand 日期守卫、upgrade/next 的 day>=3 拒绝，G4/G12 列为阻断级。",
+    "390px 适配在代码中无硬编码断点，CSS 与 scene 文件不在本包输入清单，G9 明确标注为待 d89421e 完整树真机/模拟器人工验收。",
+    "既有 node:test（test-market-daynight.js 等 5 个文件）在本包未运行，仅作为规则锚点引用；历史 334+13 测试通过不构成当前结论。"
+  ],
+  "next_steps": [
+    "由主代理/后续实现包在 d89421e 完整工作树（含 CSS 与 scene 静态资源）复跑既有 node:test 套件，再按 G1-G14 安排真人浏览器试玩。",
+    "至少 3 名试玩者分别执行 A/B/C 脚本，按协议第 6 节字段收集记录，重点覆盖 G4、G12 反例与 390px 触屏。",
+    "汇总 F1-F10 评分与最终用户问题回答，按 DoD 判定：阻断项零反例、F1/F2/F3/F7 中位分>2 才可判趣味通过。"
+  ]
+}

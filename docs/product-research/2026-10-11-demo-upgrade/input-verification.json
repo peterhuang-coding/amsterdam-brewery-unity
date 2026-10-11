@@ -1,0 +1,12 @@
+[
+  {
+    "task": "amsterdam-upg01-plan-20261011",
+    "inputs": 19,
+    "source_and_staged_match": true
+  },
+  {
+    "task": "amsterdam-upg01-acceptance-20261011",
+    "inputs": 19,
+    "source_and_staged_match": true
+  }
+]

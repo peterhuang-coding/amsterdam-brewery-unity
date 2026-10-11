@@ -1,0 +1,88 @@
+TAP version 13
+# Subtest: day 1 market panel: €8 crate, €4 saving, wallet/action guards, no receipt
+ok 1 - day 1 market panel: €8 crate, €4 saving, wallet/action guards, no receipt
+  ---
+  duration_ms: 2599.653042
+  type: 'test'
+  ...
+# Subtest: day 2 safe trade: real claim click yields 3 q1 blond +1 hop for one action; one-shot; claimed after reload
+ok 2 - day 2 safe trade: real claim click yields 3 q1 blond +1 hop for one action; one-shot; claimed after reload
+  ---
+  duration_ms: 932.402
+  type: 'test'
+  ...
+# Subtest: day 2 after real night 1 theft: €10 crate, €2 saving, real reason; no static €4 claim
+ok 3 - day 2 after real night 1 theft: €10 crate, €2 saving, real reason; no static €4 claim
+  ---
+  duration_ms: 2574.0475
+  type: 'test'
+  ...
+# Subtest: receipt errand guards in the live panel: 32-batch disabled, action0 disabled, hops15 still grants 3 cups with no hop or cash
+ok 4 - receipt errand guards in the live panel: 32-batch disabled, action0 disabled, hops15 still grants 3 cups with no hop or cash
+  ---
+  duration_ms: 2576.752792
+  type: 'test'
+  ...
+# Subtest: day 3 panel: final-night wording and no promise that tonight earns a day-4 errand or price
+ok 5 - day 3 panel: final-night wording and no promise that tonight earns a day-4 errand or price
+  ---
+  duration_ms: 869.736333
+  type: 'test'
+  ...
+# Subtest: manual pre-choice on nights 1/2: free commitment, dated €10 consequence, real barrel cost, safe errand rewards are not a payout
+ok 6 - manual pre-choice on nights 1/2: free commitment, dated €10 consequence, real barrel cost, safe errand rewards are not a payout
+  ---
+  duration_ms: 1.647917
+  type: 'test'
+  ...
+# Subtest: manual night 3 pre-choice: final night, no day 4, both choices still offered
+ok 7 - manual night 3 pre-choice: final night, no day 4, both choices still offered
+  ---
+  duration_ms: 0.892959
+  type: 'test'
+  ...
+# Subtest: manual after-choice trade copy: committed route; delivery consumes the 3-slot barrel, not 4 cups; night 3 warns the receipt cannot pay
+ok 8 - manual after-choice trade copy: committed route; delivery consumes the 3-slot barrel, not 4 cups; night 3 warns the receipt cannot pay
+  ---
+  duration_ms: 0.940166
+  type: 'test'
+  ...
+# Subtest: manual receipt on return: nights 1/2 show the dated next-day voucher; night 3 says there is no next day
+ok 9 - manual receipt on return: nights 1/2 show the dated next-day voucher; night 3 says there is no next day
+  ---
+  duration_ms: 4.331958
+  type: 'test'
+  ...
+# Subtest: manual salvage return copy: nights 1/2 name the dated next-day €10; night 3 says no next-day price
+ok 10 - manual salvage return copy: nights 1/2 name the dated next-day €10; night 3 says no next-day price
+  ---
+  duration_ms: 6.753375
+  type: 'test'
+  ...
+# Subtest: auto pre-choice view on nights 1/2 explains the real bargain with no internal labels
+ok 11 - auto pre-choice view on nights 1/2 explains the real bargain with no internal labels
+  ---
+  duration_ms: 4.408667
+  type: 'test'
+  ...
+# Subtest: auto night 3 pre-choice and intro: final night, no day 4, no tomorrow promise
+ok 12 - auto night 3 pre-choice and intro: final night, no day 4, no tomorrow promise
+  ---
+  duration_ms: 2.485917
+  type: 'test'
+  ...
+# Subtest: auto after-choice copy through real steps: night 1 barrel route then voucher wording; night 3 final delivery earns no receipt
+ok 13 - auto after-choice copy through real steps: night 1 barrel route then voucher wording; night 3 final delivery earns no receipt
+  ---
+  duration_ms: 10.788292
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9674.023333

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-upg01-plan-20261011",
+  "receipt_sha256": "ddb1d2615eaa7d771492c49f4ca9884eb467acb9466da035c7162f57c1b25a9f",
+  "reviewed_at": "2026-10-11T06:10:55Z",
+  "outcome": "rejected",
+  "failure_type": "call_exception",
+  "evidence": [
+    {
+      "path": "/tmp/amsterdam-d18-20261011/plan-parent-review.txt",
+      "sha256": "5e7ca45d767dd3d2a0c5dad5b38f6e14215357a7244e26f132dd889fcf8d926f"
+    }
+  ]
+}

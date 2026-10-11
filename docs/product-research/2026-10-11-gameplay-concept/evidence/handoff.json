@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-concept-brief-20261011",
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "concept-brief-01",
+    "task_type": "docs",
+    "attempt_kind": "business"
+  },
+  "goal": "根据提供的公开设计资料和游戏背景，写一份1800–2600字左右的简短中文玩法概念稿gameplay-concept.md，供用户先审阅故事、核心夜探、小游戏和feature方向。此为独立文档任务，不恢复UPG01、不实现游戏。",
+  "memory": {
+    "summary": "网页demo先验证，单机阿姆斯特丹昼夜探索+酒吧；主代理已核实资料，制作人要简单易读概念稿。",
+    "decisions": [
+      "固定Coding Plan Seed Evolving thinking enabled/high，只用套餐，失败即停",
+      "只传必要公开资料；本次只产文档，不改代码"
+    ],
+    "completed": [
+      "现有三日循环及超市昼夜基础，技术通过但趣味未验收"
+    ],
+    "known_issues": [
+      "不能把新设定写成已实现或研究证据",
+      "旧整体升级任务停止，不能恢复它"
+    ]
+  },
+  "tasks": [
+    "读brief.md和sources.md",
+    "用Edit写简短gameplay-concept.md",
+    "运行python3 validate.py",
+    "写枚举status=completed的完整handoff-result.json（不要把自身列入changed_files）"
+  ],
+  "acceptance": [
+    "内容满足brief，简单可读而非技术合同",
+    "至少一段具体拟议玩法经历，故事/小游戏/feature互相联系",
+    "明确基础和建议，不杜撰现有能力或来源结论",
+    "验证通过、完整交接报告、输入未改"
+  ],
+  "constraints": [
+    "只读三个指定输入，只写gameplay-concept.md与报告",
+    "仅精确验证命令，不访问其他路径/网络",
+    "字数上限3300可见字符，资料链接不计",
+    "失败停止不切换模型或渠道"
+  ],
+  "workspace": "/tmp/amsterdam-concept-20261011/input",
+  "read_files": [
+    "brief.md",
+    "sources.md",
+    "validate.py"
+  ],
+  "write_files": [
+    "gameplay-concept.md"
+  ],
+  "commands": [
+    "python3 validate.py"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 1200,
+  "max_turns": 40
+}

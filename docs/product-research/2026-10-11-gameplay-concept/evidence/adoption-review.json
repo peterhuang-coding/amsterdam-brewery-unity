@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-concept-brief-20261011",
+  "receipt_sha256": "dcec6deafaefacf0c129831fcbeb4c4b821b7986762d51eafe6103625323e66c",
+  "reviewed_at": "2026-10-11T07:46:57Z",
+  "outcome": "accepted_with_changes",
+  "failure_type": "none",
+  "evidence": [
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-11-gameplay-concept/evidence/parent-review.md",
+      "sha256": "fe3786bbf0c9486ae69ae2a0d1014d1971f0cda60bb0527c598f0addde1be13b"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-first-street-20261013",
+  "receipt_sha256": "9651f044db794e01953116912c75df6fb1d93f458ee68c5312fd1b7f6feb51b7",
+  "reviewed_at": "2026-10-12T19:45:19Z",
+  "outcome": "rejected",
+  "failure_type": "semantic",
+  "evidence": [
+    {
+      "path": "/tmp/amsterdam-play22-20261013/evidence/parent-review.md",
+      "sha256": "8291c95948058e300ca7cd214f2dd0819700252e16c390261609ecbdc19db9b1"
+    }
+  ]
+}

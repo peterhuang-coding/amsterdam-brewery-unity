@@ -1,0 +1,22 @@
+{
+  "tools/prototype/reopening-ui.js": {
+    "expected": "8fdc2968e240c3e57ad2f52c7a825312e358bbadb3f81122adcc5146f5a25961",
+    "restored": "8fdc2968e240c3e57ad2f52c7a825312e358bbadb3f81122adcc5146f5a25961",
+    "match": true
+  },
+  "tools/prototype/reopening-scene.js": {
+    "expected": "02c27c5a24ff482320401c7a5dc8e7d2ac90325439ac56554c055391f89b03b4",
+    "restored": "02c27c5a24ff482320401c7a5dc8e7d2ac90325439ac56554c055391f89b03b4",
+    "match": true
+  },
+  "tools/prototype/reopening.css": {
+    "expected": "17d05673d6634eac3b7abd5de41b6ccfe1314fdde8a448a11a93d5fef3c82b56",
+    "restored": "17d05673d6634eac3b7abd5de41b6ccfe1314fdde8a448a11a93d5fef3c82b56",
+    "match": true
+  },
+  "tools/prototype/test-first-street-ui.js": {
+    "expected": "cda4472c2afef6eaa289de106aa69c8a001106f1b6cf304fb8e569874e314290",
+    "restored": "cda4472c2afef6eaa289de106aa69c8a001106f1b6cf304fb8e569874e314290",
+    "match": true
+  }
+}

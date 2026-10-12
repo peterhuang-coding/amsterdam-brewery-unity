@@ -1,0 +1,13 @@
+{
+  "logical_task": "PLAY02",
+  "task_id": "amsterdam-first-street-r2-20261013",
+  "parent_outcome": "not_adopted",
+  "complete_deliveries": 0,
+  "attempts_this_wave": 1,
+  "game_files_adopted": 0,
+  "review_tool_result": "review_requires_finished",
+  "adapter_status_preserved": "unknown",
+  "candidate_tests": "358/358",
+  "final_gui": "not_run",
+  "reason": "ECONNRESET exit1 missing report; prior fail-stop rule remains"
+}

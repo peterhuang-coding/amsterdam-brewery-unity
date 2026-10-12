@@ -1,6 +1,6 @@
 {
   "decision": "D23",
-  "status": "running",
+  "status": "blocked",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-16T19:48:33Z",
   "next_direction_review_at": "2026-10-13T05:48:33Z",
@@ -11,5 +11,12 @@
   "failure_policy": "stop_on_failure_until_user_changes",
   "failure_policy_question_pending": true,
   "final_report_sent": false,
-  "schedule": "existing amsterdam heartbeat every15minutes"
+  "schedule": "existing amsterdam heartbeat every15minutes",
+  "current_task_terminal": "unknown_transport_failure_process_exited",
+  "failure_reason": "ECONNRESET; missing report; final GUI not run",
+  "last_result_at": "2026-10-12T20:40:12.089842Z",
+  "failure_notification_at": "2026-10-12T20:42:13Z",
+  "in_flight": [],
+  "candidate_path": "docs/product-research/2026-10-13-four-day-demo/r2-draft",
+  "adopted_this_round": 0
 }

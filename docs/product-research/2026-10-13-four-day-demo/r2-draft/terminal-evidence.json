@@ -1,0 +1,10 @@
+[
+  {
+    "type": "result",
+    "subtype": "success",
+    "is_error": true,
+    "result": "API Error: Connection dropped (ECONNRESET)",
+    "num_turns": 17,
+    "duration_ms": 656007
+  }
+]

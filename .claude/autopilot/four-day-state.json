@@ -1,6 +1,6 @@
 {
   "decision": "D23",
-  "status": "preparing",
+  "status": "running",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-16T19:48:33Z",
   "next_direction_review_at": "2026-10-13T05:48:33Z",
@@ -10,5 +10,6 @@
   "last_adopted_commit": "d89421ef86dda52044c38fab63f71a3f979138ca",
   "failure_policy": "stop_on_failure_until_user_changes",
   "failure_policy_question_pending": true,
-  "final_report_sent": false
+  "final_report_sent": false,
+  "schedule": "existing amsterdam heartbeat every15minutes"
 }

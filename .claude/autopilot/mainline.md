@@ -1,10 +1,14 @@
 # 主线
 
-## D21：LOOP01试玩—反馈—Plan升级闭环（新授权，建设中）
+## D21：LOOP01试玩反馈闭环（部分归档，Plan超时停止）
 
-用户明确要求“你要给plan建立一个玩-反馈-升级的一个闭环，完了你打开我一下”。当前游戏d89421e已在独立18828打开，保留暂停由玩家继续；没有新美术或新玩法。新任务只建设可执行反馈流程、PLAY01当前试玩卡、接入既有Notion与每日22:00。不恢复ART01/UPG01旧失败，不添加循环。
+用户明确“给plan建立玩-反馈-升级闭环，并打开游戏”，后续直接反馈“太复杂不好上手，以及这个游戏界面太丑，还有就是很长的教学流程”。当前已打开18828的d89421e既有游戏、保留存档，并建立PLAY01真实反馈卡与下一包“首次上手简化”范围；没有新美术或玩法升级。
 
-单个规程文档包amsterdam-play-loop-20261013，4740B公开必要输入、900秒32轮、Seed Evolving enabled/high，固定ID。写play-feedback-loop.md，精确python3 validate.py；合成正/负结构校验已预跑。当前容量检查有其他两路，待容量，不重复派发。验收范围与基线见[任务记录](../../docs/product-research/2026-10-13-play-feedback-loop/README.md)。Notion LOOP01执行中：https://app.notion.com/p/3f73285284df8172a79fc37a4da4f502。玩家趣味反馈尚未收到；现有需求三项未实现。
+单路amsterdam-play-loop-20261013，2输入4740B、900秒32轮、Seed Evolving enabled/high。等待容量后提交1次，提交前观察其他1路，无全局原子并发保证。206.864秒/4轮Request timed out，CLI exit1/is_error=true，adapter unknown保留，原PID已结束。实际2 Read+1 Edit，仅规程草稿，没有验证调用/交接报告；完整通过0/1，游戏采用0。父级结构校验1624字符与两输入哈希通过，仅归档原稿；不主代理重写、不重发/兜底/后续实现。
+
+本轮真实UI仅独立18829新局观察信息密度：白天7地点，入店后酿酒/营业/人物事件并列。18828根页及16个直接JS/CSS与d89421e逐字节一致；旧18767/18827与旧档不动。技术观察不代替玩家美术/趣味判断。当前已收到反馈，不再沿用原稿中的“尚无反馈”；首次升级后再试玩尚未发生。
+
+[范围、原稿与审阅](../../docs/product-research/2026-10-13-play-feedback-loop/README.md)；[PLAY01](../../docs/product-research/2026-10-13-play-feedback-loop/playtest-01.md)；[收敛后的下一包](../../docs/product-research/2026-10-13-play-feedback-loop/first-session-scope.md)。Notion反馈台 https://app.notion.com/p/3f73285284df818b9a5dce5687a0aeaa；LOOP01 https://app.notion.com/p/3f73285284df8172a79fc37a4da4f502 。现有每日22:00读取此入口；需要新明确恢复才派发，旧ART01/UPG01失败不恢复。无变化不重复失败通知。
 
 ## D20：ART01整体美术升级（终态阻塞，无美术产物）
 

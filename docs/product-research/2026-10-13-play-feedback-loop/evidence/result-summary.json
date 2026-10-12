@@ -1,0 +1,45 @@
+{
+  "task_id": "amsterdam-play-loop-20261013",
+  "status": "unknown",
+  "elapsed_seconds": 206.864,
+  "request_sha256": "9ce62cff8d6ee7803394ae16d401d8ad8f77e5e5e9698c3e8db6683f69284125",
+  "changed_files": [
+    {
+      "path": "play-feedback-loop.md",
+      "sha256": "914b1736f770d61f89ff0560e16fd7502e7a98500e4e52c66f425597e7156782"
+    }
+  ],
+  "deleted_files": [],
+  "disallowed_changes": [],
+  "input_hashes": {
+    "brief.md": "e809dbe8c7b10e762e1c3cd9e8b126c05655f401f383154691baa807fbabe287",
+    "validate.py": "c93c5c5fecc5eee925b95fbf05333d17999a7a4c360dccbb95c58cf6679fbd6f"
+  },
+  "blockers": [
+    "worker reported transport failure; inspect saved execution before recovery"
+  ],
+  "report": null,
+  "tests": [],
+  "telemetry": {
+    "attempt_kind": "business",
+    "logical_task_id": "play-loop-01",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "docs"
+  },
+  "permission_denials": [],
+  "model": "doubao-seed-evolving",
+  "thinking_requested": true,
+  "effort_requested": "high",
+  "cli_returncode": 1,
+  "cli_is_error": true,
+  "cli_subtype": "success",
+  "worker_pid_ended": true,
+  "terminal_message": "Request timed out",
+  "turns": 4,
+  "actual_tool_counts": {
+    "Read": 2,
+    "Edit": 1
+  },
+  "complete_handoffs": 0,
+  "game_changes": 0
+}

@@ -1,0 +1,10 @@
+{
+  "validate.py": {
+    "source": true,
+    "staging": true
+  },
+  "brief.md": {
+    "source": true,
+    "staging": true
+  }
+}

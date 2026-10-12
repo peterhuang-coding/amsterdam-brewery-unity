@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-first-street-20261013",
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "play02-first-street",
+    "task_type": "code",
+    "attempt_kind": "business"
+  },
+  "goal": "Implement PLAY02 per brief.md: inviting close canal street and optional first walk -> Lotte promise -> pub opening. Real code and behavioral tests plus valid report; keep mechanics intact.",
+  "memory": {
+    "summary": "New D22 approval after real feedback on confusing start, ugly map and long tutorial. Baseline d89421e. Parent independently reviews/adopts.",
+    "decisions": [
+      "Fixed Coding Plan Seed Evolving thinking enabled/high, failure stops",
+      "Three production presentation files only; no gameplay/economy/save changes",
+      "One dependent UI/scene package, no parallel overlapping files"
+    ],
+    "completed": [
+      "SM01 supermarket/day receipt loop exists",
+      "Old art attempts produced no code; stable game unchanged"
+    ],
+    "known_issues": [
+      "Default whole-city view tiny and repetitive",
+      "Use Edit not unavailable Write",
+      "Report status completed, changed_files excludes report"
+    ]
+  },
+  "tasks": [
+    "Read brief and relevant chunks",
+    "Add behavior tests and run red baseline",
+    "Implement within the four output files",
+    "Run all exact commands; preserve old tests",
+    "Write complete truthful handoff-result.json"
+  ],
+  "acceptance": [
+    "Coherent close 2.5D street, readable player and door, not palette-only edit",
+    "Real optional Lotte path, full-city access and direct pub entry",
+    "Short contextual tutorial, full help and restore pause maintained",
+    "Commands green, valid report, source and read-only inputs unchanged"
+  ],
+  "constraints": [
+    "Only listed files/report Read/Edit, exact commands only",
+    "No network, deps, git, own logs, shell oneoffs, agents or additional files",
+    "Parent full regression and GUI final review; no claim subjective fun proven"
+  ],
+  "workspace": "/tmp/amsterdam-play22-20261013/input",
+  "read_files": [
+    "brief.md",
+    "tools/prototype/index.html",
+    "tools/prototype/reopening.css",
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/reopening-core.js",
+    "tools/prototype/journey-core.js",
+    "tools/prototype/journey-ui.js",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/delivery-orders.js",
+    "tools/prototype/character-stories.js",
+    "tools/prototype/flower-network.js",
+    "tools/prototype/test-market-daynight-ui.js",
+    "tools/prototype/test-city.js",
+    "tools/prototype/test-city-bike.js"
+  ],
+  "write_files": [
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/reopening.css",
+    "tools/prototype/test-first-street-ui.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-city.js tools/prototype/test-city-bike.js tools/prototype/test-market-daynight-ui.js",
+    "node --test tools/prototype/test-first-street-ui.js",
+    "node --check tools/prototype/reopening-scene.js",
+    "node --check tools/prototype/reopening-ui.js"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 2400,
+  "max_turns": 80
+}

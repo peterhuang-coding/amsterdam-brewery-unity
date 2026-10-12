@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Read",
+    "file": "art-brief.md",
+    "command": null
+  },
+  {
+    "name": "Read",
+    "file": "tools/prototype/reopening-scene.js",
+    "command": null
+  },
+  {
+    "name": "Read",
+    "file": "tools/prototype/backstage-scene.js",
+    "command": null
+  },
+  {
+    "name": "Read",
+    "file": "tools/prototype/reopening-city.js",
+    "command": null
+  },
+  {
+    "name": "Read",
+    "file": "tools/prototype/test-market-shift-ui.js",
+    "command": null
+  },
+  {
+    "name": "Read",
+    "file": "tools/prototype/backstage-core.js",
+    "command": null
+  },
+  {
+    "name": "Read",
+    "file": "tools/prototype/backstage-ui.js",
+    "command": null
+  },
+  {
+    "name": "Bash",
+    "file": "",
+    "command": "node --check tools/prototype/reopening-scene.js"
+  },
+  {
+    "name": "Bash",
+    "file": "",
+    "command": "node --check tools/prototype/backstage-scene.js"
+  },
+  {
+    "name": "Bash",
+    "file": "",
+    "command": "node --test tools/prototype/test-market-shift-ui.js"
+  },
+  {
+    "name": "Read",
+    "file": "tools/prototype/reopening-scene.js",
+    "command": null
+  },
+  {
+    "name": "Bash",
+    "file": "",
+    "command": "cat > /dev/null <<'EOF'\nplaceholder\nEOF"
+  }
+]

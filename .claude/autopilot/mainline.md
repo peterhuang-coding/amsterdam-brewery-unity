@@ -1,14 +1,14 @@
 # 主线
 
-## D20：ART01整体美术升级（新明确批准，两路执行中）
+## D20：ART01整体美术升级（终态阻塞，无美术产物）
 
-用户原请求：“好的，你按之前的 goal 给它要求，再美术上整体再升级一下，用 plan 提升一下一会儿我来看”。本轮明确实施场景和UI表现升级；固定Coding Plan、失败即停。既有商业目标、demo优先及旧失败历史保留；不是自动复活全部候选。
+用户新明确要求“好的，你按之前的 goal 给它要求，再美术上整体再升级一下，用 plan 提升一下一会儿我来看”。已登记ART01，按既有商业目标拆为独立场景Canvas与HTML/CSS两路，固定Coding Plan Seed Evolving thinking enabled/high；游戏基线d89421ef86dda52044c38fab63f71a3f979138ca。开工记录8eb0ddf已push。独立codex/art-pass-20261013 / .claude/worktrees/art-pass-20261013保留，未改游戏。
 
-精确游戏基线d89421ef86dda52044c38fab63f71a3f979138ca，独立codex/art-pass-20261013 / .claude/worktrees/art-pass-20261013。工作台dcf007ceb5f759722f4068cb2fc50ac020a196bd。原生worktree工具在本任务父目录返回Not a git repository，已核实项目忽略目录后用Git建立独立worktree；旧游戏worktree/18767/18827和存档未改。18828是本轮旧版基线预览，非升级交付。
+两原请求均结束：amsterdam-art01-scene-20261013，946.801秒/13轮；amsterdam-art01-ui-20261013，380.790秒/12轮。均Request timed out、terminal_reason api_error、CLI exit1，适配状态unknown保留。原worker进程已消失，源与暂存哈希一致，无交接报告、无产物；0/2完整交付、游戏采用0。停止后续，未重发/切换模型/按量/主代理改写。场景有一条清单外/dev/null占位命令已执行，不能声称命令范围完全通过。UI review工具因unknown拒绝记录review_requires_finished，独立审阅证据已保存，不伪造通过。
 
-两路真正独立：amsterdam-art01-scene-20261013只改两个Canvas renderer；amsterdam-art01-ui-20261013只改index.html和三CSS。分别8输入179831B、10输入191765B，公开必要材料，1800秒80轮，Seed Evolving thinking enabled/high。已预跑准确暂存输入：两个语法检查、market-shift-ui和UI静态契约通过。完整任务合同见[美术范围](../../docs/product-research/2026-10-12-art-upgrade/README.md)。提交前即时全机检查为空；两路已各提交一次，稳定账本state=running。当前等待收齐，不另派波次。Notion任务https://app.notion.com/p/3f73285284df816bbb5dd6da243b54e8。
+本轮原版全量347/347、场景原有12/12；浏览器仅查看原版开局/酒馆/白天地图/夜探，没有新版GUI或390px美术验收。18767/18827与旧档未改，18828为原版基线预览，不当新交付。两路派发前全机快照为空，但没有原子并发保证。
 
-验收：输入/输出范围和报告真实、原347测试、独立浏览器开局/白天地图/进店/夜探操作/暂停与390px；视觉改善明确，玩法/存档/相机坐标不变。通过后仅采用列明文件，commit/push独立分支，独立服务字节与提交一致。用户稍后试玩，人工趣味未验证。失败则只收齐归档、不重发/换平台/主代理接管重写。证据/tmp/amsterdam-art20-20261013。
+[完整美术要求与实际结果](../../docs/product-research/2026-10-12-art-upgrade/README.md)；[轮次摘要](rounds/2026-10-13-art01.md)；Notion ART01 https://app.notion.com/p/3f73285284df816bbb5dd6da243b54e8。稳定请求与/tmp/amsterdam-art20-20261013证据保留。需要新明确恢复；建议缩小为单个酒馆场景、串行推进，不能凭此建议或旧D20自动重试。UPG01仍阻塞、SM01待用户趣味验收，其他旧历史保留。
 
 ## D19 2026-10-11：简短玩法概念文档（已交稿，待用户审阅方向）
 

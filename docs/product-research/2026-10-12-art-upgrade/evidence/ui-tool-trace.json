@@ -1,0 +1,57 @@
+[
+  {
+    "name": "Read",
+    "file": "art-brief.md",
+    "command": null
+  },
+  {
+    "name": "Read",
+    "file": "tools/prototype/index.html",
+    "command": null
+  },
+  {
+    "name": "Read",
+    "file": "validate_ui.py",
+    "command": null
+  },
+  {
+    "name": "Read",
+    "file": "tools/prototype/reopening.css",
+    "command": null
+  },
+  {
+    "name": "Read",
+    "file": "tools/prototype/backstage.css",
+    "command": null
+  },
+  {
+    "name": "Read",
+    "file": "tools/prototype/journey.css",
+    "command": null
+  },
+  {
+    "name": "Read",
+    "file": "tools/prototype/reopening-ui.js",
+    "command": null
+  },
+  {
+    "name": "Read",
+    "file": "tools/prototype/reopening-ui.js",
+    "command": null
+  },
+  {
+    "name": "Read",
+    "file": "tools/prototype/backstage-ui.js",
+    "command": null
+  },
+  {
+    "name": "Read",
+    "file": "tools/prototype/journey-ui.js",
+    "command": null
+  },
+  {
+    "name": "Read",
+    "file": "baseline-index.html",
+    "command": null
+  }
+]

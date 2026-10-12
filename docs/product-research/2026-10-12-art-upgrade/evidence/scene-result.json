@@ -1,0 +1,44 @@
+{
+  "task_id": "amsterdam-art01-scene-20261013",
+  "status": "unknown",
+  "started_at": "2026-10-12T16:04:21.620284+00:00",
+  "finished_at": "2026-10-12T16:20:08.439631+00:00",
+  "elapsed_seconds": 946.801,
+  "changed_files": [],
+  "deleted_files": [],
+  "disallowed_changes": [],
+  "permission_denials": [],
+  "blockers": [
+    "worker reported transport failure; inspect saved execution before recovery"
+  ],
+  "report": null,
+  "tests": [],
+  "request_sha256": "49f4b5665cafe8ac327d805ce1634430215f7090a2bf9319d2cd4525d91fd4bf",
+  "telemetry": {
+    "attempt_kind": "business",
+    "logical_task_id": "art01-scene",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "requested": {
+    "model": "doubao-seed-evolving",
+    "thinking_enabled": true,
+    "reasoning_effort": "high",
+    "permission_mode": "dontAsk"
+  },
+  "observed_model": "doubao-seed-evolving",
+  "terminal": {
+    "is_error": true,
+    "subtype": "success",
+    "terminal_reason": "api_error",
+    "result": "Request timed out",
+    "num_turns": 13,
+    "duration_ms": 946351
+  },
+  "actual_source_changes": [],
+  "actual_workspace_changes": [],
+  "handoff_report_exists": false,
+  "parent_adopted_files": [],
+  "worker_pid_alive": false,
+  "parent_review": "no deliverable; adapter unknown retained; no retry/fallback"
+}

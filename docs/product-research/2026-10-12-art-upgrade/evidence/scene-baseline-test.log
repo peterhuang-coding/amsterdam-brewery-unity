@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: market controls enable/disable while walking in and out of range without clearing ui.signature
+ok 1 - market controls enable/disable while walking in and out of range without clearing ui.signature
+  ---
+  duration_ms: 5.783
+  type: 'test'
+  ...
+# Subtest: paused runs keep every market control frozen and perform changes nothing, even at the points
+ok 2 - paused runs keep every market control frozen and perform changes nothing, even at the points
+  ---
+  duration_ms: 1.043083
+  type: 'test'
+  ...
+# Subtest: old runs without marketShift keep the previous manual board and no market controls
+ok 3 - old runs without marketShift keep the previous manual board and no market controls
+  ---
+  duration_ms: 0.446458
+  type: 'test'
+  ...
+# Subtest: the four new automatic goals render readable Chinese titles with no undefined
+ok 4 - the four new automatic goals render readable Chinese titles with no undefined
+  ---
+  duration_ms: 0.594666
+  type: 'test'
+  ...
+# Subtest: the automatic board never double-places manual market buttons
+ok 5 - the automatic board never double-places manual market buttons
+  ---
+  duration_ms: 8.843833
+  type: 'test'
+  ...
+# Subtest: receipt after a bailed delivery does not grant the safe voucher
+ok 6 - receipt after a bailed delivery does not grant the safe voucher
+  ---
+  duration_ms: 0.825083
+  type: 'test'
+  ...
+# Subtest: actual walking flips the blackout power reason while canPower stays false the whole time
+ok 7 - actual walking flips the blackout power reason while canPower stays false the whole time
+  ---
+  duration_ms: 0.681125
+  type: 'test'
+  ...
+# Subtest: actual walking flips the delivery reason far-away to no-barrel while the control stays disabled
+ok 8 - actual walking flips the delivery reason far-away to no-barrel while the control stays disabled
+  ---
+  duration_ms: 1.843083
+  type: 'test'
+  ...
+# Subtest: market panel prose uses stock-accounting language with no item or stage labels
+ok 9 - market panel prose uses stock-accounting language with no item or stage labels
+  ---
+  duration_ms: 1.003416
+  type: 'test'
+  ...
+# Subtest: safe first and second night receipts are honest next-day records with no claim button
+ok 10 - safe first and second night receipts are honest next-day records with no claim button
+  ---
+  duration_ms: 1.185084
+  type: 'test'
+  ...
+# Subtest: third night receipt honestly says there is no next day to cash it in
+ok 11 - third night receipt honestly says there is no next day to cash it in
+  ---
+  duration_ms: 0.472708
+  type: 'test'
+  ...
+# Subtest: bailed delivery and undelivered trade produce no entitlement, only an honest record
+ok 12 - bailed delivery and undelivered trade produce no entitlement, only an honest record
+  ---
+  duration_ms: 0.738667
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 92.544375

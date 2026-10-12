@@ -1,5 +1,11 @@
 # 主线
 
+## D21：LOOP01试玩—反馈—Plan升级闭环（新授权，建设中）
+
+用户明确要求“你要给plan建立一个玩-反馈-升级的一个闭环，完了你打开我一下”。当前游戏d89421e已在独立18828打开，保留暂停由玩家继续；没有新美术或新玩法。新任务只建设可执行反馈流程、PLAY01当前试玩卡、接入既有Notion与每日22:00。不恢复ART01/UPG01旧失败，不添加循环。
+
+单个规程文档包amsterdam-play-loop-20261013，4740B公开必要输入、900秒32轮、Seed Evolving enabled/high，固定ID。写play-feedback-loop.md，精确python3 validate.py；合成正/负结构校验已预跑。当前容量检查有其他两路，待容量，不重复派发。验收范围与基线见[任务记录](../../docs/product-research/2026-10-13-play-feedback-loop/README.md)。Notion LOOP01执行中：https://app.notion.com/p/3f73285284df8172a79fc37a4da4f502。玩家趣味反馈尚未收到；现有需求三项未实现。
+
 ## D20：ART01整体美术升级（终态阻塞，无美术产物）
 
 用户新明确要求“好的，你按之前的 goal 给它要求，再美术上整体再升级一下，用 plan 提升一下一会儿我来看”。已登记ART01，按既有商业目标拆为独立场景Canvas与HTML/CSS两路，固定Coding Plan Seed Evolving thinking enabled/high；游戏基线d89421ef86dda52044c38fab63f71a3f979138ca。开工记录8eb0ddf已push。独立codex/art-pass-20261013 / .claude/worktrees/art-pass-20261013保留，未改游戏。

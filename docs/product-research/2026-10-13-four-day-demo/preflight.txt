@@ -1,0 +1,264 @@
+TAP version 13
+# Subtest: new cities and legacy saves receive an independent bicycle at the pub
+ok 1 - new cities and legacy saves receive an independent bicycle at the pub
+  ---
+  duration_ms: 1.22325
+  type: 'test'
+  ...
+# Subtest: legacy saves covered by the added flower facade keep their visited places
+ok 2 - legacy saves covered by the added flower facade keep their visited places
+  ---
+  duration_ms: 0.217958
+  type: 'test'
+  ...
+# Subtest: relocating a flower-facade save retains an independently parked bicycle
+ok 3 - relocating a flower-facade save retains an independently parked bicycle
+  ---
+  duration_ms: 0.11675
+  type: 'test'
+  ...
+# Subtest: flower-facade migration does not admit nonfinite coordinates or corrupt visits
+ok 4 - flower-facade migration does not admit nonfinite coordinates or corrupt visits
+  ---
+  duration_ms: 0.129875
+  type: 'test'
+  ...
+# Subtest: malformed bicycle data resets the bicycle while retaining valid player progress
+ok 5 - malformed bicycle data resets the bicycle while retaining valid player progress
+  ---
+  duration_ms: 0.326125
+  type: 'test'
+  ...
+# Subtest: mounting requires proximity and dismounting keeps the bicycle at the player
+ok 6 - mounting requires proximity and dismounting keeps the bicycle at the player
+  ---
+  duration_ms: 0.194166
+  type: 'test'
+  ...
+# Subtest: parking on entry dismounts locally and never recalls a distant bicycle
+ok 7 - parking on entry dismounts locally and never recalls a distant bicycle
+  ---
+  duration_ms: 0.103083
+  type: 'test'
+  ...
+# Subtest: manual movement preserves visits, moves a ridden bicycle, and leaves a parked one behind
+ok 8 - manual movement preserves visits, moves a ridden bicycle, and leaves a parked one behind
+  ---
+  duration_ms: 0.433708
+  type: 'test'
+  ...
+# Subtest: automatic movement uses bicycle speed and retains the complete city state
+ok 9 - automatic movement uses bicycle speed and retains the complete city state
+  ---
+  duration_ms: 0.444083
+  type: 'test'
+  ...
+# Subtest: bicycles cross every bridge and ferry both ways without being left behind
+ok 10 - bicycles cross every bridge and ferry both ways without being left behind
+  ---
+  duration_ms: 5.025417
+  type: 'test'
+  ...
+# Subtest: manual narrow-bridge movement pushes the bicycle, can park, and can take it again
+ok 11 - manual narrow-bridge movement pushes the bicycle, can park, and can take it again
+  ---
+  duration_ms: 0.326541
+  type: 'test'
+  ...
+# Subtest: manual riding crosses a wide bridge and parked bicycles never follow automatically
+ok 12 - manual riding crosses a wide bridge and parked bicycles never follow automatically
+  ---
+  duration_ms: 0.300708
+  type: 'test'
+  ...
+# Subtest: bicycle speed never tunnels through a canal or facade
+ok 13 - bicycle speed never tunnels through a canal or facade
+  ---
+  duration_ms: 2.105666
+  type: 'test'
+  ...
+# Subtest: the same city renders night lighting and discovered map notes
+ok 14 - the same city renders night lighting and discovered map notes
+  ---
+  duration_ms: 5.946583
+  type: 'test'
+  ...
+# Subtest: summary can render the city without requiring an interior pub state
+ok 15 - summary can render the city without requiring an interior pub state
+  ---
+  duration_ms: 1.728375
+  type: 'test'
+  ...
+# Subtest: the bicycle and basket bouquet remain visible at the parked location
+ok 16 - the bicycle and basket bouquet remain visible at the parked location
+  ---
+  duration_ms: 6.228834
+  type: 'test'
+  ...
+# Subtest: a displayed bouquet appears in the pub window and uses the chosen wrapping
+ok 17 - a displayed bouquet appears in the pub window and uses the chosen wrapping
+  ---
+  duration_ms: 4.652417
+  type: 'test'
+  ...
+# ✓ CommonJS and browser expose the same public contract
+# ✓ map geometry and named destinations match the shared scene contract
+# ✓ facades use fixed positions and decorative buildings stay on dry land
+# ✓ walkability keeps an eight-unit safety margin from bounds, water, and buildings
+# ✓ all 49 ordered destination routes are reachable and every segment is safe
+# ✓ the Noord route crosses the IJ only through the ferry corridor
+# ✓ routing safely joins exact positions and snaps blocked targets
+# ✓ movement normalizes diagonals, clamps elapsed time, and cannot cross obstacles
+# ✓ moveAlong advances at walking speed without mutating its inputs
+# ✓ near selects the closest destination within the requested radius
+# ✓ city state creation and restoration are strict, cloned, and independent
+# ✓ zoomed camera keeps a player visible at every dry map corner
+# ✓ zoom follows a central player and map clicks invert the actual render transform
+# 13 city tests passed.
+# Subtest: tools/prototype/test-city.js
+ok 2 - tools/prototype/test-city.js
+  ---
+  duration_ms: 7479.381792
+  type: 'test'
+  ...
+# Subtest: welcome offers one start CTA and keeps the seed in an accessible native disclosure
+ok 19 - welcome offers one start CTA and keeps the seed in an accessible native disclosure
+  ---
+  duration_ms: 46.5575
+  type: 'test'
+  ...
+# Subtest: day starts in a close following street view; pub/Lotte lead and the overview is one action away
+ok 20 - day starts in a close following street view; pub/Lotte lead and the overview is one action away
+  ---
+  duration_ms: 53.99
+  type: 'test'
+  ...
+# Subtest: all seven destinations stay genuinely reachable through the overview, and every arrival is recorded
+ok 21 - all seven destinations stay genuinely reachable through the overview, and every arrival is recorded
+  ---
+  duration_ms: 11791.907
+  type: 'test'
+  ...
+# Subtest: first street recommends the optional Lotte walk whose promise spends exactly one preparation and no cash
+ok 22 - first street recommends the optional Lotte walk whose promise spends exactly one preparation and no cash
+  ---
+  duration_ms: 112.185208
+  type: 'test'
+  ...
+# Subtest: the recommendation can be skipped: the pub door works immediately and opening keeps the preparations warning
+ok 23 - the recommendation can be skipped: the pub door works immediately and opening keeps the preparations warning
+  ---
+  duration_ms: 95.294875
+  type: 'test'
+  ...
+# Subtest: first night shows a short local select/pour/stop cue that can be dismissed once
+ok 24 - first night shows a short local select/pour/stop cue that can be dismissed once
+  ---
+  duration_ms: 110.089292
+  type: 'test'
+  ...
+# Subtest: restoring a saved night keeps the auto-pause; resuming returns to play
+ok 25 - restoring a saved night keeps the auto-pause; resuming returns to play
+  ---
+  duration_ms: 105.636291
+  type: 'test'
+  ...
+# Subtest: camera follows at close scale, and clicks invert the real transform at pub and far boundary
+ok 26 - camera follows at close scale, and clicks invert the real transform at pub and far boundary
+  ---
+  duration_ms: 15.85825
+  type: 'test'
+  ...
+# Subtest: street view labels the pub door and Lotte bridge but not distant destinations; overview labels all seven
+ok 27 - street view labels the pub door and Lotte bridge but not distant destinations; overview labels all seven
+  ---
+  duration_ms: 9.010041
+  type: 'test'
+  ...
+# Subtest: day 1 market panel: €8 crate, €4 saving, wallet/action guards, no receipt
+ok 28 - day 1 market panel: €8 crate, €4 saving, wallet/action guards, no receipt
+  ---
+  duration_ms: 6320.220791
+  type: 'test'
+  ...
+# Subtest: day 2 safe trade: real claim click yields 3 q1 blond +1 hop for one action; one-shot; claimed after reload
+ok 29 - day 2 safe trade: real claim click yields 3 q1 blond +1 hop for one action; one-shot; claimed after reload
+  ---
+  duration_ms: 2370.944917
+  type: 'test'
+  ...
+# Subtest: day 2 after real night 1 theft: €10 crate, €2 saving, real reason; no static €4 claim
+ok 30 - day 2 after real night 1 theft: €10 crate, €2 saving, real reason; no static €4 claim
+  ---
+  duration_ms: 5978.524459
+  type: 'test'
+  ...
+# Subtest: receipt errand guards in the live panel: 32-batch disabled, action0 disabled, hops15 still grants 3 cups with no hop or cash
+ok 31 - receipt errand guards in the live panel: 32-batch disabled, action0 disabled, hops15 still grants 3 cups with no hop or cash
+  ---
+  duration_ms: 6028.257458
+  type: 'test'
+  ...
+# Subtest: day 3 panel: final-night wording and no promise that tonight earns a day-4 errand or price
+ok 32 - day 3 panel: final-night wording and no promise that tonight earns a day-4 errand or price
+  ---
+  duration_ms: 1969.256209
+  type: 'test'
+  ...
+# Subtest: manual pre-choice on nights 1/2: free commitment, dated €10 consequence, real barrel cost, safe errand rewards are not a payout
+ok 33 - manual pre-choice on nights 1/2: free commitment, dated €10 consequence, real barrel cost, safe errand rewards are not a payout
+  ---
+  duration_ms: 3.787458
+  type: 'test'
+  ...
+# Subtest: manual night 3 pre-choice: final night, no day 4, both choices still offered
+ok 34 - manual night 3 pre-choice: final night, no day 4, both choices still offered
+  ---
+  duration_ms: 1.195792
+  type: 'test'
+  ...
+# Subtest: manual after-choice trade copy: committed route; delivery consumes the 3-slot barrel, not 4 cups; night 3 warns the receipt cannot pay
+ok 35 - manual after-choice trade copy: committed route; delivery consumes the 3-slot barrel, not 4 cups; night 3 warns the receipt cannot pay
+  ---
+  duration_ms: 2.436625
+  type: 'test'
+  ...
+# Subtest: manual receipt on return: nights 1/2 show the dated next-day voucher; night 3 says there is no next day
+ok 36 - manual receipt on return: nights 1/2 show the dated next-day voucher; night 3 says there is no next day
+  ---
+  duration_ms: 9.812542
+  type: 'test'
+  ...
+# Subtest: manual salvage return copy: nights 1/2 name the dated next-day €10; night 3 says no next-day price
+ok 37 - manual salvage return copy: nights 1/2 name the dated next-day €10; night 3 says no next-day price
+  ---
+  duration_ms: 13.114917
+  type: 'test'
+  ...
+# Subtest: auto pre-choice view on nights 1/2 explains the real bargain with no internal labels
+ok 38 - auto pre-choice view on nights 1/2 explains the real bargain with no internal labels
+  ---
+  duration_ms: 9.54425
+  type: 'test'
+  ...
+# Subtest: auto night 3 pre-choice and intro: final night, no day 4, no tomorrow promise
+ok 39 - auto night 3 pre-choice and intro: final night, no day 4, no tomorrow promise
+  ---
+  duration_ms: 5.06425
+  type: 'test'
+  ...
+# Subtest: auto after-choice copy through real steps: night 1 barrel route then voucher wording; night 3 final delivery earns no receipt
+ok 40 - auto after-choice copy through real steps: night 1 barrel route then voucher wording; night 3 final delivery earns no receipt
+  ---
+  duration_ms: 21.35875
+  type: 'test'
+  ...
+1..40
+# tests 40
+# suites 0
+# pass 40
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22818.402833

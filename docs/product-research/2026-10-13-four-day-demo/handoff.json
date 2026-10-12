@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-first-street-r2-20261013",
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "play02-first-street",
+    "task_type": "code",
+    "attempt_kind": "correction"
+  },
+  "goal": "Complete PLAY02 R2 per brief: fix real pub destination away from home, show one optional current step, add behavioral regressions and valid handoff. Reuse candidate, no redesign.",
+  "memory": {
+    "summary": "D23 newly authorizes four-day web demo iteration. D22 candidate exists, unadopted, all356 tests passed but real pub shortcut wrong at Lotte. Parent provides exact candidate as input.",
+    "decisions": [
+      "Coding Plan only Seed Evolving enabled/high",
+      "This is correction attempt2 of PLAY02; preserve D22 failure history",
+      "Two files only; no redraw/core changes"
+    ],
+    "completed": [
+      "D22 renderer/CSS/short welcome are copied candidate inputs",
+      "Parent real browser reproduced pub shortcut entering Lotte"
+    ],
+    "known_issues": [
+      "city-enter targets nearest, not pub",
+      "three-step card is too long",
+      "Edit report with status completed and only final command entries"
+    ]
+  },
+  "tasks": [
+    "Read brief and focused UI/test ranges",
+    "Reproduce wrong-target and current-step tests",
+    "Fix only listed UI and test file",
+    "Run two exact commands and complete report"
+  ],
+  "acceptance": [
+    "Actual pub destination from elsewhere",
+    "One current optional step, true costs and no auto reward",
+    "Existing scenario coverage retained and new regressions green",
+    "Read-only hash unchanged; two exact command final results, valid report"
+  ],
+  "constraints": [
+    "Read/Edit only listed files and report; exact Bash commands only",
+    "No network/git/deps/ownlogs/subagents",
+    "Parent independently validates full suite and GUI"
+  ],
+  "workspace": "/tmp/amsterdam-d23-20261013/input",
+  "read_files": [
+    "brief.md",
+    "tools/prototype/index.html",
+    "tools/prototype/reopening.css",
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/reopening-core.js",
+    "tools/prototype/journey-core.js",
+    "tools/prototype/journey-ui.js",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/delivery-orders.js",
+    "tools/prototype/character-stories.js",
+    "tools/prototype/flower-network.js",
+    "tools/prototype/test-market-daynight-ui.js",
+    "tools/prototype/test-city.js",
+    "tools/prototype/test-city-bike.js",
+    "tools/prototype/test-first-street-ui.js"
+  ],
+  "write_files": [
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/test-first-street-ui.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-first-street-ui.js tools/prototype/test-city.js tools/prototype/test-city-bike.js tools/prototype/test-market-daynight-ui.js",
+    "node --check tools/prototype/reopening-ui.js"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 1500,
+  "max_turns": 48
+}

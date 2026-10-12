@@ -1,5 +1,15 @@
 # 主线
 
+## D20：ART01整体美术升级（新明确批准，两路执行中）
+
+用户原请求：“好的，你按之前的 goal 给它要求，再美术上整体再升级一下，用 plan 提升一下一会儿我来看”。本轮明确实施场景和UI表现升级；固定Coding Plan、失败即停。既有商业目标、demo优先及旧失败历史保留；不是自动复活全部候选。
+
+精确游戏基线d89421ef86dda52044c38fab63f71a3f979138ca，独立codex/art-pass-20261013 / .claude/worktrees/art-pass-20261013。工作台dcf007ceb5f759722f4068cb2fc50ac020a196bd。原生worktree工具在本任务父目录返回Not a git repository，已核实项目忽略目录后用Git建立独立worktree；旧游戏worktree/18767/18827和存档未改。18828是本轮旧版基线预览，非升级交付。
+
+两路真正独立：amsterdam-art01-scene-20261013只改两个Canvas renderer；amsterdam-art01-ui-20261013只改index.html和三CSS。分别8输入179831B、10输入191765B，公开必要材料，1800秒80轮，Seed Evolving thinking enabled/high。已预跑准确暂存输入：两个语法检查、market-shift-ui和UI静态契约通过。完整任务合同见[美术范围](../../docs/product-research/2026-10-12-art-upgrade/README.md)。提交前即时全机检查为空；两路已各提交一次，稳定账本state=running。当前等待收齐，不另派波次。Notion任务https://app.notion.com/p/3f73285284df816bbb5dd6da243b54e8。
+
+验收：输入/输出范围和报告真实、原347测试、独立浏览器开局/白天地图/进店/夜探操作/暂停与390px；视觉改善明确，玩法/存档/相机坐标不变。通过后仅采用列明文件，commit/push独立分支，独立服务字节与提交一致。用户稍后试玩，人工趣味未验证。失败则只收齐归档、不重发/换平台/主代理接管重写。证据/tmp/amsterdam-art20-20261013。
+
 ## D19 2026-10-11：简短玩法概念文档（已交稿，待用户审阅方向）
 
 用户新请求：参考成熟游戏公司的公开设计文档，先看一份关于故事、小游戏、feature的简短玩法文档。仅文档；不恢复UPG01、不改游戏、不扩新实现。工作台基线036e55b1b59f79f5e20e3dac5389c24712349216；游戏事实参考d89421ef86dda52044c38fab63f71a3f979138ca。

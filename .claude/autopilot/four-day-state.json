@@ -260,7 +260,19 @@
     "three_day_parent_evidence": "three-day-parent: seed42001 same natural save, day1 actual6services+night1salvage/extracted/day2consequence; day2/3earlyclose; ending107cash12satisfied/won; exactrefresh; replay exactnaturalending isolatedcontexts",
     "notion_sync": "home full-service-parent b449330 evidence readback verified",
     "full_service_parent_evidence": "full-service-parent: exact prior natural day2 restore branch; day2 all10/day3 all12 served and natural automatic settlement; pending inspector pagehide restore exact, paid10/9patiences+12; won281cash28satisfied, endingrefresh exact,390/1440 nooverflow,17 browserbytes matched; pauses/DOM assistance,no humanfun.",
-    "full_service_evidence_commit": "b4493309af9d9fe4de4172ab36e0caa75aa5bbac"
+    "full_service_evidence_commit": "b4493309af9d9fe4de4172ab36e0caa75aa5bbac",
+    "candidate_snapshot": {
+      "path": "/Volumes/SanDisk2TB/amsterdam-demo-candidates/dad6b38/amsterdam-web-demo-dad6b38.zip",
+      "commit": "dad6b38c54fda94f541764242f61820d8177bd19",
+      "sha256": "f74032e8074118cc288ad462e8212cb33c039fd1e491e0d44174c42bac5e1d43",
+      "bytes": 5847795,
+      "source_files": 91,
+      "browser_resources": 17,
+      "evidence": "docs/product-research/2026-10-13-four-day-demo/candidate-snapshot",
+      "human_approved": false,
+      "steam_build": false,
+      "external_upload": false
+    }
   },
   "current_task_worker_pid": null,
   "freeze_audit_attempt": {
@@ -302,6 +314,6 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-13T20:44:50.163440+00:00",
+  "updated_at": "2026-10-13T21:16:43.915488+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00"
 }

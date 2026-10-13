@@ -1,0 +1,82 @@
+{
+  "game_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
+  "archive": "/Volumes/SanDisk2TB/amsterdam-demo-candidates/dad6b38/amsterdam-web-demo-dad6b38.zip",
+  "archive_sha256": "f74032e8074118cc288ad462e8212cb33c039fd1e491e0d44174c42bac5e1d43",
+  "archive_bytes": 5847795,
+  "source_files_exact": 91,
+  "extraction_root": "/Volumes/SanDisk2TB/amsterdam-demo-candidates/dad6b38/verification/amsterdam-web-demo-dad6b38",
+  "generated_at": "2026-10-13T21:10:30.855610+00:00",
+  "verification_server_pid": 3557,
+  "http_checks": [
+    {
+      "path": "tools/prototype/index.html",
+      "matches_adopted_manifest": true
+    },
+    {
+      "path": "tools/prototype/reopening.css",
+      "matches_adopted_manifest": true
+    },
+    {
+      "path": "tools/prototype/backstage.css",
+      "matches_adopted_manifest": true
+    },
+    {
+      "path": "tools/prototype/journey.css",
+      "matches_adopted_manifest": true
+    },
+    {
+      "path": "tools/prototype/journey-core.js",
+      "matches_adopted_manifest": true
+    },
+    {
+      "path": "tools/prototype/backstage-core.js",
+      "matches_adopted_manifest": true
+    },
+    {
+      "path": "tools/prototype/backstage-auto.js",
+      "matches_adopted_manifest": true
+    },
+    {
+      "path": "tools/prototype/delivery-orders.js",
+      "matches_adopted_manifest": true
+    },
+    {
+      "path": "tools/prototype/character-stories.js",
+      "matches_adopted_manifest": true
+    },
+    {
+      "path": "tools/prototype/flower-network.js",
+      "matches_adopted_manifest": true
+    },
+    {
+      "path": "tools/prototype/reopening-core.js",
+      "matches_adopted_manifest": true
+    },
+    {
+      "path": "tools/prototype/reopening-city.js",
+      "matches_adopted_manifest": true
+    },
+    {
+      "path": "tools/prototype/reopening-scene.js",
+      "matches_adopted_manifest": true
+    },
+    {
+      "path": "tools/prototype/backstage-scene.js",
+      "matches_adopted_manifest": true
+    },
+    {
+      "path": "tools/prototype/backstage-ui.js",
+      "matches_adopted_manifest": true
+    },
+    {
+      "path": "tools/prototype/journey-ui.js",
+      "matches_adopted_manifest": true
+    },
+    {
+      "path": "tools/prototype/reopening-ui.js",
+      "matches_adopted_manifest": true
+    }
+  ],
+  "temporary_server_stopped": true,
+  "smoke": "fresh day1, exact pause/reload save,390 nooverflow,actual17responses byte-equal"
+}

@@ -1,0 +1,22 @@
+{
+  "checked_at": "2026-10-13T21:16:43.915488+00:00",
+  "archive_sha256": "f74032e8074118cc288ad462e8212cb33c039fd1e491e0d44174c42bac5e1d43",
+  "archive_bytes": 5847795,
+  "git_source_files_byte_equal": 91,
+  "extracted_source_files_byte_equal": 91,
+  "generated_metadata_files": 2,
+  "directory_entries": 9,
+  "browser_response_matches": 17,
+  "fresh_day1_cash": 45,
+  "refresh_save_exact": true,
+  "width_390": true,
+  "console_errors": 0,
+  "temporary_server_pid_gone": true,
+  "temporary_port_18861_closed": true,
+  "adopted_18860_http_status": 200,
+  "screenshot_state": "paused_overlay; Escape after reload toggled pause; not a resume assertion",
+  "new_cc_requests": 0,
+  "game_changes": 0,
+  "node_regression_rerun": false,
+  "parent_diagnostic": "Initial archive assertion counted directories as files (102 entries versus expected 93). Corrected to regular files: 93=91 source+2 metadata, plus9 directory entries. No package bytes changed."
+}

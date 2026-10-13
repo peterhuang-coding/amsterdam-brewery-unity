@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-street-atmosphere-r2-20261013",
+  "receipt_sha256": "6bcf48f491ba81533fbd0d592c45903402ad01e93c1e3e967124480c2eac3d33",
+  "reviewed_at": "2026-10-13T04:35:25Z",
+  "outcome": "partial",
+  "failure_type": "structure",
+  "evidence": [
+    {
+      "path": "/tmp/amsterdam-street-atmosphere-r2-review-20261013/parent-validation.md",
+      "sha256": "6f42733c3e5d74858e97ff7ec67ae85e700cae0c67243f17e3efce677d233a9b"
+    }
+  ]
+}

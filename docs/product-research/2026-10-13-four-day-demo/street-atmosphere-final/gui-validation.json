@@ -1,0 +1,32 @@
+{
+  "natural_path": [
+    "new game",
+    "near map click Lotte",
+    "arrived Lotte",
+    "leave",
+    "overview map click pub",
+    "arrived pub",
+    "open after unused-action confirmation",
+    "early close confirmation",
+    "night city near/overview",
+    "reload same night cash27 stock6/2",
+    "sleep",
+    "day2 near map"
+  ],
+  "desktop_screenshots": [
+    "day-near.png",
+    "day-overview.png",
+    "night-near.png",
+    "night-overview.png"
+  ],
+  "mobile_screenshots": [
+    "night-390.png",
+    "night-overview-390.png",
+    "day-390.png"
+  ],
+  "mobile_width": 390,
+  "mobile_scrollWidth": 390,
+  "console_errors_warnings": [],
+  "reduced_motion": "automated fixed-view identical-frame regression; not human OS setting test",
+  "scope": "GUI scene acceptance; no perfect-pour or fun approval"
+}

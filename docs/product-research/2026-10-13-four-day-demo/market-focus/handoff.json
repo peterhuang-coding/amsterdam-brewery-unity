@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-market-focus-20261013",
+  "workspace": "/tmp/amsterdam-market-focus-20261013/input",
+  "goal": "Make existing supermarket night readable as one current actionable goal with truthful choice consequences; preserve all mechanics and old tests.",
+  "data_sensitivity": "public",
+  "read_files": [
+    "brief.md",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/backstage.css",
+    "tools/prototype/test-market-shift-ui.js",
+    "tools/prototype/test-market-shift.js",
+    "tools/prototype/test-market-focus-ui.js"
+  ],
+  "write_files": [
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/test-market-focus-ui.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-market-focus-ui.js",
+    "node --test tools/prototype/test-market-shift-ui.js tools/prototype/test-market-shift.js",
+    "node --check tools/prototype/backstage-ui.js",
+    "node --check tools/prototype/test-market-focus-ui.js"
+  ],
+  "acceptance": [
+    "Only two allowed outputs change; all old sources/tests immutable",
+    "Focused current-market guidance follows real states in both modes, risks stay visible; outside-market/legacy unchanged",
+    "New behavior tests red before UI change and green after; old tests and syntax pass",
+    "Exactly one final report tests row per command; RED evidence in summary; no false player GUI/fun claim"
+  ],
+  "constraints": [
+    "Follow brief precise boundaries; Read/Edit/Bash exact commands only",
+    "Do not revive PLAY03 or edit economics/saves/routing",
+    "Only public input; no network or external material"
+  ],
+  "tasks": [
+    "Read brief and necessary modules",
+    "Write focused real-behavior regression and observe red",
+    "Implement bounded market guidance presentation and verify",
+    "Write complete valid handoff before deadline"
+  ],
+  "memory": {
+    "summary": "D23 autonomous demo polish; D24 one correction per logical task. Player found complex UI and long teaching. This packet is separate from shelved first-cup.",
+    "completed": [
+      "PLAY02 adopted6e4f7b3, PLAY04 scene adopted e3b7ac3 with parent365/365 and GUI."
+    ],
+    "known_issues": [
+      "Current market manual board mixes unrelated goals with long contract; automatic movement copy generic."
+    ],
+    "decisions": [
+      "Reuse existing market decisions/consequences, no new mechanics",
+      "Report final tests one row per command, red in summary"
+    ]
+  },
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "play05-market-focus",
+    "task_type": "code",
+    "attempt_kind": "business"
+  },
+  "timeout_seconds": 1500,
+  "max_turns": 48
+}

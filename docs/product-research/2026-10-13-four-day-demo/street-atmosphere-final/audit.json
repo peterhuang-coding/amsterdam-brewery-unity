@@ -1,0 +1,240 @@
+{
+  "base": "6e4f7b3fbb7ad7eca5d3b30b474f61d7437059c7",
+  "tests": [
+    {
+      "label": "red",
+      "command": [
+        "node",
+        "--test",
+        "tools/prototype/test-street-atmosphere.js"
+      ],
+      "exit": 1,
+      "tail": "20261013/red/tools/prototype/test-street-atmosphere.js:281:1'\n  failureType: 'testCodeFailure'\n  error: 'fillRect requires finite numeric geometry at argument 0 but got 450[object Object]1'\n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: true\n  actual: false\n  operator: '=='\n  stack: |-\n    record (/private/tmp/amsterdam-street-atmosphere-r2-review-20261013/red/tools/prototype/test-street-atmosphere.js:78:16)\n    Proxy.<anonymous> (/private/tmp/amsterdam-street-atmosphere-r2-review-20261013/red/tools/prototype/test-street-atmosphere.js:167:27)\n    PubScene.rect (evalmachine.<anonymous>:14:62)\n    PubScene.drawQuayWater (evalmachine.<anonymous>:72:50)\n    PubScene.drawCity (evalmachine.<anonymous>:152:40)\n    render (/private/tmp/amsterdam-street-atmosphere-r2-review-20261013/red/tools/prototype/test-street-atmosphere.js:192:9)\n    TestContext.<anonymous> (/private/tmp/amsterdam-street-atmosphere-r2-review-20261013/red/tools/prototype/test-street-atmosphere.js:301:33)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n  ...\n# Subtest: recorder models Canvas translate/scale post-multiplication with nested save/restore\nok 6 - recorder models Canvas translate/scale post-multiplication with nested save/restore\n  ---\n  duration_ms: 0.636958\n  type: 'test'\n  ...\n# Subtest: recorder rejects string, undefined and non-finite geometry while accepting real text, styles and gradients\nok 7 - recorder rejects string, undefined and non-finite geometry while accepting real text, styles and gradients\n  ---\n  duration_ms: 0.59875\n  type: 'test'\n  ...\n1..7\n# tests 7\n# suites 0\n# pass 2\n# fail 5\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 79.560542\n"
+    },
+    {
+      "label": "new",
+      "command": [
+        "node",
+        "--test",
+        "tools/prototype/test-street-atmosphere.js"
+      ],
+      "exit": 0,
+      "tail": "TAP version 13\n# Subtest: reduced motion: a fixed city state draws identical frames at two different times\nok 1 - reduced motion: a fixed city state draws identical frames at two different times\n  ---\n  duration_ms: 73.168292\n  type: 'test'\n  ...\n# Subtest: normal mode keeps the gentle ambient animation over time\nok 2 - normal mode keeps the gentle ambient animation over time\n  ---\n  duration_ms: 10.394375\n  type: 'test'\n  ...\n# Subtest: drawCity never mutates its view input or the shared city geometry\nok 3 - drawCity never mutates its view input or the shared city geometry\n  ---\n  duration_ms: 9.469084\n  type: 'test'\n  ...\n# Subtest: every frame uses finite coordinates and unwinds its save/restore transforms\nok 4 - every frame uses finite coordinates and unwinds its save/restore transforms\n  ---\n  duration_ms: 26.723083\n  type: 'test'\n  ...\n# Subtest: the recorded city draw matrix matches cityTransform and cityWorldPoint inverts it at the pub, Lotte bridge and map edges\nok 5 - the recorded city draw matrix matches cityTransform and cityWorldPoint inverts it at the pub, Lotte bridge and map edges\n  ---\n  duration_ms: 9.017458\n  type: 'test'\n  ...\n# Subtest: recorder models Canvas translate/scale post-multiplication with nested save/restore\nok 6 - recorder models Canvas translate/scale post-multiplication with nested save/restore\n  ---\n  duration_ms: 0.114375\n  type: 'test'\n  ...\n# Subtest: recorder rejects string, undefined and non-finite geometry while accepting real text, styles and gradients\nok 7 - recorder rejects string, undefined and non-finite geometry while accepting real text, styles and gradients\n  ---\n  duration_ms: 0.862917\n  type: 'test'\n  ...\n1..7\n# tests 7\n# suites 0\n# pass 7\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 194.725125\n"
+    },
+    {
+      "label": "full",
+      "command": [
+        "node",
+        "--test",
+        "tools/prototype/test-algorithm-city-equivalence.js",
+        "tools/prototype/test-algorithm-city.js",
+        "tools/prototype/test-algorithm-history.js",
+        "tools/prototype/test-algorithm-physics.js",
+        "tools/prototype/test-algorithm-replay.js",
+        "tools/prototype/test-algorithm-routes.js",
+        "tools/prototype/test-algorithm-saves.js",
+        "tools/prototype/test-backstage-auto.js",
+        "tools/prototype/test-backstage.js",
+        "tools/prototype/test-character-stories.js",
+        "tools/prototype/test-city-bike.js",
+        "tools/prototype/test-city-consequence-quality.js",
+        "tools/prototype/test-city-journey-quality.js",
+        "tools/prototype/test-city.js",
+        "tools/prototype/test-daynight.js",
+        "tools/prototype/test-delivery-orders.js",
+        "tools/prototype/test-district-auto.js",
+        "tools/prototype/test-district-core.js",
+        "tools/prototype/test-district-daynight.js",
+        "tools/prototype/test-first-street-ui.js",
+        "tools/prototype/test-flower-network.js",
+        "tools/prototype/test-journey-integration.js",
+        "tools/prototype/test-journey.js",
+        "tools/prototype/test-location-daynight.js",
+        "tools/prototype/test-location-depth.js",
+        "tools/prototype/test-market-daynight-ui.js",
+        "tools/prototype/test-market-daynight.js",
+        "tools/prototype/test-market-shift-ui.js",
+        "tools/prototype/test-market-shift.js",
+        "tools/prototype/test-night-streets.js",
+        "tools/prototype/test-phase-e.js",
+        "tools/prototype/test-reopening.js",
+        "tools/prototype/test-street-atmosphere.js"
+      ],
+      "exit": 0,
+      "tail": "...\n# Subtest: reduced motion: a fixed city state draws identical frames at two different times\nok 290 - reduced motion: a fixed city state draws identical frames at two different times\n  ---\n  duration_ms: 108.546125\n  type: 'test'\n  ...\n# Subtest: normal mode keeps the gentle ambient animation over time\nok 291 - normal mode keeps the gentle ambient animation over time\n  ---\n  duration_ms: 14.92025\n  type: 'test'\n  ...\n# Subtest: drawCity never mutates its view input or the shared city geometry\nok 292 - drawCity never mutates its view input or the shared city geometry\n  ---\n  duration_ms: 17.503333\n  type: 'test'\n  ...\n# Subtest: every frame uses finite coordinates and unwinds its save/restore transforms\nok 293 - every frame uses finite coordinates and unwinds its save/restore transforms\n  ---\n  duration_ms: 52.2415\n  type: 'test'\n  ...\n# Subtest: the recorded city draw matrix matches cityTransform and cityWorldPoint inverts it at the pub, Lotte bridge and map edges\nok 294 - the recorded city draw matrix matches cityTransform and cityWorldPoint inverts it at the pub, Lotte bridge and map edges\n  ---\n  duration_ms: 19.430083\n  type: 'test'\n  ...\n# Subtest: recorder models Canvas translate/scale post-multiplication with nested save/restore\nok 295 - recorder models Canvas translate/scale post-multiplication with nested save/restore\n  ---\n  duration_ms: 0.128917\n  type: 'test'\n  ...\n# Subtest: recorder rejects string, undefined and non-finite geometry while accepting real text, styles and gradients\nok 296 - recorder rejects string, undefined and non-finite geometry while accepting real text, styles and gradients\n  ---\n  duration_ms: 0.925125\n  type: 'test'\n  ...\n1..296\n# tests 365\n# suites 0\n# pass 365\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 13356.062208\n"
+    },
+    {
+      "label": "syntax",
+      "command": [
+        "node",
+        "--check",
+        "tools/prototype/reopening-scene.js"
+      ],
+      "exit": 0,
+      "tail": ""
+    }
+  ],
+  "test_files": 33,
+  "input_source_unchanged": {
+    "brief.md": true,
+    "original-scope.md": true,
+    "tools/prototype/flower-network.js": true,
+    "tools/prototype/reopening-city.js": true,
+    "tools/prototype/reopening-scene.js": true,
+    "tools/prototype/test-city.js": true,
+    "tools/prototype/test-street-atmosphere.js": true
+  },
+  "readonly_workspace_unchanged": {
+    "brief.md": true,
+    "original-scope.md": true,
+    "tools/prototype/flower-network.js": true,
+    "tools/prototype/reopening-city.js": true,
+    "tools/prototype/test-city.js": true
+  },
+  "tool_counts": {
+    "Read": 8,
+    "Edit": 7,
+    "Bash": 4
+  },
+  "tool_calls": [
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-street-atmosphere-r2-20261013/workspace/brief.md"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-street-atmosphere-r2-20261013/workspace/original-scope.md"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-street-atmosphere-r2-20261013/workspace/tools/prototype/reopening-scene.js"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-street-atmosphere-r2-20261013/workspace/tools/prototype/test-street-atmosphere.js"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-street-atmosphere-r2-20261013/workspace/tools/prototype/reopening-city.js"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-street-atmosphere-r2-20261013/workspace/tools/prototype/test-city.js"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-street-atmosphere-r2-20261013/workspace/tools/prototype/test-street-atmosphere.js",
+        "old_string": "// Methods whose first two arguments are world-space (x, y) coordinates.\nconst XY_METHODS = new Set([\n  'fillRect', 'clearRect', 'rect', 'ellipse', 'arc',\n  'moveTo', 'lineTo', 'fillText', 'strokeText'\n]);",
+        "new_string": "// Required finite-number argument positions per Canvas operation. fillText\n// and strokeText receive their text at index 0; addColorStop a color string.\nconst NUMERIC_INDICES = {\n  fillRect: [0, 1, 2, 3], clearRect: [0, 1, 2, 3], rect: [0, 1, 2, 3],\n  ellipse: [0, 1, 2, 3, 4, 5, 6], arc: [0, 1, 2, 3, 4], arcTo: [0, 1, 2, 3, 4],\n  moveTo: [0, 1], lineTo: [0, 1],\n  quadraticCurveTo: [0, 1, 2, 3], bezierCurveTo: [0, 1, 2, 3, 4, 5],\n  fillText: [1, 2], strokeText: [1, 2],\n  translate: [0, 1], scale: [0, 1], rotate: [0],\n  transform: [0, 1, 2, 3, 4, 5], setTransform: [0, 1, 2, 3, 4, 5],\n  createRadialGradient: [0, 1, 2, 3, 4, 5], createLinearGradient: [0, 1, 2, 3],\n  addColorStop: [0]\n};\nconst TEXT_METHODS = new Set(['fillText', 'strokeText']);\n// Argument pair holding the anchor point projected through the live matrix.\nconst XY_ORIGIN = {\n  fillRect: [0, 1], clearRect: [0, 1], rect: [0, 1],\n  ellipse: [0, 1], arc: [0, 1], arcTo: [0, 1],\n  moveTo: [0, 1], lineTo: [0, 1],\n  quadraticCurveTo: [0, 1], bezierCurveTo: [0, 1],\n  fillText: [1, 2], strokeText: [1, 2]\n};"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-street-atmosphere-r2-20261013/workspace/tools/prototype/test-street-atmosphere.js",
+        "old_string": "  function record(name, args) {\n    for (const value of args) {\n      if (typeof value === 'number') {\n        assert.ok(Number.isFinite(value), name + ' received a non-finite number');\n      }\n    }\n    if (XY_METHODS.has(name) && typeof args[0] === 'number' && typeof args[1] === 'number') {\n      const [sx, sy] = screen(args[0], args[1]);\n      assert.ok(Number.isFinite(sx) && Number.isFinite(sy), name + ' produced non-finite screen coordinates');\n    }\n    for (const v of matrix) assert.ok(Number.isFinite(v), name + ' corrupted the transform matrix');\n    calls.push({\n      name,\n      args: args.map(tag),\n      fillStyle: tag(style.fillStyle),\n      strokeStyle: tag(style.strokeStyle),\n      lineWidth: style.lineWidth,\n      font: style.font,\n      textAlign: style.textAlign,\n      lineDash: style.lineDash.slice(),\n      lineDashOffset: style.lineDashOffset,\n      matrix: matrix.slice()\n    });\n  }",
+        "new_string": "  function record(name, args) {\n    const required = NUMERIC_INDICES[name];\n    if (required) {\n      for (const index of required) {\n        const value = args[index];\n        assert.ok(\n          typeof value === 'number' && Number.isFinite(value),\n          name + ' requires finite numeric geometry at argument ' + index + ' but got ' + String(value)\n        );\n      }\n    }\n    if (TEXT_METHODS.has(name)) {\n      assert.ok(typeof args[0] === 'string', name + ' first argument must be the text to draw');\n    } else if (name === 'addColorStop') {\n      assert.ok(typeof args[1] === 'string', 'addColorStop color must be a string');\n    }\n    for (const value of args) {\n      if (typeof value === 'number') {\n        assert.ok(Number.isFinite(value), name + ' received a non-finite number');\n      }\n    }\n    let projected = null;\n    const origin = XY_ORIGIN[name];\n    if (origin) {\n      const [sx, sy] = screen(args[origin[0]], args[origin[1]]);\n      assert.ok(Number.isFinite(sx) && Number.isFinite(sy), name + ' produced non-finite screen coordinates');\n      projected = [sx, sy];\n    }\n    for (const v of matrix) assert.ok(Number.isFinite(v), name + ' corrupted the transform matrix');\n    calls.push({\n      name,\n      args: args.map(tag),\n      fillStyle: tag(style.fillStyle),\n      strokeStyle: tag(style.strokeStyle),\n      lineWidth: style.lineWidth,\n      font: style.font,\n      textAlign: style.textAlign,\n      lineDash: style.lineDash.slice(),\n      lineDashOffset: style.lineDashOffset,\n      screen: projected,\n      matrix: matrix.slice()\n    });\n  }"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-street-atmosphere-r2-20261013/workspace/tools/prototype/test-street-atmosphere.js",
+        "old_string": "    scale(sx, sy) {\n      matrix[0] *= sx; matrix[2] *= sx; matrix[4] *= sx;\n      matrix[1] *= sy; matrix[3] *= sy; matrix[5] *= sy;\n      record('scale', [sx, sy]);\n    },",
+        "new_string": "    scale(sx, sy) {\n      // Canvas post-multiplication: scale the x column (a,b) by sx and the\n      // y column (c,d) by sy; the accumulated translation (e,f) stays fixed.\n      matrix[0] *= sx; matrix[1] *= sx;\n      matrix[2] *= sy; matrix[3] *= sy;\n      record('scale', [sx, sy]);\n    },"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-street-atmosphere-r2-20261013/workspace/tools/prototype/test-street-atmosphere.js",
+        "old_string": "    setLineDash(dash) {\n      const value = Array.isArray(dash) ? dash.slice() : [];\n      style.lineDash = value;\n      record('setLineDash', value.slice());\n    },",
+        "new_string": "    setLineDash(dash) {\n      const value = Array.isArray(dash) ? dash.slice() : [];\n      for (const entry of value) {\n        assert.ok(typeof entry === 'number' && Number.isFinite(entry), 'setLineDash entries must be finite numbers');\n      }\n      style.lineDash = value;\n      record('setLineDash', value.slice());\n    },"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-street-atmosphere-r2-20261013/workspace/tools/prototype/test-street-atmosphere.js",
+        "old_string": "test('cityWorldPoint inverts the live transform at the pub, Lotte bridge and map edges', () => {\n  const world = loadWorld();\n  mediaQuery.matches = false;\n  const points = [\n    [City.PLACES.pub.x, City.PLACES.pub.y],\n    [City.PLACES.lotte.x, City.PLACES.lotte.y],\n    [516, 624], // musician's narrow bridge\n    [78, 48], [1722, 48], [78, 1072], [1722, 1072],\n    [City.LAND.x, City.LAND.y],\n    [City.LAND.x + City.LAND.w, City.LAND.y + City.LAND.h]\n  ];\n  const cameras = [\n    { camera: 'street', zoom: 1 },\n    { camera: 'overview', zoom: 1 },\n    { camera: 'overview', zoom: 2 }\n  ];\n  for (const cfg of cameras) {\n    const { scene } = render(world, cityView(cfg.camera, false, { zoom: cfg.zoom }), 1);\n    const tr = scene.cityTransform;\n    assert.ok(tr && Number.isFinite(tr.scale) && tr.scale > 0, 'street transform scale is missing');\n    assert.ok(Number.isFinite(tr.tx) && Number.isFinite(tr.ty), 'street transform translation is missing');\n    for (const [wx, wy] of points) {\n      const sx = wx * tr.scale + tr.tx;\n      const sy = wy * tr.scale + tr.ty;\n      const back = scene.cityWorldPoint(sx, sy);\n      assert.ok(\n        Math.hypot(back.x - wx, back.y - wy) < 1e-7,\n        `${cfg.camera} zoom${cfg.zoom} click inversion failed at world ${wx},${wy}`\n      );\n    }\n  }\n});",
+        "new_string": "test('the recorded city draw matrix matches cityTransform and cityWorldPoint inverts it at the pub, Lotte bridge and map edges', () => {\n  const world = loadWorld();\n  mediaQuery.matches = false;\n  const points = {\n    pub: [City.PLACES.pub.x, City.PLACES.pub.y],\n    lotte: [City.PLACES.lotte.x, City.PLACES.lotte.y],\n    bridge: [516, 624], // musician's narrow bridge\n    edgeTopLeft: [78, 48], edgeTopRight: [1722, 48],\n    edgeBottomLeft: [78, 1072], edgeBottomRight: [1722, 1072],\n    landNear: [City.LAND.x, City.LAND.y],\n    landFar: [City.LAND.x + City.LAND.w, City.LAND.y + City.LAND.h]\n  };\n  const cameras = [\n    { camera: 'street', zoom: 1 },\n    { camera: 'overview', zoom: 1 },\n    { camera: 'overview', zoom: 2 }\n  ];\n  const closeToOne = (a, b) => Math.abs(a - b) < 1e-7;\n  for (const cfg of cameras) {\n    const label = `${cfg.camera} zoom${cfg.zoom}`;\n    const { scene, recorder } = render(world, cityView(cfg.camera, false, { zoom: cfg.zoom }), 1);\n    const tr = scene.cityTransform;\n    assert.ok(tr && Number.isFinite(tr.scale) && tr.scale > 0, label + ': transform scale is missing');\n    assert.ok(Number.isFinite(tr.tx) && Number.isFinite(tr.ty), label + ': transform translation is missing');\n    // The base land rect (0,0,WIDTH,HEIGHT) is a real world-space draw issued\n    // while the city camera matrix is active; read the matrix off its record.\n    const base = recorder.calls.find(call =>\n      call.name === 'fillRect' &&\n      call.args[0] === 0 && call.args[1] === 0 &&\n      call.args[2] === City.WIDTH && call.args[3] === City.HEIGHT\n    );\n    assert.ok(base, label + ': recorded world-space base draw was not found');\n    const m = base.matrix;\n    assert.ok(closeToOne(m[0], tr.scale) && closeToOne(m[3], tr.scale), label + ': recorded scale differs from cityTransform');\n    assert.ok(closeToOne(m[1], 0) && closeToOne(m[2], 0), label + ': recorded city matrix is not axis aligned');\n    assert.ok(closeToOne(m[4], tr.tx) && closeToOne(m[5], tr.ty), label + ': recorded translation differs from cityTransform');\n    assert.ok(closeToOne(base.screen[0], tr.tx) && closeToOne(base.screen[1], tr.ty), label + ': recorded base origin is not the camera translation');\n    for (const [name, [wx, wy]] of Object.entries(points)) {\n      const sx = m[0] * wx + m[2] * wy + m[4];\n      const sy = m[1] * wx + m[3] * wy + m[5];\n      assert.ok(\n        closeToOne(sx, wx * tr.scale + tr.tx) && closeToOne(sy, wy * tr.scale + tr.ty),\n        `${label} ${name}: recorded draw point disagrees with the cityTransform forward mapping`\n      );\n      const back = scene.cityWorldPoint(sx, sy);\n      assert.ok(\n        Math.hypot(back.x - wx, back.y - wy) < 1e-7,\n        `${label} ${name}: cityWorldPoint failed to invert the recorded draw matrix at world ${wx},${wy}`\n      );\n    }\n  }\n});\n\ntest('recorder models Canvas translate/scale post-multiplication with nested save/restore', () => {\n  const recorder = createRecorder();\n  const c = recorder.ctx;\n  c.save();\n  c.translate(10, 20);\n  c.scale(2, 3);\n  assert.deepEqual(recorder.matrix(), [2, 0, 0, 3, 10, 20], 'translate then scale must keep the earlier translation');\n  c.fillRect(4, 5, 1, 1);\n  assert.deepEqual(recorder.calls.at(-1).screen, [18, 35], 'world point (4,5) must project to screen (18,35)');\n  // A nested transform measures its translation in the scaled parent space.\n  c.save();\n  c.translate(6, 0);\n  c.moveTo(0, 0);\n  assert.deepEqual(recorder.calls.at(-1).screen, [22, 20], 'nested translate must compose in scaled coordinates');\n  c.restore();\n  assert.deepEqual(recorder.matrix(), [2, 0, 0, 3, 10, 20], 'inner restore must return to the parent camera matrix');\n  c.moveTo(0, 0);\n  assert.deepEqual(recorder.calls.at(-1).screen, [10, 20]);\n  c.restore();\n  assert.equal(recorder.depth(), 0, 'nested save/restore must fully unwind');\n  assert.deepEqual(recorder.matrix(), [1, 0, 0, 1, 0, 0], 'matrix must return to identity after restore');\n});\n\ntest('recorder rejects string, undefined and non-finite geometry while accepting real text, styles and gradients', () => {\n  const recorder = createRecorder();\n  const c = recorder.ctx;\n  // Legitimate calls first: text content, styles, dashes and gradient colors\n  // are never geometry and must be accepted.\n  c.fillStyle = '#e6d5a9';\n  c.strokeStyle = '#f6d88f';\n  c.lineWidth = 5;\n  c.font = '16px sans-serif';\n  c.textAlign = 'left';\n  c.setLineDash([10, 9]);\n  c.fillText('免费渡轮', 12, 300);\n  c.strokeText('N', 1068, 43);\n  c.fillRect(0, 0, 1100, 640);\n  const glow = c.createRadialGradient(335, 610, 0, 335, 610, 66);\n  glow.addColorStop(0, '#eab85a3d');\n  glow.addColorStop(1, '#eab85a00');\n  assert.doesNotThrow(() => glow.addColorStop(0.5, '#ffffff14'));\n  const invalid = [\n    ['fillRect string x (the quay bug)', () => c.fillRect('450[object Object]1', 453, 6, 646)],\n    ['fillRect undefined width', () => c.fillRect(1, 2, undefined, 4)],\n    ['fillRect NaN height', () => c.fillRect(1, 2, 3, NaN)],\n    ['fillRect Infinity y', () => c.fillRect(1, Infinity, 3, 4)],\n    ['moveTo string coordinate', () => c.moveTo('1', 2)],\n    ['lineTo undefined coordinate', () => c.lineTo(1, undefined)],\n    ['ellipse non-finite radius', () => c.ellipse(1, 2, 3, Infinity, 0, 0, Math.PI * 2)],\n    ['arc string radius', () => c.arc(1, 2, '6', 0, Math.PI * 2)],\n    ['fillText string x', () => c.fillText('Lotte', '9', 2)],\n    ['fillText undefined y', () => c.fillText('Lotte', 9, undefined)],\n    ['createRadialGradient NaN radius', () => c.createRadialGradient(0, 0, 0, 0, 0, NaN)],\n    ['createLinearGradient undefined coordinate', () => c.createLinearGradient(0, 0, 4, undefined)],\n    ['addColorStop NaN offset', () => glow.addColorStop(NaN, '#ffffff')],\n    ['addColorStop numeric color', () => glow.addColorStop(0, 42)],\n    ['setLineDash non-finite entry', () => c.setLineDash([7, NaN])],\n    ['translate NaN', () => c.translate(NaN, 1)],\n    ['scale undefined factor', () => c.scale(2, undefined)]\n  ];\n  for (const [label, fn] of invalid) assert.throws(fn, label);\n  assert.equal(recorder.depth(), 0, 'rejected geometry must not leave save state behind');\n});"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --test tools/prototype/test-street-atmosphere.js",
+        "description": "Run street atmosphere tests (expect red on buggy scene)"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-street-atmosphere-r2-20261013/workspace/tools/prototype/reopening-scene.js",
+        "old_string": "        this.rect(w.x-7,w.y-7,6,w.h+14,cap);this.rect(w.x+w+1,w.y-7,6,w.h+14,cap);\n        for(let qy=w.y+18;qy<w.y+w.h-6;qy+=26){\n          this.line([[w.x-6,qy],[w.x-1,qy]],night?'#00000026':'#7a6c4c2b',1);\n          this.line([[w.x+w+2,qy],[w.x+w+6,qy]],night?'#00000026':'#7a6c4c2b',1);",
+        "new_string": "        this.rect(w.x-7,w.y-7,6,w.h+14,cap);this.rect(w.x+w.w+1,w.y-7,6,w.h+14,cap);\n        for(let qy=w.y+18;qy<w.y+w.h-6;qy+=26){\n          this.line([[w.x-6,qy],[w.x-1,qy]],night?'#00000026':'#7a6c4c2b',1);\n          this.line([[w.x+w.w+2,qy],[w.x+w.w+6,qy]],night?'#00000026':'#7a6c4c2b',1);"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --test tools/prototype/test-street-atmosphere.js",
+        "description": "Run street atmosphere tests after quay fix"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --test tools/prototype/test-city.js",
+        "description": "Run immutable city regression tests"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --check tools/prototype/reopening-scene.js",
+        "description": "Syntax check reopening-scene.js"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-street-atmosphere-r2-20261013/workspace/handoff-result.json"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-street-atmosphere-r2-20261013/workspace/handoff-result.json",
+        "old_string": "",
+        "new_string": "{\"status\":\"completed\",\"summary\":\"D24 correction 1/1 for PLAY04. Fixed drawQuayWater vertical branch numeric coordinates: right coping x and both vertical joint endpoints used the water object w (yielding strings like 450[object Object]1) and now use numeric w.w; no other scene expressions, materials or geometry changed. Strengthened the Canvas recorder in test-street-atmosphere.js: per-operation finite-numeric argument validation (fillText/strokeText keep a string first arg; addColorStop keeps string color; styles/dashes/gradients accepted), a negative harness self-test for string/undefined/NaN/Infinity geometry, correct Canvas post-multiplication scale (x column a,b by sx; y column c,d by sy; translation e,f unchanged) with independent translate(10,20)+scale(2,3)->[2,0,0,3,10,20] and world (4,5)->screen (18,35) checks plus nested save/restore, and a strengthened inverse test comparing the actual recorded world-space draw matrix (from the base land rect) with scene.cityTransform and cityWorldPoint at pub, Lotte, bridge 516,624 and map edges in street/overview/overview-zoom2. Red first: strengthened tests against the uncorrected scene failed 5/7 with 'fillRect requires finite numeric geometry at argument 0 but got 450[object Object]1' at drawQuayWater line 72; the two pure recorder tests passed. Green after the one-file numeric fix: 7/7. Original five behavior tests and intent preserved; test-city.js untouched.\",\"changed_files\":[\"tools/prototype/reopening-scene.js\",\"tools/prototype/test-street-atmosphere.js\"],\"tests\":[{\"command\":\"node --test tools/prototype/test-street-atmosphere.js\",\"exit_code\":1,\"summary\":\"RED before scene fix (harness already strengthened), exit 1: 2 pass / 5 fail; every city render aborted with 'fillRect requires finite numeric geometry at argument 0 but got 450[object Object]1' at drawQuayWater vertical right coping (reopening-scene.js line 72 via drawCity line 152); both new pure-recorder tests passed, showing the red is the scene defect.\"},{\"command\":\"node --test tools/prototype/test-street-atmosphere.js\",\"exit_code\":0,\"summary\":\"GREEN after numeric quay fix, exit 0: 7/7 pass - original 5 behavior tests (reduced-motion frame equality, ambient animation, input/city immutability, finite coords and balanced transforms, inverse mapping) preserved plus recorder post-multiplication/nested save-restore and negative geometry-rejection self-test.\"},{\"command\":\"node --test tools/prototype/test-city.js\",\"exit_code\":0,\"summary\":\"Exit 0: immutable city suite passes, 13/13 (contract, frozen geometry, 49 routes, ferry corridor, movement/restore, camera transform tests).\"},{\"command\":\"node --check tools/prototype/reopening-scene.js\",\"exit_code\":0,\"summary\":\"Exit 0: syntax check passes with no output.\"}],\"blockers\":[],\"memory_delta\":[\"Vertical quay bug root cause: drawQuayWater vertical branch added the water object w (w.x+w+1, w.x+w+2/+6) instead of width w.w, string-concatenating coordinates; fixed to w.w in all three expressions; horizontal branch was already correct.\",\"Recorder contract upgraded: NUMERIC_INDICES per Canvas op with strict finite-number positions; text ops require string arg0; addColorStop requires string color; scale is post-multiplication [a*sx,b*sx,c*sy,d*sy,e,f]; recorded entries now include projected screen anchor.\",\"Evidence order this attempt: red run on uncorrected scene was executed and observed (exit 1, 5 fail with 450[object Object]1) before the scene edit; no back-and-forth scene edits.\"],\"next_steps\":[\"Parent replays the final strengthened test file against the original candidate scene to independently confirm the red, then against the corrected scene for green.\",\"Parent runs full repository regression (old 358 plus additions) and real desktop/390px, day/night, near/overview click and pub-to-bridge walking acceptance before adoption; no browser or aesthetic/fun claims made by this correction.\",\"If parent acceptance fails, D24 shelves PLAY04; PLAY03 remains excluded.\"]}"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-street-atmosphere-r2-20261013/workspace/handoff-result.json"
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "base_commit": "0178350e2fb544a77c8512585ae292e50c54d5ad",
+  "method": "fresh git archive exact adopted commit",
+  "all_archive_differences": [
+    "tools/prototype/test-cargo-choice-ui.js",
+    "tools/prototype/backstage-ui.js"
+  ],
+  "patch": "candidate-adopted-base.patch",
+  "recovery": {
+    "tools/prototype/test-cargo-choice-ui.js": true,
+    "tools/prototype/backstage-ui.js": true
+  },
+  "prior_patch_limit": "Earlier candidate.patch compared to reused RED baseline directory which already contained the six-test business file. Kept original; corrected self-contained patch uses /dev/null for full seven-test new file. No adopted game changes."
+}

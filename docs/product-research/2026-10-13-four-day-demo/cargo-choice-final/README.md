@@ -1,3 +1,7 @@
+## 恢复补丁补充核对
+
+使用 candidate-adopted-base.patch：从全新git archive 0178350逐字节核对，完整归档仅两个任务输出不同，git apply后两文件均与采用候选一致（clean-adopted-recovery.json）。较早candidate.patch使用的RED基线目录已经带有首包6测试，因此该旧补丁需要测试前置文件，不能作为干净采用提交的自包含恢复补丁；旧文件保留。此次纠正的是父级恢复材料，已采用游戏字节未变。原父验记录与绑定不改。
+
 ## 已采用交付
 
 游戏 dad6b38c54fda94f541764242f61820d8177bd19 已commit/push到codex/art-pass-20261013；[新试玩](http://127.0.0.1:18860/tools/prototype/index.html?seed=42001&commit=dad6b38)，根/tmp/amsterdam-play-dad6b38，PID91799。HTTP与浏览器实际17资源均与采用提交逐字节一致；独立端口18860保留，候选18859已关闭，旧服务/存档不动。

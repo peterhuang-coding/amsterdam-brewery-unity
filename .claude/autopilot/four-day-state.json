@@ -1,6 +1,6 @@
 {
   "decision": "D23",
-  "status": "prepared",
+  "status": "running",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-16T19:48:33Z",
   "next_direction_review_at": "2026-10-13T05:48:33Z",
@@ -16,7 +16,9 @@
   "failure_reason": null,
   "last_result_at": "2026-10-13T01:47:58.771317Z",
   "failure_notification_at": "2026-10-12T20:42:13Z",
-  "in_flight": [],
+  "in_flight": [
+    "amsterdam-first-cup-20261013"
+  ],
   "candidate_path": "docs/product-research/2026-10-13-four-day-demo/first-cup",
   "adopted_this_round": 1,
   "policy_decision": "D24",
@@ -38,7 +40,7 @@
       "outcome": "adopted6e4f7b3"
     },
     "PLAY03": {
-      "business_attempts_submitted": 0,
+      "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 0
     }

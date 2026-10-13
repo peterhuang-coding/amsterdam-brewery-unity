@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-first-street-r3-20261013",
+  "receipt_sha256": "1973b8b06f51e51aa32b3c42d7971b76364eede72e47b3e085c0de2aba30f974",
+  "reviewed_at": "2026-10-13T01:59:41Z",
+  "outcome": "accepted_with_changes",
+  "failure_type": "semantic",
+  "evidence": [
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-13-four-day-demo/r3-recovery/parent-review.md",
+      "sha256": "1af9f4f07812a07e098858836a7b01a9a5395411948555958d60fe5f166bbfba"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-13T02:06:31.617065+00:00",
+  "nonterminal": [
+    {
+      "task_id": "tg-window-20261013-1100",
+      "state": "running",
+      "pid": 18046
+    }
+  ],
+  "claude_pids": [
+    18046
+  ],
+  "new_task_count": 1,
+  "atomic_guarantee": false
+}

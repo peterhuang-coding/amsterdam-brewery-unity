@@ -1,0 +1,40 @@
+{
+  "kind": "natural_new_game_partial_acceptance",
+  "path": [
+    "start",
+    "pub",
+    "open",
+    "early close 0 cups",
+    "hook",
+    "night start auto choice paused"
+  ],
+  "desktop_screenshot": "candidate-desktop.png",
+  "mobile_screenshot": "candidate-390.png",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "canvas": {
+    "width": 1100,
+    "height": 640,
+    "cssWidth": 368,
+    "cssHeight": 214.09375
+  },
+  "labels": {
+    "candidate_canvas_font": 13,
+    "effective_css_px": 4.349090909090909,
+    "menu_canvas_font": 14,
+    "menu_effective_css_px": 4.683636363636364
+  },
+  "overflow": false,
+  "console_errors": 0,
+  "finding": "390px labels 你/回店 and M 全图 are too small; relative font-size test does not assert effective rendered size",
+  "not_completed": [
+    "movement/manual-auto/M/pause-refresh/actual-exit-return"
+  ],
+  "not_claimed": [
+    "perfect first cup",
+    "human fun",
+    "full GUI pass"
+  ]
+}

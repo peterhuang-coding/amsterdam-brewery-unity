@@ -1,0 +1,9 @@
+{
+  "task_id": "amsterdam-night-map-20261013",
+  "attempted_outcome": "rejected",
+  "attempted_failure_type": "semantic",
+  "exit_code": 1,
+  "output": "review error: review_requires_finished",
+  "registered": false,
+  "basis": "Original adapter unknown; parent independent terminal and semantic audit saved separately."
+}

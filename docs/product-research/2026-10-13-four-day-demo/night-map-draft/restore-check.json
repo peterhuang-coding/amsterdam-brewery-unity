@@ -1,0 +1,8 @@
+{
+  "patch_exit": 0,
+  "stderr": "",
+  "sha_match": {
+    "tools/prototype/backstage-scene.js": true,
+    "tools/prototype/test-night-map-scene.js": true
+  }
+}

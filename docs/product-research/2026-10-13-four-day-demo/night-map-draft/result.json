@@ -1,0 +1,85 @@
+{
+  "artifact_dir": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-night-map-20261013",
+  "blockers": [
+    "worker timeout"
+  ],
+  "changed_files": [
+    {
+      "path": "tools/prototype/backstage-scene.js",
+      "sha256": "eeb1b2258b151abb47bd112fc79db941eb81c4185874e1052b2ad02c9e9cceee"
+    },
+    {
+      "path": "tools/prototype/test-night-map-scene.js",
+      "sha256": "ffd26171ba3d941c8c96d1ff6fd8daee24844f62cc2b264f2ab54f1ceb8988a9"
+    }
+  ],
+  "claude": {
+    "final_subtype": null,
+    "is_error": null,
+    "outcome": "timeout",
+    "pid": 53297,
+    "returncode": 143,
+    "usage": null
+  },
+  "cost_usd": null,
+  "deleted_files": [],
+  "disallowed_changes": [],
+  "elapsed_seconds": 1200.151,
+  "finished_at": "2026-10-13T10:31:45.483465+00:00",
+  "input_hashes": {
+    "brief.md": "81203ffdfcb0eb8c8cbb41923e0890cc89a9445ce590efbe2c9269fcf381140d",
+    "frame-contract.md": "904985ec432a0f2a5b3c65989c57ada26eb958bfbbfd21be387bec334613fa72",
+    "tools/prototype/backstage-core.js": "335baa752efedabf5771436c23fb5370a40af5aef4b89cdd1793351906219d07",
+    "tools/prototype/backstage-scene.js": "d6eed0688e0c0da9be8062e221d79fb326a12364864dd2868124c6f0b7cdda41",
+    "tools/prototype/test-district-core.js": "7c24b0f1a9a422ffae5f25c3638e9fe22bf6b0649fa627959d45c882608669e4",
+    "tools/prototype/test-night-map-scene.js": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "memory_delta": [],
+  "next_steps": [],
+  "observed_models": [
+    "doubao-seed-evolving"
+  ],
+  "permission_denials": [],
+  "replayed": false,
+  "report": null,
+  "request_sha256": "7483f7f1857930d620d94fe23f8bf19b45205494158b19b8826cec22b1ccdf21",
+  "requested": {
+    "allowed_tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash"
+    ],
+    "basis": "launcher-pinned request; requested, not provider-confirmed; the pinned model is a fixed convention, not a ranking result",
+    "model": "doubao-seed-evolving",
+    "permission_allow": [
+      "Read(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-night-map-20261013/workspace/**)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-night-map-20261013/workspace/tools/prototype/backstage-scene.js)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-night-map-20261013/workspace/tools/prototype/backstage-scene.js)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-night-map-20261013/workspace/tools/prototype/test-night-map-scene.js)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-night-map-20261013/workspace/tools/prototype/test-night-map-scene.js)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-night-map-20261013/workspace/handoff-result.json)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-night-map-20261013/workspace/handoff-result.json)",
+      "Bash(node --test tools/prototype/test-night-map-scene.js)",
+      "Bash(node --test tools/prototype/test-district-core.js)",
+      "Bash(node --check tools/prototype/backstage-scene.js)",
+      "Bash(node --check tools/prototype/test-night-map-scene.js)"
+    ],
+    "permission_mode": "dontAsk",
+    "provider_base_url": "https://ark.cn-beijing.volces.com/api/coding",
+    "reasoning_effort": "high",
+    "thinking_enabled": true
+  },
+  "session_id": "246d6f02-f3f1-43cf-a005-6079cf7e528f",
+  "started_at": "2026-10-13T10:11:45.295039+00:00",
+  "status": "unknown",
+  "summary": "",
+  "task_id": "amsterdam-night-map-20261013",
+  "telemetry": {
+    "attempt_kind": "business",
+    "logical_task_id": "play08-night-map",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "tests": []
+}

@@ -1,0 +1,41 @@
+{
+  "status": "completed",
+  "summary": "PLAY08 minimap readability, renderer-only. Edited only backstage-scene.js miniMap plus two helpers exclusively called by it (mapDiamond, mapArrow); every other byte of scene/core untouched. New map: uniform projection from B.WIDTH/B.HEIGHT (desktop s=.08, 176x112 at 896,16; narrow/350px s=.14, 308x196 at 772,18, inside x760..1090/y12..310, clear of banner/HUD/message bar); draws all real static B.WALLS with water visually distinct (blue fill + full-extent waterline) from shelf/building walls, real dynamic streetInfo walls for delivery/works/closing, real locationInfo market walls; loading door drawn at its real rect extent (closed fill blocks, open green outline passable, true center); B.GATE closed fill vs open passable outline matching r.opened. Player is a light directional arrow following r.p.x/y and fx/fy (zero vector handled finitely) with 你 label; southwest B.EXIT is a warm diamond with 回店 label drawn first so both stay visible at the natural overlapping start. Noor, barrel rings, noise ring, undiscovered-greenhouse '?' and 'M 全图' preserved. Deterministic for fixed state, no time-driven decoration, no input mutation (deep-equal verified), no invalid canvas numerics (strict recorder validates every numeric arg).",
+  "changed_files": [
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/test-night-map-scene.js"
+  ],
+  "tests": [
+    {
+      "command": "node --test tools/prototype/test-night-map-scene.js",
+      "exit_code": 0,
+      "summary": "Final candidate: 12/12 tests pass, 0 fail (recorder transform geometry; uniform projection/desktop+narrow bounds; 17 static walls + water distinction/extent; delivery/works/closing + day2/day3 + legacy; market walls and real closed/open door via real interact command; closed/open GATE via real lever command; player position/facing/zero-direction; exit diamond vs player arrow incl overlapping start and labels; preserved Noor/barrels/noise/hint/M cues; determinism/read-only/no-mutation; restored v1/v2/v3 fixtures; full real draw smoke at 860/350/reduced). Baseline RED observed on unchanged bd61443 before implementation: 10 fail / 2 pass (missing static walls/water/gate/door-rect, non-uniform scale, same-shape player/exit circles without 你/回店 labels, no narrow enlargement, legacy-door and draw-label failures). After RED capture, three test-only harness corrections were made (flush a recorder path with stroke; filledPaths reach/vertexCount argument order; v2 restored street correctly keeps 2 barrels while only v1 upgrades to empty legacy) - no production assertion weakened."
+    },
+    {
+      "command": "node --test tools/prototype/test-district-core.js",
+      "exit_code": 0,
+      "summary": "Unchanged existing suite: 18/18 tests pass, 0 fail; core file was read-only and not modified."
+    },
+    {
+      "command": "node --check tools/prototype/backstage-scene.js",
+      "exit_code": 0,
+      "summary": "Syntax check passes with no output."
+    },
+    {
+      "command": "node --check tools/prototype/test-night-map-scene.js",
+      "exit_code": 0,
+      "summary": "Syntax check passes with no output."
+    }
+  ],
+  "blockers": [],
+  "memory_delta": [
+    "PLAY08 D24 attempt implemented: candidate changes confined to backstage-scene.js miniMap + two dedicated helpers and the new test-night-map-scene.js; handoff-result.json written.",
+    "Evidence: unchanged-baseline RED 10 fail/2 pass captured from the declared command before edits; final GREEN 12/12; unchanged test-district-core 18/18; both node --check clean.",
+    "Full old 379-test suite and natural GUI were not run in this packet; technical tests cannot establish art quality or human fun - parent owns that acceptance."
+  ],
+  "next_steps": [
+    "Parent independently verify new tests RED on clean bd61443 and GREEN on this candidate, then run full old379 + new suite.",
+    "Parent natural GUI acceptance per brief: fresh game -> open -> early close 0 cups -> night exploration, compare map at start/movement/manual+auto, M overview, pause/refresh, return through real southwest B.EXIT, desktop and 390px screenshots, no console errors or overflow.",
+    "Only after parent acceptance: commit/push and independent byte-verified play service; no self-approval claimed here."
+  ]
+}

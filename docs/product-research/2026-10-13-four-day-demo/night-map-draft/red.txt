@@ -1,0 +1,236 @@
+TAP version 13
+# Subtest: recorder geometry: translation is not rescaled and save/restore returns to identity
+ok 1 - recorder geometry: translation is not rescaled and save/restore returns to identity
+  ---
+  duration_ms: 1.83825
+  type: 'test'
+  ...
+# Subtest: uniform 2200x1400 projection keeps the whole world on desktop and a larger narrow map in its corner
+not ok 2 - uniform 2200x1400 projection keeps the whole world on desktop and a larger narrow map in its corner
+  ---
+  duration_ms: 1.366416
+  type: 'test'
+  location: '/private/tmp/amsterdam-night-map-review-20261013/baseline/tools/prototype/test-night-map-scene.js:152:1'
+  failureType: 'testCodeFailure'
+  error: 'vertical scale must equal horizontal scale'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-night-map-review-20261013/baseline/tools/prototype/test-night-map-scene.js:157:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: every real static wall projects at true geometry and water walls read as water, not solid
+not ok 3 - every real static wall projects at true geometry and water walls read as water, not solid
+  ---
+  duration_ms: 0.396583
+  type: 'test'
+  location: '/private/tmp/amsterdam-night-map-review-20261013/baseline/tools/prototype/test-night-map-scene.js:180:1'
+  failureType: 'testCodeFailure'
+  error: 'missing projected static wall {"x":110,"y":140,"w":630,"h":100,"kind":"windows"}'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-night-map-review-20261013/baseline/tools/prototype/test-night-map-scene.js:187:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: real delivery/works/closing street walls project, plus day2/day3 and legacy have no dynamic wall
+not ok 4 - real delivery/works/closing street walls project, plus day2/day3 and legacy have no dynamic wall
+  ---
+  duration_ms: 0.313125
+  type: 'test'
+  location: '/private/tmp/amsterdam-night-map-review-20261013/baseline/tools/prototype/test-night-map-scene.js:208:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'color')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-night-map-review-20261013/baseline/tools/prototype/test-night-map-scene.js:220:70)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: market walls and the loading door use its real rect: closed blocks, open is visibly passable
+not ok 5 - market walls and the loading door use its real rect: closed blocks, open is visibly passable
+  ---
+  duration_ms: 0.338416
+  type: 'test'
+  location: '/private/tmp/amsterdam-night-map-review-20261013/baseline/tools/prototype/test-night-map-scene.js:236:1'
+  failureType: 'testCodeFailure'
+  error: 'missing projected market wall {"x":760,"y":818,"w":12,"h":242,"kind":"market-wall"}'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-night-map-review-20261013/baseline/tools/prototype/test-night-map-scene.js:242:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: greenhouse GATE blocks when closed and becomes a passable opening after the real lever
+not ok 6 - greenhouse GATE blocks when closed and becomes a passable opening after the real lever
+  ---
+  duration_ms: 0.329542
+  type: 'test'
+  location: '/private/tmp/amsterdam-night-map-review-20261013/baseline/tools/prototype/test-night-map-scene.js:265:1'
+  failureType: 'testCodeFailure'
+  error: 'closed gate must appear as a blocking rect'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-night-map-review-20261013/baseline/tools/prototype/test-night-map-scene.js:270:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: player marker follows real position and facing and handles a zero direction finitely
+not ok 7 - player marker follows real position and facing and handles a zero direction finitely
+  ---
+  duration_ms: 0.503958
+  type: 'test'
+  location: '/private/tmp/amsterdam-night-map-review-20261013/baseline/tools/prototype/test-night-map-scene.js:292:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-night-map-review-20261013/baseline/tools/prototype/test-night-map-scene.js:297:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: exit is a different shape and color from the player and both stay visible at the overlapping start
+not ok 8 - exit is a different shape and color from the player and both stay visible at the overlapping start
+  ---
+  duration_ms: 0.487042
+  type: 'test'
+  location: '/private/tmp/amsterdam-night-map-review-20261013/baseline/tools/prototype/test-night-map-scene.js:320:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    exit is a four-point diamond silhouette
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-night-map-review-20261013/baseline/tools/prototype/test-night-map-scene.js:325:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: existing map cues survive: Noor, street barrels, noise, greenhouse hint and M label
+ok 9 - existing map cues survive: Noor, street barrels, noise, greenhouse hint and M label
+  ---
+  duration_ms: 1.431333
+  type: 'test'
+  ...
+# Subtest: minimap is deterministic across calls, motion preference and time, and never mutates state
+ok 10 - minimap is deterministic across calls, motion preference and time, and never mutates state
+  ---
+  duration_ms: 2.111583
+  type: 'test'
+  ...
+# Subtest: real restored v1/v2/v3 legacy fixtures render without crashing and omit location data when absent
+not ok 11 - real restored v1/v2/v3 legacy fixtures render without crashing and omit location data when absent
+  ---
+  duration_ms: 0.676792
+  type: 'test'
+  location: '/private/tmp/amsterdam-night-map-review-20261013/baseline/tools/prototype/test-night-map-scene.js:401:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-night-map-review-20261013/baseline/tools/prototype/test-night-map-scene.js:404:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: full real draw smoke: balanced transforms, finite arguments and minimap markers in screen space
+not ok 12 - full real draw smoke: balanced transforms, finite arguments and minimap markers in screen space
+  ---
+  duration_ms: 8.563084
+  type: 'test'
+  location: '/private/tmp/amsterdam-night-map-review-20261013/baseline/tools/prototype/test-night-map-scene.js:426:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(rec.texts.some(t=>t.text==='你'))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-night-map-review-20261013/baseline/tools/prototype/test-night-map-scene.js:434:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 3
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 79.291083

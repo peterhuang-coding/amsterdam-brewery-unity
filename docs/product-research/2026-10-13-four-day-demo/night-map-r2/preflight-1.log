@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: recorder geometry: translation is not rescaled and save/restore returns to identity
+ok 1 - recorder geometry: translation is not rescaled and save/restore returns to identity
+  ---
+  duration_ms: 1.880125
+  type: 'test'
+  ...
+# Subtest: uniform 2200x1400 projection keeps the whole world on desktop and a larger narrow map in its corner
+ok 2 - uniform 2200x1400 projection keeps the whole world on desktop and a larger narrow map in its corner
+  ---
+  duration_ms: 1.762541
+  type: 'test'
+  ...
+# Subtest: every real static wall projects at true geometry and water walls read as water, not solid
+ok 3 - every real static wall projects at true geometry and water walls read as water, not solid
+  ---
+  duration_ms: 0.50425
+  type: 'test'
+  ...
+# Subtest: real delivery/works/closing street walls project, plus day2/day3 and legacy have no dynamic wall
+ok 4 - real delivery/works/closing street walls project, plus day2/day3 and legacy have no dynamic wall
+  ---
+  duration_ms: 2.500375
+  type: 'test'
+  ...
+# Subtest: market walls and the loading door use its real rect: closed blocks, open is visibly passable
+ok 5 - market walls and the loading door use its real rect: closed blocks, open is visibly passable
+  ---
+  duration_ms: 0.976
+  type: 'test'
+  ...
+# Subtest: greenhouse GATE blocks when closed and becomes a passable opening after the real lever
+ok 6 - greenhouse GATE blocks when closed and becomes a passable opening after the real lever
+  ---
+  duration_ms: 0.76325
+  type: 'test'
+  ...
+# Subtest: player marker follows real position and facing and handles a zero direction finitely
+ok 7 - player marker follows real position and facing and handles a zero direction finitely
+  ---
+  duration_ms: 0.988708
+  type: 'test'
+  ...
+# Subtest: exit is a different shape and color from the player and both stay visible at the overlapping start
+ok 8 - exit is a different shape and color from the player and both stay visible at the overlapping start
+  ---
+  duration_ms: 0.887875
+  type: 'test'
+  ...
+# Subtest: existing map cues survive: Noor, street barrels, noise, greenhouse hint and M label
+ok 9 - existing map cues survive: Noor, street barrels, noise, greenhouse hint and M label
+  ---
+  duration_ms: 1.025833
+  type: 'test'
+  ...
+# Subtest: minimap is deterministic across calls, motion preference and time, and never mutates state
+ok 10 - minimap is deterministic across calls, motion preference and time, and never mutates state
+  ---
+  duration_ms: 2.509666
+  type: 'test'
+  ...
+# Subtest: real restored v1/v2/v3 legacy fixtures render without crashing and omit location data when absent
+ok 11 - real restored v1/v2/v3 legacy fixtures render without crashing and omit location data when absent
+  ---
+  duration_ms: 0.955292
+  type: 'test'
+  ...
+# Subtest: full real draw smoke: balanced transforms, finite arguments and minimap markers in screen space
+ok 12 - full real draw smoke: balanced transforms, finite arguments and minimap markers in screen space
+  ---
+  duration_ms: 10.636542
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 88.806875

@@ -1,0 +1,42 @@
+[
+  {
+    "command": "node --test tools/prototype/test-night-map-scene.js",
+    "exit_code": 0,
+    "tail": [
+      "1..12",
+      "# tests 12",
+      "# suites 0",
+      "# pass 12",
+      "# fail 0",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0",
+      "# duration_ms 88.806875"
+    ]
+  },
+  {
+    "command": "node --test tools/prototype/test-district-core.js",
+    "exit_code": 0,
+    "tail": [
+      "1..18",
+      "# tests 18",
+      "# suites 0",
+      "# pass 18",
+      "# fail 0",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0",
+      "# duration_ms 86.994"
+    ]
+  },
+  {
+    "command": "node --check tools/prototype/backstage-scene.js",
+    "exit_code": 0,
+    "tail": []
+  },
+  {
+    "command": "node --check tools/prototype/test-night-map-scene.js",
+    "exit_code": 0,
+    "tail": []
+  }
+]

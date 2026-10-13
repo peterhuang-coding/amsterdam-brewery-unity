@@ -1,0 +1,9 @@
+{
+  "tools/prototype/backstage-scene.js": "eeb1b2258b151abb47bd112fc79db941eb81c4185874e1052b2ad02c9e9cceee",
+  "tools/prototype/backstage-core.js": "335baa752efedabf5771436c23fb5370a40af5aef4b89cdd1793351906219d07",
+  "tools/prototype/test-district-core.js": "7c24b0f1a9a422ffae5f25c3638e9fe22bf6b0649fa627959d45c882608669e4",
+  "tools/prototype/test-night-map-scene.js": "ffd26171ba3d941c8c96d1ff6fd8daee24844f62cc2b264f2ab54f1ceb8988a9",
+  "brief.md": "252c9aafb2daf697b6edb33297a9aab77136f49601d2ac3e07b4b43c6b80de3a",
+  "frame-contract.md": "904985ec432a0f2a5b3c65989c57ada26eb958bfbbfd21be387bec334613fa72",
+  "parent-findings.md": "7aafb5fd93265d0f7c35b38f1e79da5da09c2347e7c72e9488eaad36a2ffe197"
+}

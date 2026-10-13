@@ -1,0 +1,16 @@
+{
+  "task_id": "amsterdam-night-map-r2-20261013",
+  "submitted_at": "2026-10-13T10:48:21.378289+00:00",
+  "launcher_pid": 56486,
+  "worker_pid": 56489,
+  "model": "doubao-seed-evolving",
+  "tools": [
+    "Bash",
+    "Edit",
+    "Read"
+  ],
+  "permission_mode": "dontAsk",
+  "state": "running",
+  "thinking_requested": "enabled",
+  "effort_requested": "high"
+}

@@ -1,3 +1,13 @@
+## PLAY08唯一定向修正已单路提交
+
+2026-10-13T10:48:21.378289Z，amsterdam-night-map-r2-20261013已启动，worker56489/launcher56486。logical play08-night-map/correction，业务历史1、唯一修正1/1已使用；修正或父验仍失败搁置PLAY08，不再补派/换ID/主代理补写。原包/tmp/amsterdam-night-map-r2-20261013/handoff.json，稳定账本同ID。先查原请求/结果/日志/PID，unknown不重发。
+
+实际init Seed Evolving/Read/Edit/Bash/dontAsk，settings thinking enabled/effort high，1200秒32轮、原4精确命令。即时全机账本/CLI0路、本项1路，非原子并发保证；7公开输入111616B SHA一致，两个候选文件与原首包字节相同，精确bd61443游戏分支干净且远端一致。原首包终态及小屏反例/唯一修正合同70d8f89已push、Notion执行中。此次worker超时不是已观察API限流/传输错误，未据此虚构冷却或恢复保证。
+
+只修窄屏你/回店标签11CSSpx、M10CSSpx、标记短边6CSSpx及必要排布和新回归，保留原12断言、全部旧测试、desktop/投影/静动态障碍/核心/UI/CSS/经济/存档；不复活PLAY03/06/07。原12/12+旧18/18+两语法为预检。收完整报告/真实工具/哈希/范围、新测试在未改原候选真红再绿、旧379+全部新及自然夜探移动/手动自动/M/暂停刷新/实际返店/桌面390px后才采用push新试玩。
+
+当前在途采用0，试玩仍bd61443/18839，旧服务存档不动；临时18842/PID55317与浏览器已关闭。原首包1200.151秒/CLI143/完整报告文件及391/391仍未通过小屏的事实保留，标准review未登记。下次方向review15:48:33Z与固定四天截止不变。以下准备态为历史。
+
 ## PLAY08首包超时且小屏验收失败；唯一定向修正准备
 
 amsterdam-night-map-20261013于2026-10-13T10:31:45.483465Z结束，1200.151秒worker timeout/CLI143、done/unknown，PID53297退出。result.report=null，但原workspace/handoff-result.json真实存在且合法4条最终测试行齐全；不能称缺报告或成功交接。标准review返回review_requires_finished未登记rejected，父级独立终态/语义证据保存在night-map-draft。

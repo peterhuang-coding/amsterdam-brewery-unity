@@ -13,9 +13,11 @@
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
   "current_task_terminal": null,
-  "failure_reason": "PLAY08_business_worker_timeout_and_narrow_labels_unreadable",
+  "failure_reason": null,
   "last_result_at": "2026-10-13T10:31:45.483465Z",
-  "in_flight": [],
+  "in_flight": [
+    "amsterdam-night-map-r2-20261013"
+  ],
   "candidate_path": "/tmp/amsterdam-night-map-review-20261013/candidate",
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -108,8 +110,8 @@
     "PLAY08": {
       "business_attempts_submitted": 1,
       "corrections_allowed": 1,
-      "corrections_submitted": 0,
-      "outcome": "correction_prepared",
+      "corrections_submitted": 1,
+      "outcome": "correction_running",
       "task_id": "amsterdam-night-map-20261013",
       "base_commit": "bd614431e31dc44cd3730ef6c0d6c022cd355b1a",
       "game_adopted": 0,
@@ -118,20 +120,22 @@
       "business_terminal": "worker_timeout_cli143_unknown_done_complete_report_file_small_screen_failed",
       "business_ended_at": "2026-10-13T10:31:45.483465Z",
       "structured_review": "review_requires_finished_not_recorded_parent_audit_saved",
-      "correction_task_id": "amsterdam-night-map-r2-20261013"
+      "correction_task_id": "amsterdam-night-map-r2-20261013",
+      "correction_submitted_at": "2026-10-13T10:48:21.378289+00:00",
+      "correction_worker_pid": 56489
     }
   },
   "provider_cooldown_until": "2026-10-13T09:55:32Z",
   "provider_cooldown_basis": "parent60minafter_repeated_api_transport_failures_not_server_RetryAfter",
   "failure_notification_recorded_at": "2026-10-13T10:46:54.694579+00:00",
   "provider_cooldown_completed_at": "2026-10-13T10:11:45.254565+00:00",
-  "current_submitted_at": null,
-  "current_worker_pid": null,
+  "current_submitted_at": "2026-10-13T10:48:21.378289+00:00",
+  "current_worker_pid": 56489,
   "current_task_packet": "/tmp/amsterdam-night-map-r2-20261013/handoff.json",
   "current_task_notion": "https://app.notion.com/p/3f83285284df812590cbecc1b3f8e793",
-  "prepared_correction_task_id": "amsterdam-night-map-r2-20261013",
-  "prepared_correction_packet": "/tmp/amsterdam-night-map-r2-20261013/handoff.json",
-  "current_task_stage": "prepared_correction",
+  "prepared_correction_task_id": null,
+  "prepared_correction_packet": null,
+  "current_task_stage": "running",
   "prepared_task_id": null,
   "prepared_task_packet": null
 }

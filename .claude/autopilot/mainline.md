@@ -1,3 +1,7 @@
+## D25目标状态：blocked，待真人试玩反馈，未完成
+
+固定dad6b38及源码包已保全，技术证据在既定覆盖内完成；用户首次体验/视觉/乐趣判断连续多轮仍未收到。本轮无可独立推进的必要新项，goal已blocked。现有心跳、10h review和固定截止保持，不是暂停调度或四天最终汇总；详见rounds/2026-10-14-goal-awaiting-feedback.md。以下active等表述为历史。
+
 ## D25候选保全：dad6b38源码包已解压启动验证
 
 固定候选源码包位于 `/Volumes/SanDisk2TB/amsterdam-demo-candidates/dad6b38/amsterdam-web-demo-dad6b38.zip`，5,847,795字节，SHA256 f74032e8074118cc288ad462e8212cb33c039fd1e491e0d44174c42bac5e1d43。91个归档及解压源码与采用提交逐字节一致；独立启动新局/存档刷新/390px与实际17响应核对通过，临时18861已停。完整证据candidate-snapshot/README.md；本地源码快照未上传，不是Steam发行构建。本轮未改游戏、无新CC；试玩仍dad6b38/18860。真人首次体验反馈仍待，目标active未定版，限次/搁置项/固定截止与方向review保持。以下为历史。

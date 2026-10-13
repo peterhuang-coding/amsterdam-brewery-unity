@@ -249,7 +249,7 @@
     "week_end_beijing": "2026-10-18T23:59:59+08:00",
     "candidate_target_beijing": "2026-10-16",
     "execution_deadline_unchanged": true,
-    "status": "active_not_achieved",
+    "status": "blocked_waiting_human_playtest_feedback",
     "document": "docs/product-research/2026-10-13-four-day-demo/week-demo-freeze.md",
     "scope_priority": "parent_acceptance_then_whole_natural_loop_then_top3_freeze_blockers",
     "steam_next_phase": "preparation_after_demo_direction_confirmation",
@@ -275,7 +275,9 @@
       "evidence_commit": "5ff164fbfad9a31a391d03da5d25e1531a9990d5"
     },
     "feedback_page": "https://app.notion.com/p/3f73285284df818b9a5dce5687a0aeaa",
-    "feedback_page_current_candidate_synced": true
+    "feedback_page_current_candidate_synced": true,
+    "blocked_at": "2026-10-13T23:32:23.696781+00:00",
+    "blocked_reason": "First-time usability, visual acceptance and desire to continue require human playtest confirmation; no new feedback across consecutive goal turns. Existing technical verification and candidate preservation complete within checked scope; no authorized independent necessary task selected."
   },
   "current_task_worker_pid": null,
   "freeze_audit_attempt": {
@@ -317,6 +319,6 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-13T22:42:49.173393+00:00",
+  "updated_at": "2026-10-13T23:32:23.696781+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00"
 }

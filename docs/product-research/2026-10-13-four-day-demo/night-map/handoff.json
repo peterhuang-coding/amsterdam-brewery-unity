@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-night-map-20261013",
+  "goal": "Improve the existing night exploration minimap so player, return exit and real barriers are readable without changing gameplay or other rendering.",
+  "memory": {
+    "summary": "Independent D23 visual/readability package on adopted bd61443; no prior business attempt.",
+    "completed": [
+      "PLAY02/04/05 adopted; parent full379 tests recorded.",
+      "Parent natural night-start screenshot shows small same-shape markers and missing static walls."
+    ],
+    "decisions": [
+      "Only miniMap and dedicated helpers plus new behavior test.",
+      "Only fixed Seed Evolving enabled/high Coding Plan; parent cooldown until2026-10-13T09:55:32Z.",
+      "D24 one business attempt and at most one targeted correction; failures do not reset under another ID."
+    ],
+    "known_issues": [
+      "PLAY03/06/07 shelved; no revival or code reuse.",
+      "Technical tests cannot establish completed art or human fun."
+    ]
+  },
+  "tasks": [
+    "Read focused brief and real renderer/core contract.",
+    "Write meaningful new behavior tests and run on unchanged baseline RED.",
+    "Implement only minimap visual/readability changes and run exact commands GREEN.",
+    "Return complete truthful four-command final report."
+  ],
+  "acceptance": [
+    "Player and exit distinguishable including same-position start at desktop/narrow.",
+    "Real wall/gate/door geometry, position and orientation; no input mutation.",
+    "Old assertions unchanged; true new baseline RED/candidate GREEN.",
+    "Two files only; four final report rows; natural GUI remains parent acceptance."
+  ],
+  "constraints": [
+    "Public supplied materials only.",
+    "Read/Edit and four exact Bash commands; no extra grep/ls/wc.",
+    "No UI/core/economy/save/camera/worldPoint/draw changes outside miniMap.",
+    "No PLAY03/06/07 revival."
+  ],
+  "workspace": "/tmp/amsterdam-night-map-20261013/input",
+  "read_files": [
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/test-district-core.js",
+    "tools/prototype/test-night-map-scene.js",
+    "brief.md",
+    "frame-contract.md"
+  ],
+  "write_files": [
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/test-night-map-scene.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-night-map-scene.js",
+    "node --test tools/prototype/test-district-core.js",
+    "node --check tools/prototype/backstage-scene.js",
+    "node --check tools/prototype/test-night-map-scene.js"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 1200,
+  "max_turns": 32,
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "play08-night-map",
+    "task_type": "code",
+    "attempt_kind": "business"
+  }
+}

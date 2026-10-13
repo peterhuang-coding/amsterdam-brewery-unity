@@ -1,0 +1,37 @@
+# PLAY08: night-exploration orientation map
+
+Authorization: D23 four-day web demo visual/readability iteration and D24 one targeted correction per logical item. This is an independent renderer-only task, not a retry of PLAY03 first-cup UI, PLAY06 morning-card UI or PLAY07 pub guest art. Those remain shelved. Adopted exact baseline bd614431e31dc44cd3730ef6c0d6c022cd355b1a. No prior attempt for logical play08-night-map. Parent will submit only after its cooldown. Do not self-dispatch or call providers.
+
+## Player problem and intended result
+The current night-exploration minimap shows flat zone blocks, omits B.WALLS, and uses small circles for both player and southwest exit. At the actual natural new night start, the player overlaps the exit. Make this existing map help a player recognize themselves, the return-to-pub exit and actual blocked areas at a glance, including a 390px viewport. A restrained dark map with warm exit and light player, distinct silhouettes as well as color, fits the existing scene. No new tutorial, routes, quest mechanics or giant legend.
+
+## Exact writable boundary
+Only tools/prototype/backstage-scene.js::miniMap(r) and optional helpers exclusively called by miniMap; plus new tools/prototype/test-night-map-scene.js. The miniMap call in draw already exists and should remain as is. Every byte of existing camera/worldPoint/common primitives/draw outside the minimap method and its new dedicated helpers must remain unchanged. Keep all other files and old assertions byte-identical. No UI/CSS, game core, saves/economy, city canals, pub guests, reward/morning card or first cup changes. Do not add packages or use external assets/network. Public minimal supplied materials only.
+
+## Requirements
+1. Uniform world-to-map projection from B.WIDTH=2200 and B.HEIGHT=1400. Keep the entire world represented, same axes and correct relative positions; no clipping a region or distorting aspect ratio. Map/legend stay inside the 1100x640 canvas and clear of top-left HUD, center overview banner x360..740/y19..53, bottom message bar. For narrow display (existing canvas.getBoundingClientRect().width convention) the map may be larger within top-right x760..1090, y12..310; don't touch camera/CSS/layout. Choose sizes that yield distinguishable player/exit silhouettes and short readable labels at 390px.
+2. Distinguish player from exit by shape AND color, with concise labels such as 你 and 回店. Player indicator follows real r.p.x/y and direction r.p.fx/fy. Handle zero direction finitely. Both meanings remain visible when player stands exactly at B.EXIT (natural start). Don't imply arrival/reward/extraction just because a marker is near; this is read-only rendering.
+3. Draw real static B.WALLS and the existing dynamic street/location walls using the same projection. Water barriers remain visibly different from solid shelf/building walls. Respect real closed/open greenhouse GATE and real locationInfo(r).door: closed blocks, open is visibly passable; draw door at the rectangle's actual center/extent, not a made-up offset. Do not claim dynamic hazard-free or safe paths. Preserve current street barrels/noise, Noor marker and undiscovered greenhouse hint. New route lines or auto-navigation changes are out of scope.
+4. No arbitrary flashing/time-driven decoration. For a fixed run/view, minimap output should be deterministic and read-only; reduced motion remains stable. Existing legitimate state changes (position, facing, closed/open, barrels/noise) should still update. Full draw behavior outside minimap is unchanged.
+5. Support real current B.create(...,{marketShift:true}), all three street situations, and legacy restored runs lacking location/marketShift; use existing core fallback interfaces. No crash, invalid numeric Canvas arguments or input mutation.
+
+## Reading guide (baseline line positions)
+backstage-scene.js: lines1-22 primitives/camera/worldPoint;204-279 draw and existing miniMap invocation;280-end current miniMap. backstage-core.js: lines7-47 dimensions/exits/zones/WALLS;102-110 locationInfo/streetInfo;120-148 create/solid;restore near file end. test-district-core.js: real B.create/command/restore and state examples. Read once with bounded offsets; use Read, not unlisted grep/ls/wc. Core and old test are read-only references.
+
+## New regression tests and execution order
+Use Node node:test + vm and a recording Canvas2D context to execute the real BackstageScene (browser module exposes window.BackstageScene). Use real backstage-core.js, not stubbed geometry. New tests must observe actual drawing coordinates/styles/shapes/text and state immutability, not source-substring checks or arbitrary chosen palette constants. Validate every required numeric Canvas argument with typeof number and Number.isFinite, not just arguments already numbers. If transforms are recorded, implement actual Canvas post-multiplication/save/restore and independently test recorder geometry; scaling must not rescale existing translation. Test projected static/dynamic wall and closed/open gate/door correspondence, player/exit separation including overlapping start and moved/facing player, desktop/narrow layout, real three-night states and real restore legacy fixtures. Synthetic state fixtures must be explicitly labelled technical cases, not natural gameplay evidence. Include at least one full real draw smoke test; direct miniMap calls isolate map determinism and projection.
+
+First write meaningful new tests, run the declared new-test command against the UNCHANGED adopted baseline and keep real RED output. Then narrow implementation, same tests GREEN. No removing wiring temporarily or weakening assertions to invent RED. Keep every old test byte-identical. Parent will independently put final tests on clean adopted baseline to verify RED, and run all old379 plus new tests; don't claim that full suite was run here because it is not in this packet.
+
+## Only four Bash commands (no chaining or other shell)
+node --test tools/prototype/test-night-map-scene.js
+node --test tools/prototype/test-district-core.js
+node --check tools/prototype/backstage-scene.js
+node --check tools/prototype/test-night-map-scene.js
+
+Read/Edit/Bash are available at actual launch; new test is precreated empty for Edit, not a passing test. No Write dependency. Finish within1200seconds/32turns. Avoid repeated source reading and overbuilding tests; reserve time for final report. If blocked, report exactly what is missing rather than inventing success.
+
+## Handoff
+Write the adapter's handoff-result.json using its supplied schema. files_changed lists only the two authorized output paths, never the report itself. tests contains exactly four FINAL rows, one for each declared command, copied from actual results; put expected baseline RED evidence in summary/memory_delta, not duplicate final rows. Report honest omissions and actual tool usage. No self-acceptance or claiming natural GUI/human fun.
+
+Parent acceptance after completion: boundary/hash/tool/report audit; final new tests RED on unchanged bd61443 and GREEN candidate; old379+new full suite; natural fresh game -> open -> early close (0cups only for map test) -> night exploration -> compare map at start/movement/manual+auto -> M overview -> pause/refresh -> return through real southwest exit; desktop and390px before/after screenshots and no console errors/overflow. Technical legacy/gate/door/day2/3 cases separate from natural path. Only parent acceptance then commit/push/independent byte-verified play service can count as delivery.

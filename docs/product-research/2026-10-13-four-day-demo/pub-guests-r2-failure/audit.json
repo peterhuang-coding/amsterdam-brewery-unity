@@ -1,0 +1,106 @@
+{
+  "checked_at": "2026-10-13T09:02:00.715079+00:00",
+  "task_id": "amsterdam-pub-guests-r2-20261013",
+  "result_status": "unknown",
+  "state": {
+    "result_status": "unknown",
+    "state": "done"
+  },
+  "returncode": 1,
+  "finished_at": "2026-10-13T08:55:31.673048+00:00",
+  "elapsed_seconds": 488.124,
+  "source_sha": {
+    "tools/prototype/reopening-scene.js": "52c78435be1a47bf2da9a473f883014f29204051f746cd83aa3f495756556d8e",
+    "tools/prototype/reopening-city.js": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625",
+    "tools/prototype/test-city.js": "fea0a17524f790b75206d4a51741113439bbea8216d16c04ed5164b5659c4b13",
+    "tools/prototype/test-street-atmosphere.js": "0e49de693df25cc5f4f9cd2cfb1a8a80ab2cfab27487990748b115f4efcc55b5",
+    "tools/prototype/test-pub-guests.js": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "brief.md": "3f7958b2774ecd3af65b20ac1ff188423b94066864696b4dd5725c0b5dd84460",
+    "frame-contract.md": "9b1fd597ae6667ca6505368607bb5d39f2ffe4d2b861f122f5dac9992dbdcb80"
+  },
+  "workspace_sha": {
+    "tools/prototype/reopening-scene.js": "52c78435be1a47bf2da9a473f883014f29204051f746cd83aa3f495756556d8e",
+    "tools/prototype/reopening-city.js": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625",
+    "tools/prototype/test-city.js": "fea0a17524f790b75206d4a51741113439bbea8216d16c04ed5164b5659c4b13",
+    "tools/prototype/test-street-atmosphere.js": "0e49de693df25cc5f4f9cd2cfb1a8a80ab2cfab27487990748b115f4efcc55b5",
+    "tools/prototype/test-pub-guests.js": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "brief.md": "3f7958b2774ecd3af65b20ac1ff188423b94066864696b4dd5725c0b5dd84460",
+    "frame-contract.md": "9b1fd597ae6667ca6505368607bb5d39f2ffe4d2b861f122f5dac9992dbdcb80"
+  },
+  "source_match": true,
+  "workspace_match": true,
+  "calls": [
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-guests-r2-20261013/workspace/brief.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-guests-r2-20261013/workspace/frame-contract.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-guests-r2-20261013/workspace/tools/prototype/reopening-scene.js",
+        "offset": 1,
+        "limit": 22
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-guests-r2-20261013/workspace/tools/prototype/reopening-scene.js",
+        "offset": 429,
+        "limit": 140
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-guests-r2-20261013/workspace/tools/prototype/test-street-atmosphere.js",
+        "offset": 1,
+        "limit": 185
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-guests-r2-20261013/workspace/tools/prototype/test-street-atmosphere.js",
+        "offset": 185,
+        "limit": 120
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-guests-r2-20261013/workspace/tools/prototype/test-pub-guests.js"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-guests-r2-20261013/workspace/tools/prototype/test-city.js",
+        "offset": 1,
+        "limit": 45
+      }
+    }
+  ],
+  "tool_counts": {
+    "Read": 8
+  },
+  "final_event": {
+    "subtype": "success",
+    "is_error": true,
+    "num_turns": 9,
+    "terminal_reason": "api_error",
+    "api_error_status": null,
+    "result": "Request timed out"
+  },
+  "report_exists": false,
+  "extra_workspace_files": [],
+  "worker_alive": false
+}

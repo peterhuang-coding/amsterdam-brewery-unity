@@ -1,0 +1,5 @@
+# PLAY07 sole correction terminal audit — shelved, no adoption
+
+amsterdam-pub-guests-r2-20261013 ended2026-10-13T08:55:31.673048Z after488.124s/9turns, Request timed out/CLI1, done/unknown, worker47538 exited. subtype success also is_error=true/terminal_reason=api_error; HTTP status null, not observed429. Read8 only within supplied inputs; 7 source/7 workspace SHA equal original request. No Edit/Bash/tests/report/candidate, no denial or write escape. Original preflight8 outer tests and adopted379 tests do not count as this invocation tests. No new GUI/art/fun validation. Original receipts/logs untouched.
+
+Parent independently confirms ended failed invocation; standard review attempted separately without changing unknown. Sole correction1/1 exhausted: PLAY07 shelved per D24, no renamed retry or main-agent implementation. Repeated transport failures: parent60mincooldown until2026-10-13T09:55:32Z, not serverRetryAfter or recovery guarantee. Prepare only a genuinely independent D23 package locally, no provider probe/request during cooldown. Latest game remains bd61443/18839.

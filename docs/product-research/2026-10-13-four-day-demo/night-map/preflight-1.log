@@ -1,0 +1,118 @@
+TAP version 13
+# Subtest: new v4 runs retain all 17 item identities and expose exact district geometry
+ok 1 - new v4 runs retain all 17 item identities and expose exact district geometry
+  ---
+  duration_ms: 1.898708
+  type: 'test'
+  ...
+# Subtest: belt moves world loot east or west, and off stops motion
+ok 2 - belt moves world loot east or west, and off stops motion
+  ---
+  duration_ms: 6.028042
+  type: 'test'
+  ...
+# Subtest: foam pauses only objects whose centers are inside the local patch
+ok 3 - foam pauses only objects whose centers are inside the local patch
+  ---
+  duration_ms: 0.587416
+  type: 'test'
+  ...
+# Subtest: belt leaves bagged and delivered items alone and pushes the player through collision movement
+ok 4 - belt leaves bagged and delivered items alone and pushes the player through collision movement
+  ---
+  duration_ms: 1.921875
+  type: 'test'
+  ...
+# Subtest: nearby E toggles the switch and hook reverses it within real range
+ok 5 - nearby E toggles the switch and hook reverses it within real range
+  ---
+  duration_ms: 0.755583
+  type: 'test'
+  ...
+# Subtest: switch LOS and hook range block the effect even though hook firing itself succeeds
+ok 6 - switch LOS and hook range block the effect even though hook firing itself succeeds
+  ---
+  duration_ms: 0.145125
+  type: 'test'
+  ...
+# Subtest: valve closes sprinklers for 12 simulation seconds and auto choice freezes the countdown
+ok 7 - valve closes sprinklers for 12 simulation seconds and auto choice freezes the countdown
+  ---
+  duration_ms: 9.466125
+  type: 'test'
+  ...
+# Subtest: hook can close a visible valve but cannot pass glass or exceed reach
+ok 8 - hook can close a visible valve but cannot pass glass or exceed reach
+  ---
+  duration_ms: 0.177208
+  type: 'test'
+  ...
+# Subtest: wet ground slows walking at a legal y490 route and drift respects the greenhouse wall
+ok 9 - wet ground slows walking at a legal y490 route and drift respects the greenhouse wall
+  ---
+  duration_ms: 1.397042
+  type: 'test'
+  ...
+# Subtest: repair needs a nearby visible valve and salvage, consumes one part exactly once and persists
+ok 10 - repair needs a nearby visible valve and salvage, consumes one part exactly once and persists
+  ---
+  duration_ms: 0.563
+  type: 'test'
+  ...
+# Subtest: drop selects a bag item, rejects unknown/world ids without inventory mutation, and preserves throw behavior
+ok 11 - drop selects a bag item, rejects unknown/world ids without inventory mutation, and preserves throw behavior
+  ---
+  duration_ms: 0.253833
+  type: 'test'
+  ...
+# Subtest: ordinary E and collect use exact requested item, 45 range, LOS and capacity
+ok 12 - ordinary E and collect use exact requested item, 45 range, LOS and capacity
+  ---
+  duration_ms: 0.217667
+  type: 'test'
+  ...
+# Subtest: ordinary auto pickup checks LOS in v4 while old v3 keeps original pickup behavior
+ok 13 - ordinary auto pickup checks LOS in v4 while old v3 keeps original pickup behavior
+  ---
+  duration_ms: 0.139084
+  type: 'test'
+  ...
+# Subtest: visited records unique entered zones only, survives restore and remains separate from choice intent
+ok 14 - visited records unique entered zones only, survives restore and remains separate from choice intent
+  ---
+  duration_ms: 0.372208
+  type: 'test'
+  ...
+# Subtest: v1/v2/v3 restore without adding district and old v3 retains location behavior only
+ok 15 - v1/v2/v3 restore without adding district and old v3 retains location behavior only
+  ---
+  duration_ms: 1.937958
+  type: 'test'
+  ...
+# Subtest: restore validates district structure, discoveries and all seven outcome ids
+ok 16 - restore validates district structure, discoveries and all seven outcome ids
+  ---
+  duration_ms: 0.806834
+  type: 'test'
+  ...
+# Subtest: v4 snapshots all three daytime clues while v3 keeps its original two-clue schema
+ok 17 - v4 snapshots all three daytime clues while v3 keeps its original two-clue schema
+  ---
+  duration_ms: 0.299333
+  type: 'test'
+  ...
+# Subtest: the promised sorting spare starts on the working conveyor and actually travels
+ok 18 - the promised sorting spare starts on the working conveyor and actually travels
+  ---
+  duration_ms: 0.817417
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 91.394708

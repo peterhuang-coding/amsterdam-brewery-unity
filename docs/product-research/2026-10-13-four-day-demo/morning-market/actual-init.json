@@ -1,0 +1,9 @@
+{
+  "model": "doubao-seed-evolving",
+  "tools": [
+    "Bash",
+    "Edit",
+    "Read"
+  ],
+  "permissionMode": "dontAsk"
+}

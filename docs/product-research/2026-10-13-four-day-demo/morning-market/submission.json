@@ -1,0 +1,23 @@
+{
+  "task_id": "amsterdam-morning-market-20261013",
+  "submitted_at": "2026-10-13T05:59:19.893085+00:00",
+  "launcher_pid": 36213,
+  "global_before": {
+    "ledger": [],
+    "cli": [],
+    "unresolved": []
+  },
+  "input_sha_verified": 22,
+  "atomic_global_guarantee": false,
+  "pre_submission_note": "Earlier local ps UTF8 decode failed before launch; replaced undecodable characters for process inventory; no provider attempt on that check.",
+  "worker_pid": 36214,
+  "actual_init": {
+    "model": "doubao-seed-evolving",
+    "tools": [
+      "Bash",
+      "Edit",
+      "Read"
+    ],
+    "permissionMode": "dontAsk"
+  }
+}

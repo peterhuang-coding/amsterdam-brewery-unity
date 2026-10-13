@@ -12,11 +12,13 @@
   "failure_policy_question_pending": false,
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
-  "current_task_terminal": "prepared_not_submitted",
+  "current_task_terminal": null,
   "failure_reason": null,
   "last_result_at": "2026-10-13T05:29:29.989870Z",
-  "in_flight": [],
-  "candidate_path": "/tmp/amsterdam-market-focus-r2-review-20261013/candidate",
+  "in_flight": [
+    "amsterdam-morning-market-20261013"
+  ],
+  "candidate_path": null,
   "adopted_this_round": 2,
   "policy_decision": "D24",
   "correction_after_r2": {
@@ -75,10 +77,10 @@
       "correction_outcome": "cli0_verifying_complete_report_parent379_and_gui"
     },
     "PLAY06": {
-      "business_attempts_submitted": 0,
+      "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 0,
-      "outcome": "prepared_not_submitted",
+      "outcome": "running",
       "task_id": "amsterdam-morning-market-20261013",
       "base_commit": "bd614431e31dc44cd3730ef6c0d6c022cd355b1a",
       "game_adopted": 0
@@ -88,8 +90,8 @@
   "provider_cooldown_basis": "parent-chosen30minafter429; notserverRetryAfter",
   "failure_notification_recorded_at": "2026-10-13T05:15:28.092219+00:00",
   "provider_cooldown_completed_at": "2026-10-13T03:27:24Z",
-  "current_submitted_at": null,
-  "current_worker_pid": null,
+  "current_submitted_at": "2026-10-13T05:59:19.893085+00:00",
+  "current_worker_pid": 36214,
   "current_task_packet": "/tmp/amsterdam-morning-market-20261013/handoff.json",
   "current_task_notion": "https://app.notion.com/p/3f83285284df81308f5bfe92a6649cf6"
 }

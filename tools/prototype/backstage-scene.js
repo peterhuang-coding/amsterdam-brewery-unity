@@ -277,21 +277,89 @@
       this.text(r.auto?.enabled?(r.status!=='active'?'这一趟已结束':r.auto.event?'时间暂停 · 选择下一步行动':'自动探索中 · 重要的事会停下来问你'):near?near.label:narrow?'WASD 移动 · E 互动 · M 地图':r.message,40,610,narrow?26:14,near?'#e4d29c':'#c1cbd0','left');
       if(options.overview){this.rect(360,19,380,34,'#172a38ee');this.text(r.street?.barrels?.length?'全图 · 青环为空桶 · M 返回':'城市背面 · M 返回跟随视角',550,42,15,'#e6d5b9');}
     }
+    // Dedicated minimap silhouettes; only miniMap calls these helpers.
+    mapDiamond(cx,cy,r,fill,edge){
+      const c=this.c;c.fillStyle=fill;c.beginPath();
+      c.moveTo(cx,cy-r);c.lineTo(cx+r,cy);c.lineTo(cx,cy+r);c.lineTo(cx-r,cy);c.closePath();c.fill();
+      c.strokeStyle=edge;c.lineWidth=1;c.stroke();
+    }
+    mapArrow(cx,cy,r,angle,fill,edge){
+      const c=this.c,bx=cx-Math.cos(angle)*r*.68,by=cy-Math.sin(angle)*r*.68,px=-Math.sin(angle),py=Math.cos(angle);
+      c.fillStyle=fill;c.beginPath();
+      c.moveTo(cx+Math.cos(angle)*r,cy+Math.sin(angle)*r);
+      c.lineTo(bx+px*r*.52,by+py*r*.52);
+      c.lineTo(bx-px*r*.52,by-py*r*.52);
+      c.closePath();c.fill();
+      c.strokeStyle=edge;c.lineWidth=1;c.stroke();
+    }
     miniMap(r){
-      const x=900,y=20,w=172,h=109,s=w/B.WIDTH;
+      const cssW=this.canvas.getBoundingClientRect().width;
+      const narrow=cssW<600;
+      const s=narrow?0.14:0.08,x=narrow?772:896,y=narrow?18:16;
+      const w=B.WIDTH*s,h=B.HEIGHT*s;
+      const C={solid:'#9fb0b8',water:'#2f6f8f',waterLine:'#86bdcf',street:'#e0ab6f',market:'#d1d5b5',
+        gate:'#d97a5f',open:'#9cdfb6',door:'#e8b684',exit:'#e7b75f',exitEdge:'#f6dc96',
+        player:'#f4f1e4',playerEdge:'#102029'};
       this.rect(x-6,y-6,w+12,h+12,'#102431dc');
       for(const z of B.ZONES)this.rect(x+z.x*s,y+z.y*s,z.w*s,z.h*s,z.color);
-      for(const wall of B.streetInfo?.(r)?.walls||[])this.rect(x+wall.x*s,y+wall.y*s,Math.max(2,wall.w*s),Math.max(2,wall.h*s),'#d4b382');
+      // Real static barriers: canal water reads differently from shelf/building walls.
+      for(const wall of B.WALLS){
+        const wx=x+wall.x*s,wy=y+wall.y*s,ww=wall.w*s,wh=wall.h*s;
+        if(wall.kind==='water'){
+          this.rect(wx,wy,ww,wh,C.water);
+          this.line([[wx,wy+wh/2],[wx+ww,wy+wh/2]],C.waterLine,1);
+        }else this.rect(wx,wy,ww,wh,C.solid);
+      }
+      for(const wall of B.streetInfo?.(r)?.walls||[])this.rect(x+wall.x*s,y+wall.y*s,wall.w*s,wall.h*s,C.street);
       const location=B.locationInfo?.(r);
-      for(const w of location?.walls||[])this.rect(x+w.x*s,y+w.y*s,Math.max(1,w.w*s),Math.max(1,w.h*s),'#d1d5b5');
-      if(location?.door)this.ellipse(x+location.door.x*s,y+(location.door.y+location.door.h/2)*s,2,3,location.door.open?'#9cdfb6':'#e8b684');
-      for(const barrel of r.street?.barrels||[])this.ring(x+barrel.x*s,y+barrel.y*s,3,3,'#a6e1cd',1.5);
-      if(r.street?.noise)this.ring(x+r.street.noise.x*s,y+r.street.noise.y*s,5,5,'#edcd93',1.5);
-      this.ellipse(x+B.EXIT.x*s,y+B.EXIT.y*s,3,3,'#e0c485');
+      for(const mw of location?.walls||[])this.rect(x+mw.x*s,y+mw.y*s,mw.w*s,mw.h*s,C.market);
+      // Loading door at its real rect: closed blocks, open is outlined as passable.
+      if(location?.door){
+        const dx=x+location.door.x*s,dy=y+location.door.y*s,dw=location.door.w*s,dh=location.door.h*s;
+        if(location.door.open){this.c.strokeStyle=C.open;this.c.lineWidth=1;this.c.strokeRect(dx,dy,dw,dh);}
+        else this.rect(dx,dy,dw,dh,C.door);
+      }
+      // Greenhouse maintenance gate: solid bar while closed, green opening afterwards.
+      if(!r.opened)this.rect(x+B.GATE.x*s,y+B.GATE.y*s,B.GATE.w*s,B.GATE.h*s,C.gate);
+      else{this.c.strokeStyle=C.open;this.c.lineWidth=1;this.c.strokeRect(x+B.GATE.x*s,y+B.GATE.y*s,B.GATE.w*s,B.GATE.h*s);}
+      for(const barrel of r.street?.barrels||[])this.ring(x+barrel.x*s,y+barrel.y*s,narrow?4:3,narrow?4:3,'#a6e1cd',1.5);
+      if(r.street?.noise)this.ring(x+r.street.noise.x*s,y+r.street.noise.y*s,narrow?6:5,narrow?6:5,'#edcd93',1.5);
+      // Narrow devices display the fixed 1100px internal canvas at a smaller
+      // CSS width (a 390px viewport shows it at 368 CSS px). Derive the narrow
+      // metrics from the true CSS scale cssW/1100 so 你/回店 stay at >=11 CSS
+      // px, M 全图 >=10 CSS px, and both silhouettes keep a >=6 CSS px short
+      // axis (the arrow's perpendicular half-width is 0.52r -> 1.04r bbox).
+      // The diamond stays 2 internal px larger so its cardinal corners protrude
+      // past the overlapping arrow at the night start. Marker anchors remain at
+      // true projected world positions; only label anchors are clamped below.
+      const cssScale=cssW/1100;
+      const arrow=narrow?Math.ceil(6/(1.04*cssScale)):5;
+      const marker=narrow?arrow+2:5.5;
+      const labelSize=narrow?Math.ceil(11/cssScale):10;
+      const mLabel=narrow?Math.ceil(10/cssScale):11;
+      // Warm diamond marks the southwest return exit; drawn before the player so both
+      // stay readable on the natural night start where player stands exactly at B.EXIT.
+      const ex=x+B.EXIT.x*s,ey=y+B.EXIT.y*s;
+      this.mapDiamond(ex,ey,marker,C.exit,C.exitEdge);
+      this.text('回店',ex+marker+3,ey+labelSize/2+1,labelSize,'#f2d59a','left');
       this.ellipse(x+B.NOOR.x*s,y+B.NOOR.y*s,3,3,'#e2a1c2');
       if(!r.discovered.includes('greenhouse'))this.text('?',x+1850*s,y+390*s,13,'#e0e4ba');
-      this.ellipse(x+r.p.x*s,y+r.p.y*s,4,4,'#fff0c9');
-      this.text('M 全图',x+w,y+h+18,11,'#b8c2c6','right');
+      // Light arrow is the player: silhouette, color and 你 label all differ from the exit.
+      const d=Math.hypot(r.p.fx,r.p.fy),angle=d>0?Math.atan2(r.p.fy,r.p.fx):0;
+      const px=x+r.p.x*s,py=y+r.p.y*s;
+      this.mapArrow(px,py,arrow,angle,C.player,C.playerEdge);
+      if(narrow){
+        // Put the CJK label just beyond the larger silhouette (4 internal px
+        // clearance); flip below near the top edge, and clamp the horizontal
+        // center so the full glyph extent stays in the panel. Only the label
+        // anchor moves; the marker keeps the true world position.
+        const gap=4,half=labelSize/2,top=y-6;
+        const lx=Math.min(Math.max(px,x-6+half),x+w+6-half);
+        let base=py-arrow-gap-0.2*labelSize;
+        if(base-0.8*labelSize<top)base=py+arrow+gap+0.8*labelSize;
+        this.text('你',lx,base,labelSize,C.player,'center');
+      }else this.text('你',px,Math.max(y+8,py-arrow-3),labelSize,C.player,'center');
+      this.text('M 全图',x+w,y+h+16,mLabel,'#b8c2c6','right');
     }
   }
   root.BackstageScene=BackstageScene;

@@ -1,0 +1,26 @@
+{
+  "automation_id": "amsterdam",
+  "rrule": "FREQ=MINUTELY;INTERVAL=15",
+  "status": "ACTIVE",
+  "existing_automation_updated": true,
+  "pages": [
+    {
+      "id": "3f832852-84df-8125-90cb-ecc1b3f8e793",
+      "edited": "2026-10-13T11:29:45.483Z",
+      "properties": "{\"GitHub\":\"https://github.com/peterhuang-coding/amsterdam-brewery-unity/commit/231a1326b0a1ab05a1d59da622e7949db1394cdc\",\"url\":\"https://app.notion.com/p/3f83285284df812590cbecc1b3f8e793\",\"任务\":\"PLAY08｜夜探方位图：认出自己与返店出口\",\"任务类型\":\"工程修复\",\"夜班许可\":\"原型实现\",\"执行基线\":\"bd614431e31dc44cd3730ef6c0d6c022cd355b1a；仅backstage-scene.js miniMap/专用helper与新test-night-map-scene.js\",\"执行顺序\":29,\"状态\":\"待验收\",\"白天决定\":\"D23四天网页demo授权内自主选定：独立夜探场景可读性；D24每项一次定向修正，仍失败搁置。PLAY03/06/07不复活。\",\"结果链接\":\"http://127.0.0.1:18844/tools/prototype/index.html?seed=42001&commit=231a132\",\"编号\":\"PLAY08\",\"验收摘要\":\"R2 11:02:29Z正常交回，847.777秒/22轮/CLI0、完整报告。父级15/15；未改首包候选13/15；旧379+15=394/394。7源/5只读SHA不变，原12测试保留。Read9/Edit5/Bash7有1条表外只读wc，标准accepted_with_changes。自然手动移动/M全图/暂停刷新/实际自动出口返店及390px通过。采用push231a132，新18844试玩17资源HTTP和浏览器字节一致。原首包超时/391绿灯仍小屏失败历史保留，修正1/1已用。\"}",
+      "current_section": "## PLAY08夜探方位图已交付｜父级验收通过\nR2 正常交回完整报告，父级最终15/15、未经修改首包候选13/15，旧379+15=394/394。原12断言保留，7源/5只读SHA未变。Read9/Edit5/Bash7有一次表外只读wc，标准审查accepted_with_changes，未宣称命令全部合规。\n真实新局进入夜探后，手动移动、M全图往返、切自动、暂停刷新保持run、自动走到实际出口并安全返店通过；桌面及canvas CSS320/350/368/390检查通过，无横向溢出或console错误。提前打烊0杯仅用于进入夜探；技术fixture与自然路径分开，没有新真人趣味验证。\n两文件已采用并push [游戏231a132](https://github.com/peterhuang-coding/amsterdam-brewery-unity/commit/231a1326b0a1ab05a1d59da622e7949db1394cdc)。[打开新试玩](http://127.0.0.1:18844/tools/prototype/index.html?seed=42001&commit=231a132)：HTTP与浏览器实际17资源逐字节匹配提交。[完整父验、原日志、红绿与截图](https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/bc3ceab/docs/product-research/2026-10-13-four-day-demo/night-map-final/README.md)已push。\n唯一修正1/1已用。首包超时、391测试通过仍小屏失败及原审查限制保留；PLAY03/06/07继续暂缓。旧试玩与存档保留，整体美术、丰富度、好玩目标尚未完成。下次方向review15:48:33Z及固定四天截止不变。以下运行和准备记录为历史。"
+    },
+    {
+      "id": "3f832852-84df-8198-9c5a-f91cb5d091e1",
+      "edited": "2026-10-13T11:39:10.236Z",
+      "properties": "{\"GitHub\":\"https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/2377c9e/docs/product-research/2026-10-13-four-day-demo/pub-materials/README.md\",\"url\":\"https://app.notion.com/p/3f83285284df81989c5af91cb5d091e1\",\"任务\":\"PLAY09｜酒馆的木头与灯光：吧台材质和夜间层次\",\"任务类型\":\"工程修复\",\"夜班许可\":\"原型实现\",\"执行基线\":\"231a1326b0a1ab05a1d59da622e7949db1394cdc；仅reopening-scene.js墙/三盏灯/吧台木质壳三个背景段和专用helper、新test-pub-materials.js\",\"执行顺序\":30,\"状态\":\"执行中\",\"白天决定\":\"D23四天网页demo一致场景视觉授权内自主选定；D24每项一次修正。PLAY03/06/07保持暂缓，不重做人物或首杯。\",\"结果链接\":\"\",\"编号\":\"PLAY09\",\"验收摘要\":\"amsterdam-pub-materials-20261013已11:36:53.974632Z单路提交，worker61559/launcher61556，business1/correction0/1。实际Seed Evolving/Read/Edit/Bash/dontAsk，thinking enabled/high，1200秒32轮。提交前全机0路、本项1路（非原子），7输入95937B SHA一致、231a132干净且远端一致。合同3bcaa1d/实际2377c9e已push。仅3背景段/2文件/4精确命令，父验完整后才采用；目前采用0，试玩仍231a132/18844。\"}",
+      "current_section": "## PLAY09已单路提交｜北京时间19:36\namsterdam-pub-materials-20261013 于2026-10-13T11:36:53.974632Z启动，worker61559/launcher61556，logical play09-pub-materials/business1、correction0/1。实际init Seed Evolving、Read/Edit/Bash/dontAsk；thinking enabled/effort high，1200秒32轮。提交前即时全机账本/CLI0路，本项1路（非原子保证），7输入95937B SHA一致，231a132干净且远端一致。\n[合同、预检、自然基线截图和实际提交](https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/2377c9e/docs/product-research/2026-10-13-four-day-demo/pub-materials/README.md)已push。只改墙/灯/吧台木质壳3个背景段及专用helper、新test-pub-materials.js，其他绘制/人物/真实库存倒酒/核心/UI/CSS/经济存档只读，PLAY03/06/07不复活。\n当前在途0采用。先查固定原ID/日志/PID，不重发；完整新红绿、旧394+新增全量、真实日夜与选客倒酒库存到账/暂停刷新/桌面390px前后画面等父验通过后才采用新试玩。失败确认后本项仅一次定向修正，仍失败搁置。以下准备文字为历史。"
+    },
+    {
+      "id": "3db32852-84df-8103-8056-e2dfe875e700",
+      "edited": "2026-10-13T11:39:10.955Z",
+      "properties": "{\"title\":\"Amsterdam Brewery｜产品方向与昼夜工作台\"}",
+      "current_section": "## PLAY09已单路提交｜北京时间19:36\namsterdam-pub-materials-20261013 于2026-10-13T11:36:53.974632Z启动，worker61559/launcher61556，logical play09-pub-materials/business1、correction0/1。实际init Seed Evolving、Read/Edit/Bash/dontAsk；thinking enabled/effort high，1200秒32轮。提交前即时全机账本/CLI0路，本项1路（非原子保证），7输入95937B SHA一致，231a132干净且远端一致。\n[合同、预检、自然基线截图和实际提交](https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/2377c9e/docs/product-research/2026-10-13-four-day-demo/pub-materials/README.md)已push。只改墙/灯/吧台木质壳3个背景段及专用helper、新test-pub-materials.js，其他绘制/人物/真实库存倒酒/核心/UI/CSS/经济存档只读，PLAY03/06/07不复活。\n当前在途0采用。先查固定原ID/日志/PID，不重发；完整新红绿、旧394+新增全量、真实日夜与选客倒酒库存到账/暂停刷新/桌面390px前后画面等父验通过后才采用新试玩。失败确认后本项仅一次定向修正，仍失败搁置。以下准备文字为历史。\n<mention-page url=\"https://app.notion.com/p/3f83285284df81989c5af91cb5d091e1\"/>执行中。已交付PLAY08新试玩仍为231a132/18844，详见下方完整验收。"
+    }
+  ]
+}

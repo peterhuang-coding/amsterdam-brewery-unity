@@ -1,6 +1,6 @@
 {
   "decision": "D23",
-  "status": "preparing_correction",
+  "status": "running",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-16T19:48:33Z",
   "next_direction_review_at": "2026-10-13T05:48:33Z",
@@ -13,10 +13,12 @@
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
   "current_task_terminal": null,
-  "failure_reason": "PLAY03 original timeout; missingreport and GUI summaryfocusloss",
+  "failure_reason": null,
   "last_result_at": "2026-10-13T02:31:31.838518+00:00",
-  "failure_notification_at": "2026-10-12T20:42:13Z",
-  "in_flight": [],
+  "failure_notification_at": "2026-10-13T02:47:29Z",
+  "in_flight": [
+    "amsterdam-first-cup-r2-20261013"
+  ],
   "candidate_path": "docs/product-research/2026-10-13-four-day-demo/first-cup-draft",
   "adopted_this_round": 1,
   "policy_decision": "D24",
@@ -40,9 +42,10 @@
     "PLAY03": {
       "business_attempts_submitted": 1,
       "corrections_allowed": 1,
-      "corrections_submitted": 0,
+      "corrections_submitted": 1,
       "original_outcome": "timeout143_unknown_done",
-      "correction_planned": "amsterdam-first-cup-r2-20261013"
+      "correction_planned": "amsterdam-first-cup-r2-20261013",
+      "correction_task_id": "amsterdam-first-cup-r2-20261013"
     }
   }
 }

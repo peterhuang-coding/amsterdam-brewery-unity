@@ -1,0 +1,12 @@
+{
+  "checked_at": "2026-10-13T15:59:20.938603+00:00",
+  "active_status": [],
+  "active_claude_cli": [],
+  "input_count": 8,
+  "input_sha_match": true,
+  "git": {
+    "codex/art-pass-20261013": "0178350e2fb544a77c8512585ae292e50c54d5ad",
+    "codex/product-research-nightshift": "d11384a8128cf22a0609e9e1cdfa68433d7a416d"
+  },
+  "note": "instantaneous check, not atomic global capacity guarantee; live Notion execution readback before launch. Earlier local ps UTF8 decode exception occurred before submission; corrected with replacement decoding and full recheck, not downstream request."
+}

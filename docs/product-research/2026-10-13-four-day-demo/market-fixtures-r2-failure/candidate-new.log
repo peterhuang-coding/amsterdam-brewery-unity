@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: real geometry: exactly two shelf walls, centered one each in market-stock and market-cold rooms
+ok 1 - real geometry: exactly two shelf walls, centered one each in market-stock and market-cold rooms
+  ---
+  duration_ms: 1.521417
+  type: 'test'
+  ...
+# Subtest: stock fixture draws an open rack frame: broad tier edges, separated uprights, no solid box
+ok 2 - stock fixture draws an open rack frame: broad tier edges, separated uprights, no solid box
+  ---
+  duration_ms: 6.284125
+  type: 'test'
+  ...
+# Subtest: cold fixture draws a solid insulated cabinet: doors, center seam, handles, lower grille
+ok 3 - cold fixture draws a solid insulated cabinet: doors, center seam, handles, lower grille
+  ---
+  duration_ms: 3.7225
+  type: 'test'
+  ...
+# Subtest: rack and cold cabinet are structurally distinct silhouettes even with color ignored
+ok 4 - rack and cold cabinet are structurally distinct silhouettes even with color ignored
+  ---
+  duration_ms: 2.162167
+  type: 'test'
+  ...
+# Subtest: power state is honest: lit while powered, dark during blackout, lit again after the real repair command
+ok 5 - power state is honest: lit while powered, dark during blackout, lit again after the real repair command
+  ---
+  duration_ms: 11.418209
+  type: 'test'
+  ...
+# Subtest: non-shift runs keep the unchanged generic shelf drawing (legacy fallback honest)
+ok 6 - non-shift runs keep the unchanged generic shelf drawing (legacy fallback honest)
+  ---
+  duration_ms: 1.293291
+  type: 'test'
+  ...
+# Subtest: restored v1/v2/v3 legacy saves keep the generic shelf path and never crash full draw
+ok 7 - restored v1/v2/v3 legacy saves keep the generic shelf path and never crash full draw
+  ---
+  duration_ms: 5.352625
+  type: 'test'
+  ...
+# Subtest: shelf branch needs real room containment plus enabled location+market; outside shelves stay generic
+ok 8 - shelf branch needs real room containment plus enabled location+market; outside shelves stay generic
+  ---
+  duration_ms: 1.396584
+  type: 'test'
+  ...
+# Subtest: draw never mutates run state and fixture rendering is deterministic over time and reduced motion
+ok 9 - draw never mutates run state and fixture rendering is deterministic over time and reduced motion
+  ---
+  duration_ms: 25.059708
+  type: 'test'
+  ...
+# Subtest: desktop, 390px and overview all project the same in-envelope owned fixture geometry
+ok 10 - desktop, 390px and overview all project the same in-envelope owned fixture geometry
+  ---
+  duration_ms: 7.9655
+  type: 'test'
+  ...
+# Subtest: recorder control: owned-geometry bounds detect an overflow even when its center is outside, while unrelated full-frame paints stay excluded
+ok 11 - recorder control: owned-geometry bounds detect an overflow even when its center is outside, while unrelated full-frame paints stay excluded
+  ---
+  duration_ms: 1.357
+  type: 'test'
+  ...
+# Subtest: existing market pickups remain visible through item() and outside both fixture envelopes
+ok 12 - existing market pickups remain visible through item() and outside both fixture envelopes
+  ---
+  duration_ms: 1.185375
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 130.853834

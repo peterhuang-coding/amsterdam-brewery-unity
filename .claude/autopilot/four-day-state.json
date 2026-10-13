@@ -12,12 +12,10 @@
   "failure_policy_question_pending": false,
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
-  "current_task_terminal": null,
-  "failure_reason": null,
-  "last_result_at": "2026-10-13T13:28:55.862919Z",
-  "in_flight": [
-    "amsterdam-market-fixtures-r2-20261013"
-  ],
+  "current_task_terminal": "error_max_turns_cli1_blocked_report_file_invalid_changed_files",
+  "failure_reason": "correction_failed_max_turns_report_invalid",
+  "last_result_at": "2026-10-13T14:11:14.932084Z",
+  "in_flight": [],
   "candidate_path": "/tmp/amsterdam-market-fixtures-review-20261013/candidate",
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -165,7 +163,7 @@
       "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 1,
-      "outcome": "correction_running",
+      "outcome": "shelved",
       "game_adopted": 0,
       "business_submitted_at": "2026-10-13T13:08:55.732094+00:00",
       "worker_pid": 68932,
@@ -174,7 +172,11 @@
       "business_structured_review": "review_requires_finished_not_recorded_parent_audit_saved",
       "correction_task_id": "amsterdam-market-fixtures-r2-20261013",
       "correction_submitted_at": "2026-10-13T13:51:57.849740+00:00",
-      "correction_worker_pid": 72547
+      "correction_worker_pid": 72547,
+      "correction_outcome": "error_max_turns_cli1_blocked_report_file_invalid_changed_files",
+      "correction_ended_at": "2026-10-13T14:11:14.932084Z",
+      "correction_duration_seconds": 1156.978,
+      "structured_review": "rejected/other"
     }
   },
   "provider_cooldown_until": "2026-10-13T09:55:32Z",
@@ -182,16 +184,16 @@
   "failure_notification_recorded_at": "2026-10-13T13:52:54.044501+00:00",
   "provider_cooldown_completed_at": "2026-10-13T10:11:45.254565+00:00",
   "current_submitted_at": "2026-10-13T13:51:57.849740+00:00",
-  "current_worker_pid": 72547,
+  "current_worker_pid": null,
   "current_task_packet": "/tmp/amsterdam-market-fixtures-r2-20261013/handoff.json",
   "current_task_notion": "https://app.notion.com/p/3f83285284df816c9a2cfd5799f10053",
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
-  "current_task_stage": "running",
+  "current_task_stage": "shelved",
   "prepared_task_id": null,
   "prepared_task_packet": null,
   "play_service_pid": 67822,
   "play_root": "/tmp/amsterdam-play-0178350",
   "current_task_submitted_at": "2026-10-13T13:51:57.849740+00:00",
-  "worker_pid": 72547
+  "worker_pid": null
 }

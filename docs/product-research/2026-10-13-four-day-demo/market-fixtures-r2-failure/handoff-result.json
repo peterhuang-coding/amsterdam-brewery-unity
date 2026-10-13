@@ -1,0 +1,44 @@
+{
+  "status": "completed",
+  "summary": "Repaired the three evidenced PLAY11 test-harness failures in tools/prototype/test-market-fixtures-scene.js only; candidate backstage-scene.js (SHA ba787914f17743359c5cc8fb86b5031d825f0840dc6b951989646a5efd90e5a6) was not modified and remains frozen. Observed the supplied RED once (8/11: power-repair collect, reduced-motion determinism, ellipse envelope selection), then corrected the harness and ran GREEN: 12/12 tests pass (all original 11 intentions preserved with no weakened geometry/power/fallback assertions, count grew to 12 for the new recorder negative control). Fix 1 - repair sequence: the spawn->680,1205->680,1142 walk crossed the 31px proximity radius of item3 (salvage at 660,1180), so real stepping auto-stowed it and the deliberate B.command collect returned false; now uses a clearly labelled, B.restore-validated technical placement at the fuse (700,1105, legal-cell checked) followed by a real-step approach to (679,1145), ~39.8px from item3, asserted to land strictly inside the 31..45 band (outside auto-stow, inside the 45 collect range), asserts the part is still 'world'/not in bag, then real collect->bag, real walk to fuse, market-power consumes it; dark/lit/repair/part-consumed/no-second-free-repair/restore checks all retained. Fix 2 - determinism: the full-call deepEqual between reduced and ordinary draws was invalid because unrelated world animation legitimately differs (conveyor wet-ground marks, hero/parcel bob); removed only that invalid comparison while keeping same-input full-call determinism and full-run structuredClone immutability across desktop/390/overview/reduced; time-jump and reduced comparisons are now scoped to each fixture block's owned paint signature captured from a real BackstageScene.draw. Fix 3 - geometry ownership: replaced the whole-frame bbox prefilters (worldRects/worldEllipses/worldTexts) with per-instance instrumentation of the existing scene.block during real draw (original invoked with unchanged this and arguments); every rect/path/ellipse/text/gradient paint is attributed to its exact wall before any filter, features and envelope bounds use owned geometry only, every owned primitive is bounded with no pre-exclusion (overflow cannot be hidden), and the unrelated (717,1001) rx55 ry8 background shadow ellipse is proven present in the real full draw yet excluded from the cold-fixture bucket; a new negative-control test injects sentinel rect and ellipse whose centers lie outside the envelope but which cross it, and asserts the bounds checker flags both. Recorder now restores full graphics state on save/restore (matrix plus fill/stroke/lineWidth/font/align/globalAlpha) and enforces finite numeric args including ellipse rotation/start/end angles, arc angles, setLineDash entries and gradient stops. Parent must still place this corrected test against the untouched adopted 0178350 scene to establish the genuine missing-feature RED; no such RED was manufactured here and no GUI/natural-run claims are made.",
+  "changed_files": [
+    "tools/prototype/test-market-fixtures-scene.js",
+    "handoff-result.json"
+  ],
+  "tests": [
+    {
+      "command": "node --test tools/prototype/test-market-fixtures-scene.js",
+      "exit_code": 0,
+      "summary": "Final GREEN: 12/12 tests pass, 0 fail (11 original behavior intentions preserved plus 1 recorder overflow negative control). Earlier one-time observation of the supplied harness baseline was 8/11 RED with failures in the power-repair test, reduced-motion determinism test and envelope/ellipse test."
+    },
+    {
+      "command": "node --test tools/prototype/test-night-map-scene.js tools/prototype/test-district-core.js",
+      "exit_code": 0,
+      "summary": "Parent old-test regressions unchanged: 33/33 tests pass, 0 fail."
+    },
+    {
+      "command": "node --check tools/prototype/backstage-scene.js",
+      "exit_code": 0,
+      "summary": "Syntax check passed with no output; frozen candidate scene byte-unchanged by this correction."
+    },
+    {
+      "command": "node --check tools/prototype/test-market-fixtures-scene.js",
+      "exit_code": 0,
+      "summary": "Syntax check of the repaired harness passed with no output."
+    }
+  ],
+  "blockers": [],
+  "memory_delta": [
+    "play11-market-fixtures harness-only correction completed: candidate backstage-scene.js stays frozen (SHA ba787914f17743359c5cc8fb86b5031d825f0840dc6b951989646a5efd90e5a6); only newtest changed.",
+    "Known issue 'auto-stow makes later manual collect false' resolved in newtest: labelled B.restore-validated fuse placement (700,1105) then real-step approach to (679,1145), landing in the 31..45px band from item3 at (660,1180); collect/market-power use only real B.create/B.command, no forced inventory or power.",
+    "Known issue 'fullframe reduced comparison includes unchanged animations' resolved: full reduced==ordinary call-log deepEqual removed (conveyor water marks and actor/hero bob animate regardless), same-input full-call determinism and full-run immutability retained; clock/reduced comparisons scoped to scene.block-owned fixture paints.",
+    "Known issue 'spatial ellipse filtering includes unrelated shadow and can hide overflow' resolved: instrumentation wraps the real scene.block per instance during real draw and attributes all rect/path/ellipse/text/gradient paints per wall before filtering; bounds cover every owned primitive; unrelated full-frame (717,1001) rx55 ellipse proven present but excluded; negative control catches centered-outside overflow sentinels.",
+    "Recorder hardened: save/restore now restores styles and matrix; ellipse/arc angle arguments, setLineDash segments and gradient stop offsets are finite-enforced.",
+    "Final evidence: newtest 12/12 GREEN (up from 8/11), old night-map/district suite 33/33 GREEN, node --check clean on scene and test. Parent adopted-baseline RED against untouched 0178350 scene and natural/fullsuite/GUI acceptance remain pending."
+  ],
+  "next_steps": [
+    "Parent applies the corrected newtest to the separate untouched adopted 0178350e2fb544a77c8512585ae292e50c54d5ad backstage-scene.js to establish the genuine missing-fixture RED (harness errors now removed).",
+    "Parent runs old411 plus the new fullsuite and confirms natural-run/GUI gates: natural start and real market approach, desktop/390/overview before-after, real items unobstructed, pause-refresh, and the separately labelled blackout->repair technical fixture.",
+    "On parent acceptance only: adopt the two candidate files and proceed to push/newplay17 byte checks; if parent gates fail, PLAY11 shelves with no further retry or rewrite."
+  ]
+}

@@ -1,0 +1,122 @@
+[
+  {
+    "label": "candidate-new",
+    "command": [
+      "node",
+      "--test",
+      "tools/prototype/test-market-fixtures-scene.js"
+    ],
+    "exit": 0,
+    "tail": [
+      "  ...",
+      "1..12",
+      "# tests 12",
+      "# suites 0",
+      "# pass 12",
+      "# fail 0",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0",
+      "# duration_ms 130.853834"
+    ]
+  },
+  {
+    "label": "baseline-new",
+    "command": [
+      "node",
+      "--test",
+      "tools/prototype/test-market-fixtures-scene.js"
+    ],
+    "exit": 1,
+    "tail": [
+      "  ...",
+      "1..12",
+      "# tests 12",
+      "# suites 0",
+      "# pass 6",
+      "# fail 6",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0",
+      "# duration_ms 132.719834"
+    ]
+  },
+  {
+    "label": "candidate-all",
+    "command": [
+      "node",
+      "--test",
+      "tools/prototype/test-algorithm-city-equivalence.js",
+      "tools/prototype/test-algorithm-city.js",
+      "tools/prototype/test-algorithm-history.js",
+      "tools/prototype/test-algorithm-physics.js",
+      "tools/prototype/test-algorithm-replay.js",
+      "tools/prototype/test-algorithm-routes.js",
+      "tools/prototype/test-algorithm-saves.js",
+      "tools/prototype/test-backstage-auto.js",
+      "tools/prototype/test-backstage.js",
+      "tools/prototype/test-character-stories.js",
+      "tools/prototype/test-city-bike.js",
+      "tools/prototype/test-city-consequence-quality.js",
+      "tools/prototype/test-city-journey-quality.js",
+      "tools/prototype/test-city.js",
+      "tools/prototype/test-daynight.js",
+      "tools/prototype/test-delivery-orders.js",
+      "tools/prototype/test-district-auto.js",
+      "tools/prototype/test-district-core.js",
+      "tools/prototype/test-district-daynight.js",
+      "tools/prototype/test-first-street-ui.js",
+      "tools/prototype/test-flower-network.js",
+      "tools/prototype/test-journey-integration.js",
+      "tools/prototype/test-journey.js",
+      "tools/prototype/test-location-daynight.js",
+      "tools/prototype/test-location-depth.js",
+      "tools/prototype/test-market-daynight-ui.js",
+      "tools/prototype/test-market-daynight.js",
+      "tools/prototype/test-market-fixtures-scene.js",
+      "tools/prototype/test-market-focus-ui.js",
+      "tools/prototype/test-market-shift-ui.js",
+      "tools/prototype/test-market-shift.js",
+      "tools/prototype/test-night-loadout-ui.js",
+      "tools/prototype/test-night-map-scene.js",
+      "tools/prototype/test-night-streets.js",
+      "tools/prototype/test-phase-e.js",
+      "tools/prototype/test-pub-materials.js",
+      "tools/prototype/test-reopening.js",
+      "tools/prototype/test-street-atmosphere.js"
+    ],
+    "exit": 0,
+    "tail": [
+      "  ...",
+      "1..354",
+      "# tests 423",
+      "# suites 0",
+      "# pass 423",
+      "# fail 0",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0",
+      "# duration_ms 13653.245791"
+    ]
+  },
+  {
+    "label": "scene-syntax",
+    "command": [
+      "node",
+      "--check",
+      "tools/prototype/backstage-scene.js"
+    ],
+    "exit": 0,
+    "tail": []
+  },
+  {
+    "label": "test-syntax",
+    "command": [
+      "node",
+      "--check",
+      "tools/prototype/test-market-fixtures-scene.js"
+    ],
+    "exit": 0,
+    "tail": []
+  }
+]

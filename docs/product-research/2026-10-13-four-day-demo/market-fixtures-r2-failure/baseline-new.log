@@ -1,0 +1,187 @@
+TAP version 13
+# Subtest: real geometry: exactly two shelf walls, centered one each in market-stock and market-cold rooms
+ok 1 - real geometry: exactly two shelf walls, centered one each in market-stock and market-cold rooms
+  ---
+  duration_ms: 1.492375
+  type: 'test'
+  ...
+# Subtest: stock fixture draws an open rack frame: broad tier edges, separated uprights, no solid box
+not ok 2 - stock fixture draws an open rack frame: broad tier edges, separated uprights, no solid box
+  ---
+  duration_ms: 7.536125
+  type: 'test'
+  location: '/private/tmp/amsterdam-market-fixtures-r2-review-20261013/baseline/tools/prototype/test-market-fixtures-scene.js:272:1'
+  failureType: 'testCodeFailure'
+  error: 'need at least 3 distinct broad horizontal tier edges, got 0'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-market-fixtures-r2-review-20261013/baseline/tools/prototype/test-market-fixtures-scene.js:279:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: cold fixture draws a solid insulated cabinet: doors, center seam, handles, lower grille
+not ok 3 - cold fixture draws a solid insulated cabinet: doors, center seam, handles, lower grille
+  ---
+  duration_ms: 3.867625
+  type: 'test'
+  location: '/private/tmp/amsterdam-market-fixtures-r2-review-20261013/baseline/tools/prototype/test-market-fixtures-scene.js:292:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    two closed door panels, got 0
+    
+    0 !== 2
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 2
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-market-fixtures-r2-review-20261013/baseline/tools/prototype/test-market-fixtures-scene.js:300:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: rack and cold cabinet are structurally distinct silhouettes even with color ignored
+not ok 4 - rack and cold cabinet are structurally distinct silhouettes even with color ignored
+  ---
+  duration_ms: 2.017042
+  type: 'test'
+  location: '/private/tmp/amsterdam-market-fixtures-r2-review-20261013/baseline/tools/prototype/test-market-fixtures-scene.js:310:1'
+  failureType: 'testCodeFailure'
+  error: 'one open frame, one solid cabinet'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: true
+  operator: 'notStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-market-fixtures-r2-review-20261013/baseline/tools/prototype/test-market-fixtures-scene.js:319:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: power state is honest: lit while powered, dark during blackout, lit again after the real repair command
+not ok 5 - power state is honest: lit while powered, dark during blackout, lit again after the real repair command
+  ---
+  duration_ms: 1.874416
+  type: 'test'
+  location: '/private/tmp/amsterdam-market-fixtures-r2-review-20261013/baseline/tools/prototype/test-market-fixtures-scene.js:326:1'
+  failureType: 'testCodeFailure'
+  error: 'state light rendered'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: ~
+  operator: '=='
+  stack: |-
+    lightOf (/private/tmp/amsterdam-market-fixtures-r2-review-20261013/baseline/tools/prototype/test-market-fixtures-scene.js:334:12)
+    TestContext.<anonymous> (/private/tmp/amsterdam-market-fixtures-r2-review-20261013/baseline/tools/prototype/test-market-fixtures-scene.js:354:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: non-shift runs keep the unchanged generic shelf drawing (legacy fallback honest)
+ok 6 - non-shift runs keep the unchanged generic shelf drawing (legacy fallback honest)
+  ---
+  duration_ms: 1.919959
+  type: 'test'
+  ...
+# Subtest: restored v1/v2/v3 legacy saves keep the generic shelf path and never crash full draw
+ok 7 - restored v1/v2/v3 legacy saves keep the generic shelf path and never crash full draw
+  ---
+  duration_ms: 8.691459
+  type: 'test'
+  ...
+# Subtest: shelf branch needs real room containment plus enabled location+market; outside shelves stay generic
+not ok 8 - shelf branch needs real room containment plus enabled location+market; outside shelves stay generic
+  ---
+  duration_ms: 1.174375
+  type: 'test'
+  location: '/private/tmp/amsterdam-market-fixtures-r2-review-20261013/baseline/tools/prototype/test-market-fixtures-scene.js:422:1'
+  failureType: 'testCodeFailure'
+  error: 'enabled in-room shelf uses the open rack frame'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-market-fixtures-r2-review-20261013/baseline/tools/prototype/test-market-fixtures-scene.js:436:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: draw never mutates run state and fixture rendering is deterministic over time and reduced motion
+ok 9 - draw never mutates run state and fixture rendering is deterministic over time and reduced motion
+  ---
+  duration_ms: 25.755833
+  type: 'test'
+  ...
+# Subtest: desktop, 390px and overview all project the same in-envelope owned fixture geometry
+not ok 10 - desktop, 390px and overview all project the same in-envelope owned fixture geometry
+  ---
+  duration_ms: 12.183208
+  type: 'test'
+  location: '/private/tmp/amsterdam-market-fixtures-r2-review-20261013/baseline/tools/prototype/test-market-fixtures-scene.js:478:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(Math.abs(body.x-cold.x)<1e-6&&Math.abs(body.y-(cold.y-32))<1e-6&&
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-market-fixtures-r2-review-20261013/baseline/tools/prototype/test-market-fixtures-scene.js:508:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: recorder control: owned-geometry bounds detect an overflow even when its center is outside, while unrelated full-frame paints stay excluded
+ok 11 - recorder control: owned-geometry bounds detect an overflow even when its center is outside, while unrelated full-frame paints stay excluded
+  ---
+  duration_ms: 2.631458
+  type: 'test'
+  ...
+# Subtest: existing market pickups remain visible through item() and outside both fixture envelopes
+ok 12 - existing market pickups remain visible through item() and outside both fixture envelopes
+  ---
+  duration_ms: 1.206458
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 6
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 132.719834

@@ -1,0 +1,351 @@
+{
+  "sources": {
+    "brief.md": true,
+    "original-brief.md": true,
+    "state-guide.md": true,
+    "tools/prototype/backstage-core.js": true,
+    "tools/prototype/backstage-scene.js": true,
+    "tools/prototype/test-district-core.js": true,
+    "tools/prototype/test-market-fixtures-scene.js": true,
+    "tools/prototype/test-night-map-scene.js": true
+  },
+  "readonly": {
+    "brief.md": true,
+    "original-brief.md": true,
+    "state-guide.md": true,
+    "tools/prototype/backstage-core.js": true,
+    "tools/prototype/backstage-scene.js": true,
+    "tools/prototype/test-district-core.js": true,
+    "tools/prototype/test-night-map-scene.js": true
+  },
+  "tools": [
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/brief.md"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/state-guide.md"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/original-brief.md"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/backstage-scene.js"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/backstage-core.js",
+        "offset": 55,
+        "limit": 100
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/backstage-core.js",
+        "offset": 240,
+        "limit": 200
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --test tools/prototype/test-market-fixtures-scene.js",
+        "description": "Run market fixtures test to observe baseline failures"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/backstage-core.js",
+        "limit": 55,
+        "offset": 186
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/backstage-core.js",
+        "limit": 60,
+        "offset": 436
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "    save(){calls.push(['save']);stack.push(m.slice());},\n    restore(){calls.push(['restore']);if(stack.length)m=stack.pop();else throw new Error('restore without save');},",
+        "new_string": "    save(){calls.push(['save']);stack.push({m:m.slice(),fillStyle:ctx.fillStyle,strokeStyle:ctx.strokeStyle,\n      lineWidth:ctx.lineWidth,font:ctx.font,textAlign:ctx.textAlign,globalAlpha:ctx.globalAlpha});},\n    restore(){calls.push(['restore']);const s=stack.pop();if(!s)throw new Error('restore without save');\n      m=s.m;ctx.fillStyle=s.fillStyle;ctx.strokeStyle=s.strokeStyle;ctx.lineWidth=s.lineWidth;\n      ctx.font=s.font;ctx.textAlign=s.textAlign;ctx.globalAlpha=s.globalAlpha;},"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "    ellipse(x,y,rx,ry){[x,y,rx,ry].forEach((v,i)=>need(v,'ellipse'+i));calls.push(['ellipse',x,y,rx,ry]);\n      const [X,Y]=ap(x,y);pending={kind:'ellipse',x:X,y:Y,rx:rx*Math.hypot(m[0],m[1]),ry:ry*Math.hypot(m[2],m[3])};},\n    arc(x,y,r){[x,y,r].forEach((v,i)=>need(v,'arc'+i));calls.push(['arc',x,y,r]);\n      const [X,Y]=ap(x,y);pending={kind:'ellipse',x:X,y:Y,rx:r*Math.hypot(m[0],m[1]),ry:r*Math.hypot(m[0],m[1])};},",
+        "new_string": "    ellipse(x,y,rx,ry,rot,a0,a1){[x,y,rx,ry,rot,a0,a1].forEach((v,i)=>need(v,'ellipse'+i));\n      calls.push(['ellipse',x,y,rx,ry,rot,a0,a1]);\n      const [X,Y]=ap(x,y);pending={kind:'ellipse',x:X,y:Y,rx:rx*Math.hypot(m[0],m[1]),ry:ry*Math.hypot(m[2],m[3])};},\n    arc(x,y,r,a0,a1){[x,y,r,a0,a1].forEach((v,i)=>need(v,'arc'+i));calls.push(['arc',x,y,r,a0,a1]);\n      const [X,Y]=ap(x,y);pending={kind:'ellipse',x:X,y:Y,rx:r*Math.hypot(m[0],m[1]),ry:r*Math.hypot(m[0],m[1])};},"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "    setLineDash(){calls.push(['setLineDash']);},\n    createLinearGradient(x0,y0,x1,y1){[x0,y0,x1,y1].forEach((v,i)=>need(v,'gradient'+i));return{addColorStop(){}};},\n    createRadialGradient(x0,y0,r0,x1,y1,r1){[x0,y0,r0,x1,y1,r1].forEach((v,i)=>need(v,'radialGradient'+i));\n      return{addColorStop(){}};}",
+        "new_string": "    setLineDash(d){if(!Array.isArray(d)||d.some(v=>typeof v!=='number'||!Number.isFinite(v)))throw new Error('setLineDash needs finite numeric segments');\n      calls.push(['setLineDash',d.slice()]);},\n    createLinearGradient(x0,y0,x1,y1){[x0,y0,x1,y1].forEach((v,i)=>need(v,'gradient'+i));\n      return{addColorStop(o,c){need(o,'gradientStop.offset');calls.push(['addColorStop',o,String(c)]);}};},\n    createRadialGradient(x0,y0,r0,x1,y1,r1){[x0,y0,r0,x1,y1,r1].forEach((v,i)=>need(v,'radialGradient'+i));\n      return{addColorStop(o,c){need(o,'gradientStop.offset');calls.push(['addColorStop',o,String(c)]);}};}"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "function worldRects(rec,v,w){\n  // Candidate block-footprint window (2px slack around the envelope): keeps the\n  // shelf block's own rects while excluding room floor tints, walls and glows\n  // that merely overlap the vicinity with wider/other geometry.\n  return rec.rects.filter(q=>q.mode==='fill').map(q=>({\n    x:(q.x-v.x)/v.scale,y:(q.y-v.y)/v.scale,w:q.w/v.scale,h:q.h/v.scale,color:q.color\n  })).filter(r=>r.x>=w.x-2-1e-6&&r.x+r.w<=w.x+w.w+17+1e-6&&\n    r.y>=w.y-38-1e-6&&r.y+r.h<=w.y+w.h+12+1e-6);\n}\nfunction worldEllipses(rec,v,w){\n  const e=env(w);\n  return rec.shapes.filter(s=>s.type==='ellipse').map(s=>({\n    x:(s.x-v.x)/v.scale,y:(s.y-v.y)/v.scale,rx:s.rx/v.scale,ry:s.ry/v.scale,\n    color:s.color,mode:s.mode\n  })).filter(s=>centerIn(s.x,s.y,e));\n}\nfunction worldTexts(rec,v,w){\n  const e=env(w);\n  return rec.texts.map(t=>({text:t.text,x:(t.x-v.x)/v.scale,y:(t.y-v.y)/v.scale}))\n    .filter(t=>centerIn(t.x,t.y,e));\n}",
+        "new_string": "// Ownership-based selection. During a REAL BackstageScene.draw the existing\n// scene.block is wrapped per instance (original called with unchanged this and\n// arguments): EVERY paint emitted while one wall block renders - fill/stroke\n// rects, path vertices, ellipses, texts and the gradient fills from glow() - is\n// recorded against that exact wall BEFORE any geometric filter runs. Feature\n// extraction and envelope bounds then use this owned set only. A bounding-box\n// prefilter over the whole frame could not do this: it admits unrelated\n// full-frame paints (the (717,1001) rx55 background shadow) and silently drops\n// an owned primitive that overflows the window, which hides real violations.\nconst IDENT={scale:1,x:0,y:0};\nfunction instrument(scene,rec){\n  const owned=new Map();\n  const orig=scene.block;\n  scene.block=function(w){\n    const mark={rects:rec.rects.length,shapes:rec.shapes.length,texts:rec.texts.length,calls:rec.calls.length};\n    const out=orig.apply(this,arguments);\n    owned.set(w,{rects:rec.rects.slice(mark.rects),shapes:rec.shapes.slice(mark.shapes),\n      texts:rec.texts.slice(mark.texts),calls:rec.calls.slice(mark.calls)});\n    return out;\n  };\n  return owned;\n}\nfunction ownedWorld(raw,v){\n  return {\n    rects:raw.rects.map(q=>({mode:q.mode,x:(q.x-v.x)/v.scale,y:(q.y-v.y)/v.scale,\n      w:q.w/v.scale,h:q.h/v.scale,color:q.color,lineWidth:q.lineWidth})),\n    shapes:raw.shapes.map(s=>s.type==='path'\n      ?{type:'path',mode:s.mode,closed:s.closed,color:s.color,lineWidth:s.lineWidth,\n        verts:s.verts.map(p=>({x:(p.x-v.x)/v.scale,y:(p.y-v.y)/v.scale}))}\n      :{type:'ellipse',mode:s.mode,x:(s.x-v.x)/v.scale,y:(s.y-v.y)/v.scale,\n        rx:s.rx/v.scale,ry:s.ry/v.scale,color:s.color,lineWidth:s.lineWidth}),\n    texts:raw.texts.map(t=>({text:t.text,x:(t.x-v.x)/v.scale,y:(t.y-v.y)/v.scale,\n      font:t.font,color:t.color,align:t.align})),\n    calls:raw.calls\n  };\n}\nconst fills=b=>b.rects.filter(q=>q.mode==='fill');\nconst ell=b=>b.shapes.filter(s=>s.type==='ellipse');\nconst paths=b=>b.shapes.filter(s=>s.type==='path');\nconst GEO_EPS=1e-6;\n// Bound EVERY owned primitive against the contract envelope; nothing is excluded\n// up front, so an overflow (even from a primitive whose center sits outside the\n// envelope) is always reported rather than hidden by a prefilter.\nfunction envelopeViolations(w,b){\n  const e=env(w),bad=[];\n  for(const q of b.rects){\n    if(q.x<e.x-GEO_EPS||q.y<e.y-GEO_EPS||q.x+q.w>e.x+e.w+GEO_EPS||q.y+q.h>e.y+e.h+GEO_EPS)\n      bad.push({paint:q.mode+'Rect',x:round1(q.x),y:round1(q.y),w:round1(q.w),h:round1(q.h)});\n  }\n  for(const s of ell(b)){\n    if(s.x-s.rx<e.x-GEO_EPS||s.y-s.ry<e.y-GEO_EPS||s.x+s.rx>e.x+e.w+GEO_EPS||s.y+s.ry>e.y+e.h+GEO_EPS)\n      bad.push({paint:'ellipse',x:round1(s.x),y:round1(s.y),rx:round1(s.rx),ry:round1(s.ry)});\n  }\n  for(const p of paths(b))for(const vtx of p.verts){\n    if(vtx.x<e.x-GEO_EPS||vtx.y<e.y-GEO_EPS||vtx.x>e.x+e.w+GEO_EPS||vtx.y>e.y+e.h+GEO_EPS)\n      bad.push({paint:p.mode+'PathVertex',x:round1(vtx.x),y:round1(vtx.y)});\n  }\n  for(const t of b.texts){\n    if(t.x<e.x-GEO_EPS||t.y<e.y-GEO_EPS||t.x>e.x+e.w+GEO_EPS||t.y>e.y+e.h+GEO_EPS)\n      bad.push({paint:'text',text:t.text,x:round1(t.x),y:round1(t.y)});\n  }\n  return bad;\n}\n// Complete per-block paint signature (rect/ellipse/path/text paints plus the raw\n// local canvas calls, gradients included): proves the real block output is the\n// fixture's own and is independent of clock, reduced motion and camera.\nfunction fixturePaintKey(b){\n  return JSON.stringify({\n    rects:fills(b).map(rectKey),ells:ell(b).map(ellipseKey),\n    paths:paths(b).map(p=>p.verts.map(v=>[round1(v.x),round1(v.y)])),\n    texts:b.texts.map(t=>[round1(t.x),round1(t.y),t.text]),calls:b.calls\n  });\n}"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "function render(r,o={}){\n  const width=o.width??860,overview=o.overview??false,reduced=o.reduced??false;\n  const {rec,scene}=load(width,reduced);\n  scene.draw(r,{overview});\n  assert.equal(rec._stack.length,0,'draw must balance save/restore');\n  assert.deepEqual(rec.matrix(),[1,0,0,1,0,0],'draw must finish in identity screen space');\n  return {rec,scene,view:scene.camera(r,overview)};\n}",
+        "new_string": "function render(r,o={}){\n  const width=o.width??860,overview=o.overview??false,reduced=o.reduced??false;\n  const {rec,scene}=load(width,reduced);\n  const rawOwned=instrument(scene,rec);\n  scene.draw(r,{overview});\n  assert.equal(rec._stack.length,0,'draw must balance save/restore');\n  assert.deepEqual(rec.matrix(),[1,0,0,1,0,0],'draw must finish in identity screen space');\n  const view=scene.view;\n  const owned=new Map([...rawOwned].map(([w,raw])=>[w,ownedWorld(raw,view)]));\n  return {rec,scene,view,owned};\n}\n// One real scene.block dispatch in identity space (contract gating cases), with\n// the same ownership instrumentation as a full draw.\nfunction blockOnce(w,location,market){\n  const {rec,scene}=load();\n  const raw=instrument(scene,rec);\n  scene.block(w,location,market);\n  assert.equal(rec._stack.length,0,'block must balance save/restore');\n  assert.deepEqual(rec.matrix(),[1,0,0,1,0,0],'block must leave the identity matrix');\n  const owned=new Map([...raw].map(([ww,b])=>[ww,ownedWorld(b,IDENT)]));\n  return {rec,owned};\n}"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "test('stock fixture draws an open rack frame: broad tier edges, separated uprights, no solid box',()=>{\n  const r=shift(1);assert.equal(B.marketInfo(r).enabled,true);\n  const w=shelfMap()['market-stock'];\n  const {rec,view}=render(r);\n  const rects=worldRects(rec,view,w);\n  const f=stockFeatures(rects,w);",
+        "new_string": "test('stock fixture draws an open rack frame: broad tier edges, separated uprights, no solid box',()=>{\n  const r=shift(1);assert.equal(B.marketInfo(r).enabled,true);\n  const w=shelfMap()['market-stock'];\n  const {owned}=render(r);\n  const bucket=owned.get(w);\n  const rects=fills(bucket);\n  const f=stockFeatures(rects,w);"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "  assert.equal(f.solidBody,false,'open rack must not render a wardrobe-style solid box');\n  assert.ok(f.areaRatio<=0.65,'open bays dominate the rack silhouette, area ratio '+f.areaRatio.toFixed(2));\n  assert.equal(worldTexts(rec,view,w).length,0,'fixtures promise no new text');\n});",
+        "new_string": "  assert.equal(f.solidBody,false,'open rack must not render a wardrobe-style solid box');\n  assert.ok(f.areaRatio<=0.65,'open bays dominate the rack silhouette, area ratio '+f.areaRatio.toFixed(2));\n  assert.equal(bucket.texts.length,0,'fixtures promise no new text');\n});"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "test('cold fixture draws a solid insulated cabinet: doors, center seam, handles, lower grille',()=>{\n  const r=shift(1);\n  const w=shelfMap()['market-cold'];\n  const {rec,view}=render(r);\n  const f=coldFeatures(worldRects(rec,view,w),worldEllipses(rec,view,w),w);",
+        "new_string": "test('cold fixture draws a solid insulated cabinet: doors, center seam, handles, lower grille',()=>{\n  const r=shift(1);\n  const w=shelfMap()['market-cold'];\n  const {owned}=render(r);\n  const bucket=owned.get(w);\n  const f=coldFeatures(fills(bucket),ell(bucket),w);"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "  assert.ok(f.slotRows>=3,'broad ventilation grille rows on the lower front, got '+f.slotRows);\n  assert.ok(f.light,'power-state housing light required');\n  assert.equal(worldTexts(rec,view,w).length,0,'fixtures promise no new text');\n});",
+        "new_string": "  assert.ok(f.slotRows>=3,'broad ventilation grille rows on the lower front, got '+f.slotRows);\n  assert.ok(f.light,'power-state housing light required');\n  assert.equal(bucket.texts.length,0,'fixtures promise no new text');\n});"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "  const stockW=map['market-stock'],coldW=map['market-cold'];\n  const s=stockFeatures(worldRects(rec,view,stockW),stockW);\n  const c=coldFeatures(worldRects(rec,view,coldW),worldEllipses(rec,view,coldW),coldW);\n  const coldUprights=stockFeatures(worldRects(rec,view,coldW),coldW).uprights.length;\n  assert.notEqual(s.solidBody,Boolean(c.body),'one open frame, one solid cabinet');\n  assert.ok(s.uprights.length-coldUprights>=2,'rack has multiple open-frame supports, cabinet does not');\n  assert.ok(c.panelCount===2&&c.seam&&c.handles>=2&&c.slotRows>=3,'cabinet-only door/grille structure');\n  assert.ok(c.light&&!worldEllipses(rec,view,map['market-stock']).some(e=>e.rx<=6&&e.y<map['market-stock'].y-18),\n    'state light belongs to the cold fixture only');",
+        "new_string": "  const stockW=map['market-stock'],coldW=map['market-cold'];\n  const stockBucket=owned.get(stockW),coldBucket=owned.get(coldW);\n  const s=stockFeatures(fills(stockBucket),stockW);\n  const c=coldFeatures(fills(coldBucket),ell(coldBucket),coldW);\n  const coldUprights=stockFeatures(fills(coldBucket),coldW).uprights.length;\n  assert.notEqual(s.solidBody,Boolean(c.body),'one open frame, one solid cabinet');\n  assert.ok(s.uprights.length-coldUprights>=2,'rack has multiple open-frame supports, cabinet does not');\n  assert.ok(c.panelCount===2&&c.seam&&c.handles>=2&&c.slotRows>=3,'cabinet-only door/grille structure');\n  assert.ok(c.light&&!ell(stockBucket).some(e=>e.rx<=6&&e.y<stockW.y-18),\n    'state light belongs to the cold fixture only');"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "test('rack and cold cabinet are structurally distinct silhouettes even with color ignored',()=>{\n  const r=shift(1);\n  const map=shelfMap();\n  const {rec,view}=render(r);\n  const stockW=map['market-stock'],coldW=map['market-cold'];",
+        "new_string": "test('rack and cold cabinet are structurally distinct silhouettes even with color ignored',()=>{\n  const r=shift(1);\n  const map=shelfMap();\n  const {owned}=render(r);\n  const stockW=map['market-stock'],coldW=map['market-cold'];"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "  const map=shelfMap(),w=map['market-cold'];\n  const lightOf=r=>{\n    const {rec,view}=render(r);\n    const f=coldFeatures(worldRects(rec,view,w),worldEllipses(rec,view,w),w);\n    assert.ok(f.light,'state light rendered');\n    const glowAt=worldRects(rec,view,w).filter(q=>typeof q.color!=='string'&&\n      Math.hypot(q.x+q.w/2-f.light.x,q.y+q.h/2-f.light.y)<=14).length;\n    return {color:f.light.color,glow:glowAt,painted:worldRects(rec,view,w).filter(q=>typeof q.color==='string')};\n  };",
+        "new_string": "  const map=shelfMap(),w=map['market-cold'];\n  const lightOf=r=>{\n    const {owned}=render(r);\n    const bucket=owned.get(w);\n    const f=coldFeatures(fills(bucket),ell(bucket),w);\n    assert.ok(f.light,'state light rendered');\n    const glowAt=fills(bucket).filter(q=>typeof q.color!=='string'&&\n      Math.hypot(q.x+q.w/2-f.light.x,q.y+q.h/2-f.light.y)<=14).length;\n    return {color:f.light.color,glow:glowAt,painted:fills(bucket).filter(q=>typeof q.color==='string')};\n  };"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "  // Real repair, mirroring the adopted blackout regression excerpt. The walk\n  // loops below the street barrel (collision radius 35) then up the unloading room.\n  const r=shift(3);r.actors=[];\n  assert.equal(B.marketInfo(r).powered,false);\n  walkTo(r,{x:460,y:1205});\n  walkTo(r,{x:680,y:1205});\n  walkTo(r,{x:680,y:1142});\n  assert.equal(B.command(r,'collect',{itemId:'item3'}),true,'real collect of the unloading salvage part');\n  walkTo(r,{x:700,y:1105});\n  assert.equal(B.command(r,'market-power'),true,'real fuse repair consumes the part');\n  assert.equal(r.marketShift.powerItem,'item3');\n  assert.equal(B.marketInfo(r).powered,true);\n  assert.equal(B.command(r,'market-power'),false,'no free second repair');",
+        "new_string": "  // Real repair, mirroring the adopted blackout regression excerpt. The old\n  // spawn->680,1205->680,1142 walk crossed within the 31px proximity radius of\n  // item3, so stepping auto-stowed it before the deliberate collect (which then\n  // returned false). Technical, B.restore-validated placement at the fuse first;\n  // the real-step approach then stops collinearly ~43px from the part - OUTSIDE\n  // the 31px auto-stow but INSIDE the 45px collect range - so only the actual\n  // collect command bags it, and only the actual market-power command consumes it.\n  const r=shift(3);r.actors=[];\n  assert.equal(B.marketInfo(r).powered,false);\n  Object.assign(r.p,{x:700,y:1105});\n  assert.equal(B.solid(r,r.p.x,r.p.y),false,'fuse technical placement stays on a legal cell');\n  walkTo(r,{x:680,y:1142});\n  const d3=Math.hypot(r.p.x-660,r.p.y-1180);\n  assert.ok(d3>31&&d3<=45,'stop between the 31px stow radius and 45px collect range, got '+d3.toFixed(1));\n  assert.equal(r.bag.includes('item3'),false,'proximity auto-stow did not collect the part for us');\n  assert.equal(r.items[3].state,'world','part still waits in the unloading room');\n  assert.equal(B.command(r,'collect',{itemId:'item3'}),true,'real collect of the unloading salvage part');\n  assert.equal(r.items[3].state,'bag');\n  walkTo(r,{x:700,y:1105});\n  assert.equal(B.command(r,'market-power'),true,'real fuse repair consumes the part');\n  assert.equal(r.marketShift.powerItem,'item3');\n  assert.equal(r.items[3].state,'delivered');\n  assert.equal(B.marketInfo(r).powered,true);\n  assert.equal(B.command(r,'market-power'),false,'no free second repair');"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "test('non-shift runs keep the unchanged generic shelf drawing (legacy fallback honest)',()=>{\n  const r=B.create(42,1); // strict opt-out: no marketShift on a natural create()\n  assert.equal(B.marketInfo(r).enabled,false);\n  const map=shelfMap();\n  const {rec,view}=render(r);\n  for(const id of ['market-stock','market-cold']){\n    const w=map[id],rects=worldRects(rec,view,w);\n    assert.ok(genericSlatCount(rects,w)>=5,id+' keeps the generic repeated slats');\n    assert.ok(rects.some(q=>q.color==='#526573'&&Math.abs(q.w-w.w)<1&&Math.abs(q.h-(w.h+22))<1),\n      id+' keeps the generic solid box body');\n    assert.equal(coldFeatures(rects,worldEllipses(rec,view,w),w).light,null,id+' shows no false power light');\n  }\n});",
+        "new_string": "test('non-shift runs keep the unchanged generic shelf drawing (legacy fallback honest)',()=>{\n  const r=B.create(42,1); // strict opt-out: no marketShift on a natural create()\n  assert.equal(B.marketInfo(r).enabled,false);\n  const map=shelfMap();\n  const {owned}=render(r);\n  for(const id of ['market-stock','market-cold']){\n    const w=map[id],bucket=owned.get(w),rects=fills(bucket);\n    assert.ok(genericSlatCount(rects,w)>=5,id+' keeps the generic repeated slats');\n    assert.ok(rects.some(q=>q.color==='#526573'&&Math.abs(q.w-w.w)<1&&Math.abs(q.h-(w.h+22))<1),\n      id+' keeps the generic solid box body');\n    assert.equal(coldFeatures(rects,ell(bucket),w).light,null,id+' shows no false power light');\n  }\n});"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "  const map=shelfMap();\n  for(const version of [1,2,3]){\n    const r=restoredLegacy(version);\n    assert.equal(B.marketInfo(r).enabled,false);\n    const {rec,view}=render(r);\n    for(const id of ['market-stock','market-cold']){\n      const w=map[id];\n      assert.ok(genericSlatCount(worldRects(rec,view,w),w)>=5,'v'+version+' '+id+' generic slats');\n      assert.equal(coldFeatures(worldRects(rec,view,w),worldEllipses(rec,view,w),w).light,null);\n    }\n  }\n});",
+        "new_string": "  const map=shelfMap();\n  for(const version of [1,2,3]){\n    const r=restoredLegacy(version);\n    assert.equal(B.marketInfo(r).enabled,false);\n    const {owned}=render(r);\n    for(const id of ['market-stock','market-cold']){\n      const w=map[id],bucket=owned.get(w);\n      assert.ok(genericSlatCount(fills(bucket),w)>=5,'v'+version+' '+id+' generic slats');\n      assert.equal(coldFeatures(fills(bucket),ell(bucket),w).light,null);\n    }\n  }\n});"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "test('shelf branch needs real room containment plus enabled location+market; outside shelves stay generic',()=>{\n  const r=shift(1),info=B.locationInfo(r),market=B.marketInfo(r);\n  const stock=shelfMap()['market-stock'],cold=shelfMap()['market-cold'];\n  const identity={scale:1,x:0,y:0};\n  // One fresh identity-space scene.block dispatch per contract case.\n  const blockOnce=(w,loc,mk)=>{\n    const {rec,scene}=load();\n    scene.block(w,loc,mk);\n    assert.equal(rec._stack.length,0);\n    return rec;\n  };\n  // Synthetic shelf far outside the market rooms even with fully enabled context.\n  const outside={x:1200,y:900,w:140,h:80,kind:'shelf'};\n  assert.ok(genericSlatCount(worldRects(blockOnce(outside,info,market),identity,outside),outside)>=5,\n    'out-of-room shelf stays generic');\n  // Legacy zero-arg call (old signature) keeps the original path.\n  assert.ok(genericSlatCount(worldRects(blockOnce(stock),identity,stock),stock)>=5,'no-arg block stays generic');\n  // Explicitly disabled context keeps the original path.\n  assert.ok(genericSlatCount(worldRects(blockOnce(stock,{enabled:false,rooms:[]},{enabled:false}),identity,stock),stock)>=5,\n    'disabled context stays generic');\n  // Positive controls: real in-room shelves dispatch to the new silhouettes.\n  const rack=stockFeatures(worldRects(blockOnce(stock,info,market),identity,stock),stock);\n  assert.ok(rack.uprights.length>=3&&!rack.solidBody,'enabled in-room shelf uses the open rack frame');\n  const litRec=blockOnce(cold,info,market);\n  const lit=coldFeatures(worldRects(litRec,identity,cold),worldEllipses(litRec,identity,cold),cold);\n  assert.ok(lit.body&&lit.panelCount===2&&lit.seam&&lit.light,'enabled cold shelf uses the cabinet');\n  // Unpowered market object renders the honest dark light.\n  const dark=shift(3);dark.actors=[];\n  const darkRec=blockOnce(cold,B.locationInfo(dark),B.marketInfo(dark));\n  assert.notEqual(coldFeatures(worldRects(darkRec,identity,cold),worldEllipses(darkRec,identity,cold),cold).light.color,\n    lit.light.color,'blackout light color differs from powered');\n});",
+        "new_string": "test('shelf branch needs real room containment plus enabled location+market; outside shelves stay generic',()=>{\n  const r=shift(1),info=B.locationInfo(r),market=B.marketInfo(r);\n  const stock=shelfMap()['market-stock'],cold=shelfMap()['market-cold'];\n  // Synthetic shelf far outside the market rooms even with fully enabled context.\n  const outside={x:1200,y:900,w:140,h:80,kind:'shelf'};\n  assert.ok(genericSlatCount(fills(blockOnce(outside,info,market).owned.get(outside)),outside)>=5,\n    'out-of-room shelf stays generic');\n  // Legacy zero-arg call (old signature) keeps the original path.\n  assert.ok(genericSlatCount(fills(blockOnce(stock).owned.get(stock)),stock)>=5,'no-arg block stays generic');\n  // Explicitly disabled context keeps the original path.\n  assert.ok(genericSlatCount(fills(blockOnce(stock,{enabled:false,rooms:[]},{enabled:false}).owned.get(stock)),stock)>=5,\n    'disabled context stays generic');\n  // Positive controls: real in-room shelves dispatch to the new silhouettes.\n  const rack=stockFeatures(fills(blockOnce(stock,info,market).owned.get(stock)),stock);\n  assert.ok(rack.uprights.length>=3&&!rack.solidBody,'enabled in-room shelf uses the open rack frame');\n  const litBucket=blockOnce(cold,info,market).owned.get(cold);\n  const lit=coldFeatures(fills(litBucket),ell(litBucket),cold);\n  assert.ok(lit.body&&lit.panelCount===2&&lit.seam&&lit.light,'enabled cold shelf uses the cabinet');\n  // Unpowered market object renders the honest dark light.\n  const dark=shift(3);dark.actors=[];\n  const darkBucket=blockOnce(cold,B.locationInfo(dark),B.marketInfo(dark)).owned.get(cold);\n  assert.notEqual(coldFeatures(fills(darkBucket),ell(darkBucket),cold).light.color,\n    lit.light.color,'blackout light color differs from powered');\n});"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "test('draw never mutates run state and fixture rendering is deterministic over time and reduced motion',()=>{\n  const map=shelfMap();\n  for(const setup of ['staffed','blackout']){\n    const r=shift(setup==='staffed'?1:3); // technical: actors removed for a stable frame\n    r.actors=[];\n    const before=structuredClone(r);\n    const a=render(r).rec.calls,b=render(r).rec.calls;\n    assert.deepEqual(a,b,'identical calls across draws');\n    render(r,{width:390});render(r,{overview:true});render(r,{reduced:true});\n    assert.deepEqual(r,before,'full draw is read-only');\n  }\n  // Fixture geometry is independent of clock: technical time jump changes nothing\n  // inside either fixture envelope.\n  const r=shift(1);r.actors=[];\n  const pick=(run)=>{\n    const {rec,view}=render(run);\n    return [map['market-stock'],map['market-cold']].map(w=>({\n      rects:worldRects(rec,view,w).map(rectKey),ells:worldEllipses(rec,view,w).map(ellipseKey)}));\n  };\n  const atZero=pick(r);\n  r.time=60;\n  assert.deepEqual(pick(r),atZero,'shelf rendering ignores time');\n  const {rec:ra}=render(r,{reduced:false}),{rec:rb}=render(r,{reduced:true});\n  assert.deepEqual(ra.calls,rb.calls,'reduced/non-reduced identical at fixed state');\n});",
+        "new_string": "test('draw never mutates run state and fixture rendering is deterministic over time and reduced motion',()=>{\n  const map=shelfMap();\n  for(const setup of ['staffed','blackout']){\n    const r=shift(setup==='staffed'?1:3); // technical: actors removed for a stable frame\n    r.actors=[];\n    const before=structuredClone(r);\n    const a=render(r).rec.calls,b=render(r).rec.calls;\n    assert.deepEqual(a,b,'identical full-draw calls across same-input draws');\n    render(r,{width:390});render(r,{overview:true});render(r,{reduced:true});\n    assert.deepEqual(r,before,'full draw is read-only');\n  }\n  // Fixture-block ownership is independent of clock and reduced motion. The full\n  // frame legitimately animates elsewhere (conveyor water marks, actor bob), so\n  // the comparison is scoped to each real fixture block's owned paints, never to\n  // the whole call log.\n  const r=shift(1);r.actors=[];\n  const pick=(run)=>{\n    const {owned}=render(run);\n    return [map['market-stock'],map['market-cold']].map(w=>fixturePaintKey(owned.get(w)));\n  };\n  const atZero=pick(r);\n  r.time=60;\n  assert.deepEqual(pick(r),atZero,'owned fixture paints ignore the clock');\n  const ra=render(r,{reduced:false}),rb=render(r,{reduced:true});\n  for(const id of ['market-stock','market-cold']){\n    const w=map[id];\n    assert.equal(fixturePaintKey(ra.owned.get(w))===fixturePaintKey(rb.owned.get(w)),true,\n      id+' owned fixture paints identical under reduced/ordinary motion');\n  }\n});"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "test('desktop, 390px and overview all project the same in-envelope world geometry',()=>{\n  const r=shift(1);r.actors=[];\n  const map=shelfMap();\n  const views=[{},{width:390},{overview:true},{width:390,overview:true}];\n  const seen={};\n  for(const opt of views){\n    const {rec,view}=render(r,opt);\n    for(const id of ['market-stock','market-cold']){\n      const w=map[id],e=env(w);\n      for(const q of worldRects(rec,view,w)){\n        assert.ok(q.x>=e.x-1e-6&&q.y>=e.y-1e-6&&q.x+q.w<=e.x+e.w+1e-6&&q.y+q.h<=e.y+e.h+1e-6,\n          id+' rect outside envelope: '+JSON.stringify(q));\n        assert.ok([q.x,q.y,q.w,q.h].every(Number.isFinite));\n      }\n      for(const s of worldEllipses(rec,view,w)){\n        assert.ok(s.x-s.rx>=e.x-1e-6&&s.y-s.ry>=e.y-1e-6&&s.x+s.rx<=e.x+e.w+1e-6&&s.y+s.ry<=e.y+e.h+1e-6,\n          id+' ellipse outside envelope');\n      }\n      const key=id+JSON.stringify(opt);\n      seen[key]=worldRects(rec,view,w).map(rectKey);\n    }\n  }\n  // Every view recovers identical world geometry (camera/code path independence).\n  for(const id of ['market-stock','market-cold']){\n    const keys=views.map(opt=>seen[id+JSON.stringify(opt)]);\n    for(let i=1;i<keys.length;i++)assert.deepEqual(keys[i],keys[0],id+' geometry differs across views');\n  }\n  // Cold cabinet anchors exactly at the real shelf rect.\n  const {rec,view}=render(r);\n  const cold=map['market-cold'];\n  const body=coldFeatures(worldRects(rec,view,cold),worldEllipses(rec,view,cold),cold).body;\n  assert.ok(Math.abs(body.x-cold.x)<1e-6&&Math.abs(body.y-(cold.y-32))<1e-6&&\n    Math.abs(body.w-cold.w)<1e-6&&Math.abs(body.h-(cold.h+32))<1e-6);\n});",
+        "new_string": "test('desktop, 390px and overview all project the same in-envelope owned fixture geometry',()=>{\n  const r=shift(1);r.actors=[];\n  const map=shelfMap();\n  const views=[{},{width:390},{overview:true},{width:390,overview:true}];\n  const seen={};\n  for(const opt of views){\n    const {owned}=render(r,opt);\n    for(const id of ['market-stock','market-cold']){\n      const w=map[id],bucket=owned.get(w);\n      // Every primitive the block really paints stays in the contract envelope;\n      // bounds come from ownership, so unrelated full-frame shapes (e.g. the\n      // background shadow ellipse at (717,1001), rx55) cannot appear here and an\n      // overflow cannot be hidden by a prefilter.\n      const bad=envelopeViolations(w,bucket);\n      assert.equal(bad.length,0,id+' owned paint outside envelope: '+JSON.stringify(bad[0]||null));\n      for(const q of fills(bucket))assert.ok([q.x,q.y,q.w,q.h].every(Number.isFinite));\n      for(const s of ell(bucket))assert.ok([s.x,s.y,s.rx,s.ry].every(Number.isFinite));\n      for(const p of paths(bucket))for(const vtx of p.verts)assert.ok([vtx.x,vtx.y].every(Number.isFinite));\n      seen[id+JSON.stringify(opt)]=fills(bucket).map(rectKey);\n    }\n  }\n  // Every view recovers identical world geometry (camera/code path independence).\n  for(const id of ['market-stock','market-cold']){\n    const keys=views.map(opt=>seen[id+JSON.stringify(opt)]);\n    for(let i=1;i<keys.length;i++)assert.deepEqual(keys[i],keys[0],id+' geometry differs across views');\n  }\n  // Cold cabinet anchors exactly at the real shelf rect.\n  const {owned}=render(r);\n  const cold=map['market-cold'];\n  const body=coldFeatures(fills(owned.get(cold)),ell(owned.get(cold)),cold).body;\n  assert.ok(Math.abs(body.x-cold.x)<1e-6&&Math.abs(body.y-(cold.y-32))<1e-6&&\n    Math.abs(body.w-cold.w)<1e-6&&Math.abs(body.h-(cold.h+32))<1e-6);\n});\n\ntest('recorder control: owned-geometry bounds detect an overflow even when its center is outside, while unrelated full-frame paints stay excluded',()=>{\n  const r=shift(1);r.actors=[];\n  const cold=shelfMap()['market-cold'];\n  const {rec,view,owned}=render(r);\n  const bucket=owned.get(cold);\n  // The real cabinet paints nothing outside its envelope.\n  assert.deepEqual(envelopeViolations(cold,bucket),[],'real cold fixture is in envelope');\n  // The unrelated background ellipse (decorative loop i=13: 110+(13*199)%1980,\n  // 300+(13*127)%950 -> (717,1001), rx 38+17=55, ry 8) genuinely exists in the\n  // full draw...\n  const worldEllipsesAll=rec.shapes.filter(s=>s.type==='ellipse').map(s=>({\n    x:(s.x-view.x)/view.scale,y:(s.y-view.y)/view.scale,rx:s.rx/view.scale,ry:s.ry/view.scale}));\n  const unrelated=worldEllipsesAll.find(s=>Math.abs(s.x-717)<1&&Math.abs(s.y-1001)<1&&Math.abs(s.rx-55)<1&&Math.abs(s.ry-8)<1);\n  assert.ok(unrelated,'full draw really paints the unrelated (717,1001) rx55 ry8 shadow');\n  // ...but block ownership excludes it from the cold fixture bucket.\n  assert.equal(ell(bucket).some(s=>Math.abs(s.x-717)<1&&Math.abs(s.y-1001)<1),false,\n    'unrelated full-frame ellipse is not owned by the fixture block');\n  // Negative controls: sentinel owned primitives that OVERFLOW the envelope\n  // while their CENTERS sit outside it. A center-in/window prefilter would drop\n  // these silently; ownership bounds must flag them.\n  const e=env(cold);\n  const sentinelRect={mode:'fill',x:e.x-60,y:e.y+30,w:70,h:4,color:'#sentinel'};\n  const sentinelEll={type:'ellipse',mode:'fill',x:e.x+e.w+45,y:e.y+20,rx:50,ry:4,color:'#sentinel'};\n  assert.equal(centerIn(sentinelRect.x+sentinelRect.w/2,sentinelRect.y+sentinelRect.h/2,e),false,\n    'sentinel rect center is outside the envelope (prefilter would hide it)');\n  assert.equal(centerIn(sentinelEll.x,sentinelEll.y,e),false,\n    'sentinel ellipse center is outside the envelope (prefilter would hide it)');\n  const probed={rects:[...bucket.rects,sentinelRect],shapes:[...bucket.shapes,sentinelEll],texts:bucket.texts};\n  const flagged=envelopeViolations(cold,probed);\n  assert.equal(flagged.length>=2,true,'both centered-outside overflow primitives are detected, got '+JSON.stringify(flagged));\n});"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node -e \"const B=require('./tools/prototype/backstage-core.js');console.log(JSON.stringify(B.KITS));console.log(JSON.stringify(B.WALLS.filter(w=>w.kind==='shelf')));const r=B.create(42,3,'hook',[],{marketShift:true});console.log('item3',JSON.stringify(r.items[3]));console.log('fuse',JSON.stringify(B.marketInfo(r).fuse));\"",
+        "description": "Print kit speeds, shelf walls, item3 and fuse positions"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/backstage-core.js",
+        "limit": 54
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/tools/prototype/test-market-fixtures-scene.js",
+        "old_string": "  // Real repair, mirroring the adopted blackout regression excerpt. The old\n  // spawn->680,1205->680,1142 walk crossed within the 31px proximity radius of\n  // item3, so stepping auto-stowed it before the deliberate collect (which then\n  // returned false). Technical, B.restore-validated placement at the fuse first;\n  // the real-step approach then stops collinearly ~43px from the part - OUTSIDE\n  // the 31px auto-stow but INSIDE the 45px collect range - so only the actual\n  // collect command bags it, and only the actual market-power command consumes it.\n  const r=shift(3);r.actors=[];\n  assert.equal(B.marketInfo(r).powered,false);\n  Object.assign(r.p,{x:700,y:1105});\n  assert.equal(B.solid(r,r.p.x,r.p.y),false,'fuse technical placement stays on a legal cell');\n  walkTo(r,{x:680,y:1142});\n  const d3=Math.hypot(r.p.x-660,r.p.y-1180);\n  assert.ok(d3>31&&d3<=45,'stop between the 31px stow radius and 45px collect range, got '+d3.toFixed(1));\n  assert.equal(r.bag.includes('item3'),false,'proximity auto-stow did not collect the part for us');\n  assert.equal(r.items[3].state,'world','part still waits in the unloading room');\n  assert.equal(B.command(r,'collect',{itemId:'item3'}),true,'real collect of the unloading salvage part');\n  assert.equal(r.items[3].state,'bag');\n  walkTo(r,{x:700,y:1105});",
+        "new_string": "  // Real repair, mirroring the adopted blackout regression excerpt. The old\n  // spawn->680,1205->680,1142 walk crossed within the 31px proximity radius of\n  // item3, so stepping auto-stowed it before the deliberate collect (which then\n  // returned false). Technical, B.restore-validated placement at the fuse first;\n  // the real-step approach then stops ~40px from the part at (679,1145) -\n  // OUTSIDE the 31px auto-stow but INSIDE the 45px collect range (a hook step is\n  // ~5px, so the landing stays in the 31..45 band) - so only the actual collect\n  // command bags it, and only the actual market-power command consumes it.\n  const r=shift(3);r.actors=[];\n  assert.equal(B.marketInfo(r).powered,false);\n  Object.assign(r.p,{x:700,y:1105});\n  assert.equal(B.solid(r,r.p.x,r.p.y),false,'fuse technical placement stays on a legal cell');\n  walkTo(r,{x:679,y:1145});\n  const d3=Math.hypot(r.p.x-660,r.p.y-1180);\n  assert.ok(d3>31&&d3<=45,'stop between the 31px stow radius and 45px collect range, got '+d3.toFixed(1));\n  assert.equal(r.bag.includes('item3'),false,'proximity auto-stow did not collect the part for us');\n  assert.equal(r.items[3].state,'world','part still waits in the unloading room');\n  assert.equal(B.command(r,'collect',{itemId:'item3'}),true,'real collect of the unloading salvage part');\n  assert.equal(r.items[3].state,'bag');\n  walkTo(r,{x:700,y:1105});"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --test tools/prototype/test-market-fixtures-scene.js",
+        "description": "Run repaired market fixtures tests"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --test tools/prototype/test-night-map-scene.js tools/prototype/test-district-core.js",
+        "description": "Run parent old-test regressions"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --check tools/prototype/backstage-scene.js",
+        "description": "Syntax check frozen scene file"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --check tools/prototype/test-market-fixtures-scene.js",
+        "description": "Syntax check repaired test file"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/handoff-result.json"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-r2-20261013/workspace/handoff-result.json",
+        "old_string": "",
+        "new_string": "{\n  \"status\": \"completed\",\n  \"summary\": \"Repaired the three evidenced PLAY11 test-harness failures in tools/prototype/test-market-fixtures-scene.js only; candidate backstage-scene.js (SHA ba787914f17743359c5cc8fb86b5031d825f0840dc6b951989646a5efd90e5a6) was not modified and remains frozen. Observed the supplied RED once (8/11: power-repair collect, reduced-motion determinism, ellipse envelope selection), then corrected the harness and ran GREEN: 12/12 tests pass (all original 11 intentions preserved with no weakened geometry/power/fallback assertions, count grew to 12 for the new recorder negative control). Fix 1 - repair sequence: the spawn->680,1205->680,1142 walk crossed the 31px proximity radius of item3 (salvage at 660,1180), so real stepping auto-stowed it and the deliberate B.command collect returned false; now uses a clearly labelled, B.restore-validated technical placement at the fuse (700,1105, legal-cell checked) followed by a real-step approach to (679,1145), ~39.8px from item3, asserted to land strictly inside the 31..45 band (outside auto-stow, inside the 45 collect range), asserts the part is still 'world'/not in bag, then real collect->bag, real walk to fuse, market-power consumes it; dark/lit/repair/part-consumed/no-second-free-repair/restore checks all retained. Fix 2 - determinism: the full-call deepEqual between reduced and ordinary draws was invalid because unrelated world animation legitimately differs (conveyor wet-ground marks, hero/parcel bob); removed only that invalid comparison while keeping same-input full-call determinism and full-run structuredClone immutability across desktop/390/overview/reduced; time-jump and reduced comparisons are now scoped to each fixture block's owned paint signature captured from a real BackstageScene.draw. Fix 3 - geometry ownership: replaced the whole-frame bbox prefilters (worldRects/worldEllipses/worldTexts) with per-instance instrumentation of the existing scene.block during real draw (original invoked with unchanged this and arguments); every rect/path/ellipse/text/gradient paint is attributed to its exact wall before any filter, features and envelope bounds use owned geometry only, every owned primitive is bounded with no pre-exclusion (overflow cannot be hidden), and the unrelated (717,1001) rx55 ry8 background shadow ellipse is proven present in the real full draw yet excluded from the cold-fixture bucket; a new negative-control test injects sentinel rect and ellipse whose centers lie outside the envelope but which cross it, and asserts the bounds checker flags both. Recorder now restores full graphics state on save/restore (matrix plus fill/stroke/lineWidth/font/align/globalAlpha) and enforces finite numeric args including ellipse rotation/start/end angles, arc angles, setLineDash entries and gradient stops. Parent must still place this corrected test against the untouched adopted 0178350 scene to establish the genuine missing-feature RED; no such RED was manufactured here and no GUI/natural-run claims are made.\",\n  \"changed_files\": [\n    \"tools/prototype/test-market-fixtures-scene.js\",\n    \"handoff-result.json\"\n  ],\n  \"tests\": [\n    {\n      \"command\": \"node --test tools/prototype/test-market-fixtures-scene.js\",\n      \"exit_code\": 0,\n      \"summary\": \"Final GREEN: 12/12 tests pass, 0 fail (11 original behavior intentions preserved plus 1 recorder overflow negative control). Earlier one-time observation of the supplied harness baseline was 8/11 RED with failures in the power-repair test, reduced-motion determinism test and envelope/ellipse test.\"\n    },\n    {\n      \"command\": \"node --test tools/prototype/test-night-map-scene.js tools/prototype/test-district-core.js\",\n      \"exit_code\": 0,\n      \"summary\": \"Parent old-test regressions unchanged: 33/33 tests pass, 0 fail.\"\n    },\n    {\n      \"command\": \"node --check tools/prototype/backstage-scene.js\",\n      \"exit_code\": 0,\n      \"summary\": \"Syntax check passed with no output; frozen candidate scene byte-unchanged by this correction.\"\n    },\n    {\n      \"command\": \"node --check tools/prototype/test-market-fixtures-scene.js\",\n      \"exit_code\": 0,\n      \"summary\": \"Syntax check of the repaired harness passed with no output.\"\n    }\n  ],\n  \"blockers\": [],\n  \"memory_delta\": [\n    \"play11-market-fixtures harness-only correction completed: candidate backstage-scene.js stays frozen (SHA ba787914f17743359c5cc8fb86b5031d825f0840dc6b951989646a5efd90e5a6); only newtest changed.\",\n    \"Known issue 'auto-stow makes later manual collect false' resolved in newtest: labelled B.restore-validated fuse placement (700,1105) then real-step approach to (679,1145), landing in the 31..45px band from item3 at (660,1180); collect/market-power use only real B.create/B.command, no forced inventory or power.\",\n    \"Known issue 'fullframe reduced comparison includes unchanged animations' resolved: full reduced==ordinary call-log deepEqual removed (conveyor water marks and actor/hero bob animate regardless), same-input full-call determinism and full-run immutability retained; clock/reduced comparisons scoped to scene.block-owned fixture paints.\",\n    \"Known issue 'spatial ellipse filtering includes unrelated shadow and can hide overflow' resolved: instrumentation wraps the real scene.block per instance during real draw and attributes all rect/path/ellipse/text/gradient paints per wall before filtering; bounds cover every owned primitive; unrelated full-frame (717,1001) rx55 ellipse proven present but excluded; negative control catches centered-outside overflow sentinels.\",\n    \"Recorder hardened: save/restore now restores styles and matrix; ellipse/arc angle arguments, setLineDash segments and gradient stop offsets are finite-enforced.\",\n    \"Final evidence: newtest 12/12 GREEN (up from 8/11), old night-map/district suite 33/33 GREEN, node --check clean on scene and test. Parent adopted-baseline RED against untouched 0178350 scene and natural/fullsuite/GUI acceptance remain pending.\"\n  ],\n  \"next_steps\": [\n    \"Parent applies the corrected newtest to the separate untouched adopted 0178350e2fb544a77c8512585ae292e50c54d5ad backstage-scene.js to establish the genuine missing-fixture RED (harness errors now removed).\",\n    \"Parent runs old411 plus the new fullsuite and confirms natural-run/GUI gates: natural start and real market approach, desktop/390/overview before-after, real items unobstructed, pause-refresh, and the separately labelled blackout->repair technical fixture.\",\n    \"On parent acceptance only: adopt the two candidate files and proceed to push/newplay17 byte checks; if parent gates fail, PLAY11 shelves with no further retry or rewrite.\"\n  ]\n}\n"
+      }
+    }
+  ],
+  "counts": {
+    "Read": 12,
+    "Bash": 6,
+    "Edit": 20
+  },
+  "extra_bash": [
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node -e \"const B=require('./tools/prototype/backstage-core.js');console.log(JSON.stringify(B.KITS));console.log(JSON.stringify(B.WALLS.filter(w=>w.kind==='shelf')));const r=B.create(42,3,'hook',[],{marketShift:true});console.log('item3',JSON.stringify(r.items[3]));console.log('fuse',JSON.stringify(B.marketInfo(r).fuse));\"",
+        "description": "Print kit speeds, shelf walls, item3 and fuse positions"
+      }
+    }
+  ],
+  "denials": [
+    {
+      "tool_input": {
+        "command": "node -e \"const B=require('./tools/prototype/backstage-core.js');console.log(JSON.stringify(B.KITS));console.log(JSON.stringify(B.WALLS.filter(w=>w.kind==='shelf')));const r=B.create(42,3,'hook',[],{marketShift:true});console.log('item3',JSON.stringify(r.items[3]));console.log('fuse',JSON.stringify(B.marketInfo(r).fuse));\"",
+        "description": "Print kit speeds, shelf walls, item3 and fuse positions"
+      },
+      "tool_name": "Bash",
+      "tool_use_id": "call_pohtkq3ujrimuc18rsbri5nz"
+    }
+  ],
+  "report_file_exists": true
+}

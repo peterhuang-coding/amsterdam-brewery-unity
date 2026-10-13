@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-market-fixtures-r2-20261013",
+  "receipt_sha256": "8ba3a7c286b47966211f76f981b86bd075c2262ff3ed09a7490e52befc08ab57",
+  "reviewed_at": "2026-10-13T14:18:38Z",
+  "outcome": "rejected",
+  "failure_type": "other",
+  "evidence": [
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-13-four-day-demo/market-fixtures-r2-failure/parent-validation.md",
+      "sha256": "a512576ddb28987ca4d5d264656057e0f809a4a0aaf6ecf98620dac061b5c41d"
+    }
+  ]
+}

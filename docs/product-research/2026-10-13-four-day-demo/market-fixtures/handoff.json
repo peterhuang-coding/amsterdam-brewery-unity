@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-market-fixtures-20261013",
+  "goal": "Differentiate existing stock rack and cold-room fixture with honest power-state rendering, without changing gameplay.",
+  "memory": {
+    "summary": "D23 existing market clarity and consistent visual feedback; independent shelf fixtures only.",
+    "completed": [
+      "Adopted0178350 parent411 fullsuite and natural loadout UI."
+    ],
+    "decisions": [
+      "Two scene entry edits and dedicated shelf helpers only",
+      "Seed Evolving enabled/high, one correction maximum"
+    ],
+    "known_issues": [
+      "Natural stock/cold fixtures appear like similar slatted boxes."
+    ]
+  },
+  "tasks": [
+    "Read focused guide and establish real baseline RED",
+    "Implement bounded deterministic rendering, pass declared tests",
+    "Return honest complete four-row report before cap"
+  ],
+  "acceptance": [
+    "Two structurally distinct true market fixture silhouettes",
+    "Actual power state and legacy fallback honest, no gameplay mutation",
+    "Meaningful actualdraw RED/GREEN and all old assertions preserved",
+    "Parent natural390/desktop and411+new acceptance pending"
+  ],
+  "constraints": [
+    "Only public supplied material, no network",
+    "Only Read/Edit/four exact Bash commands",
+    "No shelved item revival or core/UI/CSS/camera/minimap changes"
+  ],
+  "workspace": "/tmp/amsterdam-market-fixtures-20261013/input",
+  "read_files": [
+    "brief.md",
+    "state-guide.md",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/test-night-map-scene.js",
+    "tools/prototype/test-district-core.js",
+    "tools/prototype/test-market-fixtures-scene.js"
+  ],
+  "write_files": [
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/test-market-fixtures-scene.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-market-fixtures-scene.js",
+    "node --test tools/prototype/test-night-map-scene.js tools/prototype/test-district-core.js",
+    "node --check tools/prototype/backstage-scene.js",
+    "node --check tools/prototype/test-market-fixtures-scene.js"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 1200,
+  "max_turns": 32,
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "play11-market-fixtures",
+    "task_type": "code",
+    "attempt_kind": "business"
+  }
+}

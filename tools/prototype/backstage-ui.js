@@ -93,7 +93,8 @@
     render(){
       const r=this.run();if(!r)return;
       const auto=r.auto?.enabled,z=B.zone(r),near=B.nearest(r),street=B.streetInfo?.(r),tools=Boolean(r.street&&street&&street.id!=='legacy'),dragTarget=B.dragTarget?.(r),location=B.locationInfo?.(r),district=B.districtInfo?.(r),market=B.marketInfo?.(r)||{enabled:false};
-      const signature=[r.sequence,z.id,near?.id,r.status,this.overview,auto,r.auto?.event,r.auto?.goal,r.auto?.speed,r.street?.situation,r.street?.dragging,location?.club?.phase,location?.door?.open,district?.belt?.direction,district?.water?.wet,district?.repaired,market.enabled,market.condition,market.approach,market.delivered,market.stockTaken,market.powered,market.canSalvage,market.canTrade,market.canDeliver,market.canPower,market.reasons?.salvage,market.reasons?.trade,market.reasons?.deliver,market.reasons?.power,this.isPaused()].join('|');
+      const inMarket=market.enabled===true&&z.id==='market'&&r.status==='active';
+      const signature=[r.sequence,z.id,near?.id,r.status,this.overview,auto,r.auto?.event,r.auto?.goal,r.auto?.speed,r.street?.situation,r.street?.dragging,location?.club?.phase,location?.door?.open,district?.belt?.direction,district?.water?.wet,district?.repaired,market.enabled,market.condition,market.approach,market.delivered,market.stockTaken,market.powered,market.canSalvage,market.canTrade,market.canDeliver,market.canPower,market.reasons?.salvage,market.reasons?.trade,market.reasons?.deliver,market.reasons?.power,B.load(r),r.items[0]?.state,r.items[1]?.state,r.items[2]?.state,r.items[3]?.state,r.bag.includes('item0'),r.bag.includes('item1'),r.bag.includes('item2'),this.isPaused()].join('|');
       const toolState=tools?`空瓶 ${r.street.baits} / 3${r.street.lureCooldown>0?' · 恢复 '+r.street.lureCooldown.toFixed(1)+'s':''} · ${r.street.dragging?'正在拖桶 · 步速降低':'青环空桶可拖动'}`:'';
       const situation=street?`<div class="exp-situation"><strong>${esc(street.title)}</strong><p>${esc(street.hint)}</p>${tools?`<span id="exp-street-tools">${esc(toolState)}</span>`:''}</div>`:'';
       let locationCard=location?.enabled?`<div class="exp-location"><strong>${z.id==='market'?'超市内部 / 货架 · 冷库 · 卸货口':z.id==='club'?'NO SIGNAL / 听清楚再动身':'地图背面 / 今晚的新路线'}</strong><p>${z.id==='market'?(location.door.open?'东墙卸货门已经打开，能从这里抄近路。':'货架北面通冷库，东边卸货门可以从里面打开。'):'夜店的鼓点与静音每六秒交替。鼓点降低警觉；贴近保安仍会被发现。'}</p><span id="exp-music-state"></span>${location.market.clued||location.club.clued?'<small>白天记下了：'+[location.market.clued?'超市路线':'',location.club.clued?'夜店节拍':''].filter(Boolean).join(' / ')+'</small>':''}</div>`:'';
@@ -134,6 +135,7 @@
       document.getElementById('night-clock').textContent=r.discovered.includes('greenhouse')?'西南入口 / 温室后门都能回家':'回店口在西南 · 时间到保住半包';
       if(signature===this.signature)return;this.signature=signature;
       document.body.classList.toggle('is-auto-expedition',Boolean(auto));
+      const focusCard=inMarket?this.marketFocusCard(market):'';
       this.canvas.setAttribute('aria-label',(street?street.title+'。'+street.hint+'。':'')+(auto?'城市背面自动探索场景：在行动区选择下一步，阅读选项时时间暂停。':'城市背面手动探险：WASD 移动，J 钩拉，F 泡沫，'+(tools?'N 空瓶引声，R 拖动或放下空桶，':'')+'E 互动，M 地图。'));
       document.getElementById('control-hint').textContent=auto?'点击选项 / 数字键做选择 · M 地图 · P 暂停 · H 帮助':'WASD 移动 · J 钩拉 · F 泡沫 · '+(tools?'N 引声 · R 拖桶 · ':'')+'Space 闪避 · E 互动 · M 地图 · P 暂停';
       document.getElementById('exp-mode').textContent=auto?'切换手动操作':'切换自动探索';
@@ -153,12 +155,93 @@
       }
       if(auto){
         const v=A.view(r);
-        board.innerHTML=`<p class="board-eyebrow">${r.auto.event?'YOUR CALL · 等你决定':'ON THE WAY · 自动探索'}</p><h2>${esc(v.title)}</h2><p class="board-copy">${esc(v.copy)}</p>${locationCard}<div class="exp-choices">${v.choices.map((c,i)=>`<button data-action="exp-command" data-verb="choice:${c.id}"><span class="exp-choice-key">${i+1}</span><span><strong>${esc(c.label)}</strong><small>${esc(c.detail)}</small></span><span aria-hidden="true">↗</span></button>`).join('')}</div>${r.auto.event?'<p class="exp-choice-note">阅读时整条街暂停。点击选项，或按对应数字键。</p>':'<div class="exp-travelling"><span class="live-dot"></span>正在执行你的选择…<button class="text-button" data-action="exp-command" data-verb="reroute">停下来，重新选路</button></div>'}${situation}${cargoButton}<div class="exp-auto-bag"><span>已装包 · ${B.load(r)} / ${B.KITS[r.kit].capacity} 格</span><p>${r.bag.length?r.bag.map(id=>esc(B.TYPES[r.items.find(i=>i.id===id).kind].name)).join(' / '):'沿途遇到普通货物会自动收好。'}</p></div><p class="exp-feed" role="status">${esc(r.message)}</p><button class="text-button" data-action="exp-command" data-verb="bail">放下背包，轻装撤回</button>`;
+        board.innerHTML=`${focusCard}<p class="board-eyebrow">${r.auto.event?'YOUR CALL · 等你决定':'ON THE WAY · 自动探索'}</p><h2>${esc(v.title)}</h2><p class="board-copy">${esc(v.copy)}</p>${locationCard}<div class="exp-choices">${v.choices.map((c,i)=>`<button data-action="exp-command" data-verb="choice:${c.id}"><span class="exp-choice-key">${i+1}</span><span><strong>${esc(c.label)}</strong><small>${esc(c.detail)}</small></span><span aria-hidden="true">↗</span></button>`).join('')}</div>${r.auto.event?'<p class="exp-choice-note">阅读时整条街暂停。点击选项，或按对应数字键。</p>':'<div class="exp-travelling"><span class="live-dot"></span>正在执行你的选择…<button class="text-button" data-action="exp-command" data-verb="reroute">停下来，重新选路</button></div>'}${situation}${cargoButton}<div class="exp-auto-bag"><span>已装包 · ${B.load(r)} / ${B.KITS[r.kit].capacity} 格</span><p>${r.bag.length?r.bag.map(id=>esc(B.TYPES[r.items.find(i=>i.id===id).kind].name)).join(' / '):'沿途遇到普通货物会自动收好。'}</p></div><p class="exp-feed" role="status">${esc(r.message)}</p><button class="text-button" data-action="exp-command" data-verb="bail">放下背包，轻装撤回</button>`;
         document.getElementById('story-line').innerHTML='<span class="quote-mark">“</span><p>本店支持自主决策。责任也会自主地找到你。</p><span class="story-author">— 后门员工手册</span>';return;
       }
       const parcelText=({ground:'夜店的冷藏箱还在那里',carried:'箱内是月雾 · 可交回 Noor',returned:'已交回 Noor · €14 待结算',lost:'冷藏箱落在街区'})[r.parcel];
-      board.innerHTML=`<p class="board-eyebrow">CITY BACKSTAGE / 第 ${r.day} 趟</p><h2>跟着灯走。<br>留条路回来。</h2><p class="board-copy">${esc(B.KITS[r.kit].name)} · 普通货物靠近装包。<br>点向目标下钩，闪避和泡沫可以救场。</p>${locationCard}${this.marketPanel(market)}${situation}<div class="exp-objectives"><div class="${r.parcel==='returned'?'done':''}"><span>◇</span><div><strong>一箱“进口酵母”</strong><p>${parcelText}。${r.parcel==='returned'?'下次营业会在酒馆再见。':r.parcel==='carried'?'交回她，或带到出口自行保留。':'占 3 格，靠近按 E。'}</p></div></div><div class="${r.discovered.includes('noor')?'done':''}"><span>♧</span><div><strong>红灯街的 Noor</strong><p>西北运河边，她刚下夜班。带箱子过去，或先问问她。</p></div></div><div class="${r.discovered.includes('greenhouse')?'done':''}"><span>✧</span><div><strong>玻璃后面，有人在生活</strong><p>${r.discovered.includes('greenhouse')?'温室捷径已记住。下次也能进去。':'东北的温室亮着灯。拉开外面的维护拉杆，找路进去。'}</p></div></div></div><div class="exp-bag"><div class="exp-bag-title"><strong>背包</strong><span>Q 扔下最后一件</span></div>${r.bag.length?r.bag.map(id=>{const i=r.items.find(x=>x.id===id),t=B.TYPES[i.kind];return `<span class="exp-cargo" style="--cargo:${t.color}">${esc(t.name)}<small>${t.weight} 格</small></span>`;}).join(''):'<p>先拿附近的封口瓶试试手。<br>价值更高的东西，不一定更好带。</p>'}</div><p class="exp-feed" role="status">${esc(r.message)}</p>${cargoButton}<div class="exp-board-actions"><button class="secondary" data-action="exp-command" data-verb="map">${this.overview?'返回跟随视角':'看看全图'} · M</button><button class="text-button" data-action="exp-command" data-verb="bail">放下背包，轻装撤回</button></div>`;
+      board.innerHTML=`${focusCard}<p class="board-eyebrow">CITY BACKSTAGE / 第 ${r.day} 趟</p><h2>跟着灯走。<br>留条路回来。</h2><p class="board-copy">${esc(B.KITS[r.kit].name)} · 普通货物靠近装包。<br>点向目标下钩，闪避和泡沫可以救场。</p>${locationCard}${this.marketPanel(market)}${situation}${inMarket?'':`<div class="exp-objectives"><div class="${r.parcel==='returned'?'done':''}"><span>◇</span><div><strong>一箱“进口酵母”</strong><p>${parcelText}。${r.parcel==='returned'?'下次营业会在酒馆再见。':r.parcel==='carried'?'交回她，或带到出口自行保留。':'占 3 格，靠近按 E。'}</p></div></div><div class="${r.discovered.includes('noor')?'done':''}"><span>♧</span><div><strong>红灯街的 Noor</strong><p>西北运河边，她刚下夜班。带箱子过去，或先问问她。</p></div></div><div class="${r.discovered.includes('greenhouse')?'done':''}"><span>✧</span><div><strong>玻璃后面，有人在生活</strong><p>${r.discovered.includes('greenhouse')?'温室捷径已记住。下次也能进去。':'东北的温室亮着灯。拉开外面的维护拉杆，找路进去。'}</p></div></div>${inMarket?'':'</div>'}`}<div class="exp-bag"><div class="exp-bag-title"><strong>背包</strong><span>Q 扔下最后一件</span></div>${r.bag.length?r.bag.map(id=>{const i=r.items.find(x=>x.id===id),t=B.TYPES[i.kind];return `<span class="exp-cargo" style="--cargo:${t.color}">${esc(t.name)}<small>${t.weight} 格</small></span>`;}).join(''):'<p>先拿附近的封口瓶试试手。<br>价值更高的东西，不一定更好带。</p>'}</div><p class="exp-feed" role="status">${esc(r.message)}</p>${cargoButton}<div class="exp-board-actions"><button class="secondary" data-action="exp-command" data-verb="map">${this.overview?'返回跟随视角':'看看全图'} · M</button><button class="text-button" data-action="exp-command" data-verb="bail">放下背包，轻装撤回</button></div>`;
       document.getElementById('story-line').innerHTML='<span class="quote-mark">“</span><p>本店坚决反对违法交易。具体定义请咨询本店法务。</p><span class="story-author">— 夜店后门告示</span>';
+    }
+    // One prominent current-objective card for the supermarket night.
+    // Read-only: derived entirely from marketInfo/run/auto state; risks stay in the panels below.
+    marketFocusCard(market){
+      const f=this.marketFocus(market);if(!f)return '';
+      return `<div class="exp-location" id="exp-market-focus" role="group" aria-label="眼前这一步"><strong>眼前这一步 · ${esc(f.h)}</strong><p>${esc(f.p)}</p><small>${esc(market.label)}${this.isPaused()?' · 已暂停，操作先冻结':''}</small></div>`;
+    }
+    marketFocus(market){
+      const r=this.run();
+      if(!market?.enabled||r.status!=='active'||B.zone(r).id!=='market')return null;
+      const auto=Boolean(r.auto?.enabled),a=r.auto,day=r.day;
+      const free=B.KITS[r.kit].capacity-B.load(r);
+      const barrelBag=r.items[2].state==='bag'&&r.bag.includes('item2');
+      const out=(h,p)=>({h,p});
+      if(auto){
+        // Interrupting events always override destination advice.
+        if(a.event==='capacity')return out('背包满了，先腾地方','在下方选一件货物放下，或放弃不拿；已经入包的东西不会被偷偷丢掉。');
+        if(a.event==='stuck')return out('这条路暂时不好走','自动走法卡住了：换个目的地，或切回手动亲自处理。');
+        if(a.event==='glimpse')return out('要顺着花车拐个弯吗','花车朝东北温室去了：继续原路线，或改道看看，由你选。');
+        if(a.event==='route')return out('先选今晚从哪开始','在下方挑第一个目的地；腿脚自动走，重要的事留给你决定。');
+        if(!a.event){
+          const space='现余 '+free+' 格';
+          const legs={
+            'market-barrel':['去收滚动酒桶','正在走过去收那只滚动酒桶（占 3 格，'+space+'），收到就回柜台。'],
+            'market-counter':['回柜台交付酒桶','酒桶已在包里，自动走回柜台交付；交付会消耗它，变不回 4 杯艾尔。'],
+            'market-fuse':['去卸货门修电','带着零件去开关旁修电：会消耗这件本来能卖 €5 的零件。'],
+            'market-part':['去找一件可修零件','自动去卸货区收零件，再回修电点；这件零件本来能卖 €5。'],
+            'market-stock':['去退货货架取货','自动走进货架区，靠近后收下封口酒（1 格）。'],
+            'market-cold':['进冷库取酒花','自动绕进冷库，靠近后收下密封酒花（1 格）。'],
+            'market-shortcut':['去打开卸货卷门','自动绕到内侧开关开卷门；这条捷径明晚还在。'],
+            'market':['去柜台表态','正走向超市收货柜台，到了由你选路线。'],
+            'exit':['带着收获去出口','正走向回酒馆的出口；安全撤离后，这一趟才结算。'],
+            'club':['离开超市去夜店','正穿过超市去夜店后门，找那只冷藏箱。'],
+            'noor':['离开超市去找 Noor','正穿过超市去运河边找 Noor。'],
+            'garden':['去玻璃后的温室','正穿过城市去东北边的温室看看。'],
+            'gate':['先拉开维护闸门','温室闸门还关着，先到外侧拉杆，再进去。'],
+            'sorting':['去失物分拣场','正离开超市去分拣场看看有什么可捡。']
+          };
+          const pair=legs[a.goal]||['继续当前这一步','正自动往前走，到地方后重要选择仍留给你。'];
+          return out(pair[0],pair[1]);
+        }
+        if(a.event!=='market')return out('先处理眼前的选择','阅读时整条街暂停；在下方做完选择再继续走。');
+      }
+      // Shared market-stage guidance (manual, and automatic mode stopped at the market choice).
+      if(market.approach===null){
+        if(market.canTrade)return out('柜台表态：二选一',auto?'在下方选「直接取库存」或「帮忙搬货」，选完自动走。':'选「直接取库存」或「帮忙搬货」：表态不花钱、不花时间，路线锁定不能改。');
+        return out('先走到超市柜台','沿通道走到收货柜台再表态；二选一锁定路线，表态本身不花钱、不花时间。');
+      }
+      if(market.approach==='trade'){
+        if(market.delivered){
+          return out('货已交，安全撤离',day===3?'交付已确认；第 3 夜没有下一天，回执无法兑现，走到出口安全撤离。':'交付已确认，奖励还没到手：走到出口安全撤离，次日回执才作数。');
+        }
+        if(barrelBag){
+          return out('把酒桶送回柜台',market.canDeliver?'酒桶在包里、柜台就在面前：用下方交付按钮交货，交完桶就被消耗。':'酒桶已在包里，走回收货柜台再交付：'+market.reasons.deliver);
+        }
+        const space=free>=3?'现余 '+free+' 格，够装':'现余 '+free+' 格，不够先扔东西';
+        const p=market.condition==='restock'
+          ?'补货夜酒桶停不下来，靠近亲手收；占 3 格，'+space+'；不是街边空桶。'
+          :'去把超市里那只滚动酒桶收进包（占 3 格，'+space+'）；它不是街边的空桶。';
+        return out('去收滚动酒桶',p);
+      }
+      // salvage route: stockTaken is the persistent surcharge consequence; current
+      // possession is derived separately from the two market goods' real bag membership.
+      const stockBag=r.items[0].state==='bag'&&r.bag.includes('item0');
+      const coldBag=r.items[1].state==='bag'&&r.bag.includes('item1');
+      if(market.stockTaken){
+        if(stockBag||coldBag){
+          return out('货已入包，准备撤离',day===3?'拿到的货已在包里；第 3 夜是最后一夜，没有后续涨价，走到出口安全撤离即可。':'拿到的货已在包里，次日收摊酒箱 €8→€10、只涨一天；走到出口安全撤离。');
+        }
+        // Every taken good was dropped back to the world: offer recovery or return
+        // without claiming possession, while keeping the dated consequence on record.
+        return out('货已离包：捡回或撤离',day===3
+          ?'先前收下的货已不在包里、落在超市地上：走回货物旁重新收下，或空手去出口安全撤离；第 3 夜是最后一夜，没有后续涨价。'
+          :'先前收下的货已不在包里、落在超市地上：走回货物旁重新收下，或空手去出口安全撤离；次日收摊酒箱 €8→€10 只涨一天。');
+      }
+      const stockWorld=r.items[0].state==='world',coldWorld=r.items[1].state==='world';
+      const coldOpen=market.condition!=='blackout'||market.powered;
+      if(market.condition==='blackout'&&!coldOpen&&coldWorld)
+        return out('货架免费拿货，冷库先修电','退货货架的封口酒可直接拿；冷库黑着，修电要消耗一件值 €5 的零件，货架拿货免费。');
+      const names=(stockWorld?'退货货架的封口酒；':'')+(coldWorld?'冷库的密封酒花；':'');
+      return out('取库存：货架与冷库',names?names+'都只占 1 格，靠近亲手收。':'货都收过了，准备安全撤离。');
     }
     // Manual market panel. Availability comes straight from B.marketInfo; verbs run through B.command.
     marketPanel(market){

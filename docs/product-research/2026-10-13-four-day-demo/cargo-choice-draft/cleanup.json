@@ -1,0 +1,16 @@
+{
+  "closed_servers": [
+    {
+      "pid": 86302,
+      "port": 18857,
+      "root": "/tmp/amsterdam-cargo-choice-review-20261013/candidate"
+    },
+    {
+      "pid": 86303,
+      "port": 18858,
+      "root": "/tmp/amsterdam-cargo-choice-review-20261013/baseline"
+    }
+  ],
+  "browser": "amsterdam-play13-review closed",
+  "old_services_untouched": true
+}

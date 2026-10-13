@@ -1,0 +1,14 @@
+{
+  "pid": 88620,
+  "model": "doubao-seed-evolving",
+  "tools": [
+    "Bash",
+    "Edit",
+    "Read"
+  ],
+  "permissionMode": "dontAsk",
+  "alwaysThinkingEnabled": true,
+  "effort": "high",
+  "max_turns": "32",
+  "requested_only_dry_run": false
+}

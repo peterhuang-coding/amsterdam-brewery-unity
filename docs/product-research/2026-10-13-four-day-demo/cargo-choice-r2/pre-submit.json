@@ -1,0 +1,27 @@
+{
+  "checked_at": "2026-10-13T16:27:05.502539+00:00",
+  "active_ledger": [],
+  "active_claude_cli": [],
+  "git": [
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914",
+      "branch": "codex/product-research-nightshift",
+      "head": "c30724322bdda844977be58ab38f4e990662b312",
+      "remote": "c30724322bdda844977be58ab38f4e990662b312",
+      "clean": true
+    },
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/art-pass-20261013",
+      "branch": "codex/art-pass-20261013",
+      "head": "0178350e2fb544a77c8512585ae292e50c54d5ad",
+      "remote": "0178350e2fb544a77c8512585ae292e50c54d5ad",
+      "clean": true
+    }
+  ],
+  "input_count": 9,
+  "input_bytes": 166583,
+  "all_input_sha_match": true,
+  "fixed_id_absent": true,
+  "capacity_note": "instantaneous check, not atomic global guarantee",
+  "notion_execution_readback": "confirmed before this command"
+}

@@ -1,3 +1,11 @@
+## PLAY07酒馆人物包已单路提交
+
+2026-10-13T07:31:47.776573+00:00，amsterdam-pub-guests-20261013已启动，worker42545/launcher42542。实际init Seed Evolving/Read/Edit/Bash/dontAsk，请求enabled/high、1200秒32轮；logical play07-pub-guests/business1，correction0/1。父选07:17:19Z冷却已过，即时全机账本/CLI0路、本项1路，7输入95133B SHA一致，非原子并发保证。实时Notion已执行中，合同264747c已push。
+
+精确基线bd614431e31dc44cd3730ef6c0d6c022cd355b1a，仅scene酒馆客人座椅段/专用helper及新test；实际订单选择/等候/倒酒状态、人物轮廓和衣着。其他场景/游戏规则/UI/CSS/经济/存档/旧断言不改；PLAY03/PLAY06仍搁置。7输入与预检8外层（city13内置+scene7）/语法0仅准备证据，不能当本任务测试。先查原ID/结果/日志/PID，unknown不重发；完整报告/边界/真实新红绿/旧379+新增全量及自然GUI/390px后才采用。
+
+当前在途采用0，试玩仍bd61443/18839；旧服务存档保持。业务失败确认结束后本项仅一次定向修正，仍失败搁置，不换ID清零。下次整体review15:48:33Z、四天固定截止不变。实际提交/即时核对见pub-guests/submission.json和pre-submit-check.json。以下准备与失败记录为历史。
+
 ## PLAY06唯一修正失败并搁置；PLAY07准备待冷却
 
 amsterdam-morning-market-r2-20261013于2026-10-13T06:47:18.242475Z结束，385.324秒/10轮、CLI1、state done/result unknown，原worker38901已退出。最终subtype虽success但is_error=true/terminal_reason=api_error，原文Request timed out，HTTP状态null；不能称成功或已观察429。仅Read9且均在输入范围，23源与23暂存输入SHA不变，无Edit/Bash/测试/交接报告，无候选补丁、游戏采用0。标准review因unknown返回review_requires_finished，未成功登记rejected；父级独立终态审查另存。原请求与日志不改，原63/63预检和379已采用回归不是本次测试。证据morning-market-r2-failure。

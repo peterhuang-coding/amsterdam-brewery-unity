@@ -1,0 +1,17 @@
+{
+  "task_id": "amsterdam-pub-guests-20261013",
+  "submitted_at": "2026-10-13T07:31:47.776573+00:00",
+  "launcher_pid": 42542,
+  "worker_pid": 42545,
+  "model": "doubao-seed-evolving",
+  "tools": [
+    "Bash",
+    "Edit",
+    "Read"
+  ],
+  "permission_mode": "dontAsk",
+  "state": "running",
+  "thinking_requested": "enabled",
+  "effort_requested": "high",
+  "source": "original init event + exact dry-run/launch settings"
+}

@@ -15,7 +15,9 @@
   "current_task_terminal": null,
   "failure_reason": null,
   "last_result_at": "2026-10-13T06:47:18.242475Z",
-  "in_flight": [],
+  "in_flight": [
+    "amsterdam-pub-guests-20261013"
+  ],
   "candidate_path": null,
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -89,10 +91,10 @@
       "structured_review": "review_requires_finished_not_recorded_parent_audit_saved"
     },
     "PLAY07": {
-      "business_attempts_submitted": 0,
+      "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 0,
-      "outcome": "prepared_cooldown",
+      "outcome": "running",
       "task_id": "amsterdam-pub-guests-20261013",
       "base_commit": "bd614431e31dc44cd3730ef6c0d6c022cd355b1a",
       "game_adopted": 0
@@ -101,12 +103,12 @@
   "provider_cooldown_until": "2026-10-13T07:17:19Z",
   "provider_cooldown_basis": "parent30minafter_api_timeout_terminal_not_server_RetryAfter",
   "failure_notification_recorded_at": "2026-10-13T07:09:00Z",
-  "provider_cooldown_completed_at": null,
-  "current_submitted_at": null,
-  "current_worker_pid": null,
+  "provider_cooldown_completed_at": "2026-10-13T07:31:47.776573+00:00",
+  "current_submitted_at": "2026-10-13T07:31:47.776573+00:00",
+  "current_worker_pid": 42545,
   "current_task_packet": "/tmp/amsterdam-pub-guests-20261013/handoff.json",
   "current_task_notion": "https://app.notion.com/p/3f83285284df819983d1fe6a03568ddb",
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
-  "current_task_stage": "prepared_cooldown"
+  "current_task_stage": "running"
 }

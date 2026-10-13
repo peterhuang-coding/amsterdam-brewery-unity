@@ -1,0 +1,35 @@
+{
+  "task_id": "amsterdam-morning-market-r2-20261013",
+  "logical_task_id": "play06-morning-market",
+  "attempt_kind": "correction",
+  "submitted_at": "2026-10-13T06:40:52.865118+00:00",
+  "launcher_pid": 38900,
+  "precheck": {
+    "checked_at": "2026-10-13T06:40:52.807727+00:00",
+    "live_tasks": [],
+    "cli_pids": [],
+    "input_sha_count": 23,
+    "input_sha_match": true,
+    "capacity_non_atomic": true
+  },
+  "corrections_submitted": 1,
+  "corrections_allowed": 1,
+  "worker_pid": 38901,
+  "observed_state": "running",
+  "actual_init": {
+    "type": "system",
+    "subtype": "init",
+    "model": "doubao-seed-evolving",
+    "tools": [
+      "Bash",
+      "Edit",
+      "Read"
+    ],
+    "permissionMode": "dontAsk",
+    "cwd": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-morning-market-r2-20261013/workspace"
+  },
+  "requested_thinking_enabled": true,
+  "requested_reasoning_effort": "high",
+  "max_turns": 40,
+  "timeout_seconds": 1500
+}

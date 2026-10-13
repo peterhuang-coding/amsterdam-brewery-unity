@@ -1,0 +1,25 @@
+{
+  "checked_at": "2026-10-13T15:13:08.040641+00:00",
+  "global_nonterminal": [],
+  "claude_processes": [],
+  "id_absent": true,
+  "inputs": 8,
+  "bytes": 133414,
+  "sha_match": true,
+  "git": [
+    {
+      "branch": "codex/product-research-nightshift",
+      "head": "abd08ff5b4c78876685caf4ae15491f0fc44fdce",
+      "remote_equal": true,
+      "clean": true
+    },
+    {
+      "branch": "codex/art-pass-20261013",
+      "head": "0178350e2fb544a77c8512585ae292e50c54d5ad",
+      "remote_equal": true,
+      "clean": true
+    }
+  ],
+  "capacity_note": "immediate observation, not an atomic global guarantee",
+  "notion": "live executing readback completed before this check"
+}

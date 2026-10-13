@@ -1,3 +1,13 @@
+## PLAY12 sole targeted correction submitted
+
+amsterdam-city-markers-r2-20261013 submitted2026-10-13T15:13:08.041737Z,worker79815/launcher79814. Logical play12-city-markers/correction, businesshistory1, solecorrection1/1 nowused. StableID and packet/tmp/amsterdam-city-markers-r2-20261013/handoff.json; resume fromoriginalstatus/result/events/PID, never resend submitted/unknown. Failed correction or parentacceptance then shelve. PLAY03/06/07/11 stay shelved.
+
+Contract abd08ff pushed and live Notion execution readback completed BEFORE launch. Immediate fullmachine status-ledger/claudeCLI0lanes to this1lane, not atomicglobal guarantee;8publicinputs133414B SHA matched,0178350game andworktable clean/remoteequal. Actualinit doubao-seed-evolving/Read/Edit/Bash/dontAsk; launchalwaysThinkingEnabled true/efforthigh,1500s40turns. No secondmatureindependentpackage. No APIcooldown newevidence.
+
+Preserve fullbusinesscandidate; fix only dedicatedlabelhelpers for actualflower bottom/avatar and synthetic upperedge/head occlusion. Both drawCity calls/allothergamebytes frozen; original12-testprefix unchanged, appendtargetedregressions. First targetedRED on originalcandidate thenGREEN. Preflight12/12+oldNode8/8+syntax0 is not R2 success. Fulllegalreport/exactscope/tools/SHA/old411+allnew/naturalcity+edge nonocclusion required beforeadoptpush/17resourcechecks. Currentadopted0,playstill0178350/18849. Business normalCLI0/legalreport/parent423 butsemanticrejected preserved undercity-markers-draft, originalreport internalcorrection wording not a separateD24attempt.
+
+Candidate18852/PID78068,baseline18853/PID78069 andbrowser closed. Oldservices/saves preserved. Nextdirectionreview15:48:33Z, fixeddeadline2026-10-16T19:48:33Z unchanged. Overallart/richness/fun incomplete,no newhumanfeedback. Earlierprepared/in-flight entries below are historical.
+
 ## PLAY12 business rejected; sole edge-placement correction prepared
 
 Business amsterdam-city-markers-20261013 normally ended14:48:48.357223Z,CLI0/fulllegalreport,1094.955s/33turns. Parent12/12,adoptedbase3/12,423/423; scope/SHA/toolchecks pass but actual flowerlabel/avatar and synthetic upperedge playerbadge/head overlap fail visual acceptance. Standard rejected/semantic. Original report counts/internal correction wording are preserved and qualified; business1/separately submitted correction0of1. Evidence city-markers-draft includes rawreport/events/tests/screens/patch2of2. Adopted0,play remains0178350/18849 and411 adoptedtests.

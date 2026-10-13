@@ -1,0 +1,15 @@
+{
+  "actual_init_model": "doubao-seed-evolving",
+  "actual_init_tools": [
+    "Bash",
+    "Edit",
+    "Read"
+  ],
+  "actual_permission_mode": "dontAsk",
+  "launch_thinking_enabled": true,
+  "launch_effort": "high",
+  "worker_pid": 79815,
+  "status": {
+    "state": "running"
+  }
+}

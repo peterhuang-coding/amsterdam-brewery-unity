@@ -426,6 +426,86 @@
       this.rect(358,45,384,77,'#163e43e8');this.text('NOORD / 北岸运河',550,74,21,'#e2d1a6','Georgia');this.text('城市更新中，贵重物品请自行打捞。',550,99,14,'#b7cbb0','sans-serif');
       this.text('有用收获 '+f.haul+' / 3',550,607,18,'#f0d497','sans-serif');
     }
+    // PLAY09 dedicated background-material helpers. Only the wall, lamp and
+    // counter-shell spans call these. Every tone is fixed per day/night flag:
+    // cityRand hashes cell keys, so there is no Math.random, no accumulating
+    // texture and no dependence on the frame timestamp.
+    pubWallDepth(night){
+      // Quiet plaster: two sparse fixed passes (soft light wash and grime).
+      for(let k=0;k<16;k++){
+        const px=26+Math.floor(this.cityRand(k*7+3)*980);
+        const pw=Math.min(46+Math.floor(this.cityRand(k*13+9)*70),1100-px-8);
+        const py=48+Math.floor(this.cityRand(k*11+5)*300);
+        const ph=18+Math.floor(this.cityRand(k*17+1)*40);
+        this.rect(px,py,pw,ph,night?'#f4e6c805':'#fff7e012');
+      }
+      for(let k=0;k<12;k++){
+        const px=30+Math.floor(this.cityRand(k*19+4)*960);
+        const pw=Math.min(40+Math.floor(this.cityRand(k*23+8)*66),1100-px-8);
+        const py=52+Math.floor(this.cityRand(k*29+6)*296);
+        const ph=16+Math.floor(this.cityRand(k*31+2)*44);
+        this.rect(px,py,pw,ph,night?'#0816100d':'#2c3a260e');
+      }
+      // Dark stained timber: the kept top beam with a cast underside, a worn
+      // edge catch, a full rail behind the bar and quiet bay posts. All stays
+      // inside the wall footprint and behind the later fixtures and props.
+      this.rect(0,0,1100,21,'#223c36');
+      this.rect(0,21,1100,3,night?'#10271f':'#1c352c');
+      this.line([[0,22],[1100,22]],night?'#9fb49318':'#fff4d62b',1);
+      this.rect(0,384,1100,14,night?'#243b33':'#3a4a38');
+      this.line([[0,385],[1100,385]],night?'#7e947c20':'#ffffff20',1);
+      this.line([[0,396],[1100,396]],'#00000030',1);
+      this.rect(0,24,8,360,night?'#1c332c':'#33473a');
+      this.rect(1092,24,8,360,night?'#1c332c':'#33473a');
+      this.rect(440,24,7,360,night?'#20382f':'#3a4f40');
+      this.rect(794,24,7,336,night?'#20382f':'#3a4f40');
+    }
+    pubCounterShell(night){
+      const c=this.ctx;
+      // Polished timber top: bright worn lip, sheen, dark contact edge.
+      this.rect(10,398,1080,38,'#67543a');
+      this.rect(10,398,1080,7,'#a99668');
+      this.line([[14,400],[1086,400]],night?'#f3dca624':'#e8d5a433',1);
+      this.line([[14,405],[1086,405]],'#00000024',1);
+      // Deterministic woodgrain following the slab, alternating light and dark.
+      for(let k=0;k<14;k++){
+        const gy=409+Math.floor(this.cityRand(k*3+5)*11)+this.cityRand(k+1)*0.6;
+        const gx=18+Math.floor(this.cityRand(k*5+7)*70);
+        const len=150+Math.floor(this.cityRand(k*9+11)*260);
+        this.line([[gx,gy],[Math.min(1084,gx+len),gy+(this.cityRand(k+3)-.5)*1.6]],
+          k%2?(night?'#0000001c':'#3a2c1a1c'):(night?'#c9a46a1a':'#9c7f4c22'),1);
+      }
+      this.rect(10,425,1080,11,'#54442f');
+      this.line([[12,435],[1088,435]],'#00000042',1.2);
+      // Cabinet carcass and a thin light catch along its top edge.
+      this.rect(24,436,1052,195,'#3b392c');
+      this.line([[26,438],[1074,438]],night?'#6b684c22':'#b0a67c26',1);
+      // Recessed fronts on the unchanged nine-panel grid: top/left light and
+      // bottom/right shadow give each cabinet door measurable depth.
+      const hi=night?'#5d6144':'#716d4d',sh=night?'#1d2418':'#282e1f';
+      for(let x=40;x<1070;x+=128){
+        this.rect(x,452,113,156,'#454330');this.rect(x+5,457,103,146,'#303d2d');this.rect(x+10,462,93,134,'#384332');
+        const right=Math.min(x+102,1072);
+        this.line([[x+11,463],[right,463]],hi,1);
+        this.line([[x+11,464],[x+11,594]],hi,1);
+        this.line([[x+11,595],[right,595]],sh,1);
+        if(right>x+20)this.line([[right,464],[right,594]],sh,1);
+      }
+      this.rect(15,612,1072,18,'#242a25');
+      this.line([[17,613],[1085,613]],night?'#5a63531f':'#6f7a6224',1);
+      if(night){
+        // Actual night pools settle on the wood directly under each lamp. They
+        // are clipped to the countertop and drawn before taps, register,
+        // glasses, cellar/stage, guests and active pours, so foreground props
+        // always sit on top of the light instead of being washed out.
+        for(const x of [257,652,952]){
+          const pool=c.createRadialGradient(x,402,2,x,405,96);
+          pool.addColorStop(0,'#f3c47440');pool.addColorStop(1,'#f3c47400');
+          const px=Math.max(14,x-104),pw=Math.min(1086,x+104)-px;
+          this.rect(px,399,pw,36,pool);
+        }
+      }
+    }
     draw(state, timestamp, selectedId, cityView) {
       const c=this.ctx;
       const time=this.reduced.matches?0:timestamp/1000;
@@ -437,8 +517,7 @@
       const wall=c.createLinearGradient(0,0,0,450);
       wall.addColorStop(0,night?'#233c38':'#668273');wall.addColorStop(1,night?'#3f4f39':'#9ba58b');
       this.rect(0,0,1100,460,wall);
-      this.rect(0,0,1100,21,'#223c36');
-      for(let x=10;x<1100;x+=85){this.rect(x,22,3,420,night?'#ffffff04':'#1f49390a');}
+      this.pubWallDepth(night);
 
       // Three tall windows look out over the canal, behind the bar.
       c.save();c.beginPath();c.rect(57,64,366,292);c.clip();
@@ -486,12 +565,17 @@
       // Warm hanging lamps. Changes in light give the day/night transition weight.
       for(const x of [257,652,952]){
         this.line([[x,0],[x,50]],'#252e26',3);this.ellipse(x,56,33,9,'#64543b');this.rect(x-34,56,68,14,'#8d7952');this.ellipse(x,70,33,8,night?'#e4b971':'#bca06b');
-        if(night){const glow=c.createRadialGradient(x,78,0,x,128,180);glow.addColorStop(0,'#e9bd6b2a');glow.addColorStop(1,'#e9bd6b00');this.rect(x-180,70,360,320,glow);}
+        this.rect(x-30,57,60,2,night?'#f6d79333':'#ffffff16');
+        if(night){
+          // Stronger but contained copper pool: capped in width and height so it
+          // never spills past the wall band or over the bar foreground.
+          const glow=c.createRadialGradient(x,76,2,x,92,150);
+          glow.addColorStop(0,'#f0c4744a');glow.addColorStop(.55,'#e9bd6b1f');glow.addColorStop(1,'#e9bd6b00');
+          this.rect(x-140,72,280,288,glow);
+        }
       }
       // Back counter, taps and glassware.
-      this.rect(10,398,1080,38,'#67543a');this.rect(10,398,1080,7,'#a99668');this.rect(24,436,1052,195,'#3b392c');
-      for(let x=40;x<1070;x+=128){this.rect(x,452,113,156,'#454330');this.rect(x+5,457,103,146,'#303d2d');this.rect(x+10,462,93,134,'#384332');}
-      this.rect(15,612,1072,18,'#242a25');
+      this.pubCounterShell(night);
       for(let i=0;i<(state.upgrades.includes('doubleTap')?2:1);i++){
         const tx=489+i*72;this.rect(tx-20,391,51,7,'#293c39');this.rect(tx,332,14,64,'#b28b4c');this.rect(tx+3,334,3,56,'#ebcc7e');this.line([[tx+7,338],[tx+7,322],[tx+35,322],[tx+35,341]],'#bd9c60',10);this.rect(tx+31,336,9,11,'#3f493a');this.rect(tx+1,302,12,23,'#324d38');this.ellipse(tx+7,300,10,11,'#b7a064');
       }

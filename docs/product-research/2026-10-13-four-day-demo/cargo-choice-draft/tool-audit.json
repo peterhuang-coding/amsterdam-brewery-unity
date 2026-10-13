@@ -1,0 +1,168 @@
+[
+  {
+    "name": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-cargo-choice-20261013/workspace/brief.md"
+    }
+  },
+  {
+    "name": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-cargo-choice-20261013/workspace/tools/prototype/backstage-ui.js"
+    }
+  },
+  {
+    "name": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-cargo-choice-20261013/workspace/tools/prototype/test-cargo-choice-ui.js"
+    }
+  },
+  {
+    "name": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-cargo-choice-20261013/workspace/tools/prototype/backstage-core.js"
+    }
+  },
+  {
+    "name": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-cargo-choice-20261013/workspace/tools/prototype/backstage-auto.js"
+    }
+  },
+  {
+    "name": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-cargo-choice-20261013/workspace/tools/prototype/test-district-core.js"
+    }
+  },
+  {
+    "name": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-cargo-choice-20261013/workspace/tools/prototype/test-district-auto.js"
+    }
+  },
+  {
+    "name": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-cargo-choice-20261013/workspace/tools/prototype/reopening.css",
+      "limit": 40
+    }
+  },
+  {
+    "name": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-cargo-choice-20261013/workspace/tools/prototype/test-cargo-choice-ui.js",
+      "old_string": "",
+      "new_string": "'use strict';\n// PLAY13 cargo modal clarity. Technical fixtures: real B.create runs with\n// hand-loaded bag ids used only to present the modal; they are not natural\n// play saves. Real BackstageUI.perform runs in a VM against the real\n// backstage core/auto; drop effects are never stubbed.\nconst test=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');\nconst B=require('./backstage-core.js'),A=require('./backstage-auto.js');\nconst KIND_NAMES=['封口艾尔','密封酒花','滚动酒桶','可修零件','“进口酵母” / 月雾'];\n\nfunction makeUI(r){\n  const sandbox={};\n  sandbox.window=sandbox;\n  sandbox.Backstage=B;\n  sandbox.BackstageAuto=A;\n  sandbox.BackstageScene=class{worldPoint(){return null;}draw(){}};\n  sandbox.document={addEventListener(){},querySelector(){return null;}};\n  sandbox.addEventListener(){};\n  const canvas={addEventListener(){},setAttribute(){},focus(){},getBoundingClientRect:()=>({left:0,top:0,width:1100,height:640})};\n  vm.createContext(sandbox);\n  vm.runInContext(fs.readFileSync(path.join(__dirname,'backstage-ui.js'),'utf8'),sandbox,{filename:'backstage-ui.js'});\n  const modals=[];let saves=0,renders=0;\n  const ui=new sandbox.BackstageUI({canvas,\n    getState:()=>({phase:'explore',backstage:{run:r}}),\n    isPaused:()=>false,save(){saves++;},render(){renders++;},dispatch(){},\n    showModal:(title,subtitle,body,choices)=>modals.push({title,subtitle,body,choices})});\n  return {ui,modals,stats:()=>({saves,renders})};\n}\n// Technical bag fixture: mark held ids directly instead of simulating pickups.\nfunction bag(r,...ids){r.bag=ids;for(const id of ids)r.items.find(i=>i.id===id).state='bag';if(ids.includes('item6'))r.parcel='carried';}\nfunction openCargo(h){h.ui.perform('cargo');return h.modals.at(-1);}\nfunction kindOf(label){return KIND_NAMES.find(n=>label.includes(n));}\n\ntest('cargo modal groups duplicates in bag first-seen order with live counts and slot math, mutating nothing on open/cancel',()=>{\n  const r=B.create(42001,1,'cart');bag(r,'item4','item0','item5','item2');\n  const h=makeUI(r),before=structuredClone(r),m=openCargo(h);\n  assert.deepEqual(structuredClone(r),before);\n  assert.deepEqual(h.stats(),{saves:0,renders:0});\n  assert.equal(m.choices.length,4);\n  const keep=m.choices[0];\n  assert.equal(keep.label,'先都留着，继续探索');assert.equal(keep.run,undefined);\n  keep.run?.();assert.deepEqual(r.bag,['item4','item0','item5','item2']);\n  assert.deepEqual(m.choices.slice(1).map(c=>kindOf(c.label)),['封口艾尔','密封酒花','滚动酒桶']);\n  const bottle=m.choices[1],hops=m.choices[2],barrel=m.choices[3];\n  assert.match(bottle.label,/^放下 1 件封口艾尔 · 持有 2 件$/);\n  assert.match(hops.label,/^放下 1 件密封酒花 · 持有 1 件$/);\n  assert.match(bottle.description,/每件占 1 格 · 本次只放下这 1 件，腾出 1 格/);\n  assert.match(barrel.label,/放下 1 件滚动酒桶 · 持有 1 件/);\n  assert.match(barrel.description,/每件占 3 格[\\s\\S]*本次只放下这 1 件[\\s\\S]*腾出 3 格/);\n  assert.match(m.body,/已占 <strong>6 \\/ 12 格<\\/strong>/);\n  assert.match(m.body,/包内 4 件/);\n  assert.match(m.body,/格数[\\s\\S]*不等于件数/);\n  assert.match(m.body,/落在街区/);\n  assert.match(m.body,/不会直接换钱/);\n  assert.match(m.body,/修温室水泵需要一件可修零件/);\n  assert.ok(!m.choices.some(c=>c.label.includes('月雾')),'world parcel is not offered');\n  assert.deepEqual(structuredClone(r),before);\n});\n\ntest('real drop callback throws exactly the first-seen id, the duplicate stays, and reopen shows the new count and load',()=>{\n  const r=B.create(42001,1,'cart');bag(r,'item4','item0');\n  const h=makeUI(r);\n  let m=openCargo(h);assert.match(m.body,/2 \\/ 12 格/);\n  m.choices[1].run();\n  assert.deepEqual(r.bag,['item0']);\n  assert.equal(r.items[4].state,'world');\n  assert.equal(r.items[0].state,'bag');\n  assert.equal(r.items[4].x,r.p.x);\n  assert.equal(r.items[4].vx,-420);\n  assert.equal(r.items[4].lock,1.2);\n  assert.deepEqual(h.stats(),{saves:1,renders:1});\n  m=openCargo(h);\n  assert.equal(m.choices.length,2);\n  assert.match(m.choices[1].label,/持有 1 件/);\n  assert.match(m.body,/1 \\/ 12 格/);\n  m.choices[1].run();\n  assert.deepEqual(r.bag,[]);\n  assert.equal(r.items[0].state,'world');\n  m=openCargo(h);\n  assert.equal(m.choices.length,1);\n  assert.equal(m.choices[0].label,'先都留着，继续探索');\n  assert.equal(m.choices[0].run,undefined);\n  assert.match(m.body,/0 \\/ 12 格/);\n  const restored=B.restore(r);\n  assert.ok(restored);\n  assert.deepEqual(restored.items.map(i=>[i.id,i.kind]),r.items.map(i=>[i.id,i.kind]));\n});\n\ntest('held counts, per-item weights and load reflect real slot math for hook, cart and foam, including all five kinds',()=>{\n  const cases=[\n    ['cart',['item0','item1','item2','item3','item6'],9,5,12],\n    ['hook',['item4','item0','item5','item2','item3'],7,5,8],\n    ['foam',['item7','item11','item9','item8'],6,4,7]\n  ];\n  for(const [kit,ids,used,n,cap] of cases){\n    const r=B.create(42001,1,kit);bag(r,...ids);\n    const m=openCargo(makeUI(r)),drops=m.choices.slice(1);\n    assert.equal(B.load(r),used,kit);\n    assert.notEqual(used,n,kit+' slot sum differs from piece count');\n    assert.match(m.body,new RegExp(used+' / '+cap+' 格'),kit);\n    assert.match(m.body,new RegExp('包内 '+n+' 件'),kit);\n    assert.match(m.body,/不等于件数/,kit);\n    assert.equal(drops.length,new Set(ids.map(id=>r.items.find(i=>i.id===id).kind)).size,kit);\n    for(const c of drops){\n      const name=kindOf(c.label),w=(name==='滚动酒桶'||name.includes('月雾'))?3:1;\n      assert.match(c.label,new RegExp('^放下 1 件'+name.replace(/[.*+?^${}()|[\\]\\\\]/g,'\\\\$&')+' · 持有 [0-9]+ 件$'),kit);\n      assert.match(c.description,new RegExp('每件占 '+w+' 格 · 本次只放下这 1 件，腾出 '+w+' 格'),kit);\n      assert.equal(c.secondary,true,kit);\n    }\n    if(kit==='hook'){\n      assert.deepEqual(drops.map(c=>kindOf(c.label)),['封口艾尔','密封酒花','滚动酒桶','可修零件']);\n      assert.match(drops[0].label,/持有 2 件/);\n    }\n    if(kit==='cart'){\n      assert.deepEqual(drops.map(c=>kindOf(c.label)),KIND_NAMES);\n      assert.match(drops[4].label,/^放下 1 件“进口酵母” \\/ 月雾 · 持有 1 件$/);\n    }\n  }\n});\n\ntest('empty bag offers only the safe keep choice, invents no item and changes no state',()=>{\n  const r=B.create(42001,1,'hook');\n  const before=structuredClone(r),h=makeUI(r),m=openCargo(h);\n  assert.equal(m.choices.length,1);\n  assert.equal(m.choices[0].label,'先都留着，继续探索');\n  assert.equal(m.choices[0].run,undefined);\n  assert.match(m.body,/已占 <strong>0 \\/ 8 格<\\/strong>/);\n  assert.match(m.body,/包内 0 件/);\n  assert.deepEqual(structuredClone(r),before);\n  assert.ok(B.restore(r));\n});\n\ntest('auto capacity modal drop routes through A.choose, really drops only that one id and resumes taking the parcel',()=>{\n  const r=B.create(42,1,'hook');A.enable(r);\n  bag(r,'item0','item1','item2','item3');\n  r.auto.event='capacity';r.auto.goal=null;\n  const h=makeUI(r),m=openCargo(h);\n  assert.equal(m.choices.length,5);\n  assert.match(m.body,/6 \\/ 8 格/);\n  const bottle=m.choices.find(c=>kindOf(c.label)==='封口艾尔');\n  assert.match(bottle.label,/持有 1 件/);\n  bottle.run();\n  assert.deepEqual(r.bag,['item1','item2','item3']);\n  assert.equal(r.items[0].state,'world');\n  assert.equal(r.items[1].state,'bag');\n  assert.equal(r.auto.event,null);\n  assert.equal(r.auto.goal,'parcel');\n  assert.match(r.message,/扔下封口艾尔/);\n  assert.ok(A.valid(r));\n  assert.ok(B.restore(r));\n});\n\ntest('ordinary automatic run keeps modal drops on the real B.command path without changing auto routing',()=>{\n  const r=B.create(42,1,'hook');A.enable(r);\n  r.auto.event=null;r.auto.goal='exit';\n  bag(r,'item10');\n  const h=makeUI(r),m=openCargo(h);\n  assert.equal(m.choices.length,2);\n  assert.match(m.choices[1].label,/^放下 1 件可修零件 · 持有 1 件$/);\n  m.choices[1].run();\n  assert.deepEqual(r.bag,[]);\n  assert.equal(r.items[10].state,'world');\n  assert.equal(r.items[10].x,r.p.x);\n  assert.equal(r.items[10].lock,1.2);\n  assert.equal(r.auto.event,null);\n  assert.equal(r.auto.goal,'exit');\n  assert.match(r.message,/扔下可修零件/);\n  assert.ok(A.valid(r));\n  assert.ok(B.restore(r));\n});\n"
+    }
+  },
+  {
+    "name": "Bash",
+    "input": {
+      "command": "node --test tools/prototype/test-cargo-choice-ui.js",
+      "description": "Run new cargo UI tests expecting baseline RED"
+    }
+  },
+  {
+    "name": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-cargo-choice-20261013/workspace/tools/prototype/test-cargo-choice-ui.js",
+      "old_string": "  sandbox.addEventListener(){};",
+      "new_string": "  sandbox.addEventListener=()=>{};"
+    }
+  },
+  {
+    "name": "Bash",
+    "input": {
+      "command": "node --test tools/prototype/test-cargo-choice-ui.js",
+      "description": "Run new cargo UI tests expecting baseline RED"
+    }
+  },
+  {
+    "name": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-cargo-choice-20261013/workspace/tools/prototype/test-cargo-choice-ui.js",
+      "old_string": "  assert.deepEqual(m.choices.slice(1).map(c=>kindOf(c.label)),['封口艾尔','密封酒花','滚动酒桶']);",
+      "new_string": "  assert.deepEqual(Array.from(m.choices).slice(1).map(c=>kindOf(c.label)),['封口艾尔','密封酒花','滚动酒桶']);"
+    }
+  },
+  {
+    "name": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-cargo-choice-20261013/workspace/tools/prototype/test-cargo-choice-ui.js",
+      "old_string": "    const m=openCargo(makeUI(r)),drops=m.choices.slice(1);",
+      "new_string": "    const m=openCargo(makeUI(r)),drops=Array.from(m.choices).slice(1);"
+    }
+  },
+  {
+    "name": "Bash",
+    "input": {
+      "command": "node --test tools/prototype/test-cargo-choice-ui.js",
+      "description": "Re-run new tests for genuine RED on untouched UI"
+    }
+  },
+  {
+    "name": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-cargo-choice-20261013/workspace/tools/prototype/backstage-ui.js",
+      "old_string": "      if(verb==='cargo'){\n        const kinds=new Set(),choices=[];\n        for(const id of r.bag){const item=r.items.find(i=>i.id===id);if(kinds.has(item.kind))continue;kinds.add(item.kind);const t=B.TYPES[item.kind];choices.push({label:'放下'+t.name,description:'腾出 '+t.weight+' 格 · 扔在脚边，仍能追回',secondary:true,run:()=>this.perform('cargo-drop:'+id)});}\n        this.showModal('背包 / 时间暂停','什么值得带回去？','<p>放下的东西会落在街区，不会直接换钱。修温室水泵需要一件可修零件。</p>',[{label:'先都留着，继续探索'},...choices]);return;\n      }",
+      "new_string": "      if(verb==='cargo'){\n        const used=B.load(r),cap=B.KITS[r.kit].capacity,held=new Map();\n        for(const id of r.bag){const kind=r.items.find(i=>i.id===id).kind;if(!held.has(kind))held.set(kind,{id,count:0});held.get(kind).count++;}\n        const choices=[];\n        for(const [kind,info] of held){const t=B.TYPES[kind],w=t.weight;\n          choices.push({label:'放下 1 件'+t.name+' · 持有 '+info.count+' 件',description:'每件占 '+w+' 格 · 本次只放下这 1 件，腾出 '+w+' 格 · 扔在脚边，仍能追回',secondary:true,run:()=>this.perform('cargo-drop:'+info.id)});}\n        const body='<p>已占 <strong>'+used+' / '+cap+' 格</strong> · 包内 '+r.bag.length+' 件货物。格数按每件体积计算（滚动酒桶、冷藏箱每件占 3 格），格数不等于件数。</p>'+\n          '<p>每个选项只放下该种货物最先捡起的 1 件：东西落在街区脚边，不会直接换钱，走回去还能捡回。修温室水泵需要一件可修零件。</p>';\n        this.showModal('背包 / 时间暂停','什么值得带回去？',body,[{label:'先都留着，继续探索'},...choices]);return;\n      }"
+    }
+  },
+  {
+    "name": "Bash",
+    "input": {
+      "command": "node --test tools/prototype/test-cargo-choice-ui.js",
+      "description": "Run new cargo UI tests expecting GREEN"
+    }
+  },
+  {
+    "name": "Bash",
+    "input": {
+      "command": "node --test tools/prototype/test-district-core.js tools/prototype/test-district-auto.js",
+      "description": "Run existing district core and auto tests unchanged"
+    }
+  },
+  {
+    "name": "Bash",
+    "input": {
+      "command": "node --check tools/prototype/backstage-ui.js",
+      "description": "Syntax check modified backstage-ui.js"
+    }
+  },
+  {
+    "name": "Bash",
+    "input": {
+      "command": "node --check tools/prototype/test-cargo-choice-ui.js",
+      "description": "Syntax check new cargo UI test file"
+    }
+  },
+  {
+    "name": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-cargo-choice-20261013/workspace/tools/prototype/backstage-ui.js",
+      "offset": 40,
+      "limit": 22
+    }
+  },
+  {
+    "name": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-cargo-choice-20261013/workspace/handoff-result.json"
+    }
+  },
+  {
+    "name": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-cargo-choice-20261013/workspace/handoff-result.json",
+      "old_string": "",
+      "new_string": "{\"status\":\"completed\",\"summary\":\"PLAY13 cargo modal clarity, presentation only. New test-cargo-choice-ui.js (6 node:test cases) loads real BackstageUI in a VM with minimal DOM/scene plumbing and drives real BackstageUI.perform over real B.create/restore/command and BackstageAuto. Genuine RED was recorded first on untouched adopted backstage-ui.js: all 6 tests failed on missing held counts/slot load/one-item wording (old grouped labels such as '放下封口艾尔', body '<p>放下的东西会落在街区…</p>') while grouping, first-seen order, no-mutation and real drop mechanics already passed. Then only the `if(verb==='cargo'){` branch in backstage-ui.js changed: body now states live used/capacity slots from B.load(r) and B.KITS[r.kit].capacity plus piece count with an explicit slots-vs-pieces distinction; one option per held kind in original bag first-seen order (Map built by iterating r.bag, no sort/mutation) with label '放下 1 件<name> · 持有 N 件' and description giving per-item weight, explicit single-item wording, and exact slots freed; callback identity kept as this.perform('cargo-drop:'+firstSeenId) with secondary:true; safe first choice '先都留着，继续探索' has no run; paragraph facts retained (lands in street, no immediate cash, one salvage for greenhouse pump). cargo-drop routing, all key handlers, render/frame and other verbs untouched; no CSS/scene/core/auto/save changes. After change: new tests 6/6 GREEN and old district suites 29/29 GREEN; both node --check pass. Coverage includes duplicate bottles with first-seen id drop (item4 dropped while item0 remains; reopen shows 1 then 0), hook/cart/foam load math, mixed bottle/hops/barrel/salvage/parcel five-kind fixture with exact full TYPES names, no state change on open/cancel, empty bag keep-only modal, auto capacity drop routing through A.choose and resuming take to parcel, ordinary auto drop via real B.command with unchanged routing, and B.restore identity checks. Real browser/Escape/390x844 layout and natural seed play remain parent acceptance.\",\"changed_files\":[\"tools/prototype/backstage-ui.js\",\"tools/prototype/test-cargo-choice-ui.js\"],\"tests\":[{\"command\":\"node --test tools/prototype/test-cargo-choice-ui.js\",\"exit_code\":0,\"summary\":\"final candidate: 6 tests, 6 pass, 0 fail (baseline on untouched UI was genuine RED: same 6 tests all failed on missing counts/load/one-item labels).\"},{\"command\":\"node --test tools/prototype/test-district-core.js tools/prototype/test-district-auto.js\",\"exit_code\":0,\"summary\":\"29 tests, 29 pass, 0 fail; old assertions byte-unchanged and all real core/auto behavior intact.\"},{\"command\":\"node --check tools/prototype/backstage-ui.js\",\"exit_code\":0,\"summary\":\"syntax OK, no output.\"},{\"command\":\"node --check tools/prototype/test-cargo-choice-ui.js\",\"exit_code\":0,\"summary\":\"syntax OK, no output.\"}],\"blockers\":[],\"memory_delta\":[\"PLAY13 shipped as presentation-only fix: cargo modal now shows live B.load/capacity slots vs piece count, grouped held counts in bag first-seen order, and explicit drop-one labels; drop/auto/capacity mechanics verified unchanged.\",\"Genuine RED-on-adopted-base then GREEN evidence captured in the new VM-based test-cargo-choice-ui.js harness (real B/A modules, minimal DOM plumbing, technical bag fixtures labeled).\"],\"next_steps\":[\"Parent applies candidate and independently verifies on untouched adopted base: finalnew RED then candidate GREEN plus all old411 assertions.\",\"Parent browser acceptance: natural seed42001 night1 duplicate bottle pickup/drop/reopen, Escape/cancel no state change, desktop 390x844 five-kind layout fit, paused refresh, manual/auto/capacity flows.\"]}"
+    }
+  }
+]

@@ -1,0 +1,64 @@
+{
+  "acceptance": [
+    "Live grouped held counts and exact slot costs, one-item labels.",
+    "No mutation or changed drop routing; real repeat/manual/auto/capacity behavior.",
+    "Final baseline RED/candidate GREEN, old assertions unchanged.",
+    "Parent browser and old411+new validation still required."
+  ],
+  "commands": [
+    "node --test tools/prototype/test-cargo-choice-ui.js",
+    "node --test tools/prototype/test-district-core.js tools/prototype/test-district-auto.js",
+    "node --check tools/prototype/backstage-ui.js",
+    "node --check tools/prototype/test-cargo-choice-ui.js"
+  ],
+  "constraints": [
+    "Only public staged files and declared scope.",
+    "Read/Edit/exactBash, no network.",
+    "No shelved task revival or core/scene/CSS/save edits."
+  ],
+  "data_sensitivity": "public",
+  "goal": "Clarify held counts and drop-one consequences in existing cargo modal without changing item mechanics.",
+  "max_turns": 32,
+  "memory": {
+    "completed": [
+      "Adopted0178350, old411 verified."
+    ],
+    "decisions": [
+      "Only cargo presentation branch plus newtest; actual drop/auto handlers frozen.",
+      "Seed Evolving enabled/high; D24 business1 plus at most one correction."
+    ],
+    "known_issues": [
+      "Two real bottles grouped into one action with no held count or explicit one-item wording."
+    ],
+    "summary": "D23 existing night choices clarity. Natural two-bottle cargo modal is ambiguous; not a core drop bug."
+  },
+  "read_files": [
+    "brief.md",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/reopening.css",
+    "tools/prototype/test-district-core.js",
+    "tools/prototype/test-district-auto.js",
+    "tools/prototype/test-cargo-choice-ui.js"
+  ],
+  "task_id": "amsterdam-cargo-choice-20261013",
+  "tasks": [
+    "Read focused inputs and write genuine baseline RED.",
+    "Change only cargo branch, real behavior GREEN and old tests.",
+    "Finish complete truthful four-final-command report before cap."
+  ],
+  "telemetry": {
+    "attempt_kind": "business",
+    "logical_task_id": "play13-cargo-choice",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "timeout_seconds": 1200,
+  "version": 1,
+  "workspace": "/tmp/amsterdam-cargo-choice-20261013/input",
+  "write_files": [
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/test-cargo-choice-ui.js"
+  ]
+}

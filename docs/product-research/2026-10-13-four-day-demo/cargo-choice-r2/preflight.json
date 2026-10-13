@@ -1,0 +1,18 @@
+[
+  {
+    "command": "node --test tools/prototype/test-cargo-choice-ui.js",
+    "exit_code": 0
+  },
+  {
+    "command": "node --test tools/prototype/test-district-core.js tools/prototype/test-district-auto.js",
+    "exit_code": 0
+  },
+  {
+    "command": "node --check tools/prototype/backstage-ui.js",
+    "exit_code": 0
+  },
+  {
+    "command": "node --check tools/prototype/test-cargo-choice-ui.js",
+    "exit_code": 0
+  }
+]

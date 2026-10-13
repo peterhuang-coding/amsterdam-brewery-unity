@@ -1,0 +1,42 @@
+{
+  "kind": "synthetic browser geometry, not natural save",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "bag": [
+    "item0",
+    "item1",
+    "item2",
+    "item3",
+    "item6"
+  ],
+  "used_slots": 9,
+  "capacity": 12,
+  "candidate": {
+    "dialog_top": 63.296875,
+    "dialog_bottom": 780.6875,
+    "option_bottoms": [
+      402.109375,
+      500.6875,
+      599.265625,
+      697.84375,
+      796.421875,
+      895
+    ]
+  },
+  "adopted_baseline": {
+    "dialog_top": 101,
+    "dialog_bottom": 743,
+    "option_bottoms": [
+      328.0625,
+      406.25,
+      484.4375,
+      562.625,
+      640.8125,
+      719
+    ]
+  },
+  "candidate_ui_sha256": "fb95bbd83e385ef81154d90e1d1e49f91ab6ce31a78c73f17dbc88c8a3f33880",
+  "candidate_test_sha256": "25df2566dca9ca20faae41357777dd812399d8ff9f298bacae5c1d8891e4a501"
+}

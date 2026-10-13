@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: cargo modal groups duplicates in bag first-seen order with live counts and slot math, mutating nothing on open/cancel
+ok 1 - cargo modal groups duplicates in bag first-seen order with live counts and slot math, mutating nothing on open/cancel
+  ---
+  duration_ms: 3.632375
+  type: 'test'
+  ...
+# Subtest: real drop callback throws exactly the first-seen id, the duplicate stays, and reopen shows the new count and load
+ok 2 - real drop callback throws exactly the first-seen id, the duplicate stays, and reopen shows the new count and load
+  ---
+  duration_ms: 1.294833
+  type: 'test'
+  ...
+# Subtest: held counts, per-item weights and load reflect real slot math for hook, cart and foam, including all five kinds
+ok 3 - held counts, per-item weights and load reflect real slot math for hook, cart and foam, including all five kinds
+  ---
+  duration_ms: 1.4435
+  type: 'test'
+  ...
+# Subtest: empty bag offers only the safe keep choice, invents no item and changes no state
+ok 4 - empty bag offers only the safe keep choice, invents no item and changes no state
+  ---
+  duration_ms: 0.976959
+  type: 'test'
+  ...
+# Subtest: auto capacity modal drop routes through A.choose, really drops only that one id and resumes taking the parcel
+ok 5 - auto capacity modal drop routes through A.choose, really drops only that one id and resumes taking the parcel
+  ---
+  duration_ms: 1.063292
+  type: 'test'
+  ...
+# Subtest: ordinary automatic run keeps modal drops on the real B.command path without changing auto routing
+ok 6 - ordinary automatic run keeps modal drops on the real B.command path without changing auto routing
+  ---
+  duration_ms: 0.541166
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 74.52025

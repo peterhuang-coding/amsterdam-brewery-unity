@@ -1,0 +1,197 @@
+diff --git a/tools/prototype/backstage-ui.js b/tools/prototype/backstage-ui.js
+index 57c01d4..0a2da22 100644
+--- a/tools/prototype/backstage-ui.js
++++ b/tools/prototype/backstage-ui.js
+@@ -41,9 +41,14 @@
+       const r=this.run();if(!r||this.isPaused())return;
+       this.updateAim();
+       if(verb==='cargo'){
+-        const kinds=new Set(),choices=[];
+-        for(const id of r.bag){const item=r.items.find(i=>i.id===id);if(kinds.has(item.kind))continue;kinds.add(item.kind);const t=B.TYPES[item.kind];choices.push({label:'放下'+t.name,description:'腾出 '+t.weight+' 格 · 扔在脚边，仍能追回',secondary:true,run:()=>this.perform('cargo-drop:'+id)});}
+-        this.showModal('背包 / 时间暂停','什么值得带回去？','<p>放下的东西会落在街区，不会直接换钱。修温室水泵需要一件可修零件。</p>',[{label:'先都留着，继续探索'},...choices]);return;
++        const used=B.load(r),cap=B.KITS[r.kit].capacity,held=new Map();
++        for(const id of r.bag){const kind=r.items.find(i=>i.id===id).kind;if(!held.has(kind))held.set(kind,{id,count:0});held.get(kind).count++;}
++        const choices=[];
++        for(const [kind,info] of held){const t=B.TYPES[kind],w=t.weight;
++          choices.push({label:'放下 1 件'+t.name+' · 持有 '+info.count+' 件',description:'每件占 '+w+' 格 · 本次只放下这 1 件，腾出 '+w+' 格 · 扔在脚边，仍能追回',secondary:true,run:()=>this.perform('cargo-drop:'+info.id)});}
++        const body='<p>已占 <strong>'+used+' / '+cap+' 格</strong> · 包内 '+r.bag.length+' 件货物。格数按每件体积计算（滚动酒桶、冷藏箱每件占 3 格），格数不等于件数。</p>'+
++          '<p>每个选项只放下该种货物最先捡起的 1 件：东西落在街区脚边，不会直接换钱，走回去还能捡回。修温室水泵需要一件可修零件。</p>';
++        this.showModal('背包 / 时间暂停','什么值得带回去？',body,[{label:'先都留着，继续探索'},...choices]);return;
+       }
+       if(verb.startsWith('cargo-drop:')){
+         const id=verb.slice(11);
+diff --git a/tools/prototype/test-cargo-choice-ui.js b/tools/prototype/test-cargo-choice-ui.js
+new file mode 100644
+index 0000000..019cce2
+--- /dev/null
++++ b/tools/prototype/test-cargo-choice-ui.js
+@@ -0,0 +1,169 @@
++'use strict';
++// PLAY13 cargo modal clarity. Technical fixtures: real B.create runs with
++// hand-loaded bag ids used only to present the modal; they are not natural
++// play saves. Real BackstageUI.perform runs in a VM against the real
++// backstage core/auto; drop effects are never stubbed.
++const test=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
++const B=require('./backstage-core.js'),A=require('./backstage-auto.js');
++const KIND_NAMES=['封口艾尔','密封酒花','滚动酒桶','可修零件','“进口酵母” / 月雾'];
++
++function makeUI(r){
++  const sandbox={};
++  sandbox.window=sandbox;
++  sandbox.Backstage=B;
++  sandbox.BackstageAuto=A;
++  sandbox.BackstageScene=class{worldPoint(){return null;}draw(){}};
++  sandbox.document={addEventListener(){},querySelector(){return null;}};
++  sandbox.addEventListener=()=>{};
++  const canvas={addEventListener(){},setAttribute(){},focus(){},getBoundingClientRect:()=>({left:0,top:0,width:1100,height:640})};
++  vm.createContext(sandbox);
++  vm.runInContext(fs.readFileSync(path.join(__dirname,'backstage-ui.js'),'utf8'),sandbox,{filename:'backstage-ui.js'});
++  const modals=[];let saves=0,renders=0;
++  const ui=new sandbox.BackstageUI({canvas,
++    getState:()=>({phase:'explore',backstage:{run:r}}),
++    isPaused:()=>false,save(){saves++;},render(){renders++;},dispatch(){},
++    showModal:(title,subtitle,body,choices)=>modals.push({title,subtitle,body,choices})});
++  return {ui,modals,stats:()=>({saves,renders})};
++}
++// Technical bag fixture: mark held ids directly instead of simulating pickups.
++function bag(r,...ids){r.bag=ids;for(const id of ids)r.items.find(i=>i.id===id).state='bag';if(ids.includes('item6'))r.parcel='carried';}
++function openCargo(h){h.ui.perform('cargo');return h.modals.at(-1);}
++function kindOf(label){return KIND_NAMES.find(n=>label.includes(n));}
++
++test('cargo modal groups duplicates in bag first-seen order with live counts and slot math, mutating nothing on open/cancel',()=>{
++  const r=B.create(42001,1,'cart');bag(r,'item4','item0','item5','item2');
++  const h=makeUI(r),before=structuredClone(r),m=openCargo(h);
++  assert.deepEqual(structuredClone(r),before);
++  assert.deepEqual(h.stats(),{saves:0,renders:0});
++  assert.equal(m.choices.length,4);
++  const keep=m.choices[0];
++  assert.equal(keep.label,'先都留着，继续探索');assert.equal(keep.run,undefined);
++  keep.run?.();assert.deepEqual(r.bag,['item4','item0','item5','item2']);
++  assert.deepEqual(Array.from(m.choices).slice(1).map(c=>kindOf(c.label)),['封口艾尔','密封酒花','滚动酒桶']);
++  const bottle=m.choices[1],hops=m.choices[2],barrel=m.choices[3];
++  assert.match(bottle.label,/^放下 1 件封口艾尔 · 持有 2 件$/);
++  assert.match(hops.label,/^放下 1 件密封酒花 · 持有 1 件$/);
++  assert.match(bottle.description,/每件占 1 格 · 本次只放下这 1 件，腾出 1 格/);
++  assert.match(barrel.label,/放下 1 件滚动酒桶 · 持有 1 件/);
++  assert.match(barrel.description,/每件占 3 格[\s\S]*本次只放下这 1 件[\s\S]*腾出 3 格/);
++  assert.match(m.body,/已占 <strong>6 \/ 12 格<\/strong>/);
++  assert.match(m.body,/包内 4 件/);
++  assert.match(m.body,/格数[\s\S]*不等于件数/);
++  assert.match(m.body,/落在街区/);
++  assert.match(m.body,/不会直接换钱/);
++  assert.match(m.body,/修温室水泵需要一件可修零件/);
++  assert.ok(!m.choices.some(c=>c.label.includes('月雾')),'world parcel is not offered');
++  assert.deepEqual(structuredClone(r),before);
++});
++
++test('real drop callback throws exactly the first-seen id, the duplicate stays, and reopen shows the new count and load',()=>{
++  const r=B.create(42001,1,'cart');bag(r,'item4','item0');
++  const h=makeUI(r);
++  let m=openCargo(h);assert.match(m.body,/2 \/ 12 格/);
++  m.choices[1].run();
++  assert.deepEqual(r.bag,['item0']);
++  assert.equal(r.items[4].state,'world');
++  assert.equal(r.items[0].state,'bag');
++  assert.equal(r.items[4].x,r.p.x);
++  assert.equal(r.items[4].vx,-420);
++  assert.equal(r.items[4].lock,1.2);
++  assert.deepEqual(h.stats(),{saves:1,renders:1});
++  m=openCargo(h);
++  assert.equal(m.choices.length,2);
++  assert.match(m.choices[1].label,/持有 1 件/);
++  assert.match(m.body,/1 \/ 12 格/);
++  m.choices[1].run();
++  assert.deepEqual(r.bag,[]);
++  assert.equal(r.items[0].state,'world');
++  m=openCargo(h);
++  assert.equal(m.choices.length,1);
++  assert.equal(m.choices[0].label,'先都留着，继续探索');
++  assert.equal(m.choices[0].run,undefined);
++  assert.match(m.body,/0 \/ 12 格/);
++  const restored=B.restore(r);
++  assert.ok(restored);
++  assert.deepEqual(restored.items.map(i=>[i.id,i.kind]),r.items.map(i=>[i.id,i.kind]));
++});
++
++test('held counts, per-item weights and load reflect real slot math for hook, cart and foam, including all five kinds',()=>{
++  const cases=[
++    ['cart',['item0','item1','item2','item3','item6'],9,5,12],
++    ['hook',['item4','item0','item5','item2','item3'],7,5,8],
++    ['foam',['item7','item11','item9','item8'],6,4,7]
++  ];
++  for(const [kit,ids,used,n,cap] of cases){
++    const r=B.create(42001,1,kit);bag(r,...ids);
++    const m=openCargo(makeUI(r)),drops=Array.from(m.choices).slice(1);
++    assert.equal(B.load(r),used,kit);
++    assert.notEqual(used,n,kit+' slot sum differs from piece count');
++    assert.match(m.body,new RegExp(used+' / '+cap+' 格'),kit);
++    assert.match(m.body,new RegExp('包内 '+n+' 件'),kit);
++    assert.match(m.body,/不等于件数/,kit);
++    assert.equal(drops.length,new Set(ids.map(id=>r.items.find(i=>i.id===id).kind)).size,kit);
++    for(const c of drops){
++      const name=kindOf(c.label),w=(name==='滚动酒桶'||name.includes('月雾'))?3:1;
++      assert.match(c.label,new RegExp('^放下 1 件'+name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+' · 持有 [0-9]+ 件$'),kit);
++      assert.match(c.description,new RegExp('每件占 '+w+' 格 · 本次只放下这 1 件，腾出 '+w+' 格'),kit);
++      assert.equal(c.secondary,true,kit);
++    }
++    if(kit==='hook'){
++      assert.deepEqual(drops.map(c=>kindOf(c.label)),['封口艾尔','密封酒花','滚动酒桶','可修零件']);
++      assert.match(drops[0].label,/持有 2 件/);
++    }
++    if(kit==='cart'){
++      assert.deepEqual(drops.map(c=>kindOf(c.label)),KIND_NAMES);
++      assert.match(drops[4].label,/^放下 1 件“进口酵母” \/ 月雾 · 持有 1 件$/);
++    }
++  }
++});
++
++test('empty bag offers only the safe keep choice, invents no item and changes no state',()=>{
++  const r=B.create(42001,1,'hook');
++  const before=structuredClone(r),h=makeUI(r),m=openCargo(h);
++  assert.equal(m.choices.length,1);
++  assert.equal(m.choices[0].label,'先都留着，继续探索');
++  assert.equal(m.choices[0].run,undefined);
++  assert.match(m.body,/已占 <strong>0 \/ 8 格<\/strong>/);
++  assert.match(m.body,/包内 0 件/);
++  assert.deepEqual(structuredClone(r),before);
++  assert.ok(B.restore(r));
++});
++
++test('auto capacity modal drop routes through A.choose, really drops only that one id and resumes taking the parcel',()=>{
++  const r=B.create(42,1,'hook');A.enable(r);
++  bag(r,'item0','item1','item2','item3');
++  r.auto.event='capacity';r.auto.goal=null;
++  const h=makeUI(r),m=openCargo(h);
++  assert.equal(m.choices.length,5);
++  assert.match(m.body,/6 \/ 8 格/);
++  const bottle=m.choices.find(c=>kindOf(c.label)==='封口艾尔');
++  assert.match(bottle.label,/持有 1 件/);
++  bottle.run();
++  assert.deepEqual(r.bag,['item1','item2','item3']);
++  assert.equal(r.items[0].state,'world');
++  assert.equal(r.items[1].state,'bag');
++  assert.equal(r.auto.event,null);
++  assert.equal(r.auto.goal,'parcel');
++  assert.match(r.message,/扔下封口艾尔/);
++  assert.ok(A.valid(r));
++  assert.ok(B.restore(r));
++});
++
++test('ordinary automatic run keeps modal drops on the real B.command path without changing auto routing',()=>{
++  const r=B.create(42,1,'hook');A.enable(r);
++  r.auto.event=null;r.auto.goal='exit';
++  bag(r,'item10');
++  const h=makeUI(r),m=openCargo(h);
++  assert.equal(m.choices.length,2);
++  assert.match(m.choices[1].label,/^放下 1 件可修零件 · 持有 1 件$/);
++  m.choices[1].run();
++  assert.deepEqual(r.bag,[]);
++  assert.equal(r.items[10].state,'world');
++  assert.equal(r.items[10].x,r.p.x);
++  assert.equal(r.items[10].lock,1.2);
++  assert.equal(r.auto.event,null);
++  assert.equal(r.auto.goal,'exit');
++  assert.match(r.message,/扔下可修零件/);
++  assert.ok(A.valid(r));
++  assert.ok(B.restore(r));
++});

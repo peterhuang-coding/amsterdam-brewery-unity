@@ -1,0 +1,4 @@
+### Ran Playwright code
+```js
+await (async (page) => { await page.setViewportSize({width:390,height:844}); await page.getByRole("button",{name:"整理背包 · 选择放下什么",exact:true}).click(); await page.screenshot({path:"/tmp/amsterdam-cargo-choice-review-20261013/natural-duplicate-390.png"}); console.log(await page.evaluate(()=>({body:document.querySelector("#dialog-body").innerText,actions:document.querySelector("#dialog-actions").innerText,bounds:[...document.querySelectorAll("#dialog-actions button")].map(e=>({text:e.innerText,bottom:e.getBoundingClientRect().bottom})),save:localStorage.getItem("ab_reopening_v1")}))); })(page);
+```

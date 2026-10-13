@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-cargo-choice-20261013",
+  "receipt_sha256": "1bcc177b3cf4c6630a5f08f859de1d75701f2bed7d21855b18e9bd5708c929cb",
+  "reviewed_at": "2026-10-13T16:22:41Z",
+  "outcome": "rejected",
+  "failure_type": "semantic",
+  "evidence": [
+    {
+      "path": "/tmp/amsterdam-cargo-choice-review-20261013/parent-validation.md",
+      "sha256": "d6750272adeef060087eb24de6bb1e608d35f9305bb6e3ebb773b01a3619f2b7"
+    }
+  ]
+}

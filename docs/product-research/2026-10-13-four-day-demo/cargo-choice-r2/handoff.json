@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-cargo-choice-r2-20261013",
+  "goal": "Targeted sole correction: compact cargo body and descriptions so all five choices fit390 without changing actual item behavior.",
+  "memory": {
+    "summary": "PLAY13 business completed normally but parent rejected five-kind390 layout. Full candidate staged; correction1/1 only.",
+    "completed": [
+      "Real duplicate one-item drop/cancel/refresh passed; old411+new6 all417."
+    ],
+    "decisions": [
+      "Only body and description expressions plus copy-specific tests change; mechanism and labels frozen.",
+      "No fallback or main-agent rewrite."
+    ],
+    "known_issues": [
+      "Last five-kind action starts805.42, below dialog780.69; baseline lastaction719 fitted."
+    ]
+  },
+  "tasks": [
+    "Read focused copy and synthetic layout evidence.",
+    "Append genuine candidate RED compression regression, then shorten only authorized copy and preserve facts.",
+    "Run all4 exact final commands, complete legal report before cap."
+  ],
+  "acceptance": [
+    "Five-kind modal compact on390 without hiding facts, labels or actions.",
+    "Same first-id grouping/drop/cancel/realauto behavior and all existing6 test intents.",
+    "Finalnew RED on unchanged businesscandidate thenGREEN; parentbrowser still required."
+  ],
+  "constraints": [
+    "Only authorized copy expressions/newtest; public staged inputs.",
+    "No core/CSS/other UI changes, no shelved revival.",
+    "Only exact four commands and Read/Edit; normal legal final report."
+  ],
+  "workspace": "/tmp/amsterdam-cargo-choice-r2-20261013/input",
+  "read_files": [
+    "brief.md",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/reopening.css",
+    "tools/prototype/test-district-core.js",
+    "tools/prototype/test-district-auto.js",
+    "tools/prototype/test-cargo-choice-ui.js",
+    "synthetic-layout.json"
+  ],
+  "write_files": [
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/test-cargo-choice-ui.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-cargo-choice-ui.js",
+    "node --test tools/prototype/test-district-core.js tools/prototype/test-district-auto.js",
+    "node --check tools/prototype/backstage-ui.js",
+    "node --check tools/prototype/test-cargo-choice-ui.js"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 1200,
+  "max_turns": 32,
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "play13-cargo-choice",
+    "task_type": "code",
+    "attempt_kind": "correction"
+  }
+}

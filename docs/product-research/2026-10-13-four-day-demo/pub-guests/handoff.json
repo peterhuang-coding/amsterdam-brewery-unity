@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-pub-guests-20261013",
+  "goal": "Improve only pub guest canvas silhouettes and truthful selected/waiting/pouring cues across evenings, preserving gameplay and all other scenes.",
+  "memory": {
+    "summary": "D23 approved visual readability iteration, independent of shelved first-cup DOM and morning-market cards.",
+    "completed": [
+      "Adopted bd61443 real full379 tests before this task.",
+      "Parent natural screenshot confirmed pawn-like Marta and tiny selection arrow."
+    ],
+    "decisions": [
+      "Renderer-only two files; no main game rules changes",
+      "Only one targeted correction after confirmed failure",
+      "Provider cooldown until07:17:19Z before any submission"
+    ],
+    "known_issues": [
+      "PLAY03 and PLAY06 shelved, do not reimplement them",
+      "Tests cannot establish human fun or finished art"
+    ]
+  },
+  "tasks": [
+    "Read brief/contracts and specific source range",
+    "New renderer behavior tests RED on unchanged baseline",
+    "Narrow visual implementation and exact tests GREEN",
+    "Complete valid truthful report"
+  ],
+  "acceptance": [
+    "Only scoped guest block/helpers and new test",
+    "True selected/customer/beer/patience/pour data; frozen inputs unchanged",
+    "New meaningful baseline RED then GREEN; old city/scene assertions unchanged",
+    "Four final command report rows, parent GUI remains separate"
+  ],
+  "constraints": [
+    "Only public supplied materials",
+    "Read/Edit/exact Bash only, no other shell commands",
+    "No UI/core/economy/save/other scene changes",
+    "No PLAY03/PLAY06"
+  ],
+  "workspace": "/tmp/amsterdam-pub-guests-20261013/input",
+  "read_files": [
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/test-city.js",
+    "tools/prototype/test-street-atmosphere.js",
+    "tools/prototype/test-pub-guests.js",
+    "brief.md",
+    "frame-contract.md"
+  ],
+  "write_files": [
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/test-pub-guests.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-pub-guests.js",
+    "node --test tools/prototype/test-city.js tools/prototype/test-street-atmosphere.js",
+    "node --check tools/prototype/reopening-scene.js",
+    "node --check tools/prototype/test-pub-guests.js"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 1200,
+  "max_turns": 32,
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "play07-pub-guests",
+    "task_type": "code",
+    "attempt_kind": "business"
+  }
+}

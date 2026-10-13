@@ -5,8 +5,8 @@
   "deadline": "2026-10-16T19:48:33Z",
   "next_direction_review_at": "2026-10-13T15:48:33Z",
   "last_direction_review_at": "2026-10-13T05:51:53Z",
-  "current_task_id": "amsterdam-morning-market-r2-20261013",
-  "logical_task": "PLAY06",
+  "current_task_id": "amsterdam-pub-guests-20261013",
+  "logical_task": "PLAY07",
   "last_adopted_commit": "bd614431e31dc44cd3730ef6c0d6c022cd355b1a",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
   "failure_policy_question_pending": false,
@@ -14,12 +14,10 @@
   "schedule": "existing amsterdam heartbeat every15minutes",
   "current_task_terminal": null,
   "failure_reason": null,
-  "last_result_at": "2026-10-13T06:08:36.918996Z",
-  "in_flight": [
-    "amsterdam-morning-market-r2-20261013"
-  ],
+  "last_result_at": "2026-10-13T06:47:18.242475Z",
+  "in_flight": [],
   "candidate_path": null,
-  "adopted_this_round": 2,
+  "adopted_this_round": 0,
   "policy_decision": "D24",
   "correction_after_r2": {
     "allowed": 1,
@@ -80,22 +78,35 @@
       "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 1,
-      "outcome": "correction_running",
+      "outcome": "shelved",
       "task_id": "amsterdam-morning-market-20261013",
       "base_commit": "bd614431e31dc44cd3730ef6c0d6c022cd355b1a",
       "game_adopted": 0,
       "business_terminal": "provider_burst_cli1_no_write_test_report",
-      "correction_task_id": "amsterdam-morning-market-r2-20261013"
+      "correction_task_id": "amsterdam-morning-market-r2-20261013",
+      "correction_outcome": "request_timed_out_cli1_unknown_done_no_write_test_report",
+      "correction_ended_at": "2026-10-13T06:47:18.242475Z",
+      "structured_review": "review_requires_finished_not_recorded_parent_audit_saved"
+    },
+    "PLAY07": {
+      "business_attempts_submitted": 0,
+      "corrections_allowed": 1,
+      "corrections_submitted": 0,
+      "outcome": "prepared_cooldown",
+      "task_id": "amsterdam-pub-guests-20261013",
+      "base_commit": "bd614431e31dc44cd3730ef6c0d6c022cd355b1a",
+      "game_adopted": 0
     }
   },
-  "provider_cooldown_until": "2026-10-13T06:38:37Z",
-  "provider_cooldown_basis": "parent30minafterterminal_not_server_RetryAfter",
-  "failure_notification_recorded_at": "2026-10-13T06:25:10.525033+00:00",
-  "provider_cooldown_completed_at": "2026-10-13T06:40:52.865118+00:00",
-  "current_submitted_at": "2026-10-13T06:40:52.865118+00:00",
-  "current_worker_pid": 38901,
-  "current_task_packet": "/tmp/amsterdam-morning-market-r2-20261013/handoff.json",
-  "current_task_notion": "https://app.notion.com/p/3f83285284df81308f5bfe92a6649cf6",
+  "provider_cooldown_until": "2026-10-13T07:17:19Z",
+  "provider_cooldown_basis": "parent30minafter_api_timeout_terminal_not_server_RetryAfter",
+  "failure_notification_recorded_at": "2026-10-13T07:09:00Z",
+  "provider_cooldown_completed_at": null,
+  "current_submitted_at": null,
+  "current_worker_pid": null,
+  "current_task_packet": "/tmp/amsterdam-pub-guests-20261013/handoff.json",
+  "current_task_notion": "https://app.notion.com/p/3f83285284df819983d1fe6a03568ddb",
   "prepared_correction_task_id": null,
-  "prepared_correction_packet": null
+  "prepared_correction_packet": null,
+  "current_task_stage": "prepared_cooldown"
 }

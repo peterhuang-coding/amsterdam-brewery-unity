@@ -1,3 +1,11 @@
+## PLAY06唯一修正失败并搁置；PLAY07准备待冷却
+
+amsterdam-morning-market-r2-20261013于2026-10-13T06:47:18.242475Z结束，385.324秒/10轮、CLI1、state done/result unknown，原worker38901已退出。最终subtype虽success但is_error=true/terminal_reason=api_error，原文Request timed out，HTTP状态null；不能称成功或已观察429。仅Read9且均在输入范围，23源与23暂存输入SHA不变，无Edit/Bash/测试/交接报告，无候选补丁、游戏采用0。标准review因unknown返回review_requires_finished，未成功登记rejected；父级独立终态审查另存。原请求与日志不改，原63/63预检和379已采用回归不是本次测试。证据morning-market-r2-failure。
+
+PLAY06业务1、唯一修正1/1已耗尽，按D24搁置，不再补派、换ID或主代理补写。父选终态后30分钟冷却至2026-10-13T07:17:19Z（北京15:17:19），不是服务端Retry-After或恢复保证；此前不派发/探针/换平台或独立ID冲击服务。当前无Amsterdam在途。
+
+独立PLAY07准备见2026-10-13-pub-guests.md。
+
 ## PLAY06唯一修正已提交
 
 2026-10-13T06:40:52.865118Z，amsterdam-morning-market-r2-20261013已单路启动，worker38901、launcher38900，实际init Seed Evolving/Read/Edit/Bash/dontAsk；请求thinking enabled/high、1500秒40轮。父选冷却06:38:37Z已过；即时全机账本/CLI0路、本项1路，23输入SHA与合同一致，非原子全局保证。实时Notion已设执行中，原首包burst/CLI1、无写测试报告历史保留。

@@ -1,0 +1,17 @@
+{
+  "checked_at": "2026-10-13T11:36:53.974054+00:00",
+  "task_id": "amsterdam-pub-materials-20261013",
+  "logical_task_id": "play09-pub-materials",
+  "attempt_kind": "business",
+  "base": "231a1326b0a1ab05a1d59da622e7949db1394cdc",
+  "active_ledgers": [],
+  "cli_processes": [],
+  "input_count": 7,
+  "input_bytes": 95937,
+  "input_sha_match": true,
+  "global_check_non_atomic": true,
+  "contract_commit": "3bcaa1d5be1272481e9efa0dfdde4d9fda3090a3",
+  "notion_execution_readback": "confirmed before submission; exact fetch wall time was not separately captured",
+  "capacity_check_basis": "all status.json ledgers and claude process command names; initial state.json glob was corrected before any submission",
+  "record_correction": "Removed a rounded 11:37Z annotation that was later than actual submission; no API/CC request changed."
+}

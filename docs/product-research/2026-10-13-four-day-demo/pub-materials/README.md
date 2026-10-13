@@ -1,3 +1,11 @@
+## PLAY09酒馆材质与灯光已单路提交
+
+amsterdam-pub-materials-20261013于2026-10-13T11:36:53.974632Z启动，worker61559/launcher61556。logical play09-pub-materials/business1、correction0/1；稳定账本同ID，原包/tmp/amsterdam-pub-materials-20261013/handoff.json。先查原ID/结果/日志/PID，已提交或unknown不重发。实际init Seed Evolving/Read/Edit/Bash/dontAsk，launch settings thinking enabled/effort high，1200秒32轮。提交前即时全机账本/CLI0路、本项1路（非原子保证），7公开输入95937B SHA一致，游戏231a132干净且远端一致，合同3bcaa1d已push，实时Notion执行中已读回。
+
+只改reopening-scene.js墙面/三盏灯/吧台木质壳3背景段及专用helper、新test-pub-materials.js；窗外/城市/夜探/库存现金/酒头酒杯/客人座椅/核心/UI/CSS/经济存档/全部旧断言只读，PLAY03/06/07不复活。先最终新行为测试在未改231a132真红再绿，只有原4精确Bash，无grep/ls/wc；合法报告最终4行，RED单列。父级完整报告/范围/SHA/工具、新红绿、旧394+新增全量、自然日夜/选客倒酒到账库存/暂停刷新/桌面390px前后截图通过才采用push新试玩。失败确认后本项唯一定向修正，仍失败搁置继续真正独立任务，不换ID清零/主代理补写。
+
+当前PLAY09在途0采用，可玩为已交付PLAY08的231a132/18844；旧服务存档保留。Notion https://app.notion.com/p/3f83285284df81989c5af91cb5d091e1 执行中。最新两轮pub-materials.md与night-map-final.md；下一方向review15:48:33Z，四天截止2026-10-16T19:48:33Z不变。以下准备态仅为历史。
+
 # PLAY09｜酒馆材质与灯光合同
 
 ## PLAY09独立酒馆材质与灯光包准备

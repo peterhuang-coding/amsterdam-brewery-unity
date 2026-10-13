@@ -1,0 +1,20 @@
+{
+  "observed_at": "2026-10-13T11:38:26.261445+00:00",
+  "task_id": "amsterdam-pub-materials-20261013",
+  "worker_pid": 61559,
+  "init": {
+    "model": "doubao-seed-evolving",
+    "tools": [
+      "Bash",
+      "Edit",
+      "Read"
+    ],
+    "permissionMode": "dontAsk"
+  },
+  "alwaysThinkingEnabled": true,
+  "effort": "high",
+  "status": {
+    "state": "running"
+  },
+  "request_only_no_adoption": true
+}

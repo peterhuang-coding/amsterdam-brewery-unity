@@ -1,0 +1,26 @@
+{
+  "captured_at": "2026-10-13T10:54Z",
+  "notion": [
+    {
+      "page_id": "3f832852-84df-8125-90cb-ecc1b3f8e793",
+      "url": "https://app.notion.com/p/3f83285284df812590cbecc1b3f8e793?pvs=204",
+      "last_edited_at": "2026-10-13T10:53:12.871Z",
+      "current_section": "\n## 唯一修正已提交｜北京时间18:48\namsterdam-night-map-r2-20261013 已于2026-10-13T10:48:21.378289Z单路启动，worker56489/launcher56486，logical play08-night-map/correction，业务历史1、唯一修正1/1已使用。实际Seed Evolving、Read/Edit/Bash/dontAsk、thinking enabled/effort high，1200秒32轮。[实际提交、即时容量与合同](https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/31c0e7b8b7ed93f1655319f39a5886ac1f1b6ca9/docs/product-research/2026-10-13-four-day-demo/night-map-r2/README.md)已push31c0e7b。\n提交前全机账本/CLI0路、本项1路（非原子保证），7公开输入111616B SHA一致，采用基线bd61443干净且远端一致。复用完整两文件候选，只修窄屏标签/标记有效CSS尺寸和必要排布，并保留原12断言；原12/12+旧18/18+两语法通过仅是预检。320/350/368/390 CSS宽下验收标签、标记和文字边界，保持原投影、障碍、实际状态与桌面画面。\n原首包1200.151秒worker超时/CLI143、done/unknown，报告文件完整存在；父级391/391但390px实际标签约4.35px，未采用。此次硬截止未观察到API限流或传输错误。先查R2原ID/结果/日志/PID，不重发；修正或父验仍失败则搁置PLAY08。当前采用0，可玩仍bd61443/18839；完整父验后才采用新试玩。以下准备和首包记录仅为历史。\n"
+    },
+    {
+      "page_id": "3db32852-84df-8103-8056-e2dfe875e700",
+      "url": "https://app.notion.com/p/3db3285284df81038056e2dfe875e700?pvs=204",
+      "last_edited_at": "2026-10-13T10:53:14.367Z",
+      "current_section": "\n## PLAY08首包未过小屏验收，唯一修正已提交｜北京时间18:48\namsterdam-night-map-r2-20261013 已于2026-10-13T10:48:21.378289Z单路启动，worker56489/launcher56486，logical play08-night-map/correction，业务历史1、唯一修正1/1已使用。实际Seed Evolving、Read/Edit/Bash/dontAsk、thinking enabled/effort high，1200秒32轮。[实际提交、即时容量与合同](https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/31c0e7b8b7ed93f1655319f39a5886ac1f1b6ca9/docs/product-research/2026-10-13-four-day-demo/night-map-r2/README.md)已push31c0e7b。\n提交前全机账本/CLI0路、本项1路（非原子保证），7公开输入111616B SHA一致，采用基线bd61443干净且远端一致。复用完整两文件候选，只修窄屏标签/标记有效CSS尺寸和必要排布，并保留原12断言；原12/12+旧18/18+两语法通过仅是预检。320/350/368/390 CSS宽下验收标签、标记和文字边界，保持原投影、障碍、实际状态与桌面画面。\n原首包1200.151秒worker超时/CLI143、done/unknown，报告文件完整存在；父级391/391但390px实际标签约4.35px，未采用。此次硬截止未观察到API限流或传输错误。先查R2原ID/结果/日志/PID，不重发；修正或父验仍失败则搁置PLAY08。当前采用0，可玩仍bd61443/18839；完整父验后才采用新试玩。以下准备和首包记录仅为历史。\n[PLAY08任务与完整失败证据](https://app.notion.com/p/3f83285284df812590cbecc1b3f8e793)。PLAY03/06/07仍暂缓；下一整体方向review为15:48:33Z，四天固定截止不变。\n"
+    }
+  ],
+  "automation": {
+    "id": "amsterdam",
+    "status": "ACTIVE",
+    "rrule": "FREQ=MINUTELY;INTERVAL=15",
+    "updated": "PLAY08 original failure and sole R2 submission; fixed deadline and next review preserved"
+  },
+  "adopted_game": "bd614431e31dc44cd3730ef6c0d6c022cd355b1a",
+  "adopted_this_round": 0
+}
+

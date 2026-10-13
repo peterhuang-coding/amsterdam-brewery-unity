@@ -1,0 +1,37 @@
+[
+  {
+    "tag": "candidate-new",
+    "exit_code": 0,
+    "tail": " the real icon while the icon stays put\n  ---\n  duration_ms: 38.953459\n  type: 'test'\n  ...\n1..16\n# tests 16\n# suites 0\n# pass 16\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1162.611334\n"
+  },
+  {
+    "tag": "business-new",
+    "exit_code": 1,
+    "tail": "f the real icon while the icon stays put\n  ---\n  duration_ms: 38.054083\n  type: 'test'\n  ...\n1..16\n# tests 16\n# suites 0\n# pass 13\n# fail 3\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 887.587042\n"
+  },
+  {
+    "tag": "baseline-new",
+    "exit_code": 1,
+    "tail": ":1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n1..16\n# tests 16\n# suites 0\n# pass 3\n# fail 13\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 179.818125\n"
+  },
+  {
+    "tag": "candidate-all",
+    "exit_code": 0,
+    "tail": "cepting real text, styles and gradients\n  ---\n  duration_ms: 0.945\n  type: 'test'\n  ...\n1..358\n# tests 427\n# suites 0\n# pass 427\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 13751.259042\n"
+  },
+  {
+    "tag": "old-exact",
+    "exit_code": 0,
+    "tail": "e accepting real text, styles and gradients\n  ---\n  duration_ms: 0.918542\n  type: 'test'\n  ...\n1..8\n# tests 8\n# suites 0\n# pass 8\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 2974.863833\n"
+  },
+  {
+    "tag": "scene-syntax",
+    "exit_code": 0,
+    "tail": ""
+  },
+  {
+    "tag": "test-syntax",
+    "exit_code": 0,
+    "tail": ""
+  }
+]

@@ -1,0 +1,35 @@
+async (page) => {
+  const fx=await page.context().newPage();
+  await fx.goto('http://127.0.0.1:18855/tools/prototype/index.html?synthetic=play12-parent');
+  const results=await fx.evaluate(()=>{
+    const host=document.createElement('section'); host.id='p12-fixture';
+    host.style.cssText='position:absolute;left:0;top:0;z-index:99999;background:#eee;padding:20px';
+    const title=document.createElement('p');title.textContent='SYNTHETIC Canvas acceptance fixture — not a natural save';host.append(title);
+    const c=document.createElement('canvas');c.style.cssText='display:block;max-width:none';host.append(c);document.body.append(host);
+    const ctx=c.getContext('2d'),ft=ctx.fillText,fr=ctx.fillRect;
+    let texts=[],lastRect=null;
+    function point(x,y,m){return {x:m.a*x+m.c*y+m.e,y:m.b*x+m.d*y+m.f};}
+    ctx.fillRect=function(x,y,w,h){const m=this.getTransform();lastRect={a:point(x,y,m),b:point(x+w,y+h,m),fill:this.fillStyle};return fr.call(this,x,y,w,h);};
+    ctx.fillText=function(text,x,y,...rest){const m=this.getTransform(),mtr=this.measureText(text);texts.push({text,font:this.font,fill:this.fillStyle,m:{a:m.a,d:m.d},rect:lastRect,box:{a:point(x-mtr.actualBoundingBoxLeft,y-mtr.actualBoundingBoxAscent,m),b:point(x+mtr.actualBoundingBoxRight,y+mtr.actualBoundingBoxDescent,m)}});return ft.call(this,text,x,y,...rest);};
+    const result=[];
+    function draw(width,camera,zoom,placeId,edge){
+      c.style.width=width+'px';c.style.height=width*640/1100+'px';texts=[];lastRect=null;
+      const place=City.PLACES[placeId||'pub'];
+      const position=edge?City.restore({x:edge.x,y:edge.y,visited:['pub']}):City.restore({...City.create(),x:place.x,y:place.y});
+      const view={position,path:[],target:placeId||null,mode:placeId&&!edge?'place':'map',place:edge?null:placeId,notes:[],camera,zoom,afterHours:false};
+      const scene=new PubScene(c);scene.drawCity(view,2);
+      const ratio=c.getBoundingClientRect().width/c.width;
+      function box(b){return {l:b.a.x*ratio,t:b.a.y*ratio,r:b.b.x*ratio,b:b.b.y*ratio};}
+      const labels=texts.filter(t=>t.text==='你'||placeId&&t.text===place.name).map(t=>({text:t.text,font:parseFloat(t.font)*t.m.a*ratio,textBox:box(t.box),badge:box(t.rect)}));
+      const tr=scene.cityTransform,css=c.getBoundingClientRect().width/1100;
+      const avatar={l:((position.x-10)*tr.scale+tr.tx)*css,r:((position.x+10)*tr.scale+tr.tx)*css,t:((position.y-24)*tr.scale+tr.ty)*css,b:((position.y+19)*tr.scale+tr.ty)*css};
+      const overlap=(a,b)=>Math.max(0,Math.min(a.r,b.r)-Math.max(a.l,b.l))*Math.max(0,Math.min(a.b,b.b)-Math.max(a.t,b.t));
+      result.push({width,camera,zoom,placeId,edge,walkable:City.walkable(position.x,position.y),labels,avatar,badgeOverlap:labels.length===2?overlap(labels[0].badge,labels[1].badge):0,avatarOverlap:labels.map(x=>({text:x.text,area:overlap(x.badge,avatar)}))});
+    }
+    draw(360,'city',1,'market',{x:980,y:80});
+    return result;
+  });
+  await fx.locator('#p12-fixture').screenshot({path:'/tmp/amsterdam-city-markers-r2-review-20261013/synthetic-market-business.png'});
+  await fx.close();
+  return results;
+}

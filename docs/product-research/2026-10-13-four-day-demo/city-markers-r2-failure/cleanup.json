@@ -1,0 +1,12 @@
+{
+  "closed_ports": [
+    18854,
+    18855
+  ],
+  "closed_pids": [
+    81491,
+    81492
+  ],
+  "browser": "amsterdam-play12-r2-review closed",
+  "old_services_saves_unchanged": true
+}

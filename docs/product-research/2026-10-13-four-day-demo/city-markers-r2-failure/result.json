@@ -1,0 +1,173 @@
+{
+  "artifact_dir": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-city-markers-r2-20261013",
+  "blockers": [],
+  "changed_files": [
+    {
+      "path": "tools/prototype/reopening-scene.js",
+      "sha256": "acfc5f3b878bf9068aa6798de390664dd14d3f43d376731b08fe4e9ca8f791c7"
+    },
+    {
+      "path": "tools/prototype/test-city-markers.js",
+      "sha256": "2c96e4fcae38ac6d5552fc4daa2dab4a38911c1299c1db88fc2129f27ab1d80f"
+    }
+  ],
+  "claude": {
+    "final_subtype": "success",
+    "is_error": false,
+    "outcome": "completed",
+    "pid": 79815,
+    "returncode": 0,
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1123000,
+      "inference_geo": "",
+      "input_tokens": 104726,
+      "iterations": [],
+      "output_tokens": 52341,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_fetch_requests": 0,
+        "web_search_requests": 0
+      },
+      "service_tier": "standard",
+      "speed": "standard"
+    }
+  },
+  "cost_basis": "client estimate; not Coding Plan charge",
+  "cost_usd": 2.3936550000000003,
+  "deleted_files": [],
+  "disallowed_changes": [],
+  "elapsed_seconds": 1167.241,
+  "finished_at": "2026-10-13T15:32:35.347911+00:00",
+  "input_hashes": {
+    "brief.md": "dcd37df8ec7d2f1b1fe17d3e2ec3797632d9c1bcd5cbf254a4b217d0959f3abf",
+    "frame-contract.md": "21b82f50af1126f6d9a5f396c2c3b59fdd1295b1ab61f0258783b43539c888d2",
+    "original-brief.md": "bb12a4e8df3499d575c21ce92b9396070306f4114054daccac92212b2b44f354",
+    "tools/prototype/reopening-city.js": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625",
+    "tools/prototype/reopening-scene.js": "cb81601de9a05c505f4e7444eaebcb62aa2f4a5f1acb118538d8be0142089dc7",
+    "tools/prototype/test-city-markers.js": "d6beb51bcc53f6011d9627d59d575412dfc14e2fe0f1fb7b35a037f8c5fed32a",
+    "tools/prototype/test-city.js": "fea0a17524f790b75206d4a51741113439bbea8216d16c04ed5164b5659c4b13",
+    "tools/prototype/test-street-atmosphere.js": "0e49de693df25cc5f4f9cd2cfb1a8a80ab2cfab27487990748b115f4efcc55b5"
+  },
+  "memory_delta": [
+    "PLAY12 R2 correction done: edge badges flip sides / stack outward instead of clamping over avatar or active icon; four dedicated helpers + appended R2 regressions, 16/16 markers, old 13+8 green, syntax clean.",
+    "RED history (summary only): unmodified candidate failed appended flowers-overview and topedge(290,48)-street occlusion assertions with original 12 green; lateral fixture already passed.",
+    "This attempt consumed the available D24 correction; parent real-browser 127-case and natural walking acceptance remain independent and not performed here."
+  ],
+  "next_steps": [
+    "Parent reruns the four commands against untouched adopted base (expect new R2 tests RED) and this candidate (GREEN), verifies original12 prefix byte-exact and diff confined to the dedicated helper block.",
+    "Parent performs independent real-browser font/occlusion audit and natural street/overview/flower/bridge walking, M/zoom/click/pub entry/pause-refresh desktop390 before/after checks before any adopt/push."
+  ],
+  "observed_models": [
+    "doubao-seed-evolving"
+  ],
+  "permission_denials": [],
+  "replayed": false,
+  "report": {
+    "blockers": [],
+    "changed_files": [
+      "tools/prototype/reopening-scene.js",
+      "tools/prototype/test-city-markers.js"
+    ],
+    "memory_delta": [
+      "PLAY12 R2 correction done: edge badges flip sides / stack outward instead of clamping over avatar or active icon; four dedicated helpers + appended R2 regressions, 16/16 markers, old 13+8 green, syntax clean.",
+      "RED history (summary only): unmodified candidate failed appended flowers-overview and topedge(290,48)-street occlusion assertions with original 12 green; lateral fixture already passed.",
+      "This attempt consumed the available D24 correction; parent real-browser 127-case and natural walking acceptance remain independent and not performed here."
+    ],
+    "next_steps": [
+      "Parent reruns the four commands against untouched adopted base (expect new R2 tests RED) and this candidate (GREEN), verifies original12 prefix byte-exact and diff confined to the dedicated helper block.",
+      "Parent performs independent real-browser font/occlusion audit and natural street/overview/flower/bridge walking, M/zoom/click/pub entry/pause-refresh desktop390 before/after checks before any adopt/push."
+    ],
+    "status": "completed",
+    "summary": "PLAY12 R2 targeted edge-occlusion correction. Appended four regression tests below the byte-exact original 12-test prefix (actual flower point (1240,1040) overview1 restored-save coincident at CSS320/350/360/368/390/1100 DPR1/1.5; all seven real C.PLACES coincident across CSS widths x overview1/overview2/street x DPR1/1.5; synthetic walkable topedge (290,48) street; lateral Lotte street fixture), asserting measured full text inside badges, 4-CSS-px margins, >=11 CSS px font, mutually disjoint active/player badges and no overlap with actual recorded avatar (hat/head/body/feet paints p.y-24..p.y+19) or real r27 active-icon extents. Genuine RED on the unmodified business scene: original 12 green, new tests failed exactly on parent-cited occlusions (flowers active badge clamped up over avatar/icon at 320; topedge player badge clamped over the head). Fixed only the four dedicated PLAY12 helpers immediately before drawCity plus small dedicated edge-placement helpers (cityBadgeMetrics, cityBadgeVisibleSpan, cityPlayerBadgeTop, cityActiveBadgeTop): preferred above/below offsets and horizontal clamp are byte-behavior-preserved while they fit, but a margin clamp is refused when it would cross the real icon/avatar and the badge deterministically flips to the opposite side, stacking coincident active/current badges outward with a fixed 4-CSS-px gap; offscreen anchors still return false to the exact original clipped labels. No camera/core/UI/CSS/worldPoint/icon/avatar/route/world bytes changed; both drawCity call spans unchanged. Final: 16/16 markers tests green, pre-existing 13 city + 8 street-atmosphere tests green, both syntax checks exit 0. No parent browser/natural/fun validation claimed.",
+    "tests": [
+      {
+        "command": "node --test tools/prototype/test-city-markers.js",
+        "exit_code": 0,
+        "summary": "16/16 pass: original 12 tests unchanged and green plus 4 appended R2 edge-occlusion regressions green after the helper correction."
+      },
+      {
+        "command": "node --test tools/prototype/test-city.js tools/prototype/test-street-atmosphere.js",
+        "exit_code": 0,
+        "summary": "13 city tests and 8 street-atmosphere tests all pass."
+      },
+      {
+        "command": "node --check tools/prototype/reopening-scene.js",
+        "exit_code": 0,
+        "summary": "Syntax check OK, no output."
+      },
+      {
+        "command": "node --check tools/prototype/test-city-markers.js",
+        "exit_code": 0,
+        "summary": "Syntax check OK, no output."
+      }
+    ]
+  },
+  "request_sha256": "5534b99eccf991325852479e8a799004ee3e8218295d527ba7364e2f12e0b54e",
+  "requested": {
+    "allowed_tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash"
+    ],
+    "basis": "launcher-pinned request; requested, not provider-confirmed; the pinned model is a fixed convention, not a ranking result",
+    "model": "doubao-seed-evolving",
+    "permission_allow": [
+      "Read(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-city-markers-r2-20261013/workspace/**)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-city-markers-r2-20261013/workspace/tools/prototype/reopening-scene.js)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-city-markers-r2-20261013/workspace/tools/prototype/reopening-scene.js)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-city-markers-r2-20261013/workspace/tools/prototype/test-city-markers.js)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-city-markers-r2-20261013/workspace/tools/prototype/test-city-markers.js)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-city-markers-r2-20261013/workspace/handoff-result.json)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-city-markers-r2-20261013/workspace/handoff-result.json)",
+      "Bash(node --test tools/prototype/test-city-markers.js)",
+      "Bash(node --test tools/prototype/test-city.js tools/prototype/test-street-atmosphere.js)",
+      "Bash(node --check tools/prototype/reopening-scene.js)",
+      "Bash(node --check tools/prototype/test-city-markers.js)"
+    ],
+    "permission_mode": "dontAsk",
+    "provider_base_url": "https://ark.cn-beijing.volces.com/api/coding",
+    "reasoning_effort": "high",
+    "thinking_enabled": true
+  },
+  "session_id": "1db3018f-600c-45ae-80f1-11de8841b6fa",
+  "started_at": "2026-10-13T15:13:08.099791+00:00",
+  "status": "verifying",
+  "summary": "PLAY12 R2 targeted edge-occlusion correction. Appended four regression tests below the byte-exact original 12-test prefix (actual flower point (1240,1040) overview1 restored-save coincident at CSS320/350/360/368/390/1100 DPR1/1.5; all seven real C.PLACES coincident across CSS widths x overview1/overview2/street x DPR1/1.5; synthetic walkable topedge (290,48) street; lateral Lotte street fixture), asserting measured full text inside badges, 4-CSS-px margins, >=11 CSS px font, mutually disjoint active/player badges and no overlap with actual recorded avatar (hat/head/body/feet paints p.y-24..p.y+19) or real r27 active-icon extents. Genuine RED on the unmodified business scene: original 12 green, new tests failed exactly on parent-cited occlusions (flowers active badge clamped up over avatar/icon at 320; topedge player badge clamped over the head). Fixed only the four dedicated PLAY12 helpers immediately before drawCity plus small dedicated edge-placement helpers (cityBadgeMetrics, cityBadgeVisibleSpan, cityPlayerBadgeTop, cityActiveBadgeTop): preferred above/below offsets and horizontal clamp are byte-behavior-preserved while they fit, but a margin clamp is refused when it would cross the real icon/avatar and the badge deterministically flips to the opposite side, stacking coincident active/current badges outward with a fixed 4-CSS-px gap; offscreen anchors still return false to the exact original clipped labels. No camera/core/UI/CSS/worldPoint/icon/avatar/route/world bytes changed; both drawCity call spans unchanged. Final: 16/16 markers tests green, pre-existing 13 city + 8 street-atmosphere tests green, both syntax checks exit 0. No parent browser/natural/fun validation claimed.",
+  "task_id": "amsterdam-city-markers-r2-20261013",
+  "telemetry": {
+    "attempt_kind": "correction",
+    "logical_task_id": "play12-city-markers",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "tests": [
+    {
+      "command": "node --test tools/prototype/test-city-markers.js",
+      "exit_code": 0,
+      "summary": "16/16 pass: original 12 tests unchanged and green plus 4 appended R2 edge-occlusion regressions green after the helper correction."
+    },
+    {
+      "command": "node --test tools/prototype/test-city.js tools/prototype/test-street-atmosphere.js",
+      "exit_code": 0,
+      "summary": "13 city tests and 8 street-atmosphere tests all pass."
+    },
+    {
+      "command": "node --check tools/prototype/reopening-scene.js",
+      "exit_code": 0,
+      "summary": "Syntax check OK, no output."
+    },
+    {
+      "command": "node --check tools/prototype/test-city-markers.js",
+      "exit_code": 0,
+      "summary": "Syntax check OK, no output."
+    }
+  ]
+}

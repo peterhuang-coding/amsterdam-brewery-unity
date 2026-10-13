@@ -1,3 +1,11 @@
+## PLAY12 R2 failed parent acceptance; shelved under D24
+
+R2 amsterdam-city-markers-r2-20261013 ended2026-10-13T15:32:35.347911Z normally,1167.241s/23turns/CLI0/verifying,fulllegalfour-final-command report,worker79815 exited. Read11/Edit5/Bash6 all exactscope/commands,no permission denial/write escape. Eight source/six readonlySHA unchanged; dedicatedhelpers only,drawCitycalls and original12test prefix byteexact. Twofilepatch2/2. Parent16/16,unmodifiedbusinesscandidate13/16,untouched0178350base3/16,all38files427/427=old411+16,oldcity13+street7(Nodeouter8),syntax0. Original report street8 count remains incorrect, original unmodified.
+
+Realbrowser156technicalcases found newregression despitegreen: selectedmarket on screen at980,1040 whileplayer atwalkable980,80,mapoverview1. Horizontalalignment falselytreated as coincidence makesbothbadgeplacements impossible, so active label fallsback to originaltinytext: CSS320/360/390 font2.6597/2.9922/3.2416px instead of>=11. SameCSS360 originalbusinesscandidate is11px. ActualCanvas/City.restore comparison andscreens saved, syntheticnotnaturalsaves. Originalflower/topedge occlusion cases pass but cannot override newfailure. FullR2naturalGUIacceptance stopped on confirmedfailure. Standardreview rejected/semantic recorded. NoAPIrate/transporterror,newcooldownnone.
+
+D24 correction1/1 exhausted,PLAY12 shelved,adopted0; no newID/redispatch/main-agentrewrite. Originalbusiness normalhandoff+423semanticfailure retained. Currentplay0178350/18849,old411 adoptedtests,alloldservices/saves unchanged. PLAY03/06/07/11 remain shelved. CurrentAmsterdam noCCinflight; continue only trulyindependentD23work after naturalobservation,not revival. Directionreviewdue2026-10-13T15:48:33Z andfixeddeadline2026-10-16T19:48:33Z unchanged. Art/richness/fun incomplete,no newhumanfeedback. Historicalinflightstatementsbelow superseded.
+
 ## PLAY12 sole targeted correction submitted
 
 amsterdam-city-markers-r2-20261013 submitted2026-10-13T15:13:08.041737Z,worker79815/launcher79814. Logical play12-city-markers/correction, businesshistory1, solecorrection1/1 nowused. StableID and packet/tmp/amsterdam-city-markers-r2-20261013/handoff.json; resume fromoriginalstatus/result/events/PID, never resend submitted/unknown. Failed correction or parentacceptance then shelve. PLAY03/06/07/11 stay shelved.

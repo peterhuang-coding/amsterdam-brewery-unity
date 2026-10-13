@@ -1,0 +1,156 @@
+TAP version 13
+# Subtest: enhanced current-player and active destination labels are readable at every phone/desktop CSS width, camera and DPR
+ok 1 - enhanced current-player and active destination labels are readable at every phone/desktop CSS width, camera and DPR
+  ---
+  duration_ms: 122.720375
+  type: 'test'
+  ...
+# Subtest: all seven destination names survive with exactly one enhanced active label and six unchanged passive labels
+ok 2 - all seven destination names survive with exactly one enhanced active label and six unchanged passive labels
+  ---
+  duration_ms: 5.958625
+  type: 'test'
+  ...
+# Subtest: map mode with no target never picks an implicit destination: all place labels stay at base size
+ok 3 - map mode with no target never picks an implicit destination: all place labels stay at base size
+  ---
+  duration_ms: 5.906333
+  type: 'test'
+  ...
+# Subtest: coincident player and active pub badges stay on opposite sides of the real anchor without overlapping
+ok 4 - coincident player and active pub badges stay on opposite sides of the real anchor without overlapping
+  ---
+  duration_ms: 6.377042
+  type: 'test'
+  ...
+# Subtest: a coincident above-anchor market badge stacks deterministically clear of the player badge
+ok 5 - a coincident above-anchor market badge stacks deterministically clear of the player badge
+  ---
+  duration_ms: 4.416459
+  type: 'test'
+  ...
+# Subtest: an offscreen active destination keeps its real clipped anchor and is never clamped into a fake on-screen badge
+ok 6 - an offscreen active destination keeps its real clipped anchor and is never clamped into a fake on-screen badge
+  ---
+  duration_ms: 3.591833
+  type: 'test'
+  ...
+# Subtest: near-edge badges move just inside the 4 CSS px margin while their marker icon stays at the real world point
+ok 7 - near-edge badges move just inside the 4 CSS px margin while their marker icon stays at the real world point
+  ---
+  duration_ms: 13.194292
+  type: 'test'
+  ...
+# Subtest: recorders without getBoundingClientRect or with zero width fall back to logical width and stay finite
+ok 8 - recorders without getBoundingClientRect or with zero width fall back to logical width and stay finite
+  ---
+  duration_ms: 6.425583
+  type: 'test'
+  ...
+# Subtest: DPR 1 and 1.5 produce identical effective CSS fonts and badge bounds at the same CSS width
+ok 9 - DPR 1 and 1.5 produce identical effective CSS fonts and badge bounds at the same CSS width
+  ---
+  duration_ms: 6.597167
+  type: 'test'
+  ...
+# Subtest: reduced motion renders deterministic enhanced labels at different times
+ok 10 - reduced motion renders deterministic enhanced labels at different times
+  ---
+  duration_ms: 15.0935
+  type: 'test'
+  ...
+# Subtest: drawCity never mutates its view input or the shared city geometry
+ok 11 - drawCity never mutates its view input or the shared city geometry
+  ---
+  duration_ms: 6.838833
+  type: 'test'
+  ...
+# Subtest: night keeps the same badge palette, effective font and bounds as day
+ok 12 - night keeps the same badge palette, effective font and bounds as day
+  ---
+  duration_ms: 7.954667
+  type: 'test'
+  ...
+# Subtest: R2 flowers bottom-edge overview: both badges stay inside the margins and stack above the real point instead of clamping over the avatar/icon
+not ok 13 - R2 flowers bottom-edge overview: both badges stay inside the margins and stack above the real point instead of clamping over the avatar/icon
+  ---
+  duration_ms: 5.937458
+  type: 'test'
+  location: '/private/tmp/amsterdam-city-markers-r2-review-20261013/business/tools/prototype/test-city-markers.js:621:1'
+  failureType: 'testCodeFailure'
+  error: 'flowers overview1 320px dpr1 active name badge covers the avatar head/body'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    r2AssertClear (/private/tmp/amsterdam-city-markers-r2-review-20261013/business/tools/prototype/test-city-markers.js:611:10)
+    TestContext.<anonymous> (/private/tmp/amsterdam-city-markers-r2-review-20261013/business/tools/prototype/test-city-markers.js:631:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: R2 all seven real places coincident with the player at every CSS width, camera and DPR: badges fit, stay disjoint and keep the true anchor
+not ok 14 - R2 all seven real places coincident with the player at every CSS width, camera and DPR: badges fit, stay disjoint and keep the true anchor
+  ---
+  duration_ms: 565.392625
+  type: 'test'
+  location: '/private/tmp/amsterdam-city-markers-r2-review-20261013/business/tools/prototype/test-city-markers.js:649:1'
+  failureType: 'testCodeFailure'
+  error: 'flowers 320px overview zoom1 dpr1 active name badge covers the avatar head/body'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    r2AssertClear (/private/tmp/amsterdam-city-markers-r2-review-20261013/business/tools/prototype/test-city-markers.js:611:10)
+    TestContext.<anonymous> (/private/tmp/amsterdam-city-markers-r2-review-20261013/business/tools/prototype/test-city-markers.js:660:23)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: R2 walkable top-edge (290,48) street: the player label goes clearly below the avatar on phones instead of clamping over the recorded head
+not ok 15 - R2 walkable top-edge (290,48) street: the player label goes clearly below the avatar on phones instead of clamping over the recorded head
+  ---
+  duration_ms: 4.33
+  type: 'test'
+  location: '/private/tmp/amsterdam-city-markers-r2-review-20261013/business/tools/prototype/test-city-markers.js:680:1'
+  failureType: 'testCodeFailure'
+  error: 'topedge(290,48) street 320px dpr1 clamped badge still covers the avatar head/body'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-city-markers-r2-review-20261013/business/tools/prototype/test-city-markers.js:692:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: R2 lateral street edge keeps the active badge inside the 4 CSS px margin and clear of the real icon while the icon stays put
+ok 16 - R2 lateral street edge keeps the active badge inside the 4 CSS px margin and clear of the real icon while the icon stays put
+  ---
+  duration_ms: 38.054083
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 13
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 887.587042

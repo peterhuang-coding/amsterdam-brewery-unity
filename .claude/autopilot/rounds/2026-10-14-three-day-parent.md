@@ -8,3 +8,5 @@ Week target: Friday10/16 fixedcandidate, weekend humanreview; original cutoff10/
 
 
 Parent evidence: docs/product-research/2026-10-13-four-day-demo/three-day-parent/README.md. CCbusiness1+correction1, accepted0; parentindependent necessary verification retained.
+
+Evidence commit f25f7650d08dceb94b860f0aac336a07bada8166 pushed and exactls-remote verified. Fullstaged diffcheck found5 original CLIlog blankEOFs; originals retained, authoredscope excludinglogs passed. Notion FREEZE01 shelved and homepage proof/limitations updated+readback; existing amsterdam15min heartbeat updated withactualfailure/naturalending and samefixeddeadline, no automationadded. Hub same-method accumulation includes state-transition ordering and remote-push gate ambiguity.

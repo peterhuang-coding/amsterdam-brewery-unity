@@ -45,3 +45,75 @@
 .city-notebook .trip-log li{margin:7px 0;font-size:14px;line-height:1.55}
 .city-notebook .trip-log span{color:#665d4a}
 @media(max-width:390px){.city-notebook{padding:12px;font-size:14px}.city-notebook .trip-log li{font-size:14px}}
+
+/* ===========================================================================
+   PLAY02 — close canal street onboarding: calmer welcome, an optional first
+   walk, a street hint, conspicuous map toggles, and a local first-pour cue.
+   =========================================================================== */
+
+/* Welcome: one clear CTA, brief premise, and the three-day rhythm strip. */
+.welcome-rhythm{display:flex;flex-wrap:wrap;gap:7px;margin:4px 0 18px}
+.welcome-rhythm span{flex:1 1 0;min-width:120px;text-align:center;font-size:10px;letter-spacing:.5px;color:#5f7360;background:#dce2cd;border:1px solid #c2cbb0;border-radius:3px;padding:8px 6px}
+.welcome-rhythm span+span{border-color:#b7c4a2}
+details.start-seed{display:block;margin-top:14px;border-top:1px dashed #c0c7ad;padding-top:10px}
+details.start-seed summary{cursor:pointer;list-style:revert;font-size:10px;color:#71836b;padding:4px 0;border-radius:2px}
+details.start-seed summary::-webkit-details-marker{margin-right:4px}
+details.start-seed[open] summary{margin-bottom:8px}
+details.start-seed label{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11px;color:#5f7358;padding:0 2px 4px}
+details.start-seed input{flex:0 1 130px;min-width:0;border:0;border-bottom:1px solid #acb99e;background:transparent;text-align:right;color:var(--green);font:12px var(--mono);padding:6px 4px}
+
+/* Optional day-1 recommendation: walk to Lotte, promise, walk back. */
+.first-walk{background:#eef0df;border:1px solid #c3ccb0;border-left:3px solid var(--copper);border-radius:4px;padding:15px 16px;margin:4px 0 18px}
+.first-walk h3{font:17px/1.4 var(--serif);font-weight:500;color:var(--canal);margin:2px 0 12px}
+.first-walk ol{list-style:none;margin:0 0 6px;padding:0;display:grid;gap:11px}
+.walk-step{display:flex;gap:11px;align-items:start;font-size:12px;color:#566858}
+.walk-step>em{flex:none;width:23px;height:23px;border-radius:50%;display:grid;place-items:center;font:11px/1 var(--mono);font-style:normal;color:#f3ead0;background:var(--canal);margin-top:1px}
+.walk-step b{display:block;color:var(--ink);font-size:12px;font-weight:600;margin-bottom:3px}
+.walk-step p{font-size:11px;line-height:1.7;margin:0 0 8px;color:#6a7a66}
+.walk-step .secondary,.walk-step .primary{width:100%;min-height:38px;font-size:11px;padding:7px 10px}
+.walk-step.done{opacity:.72}
+.walk-step.done>em{background:var(--green);color:#eef4e2}
+.walk-step.done b{color:#4a6550}
+.walk-skip{border-top:1px dashed #c4ccaf;margin-top:12px;padding-top:12px}
+.walk-skip p{font-size:11px;color:#718069;margin:0 0 9px;line-height:1.7}
+.walk-skip .primary{min-height:42px}
+
+/* Short movement cue shown the first time the close street view appears. */
+.street-hint{background:#dfe7d4;border:1px solid #b7c7a4;border-radius:4px;padding:13px 15px;margin:4px 0 16px}
+.street-hint strong{display:block;font-size:12px;color:#3d5a45;margin-bottom:5px}
+.street-hint p{font-size:11px;line-height:1.8;color:#5c7060;margin:0 0 7px}
+.street-hint kbd,.first-walk kbd{display:inline-block;min-width:20px;padding:0 5px;border:1px solid #b6c4a1;border-radius:3px;background:#eef2e2;color:var(--green);font:11px/1.7 var(--mono);text-align:center}
+.street-hint .text-button{padding:2px 0}
+
+/* Conspicuous, but honest, ways between the close street and the full map. */
+.city-overview-button{width:100%;min-height:44px;margin-top:4px;border-style:solid}
+.destination.city-overview-destination{border:1px dashed #7e9a6a;background:#e3ecd2;border-left:3px solid var(--copper);min-height:64px}
+.destination.city-overview-destination>span{font-size:20px}
+.destination.city-overview-destination strong{color:var(--canal)}
+.destination.city-overview-destination small{color:#5f7558}
+#city-toolbar button[data-action="city-overview"],#city-toolbar button[data-action="city-street"]{font-weight:700;border-color:var(--canal);background:var(--canal);color:#f0e9d2;min-width:104px}
+#city-toolbar button[data-action="city-street"]{background:#3f6350;border-color:#3f6350}
+
+/* First night: a short local cue replaces the old blocking modal. */
+.first-guest-cue{background:#e7e1cb;border:1px solid #cdc39f;border-left:3px solid var(--copper);border-radius:4px;padding:13px 15px;margin:6px 0 16px}
+.first-guest-cue .board-eyebrow{margin-bottom:7px}
+.first-guest-cue ol{list-style:none;margin:0 0 9px;padding:0;display:grid;gap:7px}
+.first-guest-cue li{display:flex;gap:9px;align-items:baseline;font-size:12px;line-height:1.6;color:#5a6353}
+.first-guest-cue li>em{flex:none;width:19px;height:19px;border-radius:50%;display:grid;place-items:center;background:var(--canal);color:#f1e9d0;font:10px/1 var(--mono);font-style:normal;margin-top:1px}
+.first-guest-cue b{color:var(--ink);font-weight:600}
+.first-guest-cue .text-button{padding:2px 0;color:#8a5a2c}
+
+/* Keep every control reachable and uncropped on narrow phones. */
+@media(max-width:430px){
+  .welcome-rhythm span{flex:1 1 100%}
+  .first-walk,.street-hint,.first-guest-cue{padding:13px 12px}
+  .walk-step{gap:9px}
+  .city-overview-button,.walk-skip .primary{min-height:46px}
+  #city-toolbar button[data-action="city-overview"],#city-toolbar button[data-action="city-street"]{flex:1 1 auto;min-width:0}
+}
+@media(max-width:390px){
+  .first-walk h3{font-size:16px}
+  .walk-step p,.street-hint p,.first-guest-cue li{font-size:11px}
+  details.start-seed input{font-size:16px}
+  .destination.city-overview-destination{padding:11px 8px}
+}

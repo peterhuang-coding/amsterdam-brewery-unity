@@ -14,8 +14,13 @@
     rect(x,y,w,h,color) { this.ctx.fillStyle=color; this.ctx.fillRect(x,y,w,h); }
     ellipse(x,y,rx,ry,color) { const c=this.ctx;c.fillStyle=color;c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.fill(); }
     line(points,color,width=1) { const c=this.ctx;c.strokeStyle=color;c.lineWidth=width;c.beginPath();points.forEach((p,i)=>i?c.lineTo(...p):c.moveTo(...p));c.stroke(); }
+    poly(points,color) { const c=this.ctx;c.fillStyle=color;c.beginPath();points.forEach((p,i)=>i?c.lineTo(...p):c.moveTo(...p));c.closePath();c.fill(); }
+    ring(x,y,r,color,width=2) { const c=this.ctx;c.strokeStyle=color;c.lineWidth=width;c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.stroke(); }
     text(value,x,y,size,color,font='Georgia',align='center') { const c=this.ctx;c.font=`${size}px ${font}`;c.fillStyle=color;c.textAlign=align;c.fillText(value,x,y); }
     bottle(x,y,color,scale=1) { const c=this.ctx;c.save();c.translate(x,y);c.scale(scale,scale);this.rect(-5,-43,10,13,color);this.rect(-9,-31,18,31,color);this.rect(-4,-44,8,3,'#cfa762');this.rect(-7,-20,14,13,'#ddcf98');this.rect(-4,-36,2,9,'#ffffff25');this.rect(-6,-27,2,21,'#ffffff15');this.text('TK',0,-10,7,'#3e4933');c.restore(); }
+    // Transform-free variant for signs drawn inside the already-transformed
+    // city camera, so the active camera matrix is never overwritten mid-frame.
+    bottleAt(x,y,color,s=1){const r=(dx,dy,w,h,col)=>this.rect(x+dx*s,y+dy*s,w*s,h*s,col);r(-5,-43,10,13,color);r(-9,-31,18,31,color);r(-4,-44,8,3,'#cfa762');r(-7,-20,14,13,'#ddcf98');r(-4,-36,2,9,'#ffffff25');r(-6,-27,2,21,'#ffffff15');this.text('TK',x,y-10*s,7*s,'#3e4933');}
     tulips(x,y,bouquet,size=1) {
       const colors=bouquet.palette==='cool'?['#aa9dc4','#c7c0d6','#897aa7']:bouquet.palette==='warm'?['#ce815d','#e2b864','#bf6555']:['#cc8068','#b6a4c4','#dfbb6d'];
       for(let i=0;i<5;i++){
@@ -50,19 +55,27 @@
       return {x:(x-view.tx)/view.scale,y:(y-view.ty)/view.scale};
     }
     drawCity(view,time) {
-      const C=window.City,c=this.ctx,night=!!view.afterHours,scale=Math.min(1100/C.WIDTH,640/C.HEIGHT)*(view.zoom||1);
-      const tx=scale*C.WIDTH<=1100?(1100-scale*C.WIDTH)/2:-Math.max(0,Math.min(C.WIDTH-1100/scale,view.position.x-550/scale))*scale;
-      const ty=scale*C.HEIGHT<=640?(640-scale*C.HEIGHT)/2:-Math.max(0,Math.min(C.HEIGHT-640/scale,view.position.y-320/scale))*scale;
+      const C=window.City,c=this.ctx,night=!!view.afterHours;
+      // Overview (zoom 1/2) keeps the whole-city map; the close street camera
+      // follows the avatar at ~2.6x the overview scale.
+      const street=view.camera==='street';
+      const base=Math.min(1100/C.WIDTH,640/C.HEIGHT);
+      const scale=base*(street?2.6:(view.zoom||1));
+      const spanW=1100/scale,spanH=640/scale;
+      const tx=scale*C.WIDTH<=1100?(1100-scale*C.WIDTH)/2:-Math.max(0,Math.min(C.WIDTH-spanW,view.position.x-spanW/2))*scale;
+      const ty=scale*C.HEIGHT<=640?(640-scale*C.HEIGHT)/2:-Math.max(0,Math.min(C.HEIGHT-spanH,view.position.y-spanH/2))*scale;
       this.cityTransform={scale,tx,ty};
-      c.clearRect(0,0,1100,640);this.rect(0,0,1100,640,night?'#112e3c':'#204d58');
+      const INK='#183b48',CANAL_BLUE='#378e9b',BRICK='#b86b4c',SAND='#e2d4b0',LAMP='#ffd184',SLATE='#253d49';
+      this.cityPalette={INK,CANAL_BLUE,BRICK,SAND,LAMP,SLATE};
+      c.clearRect(0,0,1100,640);this.rect(0,0,1100,640,night?'#102733':INK);
       c.save();c.translate(tx,ty);c.scale(scale,scale);
-      this.rect(0,0,C.WIDTH,C.HEIGHT,'#2c6470');
+      this.rect(0,0,C.WIDTH,C.HEIGHT,night?'#16414f':'#2c6470');
       for(let i=0;i<80;i++)this.rect((i*139+time*9)%C.WIDTH,(i*83)%C.HEIGHT,20+i%4*13,2,'#b9d6bd20');
-      const land=C.LAND;this.rect(land.x-7,land.y-7,land.w+14,land.h+14,'#9b9f7c');this.rect(land.x,land.y,land.w,land.h,'#b8ad89');
+      const land=C.LAND;this.rect(land.x-7,land.y-7,land.w+14,land.h+14,'#8b9271');this.rect(land.x,land.y,land.w,land.h,night?'#a89e7c':'#c3b894');
       // Street surfaces are clipped at canals. Crossings are drawn separately.
       c.save();c.beginPath();c.rect(land.x,land.y,land.w,land.h);c.clip();
-      for(const x of [190,390,590,890,1190,1490,1650]){this.rect(x-19,40,38,1040,'#d0c5a2');this.line([[x,40],[x,1080]],'#a9a580',1);}
-      for(const y of [270,520,690,890,1040]){this.rect(70,y-18,1660,36,'#d0c5a2');this.line([[70,y],[1730,y]],'#a9a580',1);}
+      for(const x of [190,390,590,890,1190,1490,1650]){this.rect(x-19,40,38,1040,night?'#b7ad8c':'#d8cba8');this.line([[x,40],[x,1080]],'#a59c78',1);}
+      for(const y of [270,520,690,890,1040]){this.rect(70,y-18,1660,36,night?'#b7ad8c':'#d8cba8');this.line([[70,y],[1730,y]],'#a59c78',1);}
       // Small public greens give the quays room to breathe.
       for(const park of [{x:92,y:64,w:260,h:158},{x:1160,y:530,w:220,h:155},{x:150,y:860,w:215,h:140}]){
         this.rect(park.x,park.y,park.w,park.h,'#84966b');
@@ -71,7 +84,8 @@
       }
       c.restore();
       for(const water of C.WATERS){
-        this.rect(water.x-5,water.y-5,water.w+10,water.h+10,'#ded0a4');this.rect(water.x,water.y,water.w,water.h,'#3c7680');
+        this.rect(water.x-5,water.y-5,water.w+10,water.h+10,SAND);this.rect(water.x,water.y,water.w,water.h,night?'#235d6c':CANAL_BLUE);
+        this.line([[water.x,water.y+5],[water.x+water.w,water.y+5]],'#ffffff18',2);
         for(let i=0;i<Math.floor(water.w*water.h/1300);i++){const x=water.x+((i*41+time*5)%Math.max(1,water.w-16)),y=water.y+(i*59)%water.h;this.rect(x,y,13,2,'#d2ddbe35');}
       }
       this.text('H E T   I J',460,393,26,'#c2d6be80','Georgia');
@@ -89,34 +103,12 @@
           else{this.rect(crossing.x,crossing.y,4,crossing.h,'#5a6752');this.rect(crossing.x+crossing.w-4,crossing.y,4,crossing.h,'#5a6752');}
         }
       }
-      const colors=['#997457','#718a76','#a18d6b','#996c50','#899376'];
-      C.BUILDINGS.forEach((b,i)=>{
-        this.rect(b.x+7,b.y+9,b.w,b.h,'#40514435');
-        const units=b.id==='lab'?1:Math.max(1,Math.floor(b.w/42));
-        for(let k=0;k<units;k++){
-          const w=b.w/units,x=b.x+k*w,color=colors[(i+k)%colors.length];
-          this.rect(x,b.y,w-2,b.h,color);this.rect(x,b.y+b.h-23,w-2,23,'#cdb38b');
-          this.rect(x+3,b.y+4,w-8,b.h-29,b.id==='lab'?'#a9b5a1':'#625d4e');
-          this.line([[x+w/2,b.y+7],[x+w/2,b.y+b.h-26]],'#a39b7c',2);
-          this.rect(x+w-13,b.y+9,6,10,'#aa9271');
-          // Narrow stepped gables and two front windows make recognizable canal houses.
-          this.rect(x+w/2-9,b.y+b.h-29,18,7,color);this.rect(x+w/2-5,b.y+b.h-35,10,7,color);
-          this.rect(x+7,b.y+b.h-18,8,10,'#45665c');this.rect(x+w-18,b.y+b.h-18,8,10,'#45665c');
-          this.rect(x+w/2-4,b.y+b.h-13,8,13,'#344f43');
-        }
-        if(b.id==='lab'){for(let wx=b.x+10;wx<b.x+b.w-10;wx+=24)this.rect(wx,b.y+9,15,b.h-38,'#cbd8c0');this.text('UvA',b.x+b.w/2,b.y+b.h-7,12,'#344f43','monospace');}
-        if(b.id==='pub'){this.rect(b.x+22,b.y+b.h-30,56,14,'#2b5949');this.text('TWEEDE KANS',b.x+50,b.y+b.h-19,7,'#ead29c','Georgia');}
-        if(b.id==='flowers'){
-          this.rect(b.x-3,b.y+b.h-31,b.w+6,17,'#718469');
-          for(let stripe=0;stripe<8;stripe++)this.rect(b.x-3+stripe*14,b.y+b.h-31,7,17,'#e1d0a8');
-          this.rect(b.x+16,b.y+b.h-51,68,16,'#365744');this.text('BLOEMEN',b.x+50,b.y+b.h-39,10,'#eed9a9','Georgia');
-          for(let bunch=0;bunch<3;bunch++){
-            const fx=b.x+13+bunch*35,fy=b.y+b.h+8;
-            this.rect(fx-10,fy-3,20,12,'#9b8057');this.tulips(fx,fy,{palette:['warm','cool','mixed'][bunch],wrap:'ribbon'},.85);
-          }
-        }
-        if(b.id==='pub'&&view.display)this.tulips(b.x+15,b.y+b.h-5,view.display,.5);
-      });
+      // Intentional 2.5D canal facades: shadow, side depth, tall windows,
+      // stepped/pitched roofs and a readable real door on every destination.
+      this.drawHouses(C,view,night,time);
+      // Lotte rehearses on the narrow bridge just east of the pub: a visible
+      // musician with a guitar marks the bridge meeting point (not a door).
+      this.drawBridgeMusician(516,624,night,time,street);
       // Working boats and cranes distinguish the north bank from the café streets.
       this.line([[1310,285],[1310,209],[1370,209]],'#b99756',7);this.line([[1310,234],[1360,209]],'#b99756',3);this.line([[1368,211],[1368,250]],'#405d51',2);
       for(const mooring of [{x:1090,y:374},{x:480,y:735},{x:1080,y:568}]){this.ellipse(mooring.x,mooring.y,12,29,'#244e53');this.ellipse(mooring.x,mooring.y-2,9,24,'#af9060');this.rect(mooring.x-6,mooring.y-8,12,16,'#d5c49b');}
@@ -126,9 +118,6 @@
       for(const x of [685,775]){this.ellipse(x,956,12,8,'#755f3f');this.ellipse(x,956,10,6,'#d6bd84');for(const dx of [-18,18])this.rect(x+dx-3,953,6,8,'#646a48');}
       if(night){
         this.rect(0,0,C.WIDTH,C.HEIGHT,'#091c3d83');
-        for(const b of C.BUILDINGS){
-          for(let wx=b.x+9;wx<b.x+b.w-10;wx+=29)if((Math.floor(wx)+b.y)%3!==0)this.rect(wx,b.y+b.h-18,8,10,'#dfb66a');
-        }
         for(const lamp of [{x:335,y:610},{x:566,y:705},{x:867,y:473},{x:777,y:923},{x:1293,y:1030},{x:1535,y:934}]){
           const glow=c.createRadialGradient(lamp.x,lamp.y,0,lamp.x,lamp.y,66);glow.addColorStop(0,'#eab85a3d');glow.addColorStop(1,'#eab85a00');
           this.rect(lamp.x-66,lamp.y-66,132,132,glow);this.line([[lamp.x,lamp.y+9],[lamp.x,lamp.y-14]],'#293e3e',3);this.ellipse(lamp.x,lamp.y-16,5,6,'#f0cd84');
@@ -143,18 +132,26 @@
         if(!view.garden.pump)this.ellipse(e.x+20,e.y-4,20,8,'#527f8b');
         const cart=view.flowerCart;if(cart){this.rect(cart.x-14,cart.y-7,28,16,'#927752');this.ellipse(cart.x-12,cart.y+10,5,5,'#294b51');this.ellipse(cart.x+12,cart.y+10,5,5,'#294b51');this.tulips(cart.x,cart.y-8,{palette:'mixed',wrap:'paper'},.8);this.text('搬花车',cart.x,cart.y-32,12,'#294b51','sans-serif');}
       }
+      const p=view.position;
       for(const place of Object.values(C.PLACES)){
-        const active=view.target===place.id||view.mode==='place'&&view.place===place.id,known=view.position.visited.includes(place.id);
-        this.ellipse(place.x,place.y,active?27:20,active?27:20,active?'#f0cd82':'#214a48');
-        this.ellipse(place.x,place.y,active?23:16,active?23:16,known?'#305b48':'#56694f');
-        this.text(place.icon,place.x,place.y+7,21,'#efdbac','sans-serif');
+        const active=view.target===place.id||view.mode==='place'&&view.place===place.id,known=p.visited.includes(place.id);
+        const distance=Math.hypot(place.x-p.x,place.y-p.y);
+        // Close street view labels only the door you are near (or walking to);
+        // the overview keeps all seven destination labels.
+        const labelled=!street||active||distance<=300,dim=street&&!labelled;
+        this.ellipse(place.x,place.y,active?27:dim?13:20,active?27:dim?13:20,active?'#f0cd82':'#214a48');
+        this.ellipse(place.x,place.y,active?23:dim?9:16,active?23:dim?9:16,known?'#305b48':'#56694f');
+        this.text(place.icon,place.x,place.y+(dim?5:7),dim?13:21,'#efdbac','sans-serif');
+        if(street&&distance<92)this.ring(place.x,place.y,26+Math.sin(time*3)*2,'#ffd184b8',2);
+        if(!labelled)continue;
         const labelWidth=Math.max(120,place.name.length*15+25),labelY=place.id==='market'?place.y-48:place.y+34;
         this.rect(place.x-labelWidth/2,labelY-18,labelWidth,29,active?'#edd5a0':'#ece0bfec');
         this.text(place.name,place.x,labelY+2,16,active?'#244334':'#3e5647','sans-serif');
       }
-      const p=view.position,isFerry=C.onFerry(p.x,p.y),mounted=p.bike&&p.bike.mounted;
+      const isFerry=C.onFerry(p.x,p.y),mounted=p.bike&&p.bike.mounted;
       if(p.bike&&!mounted)this.bicycle(p.bike.pushing?{...p.bike,x:p.bike.x+19,y:p.bike.y+5}:p.bike,view.bouquet);
       this.ellipse(p.x,p.y+9,isFerry?25:15,isFerry?12:7,'#1c434060');
+      if(street&&!isFerry)this.ring(p.x,p.y+9,19+Math.sin(time*3)*1.5,'#ffd184aa',2);
       if(isFerry){this.ellipse(p.x,p.y+6,21,32,'#b9945a');this.rect(p.x-12,p.y-9,24,26,'#e4cd9b');}
       this.ellipse(p.x,p.y,10,14,'#1d4140');this.ellipse(p.x,p.y-15,9,9,'#d4aa73');this.rect(p.x-9,p.y-22,18,6,'#ce8e4c');
       if(mounted){
@@ -168,7 +165,7 @@
       if(view.bouquet&&!view.bouquet.stored)this.tulips(p.x+16,p.y+3,view.bouquet,.7);
       this.text('你',p.x,p.y-35,16,'#fff1c8','sans-serif');
       c.restore();
-      this.rect(22,18,240,34,night?'#132e3aed':'#e4d6afea');this.text(night?'深夜 · 街灯仍亮着':'白天 · 自由漫游',36,40,15,night?'#e6c784':'#355749','sans-serif','left');
+      this.rect(22,18,240,34,night?'#132e3aed':'#e4d6afea');this.text(night?(street?'深夜 · 街头视角':'深夜 · 全城地图'):(street?'白天 · 街头视角':'白天 · 全城地图'),36,40,15,night?'#e6c784':'#355749','sans-serif','left');
       const notes=Array.isArray(view.notes)?view.notes.filter(note=>typeof note==='string').slice(-3):[];
       if(notes.length){
         this.rect(22,62,322,39+notes.length*23,night?'#183038ed':'#e9dcb9ed');this.text('地图笔记',36,85,12,night?'#dabc82':'#5c6b4e','sans-serif','left');
@@ -176,6 +173,127 @@
       }
       this.text('N',1068,43,13,'#e6d5a9','monospace');this.line([[1068,52],[1068,78]],'#e6d5a9',2);this.line([[1062,58],[1068,50],[1074,58]],'#e6d5a9',2);
       this.text('AMSTERDAM / 游戏街区示意',1072,621,10,'#d4d6b4','monospace','right');
+    }
+    // ------------------------------------------------------------------
+    // 2.5D canal houses. Every destination keeps its collision footprint
+    // (rendering only): shadow + side depth face face south toward the quay.
+    drawHouses(C,view,night,time){
+      const P=this.cityPalette;
+      const styles={
+        pub:{wall:P.BRICK,shade:'#8f513a',trim:P.SAND,roof:P.SLATE,gable:'stepped',door:true,warm:true,sign:'pub'},
+        coffee:{wall:P.SAND,shade:'#c2b087',trim:'#f2e8cd',roof:'#3d5055',gable:'stepped',door:true,sign:'KOFFIE'},
+        noord:{wall:'#7d5c43',shade:'#5d432f',trim:P.SAND,roof:P.INK,gable:'pitched',door:true,sign:'NOORD · VEER'},
+        market:{wall:'#c98e63',shade:'#a46f4b',trim:P.SAND,roof:P.SLATE,gable:'pitched',door:true,shop:true,sign:'ALBERT CUYP'},
+        flowers:{wall:P.SAND,shade:'#c2b087',trim:'#f2e8cd',roof:'#77414d',gable:'stepped',door:true,shop:true,florist:true,sign:'BLOEMEN'},
+        lab:{wall:'#d6d8c3',shade:'#aeb299',trim:'#eef0e0',roof:P.INK,gable:'flat',door:true,sign:'UvA'}
+      };
+      const deco=[
+        {wall:P.BRICK,shade:'#8f513a',trim:'#dcc49b',roof:P.SLATE,gable:'stepped'},
+        {wall:P.SAND,shade:'#c2b087',trim:'#e9dfc2',roof:'#435257',gable:'stepped'},
+        {wall:'#a56b4e',shade:'#82523b',trim:'#d9c8a4',roof:P.INK,gable:'pitched'},
+        {wall:'#c7b78e',shade:'#a1916a',trim:'#e7dcbd',roof:'#44433f',gable:'stepped'}
+      ];
+      C.BUILDINGS.forEach((b,i)=>{
+        const destination=Boolean(styles[b.id]);
+        this.drawFacade(b,styles[b.id]||deco[i%deco.length],night,destination,i,time);
+      });
+      // The bought window bouquet hangs beside the pub door, not a prop door.
+      if(view.display){const f=C.BUILDINGS.find(b=>b.id==='pub');this.tulips(f.x+18,f.y+f.h-2,view.display,.55);}
+    }
+    drawFacade(b,st,night,destination,seed,time){
+      const P=this.cityPalette,x=b.x,y=b.y,w=b.w,h=b.h,cx=x+w/2,ground=y+h;
+      const H=destination?Math.min(96,72+Math.round(h*.3)):Math.min(72,h+12);
+      const rise=st.gable==='flat'?10:26;
+      // Ground shadow on the quay.
+      this.ellipse(cx,ground+5,w*.62,11,'#102d3840');
+      // Side depth face (light comes from upper-left).
+      this.poly([[x+w,ground-H],[x+w+12,ground-H-9],[x+w+12,ground-3],[x+w,ground+1]],st.shade);
+      // Front wall and plinth.
+      this.rect(x,ground-H,w,H,st.wall);
+      this.rect(x+w-5,ground-H,5,H,st.shade+'66');
+      this.rect(x,ground-8,w,8,st.trim);this.rect(x,ground-8,w,2,st.shade);
+      // Roof: Amsterdam stepped gable, pitched tile roof or a flat lab slab.
+      if(st.gable==='stepped'){
+        this.poly([[x+w+12,ground-H-9],[cx+10,ground-H-9],[cx+14,ground-H-rise+2],[x+w+12,ground-H-rise-4]],st.shade);
+        this.rect(x-3,ground-H,w+6,5,st.shade);
+        this.rect(cx-14,ground-H-8,28,8,st.roof);this.rect(cx-11,ground-H-16,22,8,st.roof);
+        this.rect(cx-8,ground-H-24,16,8,st.roof);this.rect(cx-4,ground-H-31,8,8,st.roof);
+        this.rect(cx-2,ground-H-34,4,4,st.shade);
+      }else if(st.gable==='pitched'){
+        this.poly([[x-3,ground-H],[x+w+3,ground-H],[cx,ground-H-rise]],st.roof);
+        this.poly([[x+w+3,ground-H],[x+w+13,ground-H-9],[cx+10,ground-H-rise-5],[cx,ground-H-rise]],st.shade);
+        this.rect(x-3,ground-H,w+6,4,st.shade);
+      }else{
+        this.rect(x-4,ground-H-9,w+8,9,st.roof);this.rect(x-4,ground-H-9,w+8,3,st.shade);
+      }
+      const lit=(r,col)=>st.warm||night&&(seed*7+r*5+col*3)%4===0;
+      const glass=(r,col)=>!night?'#2f6875':lit(r,col)?P.LAMP:'#22475a';
+      if(st.shop){
+        // Ground-floor shopfront under a striped awning.
+        this.rect(x-3,ground-42,w+6,6,'#718469');
+        for(let s=0;s<Math.ceil((w+6)/13);s++)this.rect(x-3+s*13,ground-42,7,6,'#e1d0a8');
+        this.rect(x-3,ground-46,w+6,5,'#5d7058');
+        this.rect(x+8,ground-31,w-16,23,st.trim);this.rect(x+10,ground-29,w-20,19,'#33554f');
+        this.rect(x+8,ground-31,w-16,3,'#ffffff22');
+      }else{
+        // Two rows of tall canal-house windows.
+        const cols=Math.max(2,Math.min(4,Math.floor(w/28)));
+        for(let r=0;r<2;r++)for(let col=0;col<cols;col++){
+          const wx=x+11+col*((w-22)/cols),wy=ground-H+(r?42:12),ww=Math.min(12,(w-22)/cols-7);
+          if(destination&&r===1&&Math.abs(wx-cx)<13)continue; // the real door occupies the centre
+          this.rect(wx-1.5,wy-2,ww+3,23,st.trim);this.rect(wx,wy,ww,19,glass(r,col));
+          this.line([[wx+ww/2,wy],[wx+ww/2,wy+19]],'#0f242b55',1);this.line([[wx,wy+9],[wx+ww,wy+9]],'#0f242b55',1);
+          this.rect(wx-2.5,wy+19,ww+5,2,st.shade);
+          if(night&&lit(r,col))this.rect(wx+2,wy+2,2,5,'#fff3cf88');
+        }
+      }
+      if(destination)this.drawDoor(x,cx,ground,st,night);else this.rect(cx-7,ground-H+8,14,17,st.shade+'55');
+      // Signage identifies each real place; decorative houses stay anonymous.
+      if(st.sign==='pub'){
+        this.rect(cx-35,ground-H+9,70,19,'#20302b');this.rect(cx-35,ground-H+9,70,2,'#caa85f');this.rect(cx-35,ground-H+26,70,2,'#caa85f');
+        this.bottleAt(cx-25,ground-H+20,'#7a9452',.34);
+        this.text('TWEEDE KANS',cx+6,ground-H+22,8,'#f0d79b','Georgia');
+      }else if(st.sign){
+        this.rect(cx-30,ground-H+9,60,16,night?'#e9dcc0':'#f0e6cc');
+        this.text(st.sign,cx,ground-H+20,st.sign.length>7?6.5:8,P.INK,'monospace');
+      }
+      if(st.florist){
+        for(let bunch=0;bunch<3;bunch++){
+          const fx=x+14+bunch*36,fy=ground+9;
+          this.rect(fx-10,fy-3,20,11,'#9b8057');this.tulips(fx,fy,{palette:['warm','cool','mixed'][bunch],wrap:'ribbon'},.8);
+        }
+      }else if(b.id==='market'){
+        for(let k=0;k<3;k++){this.rect(x+14+k*26,ground+3,22,9,'#8a6741');for(let j=0;j<3;j++)this.ellipse(x+19+k*26+j*6+(j===1?2:0),ground+2,3.4,3.4,['#b8553f','#d6a93f','#7b8c4a'][j]);}
+      }else if(b.id==='noord'){
+        this.line([[x+w-12,ground-H+30],[x+w-12,ground-36]],'#5a4630',3);this.ellipse(x+w-12,ground-38,6,6,'#e7d4a6');this.ellipse(x+w-12,ground-38,3,3,'#c8513f');
+      }
+    }
+    drawDoor(x,cx,ground,st,night){
+      const P=this.cityPalette,dx=cx-9;
+      this.rect(dx-6,ground-2,30,5,'#b39f76');                 // stoop
+      this.rect(dx-3,ground-31,24,31,st.trim);                // frame
+      this.rect(dx-3,ground-31,24,3,st.shade);
+      this.rect(dx,ground-29,18,29,st.warm?'#2c4a33':'#2b3c42');
+      this.rect(dx+2,ground-27,14,11,'#6d8b92');              // upper glass
+      this.rect(dx+2,ground-14,14,12,st.warm?'#3c5c40':'#39494f');
+      this.ellipse(dx+14.5,ground-13,1.7,1.7,P.LAMP);
+      // Wall lantern makes the entrance conspicuous at every hour.
+      this.line([[dx+24,ground-38],[dx+24,ground-30]],'#3a2c20',2);
+      if(night){const c=this.ctx,glow=c.createRadialGradient(dx+24,ground-31,0,dx+24,ground-31,40);glow.addColorStop(0,'#ffd18455');glow.addColorStop(1,'#ffd18400');this.rect(dx-16,ground-71,80,80,glow);}
+      this.ellipse(dx+24,ground-31,3.6,5,P.LAMP);
+    }
+    drawBridgeMusician(x,y,night,time,street){
+      const P=this.cityPalette;
+      this.ellipse(x,y+10,14,5,'#102d3840');
+      this.ellipse(x,y+7,13,5,'#7c5a36');this.rect(x-13,y+2,26,5,'#8f6c45');
+      this.ellipse(x-4,y+6,1.8,1.8,P.LAMP);this.ellipse(x+3,y+6,1.8,1.8,'#e8e0c4');
+      this.ellipse(x-2,y-6,7,11,'#77484f');                   // coat
+      this.ellipse(x-3,y-17,5,5,'#d4aa73');                   // head
+      this.ellipse(x-7,y-20,6,5,'#352a26');                   // hair
+      this.ellipse(x+6,y-2,5.5,4.5,'#9a6a3c');this.ellipse(x+6,y-2,2.6,2.2,'#5d3f22');
+      this.line([[x+9,y-5],[x+16,y-15]],'#9a6a3c',2.5);this.line([[x+16,y-15],[x+19,y-18]],'#c9a86a',2);
+      this.text('♪',x+15,y-24+(street?Math.sin(time*2)*2:0),street?15:10,night?P.LAMP:'#9a7434','sans-serif');
+      if(street)this.text('♫',x-16,y-26+Math.cos(time*1.7)*2,11,night?'#ffe3ad':'#a87f45','sans-serif');
     }
     drawCanal(state,time) {
       const c=this.ctx,f=state.forage;

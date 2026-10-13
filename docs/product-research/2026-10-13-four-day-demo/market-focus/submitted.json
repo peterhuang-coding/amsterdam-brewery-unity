@@ -1,0 +1,21 @@
+{
+  "task_id": "amsterdam-market-focus-20261013",
+  "submitted_at": "2026-10-13T04:43:31.606562+00:00",
+  "launcher_pid": 30471,
+  "telemetry": {
+    "logical_task_id": "play05-market-focus",
+    "attempt_kind": "business"
+  },
+  "policy_business": 1,
+  "policy_corrections": 0,
+  "worker_pid": 30474,
+  "observed_init": {
+    "model": "doubao-seed-evolving",
+    "tools": [
+      "Bash",
+      "Edit",
+      "Read"
+    ],
+    "permissionMode": "dontAsk"
+  }
+}

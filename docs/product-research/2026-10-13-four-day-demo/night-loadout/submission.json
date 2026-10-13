@@ -1,0 +1,26 @@
+{
+  "task_id": "amsterdam-night-loadout-20261013",
+  "submitted_at": "2026-10-13T12:28:16.922565+00:00",
+  "launcher_pid": 65515,
+  "business_attempt": 1,
+  "correction_submitted": 0,
+  "base_commit": "5ffbe6ec2c9ff2532f61a9f0196b80ec1c932dac",
+  "contract_commit": "09ae785301a139d7bb61116e9e04092c1e3027e7",
+  "worker_pid": 65518,
+  "thinking_enabled": true,
+  "effort": "high",
+  "model": "doubao-seed-evolving",
+  "actual_init": [
+    {
+      "type": "system",
+      "subtype": "init",
+      "tools": [
+        "Bash",
+        "Edit",
+        "Read"
+      ],
+      "model": "doubao-seed-evolving",
+      "permissionMode": "dontAsk"
+    }
+  ]
+}

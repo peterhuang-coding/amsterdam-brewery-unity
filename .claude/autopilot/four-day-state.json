@@ -12,10 +12,12 @@
   "failure_policy_question_pending": false,
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
-  "current_task_terminal": "prepared_not_submitted",
+  "current_task_terminal": "running",
   "failure_reason": null,
   "last_result_at": "2026-10-13T11:54:29.558999Z",
-  "in_flight": [],
+  "in_flight": [
+    "amsterdam-night-loadout-20261013"
+  ],
   "candidate_path": null,
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -145,11 +147,13 @@
     "PLAY10": {
       "task_id": "amsterdam-night-loadout-20261013",
       "base_commit": "5ffbe6ec2c9ff2532f61a9f0196b80ec1c932dac",
-      "business_attempts_submitted": 0,
+      "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 0,
-      "outcome": "prepared_not_submitted",
-      "game_adopted": 0
+      "outcome": "running",
+      "game_adopted": 0,
+      "business_submitted_at": "2026-10-13T12:28:16.922565+00:00",
+      "worker_pid": 65518
     }
   },
   "provider_cooldown_until": "2026-10-13T09:55:32Z",
@@ -166,5 +170,7 @@
   "prepared_task_id": null,
   "prepared_task_packet": null,
   "play_service_pid": 60227,
-  "play_root": "/tmp/amsterdam-play-231a132"
+  "play_root": "/tmp/amsterdam-play-231a132",
+  "current_task_submitted_at": "2026-10-13T12:28:16.922565+00:00",
+  "worker_pid": 65518
 }

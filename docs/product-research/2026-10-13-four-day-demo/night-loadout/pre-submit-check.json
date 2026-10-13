@@ -1,0 +1,26 @@
+{
+  "checked_at": "2026-10-13T12:28:14.017866+00:00",
+  "fixed_id_absent": true,
+  "global_nonterminal_ledger_count": 0,
+  "global_claude_cli_count": 0,
+  "input_count": 20,
+  "input_bytes": 508180,
+  "input_sha_match": true,
+  "existing_code_commit_bytes_match": 18,
+  "git": {
+    "game": {
+      "head": "5ffbe6ec2c9ff2532f61a9f0196b80ec1c932dac",
+      "branch": "codex/art-pass-20261013",
+      "clean": true,
+      "remote_equal": true
+    },
+    "worktable": {
+      "head": "09ae785301a139d7bb61116e9e04092c1e3027e7",
+      "branch": "codex/product-research-nightshift",
+      "clean": true,
+      "remote_equal": true
+    }
+  },
+  "notion_executing_readback_at": "2026-10-13T12:27:29.714Z",
+  "concurrency_note": "snapshot only, no atomic account-wide reservation; planned single lane"
+}

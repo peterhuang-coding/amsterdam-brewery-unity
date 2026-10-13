@@ -41,9 +41,14 @@
       const r=this.run();if(!r||this.isPaused())return;
       this.updateAim();
       if(verb==='cargo'){
-        const kinds=new Set(),choices=[];
-        for(const id of r.bag){const item=r.items.find(i=>i.id===id);if(kinds.has(item.kind))continue;kinds.add(item.kind);const t=B.TYPES[item.kind];choices.push({label:'放下'+t.name,description:'腾出 '+t.weight+' 格 · 扔在脚边，仍能追回',secondary:true,run:()=>this.perform('cargo-drop:'+id)});}
-        this.showModal('背包 / 时间暂停','什么值得带回去？','<p>放下的东西会落在街区，不会直接换钱。修温室水泵需要一件可修零件。</p>',[{label:'先都留着，继续探索'},...choices]);return;
+        const used=B.load(r),cap=B.KITS[r.kit].capacity,held=new Map();
+        for(const id of r.bag){const kind=r.items.find(i=>i.id===id).kind;if(!held.has(kind))held.set(kind,{id,count:0});held.get(kind).count++;}
+        const choices=[];
+        for(const [kind,info] of held){const t=B.TYPES[kind],w=t.weight;
+          choices.push({label:'放下 1 件'+t.name+' · 持有 '+info.count+' 件',description:'每件占 '+w+' 格；只放下 1 件，腾出 '+w+' 格',secondary:true,run:()=>this.perform('cargo-drop:'+info.id)});}
+        const body='<p>已占 <strong>'+used+' / '+cap+' 格</strong> · 包内 '+r.bag.length+' 件；格数按体积计，不等于件数。</p>'+
+          '<p>放下的货落在街区脚边，不会直接换钱，可走回捡回；修温室水泵需 1 件可修零件。</p>';
+        this.showModal('背包 / 时间暂停','什么值得带回去？',body,[{label:'先都留着，继续探索'},...choices]);return;
       }
       if(verb.startsWith('cargo-drop:')){
         const id=verb.slice(11);

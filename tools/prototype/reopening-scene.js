@@ -54,6 +54,57 @@
       const view=this.cityTransform||{scale:1,tx:0,ty:0};
       return {x:(x-view.tx)/view.scale,y:(y-view.ty)/view.scale};
     }
+    // Deterministic integer hash: fixed stone/water accents per cell, never Math.random.
+    cityRand(seed){let z=(Math.imul(seed|0,2654435761)^0x9e3779b9)>>>0;z=Math.imul(z^(z>>>16),2246822519)>>>0;z^=z>>>13;return((z^0x68bc9a41)>>>0)/4294967296;}
+    // Warm cut-stone coping frames a cool, tonally banded canal. Footprints
+    // (land, water, crossings) are unchanged; this is rendering only.
+    drawQuayWater(w,night,t){
+      const P=this.cityPalette,horizontal=w.w>=w.h;
+      this.rect(w.x-7,w.y-7,w.w+14,w.h+14,night?'#b3a683':'#dccfaa');
+      const cap=night?'#8f886d':'#c0b18b';
+      if(horizontal){
+        this.rect(w.x-7,w.y-7,w.w+14,6,cap);this.rect(w.x-7,w.y+w.h+1,w.w+14,6,cap);
+        for(let qx=w.x+18;qx<w.x+w.w-6;qx+=26){
+          this.line([[qx,w.y-6],[qx,w.y-1]],night?'#00000026':'#7a6c4c2b',1);
+          this.line([[qx,w.y+w.h+2],[qx,w.y+w.h+6]],night?'#00000026':'#7a6c4c2b',1);
+        }
+      }else{
+        this.rect(w.x-7,w.y-7,6,w.h+14,cap);this.rect(w.x+w.w+1,w.y-7,6,w.h+14,cap);
+        for(let qy=w.y+18;qy<w.y+w.h-6;qy+=26){
+          this.line([[w.x-6,qy],[w.x-1,qy]],night?'#00000026':'#7a6c4c2b',1);
+          this.line([[w.x+w.w+2,qy],[w.x+w.w+6,qy]],night?'#00000026':'#7a6c4c2b',1);
+        }
+      }
+      this.rect(w.x,w.y,w.w,w.h,night?'#235d6c':P.CANAL_BLUE);
+      // Limited tonal bands and a few restrained static highlights read as water.
+      if(horizontal){
+        this.rect(w.x,w.y+Math.round(w.h*.24),w.w,Math.max(3,Math.round(w.h*.13)),night?'#1b4855':'#2c7d89');
+        this.rect(w.x,w.y+Math.round(w.h*.6),w.w,Math.max(2,Math.round(w.h*.08)),night?'#ffffff14':'#d8eef022');
+        for(let k=0;k<3;k++){
+          const hx=w.x+24+this.cityRand(w.x+k*97+3)*(w.w-80);
+          const hy=w.y+8+this.cityRand(w.y+k*53+9)*(w.h-18);
+          this.line([[hx,hy],[hx+20+this.cityRand(k+w.y+5)*18,hy]],night?'#d6ece816':'#ffffff26',1.4);
+        }
+      }else{
+        this.rect(w.x+Math.round(w.w*.24),w.y,Math.max(3,Math.round(w.w*.13)),w.h,night?'#1b4855':'#2c7d89');
+        this.rect(w.x+Math.round(w.w*.62),w.y,Math.max(2,Math.round(w.w*.09)),w.h,night?'#ffffff14':'#d8eef022');
+        for(let k=0;k<2;k++){
+          const vx=w.x+8+this.cityRand(w.x+k*61+4)*(w.w-16);
+          const vy=w.y+24+this.cityRand(w.y+k*43+7)*(w.h-70);
+          this.line([[vx,vy],[vx,vy+22+this.cityRand(k+w.x+3)*20]],night?'#d6ece816':'#ffffff26',1.4);
+        }
+      }
+      // Cool shadow where the water surface meets the stone edge.
+      this.rect(w.x,w.y,w.w,3,night?'#0a2029bb':'#1139445e');
+      this.rect(w.x,w.y+w.h-3,w.w,3,night?'#0a2029bb':'#1139445e');
+      this.rect(w.x,w.y,3,w.h,night?'#0a202977':'#11394433');
+      this.rect(w.x+w.w-3,w.y,3,w.h,night?'#0a202977':'#11394433');
+      const flecks=Math.floor(w.w*w.h/1500);
+      for(let i=0;i<flecks;i++){
+        const fx=w.x+((i*41+t*5)%Math.max(1,w.w-16)),fy=w.y+(i*59)%w.h;
+        this.rect(fx,fy,13,2,night?'#d9ecea24':'#eef7ee33');
+      }
+    }
     drawCity(view,time) {
       const C=window.City,c=this.ctx,night=!!view.afterHours;
       // Overview (zoom 1/2) keeps the whole-city map; the close street camera
@@ -66,16 +117,31 @@
       const ty=scale*C.HEIGHT<=640?(640-scale*C.HEIGHT)/2:-Math.max(0,Math.min(C.HEIGHT-spanH,view.position.y-spanH/2))*scale;
       this.cityTransform={scale,tx,ty};
       const INK='#183b48',CANAL_BLUE='#378e9b',BRICK='#b86b4c',SAND='#e2d4b0',LAMP='#ffd184',SLATE='#253d49';
+      // Stone/path/coping/water tones keep quay, street and canal distinct.
+      const STONE=night?'#ab9f80':'#d6c9a6';
+      const PATH=night?'#bdb18f':'#e4d8b5';
+      const QUAY=night?'#8f886c':'#bfb08c';
       this.cityPalette={INK,CANAL_BLUE,BRICK,SAND,LAMP,SLATE};
+      // Reduced-motion frames at a fixed view must be identical for every time.
+      const t=(this.reduced&&this.reduced.matches)?0:time;
       c.clearRect(0,0,1100,640);this.rect(0,0,1100,640,night?'#102733':INK);
       c.save();c.translate(tx,ty);c.scale(scale,scale);
-      this.rect(0,0,C.WIDTH,C.HEIGHT,night?'#16414f':'#2c6470');
-      for(let i=0;i<80;i++)this.rect((i*139+time*9)%C.WIDTH,(i*83)%C.HEIGHT,20+i%4*13,2,'#b9d6bd20');
-      const land=C.LAND;this.rect(land.x-7,land.y-7,land.w+14,land.h+14,'#8b9271');this.rect(land.x,land.y,land.w,land.h,night?'#a89e7c':'#c3b894');
+      this.rect(0,0,C.WIDTH,C.HEIGHT,night?'#123745':'#23505c');
+      for(let i=0;i<80;i++)this.rect((i*139+t*9)%C.WIDTH,(i*83)%C.HEIGHT,20+i%4*13,2,night?'#9fc3c018':'#b9d6bd20');
+      const land=C.LAND;this.rect(land.x-7,land.y-7,land.w+14,land.h+14,night?'#6f6c54':'#9b906f');this.rect(land.x,land.y,land.w,land.h,STONE);
+      this.line([[land.x,land.y+1],[land.x+land.w,land.y+1]],night?'#fff4d618':'#fff6df24',1);
       // Street surfaces are clipped at canals. Crossings are drawn separately.
       c.save();c.beginPath();c.rect(land.x,land.y,land.w,land.h);c.clip();
-      for(const x of [190,390,590,890,1190,1490,1650]){this.rect(x-19,40,38,1040,night?'#b7ad8c':'#d8cba8');this.line([[x,40],[x,1080]],'#a59c78',1);}
-      for(const y of [270,520,690,890,1040]){this.rect(70,y-18,1660,36,night?'#b7ad8c':'#d8cba8');this.line([[70,y],[1730,y]],'#a59c78',1);}
+      // Sparse scattered cut-stone seams: deterministic and subordinate to paths.
+      for(let gx=0;gx<Math.round(land.w/58);gx++)for(let gy=0;gy<Math.round(land.h/58);gy++){
+        const k=gx*73+gy*131+7;
+        if(this.cityRand(k)>0.26)continue;
+        const jx=land.x+gx*58+8+Math.floor(this.cityRand(k+1)*36);
+        const jy=land.y+gy*58+8+Math.floor(this.cityRand(k+2)*36);
+        this.line(this.cityRand(k+3)>.5?[[jx,jy],[jx+9,jy]]:[[jx,jy],[jx,jy+9]],night?'#00000026':'#8a7c5822',1);
+      }
+      for(const x of [190,390,590,890,1190,1490,1650]){this.rect(x-19,40,38,1040,PATH);this.line([[x,40],[x,1080]],night?'#9c9272':'#c1b48e',1);}
+      for(const y of [270,520,690,890,1040]){this.rect(70,y-18,1660,36,PATH);this.line([[70,y],[1730,y]],night?'#9c9272':'#c1b48e',1);}
       // Small public greens give the quays room to breathe.
       for(const park of [{x:92,y:64,w:260,h:158},{x:1160,y:530,w:220,h:155},{x:150,y:860,w:215,h:140}]){
         this.rect(park.x,park.y,park.w,park.h,'#84966b');
@@ -83,32 +149,43 @@
         for(let i=0;i<8;i++){const x=park.x+25+(i%4)*(park.w-50)/3,y=park.y+25+Math.floor(i/4)*(park.h-50);this.ellipse(x+4,y+6,15,18,'#425a4845');this.ellipse(x,y,14,19,i%2?'#527655':'#6c865c');this.ellipse(x-4,y-5,8,11,'#94a776');}
       }
       c.restore();
-      for(const water of C.WATERS){
-        this.rect(water.x-5,water.y-5,water.w+10,water.h+10,SAND);this.rect(water.x,water.y,water.w,water.h,night?'#235d6c':CANAL_BLUE);
-        this.line([[water.x,water.y+5],[water.x+water.w,water.y+5]],'#ffffff18',2);
-        for(let i=0;i<Math.floor(water.w*water.h/1300);i++){const x=water.x+((i*41+time*5)%Math.max(1,water.w-16)),y=water.y+(i*59)%water.h;this.rect(x,y,13,2,'#d2ddbe35');}
+      for(const water of C.WATERS)this.drawQuayWater(water,night,t);
+      // Wide district lettering belongs to the overview; the close street view
+      // keeps labels sparse so facades, the route and doors stay dominant.
+      if(!street){
+        this.text('H E T   I J',460,393,26,'#c2d6be80','Georgia');
+        this.text('NOORD',1260,67,27,'#405b4b','Georgia');this.text('JORDAAN',285,490,24,'#52624a','Georgia');
+        this.text('CENTRUM',770,503,21,'#687056','Georgia');this.text('DE PIJP',865,862,25,'#52624a','Georgia');this.text('SCIENCE PARK',1445,865,20,'#52624a','Georgia');
       }
-      this.text('H E T   I J',460,393,26,'#c2d6be80','Georgia');
-      this.text('NOORD',1260,67,27,'#405b4b','Georgia');this.text('JORDAAN',285,490,24,'#52624a','Georgia');
-      this.text('CENTRUM',770,503,21,'#687056','Georgia');this.text('DE PIJP',865,862,25,'#52624a','Georgia');this.text('SCIENCE PARK',1445,865,20,'#52624a','Georgia');
       for(const crossing of C.CROSSINGS){
         if(crossing.kind==='ferry'){
           c.setLineDash([7,9]);this.line([[crossing.x+crossing.w/2,crossing.y],[crossing.x+crossing.w/2,crossing.y+crossing.h]],'#e8d6a3',3);c.setLineDash([]);
           for(const y of [crossing.y,crossing.y+crossing.h-13]){this.rect(crossing.x-15,y,crossing.w+30,13,'#736c4b');this.rect(crossing.x-15,y+2,crossing.w+30,2,'#d4bd87');}
           this.text('免费渡轮',crossing.x+crossing.w+10,crossing.y+100,17,'#e4d8ac','sans-serif','left');
         }else{
-          this.rect(crossing.x,crossing.y,crossing.w,crossing.h,'#b1a279');
-          const horizontal=crossing.w>crossing.h;
-          if(horizontal){this.rect(crossing.x,crossing.y,crossing.w,4,'#5a6752');this.rect(crossing.x,crossing.y+crossing.h-4,crossing.w,4,'#5a6752');}
-          else{this.rect(crossing.x,crossing.y,4,crossing.h,'#5a6752');this.rect(crossing.x+crossing.w-4,crossing.y,4,crossing.h,'#5a6752');}
+          // Worn timber deck inside the unchanged crossing footprint; stone
+          // abutments and fascia give the bridge depth without a new crossing.
+          const g=crossing.x,top=crossing.y,gw=crossing.w,gh=crossing.h,horizontal=gw>gh;
+          this.rect(g,top,gw,gh,'#b8ab84');
+          if(horizontal){
+            this.rect(g-4,top+2,4,gh-4,QUAY);this.rect(g+gw,top+2,4,gh-4,QUAY);
+            this.rect(g,top,gw,4,'#63705b');this.rect(g,top+gh-4,gw,4,'#45503e');
+            this.rect(g+3,top+5,gw-6,1.6,'#ffffff1a');
+            for(let px=g+14;px<g+gw-8;px+=18)this.line([[px,top+6],[px,top+gh-6]],'#0000001a',1);
+          }else{
+            this.rect(g+2,top-4,gw-4,4,QUAY);this.rect(g+2,top+gh,gw-4,4,QUAY);
+            this.rect(g,top,4,gh,'#63705b');this.rect(g+gw-4,top,4,gh,'#45503e');
+            this.rect(g+5,top+3,1.6,gh-6,'#ffffff1a');
+            for(let py=top+14;py<top+gh-8;py+=18)this.line([[g+6,py],[g+gw-6,py]],'#0000001a',1);
+          }
         }
       }
       // Intentional 2.5D canal facades: shadow, side depth, tall windows,
       // stepped/pitched roofs and a readable real door on every destination.
-      this.drawHouses(C,view,night,time);
+      this.drawHouses(C,view,night,t);
       // Lotte rehearses on the narrow bridge just east of the pub: a visible
       // musician with a guitar marks the bridge meeting point (not a door).
-      this.drawBridgeMusician(516,624,night,time,street);
+      this.drawBridgeMusician(516,624,night,t,street);
       // Working boats and cranes distinguish the north bank from the café streets.
       this.line([[1310,285],[1310,209],[1370,209]],'#b99756',7);this.line([[1310,234],[1360,209]],'#b99756',3);this.line([[1368,211],[1368,250]],'#405d51',2);
       for(const mooring of [{x:1090,y:374},{x:480,y:735},{x:1080,y:568}]){this.ellipse(mooring.x,mooring.y,12,29,'#244e53');this.ellipse(mooring.x,mooring.y-2,9,24,'#af9060');this.rect(mooring.x-6,mooring.y-8,12,16,'#d5c49b');}
@@ -123,7 +200,13 @@
           this.rect(lamp.x-66,lamp.y-66,132,132,glow);this.line([[lamp.x,lamp.y+9],[lamp.x,lamp.y-14]],'#293e3e',3);this.ellipse(lamp.x,lamp.y-16,5,6,'#f0cd84');
         }
       }
-      if(view.path&&view.path.length){c.setLineDash([10,9]);c.lineDashOffset=this.reduced.matches?0:-time*12;this.line([[view.position.x,view.position.y],...view.path.map(p=>[p.x,p.y])],'#f5d48e',5);c.setLineDash([]);c.lineDashOffset=0;}
+      if(view.path&&view.path.length){
+        // A dark underlay keeps the warm route dashes readable on every surface.
+        const routePoints=[[view.position.x,view.position.y],...view.path.map(p=>[p.x,p.y])];
+        c.setLineDash([10,9]);c.lineDashOffset=-t*12;
+        this.line(routePoints,'#102c385c',8);this.line(routePoints,'#f6d88f',5);
+        c.setLineDash([]);c.lineDashOffset=0;
+      }
       if(view.garden&&!night){
         const e=window.FlowerNetwork.ENTRY;
         this.rect(e.x-30,e.y-45,60,28,'#72917b');this.rect(e.x-20,e.y-40,40,20,'#b9d6c0');
@@ -142,7 +225,7 @@
         this.ellipse(place.x,place.y,active?27:dim?13:20,active?27:dim?13:20,active?'#f0cd82':'#214a48');
         this.ellipse(place.x,place.y,active?23:dim?9:16,active?23:dim?9:16,known?'#305b48':'#56694f');
         this.text(place.icon,place.x,place.y+(dim?5:7),dim?13:21,'#efdbac','sans-serif');
-        if(street&&distance<92)this.ring(place.x,place.y,26+Math.sin(time*3)*2,'#ffd184b8',2);
+        if(street&&distance<92)this.ring(place.x,place.y,26+Math.sin(t*3)*2,'#ffd184b8',2);
         if(!labelled)continue;
         const labelWidth=Math.max(120,place.name.length*15+25),labelY=place.id==='market'?place.y-48:place.y+34;
         this.rect(place.x-labelWidth/2,labelY-18,labelWidth,29,active?'#edd5a0':'#ece0bfec');
@@ -151,7 +234,7 @@
       const isFerry=C.onFerry(p.x,p.y),mounted=p.bike&&p.bike.mounted;
       if(p.bike&&!mounted)this.bicycle(p.bike.pushing?{...p.bike,x:p.bike.x+19,y:p.bike.y+5}:p.bike,view.bouquet);
       this.ellipse(p.x,p.y+9,isFerry?25:15,isFerry?12:7,'#1c434060');
-      if(street&&!isFerry)this.ring(p.x,p.y+9,19+Math.sin(time*3)*1.5,'#ffd184aa',2);
+      if(street&&!isFerry)this.ring(p.x,p.y+9,19+Math.sin(t*3)*1.5,'#ffd184aa',2);
       if(isFerry){this.ellipse(p.x,p.y+6,21,32,'#b9945a');this.rect(p.x-12,p.y-9,24,26,'#e4cd9b');}
       this.ellipse(p.x,p.y,10,14,'#1d4140');this.ellipse(p.x,p.y-15,9,9,'#d4aa73');this.rect(p.x-9,p.y-22,18,6,'#ce8e4c');
       if(mounted){
@@ -180,10 +263,10 @@
     drawHouses(C,view,night,time){
       const P=this.cityPalette;
       const styles={
-        pub:{wall:P.BRICK,shade:'#8f513a',trim:P.SAND,roof:P.SLATE,gable:'stepped',door:true,warm:true,sign:'pub'},
+        pub:{wall:P.BRICK,shade:'#8f513a',trim:P.SAND,roof:P.SLATE,gable:'stepped',door:true,warm:true,brick:true,sign:'pub'},
         coffee:{wall:P.SAND,shade:'#c2b087',trim:'#f2e8cd',roof:'#3d5055',gable:'stepped',door:true,sign:'KOFFIE'},
         noord:{wall:'#7d5c43',shade:'#5d432f',trim:P.SAND,roof:P.INK,gable:'pitched',door:true,sign:'NOORD · VEER'},
-        market:{wall:'#c98e63',shade:'#a46f4b',trim:P.SAND,roof:P.SLATE,gable:'pitched',door:true,shop:true,sign:'ALBERT CUYP'},
+        market:{wall:'#c98e63',shade:'#a46f4b',trim:P.SAND,roof:P.SLATE,gable:'pitched',door:true,shop:true,brick:true,sign:'ALBERT CUYP'},
         flowers:{wall:P.SAND,shade:'#c2b087',trim:'#f2e8cd',roof:'#77414d',gable:'stepped',door:true,shop:true,florist:true,sign:'BLOEMEN'},
         lab:{wall:'#d6d8c3',shade:'#aeb299',trim:'#eef0e0',roof:P.INK,gable:'flat',door:true,sign:'UvA'}
       };
@@ -211,6 +294,11 @@
       // Front wall and plinth.
       this.rect(x,ground-H,w,H,st.wall);
       this.rect(x+w-5,ground-H,5,H,st.shade+'66');
+      // Crisp upper-left light and a few restrained brick courses; opaque
+      // windows and the plinth are drawn over them afterwards.
+      this.line([[x+2,ground-H+1],[x+w-2,ground-H+1]],night?'#fff6dd12':'#fff3d238',1);
+      if(!night)this.rect(x,ground-H,Math.round(w*.42),H,'#fff7e210');
+      if(st.brick)for(let by=ground-H+13;by<ground-12;by+=14)this.line([[x+5,by],[x+w-5,by]],night?'#ffffff07':'#6e3f2c1c',1);
       this.rect(x,ground-8,w,8,st.trim);this.rect(x,ground-8,w,2,st.shade);
       // Roof: Amsterdam stepped gable, pitched tile roof or a flat lab slab.
       if(st.gable==='stepped'){
@@ -242,6 +330,7 @@
           const wx=x+11+col*((w-22)/cols),wy=ground-H+(r?42:12),ww=Math.min(12,(w-22)/cols-7);
           if(destination&&r===1&&Math.abs(wx-cx)<13)continue; // the real door occupies the centre
           this.rect(wx-1.5,wy-2,ww+3,23,st.trim);this.rect(wx,wy,ww,19,glass(r,col));
+          if(!night)this.rect(wx+1,wy+1,ww-2,3,'#ffffff26');
           this.line([[wx+ww/2,wy],[wx+ww/2,wy+19]],'#0f242b55',1);this.line([[wx,wy+9],[wx+ww,wy+9]],'#0f242b55',1);
           this.rect(wx-2.5,wy+19,ww+5,2,st.shade);
           if(night&&lit(r,col))this.rect(wx+2,wy+2,2,5,'#fff3cf88');
@@ -271,10 +360,12 @@
     drawDoor(x,cx,ground,st,night){
       const P=this.cityPalette,dx=cx-9;
       this.rect(dx-6,ground-2,30,5,'#b39f76');                 // stoop
+      if(!night)this.rect(dx-5,ground-2,28,1,'#fff2d233');
       this.rect(dx-3,ground-31,24,31,st.trim);                // frame
       this.rect(dx-3,ground-31,24,3,st.shade);
       this.rect(dx,ground-29,18,29,st.warm?'#2c4a33':'#2b3c42');
       this.rect(dx+2,ground-27,14,11,'#6d8b92');              // upper glass
+      if(!night)this.rect(dx+2,ground-27,14,2,'#c8e4e24d');
       this.rect(dx+2,ground-14,14,12,st.warm?'#3c5c40':'#39494f');
       this.ellipse(dx+14.5,ground-13,1.7,1.7,P.LAMP);
       // Wall lantern makes the entrance conspicuous at every hour.

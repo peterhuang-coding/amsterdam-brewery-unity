@@ -12,13 +12,11 @@
   "failure_policy_question_pending": false,
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
-  "current_task_terminal": null,
+  "current_task_terminal": "cli0_complete_report_pending_parent_acceptance",
   "failure_reason": null,
-  "last_result_at": "2026-10-13T16:09:58.708592Z",
-  "in_flight": [
-    "amsterdam-cargo-choice-r2-20261013"
-  ],
-  "candidate_path": null,
+  "last_result_at": "2026-10-13T16:32:00.223259Z",
+  "in_flight": [],
+  "candidate_path": "/tmp/amsterdam-cargo-choice-r2-review-20261013/candidate",
   "adopted_this_round": 0,
   "policy_decision": "D24",
   "correction_after_r2": {
@@ -207,7 +205,7 @@
       "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 1,
-      "outcome": "correction_in_flight",
+      "outcome": "correction_parent_acceptance",
       "game_adopted": 0,
       "business_submitted_at": "2026-10-13T15:59:20.940079+00:00",
       "worker_pid": 84316,
@@ -218,7 +216,9 @@
       "business_structured_review": "rejected/semantic",
       "correction_task_id": "amsterdam-cargo-choice-r2-20261013",
       "correction_submitted_at": "2026-10-13T16:27:05.502989+00:00",
-      "correction_worker_pid": 88620
+      "correction_worker_pid": 88620,
+      "correction_ended_at": "2026-10-13T16:32:00.223259Z",
+      "correction_duration_seconds": 294.62
     }
   },
   "provider_cooldown_until": "2026-10-13T09:55:32Z",
@@ -231,7 +231,7 @@
   "current_task_notion": "https://app.notion.com/p/3f83285284df81848abfff583dbacd46",
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
-  "current_task_stage": "in_flight",
+  "current_task_stage": "parent_acceptance",
   "prepared_task_id": null,
   "prepared_task_packet": null,
   "play_service_pid": 67822,
@@ -240,5 +240,17 @@
   "worker_pid": 88620,
   "last_submitted_at": "2026-10-13T16:27:05.502989+00:00",
   "direction_review_count": 2,
-  "next_independent_observation": null
+  "next_independent_observation": null,
+  "weekly_goal": {
+    "decision": "D25",
+    "source": "用户2026-10-14本周敲定demo再走Steam发行",
+    "week_end_beijing": "2026-10-18T23:59:59+08:00",
+    "candidate_target_beijing": "2026-10-16",
+    "execution_deadline_unchanged": true,
+    "status": "active_not_achieved",
+    "document": "docs/product-research/2026-10-13-four-day-demo/week-demo-freeze.md",
+    "scope_priority": "parent_acceptance_then_whole_natural_loop_then_top3_freeze_blockers",
+    "steam_next_phase": "preparation_after_demo_direction_confirmation",
+    "human_play_feedback": "not_received"
+  }
 }

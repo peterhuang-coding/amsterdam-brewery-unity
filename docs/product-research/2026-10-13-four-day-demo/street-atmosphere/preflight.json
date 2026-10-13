@@ -1,0 +1,36 @@
+{
+  "task_id": "amsterdam-street-atmosphere-20261013",
+  "submitted": false,
+  "input_count": 6,
+  "input_bytes": 73182,
+  "adopted_commit_source_match": {
+    "tools/prototype/reopening-scene.js": true,
+    "tools/prototype/reopening-city.js": true,
+    "tools/prototype/flower-network.js": true,
+    "tools/prototype/test-city.js": true
+  },
+  "commands": [
+    {
+      "command": "node --test tools/prototype/test-city.js",
+      "exit_code": 0,
+      "builtin_assertions_passed": 13,
+      "node_test_wrapper_passed": 1,
+      "node_test_wrapper_total": 1
+    },
+    {
+      "command": "node --check tools/prototype/reopening-scene.js",
+      "exit_code": 0
+    }
+  ],
+  "dry_run": {
+    "status": "dry_run",
+    "requested_model": "doubao-seed-evolving",
+    "thinking_enabled": true,
+    "reasoning_effort": "high",
+    "permission_mode": "dontAsk",
+    "timeout_seconds": 1200,
+    "max_turns": 36
+  },
+  "actual_tools_basis": "most recent same adapter init exposes Bash/Edit/Read; new output placeholder precreated; confirm next actual init after launch",
+  "empty_new_test_not_counted_as_pass": true
+}

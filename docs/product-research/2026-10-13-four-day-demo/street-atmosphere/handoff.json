@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-street-atmosphere-20261013",
+  "workspace": "/tmp/amsterdam-street-atmosphere-20261013/input",
+  "goal": "Improve the adopted canal street scene materials, lighting and route readability without changing gameplay, geometry or UI; reduced-motion city frames remain static.",
+  "data_sensitivity": "public",
+  "read_files": [
+    "brief.md",
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/flower-network.js",
+    "tools/prototype/test-city.js",
+    "tools/prototype/test-street-atmosphere.js"
+  ],
+  "write_files": [
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/test-street-atmosphere.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-street-atmosphere.js",
+    "node --test tools/prototype/test-city.js",
+    "node --check tools/prototype/reopening-scene.js"
+  ],
+  "acceptance": [
+    "Only scene plus new test writable; all existing test assertions and other inputs unchanged",
+    "New reduced-motion behavioral regression red before scene edit and green after; city transform/input invariants",
+    "Existing city test passes and scene syntax passes; valid complete handoff",
+    "Parent full baseline358 plus additions and real desktop/390px visual/map walk acceptance before adoption"
+  ],
+  "constraints": [
+    "Scene-only methods specified in brief; no gameplay, UI, saves or shared helper changes",
+    "Read/Edit/Bash actual tools only, exact commands, no broad shell or network",
+    "No source code from shelved PLAY03; no retry of that item",
+    "Reserve last4turns for report; changed_files excludes report"
+  ],
+  "tasks": [
+    "Read brief/report/schema and exact inputs",
+    "Write meaningful scene regression and capture red",
+    "Improve only existing city rendering and reduced-motion behavior",
+    "Run exact tests and syntax; complete report"
+  ],
+  "memory": {
+    "summary": "Independent D23 scene task from adopted6e4f7b3. Player finds the map ugly; geometry and existing street camera are already accepted.",
+    "completed": [
+      "PLAY02 near camera/pub return adopted; full358 tests passed historically"
+    ],
+    "known_issues": [
+      "Flat map materials and repetitive shadows; city ambient animation does not consistently honor reduced-motion preference"
+    ],
+    "decisions": [
+      "Scene visual improvement only; PLAY03 first-cup task is shelved and excluded",
+      "Seed Evolving thinking enabled/high; D24 one correction maximum"
+    ]
+  },
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "play04-street-atmosphere",
+    "task_type": "code",
+    "attempt_kind": "business"
+  },
+  "timeout_seconds": 1200,
+  "max_turns": 36
+}

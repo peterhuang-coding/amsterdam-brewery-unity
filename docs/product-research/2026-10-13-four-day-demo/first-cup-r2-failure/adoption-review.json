@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-first-cup-r2-20261013",
+  "receipt_sha256": "2b778efe981d0b3d9e73e44d952d7701eb8a136e7f251fc0963ec01cf82f576b",
+  "reviewed_at": "2026-10-13T03:01:28Z",
+  "outcome": "rejected",
+  "failure_type": "call_exception",
+  "evidence": [
+    {
+      "path": "/tmp/amsterdam-first-cup-r2-review-20261013/parent-review.md",
+      "sha256": "1a74bcbeaedc427fca32fb630bd8ed5354c02b489a3546a16e1721c982b3ece1"
+    }
+  ]
+}

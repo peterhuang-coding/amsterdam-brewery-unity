@@ -1,0 +1,20 @@
+{
+  "url": "http://127.0.0.1:18834/tools/prototype/index.html?seed=42001",
+  "steps": [
+    "start",
+    "enter pub",
+    "open",
+    "confirm open",
+    "focus summary and press Enter",
+    "press Space without refocusing"
+  ],
+  "after_enter": {
+    "open": true,
+    "activeElement": "BODY"
+  },
+  "after_space": {
+    "open": true,
+    "pours_observed": false
+  },
+  "full_gui_complete": false
+}

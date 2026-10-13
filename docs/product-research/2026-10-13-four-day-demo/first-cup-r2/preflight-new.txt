@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: cue names the real selected guest (never a hardcoded Marta) and the beer actually selected
+ok 1 - cue names the real selected guest (never a hardcoded Marta) and the beer actually selected
+  ---
+  duration_ms: 54.74975
+  type: 'test'
+  ...
+# Subtest: with nobody waiting the cue says so and offers no pour control
+ok 2 - with nobody waiting the cue says so and offers no pour control
+  ---
+  duration_ms: 39.881083
+  type: 'test'
+  ...
+# Subtest: after a real pour the cue tracks pouring: collect cue, prominent serve, water/close/P stay usable
+ok 3 - after a real pour the cue tracks pouring: collect cue, prominent serve, water/close/P stay usable
+  ---
+  duration_ms: 41.008375
+  type: 'test'
+  ...
+# Subtest: a real satisfied first serve clears the cue, persists tutorialSeen, and keeps normal service
+ok 4 - a real satisfied first serve clears the cue, persists tutorialSeen, and keeps normal service
+  ---
+  duration_ms: 86.9845
+  type: 'test'
+  ...
+# Subtest: dismiss persists tutorialSeen once and brings the normal controls straight back, also after reload
+ok 5 - dismiss persists tutorialSeen once and brings the normal controls straight back, also after reload
+  ---
+  duration_ms: 80.374958
+  type: 'test'
+  ...
+# Subtest: beer/batch/quote choices default-hide behind one explicit disclosure and all stay reachable when opened
+ok 6 - beer/batch/quote choices default-hide behind one explicit disclosure and all stay reachable when opened
+  ---
+  duration_ms: 55.193125
+  type: 'test'
+  ...
+# Subtest: chosen beer, batch and quote survive re-renders and reach the genuine pour record
+ok 7 - chosen beer, batch and quote survive re-renders and reach the genuine pour record
+  ---
+  duration_ms: 82.392417
+  type: 'test'
+  ...
+# Subtest: out-of-stock, quality, over-budget and wrong-beer reasons show with controls collapsed and offer recovery
+ok 8 - out-of-stock, quality, over-budget and wrong-beer reasons show with controls collapsed and offer recovery
+  ---
+  duration_ms: 192.0635
+  type: 'test'
+  ...
+# Subtest: night 2 shows the normal service controls with no first-cup cue or disclosure
+ok 9 - night 2 shows the normal service controls with no first-cup cue or disclosure
+  ---
+  duration_ms: 41.445125
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 744.65975

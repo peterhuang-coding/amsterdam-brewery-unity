@@ -1,0 +1,81 @@
+{
+  "acceptance": [
+    "Twofilesonly,allreadonlyunchanged",
+    "Existing9testsplusnewfocusregression; original42pass; UI syntax0",
+    "Realkeyboardtogglefocus and rerender retention; no ruleschange",
+    "Valid report without self-listed output"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-first-cup-ui.js",
+    "node --test tools/prototype/test-first-street-ui.js tools/prototype/test-city.js tools/prototype/test-city-bike.js tools/prototype/test-market-daynight-ui.js",
+    "node --check tools/prototype/reopening-ui.js"
+  ],
+  "constraints": [
+    "Read/Edit/Bash only; no Write required",
+    "All nonwrite_files including CSS and oldfirst-street test readonly",
+    "Only3exactcommands; no other shell,network,git,logs",
+    "Reserve last4turns forreport"
+  ],
+  "data_sensitivity": "public",
+  "goal": "Finish first-cup candidate with keyboard disclosure focus retention, a meaningful regression and valid final handoff; do not rewrite passing work.",
+  "max_turns": 32,
+  "memory": {
+    "summary": "D23 four-day demo work. D24 allows one targeted correction; if correction or parent acceptance fails shelf this item and continue truly independent tasks.",
+    "completed": [
+      "PLAY02 adopted6e4f7b3",
+      "PLAY03 original confirmed timeout and exited; preserved4filecandidate367/367 parent tests"
+    ],
+    "known_issues": [
+      "Missing final handoff after1500s timeout",
+      "Browser Enter on summary opens details but focus lost toBODY; followingSpace does not close"
+    ],
+    "decisions": [
+      "OnlySeedEvolving enabled/high",
+      "Same logical PLAY03 correction1/1; preserve all historical failures",
+      "Fix only confirmed focus issue; no gameplay/economics changes"
+    ]
+  },
+  "read_files": [
+    "brief.md",
+    "tools/prototype/index.html",
+    "tools/prototype/reopening.css",
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/reopening-core.js",
+    "tools/prototype/journey-core.js",
+    "tools/prototype/journey-ui.js",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/delivery-orders.js",
+    "tools/prototype/character-stories.js",
+    "tools/prototype/flower-network.js",
+    "tools/prototype/test-market-daynight-ui.js",
+    "tools/prototype/test-city.js",
+    "tools/prototype/test-city-bike.js",
+    "tools/prototype/test-first-street-ui.js",
+    "tools/prototype/test-first-cup-ui.js"
+  ],
+  "task_id": "amsterdam-first-cup-r2-20261013",
+  "tasks": [
+    "Read brief and reserved report schema",
+    "Add real focus regression; run red",
+    "Minimal UI focus fix; run final exactcommands",
+    "Complete valid report"
+  ],
+  "telemetry": {
+    "attempt_kind": "correction",
+    "logical_task_id": "play03-first-cup",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "timeout_seconds": 1200,
+  "version": 1,
+  "workspace": "/tmp/amsterdam-first-cup-r2-20261013/input",
+  "write_files": [
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/test-first-cup-ui.js"
+  ]
+}

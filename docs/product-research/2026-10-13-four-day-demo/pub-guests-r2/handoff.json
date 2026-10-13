@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-pub-guests-r2-20261013",
+  "goal": "Improve only pub guest canvas silhouettes and truthful selected/waiting/pouring cues across evenings, preserving gameplay and all other scenes.",
+  "memory": {
+    "summary": "Sole D24 correction of play07-pub-guests after confirmed CLI1 transport timeout with no changed files; same approved visual task.",
+    "completed": [
+      "Adopted bd61443 real full379 tests before this task.",
+      "Parent natural screenshot confirmed pawn-like Marta and tiny selection arrow."
+    ],
+    "decisions": [
+      "Same logical history business1; only correction1/1 on submission, then shelve if it or parent validation fails",
+      "Only two original files and original behavior boundaries",
+      "Parent cooldown until2026-10-13T08:36:51Z; offline preparation only before then",
+      "Use brief bounded Read positions; no established claim that input caused provider failure"
+    ],
+    "known_issues": [
+      "PLAY03 and PLAY06 shelved, do not reimplement them",
+      "Tests cannot establish human fun or finished art"
+    ]
+  },
+  "tasks": [
+    "Read focused brief/contracts and source/test offsets before new RED tests; avoid repeated whole-file reading",
+    "New renderer behavior tests RED on unchanged baseline",
+    "Narrow visual implementation and exact tests GREEN",
+    "Complete valid truthful report"
+  ],
+  "acceptance": [
+    "Only scoped guest block/helpers and new test",
+    "True selected/customer/beer/patience/pour data; frozen inputs unchanged",
+    "New meaningful baseline RED then GREEN; old city/scene assertions unchanged",
+    "Four final command report rows, parent GUI remains separate"
+  ],
+  "constraints": [
+    "Only public supplied materials",
+    "Read/Edit/exact Bash only, no other shell commands",
+    "No UI/core/economy/save/other scene changes",
+    "No PLAY03/PLAY06"
+  ],
+  "workspace": "/tmp/amsterdam-pub-guests-r2-20261013/input",
+  "read_files": [
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/test-city.js",
+    "tools/prototype/test-street-atmosphere.js",
+    "tools/prototype/test-pub-guests.js",
+    "brief.md",
+    "frame-contract.md"
+  ],
+  "write_files": [
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/test-pub-guests.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-pub-guests.js",
+    "node --test tools/prototype/test-city.js tools/prototype/test-street-atmosphere.js",
+    "node --check tools/prototype/reopening-scene.js",
+    "node --check tools/prototype/test-pub-guests.js"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 1200,
+  "max_turns": 32,
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "play07-pub-guests",
+    "task_type": "code",
+    "attempt_kind": "correction"
+  }
+}

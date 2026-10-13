@@ -1,0 +1,7 @@
+{
+  "command": "python3 /Volumes/SanDisk2TB/toolkits/scripts/plan_observability.py review --task-id amsterdam-pub-guests-20261013 --outcome rejected --failure-type call_exception --evidence /tmp/amsterdam-pub-guests-review-20261013/parent-validation.md",
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": "review error: review_requires_finished\n",
+  "review_registered": false
+}

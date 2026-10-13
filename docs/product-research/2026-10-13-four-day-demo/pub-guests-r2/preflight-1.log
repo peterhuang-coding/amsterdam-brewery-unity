@@ -1,0 +1,72 @@
+TAP version 13
+# ✓ CommonJS and browser expose the same public contract
+# ✓ map geometry and named destinations match the shared scene contract
+# ✓ facades use fixed positions and decorative buildings stay on dry land
+# ✓ walkability keeps an eight-unit safety margin from bounds, water, and buildings
+# ✓ all 49 ordered destination routes are reachable and every segment is safe
+# ✓ the Noord route crosses the IJ only through the ferry corridor
+# ✓ routing safely joins exact positions and snaps blocked targets
+# ✓ movement normalizes diagonals, clamps elapsed time, and cannot cross obstacles
+# ✓ moveAlong advances at walking speed without mutating its inputs
+# ✓ near selects the closest destination within the requested radius
+# ✓ city state creation and restoration are strict, cloned, and independent
+# ✓ zoomed camera keeps a player visible at every dry map corner
+# ✓ zoom follows a central player and map clicks invert the actual render transform
+# 13 city tests passed.
+# Subtest: tools/prototype/test-city.js
+ok 1 - tools/prototype/test-city.js
+  ---
+  duration_ms: 2893.02625
+  type: 'test'
+  ...
+# Subtest: reduced motion: a fixed city state draws identical frames at two different times
+ok 2 - reduced motion: a fixed city state draws identical frames at two different times
+  ---
+  duration_ms: 78.585417
+  type: 'test'
+  ...
+# Subtest: normal mode keeps the gentle ambient animation over time
+ok 3 - normal mode keeps the gentle ambient animation over time
+  ---
+  duration_ms: 10.322625
+  type: 'test'
+  ...
+# Subtest: drawCity never mutates its view input or the shared city geometry
+ok 4 - drawCity never mutates its view input or the shared city geometry
+  ---
+  duration_ms: 9.730875
+  type: 'test'
+  ...
+# Subtest: every frame uses finite coordinates and unwinds its save/restore transforms
+ok 5 - every frame uses finite coordinates and unwinds its save/restore transforms
+  ---
+  duration_ms: 29.803584
+  type: 'test'
+  ...
+# Subtest: the recorded city draw matrix matches cityTransform and cityWorldPoint inverts it at the pub, Lotte bridge and map edges
+ok 6 - the recorded city draw matrix matches cityTransform and cityWorldPoint inverts it at the pub, Lotte bridge and map edges
+  ---
+  duration_ms: 13.300375
+  type: 'test'
+  ...
+# Subtest: recorder models Canvas translate/scale post-multiplication with nested save/restore
+ok 7 - recorder models Canvas translate/scale post-multiplication with nested save/restore
+  ---
+  duration_ms: 0.120959
+  type: 'test'
+  ...
+# Subtest: recorder rejects string, undefined and non-finite geometry while accepting real text, styles and gradients
+ok 8 - recorder rejects string, undefined and non-finite geometry while accepting real text, styles and gradients
+  ---
+  duration_ms: 1.206875
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2897.761875

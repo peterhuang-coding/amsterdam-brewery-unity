@@ -1,0 +1,18 @@
+{
+  "results": [
+    {
+      "command": "node --test tools/prototype/test-city.js tools/prototype/test-street-atmosphere.js",
+      "exit_code": 0,
+      "log": "preflight-1.log"
+    },
+    {
+      "command": "node --check tools/prototype/reopening-scene.js",
+      "exit_code": 0,
+      "log": "preflight-2.log"
+    }
+  ],
+  "new_test_empty_not_passed": true,
+  "file_count": 7,
+  "bytes": 96447,
+  "no_provider_submission": true
+}

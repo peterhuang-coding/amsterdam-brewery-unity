@@ -1,0 +1,99 @@
+{
+  "artifact_dir": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-guests-20261013",
+  "blockers": [
+    "worker reported transport failure; inspect saved execution before recovery"
+  ],
+  "changed_files": [],
+  "claude": {
+    "final_subtype": "success",
+    "is_error": true,
+    "outcome": "completed",
+    "pid": 42545,
+    "returncode": 1,
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 31144,
+      "inference_geo": "",
+      "input_tokens": 33620,
+      "iterations": [],
+      "output_tokens": 647,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_fetch_requests": 0,
+        "web_search_requests": 0
+      },
+      "service_tier": "standard",
+      "speed": "standard"
+    }
+  },
+  "cost_basis": "client estimate; not Coding Plan charge",
+  "cost_usd": 0.199847,
+  "deleted_files": [],
+  "disallowed_changes": [],
+  "elapsed_seconds": 302.817,
+  "finished_at": "2026-10-13T07:36:50.637999+00:00",
+  "input_hashes": {
+    "brief.md": "fa73feed6d9d53f4f739fababeaa81ce276b4000623fae01451b5d29ba2a4858",
+    "frame-contract.md": "9b1fd597ae6667ca6505368607bb5d39f2ffe4d2b861f122f5dac9992dbdcb80",
+    "tools/prototype/reopening-city.js": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625",
+    "tools/prototype/reopening-scene.js": "52c78435be1a47bf2da9a473f883014f29204051f746cd83aa3f495756556d8e",
+    "tools/prototype/test-city.js": "fea0a17524f790b75206d4a51741113439bbea8216d16c04ed5164b5659c4b13",
+    "tools/prototype/test-pub-guests.js": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tools/prototype/test-street-atmosphere.js": "0e49de693df25cc5f4f9cd2cfb1a8a80ab2cfab27487990748b115f4efcc55b5"
+  },
+  "memory_delta": [],
+  "next_steps": [],
+  "observed_models": [
+    "doubao-seed-evolving",
+    "<synthetic>"
+  ],
+  "permission_denials": [],
+  "replayed": false,
+  "report": null,
+  "request_sha256": "0de2b2232b3a75c49a27efeced0b681303f362ccb2c8ff4d088b3b5b5380eede",
+  "requested": {
+    "allowed_tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash"
+    ],
+    "basis": "launcher-pinned request; requested, not provider-confirmed; the pinned model is a fixed convention, not a ranking result",
+    "model": "doubao-seed-evolving",
+    "permission_allow": [
+      "Read(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-guests-20261013/workspace/**)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-guests-20261013/workspace/tools/prototype/reopening-scene.js)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-guests-20261013/workspace/tools/prototype/reopening-scene.js)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-guests-20261013/workspace/tools/prototype/test-pub-guests.js)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-guests-20261013/workspace/tools/prototype/test-pub-guests.js)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-guests-20261013/workspace/handoff-result.json)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-guests-20261013/workspace/handoff-result.json)",
+      "Bash(node --test tools/prototype/test-pub-guests.js)",
+      "Bash(node --test tools/prototype/test-city.js tools/prototype/test-street-atmosphere.js)",
+      "Bash(node --check tools/prototype/reopening-scene.js)",
+      "Bash(node --check tools/prototype/test-pub-guests.js)"
+    ],
+    "permission_mode": "dontAsk",
+    "provider_base_url": "https://ark.cn-beijing.volces.com/api/coding",
+    "reasoning_effort": "high",
+    "thinking_enabled": true
+  },
+  "session_id": "2933d894-6371-499c-b106-8546dc171845",
+  "started_at": "2026-10-13T07:31:47.820778+00:00",
+  "status": "unknown",
+  "summary": "",
+  "task_id": "amsterdam-pub-guests-20261013",
+  "telemetry": {
+    "attempt_kind": "business",
+    "logical_task_id": "play07-pub-guests",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "tests": []
+}

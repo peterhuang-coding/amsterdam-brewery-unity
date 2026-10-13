@@ -1,0 +1,9 @@
+{
+  "commit": "bd614431e31dc44cd3730ef6c0d6c022cd355b1a",
+  "byte_matches": {
+    "tools/prototype/reopening-scene.js": true,
+    "tools/prototype/reopening-city.js": true,
+    "tools/prototype/test-city.js": true,
+    "tools/prototype/test-street-atmosphere.js": true
+  }
+}

@@ -1,0 +1,176 @@
+{
+  "artifact_dir": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013",
+  "blockers": [],
+  "changed_files": [
+    {
+      "path": "tools/prototype/reopening-scene.js",
+      "sha256": "d429ad5760dd8b2d23397a20070d4ebdbdf7704ee3b19ce4f349fec52582dda7"
+    },
+    {
+      "path": "tools/prototype/test-pub-materials.js",
+      "sha256": "ba5b6de47085c53b3f59ff7a40b0dd89c98c7595de6b98927a4dd5bfbd60ad26"
+    }
+  ],
+  "claude": {
+    "final_subtype": "success",
+    "is_error": false,
+    "outcome": "completed",
+    "pid": 61559,
+    "returncode": 0,
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1227872,
+      "inference_geo": "",
+      "input_tokens": 99728,
+      "iterations": [],
+      "output_tokens": 44308,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_fetch_requests": 0,
+        "web_search_requests": 0
+      },
+      "service_tier": "standard",
+      "speed": "standard"
+    }
+  },
+  "cost_basis": "client estimate; not Coding Plan charge",
+  "cost_usd": 2.220276,
+  "deleted_files": [],
+  "disallowed_changes": [],
+  "elapsed_seconds": 1055.509,
+  "finished_at": "2026-10-13T11:54:29.558999+00:00",
+  "input_hashes": {
+    "brief.md": "16d4738ff81faa88cea44e35f1f1c70134194b57a7f1d67f0d7768655aa0babb",
+    "frame-contract.md": "c9b18a443b9e2816bbcffcec4436e6414def262a01de9e9c87eb0e6240fc8ae1",
+    "tools/prototype/reopening-city.js": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625",
+    "tools/prototype/reopening-scene.js": "52c78435be1a47bf2da9a473f883014f29204051f746cd83aa3f495756556d8e",
+    "tools/prototype/test-city.js": "fea0a17524f790b75206d4a51741113439bbea8216d16c04ed5164b5659c4b13",
+    "tools/prototype/test-pub-materials.js": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tools/prototype/test-street-atmosphere.js": "0e49de693df25cc5f4f9cd2cfb1a8a80ab2cfab27487990748b115f4efcc55b5"
+  },
+  "memory_delta": [
+    "PLAY09 candidate green: 2 helpers pubWallDepth/pubCounterShell before draw; three spans only; diff confined per frame-contract.",
+    "Baseline RED was 4 meaningful failures (timber rail/plaster, glow alpha/containment, bevel strokes, counter pools); 6 preservation tests passed on base.",
+    "Two test-only harness repairs were needed and made before GREEN: gradient id on create records, and separate top-band vs lower-cabinet confinement rect sets.",
+    "Unit tests prove geometry/determinism/truthful props, not art success; natural desktop and 390 day/night screenshots remain parent acceptance."
+  ],
+  "next_steps": [
+    "Parent reruns the four exact commands against adopted base 231a132 plus candidate and audits that the source diff touches only the three spans and the two helpers before draw.",
+    "Parent compares natural intro/day pub and night pub desktop and 390 screenshots before/after for coherent plaster/timber, readable counter lip and recessed panels and warm pools that never hide taps, beer fill, guest selection or real stock.",
+    "Parent spot-checks natural select customer/pour/bill/inventory feedback and pause-refresh, plus unchanged city and night minimap; if art judgment fails, one targeted correction maximum before shelving."
+  ],
+  "observed_models": [
+    "doubao-seed-evolving"
+  ],
+  "permission_denials": [],
+  "replayed": false,
+  "report": {
+    "blockers": [],
+    "changed_files": [
+      "tools/prototype/reopening-scene.js",
+      "tools/prototype/test-pub-materials.js"
+    ],
+    "memory_delta": [
+      "PLAY09 candidate green: 2 helpers pubWallDepth/pubCounterShell before draw; three spans only; diff confined per frame-contract.",
+      "Baseline RED was 4 meaningful failures (timber rail/plaster, glow alpha/containment, bevel strokes, counter pools); 6 preservation tests passed on base.",
+      "Two test-only harness repairs were needed and made before GREEN: gradient id on create records, and separate top-band vs lower-cabinet confinement rect sets.",
+      "Unit tests prove geometry/determinism/truthful props, not art success; natural desktop and 390 day/night screenshots remain parent acceptance."
+    ],
+    "next_steps": [
+      "Parent reruns the four exact commands against adopted base 231a132 plus candidate and audits that the source diff touches only the three spans and the two helpers before draw.",
+      "Parent compares natural intro/day pub and night pub desktop and 390 screenshots before/after for coherent plaster/timber, readable counter lip and recessed panels and warm pools that never hide taps, beer fill, guest selection or real stock.",
+      "Parent spot-checks natural select customer/pour/bill/inventory feedback and pause-refresh, plus unchanged city and night minimap; if art judgment fails, one targeted correction maximum before shelving."
+    ],
+    "status": "completed",
+    "summary": "PLAY09 background-only material depth landed in exactly two files. reopening-scene.js gained two dedicated deterministic helpers (pubWallDepth, pubCounterShell) inserted immediately before draw and called only from the three allowed spans. Wall: replaced the flat gradient + repetitive 3px strips with 28 fixed cityRand-hashed soft plaster patches (light wash + grime), kept the #223c36 top beam, added a cast beam shadow, full-width dark stained timber rail at y384 behind the bar and four quiet bay posts, all inside 0,0,1100,460 behind later fixtures. Lamps: preserved the three anchors/cords/shades at x257/652/952 and added a shade rim plus a stronger copper night glow (core alpha 42->74) with the fill capped to x-140..x+140 and y72..360 so the old right-edge spill (previously to x1132) is fully contained on screen; day stays gradient-free. Counter shell: kept top 10,398,1080,38, #a99668 lip, cabinet 24,436,1052,195, the exact nine-panel grid colors/positions and baseboard; added polished lip sheen, dark lip/contact edges, 14 deterministic woodgrain strokes on the slab, a darker top front face, cabinet light catch and per-panel top/left highlight + bottom/right recessed shadow (last column clamped to the carcass at x1072), plus three actual-night radial warm pools on the countertop (y399-435, clipped to x14..1086, centred under the lamps, alpha 64), drawn before taps/register/glasses/cellar/stage/guests/pours so nothing foreground is washed; day keeps only a calm sheen. No Math.random, timers, new state, animation or footprint changes. New test-pub-materials.js runs the real PubScene.draw in a VM with a local recording Canvas (real save/restore, matrix, finite-arg validation, gradient handles) and asserts semantic spatial properties, span geometry confinement, day/night pool and glow differences, timestamp determinism and reduced-motion stability, plus preserved truths: 8 TK bottles and GLASSES totals from actual batches, EUR45 register, 1/2 tap pipes, Marta seat/palette/selection marker, real 0.5 stout pour geometry, balanced canvas state and zero input mutation. Genuine baseline RED captured first: on unmodified 231a132 the suite was 4 fail/6 pass (missing rail/plaster, glow core alpha 42, no bevel strokes, 0 pools), preservation assertions already green. Two honest harness repairs before GREEN, both test-only: attach gradient id to creation records (first RED run threw reading undefined coords), and split new counter-detail confinement into separate top-band and lower-cabinet rect checks. No natural browser/GUI verification was run; parent visual judgment at desktop/390 is still required.",
+    "tests": [
+      {
+        "command": "node --test tools/prototype/test-pub-materials.js",
+        "exit_code": 0,
+        "summary": "10/10 pass on candidate (wall plaster/timber day+night, lamp anchors/contained stronger glow, shell footprint+9-panel preservation, bevel/woodgrain/recessed panels, localized night pools absent by day, timestamp determinism, reduced-motion full-frame equality, finite/balanced frames, truthful stock/cash/taps/guest/pour fixtures, no input mutation). Genuine baseline RED on unmodified 231a132 was 4 fail / 6 pass for the four missing new-behavior groups."
+      },
+      {
+        "command": "node --test tools/prototype/test-city.js tools/prototype/test-street-atmosphere.js",
+        "exit_code": 0,
+        "summary": "All old assertions pass untouched: 13/13 test-city checks and 8/8 test-street-atmosphere subtests (recorder semantics, reduced motion, matrices, mutation, finite geometry)."
+      },
+      {
+        "command": "node --check tools/prototype/reopening-scene.js",
+        "exit_code": 0,
+        "summary": "Syntax check OK, no output."
+      },
+      {
+        "command": "node --check tools/prototype/test-pub-materials.js",
+        "exit_code": 0,
+        "summary": "Syntax check OK, no output."
+      }
+    ]
+  },
+  "request_sha256": "5243c3dbafe0460996a20f93ce8a01bc9e93be4f327c452ec10bdb4828fbb159",
+  "requested": {
+    "allowed_tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash"
+    ],
+    "basis": "launcher-pinned request; requested, not provider-confirmed; the pinned model is a fixed convention, not a ranking result",
+    "model": "doubao-seed-evolving",
+    "permission_allow": [
+      "Read(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/**)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/tools/prototype/reopening-scene.js)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/tools/prototype/reopening-scene.js)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/tools/prototype/test-pub-materials.js)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/tools/prototype/test-pub-materials.js)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/handoff-result.json)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/handoff-result.json)",
+      "Bash(node --test tools/prototype/test-pub-materials.js)",
+      "Bash(node --test tools/prototype/test-city.js tools/prototype/test-street-atmosphere.js)",
+      "Bash(node --check tools/prototype/reopening-scene.js)",
+      "Bash(node --check tools/prototype/test-pub-materials.js)"
+    ],
+    "permission_mode": "dontAsk",
+    "provider_base_url": "https://ark.cn-beijing.volces.com/api/coding",
+    "reasoning_effort": "high",
+    "thinking_enabled": true
+  },
+  "session_id": "9ef59bb2-c2ce-4284-a038-297ccab570a7",
+  "started_at": "2026-10-13T11:36:54.031720+00:00",
+  "status": "verifying",
+  "summary": "PLAY09 background-only material depth landed in exactly two files. reopening-scene.js gained two dedicated deterministic helpers (pubWallDepth, pubCounterShell) inserted immediately before draw and called only from the three allowed spans. Wall: replaced the flat gradient + repetitive 3px strips with 28 fixed cityRand-hashed soft plaster patches (light wash + grime), kept the #223c36 top beam, added a cast beam shadow, full-width dark stained timber rail at y384 behind the bar and four quiet bay posts, all inside 0,0,1100,460 behind later fixtures. Lamps: preserved the three anchors/cords/shades at x257/652/952 and added a shade rim plus a stronger copper night glow (core alpha 42->74) with the fill capped to x-140..x+140 and y72..360 so the old right-edge spill (previously to x1132) is fully contained on screen; day stays gradient-free. Counter shell: kept top 10,398,1080,38, #a99668 lip, cabinet 24,436,1052,195, the exact nine-panel grid colors/positions and baseboard; added polished lip sheen, dark lip/contact edges, 14 deterministic woodgrain strokes on the slab, a darker top front face, cabinet light catch and per-panel top/left highlight + bottom/right recessed shadow (last column clamped to the carcass at x1072), plus three actual-night radial warm pools on the countertop (y399-435, clipped to x14..1086, centred under the lamps, alpha 64), drawn before taps/register/glasses/cellar/stage/guests/pours so nothing foreground is washed; day keeps only a calm sheen. No Math.random, timers, new state, animation or footprint changes. New test-pub-materials.js runs the real PubScene.draw in a VM with a local recording Canvas (real save/restore, matrix, finite-arg validation, gradient handles) and asserts semantic spatial properties, span geometry confinement, day/night pool and glow differences, timestamp determinism and reduced-motion stability, plus preserved truths: 8 TK bottles and GLASSES totals from actual batches, EUR45 register, 1/2 tap pipes, Marta seat/palette/selection marker, real 0.5 stout pour geometry, balanced canvas state and zero input mutation. Genuine baseline RED captured first: on unmodified 231a132 the suite was 4 fail/6 pass (missing rail/plaster, glow core alpha 42, no bevel strokes, 0 pools), preservation assertions already green. Two honest harness repairs before GREEN, both test-only: attach gradient id to creation records (first RED run threw reading undefined coords), and split new counter-detail confinement into separate top-band and lower-cabinet rect checks. No natural browser/GUI verification was run; parent visual judgment at desktop/390 is still required.",
+  "task_id": "amsterdam-pub-materials-20261013",
+  "telemetry": {
+    "attempt_kind": "business",
+    "logical_task_id": "play09-pub-materials",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "tests": [
+    {
+      "command": "node --test tools/prototype/test-pub-materials.js",
+      "exit_code": 0,
+      "summary": "10/10 pass on candidate (wall plaster/timber day+night, lamp anchors/contained stronger glow, shell footprint+9-panel preservation, bevel/woodgrain/recessed panels, localized night pools absent by day, timestamp determinism, reduced-motion full-frame equality, finite/balanced frames, truthful stock/cash/taps/guest/pour fixtures, no input mutation). Genuine baseline RED on unmodified 231a132 was 4 fail / 6 pass for the four missing new-behavior groups."
+    },
+    {
+      "command": "node --test tools/prototype/test-city.js tools/prototype/test-street-atmosphere.js",
+      "exit_code": 0,
+      "summary": "All old assertions pass untouched: 13/13 test-city checks and 8/8 test-street-atmosphere subtests (recorder semantics, reduced motion, matrices, mutation, finite geometry)."
+    },
+    {
+      "command": "node --check tools/prototype/reopening-scene.js",
+      "exit_code": 0,
+      "summary": "Syntax check OK, no output."
+    },
+    {
+      "command": "node --check tools/prototype/test-pub-materials.js",
+      "exit_code": 0,
+      "summary": "Syntax check OK, no output."
+    }
+  ]
+}

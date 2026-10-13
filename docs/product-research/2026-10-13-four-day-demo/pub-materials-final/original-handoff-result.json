@@ -1,0 +1,42 @@
+{
+  "status": "completed",
+  "summary": "PLAY09 background-only material depth landed in exactly two files. reopening-scene.js gained two dedicated deterministic helpers (pubWallDepth, pubCounterShell) inserted immediately before draw and called only from the three allowed spans. Wall: replaced the flat gradient + repetitive 3px strips with 28 fixed cityRand-hashed soft plaster patches (light wash + grime), kept the #223c36 top beam, added a cast beam shadow, full-width dark stained timber rail at y384 behind the bar and four quiet bay posts, all inside 0,0,1100,460 behind later fixtures. Lamps: preserved the three anchors/cords/shades at x257/652/952 and added a shade rim plus a stronger copper night glow (core alpha 42->74) with the fill capped to x-140..x+140 and y72..360 so the old right-edge spill (previously to x1132) is fully contained on screen; day stays gradient-free. Counter shell: kept top 10,398,1080,38, #a99668 lip, cabinet 24,436,1052,195, the exact nine-panel grid colors/positions and baseboard; added polished lip sheen, dark lip/contact edges, 14 deterministic woodgrain strokes on the slab, a darker top front face, cabinet light catch and per-panel top/left highlight + bottom/right recessed shadow (last column clamped to the carcass at x1072), plus three actual-night radial warm pools on the countertop (y399-435, clipped to x14..1086, centred under the lamps, alpha 64), drawn before taps/register/glasses/cellar/stage/guests/pours so nothing foreground is washed; day keeps only a calm sheen. No Math.random, timers, new state, animation or footprint changes. New test-pub-materials.js runs the real PubScene.draw in a VM with a local recording Canvas (real save/restore, matrix, finite-arg validation, gradient handles) and asserts semantic spatial properties, span geometry confinement, day/night pool and glow differences, timestamp determinism and reduced-motion stability, plus preserved truths: 8 TK bottles and GLASSES totals from actual batches, EUR45 register, 1/2 tap pipes, Marta seat/palette/selection marker, real 0.5 stout pour geometry, balanced canvas state and zero input mutation. Genuine baseline RED captured first: on unmodified 231a132 the suite was 4 fail/6 pass (missing rail/plaster, glow core alpha 42, no bevel strokes, 0 pools), preservation assertions already green. Two honest harness repairs before GREEN, both test-only: attach gradient id to creation records (first RED run threw reading undefined coords), and split new counter-detail confinement into separate top-band and lower-cabinet rect checks. No natural browser/GUI verification was run; parent visual judgment at desktop/390 is still required.",
+  "changed_files": [
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/test-pub-materials.js"
+  ],
+  "tests": [
+    {
+      "command": "node --test tools/prototype/test-pub-materials.js",
+      "exit_code": 0,
+      "summary": "10/10 pass on candidate (wall plaster/timber day+night, lamp anchors/contained stronger glow, shell footprint+9-panel preservation, bevel/woodgrain/recessed panels, localized night pools absent by day, timestamp determinism, reduced-motion full-frame equality, finite/balanced frames, truthful stock/cash/taps/guest/pour fixtures, no input mutation). Genuine baseline RED on unmodified 231a132 was 4 fail / 6 pass for the four missing new-behavior groups."
+    },
+    {
+      "command": "node --test tools/prototype/test-city.js tools/prototype/test-street-atmosphere.js",
+      "exit_code": 0,
+      "summary": "All old assertions pass untouched: 13/13 test-city checks and 8/8 test-street-atmosphere subtests (recorder semantics, reduced motion, matrices, mutation, finite geometry)."
+    },
+    {
+      "command": "node --check tools/prototype/reopening-scene.js",
+      "exit_code": 0,
+      "summary": "Syntax check OK, no output."
+    },
+    {
+      "command": "node --check tools/prototype/test-pub-materials.js",
+      "exit_code": 0,
+      "summary": "Syntax check OK, no output."
+    }
+  ],
+  "blockers": [],
+  "memory_delta": [
+    "PLAY09 candidate green: 2 helpers pubWallDepth/pubCounterShell before draw; three spans only; diff confined per frame-contract.",
+    "Baseline RED was 4 meaningful failures (timber rail/plaster, glow alpha/containment, bevel strokes, counter pools); 6 preservation tests passed on base.",
+    "Two test-only harness repairs were needed and made before GREEN: gradient id on create records, and separate top-band vs lower-cabinet confinement rect sets.",
+    "Unit tests prove geometry/determinism/truthful props, not art success; natural desktop and 390 day/night screenshots remain parent acceptance."
+  ],
+  "next_steps": [
+    "Parent reruns the four exact commands against adopted base 231a132 plus candidate and audits that the source diff touches only the three spans and the two helpers before draw.",
+    "Parent compares natural intro/day pub and night pub desktop and 390 screenshots before/after for coherent plaster/timber, readable counter lip and recessed panels and warm pools that never hide taps, beer fill, guest selection or real stock.",
+    "Parent spot-checks natural select customer/pour/bill/inventory feedback and pause-refresh, plus unchanged city and night minimap; if art judgment fails, one targeted correction maximum before shelving."
+  ]
+}

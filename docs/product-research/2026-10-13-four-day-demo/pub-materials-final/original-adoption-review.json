@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-pub-materials-20261013",
+  "receipt_sha256": "a31c0d64f0798183a919cd82dbbd0c15f8e4d11d761a66c8b5e78a8526395117",
+  "reviewed_at": "2026-10-13T12:10:43Z",
+  "outcome": "accepted_with_changes",
+  "failure_type": "other",
+  "evidence": [
+    {
+      "path": "/tmp/amsterdam-pub-materials-review-20261013/parent-validation.md",
+      "sha256": "cc2d126b08063b6f32962c0320eb52aa9222757a0788e23b44482af0712ced50"
+    }
+  ]
+}

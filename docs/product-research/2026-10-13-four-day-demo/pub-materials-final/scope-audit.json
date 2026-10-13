@@ -1,0 +1,122 @@
+{
+  "outside3spans_and_helpers_identical": true,
+  "calls": [
+    {
+      "name": "Read",
+      "allowed": true,
+      "target": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/brief.md"
+    },
+    {
+      "name": "Read",
+      "allowed": true,
+      "target": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/frame-contract.md"
+    },
+    {
+      "name": "Read",
+      "allowed": true,
+      "target": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/tools/prototype/reopening-scene.js"
+    },
+    {
+      "name": "Read",
+      "allowed": true,
+      "target": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/tools/prototype/test-street-atmosphere.js"
+    },
+    {
+      "name": "Read",
+      "allowed": true,
+      "target": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/tools/prototype/test-pub-materials.js"
+    },
+    {
+      "name": "Read",
+      "allowed": true,
+      "target": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/tools/prototype/test-city.js"
+    },
+    {
+      "name": "Edit",
+      "allowed": true,
+      "target": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/tools/prototype/test-pub-materials.js"
+    },
+    {
+      "name": "Bash",
+      "allowed": true,
+      "target": "node --test tools/prototype/test-pub-materials.js"
+    },
+    {
+      "name": "Edit",
+      "allowed": true,
+      "target": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/tools/prototype/test-pub-materials.js"
+    },
+    {
+      "name": "Bash",
+      "allowed": true,
+      "target": "node --test tools/prototype/test-pub-materials.js"
+    },
+    {
+      "name": "Edit",
+      "allowed": true,
+      "target": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/tools/prototype/reopening-scene.js"
+    },
+    {
+      "name": "Edit",
+      "allowed": true,
+      "target": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/tools/prototype/reopening-scene.js"
+    },
+    {
+      "name": "Edit",
+      "allowed": true,
+      "target": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/tools/prototype/reopening-scene.js"
+    },
+    {
+      "name": "Edit",
+      "allowed": true,
+      "target": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/tools/prototype/reopening-scene.js"
+    },
+    {
+      "name": "Edit",
+      "allowed": true,
+      "target": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/tools/prototype/test-pub-materials.js"
+    },
+    {
+      "name": "Bash",
+      "allowed": true,
+      "target": "node --test tools/prototype/test-pub-materials.js"
+    },
+    {
+      "name": "Bash",
+      "allowed": true,
+      "target": "node --test tools/prototype/test-city.js tools/prototype/test-street-atmosphere.js"
+    },
+    {
+      "name": "Bash",
+      "allowed": true,
+      "target": "node --check tools/prototype/reopening-scene.js"
+    },
+    {
+      "name": "Bash",
+      "allowed": true,
+      "target": "node --check tools/prototype/test-pub-materials.js"
+    },
+    {
+      "name": "Read",
+      "allowed": true,
+      "target": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/tools/prototype/reopening-scene.js"
+    },
+    {
+      "name": "Read",
+      "allowed": true,
+      "target": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/tools/prototype/reopening-scene.js"
+    },
+    {
+      "name": "Read",
+      "allowed": true,
+      "target": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/handoff-result.json"
+    },
+    {
+      "name": "Edit",
+      "allowed": true,
+      "target": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-pub-materials-20261013/workspace/handoff-result.json"
+    }
+  ],
+  "unexpected_workspace_files": [],
+  "note": "reserved handoff-result.json is permitted for Read/Edit; parent first checker omitted read exemption, corrected locally without game edits"
+}

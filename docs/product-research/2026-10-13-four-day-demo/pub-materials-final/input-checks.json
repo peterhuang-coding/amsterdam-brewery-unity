@@ -1,0 +1,37 @@
+[
+  {
+    "file": "brief.md",
+    "source": true,
+    "staged_readonly": true
+  },
+  {
+    "file": "frame-contract.md",
+    "source": true,
+    "staged_readonly": true
+  },
+  {
+    "file": "tools/prototype/reopening-city.js",
+    "source": true,
+    "staged_readonly": true
+  },
+  {
+    "file": "tools/prototype/reopening-scene.js",
+    "source": true,
+    "staged_readonly": null
+  },
+  {
+    "file": "tools/prototype/test-city.js",
+    "source": true,
+    "staged_readonly": true
+  },
+  {
+    "file": "tools/prototype/test-pub-materials.js",
+    "source": true,
+    "staged_readonly": null
+  },
+  {
+    "file": "tools/prototype/test-street-atmosphere.js",
+    "source": true,
+    "staged_readonly": true
+  }
+]

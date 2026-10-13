@@ -1,0 +1,135 @@
+TAP version 13
+# Subtest: wall span: worn plaster and dark stained timber read as depth, by day and night
+not ok 1 - wall span: worn plaster and dark stained timber read as depth, by day and night
+  ---
+  duration_ms: 3.494
+  type: 'test'
+  location: '/private/tmp/amsterdam-pub-materials-review-20261013/baseline/tools/prototype/test-pub-materials.js:283:1'
+  failureType: 'testCodeFailure'
+  error: 'day gains a full-width stained timber rail above the bar'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-pub-materials-review-20261013/baseline/tools/prototype/test-pub-materials.js:294:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: lamp span: the three anchors survive and night light is stronger yet fully contained
+not ok 2 - lamp span: the three anchors survive and night light is stronger yet fully contained
+  ---
+  duration_ms: 2.452042
+  type: 'test'
+  location: '/private/tmp/amsterdam-pub-materials-review-20261013/baseline/tools/prototype/test-pub-materials.js:309:1'
+  failureType: 'testCodeFailure'
+  error: 'glow core must be visibly warm but unable to wash props: 42'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-pub-materials-review-20261013/baseline/tools/prototype/test-pub-materials.js:339:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: counter span: shell footprints and panel grid are preserved exactly
+ok 3 - counter span: shell footprints and panel grid are preserved exactly
+  ---
+  duration_ms: 0.958292
+  type: 'test'
+  ...
+# Subtest: counter span: bevelled top, woodgrain and recessed panel light/shadow add depth
+not ok 4 - counter span: bevelled top, woodgrain and recessed panel light/shadow add depth
+  ---
+  duration_ms: 0.958583
+  type: 'test'
+  location: '/private/tmp/amsterdam-pub-materials-review-20261013/baseline/tools/prototype/test-pub-materials.js:369:1'
+  failureType: 'testCodeFailure'
+  error: 'day top needs a light bevel highlight'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-pub-materials-review-20261013/baseline/tools/prototype/test-pub-materials.js:378:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: counter span: night pools are warm, localized on the wood under lamps, absent by day
+not ok 5 - counter span: night pools are warm, localized on the wood under lamps, absent by day
+  ---
+  duration_ms: 2.059
+  type: 'test'
+  location: '/private/tmp/amsterdam-pub-materials-review-20261013/baseline/tools/prototype/test-pub-materials.js:411:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    one warm pool per lamp on the countertop
+    
+    0 !== 3
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 3
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-pub-materials-review-20261013/baseline/tools/prototype/test-pub-materials.js:423:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: new material detail is deterministic: equal state at different timestamps renders equal spans
+ok 6 - new material detail is deterministic: equal state at different timestamps renders equal spans
+  ---
+  duration_ms: 3.847458
+  type: 'test'
+  ...
+# Subtest: reduced motion: full pub frames are identical at different timestamps and unwind canvas state
+ok 7 - reduced motion: full pub frames are identical at different timestamps and unwind canvas state
+  ---
+  duration_ms: 4.074167
+  type: 'test'
+  ...
+# Subtest: every pub frame stays finite, on the canvas and balanced for day, night, upgrades and pours
+ok 8 - every pub frame stays finite, on the canvas and balanced for day, night, upgrades and pours
+  ---
+  duration_ms: 1.940166
+  type: 'test'
+  ...
+# Subtest: truthful fixtures survive: stock bottles, cash text, tap count, guest seat and pour fill
+ok 9 - truthful fixtures survive: stock bottles, cash text, tap count, guest seat and pour fill
+  ---
+  duration_ms: 2.57125
+  type: 'test'
+  ...
+# Subtest: rendering never mutates the supplied state, orders or pours
+ok 10 - rendering never mutates the supplied state, orders or pours
+  ---
+  duration_ms: 1.702667
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 6
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 83.105666

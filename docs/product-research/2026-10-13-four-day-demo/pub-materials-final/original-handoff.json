@@ -1,0 +1,66 @@
+{
+  "acceptance": [
+    "Exactly scoped2files; all live stock/tap/pour/guest/state behavior unchanged",
+    "Coherent surface depth and actualnight warm pools, deterministic, no visual obstruction",
+    "Genuine finaltest baselineRED thenGREEN, oldassertions untouched",
+    "Fourfinalcommand rows; parent GUI and fullregression separate"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-pub-materials.js",
+    "node --test tools/prototype/test-city.js tools/prototype/test-street-atmosphere.js",
+    "node --check tools/prototype/reopening-scene.js",
+    "node --check tools/prototype/test-pub-materials.js"
+  ],
+  "constraints": [
+    "Public supplied materials only; no outside files/network",
+    "No PLAY03/06/07 revival; no main gameplay or other renderingchanges",
+    "Read/Edit/exact4Bash only; no grep/ls/wc"
+  ],
+  "data_sensitivity": "public",
+  "goal": "Improve only existing pub wall, lamp and counter material depth with deterministic Canvas background rendering, preserving all truthful interactive props and gameplay.",
+  "max_turns": 32,
+  "memory": {
+    "completed": [
+      "Adopted231a132 with parent394/394 and natural night minimap loop; newplay verified17resources."
+    ],
+    "decisions": [
+      "Only3pubbackground spans and dedicated helpers; scene plus newtest outputs",
+      "One business and at most one targeted correction after confirmed failure",
+      "Only Seed Evolving thinking enabled/high"
+    ],
+    "known_issues": [
+      "Baseline pub wall and counter look flat in natural desktop screenshot",
+      "Technical tests do not establish art success or fun; parent screenshot required"
+    ],
+    "summary": "D23 authorized consistent visual refinement; independent background-only package; PLAY03/06/07 remain shelved."
+  },
+  "read_files": [
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/test-city.js",
+    "tools/prototype/test-street-atmosphere.js",
+    "tools/prototype/test-pub-materials.js",
+    "brief.md",
+    "frame-contract.md"
+  ],
+  "task_id": "amsterdam-pub-materials-20261013",
+  "tasks": [
+    "Read focused brief/frame contract",
+    "New renderer behavior regressions on unmodifiedbase RED",
+    "Only3background spans/helpers implementation GREEN; oldtests and syntax",
+    "Complete truthful4-row final report promptly"
+  ],
+  "telemetry": {
+    "attempt_kind": "business",
+    "logical_task_id": "play09-pub-materials",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "timeout_seconds": 1200,
+  "version": 1,
+  "workspace": "/tmp/amsterdam-pub-materials-20261013/input",
+  "write_files": [
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/test-pub-materials.js"
+  ]
+}

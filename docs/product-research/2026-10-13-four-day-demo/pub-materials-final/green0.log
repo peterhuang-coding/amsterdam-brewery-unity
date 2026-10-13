@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: wall span: worn plaster and dark stained timber read as depth, by day and night
+ok 1 - wall span: worn plaster and dark stained timber read as depth, by day and night
+  ---
+  duration_ms: 6.048375
+  type: 'test'
+  ...
+# Subtest: lamp span: the three anchors survive and night light is stronger yet fully contained
+ok 2 - lamp span: the three anchors survive and night light is stronger yet fully contained
+  ---
+  duration_ms: 2.795875
+  type: 'test'
+  ...
+# Subtest: counter span: shell footprints and panel grid are preserved exactly
+ok 3 - counter span: shell footprints and panel grid are preserved exactly
+  ---
+  duration_ms: 1.292708
+  type: 'test'
+  ...
+# Subtest: counter span: bevelled top, woodgrain and recessed panel light/shadow add depth
+ok 4 - counter span: bevelled top, woodgrain and recessed panel light/shadow add depth
+  ---
+  duration_ms: 3.049584
+  type: 'test'
+  ...
+# Subtest: counter span: night pools are warm, localized on the wood under lamps, absent by day
+ok 5 - counter span: night pools are warm, localized on the wood under lamps, absent by day
+  ---
+  duration_ms: 2.570708
+  type: 'test'
+  ...
+# Subtest: new material detail is deterministic: equal state at different timestamps renders equal spans
+ok 6 - new material detail is deterministic: equal state at different timestamps renders equal spans
+  ---
+  duration_ms: 3.739375
+  type: 'test'
+  ...
+# Subtest: reduced motion: full pub frames are identical at different timestamps and unwind canvas state
+ok 7 - reduced motion: full pub frames are identical at different timestamps and unwind canvas state
+  ---
+  duration_ms: 3.587291
+  type: 'test'
+  ...
+# Subtest: every pub frame stays finite, on the canvas and balanced for day, night, upgrades and pours
+ok 8 - every pub frame stays finite, on the canvas and balanced for day, night, upgrades and pours
+  ---
+  duration_ms: 2.256666
+  type: 'test'
+  ...
+# Subtest: truthful fixtures survive: stock bottles, cash text, tap count, guest seat and pour fill
+ok 9 - truthful fixtures survive: stock bottles, cash text, tap count, guest seat and pour fill
+  ---
+  duration_ms: 1.753
+  type: 'test'
+  ...
+# Subtest: rendering never mutates the supplied state, orders or pours
+ok 10 - rendering never mutates the supplied state, orders or pours
+  ---
+  duration_ms: 1.457083
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 87.641458

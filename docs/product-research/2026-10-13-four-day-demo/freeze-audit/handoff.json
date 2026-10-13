@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-freeze-audit-20261014",
+  "goal": "D25 read-only whole-demo freeze audit, at most3 evidenced blockers and realthree-day acceptance route. No game edits.",
+  "memory": {
+    "summary": "Currentpublicadoptedsource and parentobservations inbrief. No shelvedrevival.",
+    "decisions": [
+      "Seed Evolving thinking enabled/high only; business1 then atmostcorrection1."
+    ],
+    "known_issues": [
+      "Complex/ugly/long teaching userfeedback, humanacceptance and full3dayroute missing."
+    ]
+  },
+  "tasks": [
+    "Read brief and focused source.",
+    "Trace loop and win/end gates; rank at most3 evidencedblockers.",
+    "Write audit andfindings; validate then legalreport."
+  ],
+  "acceptance": [
+    "Accurate source references andlimits.",
+    "Atmost3 meaningfulblockers; shelvedoverlapexplicit.",
+    "Actual UI route all3days+ending, no claimedexecution."
+  ],
+  "constraints": [
+    "Readonly sources/validator.",
+    "Only exact listed command.",
+    "changed_files excludes reservedreport."
+  ],
+  "workspace": "/tmp/amsterdam-freeze-audit-20261014/input",
+  "read_files": [
+    "brief.md",
+    "tools/prototype/reopening-core.js",
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/index.html",
+    "tools/prototype/reopening.css",
+    "tools/prototype/reopening-city.js",
+    "validate_audit.py",
+    "audit.md",
+    "findings.json"
+  ],
+  "write_files": [
+    "audit.md",
+    "findings.json"
+  ],
+  "commands": [
+    "python3 validate_audit.py"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 1200,
+  "max_turns": 32,
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "d25-freeze-audit",
+    "task_type": "analysis",
+    "attempt_kind": "business"
+  }
+}

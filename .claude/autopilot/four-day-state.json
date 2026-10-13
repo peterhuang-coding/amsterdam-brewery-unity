@@ -5,8 +5,8 @@
   "deadline": "2026-10-16T19:48:33Z",
   "next_direction_review_at": "2026-10-14T01:48:33Z",
   "last_direction_review_at": "2026-10-13T15:50:11.532633+00:00",
-  "current_task_id": null,
-  "logical_task": null,
+  "current_task_id": "amsterdam-freeze-audit-20261014",
+  "logical_task": "d25-freeze-audit",
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
   "failure_policy_question_pending": false,
@@ -233,7 +233,7 @@
   "current_task_notion": "https://app.notion.com/p/3f83285284df81848abfff583dbacd46",
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
-  "current_task_stage": "complete",
+  "current_task_stage": "prepared",
   "prepared_task_id": null,
   "prepared_task_packet": null,
   "play_service_pid": 91799,
@@ -256,6 +256,6 @@
     "human_play_feedback": "not_received",
     "current_candidate": "dad6b38c54fda94f541764242f61820d8177bd19",
     "natural_loop_evidence": "cargo-choice-final: real first cup Marta, night duplicate pickup/drop, safe return, day2 inventory and market price; pause used for tool inspection, no human fun validation",
-    "next_priority": "Whole-demo freeze audit: rank at most three blockers against D25, reuse continuous evidence; no arbitrary next polish package"
+    "next_priority": "FREEZE01 read-only audit plus parent three-day ending browser acceptance"
   }
 }

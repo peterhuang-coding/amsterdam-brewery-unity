@@ -1,0 +1,52 @@
+[
+  {
+    "path": "validate_audit.py",
+    "sha256": "760e00e8f01cde3d9b2c1f6e7a1f63e83d565d73cd0863e8949b0d61323e2d71",
+    "bytes": 842
+  },
+  {
+    "path": "audit.md",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "findings.json",
+    "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "bytes": 3
+  },
+  {
+    "path": "brief.md",
+    "sha256": "45acce12d69b18f0d58908485350f94c939f41da2f8084309903177dcb5b0daf",
+    "bytes": 2797
+  },
+  {
+    "path": "tools/prototype/reopening-ui.js",
+    "sha256": "b884234f2bda638ccf6de62e8036eb4b3cdbc73e95325785588c761d38c14985",
+    "bytes": 94363
+  },
+  {
+    "path": "tools/prototype/reopening-city.js",
+    "sha256": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625",
+    "bytes": 15809
+  },
+  {
+    "path": "tools/prototype/index.html",
+    "sha256": "c70b027d392198e1cf733e2a4bdf88564a679b21f9bdc763b478a1ab0288f3fd",
+    "bytes": 7136
+  },
+  {
+    "path": "tools/prototype/reopening.css",
+    "sha256": "17d05673d6634eac3b7abd5de41b6ccfe1314fdde8a448a11a93d5fef3c82b56",
+    "bytes": 29374
+  },
+  {
+    "path": "tools/prototype/reopening-core.js",
+    "sha256": "4c31d8a72fe9fd9736e7db57999efd31efb29a2c3b1458e8f96bec5559633c3b",
+    "bytes": 70285
+  },
+  {
+    "path": "tools/prototype/backstage-ui.js",
+    "sha256": "e3860052e53dd579ee5868b457da8595417e79807bfc227da38bf8c7f2650269",
+    "bytes": 35181
+  }
+]

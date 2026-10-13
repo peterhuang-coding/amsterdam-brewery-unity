@@ -1,0 +1,23 @@
+{
+  "commit": "6e4f7b3fbb7ad7eca5d3b30b474f61d7437059c7",
+  "html_matches": true,
+  "http_runtime_files": 16,
+  "http_all_match": true,
+  "browser_resources": [
+    {
+      "path": "tools/prototype/reopening-ui.js",
+      "browser_matches_commit": true,
+      "sha256": "8fdc2968e240c3e57ad2f52c7a825312e358bbadb3f81122adcc5146f5a25961"
+    },
+    {
+      "path": "tools/prototype/reopening-scene.js",
+      "browser_matches_commit": true,
+      "sha256": "02c27c5a24ff482320401c7a5dc8e7d2ac90325439ac56554c055391f89b03b4"
+    },
+    {
+      "path": "tools/prototype/reopening.css",
+      "browser_matches_commit": true,
+      "sha256": "17d05673d6634eac3b7abd5de41b6ccfe1314fdde8a448a11a93d5fef3c82b56"
+    }
+  ]
+}

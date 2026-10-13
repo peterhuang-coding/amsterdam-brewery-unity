@@ -1,3 +1,7 @@
+## D24最新：PLAY02 R3已采用，后续按新失败策略推进
+
+R3只读恢复交接256.015秒success；父级全量358/358、自然桥边回店/开张倒酒到账/刷新/390px与近景和全城点击通过。原四文件候选已采用push游戏`6e4f7b3fbb7ad7eca5d3b30b474f61d7437059c7`，独立试玩http://127.0.0.1:18833/tools/prototype/index.html?seed=42001&commit=6e4f7b3。首页和16运行资源、浏览器实际三改动资源均字节匹配。第一杯提前收杯满意0；技术通过不当趣味通过。R3报告“验收后搁置”源于父级交接简写，纠正为仍失败才搁置，accepted_with_changes。原失败保留、D24一次修正已使用。后续首杯界面简化待下一包精确定义；四天截止/10h review不变。详见docs/product-research/2026-10-13-four-day-demo/r3-recovery/parent-review.md。
+
 # 当前覆盖规则：D24
 
 用户已明确批准四天窗口内每项失败后一次定向修正；仍失败则搁置该项、继续独立任务。仅套餐/固定截止/原ID未知先查/不主代理重写仍有效。当前PLAY02 R3合同见mainline与four-day-state，下文停止条款为各历史轮次规则。

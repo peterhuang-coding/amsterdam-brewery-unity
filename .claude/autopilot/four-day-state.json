@@ -1,32 +1,34 @@
 {
   "decision": "D23",
-  "status": "preparing",
+  "status": "ready_for_next_scoped_package",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-16T19:48:33Z",
   "next_direction_review_at": "2026-10-13T05:48:33Z",
   "last_direction_review_at": null,
   "current_task_id": "amsterdam-first-street-r3-20261013",
   "logical_task": "PLAY02",
-  "last_adopted_commit": "d89421ef86dda52044c38fab63f71a3f979138ca",
+  "last_adopted_commit": "6e4f7b3fbb7ad7eca5d3b30b474f61d7437059c7",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
   "failure_policy_question_pending": false,
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
-  "current_task_terminal": null,
-  "failure_reason": "ECONNRESET; missing report; final GUI not run",
-  "last_result_at": "2026-10-12T20:40:12.089842Z",
+  "current_task_terminal": "accepted_with_changes",
+  "failure_reason": null,
+  "last_result_at": "2026-10-13T01:47:58.771317Z",
   "failure_notification_at": "2026-10-12T20:42:13Z",
   "in_flight": [],
   "candidate_path": "docs/product-research/2026-10-13-four-day-demo/r2-draft",
-  "adopted_this_round": 0,
+  "adopted_this_round": 1,
   "policy_decision": "D24",
   "correction_after_r2": {
     "allowed": 1,
-    "submitted": 0,
-    "task_id": "amsterdam-first-street-r3-20261013"
+    "submitted": 1,
+    "task_id": "amsterdam-first-street-r3-20261013",
+    "outcome": "accepted_with_changes"
   },
   "history_attempts_preserved": [
     "amsterdam-first-street-20261013",
     "amsterdam-first-street-r2-20261013"
-  ]
+  ],
+  "play_url": "http://127.0.0.1:18833/tools/prototype/index.html?seed=42001&commit=6e4f7b3"
 }

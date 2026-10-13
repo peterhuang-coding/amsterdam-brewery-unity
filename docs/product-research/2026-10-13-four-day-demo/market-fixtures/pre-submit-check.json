@@ -1,0 +1,23 @@
+{
+  "game": {
+    "head": "0178350e2fb544a77c8512585ae292e50c54d5ad",
+    "remote": "0178350e2fb544a77c8512585ae292e50c54d5ad",
+    "clean": true
+  },
+  "docs": {
+    "head": "901f95c683d72d86e188aceee7ccefe09f7e9535",
+    "remote": "901f95c683d72d86e188aceee7ccefe09f7e9535",
+    "clean": true
+  },
+  "checked_at": "2026-10-13T13:08:55.731669+00:00",
+  "input_count": 7,
+  "bytes": 120344,
+  "source_sha_match": true,
+  "existing_code_bytes_match": 4,
+  "global_nonterminal_ledgers": [],
+  "actual_cli_pids": [],
+  "fixed_id_absent": true,
+  "notion_status_readback": "executing",
+  "notion_readback_at": "2026-10-13T13:08:06.585Z",
+  "atomic_global_guarantee": false
+}

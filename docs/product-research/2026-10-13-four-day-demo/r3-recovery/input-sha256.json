@@ -1,0 +1,23 @@
+{
+  "brief.md": "d841fc2b7bec9e9f6a8101cfaafab73136c7acb5247ddc30b1efaca02012bf5f",
+  "recovery-review.md": "8e89bffc8821e5bc3dad5baa5987c60ff084cb3f9cec32e1b672d72070df003b",
+  "tools/prototype/index.html": "c70b027d392198e1cf733e2a4bdf88564a679b21f9bdc763b478a1ab0288f3fd",
+  "tools/prototype/reopening.css": "17d05673d6634eac3b7abd5de41b6ccfe1314fdde8a448a11a93d5fef3c82b56",
+  "tools/prototype/reopening-ui.js": "8fdc2968e240c3e57ad2f52c7a825312e358bbadb3f81122adcc5146f5a25961",
+  "tools/prototype/reopening-scene.js": "02c27c5a24ff482320401c7a5dc8e7d2ac90325439ac56554c055391f89b03b4",
+  "tools/prototype/reopening-city.js": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625",
+  "tools/prototype/reopening-core.js": "4c31d8a72fe9fd9736e7db57999efd31efb29a2c3b1458e8f96bec5559633c3b",
+  "tools/prototype/journey-core.js": "1424adad30c587fda0aa49e101336061dd0e0a35587d0c0c998feb804948c963",
+  "tools/prototype/journey-ui.js": "23fe4245f342aebfa868f7ff6fb4dc395d4e1dee94440b72df0eb86f1e124c43",
+  "tools/prototype/backstage-core.js": "335baa752efedabf5771436c23fb5370a40af5aef4b89cdd1793351906219d07",
+  "tools/prototype/backstage-auto.js": "569f7dab7e49afb0ec56870cef1d412fff3ef0f53399bbf2738d370fca919681",
+  "tools/prototype/backstage-scene.js": "d6eed0688e0c0da9be8062e221d79fb326a12364864dd2868124c6f0b7cdda41",
+  "tools/prototype/backstage-ui.js": "338d9ea5da3ff4fc6af78829b0a59521ec1fadf5d7b3c79dfb8dc00e2385dbc9",
+  "tools/prototype/delivery-orders.js": "62e46bb83f5f8d97a2e7bc0d856484ef978efd2566236ee53304ea5167d3e496",
+  "tools/prototype/character-stories.js": "3db456b04852929656867925bd35bc73dbe0b6349159708922acab22db1a53bb",
+  "tools/prototype/flower-network.js": "e6febfd844da0107ca9079251ddbb4fd81e30cc5979f696bdba8f3b493027f80",
+  "tools/prototype/test-market-daynight-ui.js": "e9df8904cd91e91c04558abf2087264b2b8d6fc3d4ae4476eabbc4ee61a41531",
+  "tools/prototype/test-city.js": "fea0a17524f790b75206d4a51741113439bbea8216d16c04ed5164b5659c4b13",
+  "tools/prototype/test-city-bike.js": "1987a2f2e47f1b2dff16b5f23a818af30bae6890a0ffae54ffbfc163b1a8176e",
+  "tools/prototype/test-first-street-ui.js": "cda4472c2afef6eaa289de106aa69c8a001106f1b6cf304fb8e569874e314290"
+}

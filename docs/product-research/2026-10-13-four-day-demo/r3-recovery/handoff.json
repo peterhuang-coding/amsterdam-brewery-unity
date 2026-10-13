@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-first-street-r3-20261013",
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "play02-first-street",
+    "task_type": "code",
+    "attempt_kind": "correction"
+  },
+  "goal": "Recover existing PLAY02 candidate handoff: audit unchanged source, run two exact commands, write recovery review and valid report. No code edits.",
+  "memory": {
+    "summary": "Third historical PLAY02 attempt; D22 turn-limit/GUI failure and D23 R2 transport failure retained. Human authorizes one directed correction, then shelf this item and continue independent work. Existing candidate is input, never reimplement.",
+    "decisions": [
+      "Coding Plan Seed Evolving thinking enabled/high only",
+      "Consumes one correction after D23 failure under D24 policy",
+      "All game files and tests read-only"
+    ],
+    "completed": [
+      "Parent previous full suite358/358; two targeted new regressions failed on pre-fix input",
+      "Four-file candidate restored/hash matched on clean d89421e"
+    ],
+    "known_issues": [
+      "Previous report missing after ECONNRESET",
+      "Final GUI and user fun review pending"
+    ]
+  },
+  "tasks": [
+    "Inspect focused pub shortcut/current-step source and tests",
+    "Run two exact commands without suffixes",
+    "Edit recovery-review.md and exact handoff-result.json; no code edits"
+  ],
+  "acceptance": [
+    "Unchanged source hash and no out-of-scope tools",
+    "Actual targeted suite and syntax results",
+    "Accurate review and schema-valid handoff",
+    "No fake adoption or GUI claim"
+  ],
+  "constraints": [
+    "Only Read/Edit of named files, exact Bash commands; source/test inputs read-only",
+    "No network/git/deps/own logs/subagents; use Edit, not unavailable Write",
+    "Blocked if tests fail or genuine defect; parent independently validates GUI/full suite"
+  ],
+  "workspace": "/tmp/amsterdam-d24-20261013/input",
+  "read_files": [
+    "brief.md",
+    "recovery-review.md",
+    "tools/prototype/index.html",
+    "tools/prototype/reopening.css",
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/reopening-core.js",
+    "tools/prototype/journey-core.js",
+    "tools/prototype/journey-ui.js",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/delivery-orders.js",
+    "tools/prototype/character-stories.js",
+    "tools/prototype/flower-network.js",
+    "tools/prototype/test-market-daynight-ui.js",
+    "tools/prototype/test-city.js",
+    "tools/prototype/test-city-bike.js",
+    "tools/prototype/test-first-street-ui.js"
+  ],
+  "write_files": [
+    "recovery-review.md"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-first-street-ui.js tools/prototype/test-city.js tools/prototype/test-city-bike.js tools/prototype/test-market-daynight-ui.js",
+    "node --check tools/prototype/reopening-ui.js"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 900,
+  "max_turns": 24
+}

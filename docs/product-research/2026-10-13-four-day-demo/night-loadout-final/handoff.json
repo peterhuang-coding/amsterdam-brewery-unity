@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-night-loadout-20261013",
+  "goal": "Make existing night expedition tool-choice modal concise and keyboard-safe without changing tool facts/gameplay.",
+  "memory": {
+    "summary": "D23 clarity. Independent night tool modal, not shelved first-cup/morning/guest work.",
+    "completed": [
+      "Adopted5ffbe6e parent404 and natural pub checks."
+    ],
+    "decisions": [
+      "Only chooseExpedition and loadout-specific keyboard branch; two outputs",
+      "Seed Evolving enabled/high; one business plus at most one targeted correction"
+    ],
+    "known_issues": [
+      "Natural390x844 thirdtool/stay below visible dialog",
+      "Generic Escape invokes first modal callback; newloadout must cancel"
+    ]
+  },
+  "tasks": [
+    "Read focused context and write realUI baselineRED",
+    "Only authorized spans GREEN, oldtests/syntax",
+    "Complete truthful4-row report before cap"
+  ],
+  "acceptance": [
+    "Visible essentials/fulltool facts, optional facts preserved",
+    "Loadout cancel/real kitlaunch correct; otherdialogs unchanged",
+    "Meaningful baselineRED/candidateGREEN and oldassertions preserved",
+    "Parent GUI and404+new acceptance pending"
+  ],
+  "constraints": [
+    "Public supplied files only, no network",
+    "Read/Edit/exactBash only",
+    "No PLAY03/06/07 revival or core/scene/CSS/save changes"
+  ],
+  "workspace": "/tmp/amsterdam-night-loadout-20261013/input",
+  "read_files": [
+    "brief.md",
+    "tools/prototype/index.html",
+    "tools/prototype/reopening.css",
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/reopening-core.js",
+    "tools/prototype/journey-core.js",
+    "tools/prototype/journey-ui.js",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/delivery-orders.js",
+    "tools/prototype/character-stories.js",
+    "tools/prototype/flower-network.js",
+    "tools/prototype/test-first-street-ui.js",
+    "tools/prototype/test-backstage.js",
+    "tools/prototype/test-backstage-auto.js",
+    "tools/prototype/test-night-loadout-ui.js"
+  ],
+  "write_files": [
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/test-night-loadout-ui.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-night-loadout-ui.js",
+    "node --test tools/prototype/test-first-street-ui.js tools/prototype/test-backstage.js tools/prototype/test-backstage-auto.js",
+    "node --check tools/prototype/reopening-ui.js",
+    "node --check tools/prototype/test-night-loadout-ui.js"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 1500,
+  "max_turns": 40,
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "play10-night-loadout",
+    "task_type": "code",
+    "attempt_kind": "business"
+  }
+}

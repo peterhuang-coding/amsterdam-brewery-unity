@@ -5,21 +5,19 @@
   "deadline": "2026-10-16T19:48:33Z",
   "next_direction_review_at": "2026-10-13T15:48:33Z",
   "last_direction_review_at": "2026-10-13T05:51:53Z",
-  "current_task_id": "amsterdam-night-loadout-20261013",
-  "logical_task": "play10-night-loadout",
-  "last_adopted_commit": "5ffbe6ec2c9ff2532f61a9f0196b80ec1c932dac",
+  "current_task_id": null,
+  "logical_task": null,
+  "last_adopted_commit": "0178350e2fb544a77c8512585ae292e50c54d5ad",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
   "failure_policy_question_pending": false,
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
-  "current_task_terminal": "running",
+  "current_task_terminal": "accepted_with_changes",
   "failure_reason": null,
-  "last_result_at": "2026-10-13T11:54:29.558999Z",
-  "in_flight": [
-    "amsterdam-night-loadout-20261013"
-  ],
-  "candidate_path": null,
-  "adopted_this_round": 0,
+  "last_result_at": "2026-10-13T12:43:28.484748Z",
+  "in_flight": [],
+  "candidate_path": "/tmp/amsterdam-night-loadout-review-20261013/candidate",
+  "adopted_this_round": 2,
   "policy_decision": "D24",
   "correction_after_r2": {
     "allowed": 1,
@@ -31,7 +29,7 @@
     "amsterdam-first-street-20261013",
     "amsterdam-first-street-r2-20261013"
   ],
-  "play_url": "http://127.0.0.1:18847/tools/prototype/index.html?seed=42001&commit=5ffbe6e",
+  "play_url": "http://127.0.0.1:18849/tools/prototype/index.html?seed=42001&commit=0178350",
   "task_policy_ledger": {
     "PLAY02": {
       "historical_attempts": 3,
@@ -150,10 +148,14 @@
       "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 0,
-      "outcome": "running",
-      "game_adopted": 0,
+      "outcome": "accepted_with_changes",
+      "game_adopted": 2,
       "business_submitted_at": "2026-10-13T12:28:16.922565+00:00",
-      "worker_pid": 65518
+      "worker_pid": 65518,
+      "game_commit": "0178350e2fb544a77c8512585ae292e50c54d5ad",
+      "business_ended_at": "2026-10-13T12:43:28.484748Z",
+      "business_terminal": "cli0_verifying_complete_report_parent411_and_natural_gui",
+      "structured_review": "accepted_with_changes/other_extra_readonly_bash_and_report_counts"
     }
   },
   "provider_cooldown_until": "2026-10-13T09:55:32Z",

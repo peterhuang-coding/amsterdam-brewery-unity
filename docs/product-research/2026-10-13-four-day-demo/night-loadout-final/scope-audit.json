@@ -1,0 +1,21 @@
+{
+  "source_sha_ok": 20,
+  "staged_readonly_sha_ok": 18,
+  "unexpected_files": [],
+  "allowed_spans_only": true,
+  "tool_counts": {
+    "Read": 16,
+    "Bash": 11,
+    "Edit": 10
+  },
+  "extra_readonly_bash": [
+    "grep -n \"KITS\" tools/prototype/backstage-core.js | head -30",
+    "grep -n \"explore\\|prepared\\|close\" tools/prototype/reopening-core.js | head -40",
+    "grep -n \"overlay\\|dialog\\|modal\" tools/prototype/reopening.css | head -40",
+    "grep -n \"overlay\\|dialog\" tools/prototype/index.html",
+    "true"
+  ],
+  "outscope_file_calls": [],
+  "num_turns": 38,
+  "report_validation": null
+}

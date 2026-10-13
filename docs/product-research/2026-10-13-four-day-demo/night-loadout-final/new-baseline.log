@@ -1,0 +1,141 @@
+TAP version 13
+# Subtest: loadout dialog shows short essentials, tonight title, closed details with full facts and verbatim kit cards
+not ok 1 - loadout dialog shows short essentials, tonight title, closed details with full facts and verbatim kit cards
+  ---
+  duration_ms: 102.559208
+  type: 'test'
+  location: '/private/tmp/amsterdam-night-loadout-review-20261013/baseline/tools/prototype/test-night-loadout-ui.js:208:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /<details>/. Input:
+    
+    '<p><b>今晚 · 夜间补货</b><br>超市卸货占了巷子，清洁车照常上班。 货堆堵住近路；从南侧绕行，空桶可以挡住清洁车。</p><p>超市有货架、冷库与可打开的卸货捷径；夜店有六秒鼓点掩护。分拣场可以停带、反转、钩货；温室能关阀抢时间，也能花零件修出后续夜晚的干路。每套工具都附带 3 只空瓶。引声带开巡查，或拖动青环空桶挡住冲撞；自动探索也能选择这两种做法。</p><p>有人在 NO SIGNAL 夜店落下一箱“进口酵母”。红灯街的 Noor 知道来历。去找箱子，也可以走自己的路。</p><p>角色会自动探索和使用工具，你只需要在关键时刻选怎么做。阅读选项时时间暂停；途中可以切换 2× 播放或手动操作。实际行动时间 3 分钟，选择回家后自动走到出口。</p>'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<p><b>今晚 · 夜间补货</b><br>超市卸货占了巷子，清洁车照常上班。 货堆堵住近路；从南侧绕行，空桶可以挡住清洁车。</p><p>超市有货架、冷库与可打开的卸货捷径；夜店有六秒鼓点掩护。分拣场可以停带、反转、钩货；温室能关阀抢时间，也能花零件修出后续夜晚的干路。每套工具都附带 3 只空瓶。引声带开巡查，或拖动青环空桶挡住冲撞；自动探索也能选择这两种做法。</p><p>有人在 NO SIGNAL 夜店落下一箱“进口酵母”。红灯街的 Noor 知道来历。去找箱子，也可以走自己的路。</p><p>角色会自动探索和使用工具，你只需要在关键时刻选怎么做。阅读选项时时间暂停；途中可以切换 2× 播放或手动操作。实际行动时间 3 分钟，选择回家后自动走到出口。</p>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-night-loadout-review-20261013/baseline/tools/prototype/test-night-loadout-ui.js:217:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: each kit button starts a real explore run with its actual kit, capacity, auto mode and 180s
+ok 2 - each kit button starts a real explore run with its actual kit, capacity, auto mode and 180s
+  ---
+  duration_ms: 279.936458
+  type: 'test'
+  ...
+# Subtest: stay and Escape cancel the loadout with no trip/resource change, restore focus, and reopen still launches
+not ok 3 - stay and Escape cancel the loadout with no trip/resource change, restore focus, and reopen still launches
+  ---
+  duration_ms: 78.340625
+  type: 'test'
+  location: '/private/tmp/amsterdam-night-loadout-review-20261013/baseline/tools/prototype/test-night-loadout-ui.js:297:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Escape never launches the first tool
+    + actual - expected
+    
+    + 'explore'
+    - 'summary'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'summary'
+  actual: 'explore'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-night-loadout-review-20261013/baseline/tools/prototype/test-night-loadout-ui.js:310:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: loadout focus trap cycles summary, three tools and stay; Enter/Space on summary stay native
+not ok 4 - loadout focus trap cycles summary, three tools and stay; Enter/Space on summary stay native
+  ---
+  duration_ms: 72.2685
+  type: 'test'
+  location: '/private/tmp/amsterdam-night-loadout-review-20261013/baseline/tools/prototype/test-night-loadout-ui.js:330:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'summary',
+        '长钩绳',
+        '搬货背架',
+        '泡沫工具',
+        '先留在酒馆'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'summary'
+    1: '长钩绳'
+    2: '搬货背架'
+    3: '泡沫工具'
+    4: '先留在酒馆'
+  actual:
+    0: '长钩绳'
+    1: '搬货背架'
+    2: '泡沫工具'
+    3: '先留在酒馆'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-night-loadout-review-20261013/baseline/tools/prototype/test-night-loadout-ui.js:333:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: day 2 and day 3 loadouts show the real current-night street title, description and hint
+not ok 5 - day 2 and day 3 loadouts show the real current-night street title, description and hint
+  ---
+  duration_ms: 83.195542
+  type: 'test'
+  location: '/private/tmp/amsterdam-night-loadout-review-20261013/baseline/tools/prototype/test-night-loadout-ui.js:382:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of null (reading '0')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-night-loadout-review-20261013/baseline/tools/prototype/test-night-loadout-ui.js:392:62)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: used-run and non-summary guards never open the choice
+ok 6 - used-run and non-summary guards never open the choice
+  ---
+  duration_ms: 109.620375
+  type: 'test'
+  ...
+# Subtest: pause and normal-confirm Escape keep old behaviour; event Escape still does not close
+ok 7 - pause and normal-confirm Escape keep old behaviour; event Escape still does not close
+  ---
+  duration_ms: 181.380875
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 3
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1039.317458

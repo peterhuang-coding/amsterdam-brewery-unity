@@ -1,0 +1,26 @@
+--- a/tools/prototype/reopening-ui.js
++++ b/tools/prototype/reopening-ui.js
+@@ -149,8 +149,10 @@
+   function chooseExpedition(){
+     if(state.phase!=='summary'||state.prepared.includes('explore'))return;
+     const street=Backstage.streetInfo?.(Backstage.create(state.seed,state.day));
+-    const streetIntro=street?`<p><b>今晚 · ${esc(street.title)}</b><br>${esc(street.description)} ${esc(street.hint)}</p><p>超市有货架、冷库与可打开的卸货捷径；夜店有六秒鼓点掩护。分拣场可以停带、反转、钩货；温室能关阀抢时间，也能花零件修出后续夜晚的干路。每套工具都附带 3 只空瓶。引声带开巡查，或拖动青环空桶挡住冲撞；自动探索也能选择这两种做法。</p>`:'';
+-    modal('出门前 · 工具免费借用','今晚带哪一套？',streetIntro+'<p>有人在 NO SIGNAL 夜店落下一箱“进口酵母”。红灯街的 Noor 知道来历。去找箱子，也可以走自己的路。</p><p>角色会自动探索和使用工具，你只需要在关键时刻选怎么做。阅读选项时时间暂停；途中可以切换 2× 播放或手动操作。实际行动时间 3 分钟，选择回家后自动走到出口。</p>',[...Object.entries(Backstage.KITS).map(([id,k])=>({label:k.name,description:k.detail,run:()=>dispatch({type:'explore',kit:id})})),{label:'先留在酒馆',secondary:true}]);
++    const tonight=street?`<p><b>今晚 · ${esc(street.title)}</b></p>`:'';
++    const essentials='<p>工具免费借用，每夜只出一趟门。实际行动 180 秒，阅读选项时暂停：角色自动行走，关键时刻由你选择，也可切 2× 或手动。回家必须自己走到真正的回店口（西南出口），不能瞬移。</p>';
++    const roadDetail=street?`<details><summary>今晚的路线与地点细节（超市后场 / 夜店 / 分拣场 / 温室）</summary><p><b>今晚路线：</b>${esc(street.description)} ${esc(street.hint)}</p><p>超市有货架、冷库与可打开的卸货捷径；夜店有六秒鼓点掩护。分拣场可以停带、反转、钩货；温室能关阀抢时间，也能花零件修出后续夜晚的干路。每套工具都附带 3 只空瓶。引声带开巡查，或拖动青环空桶挡住冲撞；自动探索也能选择这两种做法。</p><p>有人在 NO SIGNAL 夜店落下一箱“进口酵母”。红灯街的 Noor 知道来历。去找箱子，也可以走自己的路。</p><p>角色会自动探索和使用工具，你只需要在关键时刻选怎么做。阅读选项时时间暂停；途中可以切换 2× 播放或手动操作。实际行动时间 3 分钟，选择回家后自动走到出口。</p></details>`:'';
++    modal('出门前 · 工具免费借用','今晚带哪一套？',tonight+essentials+roadDetail,[...Object.entries(Backstage.KITS).map(([id,k])=>({label:k.name,description:k.detail,run:()=>dispatch({type:'explore',kit:id})})),{label:'先留在酒馆',secondary:true}],'loadout');
+   }
+   function renderCityToolbar(){
+     const toolbar=$('city-toolbar');toolbar.hidden=!inCity();if(!inCity())return;
+@@ -673,8 +675,8 @@
+   $('sound-button').addEventListener('click',()=>{ui.sound=!ui.sound;save();render();if(ui.sound)sound();});
+   document.addEventListener('keydown',e=>{
+     if(ui.modal){
+-      if(e.key==='Escape'){e.preventDefault();if(ui.modal.kind==='event')return;const callback=ui.modal.buttons[0].run;closeModal();if(callback)callback();syncEvent();}
+-      if(e.key==='Tab'){const controls=[...$('overlay').querySelectorAll('button:not(:disabled),a,input')],first=controls[0],last=controls[controls.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
++      if(e.key==='Escape'){e.preventDefault();if(ui.modal.kind==='event')return;if(ui.modal.kind==='loadout'){closeModal();return;}const callback=ui.modal.buttons[0].run;closeModal();if(callback)callback();syncEvent();}
++      if(e.key==='Tab'){const selector=ui.modal.kind==='loadout'?'button:not(:disabled),a,input,summary':'button:not(:disabled),a,input';const controls=[...$('overlay').querySelectorAll(selector)],first=controls[0],last=controls[controls.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
+       return;
+     }
+     if(e.target.matches('input,textarea,select')){if(e.key==='Enter'&&e.target.id==='seed-input'){e.preventDefault();handleAction($board.querySelector('[data-action="start"]'));}return;}

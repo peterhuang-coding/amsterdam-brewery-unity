@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-night-loadout-20261013",
+  "receipt_sha256": "cca36e7b5ce96a5d907859211b23f6252e16d5f1cc0415162f21aefc80d9d217",
+  "reviewed_at": "2026-10-13T12:54:49Z",
+  "outcome": "accepted_with_changes",
+  "failure_type": "other",
+  "evidence": [
+    {
+      "path": "/tmp/amsterdam-night-loadout-review-20261013/parent-validation.md",
+      "sha256": "11c7cdb7d8ce7bf1d59fec37b9727861e01b6e71a6f97bd5dfca5e47dddcbc1c"
+    }
+  ]
+}

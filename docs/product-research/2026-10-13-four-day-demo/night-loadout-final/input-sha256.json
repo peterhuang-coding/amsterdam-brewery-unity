@@ -1,0 +1,22 @@
+{
+  "brief.md": "3e33e09df0f7a030731f887ca34786afc0118225bdfaa163eeb6f53f01ff91ab",
+  "tools/prototype/index.html": "c70b027d392198e1cf733e2a4bdf88564a679b21f9bdc763b478a1ab0288f3fd",
+  "tools/prototype/reopening.css": "17d05673d6634eac3b7abd5de41b6ccfe1314fdde8a448a11a93d5fef3c82b56",
+  "tools/prototype/reopening-ui.js": "8fdc2968e240c3e57ad2f52c7a825312e358bbadb3f81122adcc5146f5a25961",
+  "tools/prototype/reopening-scene.js": "d429ad5760dd8b2d23397a20070d4ebdbdf7704ee3b19ce4f349fec52582dda7",
+  "tools/prototype/reopening-city.js": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625",
+  "tools/prototype/reopening-core.js": "4c31d8a72fe9fd9736e7db57999efd31efb29a2c3b1458e8f96bec5559633c3b",
+  "tools/prototype/journey-core.js": "1424adad30c587fda0aa49e101336061dd0e0a35587d0c0c998feb804948c963",
+  "tools/prototype/journey-ui.js": "23fe4245f342aebfa868f7ff6fb4dc395d4e1dee94440b72df0eb86f1e124c43",
+  "tools/prototype/backstage-core.js": "335baa752efedabf5771436c23fb5370a40af5aef4b89cdd1793351906219d07",
+  "tools/prototype/backstage-auto.js": "569f7dab7e49afb0ec56870cef1d412fff3ef0f53399bbf2738d370fca919681",
+  "tools/prototype/backstage-scene.js": "153175d48b778960a86a0a43317e49bc1aa64837e78dfb2d108387715428ce0f",
+  "tools/prototype/backstage-ui.js": "3a68d64173a079d213ba048aa6c01db4191284a0d703759b8935fa2f3def5af9",
+  "tools/prototype/delivery-orders.js": "62e46bb83f5f8d97a2e7bc0d856484ef978efd2566236ee53304ea5167d3e496",
+  "tools/prototype/character-stories.js": "3db456b04852929656867925bd35bc73dbe0b6349159708922acab22db1a53bb",
+  "tools/prototype/flower-network.js": "e6febfd844da0107ca9079251ddbb4fd81e30cc5979f696bdba8f3b493027f80",
+  "tools/prototype/test-first-street-ui.js": "cda4472c2afef6eaa289de106aa69c8a001106f1b6cf304fb8e569874e314290",
+  "tools/prototype/test-backstage.js": "d76e837eb53cd6c09421061011bb4ba993d008e63f1106dd277eae7e331d743c",
+  "tools/prototype/test-backstage-auto.js": "04087344a2abf20b761e3c34ff2fff1dfd67efad20e3e1822234b0ece219232f",
+  "tools/prototype/test-night-loadout-ui.js": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

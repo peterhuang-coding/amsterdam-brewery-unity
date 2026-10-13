@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: loadout dialog shows short essentials, tonight title, closed details with full facts and verbatim kit cards
+ok 1 - loadout dialog shows short essentials, tonight title, closed details with full facts and verbatim kit cards
+  ---
+  duration_ms: 90.854708
+  type: 'test'
+  ...
+# Subtest: each kit button starts a real explore run with its actual kit, capacity, auto mode and 180s
+ok 2 - each kit button starts a real explore run with its actual kit, capacity, auto mode and 180s
+  ---
+  duration_ms: 269.544583
+  type: 'test'
+  ...
+# Subtest: stay and Escape cancel the loadout with no trip/resource change, restore focus, and reopen still launches
+ok 3 - stay and Escape cancel the loadout with no trip/resource change, restore focus, and reopen still launches
+  ---
+  duration_ms: 97.739209
+  type: 'test'
+  ...
+# Subtest: loadout focus trap cycles summary, three tools and stay; Enter/Space on summary stay native
+ok 4 - loadout focus trap cycles summary, three tools and stay; Enter/Space on summary stay native
+  ---
+  duration_ms: 64.517708
+  type: 'test'
+  ...
+# Subtest: day 2 and day 3 loadouts show the real current-night street title, description and hint
+ok 5 - day 2 and day 3 loadouts show the real current-night street title, description and hint
+  ---
+  duration_ms: 223.211917
+  type: 'test'
+  ...
+# Subtest: used-run and non-summary guards never open the choice
+ok 6 - used-run and non-summary guards never open the choice
+  ---
+  duration_ms: 133.104583
+  type: 'test'
+  ...
+# Subtest: pause and normal-confirm Escape keep old behaviour; event Escape still does not close
+ok 7 - pause and normal-confirm Escape keep old behaviour; event Escape still does not close
+  ---
+  duration_ms: 177.66075
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1243.048708

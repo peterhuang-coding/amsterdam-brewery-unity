@@ -20,3 +20,5 @@
 当前仍用[dad6b38试玩](http://127.0.0.1:18860/tools/prototype/index.html?seed=42001&commit=dad6b38)。首杯/夜探/返店/次日后果证据在cargo-choice-final；完整三天结局及第二、三晚全部订单与检查员恢复分别在three-day-parent和full-service-parent。操作带暂停和DOM时机辅助，不替代新人体验或真人乐趣。
 
 本包固定的是可恢复源码版本，并不表示用户已认可demo定版。目标仍active：10月16日候选、17–18日真人体验确认；原执行截止和下一方向review保持。PLAY03/06/07/11/12与FREEZE01仍搁置，不复活。下一步等待固定版本的真实首次体验反馈，最多选择三个有证据的定版问题，不增加无依据的局部润色。
+
+同步：证据c85c793及原日志gzip纠正5ff164f均已push，远端读回一致；Notion主页21:17:27Z补候选证据读回。现有amsterdam同ID/thread/ACTIVE/15min提示逐字节读回一致，未新建自动化。初次cached检查因原console尾空行失败后仍提交，后续原字节gzip保全并再次cached检查0；保留原历史。

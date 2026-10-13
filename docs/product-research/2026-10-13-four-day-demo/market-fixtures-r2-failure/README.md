@@ -10,3 +10,5 @@ Read12/Edit20/Bash6。唯一表外Bash为只读node -e打印KITS/WALLS/item3/fus
 没有API冷却新依据；接下来仅在D23内选择真正独立成熟任务，先观察已采用版、定边界、Notion/合同与实时容量后再提交。标准review另存。整体目标未完成，方向review15:48:33Z与四天截止不变。
 
 标准review已登记rejected/other；两文件补丁从0178350恢复2/2匹配。
+
+Post-commit verification: git show --check 958d0e5 flags four trailing-whitespace lines (39,41,150,152) in raw baseline-new.log. These are original TAP failure output retained byte-for-byte as evidence, not a game-code defect; the log was not normalized. Contract/submission commits are checked separately.

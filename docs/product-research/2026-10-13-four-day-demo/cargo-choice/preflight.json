@@ -1,0 +1,12 @@
+[
+  {
+    "command": "node --test tools/prototype/test-district-core.js tools/prototype/test-district-auto.js",
+    "exit": 0,
+    "log": "preflight-0.log"
+  },
+  {
+    "command": "node --check tools/prototype/backstage-ui.js",
+    "exit": 0,
+    "log": "preflight-1.log"
+  }
+]

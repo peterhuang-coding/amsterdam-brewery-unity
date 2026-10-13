@@ -1,0 +1,34 @@
+{
+  "brief.md": {
+    "sha256": "b1056a0cde10b099ab67ae62e80087c3c58a897a954877c8cc00e96cf0ad799d",
+    "bytes": 6511
+  },
+  "tools/prototype/backstage-core.js": {
+    "sha256": "335baa752efedabf5771436c23fb5370a40af5aef4b89cdd1793351906219d07",
+    "bytes": 40144
+  },
+  "tools/prototype/backstage-auto.js": {
+    "sha256": "569f7dab7e49afb0ec56870cef1d412fff3ef0f53399bbf2738d370fca919681",
+    "bytes": 27715
+  },
+  "tools/prototype/backstage-ui.js": {
+    "sha256": "3a68d64173a079d213ba048aa6c01db4191284a0d703759b8935fa2f3def5af9",
+    "bytes": 34821
+  },
+  "tools/prototype/reopening.css": {
+    "sha256": "17d05673d6634eac3b7abd5de41b6ccfe1314fdde8a448a11a93d5fef3c82b56",
+    "bytes": 29374
+  },
+  "tools/prototype/test-district-core.js": {
+    "sha256": "7c24b0f1a9a422ffae5f25c3638e9fe22bf6b0649fa627959d45c882608669e4",
+    "bytes": 13250
+  },
+  "tools/prototype/test-district-auto.js": {
+    "sha256": "9e2367373e15750e29f658f882459dda2e4dccc7057a1e5bd82cdc695d8b7437",
+    "bytes": 5599
+  },
+  "tools/prototype/test-cargo-choice-ui.js": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  }
+}

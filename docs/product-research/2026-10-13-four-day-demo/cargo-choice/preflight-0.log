@@ -1,0 +1,184 @@
+TAP version 13
+# Subtest: new route menu can start with any district or immediately return without losing cargo
+ok 1 - new route menu can start with any district or immediately return without losing cargo
+  ---
+  duration_ms: 3.423125
+  type: 'test'
+  ...
+# Subtest: sorting choices operate the real switch then preserve choice of onward route
+ok 2 - sorting choices operate the real switch then preserve choice of onward route
+  ---
+  duration_ms: 346.055084
+  type: 'test'
+  ...
+# Subtest: three sorting approaches collect physical cargo in every situation and kit, including restored travel
+ok 3 - three sorting approaches collect physical cargo in every situation and kit, including restored travel
+  ---
+  duration_ms: 1603.941583
+  type: 'test'
+  ...
+# Subtest: greenhouse valve and harvest choices really travel to their objects
+ok 4 - greenhouse valve and harvest choices really travel to their objects
+  ---
+  duration_ms: 44.596167
+  type: 'test'
+  ...
+# Subtest: repair choice only appears with a real spare, consumes it once and returns to greenhouse choices
+ok 5 - repair choice only appears with a real spare, consumes it once and returns to greenhouse choices
+  ---
+  duration_ms: 57.093041
+  type: 'test'
+  ...
+# Subtest: capacity chooses which kind to drop and never discards a different last item
+ok 6 - capacity chooses which kind to drop and never discards a different last item
+  ---
+  duration_ms: 0.217125
+  type: 'test'
+  ...
+# Subtest: old v3 keeps its old route and rejects new-only automatic goals
+ok 7 - old v3 keeps its old route and rejects new-only automatic goals
+  ---
+  duration_ms: 0.317375
+  type: 'test'
+  ...
+# Subtest: malformed legacy automatic visits reject cleanly
+ok 8 - malformed legacy automatic visits reject cleanly
+  ---
+  duration_ms: 0.062125
+  type: 'test'
+  ...
+# Subtest: sorting arrival records an actual visit before a player can immediately leave
+ok 9 - sorting arrival records an actual visit before a player can immediately leave
+  ---
+  duration_ms: 32.867625
+  type: 'test'
+  ...
+# Subtest: intercepted switch hook reports failure instead of recording a completed reverse
+ok 10 - intercepted switch hook reports failure instead of recording a completed reverse
+  ---
+  duration_ms: 0.491625
+  type: 'test'
+  ...
+# Subtest: dropping the only spare while travelling to repair gives a retryable failure
+ok 11 - dropping the only spare while travelling to repair gives a retryable failure
+  ---
+  duration_ms: 1.192542
+  type: 'test'
+  ...
+# Subtest: new v4 runs retain all 17 item identities and expose exact district geometry
+ok 12 - new v4 runs retain all 17 item identities and expose exact district geometry
+  ---
+  duration_ms: 2.698083
+  type: 'test'
+  ...
+# Subtest: belt moves world loot east or west, and off stops motion
+ok 13 - belt moves world loot east or west, and off stops motion
+  ---
+  duration_ms: 4.669125
+  type: 'test'
+  ...
+# Subtest: foam pauses only objects whose centers are inside the local patch
+ok 14 - foam pauses only objects whose centers are inside the local patch
+  ---
+  duration_ms: 0.697125
+  type: 'test'
+  ...
+# Subtest: belt leaves bagged and delivered items alone and pushes the player through collision movement
+ok 15 - belt leaves bagged and delivered items alone and pushes the player through collision movement
+  ---
+  duration_ms: 2.386084
+  type: 'test'
+  ...
+# Subtest: nearby E toggles the switch and hook reverses it within real range
+ok 16 - nearby E toggles the switch and hook reverses it within real range
+  ---
+  duration_ms: 1.00175
+  type: 'test'
+  ...
+# Subtest: switch LOS and hook range block the effect even though hook firing itself succeeds
+ok 17 - switch LOS and hook range block the effect even though hook firing itself succeeds
+  ---
+  duration_ms: 0.200041
+  type: 'test'
+  ...
+# Subtest: valve closes sprinklers for 12 simulation seconds and auto choice freezes the countdown
+ok 18 - valve closes sprinklers for 12 simulation seconds and auto choice freezes the countdown
+  ---
+  duration_ms: 10.938167
+  type: 'test'
+  ...
+# Subtest: hook can close a visible valve but cannot pass glass or exceed reach
+ok 19 - hook can close a visible valve but cannot pass glass or exceed reach
+  ---
+  duration_ms: 0.213042
+  type: 'test'
+  ...
+# Subtest: wet ground slows walking at a legal y490 route and drift respects the greenhouse wall
+ok 20 - wet ground slows walking at a legal y490 route and drift respects the greenhouse wall
+  ---
+  duration_ms: 1.566542
+  type: 'test'
+  ...
+# Subtest: repair needs a nearby visible valve and salvage, consumes one part exactly once and persists
+ok 21 - repair needs a nearby visible valve and salvage, consumes one part exactly once and persists
+  ---
+  duration_ms: 0.927167
+  type: 'test'
+  ...
+# Subtest: drop selects a bag item, rejects unknown/world ids without inventory mutation, and preserves throw behavior
+ok 22 - drop selects a bag item, rejects unknown/world ids without inventory mutation, and preserves throw behavior
+  ---
+  duration_ms: 0.454375
+  type: 'test'
+  ...
+# Subtest: ordinary E and collect use exact requested item, 45 range, LOS and capacity
+ok 23 - ordinary E and collect use exact requested item, 45 range, LOS and capacity
+  ---
+  duration_ms: 0.237125
+  type: 'test'
+  ...
+# Subtest: ordinary auto pickup checks LOS in v4 while old v3 keeps original pickup behavior
+ok 24 - ordinary auto pickup checks LOS in v4 while old v3 keeps original pickup behavior
+  ---
+  duration_ms: 0.163125
+  type: 'test'
+  ...
+# Subtest: visited records unique entered zones only, survives restore and remains separate from choice intent
+ok 25 - visited records unique entered zones only, survives restore and remains separate from choice intent
+  ---
+  duration_ms: 0.436084
+  type: 'test'
+  ...
+# Subtest: v1/v2/v3 restore without adding district and old v3 retains location behavior only
+ok 26 - v1/v2/v3 restore without adding district and old v3 retains location behavior only
+  ---
+  duration_ms: 2.376083
+  type: 'test'
+  ...
+# Subtest: restore validates district structure, discoveries and all seven outcome ids
+ok 27 - restore validates district structure, discoveries and all seven outcome ids
+  ---
+  duration_ms: 1.101458
+  type: 'test'
+  ...
+# Subtest: v4 snapshots all three daytime clues while v3 keeps its original two-clue schema
+ok 28 - v4 snapshots all three daytime clues while v3 keeps its original two-clue schema
+  ---
+  duration_ms: 0.375459
+  type: 'test'
+  ...
+# Subtest: the promised sorting spare starts on the working conveyor and actually travels
+ok 29 - the promised sorting spare starts on the working conveyor and actually travels
+  ---
+  duration_ms: 0.788292
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2162.366334

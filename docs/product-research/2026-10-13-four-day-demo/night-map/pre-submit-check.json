@@ -1,0 +1,12 @@
+{
+  "checked_at": "2026-10-13T10:11:45.254023+00:00",
+  "task_id": "amsterdam-night-map-20261013",
+  "base": "bd614431e31dc44cd3730ef6c0d6c022cd355b1a",
+  "active_ledgers": [],
+  "cli_processes": [],
+  "input_count": 6,
+  "input_sha_match": true,
+  "global_check_non_atomic": true,
+  "cooldown_until": "2026-10-13T09:55:32Z",
+  "contract_commit": "194e2c9fa6f09561b889076f00e5453c83df6b51"
+}

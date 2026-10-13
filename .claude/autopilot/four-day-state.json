@@ -13,9 +13,11 @@
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
   "current_task_terminal": null,
-  "failure_reason": "previous_PLAY07_correction_request_timeout_shelved",
+  "failure_reason": null,
   "last_result_at": "2026-10-13T08:55:31.673048Z",
-  "in_flight": [],
+  "in_flight": [
+    "amsterdam-night-map-20261013"
+  ],
   "candidate_path": null,
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -106,26 +108,28 @@
       "correction_duration_seconds": 488.124
     },
     "PLAY08": {
-      "business_attempts_submitted": 0,
+      "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 0,
-      "outcome": "prepared_waiting_provider_cooldown",
+      "outcome": "running",
       "task_id": "amsterdam-night-map-20261013",
       "base_commit": "bd614431e31dc44cd3730ef6c0d6c022cd355b1a",
-      "game_adopted": 0
+      "game_adopted": 0,
+      "business_submitted_at": "2026-10-13T10:11:45.254565+00:00",
+      "worker_pid": 53297
     }
   },
   "provider_cooldown_until": "2026-10-13T09:55:32Z",
   "provider_cooldown_basis": "parent60minafter_repeated_api_transport_failures_not_server_RetryAfter",
   "failure_notification_recorded_at": "2026-10-13T09:15:22Z",
-  "provider_cooldown_completed_at": null,
-  "current_submitted_at": null,
-  "current_worker_pid": null,
+  "provider_cooldown_completed_at": "2026-10-13T10:11:45.254565+00:00",
+  "current_submitted_at": "2026-10-13T10:11:45.254565+00:00",
+  "current_worker_pid": 53297,
   "current_task_packet": "/tmp/amsterdam-night-map-20261013/handoff.json",
   "current_task_notion": "https://app.notion.com/p/3f83285284df812590cbecc1b3f8e793",
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
-  "current_task_stage": "prepared_cooldown",
-  "prepared_task_id": "amsterdam-night-map-20261013",
-  "prepared_task_packet": "/tmp/amsterdam-night-map-20261013/handoff.json"
+  "current_task_stage": "running",
+  "prepared_task_id": null,
+  "prepared_task_packet": null
 }

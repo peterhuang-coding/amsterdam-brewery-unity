@@ -1,3 +1,13 @@
+## PLAY08夜探方位图已单路提交
+
+2026-10-13T10:11:45.254565Z，amsterdam-night-map-20261013已启动，worker53297/launcher53294。logical play08-night-map/business1、correction0/1；实际init Seed Evolving/Read/Edit/Bash/dontAsk，launch settings确认thinking enabled/effort high。1200秒32轮、原4精确命令。固定原包/tmp/amsterdam-night-map-20261013/handoff.json，稳定账本同ID；先查原请求/结果/日志/PID，已提交或unknown不重发。
+
+父选09:55:32Z冷却已过，不代表服务稳定恢复；实时Notion已执行中，提交前即时全机账本/CLI0路、本项1路（非原子并发保证），6公开输入87072B SHA一致。精确bd614431e31dc44cd3730ef6c0d6c022cd355b1a游戏分支干净且与远端一致；合同194e2c9已push。仅backstage-scene.js::miniMap/专用helper与新test-night-map-scene.js可写；相机/worldPoint/其他绘制/核心/UI/CSS/经济/存档/旧断言只读。PLAY03/06/07仍搁置。
+
+收原ID完整报告并核对实际工具/范围/输入哈希、新行为在未改采用基线红再候选绿、旧379+新增全量、自然夜探起点/移动/手动自动/M地图/暂停刷新/实际出口返店、桌面390px和前后截图后才采用push新试玩。若业务失败，先确认终态后仅一次定向修正；修正或父验仍失败就搁置，不换ID清零。原18/18预检不是本请求测试，当前在途采用0。
+
+已交付试玩仍bd61443/18839，原服务存档不动。Notion https://app.notion.com/p/3f83285284df812590cbecc1b3f8e793 执行中。下次方向review2026-10-13T15:48:33Z及固定截止2026-10-16T19:48:33Z不变。实际提交、即时核对和init摘要保存在night-map目录；以下准备/冷却说明为历史。
+
 ## PLAY07修正超时并搁置；独立PLAY08准备待冷却
 
 amsterdam-pub-guests-r2-20261013于2026-10-13T08:55:31.673048Z结束，488.124秒/9轮、Request timed out/CLI1、state done/result unknown，worker47538退出。最终subtype success同时is_error=true/terminal_reason=api_error，HTTP状态null；不称成功或已观察429。Read8均输入范围，7源与7暂存SHA一致；无Edit/Bash/测试/报告/候选、无权限拒绝或写越界，采用0。标准review返回review_requires_finished，未登记rejected；父级独立终态审查见pub-guests-r2-failure，原请求/回执/日志不改。原预检及已采用379不是此请求测试。D24唯一修正1/1耗尽，PLAY07暂缓，不再补派/换ID/主代理补写。PLAY03/06仍暂缓。

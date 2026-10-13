@@ -1,3 +1,19 @@
+# PLAY08 夜探方位图 — 已提交待独立验收
+
+## PLAY08夜探方位图已单路提交
+
+2026-10-13T10:11:45.254565Z，amsterdam-night-map-20261013已启动，worker53297/launcher53294。logical play08-night-map/business1、correction0/1；实际init Seed Evolving/Read/Edit/Bash/dontAsk，launch settings确认thinking enabled/effort high。1200秒32轮、原4精确命令。固定原包/tmp/amsterdam-night-map-20261013/handoff.json，稳定账本同ID；先查原请求/结果/日志/PID，已提交或unknown不重发。
+
+父选09:55:32Z冷却已过，不代表服务稳定恢复；实时Notion已执行中，提交前即时全机账本/CLI0路、本项1路（非原子并发保证），6公开输入87072B SHA一致。精确bd614431e31dc44cd3730ef6c0d6c022cd355b1a游戏分支干净且与远端一致；合同194e2c9已push。仅backstage-scene.js::miniMap/专用helper与新test-night-map-scene.js可写；相机/worldPoint/其他绘制/核心/UI/CSS/经济/存档/旧断言只读。PLAY03/06/07仍搁置。
+
+收原ID完整报告并核对实际工具/范围/输入哈希、新行为在未改采用基线红再候选绿、旧379+新增全量、自然夜探起点/移动/手动自动/M地图/暂停刷新/实际出口返店、桌面390px和前后截图后才采用push新试玩。若业务失败，先确认终态后仅一次定向修正；修正或父验仍失败就搁置，不换ID清零。原18/18预检不是本请求测试，当前在途采用0。
+
+已交付试玩仍bd61443/18839，原服务存档不动。Notion https://app.notion.com/p/3f83285284df812590cbecc1b3f8e793 执行中。下次方向review2026-10-13T15:48:33Z及固定截止2026-10-16T19:48:33Z不变。实际提交、即时核对和init摘要保存在night-map目录；以下准备/冷却说明为历史。
+
+[实际提交](submission.json)、[即时容量与SHA核对](pre-submit-check.json)、[实际模型/工具](actual-launch-summary.json)。
+
+## 原准备合同与预检
+
 # PLAY08 夜探方位图 — 准备未提交
 
 D23四天网页demo授权/D24失败策略下的独立小包。现有夜探地图只画区域块和动态墙，静态B.WALLS缺失；玩家和西南返店口都为小圆点，自然起点重合。主代理已自然新局→进酒馆开门→0杯提前打烊→长钩绳→夜探起点观察，见[基线截图](baseline-night-map.png)。0杯仅为快速进入夜探，不是首杯/趣味验收；临时18841/PID48942和标签已关闭。

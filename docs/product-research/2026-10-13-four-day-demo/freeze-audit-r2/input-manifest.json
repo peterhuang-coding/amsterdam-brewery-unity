@@ -1,0 +1,57 @@
+[
+  {
+    "path": "correction.md",
+    "sha256": "f8f33bbf0123f4959478643ebd5f8d9a98e4fba0dcf6b4b544375e585f7c504e",
+    "bytes": 2024
+  },
+  {
+    "path": "validate_audit.py",
+    "sha256": "760e00e8f01cde3d9b2c1f6e7a1f63e83d565d73cd0863e8949b0d61323e2d71",
+    "bytes": 842
+  },
+  {
+    "path": "audit.md",
+    "sha256": "1afe7250ea1c452d979f8e9af11ddeee52d00dcdbfdecaf0db173623e1528582",
+    "bytes": 6982
+  },
+  {
+    "path": "findings.json",
+    "sha256": "5207d9667274a4de36c4041dc6802c612f3f4ab0b32705fbb1072dc39e17b725",
+    "bytes": 11803
+  },
+  {
+    "path": "brief.md",
+    "sha256": "45acce12d69b18f0d58908485350f94c939f41da2f8084309903177dcb5b0daf",
+    "bytes": 2797
+  },
+  {
+    "path": "tools/prototype/reopening-ui.js",
+    "sha256": "b884234f2bda638ccf6de62e8036eb4b3cdbc73e95325785588c761d38c14985",
+    "bytes": 94363
+  },
+  {
+    "path": "tools/prototype/reopening-city.js",
+    "sha256": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625",
+    "bytes": 15809
+  },
+  {
+    "path": "tools/prototype/index.html",
+    "sha256": "c70b027d392198e1cf733e2a4bdf88564a679b21f9bdc763b478a1ab0288f3fd",
+    "bytes": 7136
+  },
+  {
+    "path": "tools/prototype/reopening.css",
+    "sha256": "17d05673d6634eac3b7abd5de41b6ccfe1314fdde8a448a11a93d5fef3c82b56",
+    "bytes": 29374
+  },
+  {
+    "path": "tools/prototype/reopening-core.js",
+    "sha256": "4c31d8a72fe9fd9736e7db57999efd31efb29a2c3b1458e8f96bec5559633c3b",
+    "bytes": 70285
+  },
+  {
+    "path": "tools/prototype/backstage-ui.js",
+    "sha256": "e3860052e53dd579ee5868b457da8595417e79807bfc227da38bf8c7f2650269",
+    "bytes": 35181
+  }
+]

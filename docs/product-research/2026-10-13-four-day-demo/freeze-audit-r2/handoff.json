@@ -1,0 +1,59 @@
+{
+  "acceptance": [
+    "Accurate source references andlimits.",
+    "Atmost3 meaningfulblockers; shelvedoverlapexplicit.",
+    "Actual UI route all3days+ending, no claimedexecution."
+  ],
+  "commands": [
+    "python3 validate_audit.py"
+  ],
+  "constraints": [
+    "Readonly sources/validator.",
+    "Only exact listed command.",
+    "changed_files excludes reservedreport."
+  ],
+  "data_sensitivity": "public",
+  "goal": "Sole targeted correction of read-only D25 audit: continuous route ordering/seed, boundedclaims and reportsemantics; no game edits.",
+  "max_turns": 24,
+  "memory": {
+    "summary": "Business normalCLI0 but adapterblocked/parentsemanticrejected. Full drafts reused. correction1/1.",
+    "decisions": [
+      "Fix only audit defects; no gameedits or shelvedrevival."
+    ],
+    "known_issues": [
+      "Sleep/upgrade endsnight; replay destroysending; seedorder/broadclaims wrong."
+    ]
+  },
+  "read_files": [
+    "correction.md",
+    "brief.md",
+    "tools/prototype/reopening-core.js",
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/index.html",
+    "tools/prototype/reopening.css",
+    "tools/prototype/reopening-city.js",
+    "validate_audit.py",
+    "audit.md",
+    "findings.json"
+  ],
+  "task_id": "amsterdam-freeze-audit-r2-20261014",
+  "tasks": [
+    "Read correction and focusedsource.",
+    "Correct bothauditoutputs consistently.",
+    "Run exactvalidator and legalfinalreport with onlyexecutionblockers."
+  ],
+  "telemetry": {
+    "attempt_kind": "correction",
+    "logical_task_id": "d25-freeze-audit",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "analysis"
+  },
+  "timeout_seconds": 900,
+  "version": 1,
+  "workspace": "/tmp/amsterdam-freeze-audit-r2-20261014/input",
+  "write_files": [
+    "audit.md",
+    "findings.json"
+  ]
+}

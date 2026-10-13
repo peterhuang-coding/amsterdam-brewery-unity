@@ -5,7 +5,7 @@
   "deadline": "2026-10-16T19:48:33Z",
   "next_direction_review_at": "2026-10-14T01:48:33Z",
   "last_direction_review_at": "2026-10-13T15:50:11.532633+00:00",
-  "current_task_id": "amsterdam-freeze-audit-20261014",
+  "current_task_id": "amsterdam-freeze-audit-r2-20261014",
   "logical_task": "d25-freeze-audit",
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
@@ -15,9 +15,7 @@
   "current_task_terminal": "cli0_complete_report_parent_accepted",
   "failure_reason": null,
   "last_result_at": "2026-10-13T16:32:00.223259Z",
-  "in_flight": [
-    "amsterdam-freeze-audit-20261014"
-  ],
+  "in_flight": [],
   "candidate_path": null,
   "adopted_this_round": 1,
   "policy_decision": "D24",
@@ -235,7 +233,7 @@
   "current_task_notion": "https://app.notion.com/p/3f83285284df81848abfff583dbacd46",
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
-  "current_task_stage": "running",
+  "current_task_stage": "correction_prepared",
   "prepared_task_id": null,
   "prepared_task_packet": null,
   "play_service_pid": 91799,
@@ -265,8 +263,8 @@
     "logical_task_id": "d25-freeze-audit",
     "business_attempts": 1,
     "corrections_used": 0,
-    "current_id": "amsterdam-freeze-audit-20261014",
-    "outcome": "in_flight",
+    "current_id": "amsterdam-freeze-audit-r2-20261014",
+    "outcome": "business_rejected_semantic",
     "submission": {
       "started_at": "2026-10-13T17:09:12+00:00",
       "worker_pid": 93892,
@@ -283,6 +281,7 @@
       "adopted": 0,
       "global_active_before": 0,
       "capacity_note": "two other live lanes observed earlier; both terminal by immediate launch recheck; non-atomic guarantee"
-    }
+    },
+    "business_ended_at": "2026-10-13T17:20:57.960011+00:00"
   }
 }

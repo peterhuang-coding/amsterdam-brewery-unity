@@ -1,3 +1,7 @@
+## FREEZE01首稿拒收、唯一修正准备
+
+只读首稿正常CLI0/完整报告，607.429秒；adapterblocked因把产品观察填入保留blockers。父验发现先睡觉再夜探、先重开再验证结局的错误顺序，已rejected/semantic；源码未改。固定r2复用全稿，仅修审查路线/口径/报告，900秒24轮，当前未提交，原历史保留。父级自然三天验证继续，当前试玩dad6b38。
+
 ## FREEZE01只读审查已单路提交
 
 实际单路提交 2026-10-13T17:09:12+00:00，worker93892/launcher93888；此前两路已结束，提交前全机0路、本项1路（非原子保证）。实际init Seed Evolving/Read/Edit/Bash/dontAsk；launch确认alwaysThinkingEnabled true/effort high。business1/correction0。

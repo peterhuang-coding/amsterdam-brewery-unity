@@ -1,0 +1,69 @@
+{
+  "files": [
+    {
+      "path": "validate_audit.py",
+      "source_same": true,
+      "staged_same": true
+    },
+    {
+      "path": "audit.md",
+      "source_same": true,
+      "staged_same": false
+    },
+    {
+      "path": "findings.json",
+      "source_same": true,
+      "staged_same": false
+    },
+    {
+      "path": "brief.md",
+      "source_same": true,
+      "staged_same": true
+    },
+    {
+      "path": "tools/prototype/reopening-ui.js",
+      "source_same": true,
+      "staged_same": true
+    },
+    {
+      "path": "tools/prototype/reopening-city.js",
+      "source_same": true,
+      "staged_same": true
+    },
+    {
+      "path": "tools/prototype/index.html",
+      "source_same": true,
+      "staged_same": true
+    },
+    {
+      "path": "tools/prototype/reopening.css",
+      "source_same": true,
+      "staged_same": true
+    },
+    {
+      "path": "tools/prototype/reopening-core.js",
+      "source_same": true,
+      "staged_same": true
+    },
+    {
+      "path": "tools/prototype/backstage-ui.js",
+      "source_same": true,
+      "staged_same": true
+    }
+  ],
+  "counts": {
+    "Read": 11,
+    "Bash": 2,
+    "Edit": 3
+  },
+  "bash": [
+    {
+      "command": "wc -l tools/prototype/reopening-core.js tools/prototype/reopening-ui.js tools/prototype/backstage-ui.js tools/prototype/index.html tools/prototype/reopening.css tools/prototype/reopening-city.js",
+      "description": "Count lines in prototype source files"
+    },
+    {
+      "command": "python3 validate_audit.py",
+      "description": "Run audit structure validator"
+    }
+  ]
+}

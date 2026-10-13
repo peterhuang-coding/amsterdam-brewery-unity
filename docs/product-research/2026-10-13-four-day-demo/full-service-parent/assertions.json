@@ -1,0 +1,57 @@
+{
+  "checked_at": "2026-10-13T20:44:50.157093+00:00",
+  "checks": {
+    "natural_day2_exact_restore": true,
+    "day2_all_ten": true,
+    "day3_all_twelve": true,
+    "pending_event_restore_exact": true,
+    "inspector_cash_fee": true,
+    "inspector_patience": true,
+    "ending_refresh_exact": true,
+    "ending_result": true,
+    "viewport_widths": true,
+    "browser_resources": true,
+    "console": true
+  },
+  "day2_elapsed": 162.8576999999877,
+  "day3_elapsed": 180.25080000001213,
+  "reports": [
+    {
+      "day": 1,
+      "earned": 64,
+      "served": 6,
+      "satisfied": 6,
+      "lost": 2,
+      "rent": 12,
+      "cash": 85,
+      "promiseKept": false,
+      "promiseBroken": true,
+      "note": "Lotte 没收到答应的黑啤。她没开罚单，只说明晚先不带琴了。  "
+    },
+    {
+      "day": 2,
+      "earned": 123,
+      "served": 10,
+      "satisfied": 10,
+      "lost": 0,
+      "rent": 18,
+      "cash": 178,
+      "promiseKept": false,
+      "promiseBroken": false,
+      "note": "街坊们约好再来。没人要求做用户访谈，大家直接付了钱。  "
+    },
+    {
+      "day": 3,
+      "earned": 155,
+      "served": 12,
+      "satisfied": 12,
+      "lost": 0,
+      "rent": 18,
+      "cash": 281,
+      "promiseKept": false,
+      "promiseBroken": false,
+      "note": "街坊们约好再来。没人要求做用户访谈，大家直接付了钱。  "
+    }
+  ],
+  "note": "These checks summarize captured real browser evidence; they are not a fresh Node regression suite."
+}

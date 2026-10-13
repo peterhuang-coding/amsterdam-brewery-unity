@@ -1,0 +1,180 @@
+{
+  "version": 1,
+  "game": {
+    "version": 1,
+    "seed": 42001,
+    "day": 2,
+    "phase": "prep",
+    "cash": 85,
+    "actions": 2,
+    "trade": {
+      "rulesFromDay": 1,
+      "contracts": []
+    },
+    "stories": {
+      "version": 1,
+      "fromDay": 1,
+      "threads": []
+    },
+    "garden": {
+      "known": false,
+      "source": null,
+      "introduced": false,
+      "visits": []
+    },
+    "batches": [
+      {
+        "id": "starter-blond",
+        "beer": "blond",
+        "cups": 1,
+        "quality": 1,
+        "madeDay": 1,
+        "aged": false
+      },
+      {
+        "id": "starter-stout",
+        "beer": "stout",
+        "cups": 0,
+        "quality": 1,
+        "madeDay": 1,
+        "aged": false
+      },
+      {
+        "id": "d1-batch2",
+        "beer": "stout",
+        "cups": 5,
+        "quality": 3,
+        "madeDay": 1,
+        "aged": false
+      },
+      {
+        "id": "d1-backstage-0",
+        "beer": "blond",
+        "cups": 2,
+        "quality": 2,
+        "madeDay": 1,
+        "aged": false
+      }
+    ],
+    "friends": {
+      "lotte": 0,
+      "bram": 1,
+      "marta": 1
+    },
+    "promises": {
+      "lotte": false
+    },
+    "upgrades": [],
+    "hops": 0,
+    "music": false,
+    "log": [
+      "第 2 天，游客又把昨天的街道拍成了全新的城市。两次白天行动已经恢复。第 1 夜带回 2 杯艾尔、0 份酒花和 €0，已经收进酒馆。",
+      "探险归来：2 杯艾尔，0 份酒花，€0。收好东西，睡醒后再开门。",
+      "城市背面的门开着。去夜店找冷藏箱，或者沿着陌生的灯走。",
+      "第 1 夜收店：6 位满意的客人，支付租金 €12。",
+      "诺拉推门进来，点了金色艾尔。",
+      "Lotte 没等到答应的黑啤。她没发差评，只把吉他收回了琴盒。",
+      "Lotte的酒溢出了。损失一杯，也错过了一位客人。",
+      "正在给Lotte倒黑啤。在浅绿色区域收杯。",
+      "Lotte推门进来，点了黑啤。",
+      "诺拉接过漂亮的一杯，收入 €12。",
+      "正在给诺拉倒黑啤。在浅绿色区域收杯。",
+      "诺拉推门进来，点了黑啤。"
+    ],
+    "totalSatisfied": 6,
+    "totalServed": 6,
+    "brew": null,
+    "forage": null,
+    "night": null,
+    "reports": [
+      {
+        "day": 1,
+        "earned": 64,
+        "served": 6,
+        "satisfied": 6,
+        "lost": 2,
+        "rent": 12,
+        "cash": 85,
+        "promiseKept": false,
+        "promiseBroken": true,
+        "note": "Lotte 没收到答应的黑啤。她没开罚单，只说明晚先不带琴了。  "
+      }
+    ],
+    "lastMessage": "第 2 天，游客又把昨天的街道拍成了全新的城市。两次白天行动已经恢复。第 1 夜带回 2 杯艾尔、0 份酒花和 €0，已经收进酒馆。",
+    "result": null,
+    "prepared": [],
+    "backstage": {
+      "run": null,
+      "discovered": [],
+      "resolution": null,
+      "trips": 1,
+      "from": null,
+      "cashAfterClose": 0,
+      "journal": [
+        {
+          "day": 1,
+          "status": "extracted",
+          "cups": 2,
+          "hops": 0,
+          "cash": 0,
+          "visited": [
+            "market"
+          ],
+          "outcomes": [
+            "market-salvaged"
+          ]
+        }
+      ]
+    },
+    "life": {
+      "arrangement": null,
+      "bouquet": null,
+      "flowersDay": 0,
+      "display": null,
+      "gifts": 0,
+      "morning": [
+        "第 1 夜带回 2 杯艾尔、0 份酒花和 €0，已经收进酒馆。",
+        "超市今日告示：后场被人走动过、货物被搬动过，补货与销毁表重新排了一遍。你认得那片货架。",
+        "超市告示：第 2 天收摊酒箱涨价到 €10。今夜货架或冷库真的少了货；只涨第 2 天这一天。"
+      ],
+      "clues": []
+    },
+    "journeys": {
+      "run": null,
+      "usedDay": 0,
+      "debt": 0,
+      "history": []
+    },
+    "market": {
+      "version": 1,
+      "history": [
+        {
+          "day": 1,
+          "condition": "restock",
+          "approach": "salvage",
+          "delivered": false,
+          "stockTaken": true,
+          "powerRestored": false,
+          "safe": true,
+          "claimed": false
+        }
+      ]
+    }
+  },
+  "city": {
+    "x": 290,
+    "y": 590,
+    "visited": [
+      "pub",
+      "lotte"
+    ],
+    "bike": {
+      "x": 290,
+      "y": 590,
+      "mounted": false
+    }
+  },
+  "brewElapsed": 0,
+  "tutorialSeen": true,
+  "sound": true
+}

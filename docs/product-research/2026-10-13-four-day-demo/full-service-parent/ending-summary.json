@@ -1,0 +1,406 @@
+{
+  "same": true,
+  "ending": {
+    "version": 1,
+    "game": {
+      "version": 1,
+      "seed": 42001,
+      "day": 3,
+      "phase": "ending",
+      "cash": 281,
+      "actions": 0,
+      "trade": {
+        "rulesFromDay": 1,
+        "contracts": []
+      },
+      "stories": {
+        "version": 1,
+        "fromDay": 1,
+        "threads": []
+      },
+      "garden": {
+        "known": false,
+        "source": null,
+        "introduced": false,
+        "visits": []
+      },
+      "batches": [
+        {
+          "id": "starter-blond",
+          "beer": "blond",
+          "cups": 0,
+          "quality": 1,
+          "madeDay": 1,
+          "aged": false
+        },
+        {
+          "id": "starter-stout",
+          "beer": "stout",
+          "cups": 0,
+          "quality": 1,
+          "madeDay": 1,
+          "aged": false
+        },
+        {
+          "id": "d1-batch2",
+          "beer": "stout",
+          "cups": 0,
+          "quality": 3,
+          "madeDay": 1,
+          "aged": false
+        },
+        {
+          "id": "d1-backstage-0",
+          "beer": "blond",
+          "cups": 0,
+          "quality": 2,
+          "madeDay": 1,
+          "aged": false
+        },
+        {
+          "id": "d2-batch4",
+          "beer": "blond",
+          "cups": 0,
+          "quality": 3,
+          "madeDay": 2,
+          "aged": false
+        },
+        {
+          "id": "d3-batch5",
+          "beer": "blond",
+          "cups": 1,
+          "quality": 3,
+          "madeDay": 3,
+          "aged": false
+        },
+        {
+          "id": "d3-batch6",
+          "beer": "stout",
+          "cups": 1,
+          "quality": 3,
+          "madeDay": 3,
+          "aged": false
+        }
+      ],
+      "friends": {
+        "lotte": 2,
+        "bram": 3,
+        "marta": 3
+      },
+      "promises": {
+        "lotte": false
+      },
+      "upgrades": [],
+      "hops": 0,
+      "music": false,
+      "log": [
+        "尚未倒闭，房东表示欣慰",
+        "第 3 夜收店：12 位满意的客人，支付租金 €18。",
+        "芬恩接过漂亮的一杯，收入 €14。",
+        "正在给芬恩倒黑啤。在浅绿色区域收杯。",
+        "芬恩推门进来，点了黑啤。",
+        "Lotte接过漂亮的一杯，收入 €14。",
+        "正在给Lotte倒黑啤。在浅绿色区域收杯。",
+        "Lotte推门进来，点了黑啤。",
+        "米兰接过漂亮的一杯，收入 €12。",
+        "正在给米兰倒金色艾尔。在浅绿色区域收杯。",
+        "米兰推门进来，点了金色艾尔。",
+        "苏菲接过漂亮的一杯，收入 €14。"
+      ],
+      "totalSatisfied": 28,
+      "totalServed": 28,
+      "brew": null,
+      "forage": null,
+      "night": {
+        "elapsed": 180.25080000001213,
+        "duration": 195,
+        "orders": [
+          {
+            "id": "d3-guest0",
+            "name": "Marta",
+            "person": "marta",
+            "beer": "blond",
+            "budget": 8,
+            "arrival": 0,
+            "patience": 26,
+            "status": "served",
+            "portrait": "👩🏼‍🦳",
+            "quote": "先倒一杯。商业计划晚点再说，泡沫已经在杯子里了。"
+          },
+          {
+            "id": "d3-guest1",
+            "name": "尤斯特",
+            "person": null,
+            "beer": "blond",
+            "budget": 8,
+            "arrival": 16,
+            "patience": 24,
+            "status": "served",
+            "portrait": "👩🏻",
+            "quote": "一杯金色艾尔。老板说公司是家，所以加班费算亲情。"
+          },
+          {
+            "id": "d3-guest2",
+            "name": "鲁本",
+            "person": null,
+            "beer": "stout",
+            "budget": 10,
+            "arrival": 31,
+            "patience": 25,
+            "status": "served",
+            "portrait": "👨🏻",
+            "quote": "一杯黑啤。论文还在返修，我先完成这一杯。"
+          },
+          {
+            "id": "d3-guest3",
+            "name": "泰斯",
+            "person": null,
+            "beer": "blond",
+            "budget": 10,
+            "arrival": 31,
+            "patience": 39,
+            "status": "served",
+            "portrait": "👨🏾",
+            "quote": "一杯金色艾尔。老板说公司是家，所以加班费算亲情。"
+          },
+          {
+            "id": "d3-guest4",
+            "name": "苏菲",
+            "person": null,
+            "beer": "blond",
+            "budget": 13,
+            "arrival": 64,
+            "patience": 37,
+            "status": "served",
+            "portrait": "👨🏻",
+            "quote": "一杯金色艾尔。老板说公司是家，所以加班费算亲情。"
+          },
+          {
+            "id": "d3-guest5",
+            "name": "尤斯特",
+            "person": null,
+            "beer": "stout",
+            "budget": 15,
+            "arrival": 80,
+            "patience": 39,
+            "status": "served",
+            "portrait": "👨🏾",
+            "quote": "一杯黑啤。论文还在返修，我先完成这一杯。"
+          },
+          {
+            "id": "d3-guest6",
+            "name": "Bram",
+            "person": "bram",
+            "beer": "blond",
+            "budget": 11,
+            "arrival": 96,
+            "patience": 45,
+            "status": "served",
+            "portrait": "🧔🏼",
+            "quote": "来帮个午市，工钱当天结。理想我也有，不拿它抵工资。"
+          },
+          {
+            "id": "d3-guest7",
+            "name": "芬恩",
+            "person": null,
+            "beer": "blond",
+            "budget": 13,
+            "arrival": 114,
+            "patience": 37,
+            "status": "served",
+            "portrait": "🧑🏽",
+            "quote": "一杯金色艾尔。老板说公司是家，所以加班费算亲情。"
+          },
+          {
+            "id": "d3-guest8",
+            "name": "苏菲",
+            "person": null,
+            "beer": "stout",
+            "budget": 14,
+            "arrival": 131,
+            "patience": 39,
+            "status": "served",
+            "portrait": "👩🏻",
+            "quote": "一杯黑啤。论文还在返修，我先完成这一杯。"
+          },
+          {
+            "id": "d3-guest9",
+            "name": "米兰",
+            "person": null,
+            "beer": "blond",
+            "budget": 11,
+            "arrival": 144,
+            "patience": 38,
+            "status": "served",
+            "portrait": "🧑🏽",
+            "quote": "一杯金色艾尔。老板说公司是家，所以加班费算亲情。"
+          },
+          {
+            "id": "d3-guest10",
+            "name": "Lotte",
+            "person": "lotte",
+            "beer": "stout",
+            "budget": 14,
+            "arrival": 159,
+            "patience": 35,
+            "status": "served",
+            "portrait": "👩🏻‍🎤",
+            "quote": "留杯黑啤给我。我带吉他来，房东的独奏已经够多了。"
+          },
+          {
+            "id": "d3-guest11",
+            "name": "芬恩",
+            "person": null,
+            "beer": "stout",
+            "budget": 14,
+            "arrival": 177,
+            "patience": 39,
+            "status": "served",
+            "portrait": "👩🏻",
+            "quote": "一杯黑啤。论文还在返修，我先完成这一杯。"
+          }
+        ],
+        "pours": [],
+        "earned": 155,
+        "served": 12,
+        "satisfied": 12,
+        "lost": 0,
+        "promiseKept": false,
+        "promiseBroken": false,
+        "event": {
+          "id": "inspector",
+          "status": "resolved",
+          "choice": "paperwork"
+        },
+        "rentAdjustment": 0
+      },
+      "reports": [
+        {
+          "day": 1,
+          "earned": 64,
+          "served": 6,
+          "satisfied": 6,
+          "lost": 2,
+          "rent": 12,
+          "cash": 85,
+          "promiseKept": false,
+          "promiseBroken": true,
+          "note": "Lotte 没收到答应的黑啤。她没开罚单，只说明晚先不带琴了。  "
+        },
+        {
+          "day": 2,
+          "earned": 123,
+          "served": 10,
+          "satisfied": 10,
+          "lost": 0,
+          "rent": 18,
+          "cash": 178,
+          "promiseKept": false,
+          "promiseBroken": false,
+          "note": "街坊们约好再来。没人要求做用户访谈，大家直接付了钱。  "
+        },
+        {
+          "day": 3,
+          "earned": 155,
+          "served": 12,
+          "satisfied": 12,
+          "lost": 0,
+          "rent": 18,
+          "cash": 281,
+          "promiseKept": false,
+          "promiseBroken": false,
+          "note": "街坊们约好再来。没人要求做用户访谈，大家直接付了钱。  "
+        }
+      ],
+      "lastMessage": "尚未倒闭，房东表示欣慰",
+      "result": {
+        "won": true,
+        "title": "尚未倒闭，房东表示欣慰",
+        "description": "三晚租金结清，余款 €281，满意客人 28 位。街坊约了下一杯，房东约了下一笔。你终于有资格考虑给自己发工资。"
+      },
+      "prepared": [],
+      "backstage": {
+        "run": null,
+        "discovered": [],
+        "resolution": null,
+        "trips": 1,
+        "from": null,
+        "cashAfterClose": 0,
+        "journal": [
+          {
+            "day": 1,
+            "status": "extracted",
+            "cups": 2,
+            "hops": 0,
+            "cash": 0,
+            "visited": [
+              "market"
+            ],
+            "outcomes": [
+              "market-salvaged"
+            ]
+          }
+        ]
+      },
+      "life": {
+        "arrangement": null,
+        "bouquet": null,
+        "flowersDay": 0,
+        "display": null,
+        "gifts": 0,
+        "morning": [
+          "第 1 夜带回 2 杯艾尔、0 份酒花和 €0，已经收进酒馆。",
+          "超市今日告示：后场被人走动过、货物被搬动过，补货与销毁表重新排了一遍。你认得那片货架。",
+          "超市告示：第 2 天收摊酒箱涨价到 €10。今夜货架或冷库真的少了货；只涨第 2 天这一天。"
+        ],
+        "clues": []
+      },
+      "journeys": {
+        "run": null,
+        "usedDay": 0,
+        "debt": 0,
+        "history": []
+      },
+      "market": {
+        "version": 1,
+        "history": [
+          {
+            "day": 1,
+            "condition": "restock",
+            "approach": "salvage",
+            "delivered": false,
+            "stockTaken": true,
+            "powerRestored": false,
+            "safe": true,
+            "claimed": false
+          }
+        ]
+      }
+    },
+    "city": {
+      "x": 290,
+      "y": 590,
+      "visited": [
+        "pub",
+        "lotte"
+      ],
+      "bike": {
+        "x": 290,
+        "y": 590,
+        "mounted": false
+      }
+    },
+    "brewElapsed": 0,
+    "tutorialSeen": true,
+    "sound": true
+  },
+  "small": {
+    "width": 390,
+    "doc": 390
+  },
+  "desktop": {
+    "width": 1440,
+    "doc": 1440
+  },
+  "body": "TK\nTweede Kans\nAMSTERDAM · SINDS 1986\n✓\n试营业，试着活着\n✓\n好评与坏账\n3\n合法地重新开业\n♪\n?\nⅡ\n\nTWEEDE KANS · 三天之后\n\n恭喜，还能继续交租。\n手头现金\n€281\n金色艾尔\n1 杯\n运河黑啤\n1 杯\nTWEEDE KANS · 运河边\n今晚的目标：灯亮着，门没被封。\n这条街上的熟面孔\n👩🏼‍🍳\nMarta\n老街坊 · 不收咨询费\n开始记得你 · 3 次好印象\n🧔🏽\nBram\n咖啡馆老板 · 按时结工钱\n开始记得你 · 3 次好印象\n👩🏻\nLotte\n音乐人 · 不收曝光券\n开始记得你 · 2 次好印象\n“\n\n不错。今天带来的投诉信，可以改成情书草稿。\n\n— Marta\n\nTWEEDE KANS / REOPENING\n\n尚未倒闭，房东表示欣慰\n\n三晚租金结清，余款 €281，满意客人 28 位。街坊约了下一杯，房东约了下一笔。你终于有资格考虑给自己发工资。\n\nOPEN\n留下的现金\n€281 / €100\n满意的客人\n28 / 12\n亲手送出的酒\n28 杯\nLotte\n开始记得你 · 2 次好印象\nBram\n开始记得你 · 3 次好印象\nMarta\n开始记得你 · 3 次好印象\n这次换一种安排，再试一次 →换一组客人，重新开店\n\n这次，你给这家店留下了一个明天。\n\n票务待付\n€0\n最终净余额\n€281\n白天出行后记\n还没有出行记录。带车去南街花店看看委托。\n柜台记事\n进度自动保存在这台设备\n尚未倒闭，房东表示欣慰\n第 3 夜收店：12 位满意的客人，支付租金 €18。\n芬恩接过漂亮的一杯，收入 €14。\nTWEEDE KANS 意为「第二次机会」\n鼠标或键盘操作 · H 帮助 · P 暂停\n旧版实验室 ↗\n进度已恢复。打烊后就能进入夜间探险。"
+}

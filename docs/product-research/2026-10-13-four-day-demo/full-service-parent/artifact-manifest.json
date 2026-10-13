@@ -1,0 +1,227 @@
+[
+  {
+    "path": "README.md",
+    "sha256": "07234a4a686206010915f189dc8986e5e443a9fcbccc92d92fa6f2fda28b0f72",
+    "bytes": 4276
+  },
+  {
+    "path": "assertions.json",
+    "sha256": "2e63d4fd76cde0b743974da28f4c1c136090a00e97e19fa0f3b50c3df229aed1",
+    "bytes": 1525
+  },
+  {
+    "path": "browser-resource-check.json",
+    "sha256": "e75a83ef1df73c0f04899f7e01eafaa2c57ba613849f7483b810e25f7c73d9a8",
+    "bytes": 3140
+  },
+  {
+    "path": "console-final.log.gz",
+    "sha256": "2cf66507f650af7ea1e4545f95b46732f9bff735fdcecae9f9af371a44275639",
+    "bytes": 88
+  },
+  {
+    "path": "console.log.gz",
+    "sha256": "034c9522d62e3a525427402ecb4a139ea69af088f58d57e6e5669d618386cc20",
+    "bytes": 82
+  },
+  {
+    "path": "day2-event-choice.log.gz",
+    "sha256": "d786dda94af15369013fbabb6de633097c7ddb1927cb883235d82fa541d2c1c3",
+    "bytes": 3461
+  },
+  {
+    "path": "day2-event-diagnostic.log.gz",
+    "sha256": "582816113023a23381c9fc1416a1bad75103d40865c420253dfca796e59dc5fd",
+    "bytes": 3445
+  },
+  {
+    "path": "day2-event.log.gz",
+    "sha256": "a24dc79fd6e95fd6bfc647338faec221fe3bad75349fcc16b242a6d9e80a7f70",
+    "bytes": 202
+  },
+  {
+    "path": "day2-first-two.log.gz",
+    "sha256": "a62b0ee6f39fd64f712fc6ec0696641e3fc530457518cf53163d6f42bd16df72",
+    "bytes": 2703
+  },
+  {
+    "path": "day2-five.log.gz",
+    "sha256": "8516a547aaa15df5b7f81102993891e793e905cae24a1bbb78f85df1d2726906",
+    "bytes": 2631
+  },
+  {
+    "path": "day2-four.log.gz",
+    "sha256": "3014e988133db05739864dea2d45a499f7c850839119e4e05036425a3375d717",
+    "bytes": 2649
+  },
+  {
+    "path": "day2-full-summary-390.png",
+    "sha256": "7ac01438c11c31b50466f9d40999f33a23b76c4088b740f0589bf9c780aea057",
+    "bytes": 150579
+  },
+  {
+    "path": "day2-nine.log.gz",
+    "sha256": "8160a21abc505b7f3944fb3145e484ae5bed418620081c48636205861e7dd131",
+    "bytes": 2530
+  },
+  {
+    "path": "day2-seven.log.gz",
+    "sha256": "b223baf774430fa19292fc24d0038178e41170597ecff80fc42889581c9eba42",
+    "bytes": 2539
+  },
+  {
+    "path": "day2-start.js",
+    "sha256": "bc49d673a3baeb21580f374fff2ba298701599a39ce72a1c21ea2bf5a546f0a4",
+    "bytes": 874
+  },
+  {
+    "path": "day2-start.log.gz",
+    "sha256": "6d3e888bfe891de956ee85ecdb2e274a28180e47864523690db8ffce73f27305",
+    "bytes": 3737
+  },
+  {
+    "path": "day2-summary.log.gz",
+    "sha256": "61d948b8673799b414a17620c016a019f09997564d8fc7d39d44187ad7be91ae",
+    "bytes": 3321
+  },
+  {
+    "path": "day2-ten-completed.log.gz",
+    "sha256": "603822a89a14c552cc8b4c6985129fdf9675a85fd76d68d8b3843258805f8593",
+    "bytes": 2622
+  },
+  {
+    "path": "day2-ten-diagnostic.log.gz",
+    "sha256": "89192a616131a0b2e717f63715ee23d5b7e9e9d5b858d9590cb9d0a55b3f5f8a",
+    "bytes": 3088
+  },
+  {
+    "path": "day2-ten.log.gz",
+    "sha256": "aeb2e6fc9dff0f880c88782c84612482127fa834a31a2ac248912aedab14dc21",
+    "bytes": 165
+  },
+  {
+    "path": "day3-eleven.log.gz",
+    "sha256": "d0cc0df0db6209ce005fe0ed2ac1eda97e0b22aa3d3c0486c13d6f754346e164",
+    "bytes": 2687
+  },
+  {
+    "path": "day3-five.log.gz",
+    "sha256": "c1ecf76b6f455c3d2a6c772df31d167da989cf49e5afb7694d624033aa2a94d9",
+    "bytes": 2789
+  },
+  {
+    "path": "day3-four.log.gz",
+    "sha256": "80cafbebe4fcb0481f5c6e5d87abcaf4bbc03fdc8bdba062d1de8d5be330d3aa",
+    "bytes": 2792
+  },
+  {
+    "path": "day3-inspector-390.png",
+    "sha256": "5567de62f156c7cd2f548161e65f17047ff41a252cd0b6ed81f6fa8dcaa07145",
+    "bytes": 148882
+  },
+  {
+    "path": "day3-inspector-choice.log.gz",
+    "sha256": "59438fb3e51e8241e9f4d92dbbfcddbdc7bf06e4a7294897379b3588fdc85fa2",
+    "bytes": 3395
+  },
+  {
+    "path": "day3-inspector-restore.log.gz",
+    "sha256": "97dcfa732e31035cda1f654edfaaa3c995d452bd91ee9019659ea2f6324cac61",
+    "bytes": 4124
+  },
+  {
+    "path": "day3-nine.log.gz",
+    "sha256": "a6b7305649edb06656ae95991aef6ff6c8655de28be533176f30ddffa535bac7",
+    "bytes": 2691
+  },
+  {
+    "path": "day3-seven.log.gz",
+    "sha256": "33809902adc5ba059db42894d2c4a463f2558db76ff859c2d11ad632320de3a4",
+    "bytes": 2758
+  },
+  {
+    "path": "day3-start.js",
+    "sha256": "0cb36ff78632688a7ebf9b23e49cc637da76dbd1229616b511622399ee5c2414",
+    "bytes": 940
+  },
+  {
+    "path": "day3-start.log.gz",
+    "sha256": "48d4229ddcab6c0fce61949d25dab2b3403c4db22d8a6de1e5c2488790987f55",
+    "bytes": 3789
+  },
+  {
+    "path": "day3-three.log.gz",
+    "sha256": "aacd5ea5b9b79b30347cc2125ce20a1653a60c9159d8d1b28140ac95826ba71d",
+    "bytes": 2751
+  },
+  {
+    "path": "day3-twelve.log.gz",
+    "sha256": "3b653347124df87e668ebdeccf9d8174eb47beacb447802b398f1e3995f9d1d3",
+    "bytes": 2721
+  },
+  {
+    "path": "day3-two.log.gz",
+    "sha256": "d0afa202fd831556d2014a4d4045f9645106eb84bf7b02bd1fadb8f17cd81a02",
+    "bytes": 2778
+  },
+  {
+    "path": "ending-390.png",
+    "sha256": "5d990f5379cee332eefb9ed4a117718b066593d7335cec87c42878b951d9484c",
+    "bytes": 160485
+  },
+  {
+    "path": "ending-completed.log.gz",
+    "sha256": "54f92cb2b253cc37dd9063964eb3a30409880fd93fe19267d07d5548fb816777",
+    "bytes": 236770
+  },
+  {
+    "path": "ending-desktop.png",
+    "sha256": "42b7e28ce56f4d377869e667ff7b3ddb35452cffa9ea5039ce1b98bcff9513c6",
+    "bytes": 321796
+  },
+  {
+    "path": "ending-summary.json",
+    "sha256": "6a4ff7aad9ffa010c936162a768d9a5a347d1d8156dcfdd5933cf35924eb4d75",
+    "bytes": 12918
+  },
+  {
+    "path": "ending.log.gz",
+    "sha256": "b9e4e9474ce04d3b56f3177089e764c48f529e02aaa4d87bb4b89599e744b2f4",
+    "bytes": 586
+  },
+  {
+    "path": "finish-after-pause.js",
+    "sha256": "3d82931803613e8ebd2d97d7977fbf4dcbf6adabbda85a9b3133261fc2794a88",
+    "bytes": 1362
+  },
+  {
+    "path": "finish.js",
+    "sha256": "0746c84e8a097db0387c0eed3f74d03c0e416e2d4e8422f8be6a071e041dae34",
+    "bytes": 1249
+  },
+  {
+    "path": "full-service-ending-save.json",
+    "sha256": "71da1a87aad296d2284a77cc2c9d8eab37c9d81a91ac7b1421c2d9066b28a377",
+    "bytes": 10222
+  },
+  {
+    "path": "natural-day2-source.json",
+    "sha256": "911d45aadd703ce83e8dcc74380fe023e712fa8a5470de19daa277975db61b14",
+    "bytes": 4512
+  },
+  {
+    "path": "resource-check.json",
+    "sha256": "af7948d91e03beee2c42087d419075456cd003905d4aef0d367087d4afb12004",
+    "bytes": 3412
+  },
+  {
+    "path": "serve-one.js",
+    "sha256": "2c81a412bc25c668f56240a2702089390a81344a63ee8ac16a78ce49535f549a",
+    "bytes": 852
+  },
+  {
+    "path": "serve-two.js",
+    "sha256": "7a15e84384cd87409da0b92fba66f443cf903f30dcc11c7d65329c920e14382f",
+    "bytes": 852
+  }
+]

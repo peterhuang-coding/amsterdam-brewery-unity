@@ -1,3 +1,9 @@
+## D25补验更新：两晚全部订单、第三夜事件和恢复通过
+
+采用版仍dad6b38/18860，本轮未改游戏/未派新CC。从上轮精确自然日2快照恢复的续玩分支：日2十位、日3十二位全部满意并自动结算（非提前打烊，全部订单完成即结束，非时钟跑满）；网红样品实际扣酒/加预算，检查员pending离页恢复完全一致，付10欧后九位耐心各+12。最终281现金、28满意，结局刷新JSON一致；390/1440无横向溢出、console0、HTTP及实际浏览器17资源与提交一致。证据full-service-parent/README.md；原日1失约/两丢单保留。辅助暂停/DOM时机、跳过夜2/3探险，不等于新人上手/完整节奏/真人乐趣。
+
+目标仍active未定版；本轮覆盖未见新增阻断，下一步是固定候选的真人首次体验反馈，最多三个有证据的定版问题。PLAY03/06/07/11/12及FREEZE01继续搁置，无Amsterdam在途。周五候选、周末确认，原四天截止/下一10h review不变。以下为历史。
+
 # D25 checkpoint — one three-day ending path verified, no new game change
 
 Game dad6b38/18860 remains adopted. Parent one natural seed42001 save: firstnight6satisfied plus actualnight1bottle/extraction/day2consequence, day2earlyclose4satisfied, day3earlyclose2satisfied→won/netcash107/12satisfied. FullJSONending refresh identical; two isolated exactnaturalending restorecontexts verify same/alternate replay. Parent used pauses and DOMtiming; not allnight pacing, allbranches or humanfun. Evidence three-day-parent/README.md. User first-time feedback still missing; D25 goal active, not frozen/complete.

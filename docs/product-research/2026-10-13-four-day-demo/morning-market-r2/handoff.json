@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-morning-market-r2-20261013",
+  "goal": "Add one truthful optional next-morning market-outcome card on near-street, using existing real walking and entry controls. No new mechanics.",
+  "memory": {
+    "summary": "PLAY06 sole D24 correction after confirmed provider call failure before any code/test changes. Same bd61443 baseline and narrow original task.",
+    "completed": [
+      "Original22 source/workspace SHA unchanged; no implementation or new tests produced.",
+      "Parent staged old63/63 and syntax baseline verified before original request."
+    ],
+    "decisions": [
+      "One correction only, still fails => shelve PLAY06",
+      "Read targeted supplied ranges; no extra Bash",
+      "PLAY03 remains shelved, exclude first-cup feature"
+    ],
+    "known_issues": [
+      "Original provider burst protection, HTTP code unavailable; CLI1 after556.983s/16turns.",
+      "Four extra read-only grep calls outside command list; no write escape."
+    ]
+  },
+  "tasks": [
+    "Read brief and real UI/lifecycle test patterns",
+    "Add bounded real behavior regressions and run red on unchanged UI",
+    "Implement only morning card and run four final commands",
+    "Return truthful complete report before limits"
+  ],
+  "acceptance": [
+    "Only UI allowed helper/insertion and new test change; all old assertions unchanged",
+    "Current receipt and surcharge state truthful with real travel, no resource mutations",
+    "New tests RED baseline then GREEN, exact old staged tests and syntax pass",
+    "Exactly4 final report command rows; parent GUI/adoption remains pending"
+  ],
+  "constraints": [
+    "Public inputs only; no network or private material",
+    "Read/Edit and declared exact Bash only",
+    "No PLAY03, core/economy/save/CSS/scene/handler changes"
+  ],
+  "workspace": "/tmp/amsterdam-morning-market-r2-20261013/input",
+  "read_files": [
+    "brief.md",
+    "tools/prototype/index.html",
+    "tools/prototype/reopening.css",
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/reopening-core.js",
+    "tools/prototype/journey-core.js",
+    "tools/prototype/journey-ui.js",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/delivery-orders.js",
+    "tools/prototype/character-stories.js",
+    "tools/prototype/flower-network.js",
+    "tools/prototype/test-market-daynight.js",
+    "tools/prototype/test-market-daynight-ui.js",
+    "tools/prototype/test-city.js",
+    "tools/prototype/test-city-bike.js",
+    "tools/prototype/test-first-street-ui.js",
+    "tools/prototype/test-morning-market-ui.js",
+    "original-brief.md"
+  ],
+  "write_files": [
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/test-morning-market-ui.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-morning-market-ui.js",
+    "node --test tools/prototype/test-first-street-ui.js tools/prototype/test-city.js tools/prototype/test-city-bike.js tools/prototype/test-market-daynight-ui.js tools/prototype/test-market-daynight.js",
+    "node --check tools/prototype/reopening-ui.js",
+    "node --check tools/prototype/test-morning-market-ui.js"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 1500,
+  "max_turns": 40,
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "play06-morning-market",
+    "task_type": "code",
+    "attempt_kind": "correction"
+  }
+}

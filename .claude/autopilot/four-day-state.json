@@ -12,12 +12,10 @@
   "failure_policy_question_pending": false,
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
-  "current_task_terminal": null,
-  "failure_reason": null,
-  "last_result_at": "2026-10-13T05:29:29.989870Z",
-  "in_flight": [
-    "amsterdam-morning-market-20261013"
-  ],
+  "current_task_terminal": "provider_burst_cli1_no_writes_no_report",
+  "failure_reason": "provider_request_burst_http_status_unknown",
+  "last_result_at": "2026-10-13T06:08:36.918996Z",
+  "in_flight": [],
   "candidate_path": null,
   "adopted_this_round": 2,
   "policy_decision": "D24",
@@ -80,18 +78,22 @@
       "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 0,
-      "outcome": "running",
+      "outcome": "business_failed_correction_prepared_cooldown",
       "task_id": "amsterdam-morning-market-20261013",
       "base_commit": "bd614431e31dc44cd3730ef6c0d6c022cd355b1a",
-      "game_adopted": 0
+      "game_adopted": 0,
+      "business_terminal": "provider_burst_cli1_no_write_test_report",
+      "correction_task_id": "amsterdam-morning-market-r2-20261013"
     }
   },
-  "provider_cooldown_until": "2026-10-13T03:22:28Z",
-  "provider_cooldown_basis": "parent-chosen30minafter429; notserverRetryAfter",
-  "failure_notification_recorded_at": "2026-10-13T05:15:28.092219+00:00",
+  "provider_cooldown_until": "2026-10-13T06:38:37Z",
+  "provider_cooldown_basis": "parent30minafterterminal_not_server_RetryAfter",
+  "failure_notification_recorded_at": "2026-10-13T06:25:10.525033+00:00",
   "provider_cooldown_completed_at": "2026-10-13T03:27:24Z",
   "current_submitted_at": "2026-10-13T05:59:19.893085+00:00",
-  "current_worker_pid": 36214,
+  "current_worker_pid": null,
   "current_task_packet": "/tmp/amsterdam-morning-market-20261013/handoff.json",
-  "current_task_notion": "https://app.notion.com/p/3f83285284df81308f5bfe92a6649cf6"
+  "current_task_notion": "https://app.notion.com/p/3f83285284df81308f5bfe92a6649cf6",
+  "prepared_correction_task_id": "amsterdam-morning-market-r2-20261013",
+  "prepared_correction_packet": "/tmp/amsterdam-morning-market-r2-20261013/handoff.json"
 }

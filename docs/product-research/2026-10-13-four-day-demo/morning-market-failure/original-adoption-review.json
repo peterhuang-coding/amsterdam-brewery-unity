@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-morning-market-20261013",
+  "receipt_sha256": "484bb65ca5985c72431f0caac02b870aba7fd741effedba3f1c0f17a16363aa3",
+  "reviewed_at": "2026-10-13T06:22:42Z",
+  "outcome": "rejected",
+  "failure_type": "call_exception",
+  "evidence": [
+    {
+      "path": "/tmp/amsterdam-morning-market-review-20261013/parent-validation.md",
+      "sha256": "bbd19494f905c08769bf7bad12a04438c5fb3c773b1b89626ec28bceae711f2b"
+    }
+  ]
+}

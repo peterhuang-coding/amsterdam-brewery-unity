@@ -1,0 +1,10 @@
+{
+  "brief.md": "7de520ddaae4d5b9f09c2d9e682a310e845ae47302ff3d7ac6383ef9c470fee3",
+  "original-brief.md": "c80ce7834ffa3c28a00e941281e8101e2b437cd6c928a8de4c1b2753f8ec3225",
+  "state-guide.md": "bd3331189a8cb4e432835fe30882509e6779ff18adb063e972d013389839b34b",
+  "tools/prototype/backstage-core.js": "335baa752efedabf5771436c23fb5370a40af5aef4b89cdd1793351906219d07",
+  "tools/prototype/backstage-scene.js": "ba787914f17743359c5cc8fb86b5031d825f0840dc6b951989646a5efd90e5a6",
+  "tools/prototype/test-night-map-scene.js": "e84a1e0b95b840a07814b6c8c5b00520f77fff957753e29f1690f266a043e873",
+  "tools/prototype/test-district-core.js": "7c24b0f1a9a422ffae5f25c3638e9fe22bf6b0649fa627959d45c882608669e4",
+  "tools/prototype/test-market-fixtures-scene.js": "8ec467aadf80c64f5638bbb04f155f60e020508a116fa9c3c6a8f4921b74b478"
+}

@@ -1,0 +1,118 @@
+{
+  "steps": [
+    {
+      "to": {
+        "x": 460,
+        "y": 1205
+      },
+      "p": {
+        "x": 458.00451736449526,
+        "y": 1204.4811745147688,
+        "fx": 0.9678225067882669,
+        "fy": 0.2516338517649703,
+        "hp": 3,
+        "inv": 0,
+        "dash": 0,
+        "hook": 0,
+        "foam": 0
+      },
+      "bag": [],
+      "item3": {
+        "id": "item3",
+        "kind": "salvage",
+        "x": 660,
+        "y": 1180,
+        "vx": 0,
+        "vy": 0,
+        "state": "world",
+        "lock": 0
+      }
+    },
+    {
+      "to": {
+        "x": 680,
+        "y": 1205
+      },
+      "p": {
+        "x": 677.7331672827361,
+        "y": 1204.994702186862,
+        "fx": 0.9999972689946378,
+        "fy": 0.002337092909082948,
+        "hp": 3,
+        "inv": 0,
+        "dash": 0,
+        "hook": 0,
+        "foam": 0
+      },
+      "bag": [
+        "item3"
+      ],
+      "item3": {
+        "id": "item3",
+        "kind": "salvage",
+        "x": 660,
+        "y": 1180,
+        "vx": 0,
+        "vy": 0,
+        "state": "bag",
+        "lock": 0
+      }
+    },
+    {
+      "to": {
+        "x": 680,
+        "y": 1142
+      },
+      "p": {
+        "x": 679.90497338991,
+        "y": 1144.6407652213838,
+        "fx": 0.03596122244588248,
+        "fy": -0.9993531860559598,
+        "hp": 3,
+        "inv": 0,
+        "dash": 0,
+        "hook": 0,
+        "foam": 0
+      },
+      "bag": [
+        "item3"
+      ],
+      "item3": {
+        "id": "item3",
+        "kind": "salvage",
+        "x": 660,
+        "y": 1180,
+        "vx": 0,
+        "vy": 0,
+        "state": "bag",
+        "lock": 0
+      }
+    }
+  ],
+  "collect": false,
+  "bag": [],
+  "repaired": true,
+  "powerItem": "item3",
+  "powered": true,
+  "allFrameColdEllipsesOutside": [
+    {
+      "x": 717,
+      "y": 1000.9999999999999,
+      "rx": 55,
+      "ry": 8,
+      "color": "#132e3f50",
+      "mode": "fill"
+    }
+  ],
+  "onlyColdBlockEllipses": [
+    {
+      "x": 698,
+      "y": 861,
+      "rx": 3.5,
+      "ry": 3.5,
+      "color": "#a9e6f2",
+      "mode": "fill"
+    }
+  ],
+  "assertionScope": "all-frame spatial selection includes unrelated existing items; block capture diagnostic only, no candidate edits"
+}

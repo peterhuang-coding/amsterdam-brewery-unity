@@ -1,0 +1,85 @@
+--- a/tools/prototype/backstage-scene.js
++++ b/tools/prototype/backstage-scene.js
+@@ -27,8 +27,22 @@
+       this.rect(x-6,y-40,13,3,hero?'#f4ce8e':'#392b38');
+       if(hero){this.rect(x-8,y-24,13,20,'#366775');this.rect(x-7,y-21,11,3,'#92b8b0');this.rect(x+4,y-29,3,12,'#e2bc75');}
+     }
+-    block(w){
++    block(w,location=null,market=null){
+       const {x,y,w:width,h}=w;
++      // Market-shift only: a shelf whose center really sits in the stock or cold
++      // room gets its own silhouette. Everything else (missing/disabled context,
++      // shelves outside those rooms, legacy saves) falls through to the generic block.
++      if(w.kind==='shelf'&&market?.enabled&&location?.enabled){
++        const cx=x+width/2,cy=y+h/2;
++        for(const room of location.rooms){
++          if(room.id!=='market-stock'&&room.id!=='market-cold')continue;
++          if(cx>=room.x&&cx<=room.x+room.w&&cy>=room.y&&cy<=room.y+room.h){
++            if(room.id==='market-stock')this.marketStockRack(w);
++            else this.marketColdFixture(w,Boolean(market.powered));
++            return;
++          }
++        }
++      }
+       if(w.kind==='water'){
+         this.rect(x,y,width,h,'#173c4b');this.rect(x,y-5,width,5,'#9b927d');
+         for(let i=0;i<width;i+=40)this.rect(x+i,y+27+(i%3)*10,24,2,'#bc7d9644');return;
+@@ -86,6 +100,49 @@
+         for(let xx=x+9;xx<x+width-9;xx+=26){this.rect(xx,y+5,18,h-17,'#8b8d7a');this.rect(xx+3,y+7,12,4,'#d6b97d');}
+         this.line([[x,y+h-13],[x+width,y+h-13]],'#a8b8ab',3);
+       }
++    }
++    // Dedicated market fixture silhouettes; only the shelf branch in block() calls
++    // these. Structural bays/panels only - no goods, counts, labels or new props.
++    marketStockRack(w){
++      const {x,y,w:width,h}=w;
++      this.rect(x+6,y+h-4,width+4,10,'#091b2855');
++      const post='#6f5f47',postEdge='#97805c',tier='#8a7456',tierEdge='#b79d73';
++      // A few separated uprights leave wide open bays: an open rack frame, not a
++      // run of narrow wardrobe slats.
++      for(const px of [x+4,x+width/2,x+width-4]){
++        this.rect(px-4,y-30,8,h+30,post);
++        this.rect(px-4,y-30,2,h+30,postEdge);
++      }
++      // Broad full-width tier edges; the bays between stay empty on purpose.
++      for(const ty of [y-30,y,y+30]){
++        this.rect(x,ty-4,width+2,8,tier);
++        this.rect(x,ty-4,width+2,2,tierEdge);
++      }
++      this.rect(x,y+h-7,width+2,7,'#7a664b');
++    }
++    marketColdFixture(w,powered){
++      const {x,y,w:width,h}=w;
++      this.rect(x+6,y+h-4,width+4,10,'#091b2855');
++      // Solid insulated cabinet volume - the opposite of the open rack.
++      this.rect(x,y-32,width,h+32,'#3d5968');
++      this.rect(x,y-32,width,5,'#5d7d8e');
++      this.rect(x,y+h-3,width,3,'#273944');
++      const doorTop=y-25,doorH=66,mid=x+width/2;
++      // Two closed door panels with a center seam and paired vertical handles.
++      this.rect(x+6,doorTop,width/2-10,doorH,'#49697a');
++      this.rect(mid+4,doorTop,width/2-10,doorH,'#49697a');
++      this.rect(mid-1.5,doorTop-2,3,doorH+4,'#243742');
++      this.rect(mid-9,doorTop+10,3,20,'#9fb6bf');
++      this.rect(mid+6,doorTop+10,3,20,'#9fb6bf');
++      // Broad ventilation grille across the lower front.
++      const gy=y+48,gh=h-58;
++      this.rect(x+6,gy,width-12,gh,'#2a414e');
++      for(let i=0;i<4;i++)this.rect(x+12,gy+6+i*((gh-12)/3),width-24,4,'#5d7e8d');
++      // Small power housing; the light is decided solely by actual marketInfo.powered.
++      const lx=x+width-17,ly=y-29;
++      this.rect(x+width-28,y-34,22,10,'#223843');
++      this.ellipse(lx,ly,3.5,3.5,powered?'#a9e6f2':'#2c3d47');
++      if(powered)this.glow(lx,ly,10,7,'#8fd8ee55');
+     }
+     item(item,time){
+       const {x,y,kind}=item,t=B.TYPES[kind];this.glow(x,y+3,25,15,t.color+'35');this.ellipse(x,y+4,13,6,'#12232c99');
+@@ -230,7 +287,7 @@
+       this.rect(B.LEVER.x-10,B.LEVER.y-21,20,32,'#596e74');this.line([[B.LEVER.x,B.LEVER.y-7],[B.LEVER.x+12,B.LEVER.y-28]],r.opened?'#a2d3a5':'#e6bd7e',5);
+       this.text(r.opened?'闸门已开':'维护拉杆',B.LEVER.x,B.LEVER.y+28,13,'#c5c5ac');
+       if(!r.opened){this.rect(B.GATE.x,B.GATE.y-32,B.GATE.w,54,'#566773');for(let x=B.GATE.x+6;x<B.GATE.x+B.GATE.w;x+=14)this.line([[x,B.GATE.y-31],[x,B.GATE.y+21]],'#9daba6',3);}
+-      const objects=[...B.WALLS,...(street?.walls||[])].map(w=>({y:w.y+w.h,draw:()=>{c.save();if(['shop','club'].includes(w.kind)&&p.x>w.x-20&&p.x<w.x+w.w+20&&p.y>w.y-100&&p.y<w.y)c.globalAlpha=.4;this.block(w);c.restore();}}));
++      const objects=[...B.WALLS,...(street?.walls||[])].map(w=>({y:w.y+w.h,draw:()=>{c.save();if(['shop','club'].includes(w.kind)&&p.x>w.x-20&&p.x<w.x+w.w+20&&p.y>w.y-100&&p.y<w.y)c.globalAlpha=.4;this.block(w,location,market);c.restore();}}));
+       for(const w of location?.walls||[])objects.push({y:w.y+w.h,draw:()=>{this.rect(w.x,w.y-12,w.w,w.h+12,'#526b70');this.rect(w.x,w.y-12,w.w,5,'#b7baa1');}});
+       if(location?.door)objects.push({y:location.door.y+location.door.h,draw:()=>this.locationDoor(location.door)});
+       for(const barrel of r.street?.barrels||[])objects.push({y:barrel.y,draw:()=>this.streetBarrel(barrel,r)});

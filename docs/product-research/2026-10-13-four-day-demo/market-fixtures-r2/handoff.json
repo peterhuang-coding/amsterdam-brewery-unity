@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-market-fixtures-r2-20261013",
+  "goal": "Repair the three evidenced PLAY11 test-harness failures and return a complete report; freeze candidate game code.",
+  "memory": {
+    "summary": "Only allowed correction for play11-market-fixtures. Hard worker timeout, no report, three newtest harness defects; candidate game rendering frozen.",
+    "completed": [
+      "Parent old411 regressions pass, candidate new8/11, syntax pass; preliminary natural market silhouettes distinguishable."
+    ],
+    "decisions": [
+      "Only newtest editable; all game code readonly",
+      "Repair evidence, not implemented game; one correction only; Seed Evolving enabled/high"
+    ],
+    "known_issues": [
+      "Auto-stow makes later manualcollect false",
+      "Fullframe reduced comparison includes unchanged animations",
+      "Spatial ellipse filtering includes unrelated shadow and can hide overflow"
+    ]
+  },
+  "tasks": [
+    "Observe supplied harness8/11; preserve all11 behavior intentions",
+    "Correct real fixture ownership and repair sequence in newtest only",
+    "Run four final commands and return complete honest report"
+  ],
+  "acceptance": [
+    "Candidate scene and all old inputs unchanged",
+    "All11 behavior intentions preserved, no weakened geometry/power/fallback assertions",
+    "Corrected tests green with meaningful overflow negative control; parent adopted-baseline RED pending",
+    "Complete four-command report; parent natural/fullsuite acceptance pending"
+  ],
+  "constraints": [
+    "Only public supplied material, no network",
+    "Only Read/Edit/four exact Bash commands",
+    "No shelved item revival or core/UI/CSS/camera/minimap changes"
+  ],
+  "workspace": "/tmp/amsterdam-market-fixtures-r2-20261013/input",
+  "read_files": [
+    "brief.md",
+    "original-brief.md",
+    "state-guide.md",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/test-night-map-scene.js",
+    "tools/prototype/test-district-core.js",
+    "tools/prototype/test-market-fixtures-scene.js"
+  ],
+  "write_files": [
+    "tools/prototype/test-market-fixtures-scene.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-market-fixtures-scene.js",
+    "node --test tools/prototype/test-night-map-scene.js tools/prototype/test-district-core.js",
+    "node --check tools/prototype/backstage-scene.js",
+    "node --check tools/prototype/test-market-fixtures-scene.js"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 1200,
+  "max_turns": 32,
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "play11-market-fixtures",
+    "task_type": "code",
+    "attempt_kind": "correction"
+  }
+}

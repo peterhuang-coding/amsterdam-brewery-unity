@@ -12,13 +12,11 @@
   "failure_policy_question_pending": false,
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
-  "current_task_terminal": null,
-  "failure_reason": null,
-  "last_result_at": "2026-10-13T12:43:28.484748Z",
-  "in_flight": [
-    "amsterdam-market-fixtures-20261013"
-  ],
-  "candidate_path": null,
+  "current_task_terminal": "worker_timeout_cli143_done_unknown_missing_report_three_newtest_harness_failures",
+  "failure_reason": "newtest8of11_and_missing_report",
+  "last_result_at": "2026-10-13T13:28:55.862919Z",
+  "in_flight": [],
+  "candidate_path": "/tmp/amsterdam-market-fixtures-review-20261013/candidate",
   "adopted_this_round": 0,
   "policy_decision": "D24",
   "correction_after_r2": {
@@ -165,10 +163,14 @@
       "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 0,
-      "outcome": "running",
+      "outcome": "correction_prepared",
       "game_adopted": 0,
       "business_submitted_at": "2026-10-13T13:08:55.732094+00:00",
-      "worker_pid": 68932
+      "worker_pid": 68932,
+      "business_terminal": "worker_timeout_cli143_done_unknown_missing_report_three_newtest_harness_failures",
+      "business_ended_at": "2026-10-13T13:28:55.862919Z",
+      "business_structured_review": "review_requires_finished_not_recorded_parent_audit_saved",
+      "correction_task_id": "amsterdam-market-fixtures-r2-20261013"
     }
   },
   "provider_cooldown_until": "2026-10-13T09:55:32Z",
@@ -176,16 +178,16 @@
   "failure_notification_recorded_at": "2026-10-13T10:46:54.694579+00:00",
   "provider_cooldown_completed_at": "2026-10-13T10:11:45.254565+00:00",
   "current_submitted_at": "2026-10-13T13:08:55.732094+00:00",
-  "current_worker_pid": 68932,
+  "current_worker_pid": null,
   "current_task_packet": "/tmp/amsterdam-market-fixtures-20261013/handoff.json",
   "current_task_notion": "https://app.notion.com/p/3f83285284df816c9a2cfd5799f10053",
-  "prepared_correction_task_id": null,
-  "prepared_correction_packet": null,
-  "current_task_stage": "running",
+  "prepared_correction_task_id": "amsterdam-market-fixtures-r2-20261013",
+  "prepared_correction_packet": "/tmp/amsterdam-market-fixtures-r2-20261013/handoff.json",
+  "current_task_stage": "correction_prepared",
   "prepared_task_id": null,
   "prepared_task_packet": null,
   "play_service_pid": 67822,
   "play_root": "/tmp/amsterdam-play-0178350",
   "current_task_submitted_at": "2026-10-13T13:08:55.732094+00:00",
-  "worker_pid": 68932
+  "worker_pid": null
 }

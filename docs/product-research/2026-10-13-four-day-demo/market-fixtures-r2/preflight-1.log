@@ -1,0 +1,208 @@
+TAP version 13
+# Subtest: new v4 runs retain all 17 item identities and expose exact district geometry
+ok 1 - new v4 runs retain all 17 item identities and expose exact district geometry
+  ---
+  duration_ms: 1.923625
+  type: 'test'
+  ...
+# Subtest: belt moves world loot east or west, and off stops motion
+ok 2 - belt moves world loot east or west, and off stops motion
+  ---
+  duration_ms: 3.679292
+  type: 'test'
+  ...
+# Subtest: foam pauses only objects whose centers are inside the local patch
+ok 3 - foam pauses only objects whose centers are inside the local patch
+  ---
+  duration_ms: 0.536458
+  type: 'test'
+  ...
+# Subtest: belt leaves bagged and delivered items alone and pushes the player through collision movement
+ok 4 - belt leaves bagged and delivered items alone and pushes the player through collision movement
+  ---
+  duration_ms: 2.084125
+  type: 'test'
+  ...
+# Subtest: nearby E toggles the switch and hook reverses it within real range
+ok 5 - nearby E toggles the switch and hook reverses it within real range
+  ---
+  duration_ms: 0.928625
+  type: 'test'
+  ...
+# Subtest: switch LOS and hook range block the effect even though hook firing itself succeeds
+ok 6 - switch LOS and hook range block the effect even though hook firing itself succeeds
+  ---
+  duration_ms: 0.177291
+  type: 'test'
+  ...
+# Subtest: valve closes sprinklers for 12 simulation seconds and auto choice freezes the countdown
+ok 7 - valve closes sprinklers for 12 simulation seconds and auto choice freezes the countdown
+  ---
+  duration_ms: 9.637917
+  type: 'test'
+  ...
+# Subtest: hook can close a visible valve but cannot pass glass or exceed reach
+ok 8 - hook can close a visible valve but cannot pass glass or exceed reach
+  ---
+  duration_ms: 0.23425
+  type: 'test'
+  ...
+# Subtest: wet ground slows walking at a legal y490 route and drift respects the greenhouse wall
+ok 9 - wet ground slows walking at a legal y490 route and drift respects the greenhouse wall
+  ---
+  duration_ms: 1.419292
+  type: 'test'
+  ...
+# Subtest: repair needs a nearby visible valve and salvage, consumes one part exactly once and persists
+ok 10 - repair needs a nearby visible valve and salvage, consumes one part exactly once and persists
+  ---
+  duration_ms: 0.769875
+  type: 'test'
+  ...
+# Subtest: drop selects a bag item, rejects unknown/world ids without inventory mutation, and preserves throw behavior
+ok 11 - drop selects a bag item, rejects unknown/world ids without inventory mutation, and preserves throw behavior
+  ---
+  duration_ms: 0.290958
+  type: 'test'
+  ...
+# Subtest: ordinary E and collect use exact requested item, 45 range, LOS and capacity
+ok 12 - ordinary E and collect use exact requested item, 45 range, LOS and capacity
+  ---
+  duration_ms: 0.22375
+  type: 'test'
+  ...
+# Subtest: ordinary auto pickup checks LOS in v4 while old v3 keeps original pickup behavior
+ok 13 - ordinary auto pickup checks LOS in v4 while old v3 keeps original pickup behavior
+  ---
+  duration_ms: 0.14525
+  type: 'test'
+  ...
+# Subtest: visited records unique entered zones only, survives restore and remains separate from choice intent
+ok 14 - visited records unique entered zones only, survives restore and remains separate from choice intent
+  ---
+  duration_ms: 0.410167
+  type: 'test'
+  ...
+# Subtest: v1/v2/v3 restore without adding district and old v3 retains location behavior only
+ok 15 - v1/v2/v3 restore without adding district and old v3 retains location behavior only
+  ---
+  duration_ms: 1.934584
+  type: 'test'
+  ...
+# Subtest: restore validates district structure, discoveries and all seven outcome ids
+ok 16 - restore validates district structure, discoveries and all seven outcome ids
+  ---
+  duration_ms: 0.811792
+  type: 'test'
+  ...
+# Subtest: v4 snapshots all three daytime clues while v3 keeps its original two-clue schema
+ok 17 - v4 snapshots all three daytime clues while v3 keeps its original two-clue schema
+  ---
+  duration_ms: 0.300041
+  type: 'test'
+  ...
+# Subtest: the promised sorting spare starts on the working conveyor and actually travels
+ok 18 - the promised sorting spare starts on the working conveyor and actually travels
+  ---
+  duration_ms: 0.776333
+  type: 'test'
+  ...
+# Subtest: recorder geometry: translation is not rescaled and save/restore returns to identity
+ok 19 - recorder geometry: translation is not rescaled and save/restore returns to identity
+  ---
+  duration_ms: 1.970041
+  type: 'test'
+  ...
+# Subtest: uniform 2200x1400 projection keeps the whole world on desktop and a larger narrow map in its corner
+ok 20 - uniform 2200x1400 projection keeps the whole world on desktop and a larger narrow map in its corner
+  ---
+  duration_ms: 1.648417
+  type: 'test'
+  ...
+# Subtest: every real static wall projects at true geometry and water walls read as water, not solid
+ok 21 - every real static wall projects at true geometry and water walls read as water, not solid
+  ---
+  duration_ms: 0.618375
+  type: 'test'
+  ...
+# Subtest: real delivery/works/closing street walls project, plus day2/day3 and legacy have no dynamic wall
+ok 22 - real delivery/works/closing street walls project, plus day2/day3 and legacy have no dynamic wall
+  ---
+  duration_ms: 2.598625
+  type: 'test'
+  ...
+# Subtest: market walls and the loading door use its real rect: closed blocks, open is visibly passable
+ok 23 - market walls and the loading door use its real rect: closed blocks, open is visibly passable
+  ---
+  duration_ms: 0.991417
+  type: 'test'
+  ...
+# Subtest: greenhouse GATE blocks when closed and becomes a passable opening after the real lever
+ok 24 - greenhouse GATE blocks when closed and becomes a passable opening after the real lever
+  ---
+  duration_ms: 0.814083
+  type: 'test'
+  ...
+# Subtest: player marker follows real position and facing and handles a zero direction finitely
+ok 25 - player marker follows real position and facing and handles a zero direction finitely
+  ---
+  duration_ms: 1.119625
+  type: 'test'
+  ...
+# Subtest: exit is a different shape and color from the player and both stay visible at the overlapping start
+ok 26 - exit is a different shape and color from the player and both stay visible at the overlapping start
+  ---
+  duration_ms: 0.918167
+  type: 'test'
+  ...
+# Subtest: existing map cues survive: Noor, street barrels, noise, greenhouse hint and M label
+ok 27 - existing map cues survive: Noor, street barrels, noise, greenhouse hint and M label
+  ---
+  duration_ms: 1.106916
+  type: 'test'
+  ...
+# Subtest: minimap is deterministic across calls, motion preference and time, and never mutates state
+ok 28 - minimap is deterministic across calls, motion preference and time, and never mutates state
+  ---
+  duration_ms: 2.654458
+  type: 'test'
+  ...
+# Subtest: real restored v1/v2/v3 legacy fixtures render without crashing and omit location data when absent
+ok 29 - real restored v1/v2/v3 legacy fixtures render without crashing and omit location data when absent
+  ---
+  duration_ms: 1.031792
+  type: 'test'
+  ...
+# Subtest: full real draw smoke: balanced transforms, finite arguments and minimap markers in screen space
+ok 30 - full real draw smoke: balanced transforms, finite arguments and minimap markers in screen space
+  ---
+  duration_ms: 11.787791
+  type: 'test'
+  ...
+# Subtest: D24 narrow regression: 你/回店 reach >=11 CSS px, M >=10 CSS px, with >=6 CSS px marker short axes at 320/350/368/390
+ok 31 - D24 narrow regression: 你/回店 reach >=11 CSS px, M >=10 CSS px, with >=6 CSS px marker short axes at 320/350/368/390
+  ---
+  duration_ms: 2.646125
+  type: 'test'
+  ...
+# Subtest: narrow overlap: diamond corners protrude beyond the arrow in every facing at every narrow width
+ok 32 - narrow overlap: diamond corners protrude beyond the arrow in every facing at every narrow width
+  ---
+  duration_ms: 3.562458
+  type: 'test'
+  ...
+# Subtest: narrow technical edge fixtures: 你 label is clamped inside the region, never moving the marker
+ok 33 - narrow technical edge fixtures: 你 label is clamped inside the region, never moving the marker
+  ---
+  duration_ms: 5.739375
+  type: 'test'
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 33
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 100.537667

@@ -1,0 +1,531 @@
+--- a/tools/prototype/backstage-scene.js
++++ b/tools/prototype/backstage-scene.js
+@@ -27,8 +27,22 @@
+       this.rect(x-6,y-40,13,3,hero?'#f4ce8e':'#392b38');
+       if(hero){this.rect(x-8,y-24,13,20,'#366775');this.rect(x-7,y-21,11,3,'#92b8b0');this.rect(x+4,y-29,3,12,'#e2bc75');}
+     }
+-    block(w){
++    block(w,location=null,market=null){
+       const {x,y,w:width,h}=w;
++      // Market-shift only: a shelf whose center really sits in the stock or cold
++      // room gets its own silhouette. Everything else (missing/disabled context,
++      // shelves outside those rooms, legacy saves) falls through to the generic block.
++      if(w.kind==='shelf'&&market?.enabled&&location?.enabled){
++        const cx=x+width/2,cy=y+h/2;
++        for(const room of location.rooms){
++          if(room.id!=='market-stock'&&room.id!=='market-cold')continue;
++          if(cx>=room.x&&cx<=room.x+room.w&&cy>=room.y&&cy<=room.y+room.h){
++            if(room.id==='market-stock')this.marketStockRack(w);
++            else this.marketColdFixture(w,Boolean(market.powered));
++            return;
++          }
++        }
++      }
+       if(w.kind==='water'){
+         this.rect(x,y,width,h,'#173c4b');this.rect(x,y-5,width,5,'#9b927d');
+         for(let i=0;i<width;i+=40)this.rect(x+i,y+27+(i%3)*10,24,2,'#bc7d9644');return;
+@@ -86,6 +100,49 @@
+         for(let xx=x+9;xx<x+width-9;xx+=26){this.rect(xx,y+5,18,h-17,'#8b8d7a');this.rect(xx+3,y+7,12,4,'#d6b97d');}
+         this.line([[x,y+h-13],[x+width,y+h-13]],'#a8b8ab',3);
+       }
++    }
++    // Dedicated market fixture silhouettes; only the shelf branch in block() calls
++    // these. Structural bays/panels only - no goods, counts, labels or new props.
++    marketStockRack(w){
++      const {x,y,w:width,h}=w;
++      this.rect(x+6,y+h-4,width+4,10,'#091b2855');
++      const post='#6f5f47',postEdge='#97805c',tier='#8a7456',tierEdge='#b79d73';
++      // A few separated uprights leave wide open bays: an open rack frame, not a
++      // run of narrow wardrobe slats.
++      for(const px of [x+4,x+width/2,x+width-4]){
++        this.rect(px-4,y-30,8,h+30,post);
++        this.rect(px-4,y-30,2,h+30,postEdge);
++      }
++      // Broad full-width tier edges; the bays between stay empty on purpose.
++      for(const ty of [y-30,y,y+30]){
++        this.rect(x,ty-4,width+2,8,tier);
++        this.rect(x,ty-4,width+2,2,tierEdge);
++      }
++      this.rect(x,y+h-7,width+2,7,'#7a664b');
++    }
++    marketColdFixture(w,powered){
++      const {x,y,w:width,h}=w;
++      this.rect(x+6,y+h-4,width+4,10,'#091b2855');
++      // Solid insulated cabinet volume - the opposite of the open rack.
++      this.rect(x,y-32,width,h+32,'#3d5968');
++      this.rect(x,y-32,width,5,'#5d7d8e');
++      this.rect(x,y+h-3,width,3,'#273944');
++      const doorTop=y-25,doorH=66,mid=x+width/2;
++      // Two closed door panels with a center seam and paired vertical handles.
++      this.rect(x+6,doorTop,width/2-10,doorH,'#49697a');
++      this.rect(mid+4,doorTop,width/2-10,doorH,'#49697a');
++      this.rect(mid-1.5,doorTop-2,3,doorH+4,'#243742');
++      this.rect(mid-9,doorTop+10,3,20,'#9fb6bf');
++      this.rect(mid+6,doorTop+10,3,20,'#9fb6bf');
++      // Broad ventilation grille across the lower front.
++      const gy=y+48,gh=h-58;
++      this.rect(x+6,gy,width-12,gh,'#2a414e');
++      for(let i=0;i<4;i++)this.rect(x+12,gy+6+i*((gh-12)/3),width-24,4,'#5d7e8d');
++      // Small power housing; the light is decided solely by actual marketInfo.powered.
++      const lx=x+width-17,ly=y-29;
++      this.rect(x+width-28,y-34,22,10,'#223843');
++      this.ellipse(lx,ly,3.5,3.5,powered?'#a9e6f2':'#2c3d47');
++      if(powered)this.glow(lx,ly,10,7,'#8fd8ee55');
+     }
+     item(item,time){
+       const {x,y,kind}=item,t=B.TYPES[kind];this.glow(x,y+3,25,15,t.color+'35');this.ellipse(x,y+4,13,6,'#12232c99');
+@@ -230,7 +287,7 @@
+       this.rect(B.LEVER.x-10,B.LEVER.y-21,20,32,'#596e74');this.line([[B.LEVER.x,B.LEVER.y-7],[B.LEVER.x+12,B.LEVER.y-28]],r.opened?'#a2d3a5':'#e6bd7e',5);
+       this.text(r.opened?'闸门已开':'维护拉杆',B.LEVER.x,B.LEVER.y+28,13,'#c5c5ac');
+       if(!r.opened){this.rect(B.GATE.x,B.GATE.y-32,B.GATE.w,54,'#566773');for(let x=B.GATE.x+6;x<B.GATE.x+B.GATE.w;x+=14)this.line([[x,B.GATE.y-31],[x,B.GATE.y+21]],'#9daba6',3);}
+-      const objects=[...B.WALLS,...(street?.walls||[])].map(w=>({y:w.y+w.h,draw:()=>{c.save();if(['shop','club'].includes(w.kind)&&p.x>w.x-20&&p.x<w.x+w.w+20&&p.y>w.y-100&&p.y<w.y)c.globalAlpha=.4;this.block(w);c.restore();}}));
++      const objects=[...B.WALLS,...(street?.walls||[])].map(w=>({y:w.y+w.h,draw:()=>{c.save();if(['shop','club'].includes(w.kind)&&p.x>w.x-20&&p.x<w.x+w.w+20&&p.y>w.y-100&&p.y<w.y)c.globalAlpha=.4;this.block(w,location,market);c.restore();}}));
+       for(const w of location?.walls||[])objects.push({y:w.y+w.h,draw:()=>{this.rect(w.x,w.y-12,w.w,w.h+12,'#526b70');this.rect(w.x,w.y-12,w.w,5,'#b7baa1');}});
+       if(location?.door)objects.push({y:location.door.y+location.door.h,draw:()=>this.locationDoor(location.door)});
+       for(const barrel of r.street?.barrels||[])objects.push({y:barrel.y,draw:()=>this.streetBarrel(barrel,r)});
+--- /dev/null
++++ b/tools/prototype/test-market-fixtures-scene.js
+@@ -0,0 +1,443 @@
++'use strict';
++// PLAY11 technical behavior tests for the two market fixture silhouettes
++// (stock rack vs cold-room fixture) and their honest power-state rendering.
++// The real backstage-core.js drives geometry/state; a recording canvas observes
++// actual Canvas2D calls from real BackstageScene.draw. Synthetic position and
++// inventory setups below are labelled technical fixtures and are not natural
++// gameplay evidence (parent owns GUI / natural-run acceptance).
++const test=require('node:test');
++const assert=require('node:assert/strict');
++const fs=require('node:fs');
++const vm=require('node:vm');
++const path=require('node:path');
++const B=require('./backstage-core.js');
++const SCENE_SRC=fs.readFileSync(path.join(__dirname,'backstage-scene.js'),'utf8');
++
++// Strict recording 2D context: numeric arguments must be finite, rects/texts are
++// captured in transformed coordinates, save/translate/scale/restore implement
++// real Canvas post-multiplication (adapted from test-night-map-scene.js).
++function recorder(){
++  const calls=[],rects=[],shapes=[],texts=[];
++  const stack=[];
++  let m=[1,0,0,1,0,0];
++  let verts=null,pending=null,closed=false;
++  const need=(v,what)=>{
++    if(typeof v!=='number'||!Number.isFinite(v))throw new Error('invalid canvas numeric argument '+what+': '+String(v));
++    return v;
++  };
++  const ap=(x,y)=>[m[0]*x+m[2]*y+m[4],m[1]*x+m[3]*y+m[5]];
++  const flush=(mode)=>{
++    if(pending&&pending.kind==='ellipse'){
++      shapes.push({type:'ellipse',mode,x:pending.x,y:pending.y,rx:pending.rx,ry:pending.ry,
++        color:mode==='fill'?ctx.fillStyle:ctx.strokeStyle,lineWidth:ctx.lineWidth});
++    }else if(verts&&verts.length>=2){
++      shapes.push({type:'path',mode,closed,verts:verts.map(p=>({x:p[0],y:p[1]})),
++        color:mode==='fill'?ctx.fillStyle:ctx.strokeStyle,lineWidth:ctx.lineWidth});
++    }
++    pending=null;
++  };
++  const ctx={
++    fillStyle:'#000000',strokeStyle:'#000000',lineWidth:1,font:'10px sans-serif',textAlign:'left',globalAlpha:1,
++    save(){calls.push(['save']);stack.push(m.slice());},
++    restore(){calls.push(['restore']);if(stack.length)m=stack.pop();else throw new Error('restore without save');},
++    translate(tx,ty){need(tx,'translate.tx');need(ty,'translate.ty');calls.push(['translate',tx,ty]);
++      const a=m[0],b=m[1],c=m[2],d=m[3];m[4]+=a*tx+c*ty;m[5]+=b*tx+d*ty;},
++    scale(sx,sy){need(sx,'scale.sx');need(sy,'scale.sy');calls.push(['scale',sx,sy]);m[0]*=sx;m[1]*=sx;m[2]*=sy;m[3]*=sy;},
++    clearRect(x,y,w,h){[x,y,w,h].forEach((v,i)=>need(v,'clearRect'+i));calls.push(['clearRect',x,y,w,h]);
++      const [X,Y]=ap(x,y);rects.push({mode:'clear',x:X,y:Y,w:w*m[0],h:h*m[3]});},
++    fillRect(x,y,w,h){[x,y,w,h].forEach((v,i)=>need(v,'fillRect'+i));calls.push(['fillRect',x,y,w,h]);
++      const [X,Y]=ap(x,y);rects.push({mode:'fill',x:X,y:Y,w:w*m[0],h:h*m[3],color:ctx.fillStyle});},
++    strokeRect(x,y,w,h){[x,y,w,h].forEach((v,i)=>need(v,'strokeRect'+i));calls.push(['strokeRect',x,y,w,h]);
++      const [X,Y]=ap(x,y);rects.push({mode:'stroke',x:X,y:Y,w:w*m[0],h:h*m[3],color:ctx.strokeStyle,lineWidth:ctx.lineWidth});},
++    beginPath(){calls.push(['beginPath']);verts=[];pending=null;closed=false;},
++    moveTo(x,y){need(x,'moveTo.x');need(y,'moveTo.y');calls.push(['moveTo',x,y]);verts.push(ap(x,y));},
++    lineTo(x,y){need(x,'lineTo.x');need(y,'lineTo.y');calls.push(['lineTo',x,y]);if(verts)verts.push(ap(x,y));},
++    closePath(){calls.push(['closePath']);closed=true;},
++    ellipse(x,y,rx,ry){[x,y,rx,ry].forEach((v,i)=>need(v,'ellipse'+i));calls.push(['ellipse',x,y,rx,ry]);
++      const [X,Y]=ap(x,y);pending={kind:'ellipse',x:X,y:Y,rx:rx*Math.hypot(m[0],m[1]),ry:ry*Math.hypot(m[2],m[3])};},
++    arc(x,y,r){[x,y,r].forEach((v,i)=>need(v,'arc'+i));calls.push(['arc',x,y,r]);
++      const [X,Y]=ap(x,y);pending={kind:'ellipse',x:X,y:Y,rx:r*Math.hypot(m[0],m[1]),ry:r*Math.hypot(m[0],m[1])};},
++    fill(){calls.push(['fill']);flush('fill');},
++    stroke(){calls.push(['stroke']);flush('stroke');},
++    fillText(t,x,y){need(x,'fillText.x');need(y,'fillText.y');calls.push(['fillText',String(t),x,y]);
++      const [X,Y]=ap(x,y);texts.push({text:String(t),x:X,y:Y,font:ctx.font,color:ctx.fillStyle,align:ctx.textAlign});},
++    setLineDash(){calls.push(['setLineDash']);},
++    createLinearGradient(x0,y0,x1,y1){[x0,y0,x1,y1].forEach((v,i)=>need(v,'gradient'+i));return{addColorStop(){}};},
++    createRadialGradient(x0,y0,r0,x1,y1,r1){[x0,y0,r0,x1,y1,r1].forEach((v,i)=>need(v,'radialGradient'+i));
++      return{addColorStop(){}};}
++  };
++  return Object.assign(ctx,{calls,rects,shapes,texts,_stack:stack,matrix:()=>m.slice()});
++}
++function load(width=860,reduced=false){
++  const rec=recorder();
++  const canvas={getContext:()=>rec,getBoundingClientRect:()=>({width,height:560,left:0,top:0})};
++  const sandbox={Backstage:B,matchMedia:()=>({matches:reduced})};
++  sandbox.window=sandbox;
++  vm.createContext(sandbox);
++  vm.runInContext(SCENE_SRC,sandbox,{filename:'backstage-scene.js'});
++  return {rec,scene:new sandbox.BackstageScene(canvas)};
++}
++function render(r,o={}){
++  const width=o.width??860,overview=o.overview??false,reduced=o.reduced??false;
++  const {rec,scene}=load(width,reduced);
++  scene.draw(r,{overview});
++  assert.equal(rec._stack.length,0,'draw must balance save/restore');
++  assert.deepEqual(rec.matrix(),[1,0,0,1,0,0],'draw must finish in identity screen space');
++  return {rec,scene,view:scene.camera(r,overview)};
++}
++
++// Real run builders: marketShift is strict opt-in; ordinary create() stays legacy.
++const shift=(day=1,seed=42)=>B.create(seed,day,'hook',[],{marketShift:true});
++// Map the two real shelf-kind WALLS to market rooms purely by center-in-room geometry.
++function shelfMap(){
++  const info=B.locationInfo(shift(1));
++  assert.equal(info.enabled,true);
++  const byRoom={};
++  for(const w of B.WALLS.filter(q=>q.kind==='shelf')){
++    const cx=w.x+w.w/2,cy=w.y+w.h/2;
++    const room=info.rooms.find(rm=>(rm.id==='market-stock'||rm.id==='market-cold')&&
++      cx>=rm.x&&cx<=rm.x+rm.w&&cy>=rm.y&&cy<=rm.y+rm.h);
++    if(room)byRoom[room.id]=w;
++  }
++  return byRoom;
++}
++// Contract envelope declared by the plan: the silhouettes must stay inside the
++// old fixture visual envelope x..x+w+15, y-36..y+h+10.
++const env=w=>({x:w.x,y:w.y-36,w:w.w+15,h:w.h+46});
++const centerIn=(x,y,e)=>x>=e.x&&x<=e.x+e.w&&y>=e.y&&y<=e.y+e.h;
++function worldRects(rec,v,w){
++  // Candidate block-footprint window (2px slack around the envelope): keeps the
++  // shelf block's own rects while excluding room floor tints, walls and glows
++  // that merely overlap the vicinity with wider/other geometry.
++  return rec.rects.filter(q=>q.mode==='fill').map(q=>({
++    x:(q.x-v.x)/v.scale,y:(q.y-v.y)/v.scale,w:q.w/v.scale,h:q.h/v.scale,color:q.color
++  })).filter(r=>r.x>=w.x-2-1e-6&&r.x+r.w<=w.x+w.w+17+1e-6&&
++    r.y>=w.y-38-1e-6&&r.y+r.h<=w.y+w.h+12+1e-6);
++}
++function worldEllipses(rec,v,w){
++  const e=env(w);
++  return rec.shapes.filter(s=>s.type==='ellipse').map(s=>({
++    x:(s.x-v.x)/v.scale,y:(s.y-v.y)/v.scale,rx:s.rx/v.scale,ry:s.ry/v.scale,
++    color:s.color,mode:s.mode
++  })).filter(s=>centerIn(s.x,s.y,e));
++}
++function worldTexts(rec,v,w){
++  const e=env(w);
++  return rec.texts.map(t=>({text:t.text,x:(t.x-v.x)/v.scale,y:(t.y-v.y)/v.scale}))
++    .filter(t=>centerIn(t.x,t.y,e));
++}
++const R=5,round1=n=>Math.round(n*10**R)/10**R;
++const rectKey=r=>[round1(r.x),round1(r.y),round1(r.w),round1(r.h),String(r.color)];
++const ellipseKey=s=>[round1(s.x),round1(s.y),round1(s.rx),round1(s.ry),String(s.color),s.mode];
++const sameDraw=(a,b)=>JSON.stringify(a.map(rectKey))===JSON.stringify(b.map(rectKey));
++// Structural feature extractors describe silhouette construction (frame vs solid
++// cabinet), not colors or source/helper names.
++function stockFeatures(rects,w){
++  const painted=rects.filter(r=>typeof r.color==='string');
++  const broad=painted.filter(r=>r.h<=9&&r.w>=0.7*w.w&&r.y>=w.y-34&&r.y<=w.y+w.h+2);
++  const tall=painted.filter(r=>r.w<=10&&r.h>=40&&r.h>=3*r.w);
++  const clusters=[];
++  for(const r of tall){const c=r.x+r.w/2;if(!clusters.some(q=>Math.abs(q.x-c)<=8))clusters.push({x:c,top:r.y,bottom:r.y+r.h});
++    else{const q=clusters.find(q=>Math.abs(q.x-c)<=8);q.top=Math.min(q.top,r.y);q.bottom=Math.max(q.bottom,r.y+r.h);}}
++  const body=painted.find(r=>r.w>=w.w-2&&r.h>=w.h+18);
++  const area=painted.reduce((n,r)=>n+r.w*r.h,0)/(env(w).w*env(w).h);
++  return {broadCount:broad.length,bandTops:new Set(broad.map(r=>round1(r.y))).size,
++    uprights:clusters,solidBody:Boolean(body),areaRatio:area};
++}
++function coldFeatures(rects,ells,w){
++  const painted=rects.filter(r=>typeof r.color==='string');
++  const mid=w.x+w.w/2;
++  const body=painted.find(r=>r.w>=w.w-2&&r.h>=w.h+20);
++  const panels=painted.filter(r=>r.w>=0.32*w.w&&r.w<=0.56*w.w&&r.h>=40&&
++    r.y>=w.y-26&&r.y<=w.y+42&&Math.abs((r.x+r.w/2)-mid)>=0.15*w.w);
++  const seam=painted.find(r=>r.w<=5&&r.h>=50&&Math.abs((r.x+r.w/2)-mid)<=4);
++  const handles=painted.filter(r=>r.w<=5&&r.h>=12&&r.h<=30&&Math.abs((r.x+r.w/2)-mid)<=18);
++  const slots=painted.filter(r=>r.h<=7&&r.w>=0.7*w.w&&r.y>=w.y+44);
++  const slotRows=new Set(slots.map(r=>round1(r.y)));
++  // The state light is the only small ellipse riding the top housing strip.
++  const light=ells.find(s=>s.mode==='fill'&&s.rx<=6&&s.ry<=6&&
++    s.x>=w.x+w.w-40&&s.x<=w.x+w.w&&s.y>=w.y-36&&s.y<=w.y-18)||null;
++  return {body:body?{x:body.x,y:body.y,w:body.w,h:body.h}:null,
++    panelCount:panels.length,panels,seam:Boolean(seam),handles:handles.length,
++    slotRows:slotRows.size,light};
++}
++// Generic legacy shelf: repeated narrow upright slats over a solid box body.
++function genericSlatCount(rects,w){
++  return rects.filter(r=>typeof r.color==='string'&&r.w>=15&&r.w<=20&&
++    r.h>=w.h-19&&r.h<=w.h-15&&r.y>=w.y).length;
++}
++function restoredLegacy(version){
++  const r=B.create(11,1);
++  r.version=version;
++  delete r.district;
++  if(version<3)delete r.location;
++  if(version===1)delete r.street;
++  const restored=B.restore(r);
++  assert.ok(restored,'real B.restore must accept the legacy v'+version+' fixture');
++  return restored;
++}
++// Technical movement: walk straight with real stepping, staying on legal cells.
++function walkTo(r,to){
++  for(let n=0;n<6000&&Math.hypot(to.x-r.p.x,to.y-r.p.y)>4;n++){
++    const d=Math.hypot(to.x-r.p.x,to.y-r.p.y);
++    B.step(r,{dx:(to.x-r.p.x)/d,dy:(to.y-r.p.y)/d},.025);
++    assert.ok(!B.solid(r,r.p.x,r.p.y));
++  }
++  assert.ok(Math.hypot(to.x-r.p.x,to.y-r.p.y)<=6,JSON.stringify({p:r.p,to}));
++}
++
++test('real geometry: exactly two shelf walls, centered one each in market-stock and market-cold rooms',()=>{
++  const shelves=B.WALLS.filter(w=>w.kind==='shelf');
++  assert.equal(shelves.length,2);
++  const map=shelfMap();
++  assert.ok(map['market-stock']&&map['market-cold'],'both real shelves map to market rooms by geometry');
++  assert.notDeepEqual(map['market-stock'],map['market-cold']);
++  // The pickups live outside the shelf envelopes (fixtures must not cover them).
++  assert.equal(B.solid(shift(1),405,990),false);
++  assert.equal(B.solid(shift(1),740,850),false);
++});
++
++test('stock fixture draws an open rack frame: broad tier edges, separated uprights, no solid box',()=>{
++  const r=shift(1);assert.equal(B.marketInfo(r).enabled,true);
++  const w=shelfMap()['market-stock'];
++  const {rec,view}=render(r);
++  const rects=worldRects(rec,view,w);
++  const f=stockFeatures(rects,w);
++  assert.ok(f.bandTops>=3,'need at least 3 distinct broad horizontal tier edges, got '+f.bandTops);
++  assert.ok(f.broadCount>=4,'broad tier/plinth edges spanning the rack, got '+f.broadCount);
++  assert.ok(f.uprights.length>=3,'separated upright supports, got '+f.uprights.length);
++  assert.ok(f.uprights.length<=4,'open frame bays, not a run of slats, got '+f.uprights.length);
++  const xs=f.uprights.map(q=>q.x);
++  assert.ok(Math.max(...xs)-Math.min(...xs)>=0.6*w.w,'supports must be separated across the width');
++  assert.ok(Math.min(...f.uprights.map(q=>q.top))<=w.y-28,'uprights rise to the top tier');
++  assert.ok(Math.max(...f.uprights.map(q=>q.bottom))>=w.y+w.h-8,'uprights reach the base');
++  assert.equal(f.solidBody,false,'open rack must not render a wardrobe-style solid box');
++  assert.ok(f.areaRatio<=0.65,'open bays dominate the rack silhouette, area ratio '+f.areaRatio.toFixed(2));
++  assert.equal(worldTexts(rec,view,w).length,0,'fixtures promise no new text');
++});
++
++test('cold fixture draws a solid insulated cabinet: doors, center seam, handles, lower grille',()=>{
++  const r=shift(1);
++  const w=shelfMap()['market-cold'];
++  const {rec,view}=render(r);
++  const f=coldFeatures(worldRects(rec,view,w),worldEllipses(rec,view,w),w);
++  assert.ok(f.body,'solid cabinet body required');
++  assert.ok(f.body.w>=w.w&&f.body.h>=w.h+20);
++  assert.equal(f.panelCount,2,'two closed door panels, got '+f.panelCount);
++  const pcx=f.panels.map(q=>q.x+q.w/2).sort((a,b)=>a-b),mid=w.x+w.w/2;
++  assert.ok(pcx[0]<mid&&pcx[1]>mid,'door panels sit on opposite sides of the center seam');
++  assert.equal(f.seam,true,'center door seam required');
++  assert.ok(f.handles>=2,'paired door handles required, got '+f.handles);
++  assert.ok(f.slotRows>=3,'broad ventilation grille rows on the lower front, got '+f.slotRows);
++  assert.ok(f.light,'power-state housing light required');
++  assert.equal(worldTexts(rec,view,w).length,0,'fixtures promise no new text');
++});
++
++test('rack and cold cabinet are structurally distinct silhouettes even with color ignored',()=>{
++  const r=shift(1);
++  const map=shelfMap();
++  const {rec,view}=render(r);
++  const stockW=map['market-stock'],coldW=map['market-cold'];
++  const s=stockFeatures(worldRects(rec,view,stockW),stockW);
++  const c=coldFeatures(worldRects(rec,view,coldW),worldEllipses(rec,view,coldW),coldW);
++  const coldUprights=stockFeatures(worldRects(rec,view,coldW),coldW).uprights.length;
++  assert.notEqual(s.solidBody,Boolean(c.body),'one open frame, one solid cabinet');
++  assert.ok(s.uprights.length-coldUprights>=2,'rack has multiple open-frame supports, cabinet does not');
++  assert.ok(c.panelCount===2&&c.seam&&c.handles>=2&&c.slotRows>=3,'cabinet-only door/grille structure');
++  assert.ok(c.light&&!worldEllipses(rec,view,map['market-stock']).some(e=>e.rx<=6&&e.y<map['market-stock'].y-18),
++    'state light belongs to the cold fixture only');
++});
++
++test('power state is honest: lit while powered, dark during blackout, lit again after the real repair command',()=>{
++  // Technical fixtures: actors removed; real B.create states and real B.command
++  // repair sequence (walk-collect part, walk to fuse, market-power).
++  const map=shelfMap(),w=map['market-cold'];
++  const lightOf=r=>{
++    const {rec,view}=render(r);
++    const f=coldFeatures(worldRects(rec,view,w),worldEllipses(rec,view,w),w);
++    assert.ok(f.light,'state light rendered');
++    const glowAt=worldRects(rec,view,w).filter(q=>typeof q.color!=='string'&&
++      Math.hypot(q.x+q.w/2-f.light.x,q.y+q.h/2-f.light.y)<=14).length;
++    return {color:f.light.color,glow:glowAt,painted:worldRects(rec,view,w).filter(q=>typeof q.color==='string')};
++  };
++  const staffed=shift(1);staffed.actors=[];
++  assert.equal(B.marketInfo(staffed).condition,'staffed');
++  assert.equal(B.marketInfo(staffed).powered,true);
++  const restock=shift(2);restock.actors=[];
++  assert.equal(B.marketInfo(restock).condition,'restock');
++  assert.equal(B.marketInfo(restock).powered,true);
++  const black=shift(3);black.actors=[];
++  assert.equal(B.marketInfo(black).condition,'blackout');
++  assert.equal(B.marketInfo(black).powered,false);
++  // Cold goods really stay locked while unpowered (gameplay semantics unchanged).
++  assert.equal(B.command(black,'collect',{itemId:'item1'}),false,'cannot grab cold goods from afar');
++  assert.equal(B.solid(black,740,850),false,'technical placement uses a legal cold-room cell');
++  Object.assign(black.p,{x:740,y:850});
++  assert.equal(B.command(black,'collect',{itemId:'item1'}),false,'cold stock refuses even standing on it');
++
++  const lit=lightOf(staffed),alsoLit=lightOf(restock),dark=lightOf(black);
++  assert.ok(lit.glow>=1,'powered light carries a cool glow');
++  assert.equal(lit.color,alsoLit.color,'staffed and restock share the powered light');
++  assert.notEqual(lit.color,dark.color,'blackout light must differ from powered');
++  assert.equal(dark.glow,0,'unpowered blackout emits no false energy glow');
++  assert.ok(sameDraw(lit.painted,dark.painted),'power changes only the state light, not the cabinet body');
++
++  // Real repair, mirroring the adopted blackout regression excerpt. The walk
++  // loops below the street barrel (collision radius 35) then up the unloading room.
++  const r=shift(3);r.actors=[];
++  assert.equal(B.marketInfo(r).powered,false);
++  walkTo(r,{x:460,y:1205});
++  walkTo(r,{x:680,y:1205});
++  walkTo(r,{x:680,y:1142});
++  assert.equal(B.command(r,'collect',{itemId:'item3'}),true,'real collect of the unloading salvage part');
++  walkTo(r,{x:700,y:1105});
++  assert.equal(B.command(r,'market-power'),true,'real fuse repair consumes the part');
++  assert.equal(r.marketShift.powerItem,'item3');
++  assert.equal(B.marketInfo(r).powered,true);
++  assert.equal(B.command(r,'market-power'),false,'no free second repair');
++  const repaired=lightOf(r);
++  assert.equal(repaired.color,lit.color,'after real repair the same powered light returns');
++  assert.ok(repaired.glow>=1,'repaired light glows again');
++  assert.ok(sameDraw(repaired.painted,lit.painted),'repaired cabinet renders identically to staffed');
++  // Technical repaired fixture survives real restore round-trip.
++  assert.deepEqual(B.restore(r),r);
++});
++
++test('non-shift runs keep the unchanged generic shelf drawing (legacy fallback honest)',()=>{
++  const r=B.create(42,1); // strict opt-out: no marketShift on a natural create()
++  assert.equal(B.marketInfo(r).enabled,false);
++  const map=shelfMap();
++  const {rec,view}=render(r);
++  for(const id of ['market-stock','market-cold']){
++    const w=map[id],rects=worldRects(rec,view,w);
++    assert.ok(genericSlatCount(rects,w)>=5,id+' keeps the generic repeated slats');
++    assert.ok(rects.some(q=>q.color==='#526573'&&Math.abs(q.w-w.w)<1&&Math.abs(q.h-(w.h+22))<1),
++      id+' keeps the generic solid box body');
++    assert.equal(coldFeatures(rects,worldEllipses(rec,view,w),w).light,null,id+' shows no false power light');
++  }
++});
++
++test('restored v1/v2/v3 legacy saves keep the generic shelf path and never crash full draw',()=>{
++  const map=shelfMap();
++  for(const version of [1,2,3]){
++    const r=restoredLegacy(version);
++    assert.equal(B.marketInfo(r).enabled,false);
++    const {rec,view}=render(r);
++    for(const id of ['market-stock','market-cold']){
++      const w=map[id];
++      assert.ok(genericSlatCount(worldRects(rec,view,w),w)>=5,'v'+version+' '+id+' generic slats');
++      assert.equal(coldFeatures(worldRects(rec,view,w),worldEllipses(rec,view,w),w).light,null);
++    }
++  }
++});
++
++test('shelf branch needs real room containment plus enabled location+market; outside shelves stay generic',()=>{
++  const r=shift(1),info=B.locationInfo(r),market=B.marketInfo(r);
++  const stock=shelfMap()['market-stock'],cold=shelfMap()['market-cold'];
++  const identity={scale:1,x:0,y:0};
++  // One fresh identity-space scene.block dispatch per contract case.
++  const blockOnce=(w,loc,mk)=>{
++    const {rec,scene}=load();
++    scene.block(w,loc,mk);
++    assert.equal(rec._stack.length,0);
++    return rec;
++  };
++  // Synthetic shelf far outside the market rooms even with fully enabled context.
++  const outside={x:1200,y:900,w:140,h:80,kind:'shelf'};
++  assert.ok(genericSlatCount(worldRects(blockOnce(outside,info,market),identity,outside),outside)>=5,
++    'out-of-room shelf stays generic');
++  // Legacy zero-arg call (old signature) keeps the original path.
++  assert.ok(genericSlatCount(worldRects(blockOnce(stock),identity,stock),stock)>=5,'no-arg block stays generic');
++  // Explicitly disabled context keeps the original path.
++  assert.ok(genericSlatCount(worldRects(blockOnce(stock,{enabled:false,rooms:[]},{enabled:false}),identity,stock),stock)>=5,
++    'disabled context stays generic');
++  // Positive controls: real in-room shelves dispatch to the new silhouettes.
++  const rack=stockFeatures(worldRects(blockOnce(stock,info,market),identity,stock),stock);
++  assert.ok(rack.uprights.length>=3&&!rack.solidBody,'enabled in-room shelf uses the open rack frame');
++  const litRec=blockOnce(cold,info,market);
++  const lit=coldFeatures(worldRects(litRec,identity,cold),worldEllipses(litRec,identity,cold),cold);
++  assert.ok(lit.body&&lit.panelCount===2&&lit.seam&&lit.light,'enabled cold shelf uses the cabinet');
++  // Unpowered market object renders the honest dark light.
++  const dark=shift(3);dark.actors=[];
++  const darkRec=blockOnce(cold,B.locationInfo(dark),B.marketInfo(dark));
++  assert.notEqual(coldFeatures(worldRects(darkRec,identity,cold),worldEllipses(darkRec,identity,cold),cold).light.color,
++    lit.light.color,'blackout light color differs from powered');
++});
++
++test('draw never mutates run state and fixture rendering is deterministic over time and reduced motion',()=>{
++  const map=shelfMap();
++  for(const setup of ['staffed','blackout']){
++    const r=shift(setup==='staffed'?1:3); // technical: actors removed for a stable frame
++    r.actors=[];
++    const before=structuredClone(r);
++    const a=render(r).rec.calls,b=render(r).rec.calls;
++    assert.deepEqual(a,b,'identical calls across draws');
++    render(r,{width:390});render(r,{overview:true});render(r,{reduced:true});
++    assert.deepEqual(r,before,'full draw is read-only');
++  }
++  // Fixture geometry is independent of clock: technical time jump changes nothing
++  // inside either fixture envelope.
++  const r=shift(1);r.actors=[];
++  const pick=(run)=>{
++    const {rec,view}=render(run);
++    return [map['market-stock'],map['market-cold']].map(w=>({
++      rects:worldRects(rec,view,w).map(rectKey),ells:worldEllipses(rec,view,w).map(ellipseKey)}));
++  };
++  const atZero=pick(r);
++  r.time=60;
++  assert.deepEqual(pick(r),atZero,'shelf rendering ignores time');
++  const {rec:ra}=render(r,{reduced:false}),{rec:rb}=render(r,{reduced:true});
++  assert.deepEqual(ra.calls,rb.calls,'reduced/non-reduced identical at fixed state');
++});
++
++test('desktop, 390px and overview all project the same in-envelope world geometry',()=>{
++  const r=shift(1);r.actors=[];
++  const map=shelfMap();
++  const views=[{},{width:390},{overview:true},{width:390,overview:true}];
++  const seen={};
++  for(const opt of views){
++    const {rec,view}=render(r,opt);
++    for(const id of ['market-stock','market-cold']){
++      const w=map[id],e=env(w);
++      for(const q of worldRects(rec,view,w)){
++        assert.ok(q.x>=e.x-1e-6&&q.y>=e.y-1e-6&&q.x+q.w<=e.x+e.w+1e-6&&q.y+q.h<=e.y+e.h+1e-6,
++          id+' rect outside envelope: '+JSON.stringify(q));
++        assert.ok([q.x,q.y,q.w,q.h].every(Number.isFinite));
++      }
++      for(const s of worldEllipses(rec,view,w)){
++        assert.ok(s.x-s.rx>=e.x-1e-6&&s.y-s.ry>=e.y-1e-6&&s.x+s.rx<=e.x+e.w+1e-6&&s.y+s.ry<=e.y+e.h+1e-6,
++          id+' ellipse outside envelope');
++      }
++      const key=id+JSON.stringify(opt);
++      seen[key]=worldRects(rec,view,w).map(rectKey);
++    }
++  }
++  // Every view recovers identical world geometry (camera/code path independence).
++  for(const id of ['market-stock','market-cold']){
++    const keys=views.map(opt=>seen[id+JSON.stringify(opt)]);
++    for(let i=1;i<keys.length;i++)assert.deepEqual(keys[i],keys[0],id+' geometry differs across views');
++  }
++  // Cold cabinet anchors exactly at the real shelf rect.
++  const {rec,view}=render(r);
++  const cold=map['market-cold'];
++  const body=coldFeatures(worldRects(rec,view,cold),worldEllipses(rec,view,cold),cold).body;
++  assert.ok(Math.abs(body.x-cold.x)<1e-6&&Math.abs(body.y-(cold.y-32))<1e-6&&
++    Math.abs(body.w-cold.w)<1e-6&&Math.abs(body.h-(cold.h+32))<1e-6);
++});
++
++test('existing market pickups remain visible through item() and outside both fixture envelopes',()=>{
++  const r=shift(1);
++  const map=shelfMap();
++  const stockItem=r.items.find(i=>i.id==='item0'),coldItem=r.items.find(i=>i.id==='item1');
++  assert.equal(stockItem.x,405);assert.equal(stockItem.y,990);
++  assert.equal(coldItem.x,740);assert.equal(coldItem.y,850);
++  assert.ok(!centerIn(stockItem.x,stockItem.y,env(map['market-stock'])),'stock pickup stays clear of rack envelope');
++  assert.ok(!centerIn(coldItem.x,coldItem.y,env(map['market-cold'])),'cold pickup stays clear of cabinet envelope');
++  const {rec,view}=render(r);
++  // item() draws the world shadow ellipse at each real pickup position.
++  for(const it of [stockItem,coldItem]){
++    const wx=(q)=>(q.x-view.x)/view.scale,wy=(q)=>(q.y-view.y)/view.scale;
++    assert.ok(rec.shapes.some(s=>s.type==='ellipse'&&s.mode==='fill'&&
++      Math.hypot(wx(s)-it.x,wy(s)-(it.y+4))<8),'pickup still drawn by item() at '+it.id);
++  }
++});

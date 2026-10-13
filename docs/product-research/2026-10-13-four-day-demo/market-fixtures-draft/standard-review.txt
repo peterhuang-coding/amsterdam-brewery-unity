@@ -1,0 +1,2 @@
+review error: review_requires_finished
+exit1; no rejected record registered. Original receipt retained; parent validation separately saved.

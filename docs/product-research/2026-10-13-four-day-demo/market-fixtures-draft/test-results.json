@@ -1,0 +1,133 @@
+[
+  {
+    "name": "candidate-new",
+    "command": [
+      "node",
+      "--test",
+      "tools/prototype/test-market-fixtures-scene.js"
+    ],
+    "cwd": "/tmp/amsterdam-market-fixtures-review-20261013/candidate",
+    "exit": 1,
+    "tail": [
+      "  duration_ms: 4.992042",
+      "  type: 'test'",
+      "  ...",
+      "1..11",
+      "# tests 11",
+      "# suites 0",
+      "# pass 8",
+      "# fail 3",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0",
+      "# duration_ms 470.919"
+    ]
+  },
+  {
+    "name": "baseline-new",
+    "command": [
+      "node",
+      "--test",
+      "tools/prototype/test-market-fixtures-scene.js"
+    ],
+    "cwd": "/tmp/amsterdam-market-fixtures-review-20261013/baseline",
+    "exit": 1,
+    "tail": [
+      "  duration_ms: 5.739042",
+      "  type: 'test'",
+      "  ...",
+      "1..11",
+      "# tests 11",
+      "# suites 0",
+      "# pass 4",
+      "# fail 7",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0",
+      "# duration_ms 447.911042"
+    ]
+  },
+  {
+    "name": "candidate-all",
+    "command": [
+      "node",
+      "--test",
+      "tools/prototype/test-algorithm-city-equivalence.js",
+      "tools/prototype/test-algorithm-city.js",
+      "tools/prototype/test-algorithm-history.js",
+      "tools/prototype/test-algorithm-physics.js",
+      "tools/prototype/test-algorithm-replay.js",
+      "tools/prototype/test-algorithm-routes.js",
+      "tools/prototype/test-algorithm-saves.js",
+      "tools/prototype/test-backstage-auto.js",
+      "tools/prototype/test-backstage.js",
+      "tools/prototype/test-character-stories.js",
+      "tools/prototype/test-city-bike.js",
+      "tools/prototype/test-city-consequence-quality.js",
+      "tools/prototype/test-city-journey-quality.js",
+      "tools/prototype/test-city.js",
+      "tools/prototype/test-daynight.js",
+      "tools/prototype/test-delivery-orders.js",
+      "tools/prototype/test-district-auto.js",
+      "tools/prototype/test-district-core.js",
+      "tools/prototype/test-district-daynight.js",
+      "tools/prototype/test-first-street-ui.js",
+      "tools/prototype/test-flower-network.js",
+      "tools/prototype/test-journey-integration.js",
+      "tools/prototype/test-journey.js",
+      "tools/prototype/test-location-daynight.js",
+      "tools/prototype/test-location-depth.js",
+      "tools/prototype/test-market-daynight-ui.js",
+      "tools/prototype/test-market-daynight.js",
+      "tools/prototype/test-market-fixtures-scene.js",
+      "tools/prototype/test-market-focus-ui.js",
+      "tools/prototype/test-market-shift-ui.js",
+      "tools/prototype/test-market-shift.js",
+      "tools/prototype/test-night-loadout-ui.js",
+      "tools/prototype/test-night-map-scene.js",
+      "tools/prototype/test-night-streets.js",
+      "tools/prototype/test-phase-e.js",
+      "tools/prototype/test-pub-materials.js",
+      "tools/prototype/test-reopening.js",
+      "tools/prototype/test-street-atmosphere.js"
+    ],
+    "cwd": "/tmp/amsterdam-market-fixtures-review-20261013/candidate",
+    "exit": 1,
+    "tail": [
+      "  duration_ms: 0.935334",
+      "  type: 'test'",
+      "  ...",
+      "1..353",
+      "# tests 422",
+      "# suites 0",
+      "# pass 419",
+      "# fail 3",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0",
+      "# duration_ms 13643.918125"
+    ]
+  },
+  {
+    "name": "scene-syntax",
+    "command": [
+      "node",
+      "--check",
+      "tools/prototype/backstage-scene.js"
+    ],
+    "cwd": "/tmp/amsterdam-market-fixtures-review-20261013/candidate",
+    "exit": 0,
+    "tail": []
+  },
+  {
+    "name": "test-syntax",
+    "command": [
+      "node",
+      "--check",
+      "tools/prototype/test-market-fixtures-scene.js"
+    ],
+    "cwd": "/tmp/amsterdam-market-fixtures-review-20261013/candidate",
+    "exit": 0,
+    "tail": []
+  }
+]

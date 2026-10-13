@@ -1,0 +1,86 @@
+{
+  "artifact_dir": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-20261013",
+  "blockers": [
+    "worker timeout"
+  ],
+  "changed_files": [
+    {
+      "path": "tools/prototype/backstage-scene.js",
+      "sha256": "ba787914f17743359c5cc8fb86b5031d825f0840dc6b951989646a5efd90e5a6"
+    },
+    {
+      "path": "tools/prototype/test-market-fixtures-scene.js",
+      "sha256": "8ec467aadf80c64f5638bbb04f155f60e020508a116fa9c3c6a8f4921b74b478"
+    }
+  ],
+  "claude": {
+    "final_subtype": null,
+    "is_error": null,
+    "outcome": "timeout",
+    "pid": 68932,
+    "returncode": 143,
+    "usage": null
+  },
+  "cost_usd": null,
+  "deleted_files": [],
+  "disallowed_changes": [],
+  "elapsed_seconds": 1200.139,
+  "finished_at": "2026-10-13T13:28:55.862919+00:00",
+  "input_hashes": {
+    "brief.md": "c80ce7834ffa3c28a00e941281e8101e2b437cd6c928a8de4c1b2753f8ec3225",
+    "state-guide.md": "bd3331189a8cb4e432835fe30882509e6779ff18adb063e972d013389839b34b",
+    "tools/prototype/backstage-core.js": "335baa752efedabf5771436c23fb5370a40af5aef4b89cdd1793351906219d07",
+    "tools/prototype/backstage-scene.js": "153175d48b778960a86a0a43317e49bc1aa64837e78dfb2d108387715428ce0f",
+    "tools/prototype/test-district-core.js": "7c24b0f1a9a422ffae5f25c3638e9fe22bf6b0649fa627959d45c882608669e4",
+    "tools/prototype/test-market-fixtures-scene.js": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tools/prototype/test-night-map-scene.js": "e84a1e0b95b840a07814b6c8c5b00520f77fff957753e29f1690f266a043e873"
+  },
+  "memory_delta": [],
+  "next_steps": [],
+  "observed_models": [
+    "doubao-seed-evolving"
+  ],
+  "permission_denials": [],
+  "replayed": false,
+  "report": null,
+  "request_sha256": "a1d104cbff4dc55b14692ed8d1c1e7712beb12172cac14474d18df506295d890",
+  "requested": {
+    "allowed_tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash"
+    ],
+    "basis": "launcher-pinned request; requested, not provider-confirmed; the pinned model is a fixed convention, not a ranking result",
+    "model": "doubao-seed-evolving",
+    "permission_allow": [
+      "Read(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-20261013/workspace/**)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-20261013/workspace/tools/prototype/backstage-scene.js)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-20261013/workspace/tools/prototype/backstage-scene.js)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-20261013/workspace/tools/prototype/test-market-fixtures-scene.js)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-20261013/workspace/tools/prototype/test-market-fixtures-scene.js)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-20261013/workspace/handoff-result.json)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-fixtures-20261013/workspace/handoff-result.json)",
+      "Bash(node --test tools/prototype/test-market-fixtures-scene.js)",
+      "Bash(node --test tools/prototype/test-night-map-scene.js tools/prototype/test-district-core.js)",
+      "Bash(node --check tools/prototype/backstage-scene.js)",
+      "Bash(node --check tools/prototype/test-market-fixtures-scene.js)"
+    ],
+    "permission_mode": "dontAsk",
+    "provider_base_url": "https://ark.cn-beijing.volces.com/api/coding",
+    "reasoning_effort": "high",
+    "thinking_enabled": true
+  },
+  "session_id": "f02e428c-5d27-470b-b844-7f9030cebecd",
+  "started_at": "2026-10-13T13:08:55.774838+00:00",
+  "status": "unknown",
+  "summary": "",
+  "task_id": "amsterdam-market-fixtures-20261013",
+  "telemetry": {
+    "attempt_kind": "business",
+    "logical_task_id": "play11-market-fixtures",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "tests": []
+}

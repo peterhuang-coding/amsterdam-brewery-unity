@@ -12,12 +12,14 @@
   "failure_policy_question_pending": false,
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
-  "current_task_terminal": "cli0_complete_report_parent_accepted",
+  "current_task_terminal": null,
   "failure_reason": null,
   "last_result_at": "2026-10-13T16:32:00.223259Z",
-  "in_flight": [],
+  "in_flight": [
+    "amsterdam-freeze-audit-r2-20261014"
+  ],
   "candidate_path": null,
-  "adopted_this_round": 1,
+  "adopted_this_round": 0,
   "policy_decision": "D24",
   "correction_after_r2": {
     "allowed": 1,
@@ -227,20 +229,20 @@
   "provider_cooldown_basis": "parent60minafter_repeated_api_transport_failures_not_server_RetryAfter",
   "failure_notification_recorded_at": "2026-10-13T16:25:22.751130+00:00",
   "provider_cooldown_completed_at": "2026-10-13T10:11:45.254565+00:00",
-  "current_submitted_at": "2026-10-13T16:27:05.502989+00:00",
-  "current_worker_pid": 88620,
-  "current_task_packet": "/tmp/amsterdam-freeze-audit-20261014/handoff.json",
-  "current_task_notion": "https://app.notion.com/p/3f83285284df81848abfff583dbacd46",
+  "current_submitted_at": "2026-10-13T17:54:21.539560Z",
+  "current_worker_pid": 96724,
+  "current_task_packet": "/tmp/amsterdam-freeze-audit-r2-20261014/handoff.json",
+  "current_task_notion": "https://app.notion.com/p/3f83285284df819e87b2ca01f84cb95b",
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
-  "current_task_stage": "correction_prepared",
+  "current_task_stage": "submitted",
   "prepared_task_id": null,
   "prepared_task_packet": null,
   "play_service_pid": 91799,
   "play_root": "/tmp/amsterdam-play-dad6b38",
-  "current_task_submitted_at": "2026-10-13T16:27:05.502989+00:00",
-  "worker_pid": 88620,
-  "last_submitted_at": "2026-10-13T16:27:05.502989+00:00",
+  "current_task_submitted_at": "2026-10-13T17:54:21.539560Z",
+  "worker_pid": 96724,
+  "last_submitted_at": "2026-10-13T17:54:21.539560Z",
   "direction_review_count": 2,
   "next_independent_observation": "D25定版审查：利用同局首杯→夜探→返店→日2后果证据，审阅首次信息量、关键画面与三天节奏，只列最多三个定版阻碍；搁置项不复活。",
   "weekly_goal": {
@@ -258,13 +260,13 @@
     "natural_loop_evidence": "cargo-choice-final: real first cup Marta, night duplicate pickup/drop, safe return, day2 inventory and market price; pause used for tool inspection, no human fun validation",
     "next_priority": "FREEZE01 read-only audit plus parent three-day ending browser acceptance"
   },
-  "current_task_worker_pid": 93892,
+  "current_task_worker_pid": 96724,
   "freeze_audit_attempt": {
     "logical_task_id": "d25-freeze-audit",
     "business_attempts": 1,
-    "corrections_used": 0,
+    "corrections_used": 1,
     "current_id": "amsterdam-freeze-audit-r2-20261014",
-    "outcome": "business_rejected_semantic",
+    "outcome": "correction_running",
     "submission": {
       "started_at": "2026-10-13T17:09:12+00:00",
       "worker_pid": 93892,
@@ -282,6 +284,17 @@
       "global_active_before": 0,
       "capacity_note": "two other live lanes observed earlier; both terminal by immediate launch recheck; non-atomic guarantee"
     },
-    "business_ended_at": "2026-10-13T17:20:57.960011+00:00"
+    "business_ended_at": "2026-10-13T17:20:57.960011+00:00",
+    "correction_submission": {
+      "started_at": "2026-10-13T17:54:21.539560Z",
+      "worker_pid": 96724,
+      "launcher_pid": 96717,
+      "model": "doubao-seed-evolving",
+      "thinking_enabled": true,
+      "effort": "high",
+      "global_active_before": 0,
+      "capacity_note": "non-atomic immediate check",
+      "adopted": 0
+    }
   }
 }

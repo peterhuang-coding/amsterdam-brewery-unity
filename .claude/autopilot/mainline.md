@@ -1,3 +1,7 @@
+# D25 FREEZE01 R2 actual in flight
+
+Sole correction amsterdam-freeze-audit-r2-20261014 submitted 2026-10-13T17:54:21.539560Z, worker96724; correction1/1. Parent whole-demo browser path separately in progress: real day1 six satisfied, Lotte overflow/broken promise, night1 actual bottle pickup/extracted, return settlement. Not full3day or fun acceptance yet. Adopted game remains dad6b38/418. Contract push reported RPC failure, later exact remote b9c5f5e readback confirmed; see R2 round for sequence.
+
 ## FREEZE01首稿拒收、唯一修正准备
 
 只读首稿正常CLI0/完整报告，607.429秒；adapterblocked因把产品观察填入保留blockers。父验发现先睡觉再夜探、先重开再验证结局的错误顺序，已rejected/semantic；源码未改。固定r2复用全稿，仅修审查路线/口径/报告，900秒24轮，当前未提交，原历史保留。父级自然三天验证继续，当前试玩dad6b38。

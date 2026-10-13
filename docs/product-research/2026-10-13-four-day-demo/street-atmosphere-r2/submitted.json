@@ -1,0 +1,9 @@
+{
+  "task_id": "amsterdam-street-atmosphere-r2-20261013",
+  "logical_task_id": "play04-street-atmosphere",
+  "attempt_kind": "correction",
+  "correction_allowance_used": "1/1",
+  "submitted_at": "2026-10-13T04:04:26.566282+00:00",
+  "launcher_pid": 27766,
+  "packet_sha256": "56dce488f1b2bc56b7e85a0850c5f2324af25a1a3be064704b33c9093853de75"
+}

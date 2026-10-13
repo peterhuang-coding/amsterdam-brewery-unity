@@ -1,0 +1,9 @@
+{
+  "checked_at": "2026-10-13T04:04:26.041717+00:00",
+  "live_ledgers": [],
+  "stream_cli_pids": [],
+  "global_count": 0,
+  "intended_new_count": 1,
+  "atomic_global_guarantee": false,
+  "original_confirmed_done": true
+}

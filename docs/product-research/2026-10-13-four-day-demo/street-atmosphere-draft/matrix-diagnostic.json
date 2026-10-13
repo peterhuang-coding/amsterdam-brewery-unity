@@ -1,0 +1,19 @@
+{
+  "operations": "translate(10,20);scale(2,3)",
+  "expectedCanvas": [
+    2,
+    0,
+    0,
+    3,
+    10,
+    20
+  ],
+  "actualRecorder": [
+    2,
+    0,
+    0,
+    3,
+    20,
+    60
+  ]
+}

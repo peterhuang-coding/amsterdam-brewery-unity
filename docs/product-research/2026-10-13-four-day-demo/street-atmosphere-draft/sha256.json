@@ -1,0 +1,17 @@
+{
+  "review-tool.json": "10e909012404410cdaf862e1c56a77e819274be0e95cabcd22b0e49b9adb47e7",
+  "candidate-day.png": "d8ade8f97e9a7bba783ca80b4e0997130af91921338aa536775a208497b1cda4",
+  "scope-audit.json": "77692a354d183c9edbab95f49ba4e9d8b2350ceb8e99bd7f633f9bf8762d0e9f",
+  "parent-review.md": "c521f15b3c40e64f16a62c1264579dc7a593420c0e44387447a6b8a2d1a5e381",
+  "result.json": "292e3187af564bcd352108859d4402d2788c01062f78fa7d8ac6878bd622f2d0",
+  "new-red.txt.gz": "8cb880f9426102fb2c67d14bf6ff5eb7ae5064dce19b3539b4c9a53abc0d395d",
+  "stderr.log.gz": "b071ab65dfe5fac6d9eb6e2124833f44564bf46418e596da1405daa28e2a3214",
+  "new-final.txt.gz": "ee1b5838f0b25829b759a15ac4eff7c654ec26dd6e64c05fdbf4c7c807bb8eb9",
+  "restore-check.json": "27dd60fa47d8459540dea36c0ad139550d89d4a8417ec3b0dad33d0251cfecc4",
+  "README.md": "5a43d6da518f126e219b2f3f778f4d47707ce6b4fba702c21c28c23110761067",
+  "candidate.patch.gz": "f4fa71f907a439725f653aa23be6714e7c8e2a5bea9dbf80699e5ecd061b7cd0",
+  "coordinate-diagnostic.json": "b214630e155c797b440a65e30f3e42d1287952b22f3b9d92768f9141c671a645",
+  "full-tests.txt.gz": "20cc53851044ec797f6c71fa022d2fb8a07e457aabc77069c015685bb5d171bc",
+  "events.jsonl.gz": "afc30fdbf74242c27b3f44872c495c79333669be509b102609c94a1246a2a32f",
+  "matrix-diagnostic.json": "adf5b52c085add03afa1b824ef6fda5275ba4240f027045f786d697a8e977669"
+}

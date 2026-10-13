@@ -1,0 +1,5 @@
+{
+  "exit_code": 1,
+  "error": "review_requires_finished",
+  "reason": "adapter status unknown despite process ended; independent parent-review.md retained"
+}

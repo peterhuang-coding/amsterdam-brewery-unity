@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-street-atmosphere-r2-20261013",
+  "workspace": "/tmp/amsterdam-street-atmosphere-r2-20261013/input",
+  "goal": "Single targeted correction: repair invalid vertical quay coordinates, strengthen numeric Canvas recorder and real transform regression, preserve existing candidate and return valid handoff.",
+  "data_sensitivity": "public",
+  "read_files": [
+    "brief.md",
+    "original-scope.md",
+    "tools/prototype/flower-network.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/test-city.js",
+    "tools/prototype/test-street-atmosphere.js"
+  ],
+  "write_files": [
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/test-street-atmosphere.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-street-atmosphere.js",
+    "node --test tools/prototype/test-city.js",
+    "node --check tools/prototype/reopening-scene.js"
+  ],
+  "acceptance": [
+    "Only permitted scene expressions/newtest change; all other inputs immutable",
+    "Stronger geometry regression red on original candidate, green after numeric correction; original5behavior tests preserved",
+    "Real Canvas matrix/recorded-draw inverse check and immutable city tests pass; syntax pass; valid report",
+    "Parent full old358 plus additions and real desktop/390px/daynight/nearoverview walking acceptance required before adoption"
+  ],
+  "constraints": [
+    "Follow correction brief; original-scope is context not expanded edit permission",
+    "Read/Edit/Bash exact3 commands only; no ls/grep or logs",
+    "No PLAY03 or main-agent rewrites",
+    "Use valid complete report; changed_files excludes report"
+  ],
+  "tasks": [
+    "Read targeted brief and exact inputs",
+    "Strengthen recorder and reproduce red on original candidate scene",
+    "Correct numeric quay expressions only and rerun exact tests",
+    "Complete valid concise handoff before timeout"
+  ],
+  "memory": {
+    "summary": "Only correction for same PLAY04 logical task; business attempt confirmed ended with timeout and missing report. Candidate reused verbatim.",
+    "completed": [
+      "Parent historical candidate363/363 and5newtests; no adoption."
+    ],
+    "known_issues": [
+      "Vertical quay w.x+w produces48 nonnumeric draw calls; recorder ignores them.",
+      "Recorder scale alters translation incorrectly; inverse test self-consistent only.",
+      "Original final report missing; two extra readonly ls commands out of scope."
+    ],
+    "decisions": [
+      "Only numeric quay expressions and new test harness may change; no design expansion.",
+      "D24 correction1/1; if still fails parent shelves. PLAY03 excluded."
+    ]
+  },
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "play04-street-atmosphere",
+    "task_type": "code",
+    "attempt_kind": "correction"
+  },
+  "timeout_seconds": 1200,
+  "max_turns": 32
+}

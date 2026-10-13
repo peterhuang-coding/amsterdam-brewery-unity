@@ -1,0 +1,643 @@
+{
+  "invalid_count": 48,
+  "invalid": [
+    {
+      "method": "rect",
+      "args": [
+        "450[object Object]1",
+        453,
+        6,
+        634,
+        "#c0b18b"
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          478
+        ],
+        [
+          "450[object Object]6",
+          478
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          504
+        ],
+        [
+          "450[object Object]6",
+          504
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          530
+        ],
+        [
+          "450[object Object]6",
+          530
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          556
+        ],
+        [
+          "450[object Object]6",
+          556
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          582
+        ],
+        [
+          "450[object Object]6",
+          582
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          608
+        ],
+        [
+          "450[object Object]6",
+          608
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          634
+        ],
+        [
+          "450[object Object]6",
+          634
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          660
+        ],
+        [
+          "450[object Object]6",
+          660
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          686
+        ],
+        [
+          "450[object Object]6",
+          686
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          712
+        ],
+        [
+          "450[object Object]6",
+          712
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          738
+        ],
+        [
+          "450[object Object]6",
+          738
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          764
+        ],
+        [
+          "450[object Object]6",
+          764
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          790
+        ],
+        [
+          "450[object Object]6",
+          790
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          816
+        ],
+        [
+          "450[object Object]6",
+          816
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          842
+        ],
+        [
+          "450[object Object]6",
+          842
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          868
+        ],
+        [
+          "450[object Object]6",
+          868
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          894
+        ],
+        [
+          "450[object Object]6",
+          894
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          920
+        ],
+        [
+          "450[object Object]6",
+          920
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          946
+        ],
+        [
+          "450[object Object]6",
+          946
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          972
+        ],
+        [
+          "450[object Object]6",
+          972
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          998
+        ],
+        [
+          "450[object Object]6",
+          998
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          1024
+        ],
+        [
+          "450[object Object]6",
+          1024
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "450[object Object]2",
+          1050
+        ],
+        [
+          "450[object Object]6",
+          1050
+        ]
+      ]
+    },
+    {
+      "method": "rect",
+      "args": [
+        "1050[object Object]1",
+        453,
+        6,
+        634,
+        "#c0b18b"
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          478
+        ],
+        [
+          "1050[object Object]6",
+          478
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          504
+        ],
+        [
+          "1050[object Object]6",
+          504
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          530
+        ],
+        [
+          "1050[object Object]6",
+          530
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          556
+        ],
+        [
+          "1050[object Object]6",
+          556
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          582
+        ],
+        [
+          "1050[object Object]6",
+          582
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          608
+        ],
+        [
+          "1050[object Object]6",
+          608
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          634
+        ],
+        [
+          "1050[object Object]6",
+          634
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          660
+        ],
+        [
+          "1050[object Object]6",
+          660
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          686
+        ],
+        [
+          "1050[object Object]6",
+          686
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          712
+        ],
+        [
+          "1050[object Object]6",
+          712
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          738
+        ],
+        [
+          "1050[object Object]6",
+          738
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          764
+        ],
+        [
+          "1050[object Object]6",
+          764
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          790
+        ],
+        [
+          "1050[object Object]6",
+          790
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          816
+        ],
+        [
+          "1050[object Object]6",
+          816
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          842
+        ],
+        [
+          "1050[object Object]6",
+          842
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          868
+        ],
+        [
+          "1050[object Object]6",
+          868
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          894
+        ],
+        [
+          "1050[object Object]6",
+          894
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          920
+        ],
+        [
+          "1050[object Object]6",
+          920
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          946
+        ],
+        [
+          "1050[object Object]6",
+          946
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          972
+        ],
+        [
+          "1050[object Object]6",
+          972
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          998
+        ],
+        [
+          "1050[object Object]6",
+          998
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          1024
+        ],
+        [
+          "1050[object Object]6",
+          1024
+        ]
+      ]
+    },
+    {
+      "method": "line",
+      "points": [
+        [
+          "1050[object Object]2",
+          1050
+        ],
+        [
+          "1050[object Object]6",
+          1050
+        ]
+      ]
+    }
+  ],
+  "recorder_scale_counterexample": {
+    "operations": "translate(10,20); scale(2,3)",
+    "canvas_expected": [
+      2,
+      0,
+      0,
+      3,
+      10,
+      20
+    ],
+    "candidate_recorder": [
+      2,
+      0,
+      0,
+      3,
+      20,
+      60
+    ]
+  },
+  "note": "Parent inspection only; no candidate/source edits."
+}

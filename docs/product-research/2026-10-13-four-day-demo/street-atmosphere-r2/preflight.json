@@ -1,0 +1,17 @@
+[
+  {
+    "command": "node --test tools/prototype/test-street-atmosphere.js",
+    "exit_code": 0,
+    "tail": "ge and map edges\nok 5 - cityWorldPoint inverts the live transform at the pub, Lotte bridge and map edges\n  ---\n  duration_ms: 8.636958\n  type: 'test'\n  ...\n1..5\n# tests 5\n# suites 0\n# pass 5\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 194.191125\n"
+  },
+  {
+    "command": "node --test tools/prototype/test-city.js",
+    "exit_code": 0,
+    "tail": "orm\n# 13 city tests passed.\n# Subtest: tools/prototype/test-city.js\nok 1 - tools/prototype/test-city.js\n  ---\n  duration_ms: 2981.589667\n  type: 'test'\n  ...\n1..1\n# tests 1\n# suites 0\n# pass 1\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 2985.794\n"
+  },
+  {
+    "command": "node --check tools/prototype/reopening-scene.js",
+    "exit_code": 0,
+    "tail": ""
+  }
+]

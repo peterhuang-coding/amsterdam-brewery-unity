@@ -1,0 +1,59 @@
+{
+  "type": "TECHNICAL capacity fixture, not natural save",
+  "before": {
+    "bag": [
+      "item0",
+      "item1",
+      "item2",
+      "item3"
+    ],
+    "position": {
+      "x": 1200,
+      "y": 1050,
+      "fx": 1,
+      "fy": 0,
+      "hp": 3,
+      "inv": 0,
+      "dash": 0,
+      "hook": 0,
+      "foam": 0
+    },
+    "parcel": "ground",
+    "load": 6
+  },
+  "resumed": {
+    "bag": [
+      "item1",
+      "item2",
+      "item3"
+    ],
+    "goal": "parcel",
+    "event": null,
+    "load": 5
+  },
+  "steps": 1,
+  "after": {
+    "bag": [
+      "item1",
+      "item2",
+      "item3",
+      "item6"
+    ],
+    "parcel": "carried",
+    "status": "active",
+    "event": "parcel",
+    "goal": null,
+    "load": 8,
+    "position": {
+      "x": 1200,
+      "y": 1050,
+      "fx": -1,
+      "fy": 0,
+      "hp": 3,
+      "inv": 0,
+      "dash": 0,
+      "hook": 0,
+      "foam": 0
+    }
+  }
+}

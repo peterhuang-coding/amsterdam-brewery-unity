@@ -1,0 +1,8 @@
+{
+  "candidate_port": 18859,
+  "candidate_pid": 89954,
+  "terminated": true,
+  "adopted_port": 18860,
+  "adopted_pid": 91799,
+  "old_services_untouched": true
+}

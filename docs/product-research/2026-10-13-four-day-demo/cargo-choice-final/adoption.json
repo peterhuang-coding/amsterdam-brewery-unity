@@ -1,0 +1,200 @@
+{
+  "commit": "dad6b38c54fda94f541764242f61820d8177bd19",
+  "branch": "codex/art-pass-20261013",
+  "root": "/tmp/amsterdam-play-dad6b38",
+  "port": 18860,
+  "pid": 91799,
+  "url": "http://127.0.0.1:18860/tools/prototype/index.html?seed=42001&commit=dad6b38",
+  "http_resources": [
+    {
+      "path": "tools/prototype/index.html",
+      "same": true,
+      "sha256": "c70b027d392198e1cf733e2a4bdf88564a679b21f9bdc763b478a1ab0288f3fd"
+    },
+    {
+      "path": "tools/prototype/reopening.css",
+      "same": true,
+      "sha256": "17d05673d6634eac3b7abd5de41b6ccfe1314fdde8a448a11a93d5fef3c82b56"
+    },
+    {
+      "path": "tools/prototype/backstage.css",
+      "same": true,
+      "sha256": "a382d6e347effe4d0114b3e6696884cf66bd075dd710eec055e13e2e98cd0fc7"
+    },
+    {
+      "path": "tools/prototype/journey.css",
+      "same": true,
+      "sha256": "b632fc40e8df6da18b2b178c49fd369536b004b533cd5550395f3c3643b44d44"
+    },
+    {
+      "path": "tools/prototype/journey-core.js",
+      "same": true,
+      "sha256": "1424adad30c587fda0aa49e101336061dd0e0a35587d0c0c998feb804948c963"
+    },
+    {
+      "path": "tools/prototype/backstage-core.js",
+      "same": true,
+      "sha256": "335baa752efedabf5771436c23fb5370a40af5aef4b89cdd1793351906219d07"
+    },
+    {
+      "path": "tools/prototype/backstage-auto.js",
+      "same": true,
+      "sha256": "569f7dab7e49afb0ec56870cef1d412fff3ef0f53399bbf2738d370fca919681"
+    },
+    {
+      "path": "tools/prototype/delivery-orders.js",
+      "same": true,
+      "sha256": "62e46bb83f5f8d97a2e7bc0d856484ef978efd2566236ee53304ea5167d3e496"
+    },
+    {
+      "path": "tools/prototype/character-stories.js",
+      "same": true,
+      "sha256": "3db456b04852929656867925bd35bc73dbe0b6349159708922acab22db1a53bb"
+    },
+    {
+      "path": "tools/prototype/flower-network.js",
+      "same": true,
+      "sha256": "e6febfd844da0107ca9079251ddbb4fd81e30cc5979f696bdba8f3b493027f80"
+    },
+    {
+      "path": "tools/prototype/reopening-core.js",
+      "same": true,
+      "sha256": "4c31d8a72fe9fd9736e7db57999efd31efb29a2c3b1458e8f96bec5559633c3b"
+    },
+    {
+      "path": "tools/prototype/reopening-city.js",
+      "same": true,
+      "sha256": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625"
+    },
+    {
+      "path": "tools/prototype/reopening-scene.js",
+      "same": true,
+      "sha256": "d429ad5760dd8b2d23397a20070d4ebdbdf7704ee3b19ce4f349fec52582dda7"
+    },
+    {
+      "path": "tools/prototype/backstage-scene.js",
+      "same": true,
+      "sha256": "153175d48b778960a86a0a43317e49bc1aa64837e78dfb2d108387715428ce0f"
+    },
+    {
+      "path": "tools/prototype/backstage-ui.js",
+      "same": true,
+      "sha256": "e3860052e53dd579ee5868b457da8595417e79807bfc227da38bf8c7f2650269"
+    },
+    {
+      "path": "tools/prototype/journey-ui.js",
+      "same": true,
+      "sha256": "23fe4245f342aebfa868f7ff6fb4dc395d4e1dee94440b72df0eb86f1e124c43"
+    },
+    {
+      "path": "tools/prototype/reopening-ui.js",
+      "same": true,
+      "sha256": "b884234f2bda638ccf6de62e8036eb4b3cdbc73e95325785588c761d38c14985"
+    }
+  ],
+  "parent_http_diagnostic": "First comparison passed URL query as Git path and received empty Git wildcard matches; corrected by urlsplit pathname, originals unchanged. No game/resource mismatch observed after correct path comparison.",
+  "browser_actual_resources": [
+    {
+      "path": "tools/prototype/index.html",
+      "status": 200,
+      "sha256": "c70b027d392198e1cf733e2a4bdf88564a679b21f9bdc763b478a1ab0288f3fd",
+      "same": true
+    },
+    {
+      "path": "tools/prototype/reopening.css",
+      "status": 200,
+      "sha256": "17d05673d6634eac3b7abd5de41b6ccfe1314fdde8a448a11a93d5fef3c82b56",
+      "same": true
+    },
+    {
+      "path": "tools/prototype/backstage.css",
+      "status": 200,
+      "sha256": "a382d6e347effe4d0114b3e6696884cf66bd075dd710eec055e13e2e98cd0fc7",
+      "same": true
+    },
+    {
+      "path": "tools/prototype/journey.css",
+      "status": 200,
+      "sha256": "b632fc40e8df6da18b2b178c49fd369536b004b533cd5550395f3c3643b44d44",
+      "same": true
+    },
+    {
+      "path": "tools/prototype/journey-core.js",
+      "status": 200,
+      "sha256": "1424adad30c587fda0aa49e101336061dd0e0a35587d0c0c998feb804948c963",
+      "same": true
+    },
+    {
+      "path": "tools/prototype/backstage-auto.js",
+      "status": 200,
+      "sha256": "569f7dab7e49afb0ec56870cef1d412fff3ef0f53399bbf2738d370fca919681",
+      "same": true
+    },
+    {
+      "path": "tools/prototype/delivery-orders.js",
+      "status": 200,
+      "sha256": "62e46bb83f5f8d97a2e7bc0d856484ef978efd2566236ee53304ea5167d3e496",
+      "same": true
+    },
+    {
+      "path": "tools/prototype/backstage-core.js",
+      "status": 200,
+      "sha256": "335baa752efedabf5771436c23fb5370a40af5aef4b89cdd1793351906219d07",
+      "same": true
+    },
+    {
+      "path": "tools/prototype/flower-network.js",
+      "status": 200,
+      "sha256": "e6febfd844da0107ca9079251ddbb4fd81e30cc5979f696bdba8f3b493027f80",
+      "same": true
+    },
+    {
+      "path": "tools/prototype/reopening-city.js",
+      "status": 200,
+      "sha256": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625",
+      "same": true
+    },
+    {
+      "path": "tools/prototype/character-stories.js",
+      "status": 200,
+      "sha256": "3db456b04852929656867925bd35bc73dbe0b6349159708922acab22db1a53bb",
+      "same": true
+    },
+    {
+      "path": "tools/prototype/reopening-scene.js",
+      "status": 200,
+      "sha256": "d429ad5760dd8b2d23397a20070d4ebdbdf7704ee3b19ce4f349fec52582dda7",
+      "same": true
+    },
+    {
+      "path": "tools/prototype/backstage-ui.js",
+      "status": 200,
+      "sha256": "e3860052e53dd579ee5868b457da8595417e79807bfc227da38bf8c7f2650269",
+      "same": true
+    },
+    {
+      "path": "tools/prototype/journey-ui.js",
+      "status": 200,
+      "sha256": "23fe4245f342aebfa868f7ff6fb4dc395d4e1dee94440b72df0eb86f1e124c43",
+      "same": true
+    },
+    {
+      "path": "tools/prototype/backstage-scene.js",
+      "status": 200,
+      "sha256": "153175d48b778960a86a0a43317e49bc1aa64837e78dfb2d108387715428ce0f",
+      "same": true
+    },
+    {
+      "path": "tools/prototype/reopening-core.js",
+      "status": 200,
+      "sha256": "4c31d8a72fe9fd9736e7db57999efd31efb29a2c3b1458e8f96bec5559633c3b",
+      "same": true
+    },
+    {
+      "path": "tools/prototype/reopening-ui.js",
+      "status": 200,
+      "sha256": "b884234f2bda638ccf6de62e8036eb4b3cdbc73e95325785588c761d38c14985",
+      "same": true
+    }
+  ]
+}

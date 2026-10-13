@@ -1,0 +1,48 @@
+[
+  {
+    "check": "new-green",
+    "exit": 0,
+    "summary": [
+      "# tests 7",
+      "# pass 7",
+      "# fail 0"
+    ]
+  },
+  {
+    "check": "new-business-red",
+    "exit": 1,
+    "summary": [
+      "# tests 7",
+      "# pass 4",
+      "# fail 3"
+    ]
+  },
+  {
+    "check": "old-focused",
+    "exit": 0,
+    "summary": [
+      "# tests 29",
+      "# pass 29",
+      "# fail 0"
+    ]
+  },
+  {
+    "check": "syntax-ui",
+    "exit": 0,
+    "summary": []
+  },
+  {
+    "check": "syntax-new",
+    "exit": 0,
+    "summary": []
+  },
+  {
+    "check": "all-tests",
+    "exit": 0,
+    "summary": [
+      "# tests 418",
+      "# pass 418",
+      "# fail 0"
+    ]
+  }
+]

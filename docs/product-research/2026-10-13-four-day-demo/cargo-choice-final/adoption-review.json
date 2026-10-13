@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-cargo-choice-r2-20261013",
+  "receipt_sha256": "c9ae843798a7c037d9e5509bba0489f8b26be9edb15cf7753e3b30e7ae095679",
+  "reviewed_at": "2026-10-13T16:51:23Z",
+  "outcome": "accepted_with_changes",
+  "failure_type": "other",
+  "evidence": [
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-13-four-day-demo/cargo-choice-final/parent-validation.md",
+      "sha256": "a61860cf2023e8cd012bef2f5ccb818b89c4003d73b84ccae8f99619bd230661"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+--- business
++++ r2
+@@ -43,15 +43,15 @@
+   const bottle=m.choices[1],hops=m.choices[2],barrel=m.choices[3];
+   assert.match(bottle.label,/^放下 1 件封口艾尔 · 持有 2 件$/);
+   assert.match(hops.label,/^放下 1 件密封酒花 · 持有 1 件$/);
+-  assert.match(bottle.description,/每件占 1 格 · 本次只放下这 1 件，腾出 1 格/);
++  assert.equal(bottle.description,'每件占 1 格；只放下 1 件，腾出 1 格');
+   assert.match(barrel.label,/放下 1 件滚动酒桶 · 持有 1 件/);
+-  assert.match(barrel.description,/每件占 3 格[\s\S]*本次只放下这 1 件[\s\S]*腾出 3 格/);
++  assert.equal(barrel.description,'每件占 3 格；只放下 1 件，腾出 3 格');
+   assert.match(m.body,/已占 <strong>6 \/ 12 格<\/strong>/);
+   assert.match(m.body,/包内 4 件/);
+   assert.match(m.body,/格数[\s\S]*不等于件数/);
+   assert.match(m.body,/落在街区/);
+   assert.match(m.body,/不会直接换钱/);
+-  assert.match(m.body,/修温室水泵需要一件可修零件/);
++  assert.match(m.body,/修温室水泵需 1 件可修零件/);
+   assert.ok(!m.choices.some(c=>c.label.includes('月雾')),'world parcel is not offered');
+   assert.deepEqual(structuredClone(r),before);
+ });
+@@ -103,7 +103,7 @@
+     for(const c of drops){
+       const name=kindOf(c.label),w=(name==='滚动酒桶'||name.includes('月雾'))?3:1;
+       assert.match(c.label,new RegExp('^放下 1 件'+name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+' · 持有 [0-9]+ 件$'),kit);
+-      assert.match(c.description,new RegExp('每件占 '+w+' 格 · 本次只放下这 1 件，腾出 '+w+' 格'),kit);
++      assert.equal(c.description,'每件占 '+w+' 格；只放下 1 件，腾出 '+w+' 格',kit);
+       assert.equal(c.secondary,true,kit);
+     }
+     if(kit==='hook'){
+@@ -167,3 +167,37 @@
+   assert.ok(A.valid(r));
+   assert.ok(B.restore(r));
+ });
++
++test('PLAY13 five-kind 390 fixture: compact copy budgets keep full labels, held counts, per-item weight and freed slots plus shared facts',()=>{
++  // Same valid technical five-kind bag as the failed real 390x844 layout in
++  // synthetic-layout.json: 9/12 slots, five kinds. Text budgets are a proxy
++  // regression guard for that geometry, not proof of browser layout.
++  const r=B.create(42001,1,'cart');bag(r,'item0','item1','item2','item3','item6');
++  const before=structuredClone(r),h=makeUI(r),m=openCargo(h);
++  assert.deepEqual(structuredClone(r),before);
++  assert.equal(B.load(r),9);
++  assert.equal(m.choices.length,6);
++  assert.equal(m.choices[0].label,'先都留着，继续探索');
++  assert.equal(m.choices[0].run,undefined);
++  const decode=s=>s.replace(/<[^>]*>/g,'').replace(/&(?:amp|lt|gt|quot|#39);/g,x=>({'&amp;':'&','&lt;':'<','&gt;':'>','&quot;':'"','&#39;':"'"}[x]));
++  const cps=s=>[...decode(s)].length;
++  assert.ok(cps(m.body)<=90,'visible body codepoints '+cps(m.body));
++  const expect=[
++    ['封口艾尔',1],['密封酒花',1],['滚动酒桶',3],['可修零件',1],['“进口酵母” / 月雾',3]
++  ];
++  m.choices.slice(1).forEach((c,i)=>{
++    const [name,w]=expect[i];
++    assert.equal(c.label,'放下 1 件'+name+' · 持有 1 件',name);
++    assert.equal(c.description,'每件占 '+w+' 格；只放下 1 件，腾出 '+w+' 格',name);
++    assert.ok(cps(c.description)<=32,name+' description codepoints '+cps(c.description));
++    assert.equal(c.secondary,true,name);
++  });
++  const text=decode(m.body);
++  assert.match(text,/已占 9 \/ 12 格/);
++  assert.match(text,/包内 5 件/);
++  assert.match(text,/格数[\s\S]*不等于件数/);
++  assert.match(text,/落在街区[\s\S]*捡回/);
++  assert.match(text,/不会直接换钱/);
++  assert.match(text,/修温室水泵需 1 件可修零件/);
++  assert.ok(B.restore(r));
++});

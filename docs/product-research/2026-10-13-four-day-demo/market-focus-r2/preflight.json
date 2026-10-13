@@ -1,0 +1,22 @@
+[
+  {
+    "command": "node --test tools/prototype/test-market-focus-ui.js",
+    "exit_code": 0,
+    "tail": "test'\n  ...\n# Subtest: legacy runs and outside-market positions keep the old three-objective board unchanged\nok 10 - legacy runs and outside-market positions keep the old three-objective board unchanged\n  ---\n  duration_ms: 0.98725\n  type: 'test'\n  ...\n# Subtest: rendering guidance never mutates run, items or auto history\nok 11 - rendering guidance never mutates run, items or auto history\n  ---\n  duration_ms: 0.760625\n  type: 'test'\n  ...\n1..11\n# tests 11\n# suites 0\n# pass 11\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 136.596042\n"
+  },
+  {
+    "command": "node --test tools/prototype/test-market-shift-ui.js tools/prototype/test-market-shift.js",
+    "exit_code": 0,
+    "tail": "  ...\n# Subtest: legacy runs and old versions never gain a marketShift through restore\nok 31 - legacy runs and old versions never gain a marketShift through restore\n  ---\n  duration_ms: 0.147958\n  type: 'test'\n  ...\n# Subtest: UI renders real manual market controls and failure reasons; scene draws markers\nok 32 - UI renders real manual market controls and failure reasons; scene draws markers\n  ---\n  duration_ms: 7.870375\n  type: 'test'\n  ...\n1..32\n# tests 32\n# suites 0\n# pass 32\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 253.008\n"
+  },
+  {
+    "command": "node --check tools/prototype/backstage-ui.js",
+    "exit_code": 0,
+    "tail": ""
+  },
+  {
+    "command": "node --check tools/prototype/test-market-focus-ui.js",
+    "exit_code": 0,
+    "tail": ""
+  }
+]

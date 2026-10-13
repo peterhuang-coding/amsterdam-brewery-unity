@@ -1,0 +1,69 @@
+{
+  "acceptance": [
+    "Only the two allowed files change; all existing assertions remain",
+    "Actual child objective prose absent only in active market; truthful current bag vs historical consequence after drop/recollect",
+    "New regressions red on unchanged input then green; old32 and syntax green",
+    "Exactly four truthful final command rows and complete report; no GUI/adoption claim"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-market-focus-ui.js",
+    "node --test tools/prototype/test-market-shift-ui.js tools/prototype/test-market-shift.js",
+    "node --check tools/prototype/backstage-ui.js",
+    "node --check tools/prototype/test-market-focus-ui.js"
+  ],
+  "constraints": [
+    "Follow brief precise boundaries; Read/Edit/Bash exact commands only",
+    "Do not revive PLAY03 or edit economics/saves/routing",
+    "Only public input; no network or external material"
+  ],
+  "data_sensitivity": "public",
+  "goal": "Correct only retained unrelated task prose and current-goods truthfulness in existing PLAY05 candidate; foreground its existing card and complete verified handoff.",
+  "max_turns": 32,
+  "memory": {
+    "summary": "D24 sole PLAY05 correction; original CLI1/max-turns plus parent confirmed presentation/state defects, no game adoption. Reuse original candidate.",
+    "completed": [
+      "Original candidate parent full376/376, new11/11; source/readonly and exact Bash scopes passed."
+    ],
+    "decisions": [
+      "Two gameplay files only; all existing mechanics and assertions preserved.",
+      "Correction1/1; fail again => shelve."
+    ],
+    "known_issues": [
+      "Context guard hides wrapper but leaves all three unrelated headings/prose visible.",
+      "Historical stockTaken wrongly treated as currently carried after real drop.",
+      "Report exists but original result blocked; claimed hiding was false."
+    ]
+  },
+  "read_files": [
+    "brief.md",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/backstage.css",
+    "tools/prototype/test-market-shift-ui.js",
+    "tools/prototype/test-market-shift.js",
+    "tools/prototype/test-market-focus-ui.js",
+    "original-brief.md"
+  ],
+  "task_id": "amsterdam-market-focus-r2-20261013",
+  "tasks": [
+    "Read bounded correction brief and relevant candidate sections",
+    "Add actual regression on original candidate and observe red",
+    "Fix only specified issues and run four final commands",
+    "Return complete truthful valid report within turn/time limit"
+  ],
+  "telemetry": {
+    "attempt_kind": "correction",
+    "logical_task_id": "play05-market-focus",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "timeout_seconds": 1200,
+  "version": 1,
+  "workspace": "/tmp/amsterdam-market-focus-r2-20261013/input",
+  "write_files": [
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/test-market-focus-ui.js"
+  ]
+}

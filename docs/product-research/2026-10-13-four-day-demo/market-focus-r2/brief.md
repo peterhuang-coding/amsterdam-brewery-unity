@@ -1,0 +1,26 @@
+# PLAY05 sole correction: finish the existing supermarket UI, no redesign
+
+D23/D24 user approval: one targeted correction for each logical task, then shelve if still failing. This is play05-market-focus correction1/1 after business amsterdam-market-focus-20261013. Coding Plan Seed Evolving enabled/high only. Parent original PID exited, result blocked/error_max_turns/CLI1 after1377.032s, 48-turn limit (final reports num_turns49). A report file exists but parent rejected its semantic claims. Reuse the two existing candidate files; do not rebuild the feature.
+
+Adopted baseline e3b7ac3d4aa170365988171eeaea8758f64b9e8c plus the exact original two-file candidate. Candidate parent new11/11 and old32/32; full34files376/376. Final11 tests on untouched adopted UI are2/11; parent red evidence is real baseline, while executor did a later unwiring. All source9/read-only7 unchanged, all13 Bash exact, no permission denials. PLAY03 remains shelved and excluded.
+
+## Only the confirmed deficiencies
+1. Manual active market hides only the exp-objectives opening/closing div. The child text remains visible: 一箱“进口酵母”, 红灯街的 Noor, 玻璃后面，有人在生活. Conditionalize the WHOLE existing objectives fragment in market; preserve its exact contents and normal wrapper outside market and in legacy runs. Add a real render regression asserting those headings and objective prose are absent inside market and present outside/legacy. Checking absence of only a CSS class is insufficient.
+2. market.stockTaken is a persistent consequence flag, NOT current bag inventory. Real reproduction: shift1, actors removed as labelled fixture; stand405,1110; B.command market-salvage; stand405,990; B.command collect item0; B.command drop. Bag is empty, item0.state world, market.stockTaken still true, but focus claims goods are in bag. Derive current carried market goods from actual item0/item1 bag membership+state separately from historical stockTaken. After dropping all such goods, show a truthful short actionable recovery/return choice without claiming current possession; keep the next-day one-day surcharge consequence (or day3 no-next-day fact). Collect/drop/recollect transitions must refresh without forcibly resetting ui.signature or overwriting production state. If one market item remains in the bag, the current-goods guidance remains truthful. Do not alter core, flags, prices or drop behavior.
+3. Place the existing focus card ahead of generic exposition in the active market board in both manual and auto. Only move/reuse current markup, no new design/control. Keep all original risks/costs/disabled reasons, A.view choices and navigation visible; outside/legacy order stays unchanged.
+
+Only write tools/prototype/backstage-ui.js and tools/prototype/test-market-focus-ui.js. All other supplied files including original-brief.md are read-only. Preserve all original11 new-test behaviors/assertions and all old tests; add focused actual-state regression(s). No UI/CSS/scene/economy/AI/saves/control changes outside the above. Existing card's other stages remain. No new feature, no broad cleanup, no game source adoption. Full original scope is in original-brief.md; it is context and does not expand this correction.
+
+## Work efficiently and return the report
+Read the relevant candidate sections and existing harness. First add the missing regression(s) and run on unchanged ORIGINAL CANDIDATE to see actual failures. Then fix only above issues and run final commands. This package's input is the candidate, not the earlier adopted UI; do not unwire completed features to manufacture red. Parent will reproduce new regression on original candidate independently.
+
+Use Read/Edit/Bash, not Write (unavailable). Only these exact Bash strings, standalone:
+1. node --test tools/prototype/test-market-focus-ui.js
+2. node --test tools/prototype/test-market-shift-ui.js tools/prototype/test-market-shift.js
+3. node --check tools/prototype/backstage-ui.js
+4. node --check tools/prototype/test-market-focus-ui.js
+No ls/grep/wc, shell combinations, log browsing, git, network, other tool or process. Parent preflight already11/11+32/32+syntax. No extra local test infrastructure or many duplicated cases.
+
+1200seconds/32turns. Reserve final turns for handoff-result.json using Edit; do not finish code and spend all turns re-reading. You may first write a truthful blocked/incomplete report shell, then update actual final results before completion. Valid final: status completed or blocked; summary string; changed_files array exactly actual outputs excluding report itself; tests EXACT4 rows matching commands, each with FINAL actual exit_code and summary; blockers/memory_delta/next_steps string arrays. RED results belong in summary/memory_delta, not a duplicate final row. Do not falsify failures, counts, outside/legacy equality, GUI, fun or adoption. Report file is allowed separately by the runner. Complete final response promptly after writing the verified report.
+
+Parent acceptance after return: original-candidate new regression RED -> corrected GREEN, scope/source/readonly hashes and actual commands/report; old365+allnew full suite, natural night1market real choice/barrel/safeexit/day2receipt, day3fixture, keyboard/390px. Still failing correction or parent acceptance => shelved, no second correction or ID reset.

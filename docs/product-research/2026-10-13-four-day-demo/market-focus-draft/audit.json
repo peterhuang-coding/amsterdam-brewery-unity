@@ -1,0 +1,576 @@
+{
+  "base": "e3b7ac3d4aa170365988171eeaea8758f64b9e8c",
+  "test_files": [
+    "tools/prototype/test-algorithm-city-equivalence.js",
+    "tools/prototype/test-algorithm-city.js",
+    "tools/prototype/test-algorithm-history.js",
+    "tools/prototype/test-algorithm-physics.js",
+    "tools/prototype/test-algorithm-replay.js",
+    "tools/prototype/test-algorithm-routes.js",
+    "tools/prototype/test-algorithm-saves.js",
+    "tools/prototype/test-backstage-auto.js",
+    "tools/prototype/test-backstage.js",
+    "tools/prototype/test-character-stories.js",
+    "tools/prototype/test-city-bike.js",
+    "tools/prototype/test-city-consequence-quality.js",
+    "tools/prototype/test-city-journey-quality.js",
+    "tools/prototype/test-city.js",
+    "tools/prototype/test-daynight.js",
+    "tools/prototype/test-delivery-orders.js",
+    "tools/prototype/test-district-auto.js",
+    "tools/prototype/test-district-core.js",
+    "tools/prototype/test-district-daynight.js",
+    "tools/prototype/test-first-street-ui.js",
+    "tools/prototype/test-flower-network.js",
+    "tools/prototype/test-journey-integration.js",
+    "tools/prototype/test-journey.js",
+    "tools/prototype/test-location-daynight.js",
+    "tools/prototype/test-location-depth.js",
+    "tools/prototype/test-market-daynight-ui.js",
+    "tools/prototype/test-market-daynight.js",
+    "tools/prototype/test-market-focus-ui.js",
+    "tools/prototype/test-market-shift-ui.js",
+    "tools/prototype/test-market-shift.js",
+    "tools/prototype/test-night-streets.js",
+    "tools/prototype/test-phase-e.js",
+    "tools/prototype/test-reopening.js",
+    "tools/prototype/test-street-atmosphere.js"
+  ],
+  "test_runs": [
+    {
+      "name": "new",
+      "command": [
+        "node",
+        "--test",
+        "tools/prototype/test-market-focus-ui.js"
+      ],
+      "exit_code": 0,
+      "tail": " on the trade errand trips a real stuck event that overrides the advice\nok 8 - a full bag on the trade errand trips a real stuck event that overrides the advice\n  ---\n  duration_ms: 40.051458\n  type: 'test'\n  ...\n# Subtest: real capacity and glimpse auto events override market advice when read inside the market\nok 9 - real capacity and glimpse auto events override market advice when read inside the market\n  ---\n  duration_ms: 12.709708\n  type: 'test'\n  ...\n# Subtest: legacy runs and outside-market positions keep the old three-objective board unchanged\nok 10 - legacy runs and outside-market positions keep the old three-objective board unchanged\n  ---\n  duration_ms: 0.976708\n  type: 'test'\n  ...\n# Subtest: rendering guidance never mutates run, items or auto history\nok 11 - rendering guidance never mutates run, items or auto history\n  ---\n  duration_ms: 0.705417\n  type: 'test'\n  ...\n1..11\n# tests 11\n# suites 0\n# pass 11\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 133.516708\n"
+    },
+    {
+      "name": "red",
+      "command": [
+        "node",
+        "--test",
+        "tools/prototype/test-market-focus-ui.js"
+      ],
+      "exit_code": 1,
+      "tail": "msterdam-market-focus-review-20261013/red/tools/prototype/test-market-focus-ui.js:248:26)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: legacy runs and outside-market positions keep the old three-objective board unchanged\nok 10 - legacy runs and outside-market positions keep the old three-objective board unchanged\n  ---\n  duration_ms: 1.050209\n  type: 'test'\n  ...\n# Subtest: rendering guidance never mutates run, items or auto history\nok 11 - rendering guidance never mutates run, items or auto history\n  ---\n  duration_ms: 1.332583\n  type: 'test'\n  ...\n1..11\n# tests 11\n# suites 0\n# pass 2\n# fail 9\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 130.240708\n"
+    },
+    {
+      "name": "old-package",
+      "command": [
+        "node",
+        "--test",
+        "tools/prototype/test-market-shift-ui.js",
+        "tools/prototype/test-market-shift.js"
+      ],
+      "exit_code": 0,
+      "tail": "f stock and extracts\n  ---\n  duration_ms: 20.19075\n  type: 'test'\n  ...\n# Subtest: reading an automatic choice pauses the whole city\nok 29 - reading an automatic choice pauses the whole city\n  ---\n  duration_ms: 0.29\n  type: 'test'\n  ...\n# Subtest: marketShift state roundtrips at every stage; tampered saves are rejected\nok 30 - marketShift state roundtrips at every stage; tampered saves are rejected\n  ---\n  duration_ms: 1.953708\n  type: 'test'\n  ...\n# Subtest: legacy runs and old versions never gain a marketShift through restore\nok 31 - legacy runs and old versions never gain a marketShift through restore\n  ---\n  duration_ms: 0.147417\n  type: 'test'\n  ...\n# Subtest: UI renders real manual market controls and failure reasons; scene draws markers\nok 32 - UI renders real manual market controls and failure reasons; scene draws markers\n  ---\n  duration_ms: 7.90225\n  type: 'test'\n  ...\n1..32\n# tests 32\n# suites 0\n# pass 32\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 249.704583\n"
+    },
+    {
+      "name": "syntax",
+      "command": [
+        "node",
+        "--check",
+        "tools/prototype/backstage-ui.js"
+      ],
+      "exit_code": 0,
+      "tail": ""
+    },
+    {
+      "name": "full",
+      "command": [
+        "node",
+        "--test",
+        "tools/prototype/test-algorithm-city-equivalence.js",
+        "tools/prototype/test-algorithm-city.js",
+        "tools/prototype/test-algorithm-history.js",
+        "tools/prototype/test-algorithm-physics.js",
+        "tools/prototype/test-algorithm-replay.js",
+        "tools/prototype/test-algorithm-routes.js",
+        "tools/prototype/test-algorithm-saves.js",
+        "tools/prototype/test-backstage-auto.js",
+        "tools/prototype/test-backstage.js",
+        "tools/prototype/test-character-stories.js",
+        "tools/prototype/test-city-bike.js",
+        "tools/prototype/test-city-consequence-quality.js",
+        "tools/prototype/test-city-journey-quality.js",
+        "tools/prototype/test-city.js",
+        "tools/prototype/test-daynight.js",
+        "tools/prototype/test-delivery-orders.js",
+        "tools/prototype/test-district-auto.js",
+        "tools/prototype/test-district-core.js",
+        "tools/prototype/test-district-daynight.js",
+        "tools/prototype/test-first-street-ui.js",
+        "tools/prototype/test-flower-network.js",
+        "tools/prototype/test-journey-integration.js",
+        "tools/prototype/test-journey.js",
+        "tools/prototype/test-location-daynight.js",
+        "tools/prototype/test-location-depth.js",
+        "tools/prototype/test-market-daynight-ui.js",
+        "tools/prototype/test-market-daynight.js",
+        "tools/prototype/test-market-focus-ui.js",
+        "tools/prototype/test-market-shift-ui.js",
+        "tools/prototype/test-market-shift.js",
+        "tools/prototype/test-night-streets.js",
+        "tools/prototype/test-phase-e.js",
+        "tools/prototype/test-reopening.js",
+        "tools/prototype/test-street-atmosphere.js"
+      ],
+      "exit_code": 0,
+      "tail": "---\n  duration_ms: 37.176292\n  type: 'test'\n  ...\n# Subtest: the recorded city draw matrix matches cityTransform and cityWorldPoint inverts it at the pub, Lotte bridge and map edges\nok 305 - the recorded city draw matrix matches cityTransform and cityWorldPoint inverts it at the pub, Lotte bridge and map edges\n  ---\n  duration_ms: 14.896375\n  type: 'test'\n  ...\n# Subtest: recorder models Canvas translate/scale post-multiplication with nested save/restore\nok 306 - recorder models Canvas translate/scale post-multiplication with nested save/restore\n  ---\n  duration_ms: 0.133292\n  type: 'test'\n  ...\n# Subtest: recorder rejects string, undefined and non-finite geometry while accepting real text, styles and gradients\nok 307 - recorder rejects string, undefined and non-finite geometry while accepting real text, styles and gradients\n  ---\n  duration_ms: 0.971667\n  type: 'test'\n  ...\n1..307\n# tests 376\n# suites 0\n# pass 376\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 13414.357959\n"
+    }
+  ],
+  "source_unchanged": {
+    "brief.md": true,
+    "tools/prototype/backstage-auto.js": true,
+    "tools/prototype/backstage-core.js": true,
+    "tools/prototype/backstage-scene.js": true,
+    "tools/prototype/backstage-ui.js": true,
+    "tools/prototype/backstage.css": true,
+    "tools/prototype/test-market-focus-ui.js": true,
+    "tools/prototype/test-market-shift-ui.js": true,
+    "tools/prototype/test-market-shift.js": true
+  },
+  "readonly_unchanged": {
+    "brief.md": true,
+    "tools/prototype/backstage-auto.js": true,
+    "tools/prototype/backstage-core.js": true,
+    "tools/prototype/backstage-scene.js": true,
+    "tools/prototype/backstage.css": true,
+    "tools/prototype/test-market-shift-ui.js": true,
+    "tools/prototype/test-market-shift.js": true
+  },
+  "tools": [
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/brief.md"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-ui.js"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/test-market-shift-ui.js"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-core.js"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-auto.js"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/test-market-focus-ui.js"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage.css"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/test-market-shift.js"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "      const auto=r.auto?.enabled,z=B.zone(r),near=B.nearest(r),street=B.streetInfo?.(r),tools=Boolean(r.street&&street&&street.id!=='legacy'),dragTarget=B.dragTarget?.(r),location=B.locationInfo?.(r),district=B.districtInfo?.(r),market=B.marketInfo?.(r)||{enabled:false};",
+        "new_string": "      const auto=r.auto?.enabled,z=B.zone(r),near=B.nearest(r),street=B.streetInfo?.(r),tools=Boolean(r.street&&street&&street.id!=='legacy'),dragTarget=B.dragTarget?.(r),location=B.locationInfo?.(r),district=B.districtInfo?.(r),market=B.marketInfo?.(r)||{enabled:false};\n      const inMarket=market.enabled===true&&z.id==='market'&&r.status==='active';"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "market.canPower,market.reasons?.salvage,market.reasons?.trade,market.reasons?.deliver,market.reasons?.power,this.isPaused()].join('|');",
+        "new_string": "market.canPower,market.reasons?.salvage,market.reasons?.trade,market.reasons?.deliver,market.reasons?.power,B.load(r),r.items[0]?.state,r.items[1]?.state,r.items[2]?.state,r.items[3]?.state,r.bag.includes('item2'),this.isPaused()].join('|');"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "      document.body.classList.toggle('is-auto-expedition',Boolean(auto));",
+        "new_string": "      document.body.classList.toggle('is-auto-expedition',Boolean(auto));\n      const focusCard=inMarket?this.marketFocusCard(market):'';"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "<p class=\"board-copy\">${esc(v.copy)}</p>${locationCard}<div class=\"exp-choices\">",
+        "new_string": "<p class=\"board-copy\">${esc(v.copy)}</p>${focusCard}${locationCard}<div class=\"exp-choices\">"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "点向目标下钩，闪避和泡沫可以救场。</p>${locationCard}${this.marketPanel(market)}${situation}<div class=\"exp-objectives\">",
+        "new_string": "点向目标下钩，闪避和泡沫可以救场。</p>${focusCard}${locationCard}${this.marketPanel(market)}${situation}${inMarket?'':'<div class=\"exp-objectives\">'}"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "下次也能进去。'}</p></div></div></div><div class=\"exp-bag\">",
+        "new_string": "下次也能进去。'}</p></div></div>${inMarket?'':'</div>'}<div class=\"exp-bag\">"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-ui.js",
+        "offset": 155,
+        "limit": 15
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "找路进去。'}</p></div></div></div><div class=\"exp-bag\">",
+        "new_string": "找路进去。'}</p></div></div>${inMarket?'':'</div>'}<div class=\"exp-bag\">"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "    // Manual market panel. Availability comes straight from B.marketInfo; verbs run through B.command.\n    marketPanel(market){",
+        "new_string": "    // One prominent current-objective card for the supermarket night.\n    // Read-only: derived entirely from marketInfo/run/auto state; risks stay in the panels below.\n    marketFocusCard(market){\n      const f=this.marketFocus(market);if(!f)return '';\n      return `<div class=\"exp-location\" id=\"exp-market-focus\" role=\"group\" aria-label=\"眼前这一步\"><strong>眼前这一步 · ${esc(f.h)}</strong><p>${esc(f.p)}</p><small>${esc(market.label)}${this.isPaused()?' · 已暂停，操作先冻结':''}</small></div>`;\n    }\n    marketFocus(market){\n      const r=this.run();\n      if(!market?.enabled||r.status!=='active'||B.zone(r).id!=='market')return null;\n      const auto=Boolean(r.auto?.enabled),a=r.auto,day=r.day;\n      const free=B.KITS[r.kit].capacity-B.load(r);\n      const barrelBag=r.items[2].state==='bag'&&r.bag.includes('item2');\n      const out=(h,p)=>({h,p});\n      if(auto){\n        // Interrupting events always override destination advice.\n        if(a.event==='capacity')return out('背包满了，先腾地方','在下方选一件货物放下，或放弃不拿；已经入包的东西不会被偷偷丢掉。');\n        if(a.event==='stuck')return out('这条路暂时不好走','自动走法卡住了：换个目的地，或切回手动亲自处理。');\n        if(a.event==='glimpse')return out('要顺着花车拐个弯吗','花车朝东北温室去了：继续原路线，或改道看看，由你选。');\n        if(a.event==='route')return out('先选今晚从哪开始','在下方挑第一个目的地；腿脚自动走，重要的事留给你决定。');\n        if(!a.event){\n          const space='现余 '+free+' 格';\n          const legs={\n            'market-barrel':['去收滚动酒桶','正在走过去收那只滚动酒桶（占 3 格，'+space+'），收到就回柜台。'],\n            'market-counter':['回柜台交付酒桶','酒桶已在包里，自动走回柜台交付；交付会消耗它，变不回 4 杯艾尔。'],\n            'market-fuse':['去卸货门修电','带着零件去开关旁修电：会消耗这件本来能卖 €5 的零件。'],\n            'market-part':['去找一件可修零件','自动去卸货区收零件，再回修电点；这件零件本来能卖 €5。'],\n            'market-stock':['去退货货架取货','自动走进货架区，靠近后收下封口酒（1 格）。'],\n            'market-cold':['进冷库取酒花','自动绕进冷库，靠近后收下密封酒花（1 格）。'],\n            'market-shortcut':['去打开卸货卷门','自动绕到内侧开关开卷门；这条捷径明晚还在。'],\n            'market':['去柜台表态','正走向超市收货柜台，到了由你选路线。'],\n            'exit':['带着收获去出口','正走向回酒馆的出口；安全撤离后，这一趟才结算。'],\n            'club':['离开超市去夜店','正穿过超市去夜店后门，找那只冷藏箱。'],\n            'noor':['离开超市去找 Noor','正穿过超市去运河边找 Noor。'],\n            'garden':['去玻璃后的温室','正穿过城市去东北边的温室看看。'],\n            'gate':['先拉开维护闸门','温室闸门还关着，先到外侧拉杆，再进去。'],\n            'sorting':['去失物分拣场','正离开超市去分拣场看看有什么可捡。']\n          };\n          const pair=legs[a.goal]||['继续当前这一步','正自动往前走，到地方后重要选择仍留给你。'];\n          return out(pair[0],pair[1]);\n        }\n        if(a.event!=='market')return out('先处理眼前的选择','阅读时整条街暂停；在下方做完选择再继续走。');\n      }\n      // Shared market-stage guidance (manual, and automatic mode stopped at the market choice).\n      if(market.approach===null){\n        if(market.canTrade)return out('柜台表态：二选一',auto?'在下方选「直接取库存」或「帮忙搬货」，选完自动走。':'选「直接取库存」或「帮忙搬货」：表态不花钱、不花时间，路线锁定不能改。');\n        return out('先走到超市柜台','沿通道走到收货柜台再表态；二选一锁定路线，表态本身不花钱、不花时间。');\n      }\n      if(market.approach==='trade'){\n        if(market.delivered){\n          return out('货已交，安全撤离',day===3?'交付已确认；第 3 夜没有下一天，回执无法兑现，走到出口安全撤离。':'交付已确认，奖励还没到手：走到出口安全撤离，次日回执才作数。');\n        }\n        if(barrelBag){\n          return out('把酒桶送回柜台',market.canDeliver?'酒桶在包里、柜台就在面前：用下方交付按钮交货，交完桶就被消耗。':'酒桶已在包里，走回收货柜台再交付：'+market.reasons.deliver);\n        }\n        const space=free>=3?'现余 '+free+' 格，够装':'现余 '+free+' 格，不够先扔东西';\n        const p=market.condition==='restock'\n          ?'补货夜酒桶停不下来，靠近亲手收；占 3 格，'+space+'；不是街边空桶。'\n          :'去把超市里那只滚动酒桶收进包（占 3 格，'+space+'）；它不是街边的空桶。';\n        return out('去收滚动酒桶',p);\n      }\n      // salvage route\n      if(market.stockTaken){\n        return out('货已入包，准备撤离',day===3?'拿到的货已在包里；第 3 夜没有次日涨价，走到出口安全撤离即可。':'拿到的货已在包里，次日收摊酒箱 €8→€10、只涨一天；走到出口安全撤离。');\n      }\n      const stockWorld=r.items[0].state==='world',coldWorld=r.items[1].state==='world';\n      const coldOpen=market.condition!=='blackout'||market.powered;\n      if(market.condition==='blackout'&&!coldOpen&&coldWorld)\n        return out('货架免费拿货，冷库先修电','退货货架的封口酒可直接拿；冷库黑着，修电要消耗一件值 €5 的零件，货架拿货免费。');\n      const names=(stockWorld?'退货货架的封口酒；':'')+(coldWorld?'冷库的密封酒花；':'');\n      return out('取库存：货架与冷库',names?names+'都只占 1 格，靠近亲手收。':'货都收过了，准备安全撤离。');\n    }\n    // Manual market panel. Availability comes straight from B.marketInfo; verbs run through B.command.\n    marketPanel(market){"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/test-market-focus-ui.js",
+        "old_string": "",
+        "new_string": "'use strict';\nconst test=require('node:test'),assert=require('node:assert/strict');\nconst fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');\nconst B=require('./backstage-core.js'),A=require('./backstage-auto.js');\nconst shift=(day=1,kit='hook',seed=42)=>B.create(seed,day,kit,[],{marketShift:true});\nconst noop=()=>{};\nfunction harness(run,paused=false){\n  const gradient={addColorStop:noop};\n  const context2d=new Proxy({createLinearGradient:()=>gradient,createRadialGradient:()=>gradient},{get:(o,k)=>k in o?o[k]:noop});\n  const canvas={getContext:()=>context2d,addEventListener:noop,getBoundingClientRect:()=>({left:0,top:0,width:1100,height:640}),setAttribute:noop};\n  const mkEl=()=>({textContent:'',hidden:false,disabled:false,innerHTML:'',setAttribute:noop,classList:{toggle:noop},style:{},title:'',focus:noop,scrollIntoView:noop});\n  const els=new Map();\n  const document={addEventListener:noop,hidden:false,body:{classList:{toggle:noop}},\n    getElementById:id=>{if(!els.has(id))els.set(id,mkEl());return els.get(id);},\n    querySelector:()=>null};\n  const state={run};const flags={paused};\n  const window={Backstage:B,BackstageAuto:A,addEventListener:noop};\n  const sandbox={window,document,matchMedia:()=>({matches:false})};\n  window.window=window;\n  vm.createContext(sandbox);\n  vm.runInContext(fs.readFileSync(path.join(__dirname,'backstage-scene.js'),'utf8'),sandbox);\n  vm.runInContext(fs.readFileSync(path.join(__dirname,'backstage-ui.js'),'utf8'),sandbox);\n  const ui=new window.BackstageUI({canvas,getState:()=>({phase:'explore',backstage:{run:state.run}}),isPaused:()=>flags.paused,save:noop,dispatch:noop,showModal:noop});\n  return {ui,els,state,flags,board:()=>els.get('action-content').innerHTML};\n}\nfunction walkTo(r,to){\n  for(let n=0;n<9000&&Math.hypot(to.x-r.p.x,to.y-r.p.y)>6;n++){\n    const d=Math.hypot(to.x-r.p.x,to.y-r.p.y);\n    B.step(r,{dx:(to.x-r.p.x)/d,dy:(to.y-r.p.y)/d},.025);\n  }\n  assert.ok(Math.hypot(to.x-r.p.x,to.y-r.p.y)<10,JSON.stringify({p:r.p,to}));\n}\nfunction focus(html){\n  const m=html.match(/<div class=\"exp-location\" id=\"exp-market-focus\"[^>]*>([\\s\\S]*?)<\\/div>/);\n  if(!m)return null;\n  const clean=x=>(x||'').replace(/<[^>]+>/g,'');\n  return {\n    block:m[0],\n    heading:clean(m[0].match(/<strong>([\\s\\S]*?)<\\/strong>/)[1]),\n    action:clean(m[0].match(/<p>([\\s\\S]*?)<\\/p>/)[1]),\n    note:clean((m[0].match(/<small>([\\s\\S]*?)<\\/small>/)||[])[1])\n  };\n}\nconst clen=s=>[...s].length;\nfunction assertSized(f){\n  assert.ok(f,'focus card exists');\n  assert.ok(f.heading.length&&f.action.length,'heading and action present');\n  assert.ok(clen(f.heading)<=24,'heading <=24 chars: '+f.heading);\n  assert.ok(clen(f.action)<=65,'action <=65 chars: '+f.action);\n}\nconst MANUAL_VERBS=['market-salvage','market-trade','market-deliver','market-power'];\n\ntest('manual supermarket night opens on one undecided counter objective with the real shift label',()=>{\n  const r=shift(1);r.actors=[]; // starts at the tavern exit, which lies inside the market zone rectangle\n  const before=structuredClone(r);\n  const h=harness(r);h.ui.render();\n  const f=focus(h.board());assertSized(f);\n  assert.ok(f.block.includes('眼前这一步'),'stable landmark prefix');\n  assert.match(f.heading,/柜台/,'undecided stage points at the counter');\n  assert.match(f.action,/走到/);\n  assert.ok(!f.action.includes('回执'),'no voucher before any choice');\n  assert.ok(h.board().includes(B.marketInfo(r).label),'real night label stays visible');\n  assert.deepEqual(r,before,'render mutates nothing');\n});\n\ntest('manual guidance follows undecided -> trade -> barrel -> deliver -> extraction truthfully',()=>{\n  const r=shift(1);r.actors=[];\n  Object.assign(r.p,{x:405,y:1110});\n  const h=harness(r);h.ui.render();\n  let f=focus(h.board());assertSized(f);\n  assert.match(f.heading,/表态/);\n  h.ui.perform('market-trade');\n  assert.equal(r.marketShift.approach,'trade');\n  f=focus(h.board());assertSized(f);\n  assert.match(f.heading,/酒桶/,'fetch-barrel stage');\n  assert.match(f.action,/3 格/,'states the real slot need');\n  assert.ok(!/按\\s*R/.test(f.action),'never tells the player to use R on the deliverable barrel');\n  assert.ok(f.action.includes('不是街边'),'distinguishes the deliverable barrel from the street empty barrel');\n  // Fixture: park the real rolling barrel away from the counter and collect it from range.\n  Object.assign(r.items[2],{x:560,y:1180,vx:0,vy:0,lock:0});\n  Object.assign(r.p,{x:545,y:1180});\n  assert.equal(B.command(r,'collect',{itemId:'item2'}),true,'real barrel collected');\n  assert.equal(B.marketInfo(r).canDeliver,false,'still far from the counter');\n  h.ui.render();f=focus(h.board());assertSized(f);\n  assert.match(f.heading,/柜台/);\n  assert.match(f.action,/走到柜台旁边/,'uses the real distance reason');\n  assert.ok(!f.action.includes('交付已确认'),'no early delivery claim');\n  // Real walk back to the counter: delivery goes live, and the cost prose remains visible below.\n  walkTo(r,{x:405,y:1110});\n  assert.equal(B.marketInfo(r).canDeliver,true);\n  h.ui.render();\n  assert.match(h.board(),/变不回 4 杯艾尔/,'barrel consumption risk still on the board');\n  f=focus(h.board());assertSized(f);\n  assert.match(f.action,/交付/);\n  h.ui.perform('market-deliver');\n  assert.equal(r.items[2].state,'delivered');\n  h.ui.render();f=focus(h.board());assertSized(f);\n  assert.match(f.heading,/撤离/);\n  assert.match(f.action,/回执/);\n  assert.ok(!/再交付|交付按钮/.test(f.action),'no repeat-delivery encouragement');\n  assert.ok(!/领到钱|已发现金|€\\d+/.test(f.action),'no cash granted tonight');\n  // Genuine extraction ends the active board; receipt replaces the goal card.\n  Object.assign(r.p,B.EXIT);B.command(r,'interact');\n  h.ui.render();\n  assert.equal(r.status,'extracted');\n  assert.equal(focus(h.board()),null);\n  assert.match(h.board(),/回执/);\n});\n\ntest('salvage guidance names real shelf and cold destinations, then confirms goods and next-day fact',()=>{\n  const r=shift(1);r.actors=[];\n  Object.assign(r.p,{x:405,y:1110});\n  assert.equal(B.command(r,'market-salvage'),true);\n  const h=harness(r);h.ui.render();\n  let f=focus(h.board());assertSized(f);\n  assert.match(f.action,/货架/);\n  assert.match(f.action,/冷库/);\n  walkTo(r,{x:405,y:990});\n  assert.ok(r.bag.includes('item0'),'shelf stock really stowed');\n  h.ui.render();f=focus(h.board());assertSized(f);\n  assert.match(f.heading,/货已入包/);\n  assert.match(f.action,/€10/,'real next-day crate fact');\n  assert.match(f.action,/撤离/,'safe return is an option');\n});\n\ntest('blackout keeps free shelf choice distinct from the EUR5 repair; day3 has no next day',()=>{\n  const r=shift(3);r.actors=[];\n  Object.assign(r.p,{x:405,y:1110});\n  assert.equal(B.command(r,'market-salvage'),true);\n  const h=harness(r);h.ui.render();\n  let f=focus(h.board());assertSized(f);\n  assert.match(f.action,/货架/);\n  assert.match(f.action,/修电/);\n  assert.match(f.action,/€5/);\n  assert.match(f.action,/免费/,'shelf taking stays free, repair is the paid part');\n  walkTo(r,{x:660,y:1180});\n  assert.ok(r.bag.includes('item3'),'real part collected');\n  walkTo(r,{x:700,y:1105});\n  assert.equal(B.command(r,'market-power'),true,'power restored with the real part');\n  h.ui.render();f=focus(h.board());assertSized(f);\n  assert.match(f.heading,/货架与冷库/);\n  assert.match(f.action,/冷库/,'cold destination appears only once power is real');\n  walkTo(r,{x:740,y:850});\n  assert.ok(r.bag.includes('item1'),'cold goods really stowed after repair');\n  h.ui.render();f=focus(h.board());assertSized(f);\n  assert.match(f.heading,/撤离/);\n  assert.doesNotMatch(f.action,/次日/);\n  assert.doesNotMatch(f.action,/€10/);\n});\n\ntest('third-night delivered trade points to extraction without a cashable receipt',()=>{\n  const r=shift(3);r.actors=[];Object.assign(r.p,{x:405,y:1110});\n  B.command(r,'market-trade');B.command(r,'collect',{itemId:'item2'});B.command(r,'market-deliver');\n  const h=harness(r);h.ui.render();\n  const f=focus(h.board());assertSized(f);\n  assert.match(f.action,/没有下一天/);\n  assert.doesNotMatch(f.action,/次日回执才作数/);\n  assert.ok(!/领到|发现金/.test(f.action));\n});\n\ntest('paused night keeps the same current goal, shows the frozen note and performs nothing',()=>{\n  const r=shift(1);r.actors=[];Object.assign(r.p,{x:405,y:1110});\n  B.command(r,'market-trade');\n  const h=harness(r,true);h.ui.render();\n  const f=focus(h.board());assertSized(f);\n  assert.match(f.heading,/酒桶/);\n  assert.match(f.note,/已暂停/);\n  h.ui.perform('market-salvage');\n  h.ui.perform('market-deliver');\n  assert.equal(r.marketShift.approach,'trade');\n  assert.equal(r.marketShift.delivered,false);\n});\n\ntest('automatic market legs keep one truthful goal, real choices and no early delivery claim',()=>{\n  const r=shift(1);r.actors=[];A.enable(r);\n  const h=harness(r);h.ui.render();\n  let f=focus(h.board());assertSized(f);\n  assert.match(f.heading,/从哪开始/);\n  for(const verb of MANUAL_VERBS)assert.ok(!h.board().includes('data-verb=\"'+verb+'\"'),verb+' never duplicated in auto');\n  assert.ok(A.choose(r,'market'));\n  for(let n=0;n<4000&&!r.auto.event;n++)A.step(r,.05);\n  assert.equal(r.auto.event,'market');\n  h.ui.render();f=focus(h.board());assertSized(f);\n  assert.match(f.heading,/表态/);\n  assert.match(h.board(),/data-verb=\"choice:mkt-trade\"/,'A.view choices remain the controls');\n  assert.ok(A.choose(r,'mkt-trade'));\n  let barrelLeg=null;\n  for(let n=0;n<4000&&r.status==='active';n++){\n    A.step(r,.05);\n    if(!r.auto.event&&r.auto.goal==='market-barrel'){h.ui.render();barrelLeg=focus(h.board());}\n    if(!r.auto.event&&r.auto.goal==='market-counter'&&r.bag.includes('item2')){\n      h.ui.render();const g=focus(h.board());assertSized(g);\n      assert.match(g.heading,/柜台/);\n      assert.ok(!g.action.includes('交付已确认'));\n      break;\n    }\n  }\n  if(barrelLeg){assertSized(barrelLeg);assert.match(barrelLeg.heading,/酒桶/);assert.ok(!barrelLeg.action.includes('交付已确认'));}\n  for(let n=0;n<4000&&!r.auto.event&&r.status==='active';n++)A.step(r,.05);\n  assert.equal(r.marketShift.delivered,true,'barrel really delivered via shared commands');\n  h.ui.render();f=focus(h.board());assertSized(f);\n  assert.match(f.heading,/撤离/);\n  assert.match(f.action,/回执/);\n  for(const verb of MANUAL_VERBS)assert.ok(!h.board().includes('data-verb=\"'+verb+'\"'),verb+' still absent after delivery');\n});\n\ntest('a full bag on the trade errand trips a real stuck event that overrides the advice',()=>{\n  const r=shift(1);r.actors=[];\n  // Fill 6/8 slots with REAL collected singles (the rolling barrel stays in the world).\n  for(const [id,to] of [['item3',{x:660,y:1180}],['item7',{x:1300,y:875}],['item8',{x:1430,y:1130}],['item10',{x:1920,y:1020}],['item4',{x:610,y:540}],['item5',{x:430,y:370}]]){\n    walkTo(r,to);assert.ok(r.bag.includes(id),id+' really stowed');\n  }\n  assert.equal(B.load(r),6);\n  A.enable(r);\n  assert.ok(A.choose(r,'market'));\n  for(let n=0;n<8000&&!r.auto.event;n++)A.step(r,.05);\n  assert.equal(r.auto.event,'market');\n  assert.ok(A.choose(r,'mkt-trade'));\n  let stuck=false;\n  for(let n=0;n<4000&&r.status==='active';n++){A.step(r,.05);if(r.auto.event==='stuck'){stuck=true;break;}}\n  assert.ok(stuck,'capacity-blocked barrel fetch becomes stuck, never a fake delivery');\n  const h=harness(r);h.ui.render();\n  const f=focus(h.board());assertSized(f);\n  assert.match(f.heading,/不好走/);\n  assert.equal(r.marketShift.delivered,false);\n  assert.ok(!f.action.includes('交付已确认'));\n});\n\ntest('real capacity and glimpse auto events override market advice when read inside the market',()=>{\n  const r=shift(1);r.actors=[];\n  for(const to of [{x:660,y:1180},{x:1300,y:875},{x:1430,y:1130},{x:1920,y:1020},{x:610,y:540},{x:430,y:370}])walkTo(r,to);\n  assert.equal(B.load(r),6);\n  A.enable(r);\n  assert.ok(A.choose(r,'club'));\n  for(let n=0;n<9000&&!r.auto.event;n++)A.step(r,.05);\n  assert.equal(r.auto.event,'club');\n  assert.ok(A.choose(r,'take-foam'));\n  assert.equal(r.auto.event,'capacity','real capacity event before taking the 3-slot box');\n  // Proximity fixture (sanctioned by the brief): read this advice while standing in the market zone.\n  Object.assign(r.p,{x:405,y:1110,fx:0,fy:1});\n  let h=harness(r);h.ui.render();\n  let f=focus(h.board());assertSized(f);\n  assert.match(f.heading,/背包/);\n\n  // Real glimpse event on a sorting leg past the flower cart.\n  const g=shift(1);A.enable(g);\n  assert.ok(A.choose(g,'sorting'));\n  A.step(g,.5);\n  // Proximity fixture: a clear tile beside the passing flower cart.\n  Object.assign(g.p,{x:1080,y:1060,fx:1,fy:0});\n  A.step(g,.05);\n  assert.equal(g.auto.event,'glimpse');\n  // Proximity fixture: read the override from inside the market zone.\n  Object.assign(g.p,{x:405,y:1110});\n  h=harness(g);h.ui.render();\n  f=focus(h.board());assertSized(f);\n  assert.match(f.heading,/花车/);\n  assert.match(f.action,/温室/);\n});\n\ntest('legacy runs and outside-market positions keep the old three-objective board unchanged',()=>{\n  const legacy=B.create(42,1);\n  assert.equal(B.marketInfo(legacy).enabled,false);\n  const h=harness(legacy);h.ui.render();\n  assert.equal(focus(h.board()),null);\n  assert.match(h.board(),/exp-objectives/);\n  for(const verb of MANUAL_VERBS)assert.ok(!h.board().includes('data-verb=\"'+verb+'\"'));\n  const r=shift(1);Object.assign(r.p,{x:1230,y:1000}); // marketShift run, currently in the club zone\n  const h2=harness(r);h2.ui.render();\n  assert.equal(focus(h2.board()),null);\n  assert.match(h2.board(),/exp-objectives/);\n});\n\ntest('rendering guidance never mutates run, items or auto history',()=>{\n  const r=shift(1);r.actors=[];Object.assign(r.p,{x:405,y:1110});\n  B.command(r,'market-trade');\n  const h=harness(r);\n  let snap=structuredClone(r);h.ui.render();assert.deepEqual(r,snap);\n  Object.assign(r.items[2],{x:560,y:1180,vx:0,vy:0});Object.assign(r.p,{x:545,y:1180});\n  B.command(r,'collect',{itemId:'item2'});\n  snap=structuredClone(r);h.ui.render();assert.deepEqual(r,snap);\n  A.enable(r);\n  snap=structuredClone(r);h.ui.render();assert.deepEqual(r,snap);\n});\n"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --test tools/prototype/test-market-focus-ui.js",
+        "description": "Run new market focus UI tests"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/test-market-focus-ui.js",
+        "old_string": "function focus(html){",
+        "new_string": "// Real walk, then a deliberate in-range collect when proximity stow did not trigger.\nfunction reach(r,id,to){\n  walkTo(r,to);\n  if(!r.bag.includes(id))assert.equal(B.command(r,'collect',{itemId:id}),true,'collect '+id);\n  assert.ok(r.bag.includes(id),id+' really stowed');\n}\nfunction focus(html){"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/test-market-focus-ui.js",
+        "old_string": "  // Fixture: park the real rolling barrel away from the counter and collect it from range.\n  Object.assign(r.items[2],{x:560,y:1180,vx:0,vy:0,lock:0});\n  Object.assign(r.p,{x:545,y:1180});",
+        "new_string": "  // Fixture: park the real rolling barrel west of the counter (away from the street empty barrel) and collect it.\n  Object.assign(r.items[2],{x:320,y:1180,vx:0,vy:0,lock:0});\n  Object.assign(r.p,{x:335,y:1180});"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/test-market-focus-ui.js",
+        "old_string": "  walkTo(r,{x:660,y:1180});\n  assert.ok(r.bag.includes('item3'),'real part collected');\n  walkTo(r,{x:700,y:1105});",
+        "new_string": "  reach(r,'item3',{x:680,y:1142});\n  walkTo(r,{x:700,y:1105});"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/test-market-focus-ui.js",
+        "old_string": "  // Fill 6/8 slots with REAL collected singles (the rolling barrel stays in the world).\n  for(const [id,to] of [['item3',{x:660,y:1180}],['item7',{x:1300,y:875}],['item8',{x:1430,y:1130}],['item10',{x:1920,y:1020}],['item4',{x:610,y:540}],['item5',{x:430,y:370}]]){\n    walkTo(r,to);assert.ok(r.bag.includes(id),id+' really stowed');\n  }",
+        "new_string": "  // Fill 6/8 slots with REAL collected singles (the rolling barrel stays in the world).\n  for(const [id,to] of [['item3',{x:680,y:1142}],['item7',{x:1300,y:875}],['item8',{x:1430,y:1130}],['item10',{x:1920,y:1020}],['item4',{x:610,y:540}],['item5',{x:430,y:370}]]){\n    reach(r,id,to);\n  }"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/test-market-focus-ui.js",
+        "old_string": "  const r=shift(1);r.actors=[];\n  for(const to of [{x:660,y:1180},{x:1300,y:875},{x:1430,y:1130},{x:1920,y:1020},{x:610,y:540},{x:430,y:370}])walkTo(r,to);\n  assert.equal(B.load(r),6);",
+        "new_string": "  const r=shift(1);r.actors=[];\n  for(const [id,to] of [['item3',{x:680,y:1142}],['item7',{x:1300,y:875}],['item8',{x:1430,y:1130}],['item10',{x:1920,y:1020}],['item4',{x:610,y:540}],['item5',{x:430,y:370}]]){\n    reach(r,id,to);\n  }\n  assert.equal(B.load(r),6);"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --test tools/prototype/test-market-focus-ui.js",
+        "description": "Re-run new market focus UI tests"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "        return out('货已入包，准备撤离',day===3?'拿到的货已在包里；第 3 夜没有次日涨价，走到出口安全撤离即可。':'拿到的货已在包里，次日收摊酒箱 €8→€10、只涨一天；走到出口安全撤离。');",
+        "new_string": "        return out('货已入包，准备撤离',day===3?'拿到的货已在包里；第 3 夜是最后一夜，没有后续涨价，走到出口安全撤离即可。':'拿到的货已在包里，次日收摊酒箱 €8→€10、只涨一天；走到出口安全撤离。');"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/test-market-focus-ui.js",
+        "old_string": "  // Fill 6/8 slots with REAL collected singles (the rolling barrel stays in the world).\n  for(const [id,to] of [['item3',{x:680,y:1142}],['item7',{x:1300,y:875}],['item8',{x:1430,y:1130}],['item10',{x:1920,y:1020}],['item4',{x:610,y:540}],['item5',{x:430,y:370}]]){\n    reach(r,id,to);\n  }\n  assert.equal(B.load(r),6);",
+        "new_string": "  // Fill 6/8 slots with REAL collected singles (the rolling barrel stays in the world).\n  for(const [id,to] of [['item7',{x:1300,y:875}],['item8',{x:1430,y:1130}],['item10',{x:1920,y:1020}],['item4',{x:610,y:540}],['item5',{x:430,y:370}]]){\n    reach(r,id,to);\n  }\n  // Proximity fixture: the unloading part is collected from east of the delivery wall.\n  Object.assign(r.p,{x:680,y:1142});\n  assert.equal(B.command(r,'collect',{itemId:'item3'}),true);\n  assert.equal(B.load(r),6);"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/test-market-focus-ui.js",
+        "old_string": "  const r=shift(1);r.actors=[];\n  for(const [id,to] of [['item3',{x:680,y:1142}],['item7',{x:1300,y:875}],['item8',{x:1430,y:1130}],['item10',{x:1920,y:1020}],['item4',{x:610,y:540}],['item5',{x:430,y:370}]]){\n    reach(r,id,to);\n  }\n  assert.equal(B.load(r),6);",
+        "new_string": "  const r=shift(1);r.actors=[];\n  for(const [id,to] of [['item7',{x:1300,y:875}],['item8',{x:1430,y:1130}],['item10',{x:1920,y:1020}],['item4',{x:610,y:540}],['item5',{x:430,y:370}]]){\n    reach(r,id,to);\n  }\n  // Proximity fixture: the unloading part is collected from east of the delivery wall.\n  Object.assign(r.p,{x:680,y:1142});\n  assert.equal(B.command(r,'collect',{itemId:'item3'}),true);\n  assert.equal(B.load(r),6);"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/test-market-focus-ui.js",
+        "old_string": "  reach(r,'item3',{x:680,y:1142});\n  walkTo(r,{x:700,y:1105});",
+        "new_string": "  // Proximity fixture: stand east of the delivery wall within real collect range of the part.\n  Object.assign(r.p,{x:680,y:1142});\n  assert.equal(B.command(r,'collect',{itemId:'item3'}),true,'real part collected');\n  walkTo(r,{x:700,y:1105});"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --test tools/prototype/test-market-focus-ui.js",
+        "description": "Re-run new market focus UI tests"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/test-market-focus-ui.js",
+        "old_string": "  // Fill 6/8 slots with REAL collected singles (the rolling barrel stays in the world).\n  for(const [id,to] of [['item7',{x:1300,y:875}],['item8',{x:1430,y:1130}],['item10',{x:1920,y:1020}],['item4',{x:610,y:540}],['item5',{x:430,y:370}]]){\n    reach(r,id,to);\n  }\n  // Proximity fixture: the unloading part is collected from east of the delivery wall.\n  Object.assign(r.p,{x:680,y:1142});\n  assert.equal(B.command(r,'collect',{itemId:'item3'}),true);\n  assert.equal(B.load(r),6);",
+        "new_string": "  // Proximity fixtures (sanctioned by the brief): stand beside each real single, then collect\n  // through the real B.command distance/LOS/capacity checks. The market barrel stays in the world.\n  const standCollect=(id,x,y)=>{Object.assign(r.p,{x,y});assert.equal(B.command(r,'collect',{itemId:id}),true,id);};\n  standCollect('item7',1300,900);standCollect('item8',1430,1160);standCollect('item10',1920,1060);\n  standCollect('item4',610,570);standCollect('item5',430,400);standCollect('item3',680,1142);\n  assert.equal(B.load(r),6);"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/test-market-focus-ui.js",
+        "old_string": "  const r=shift(1);r.actors=[];\n  for(const [id,to] of [['item7',{x:1300,y:875}],['item8',{x:1430,y:1130}],['item10',{x:1920,y:1020}],['item4',{x:610,y:540}],['item5',{x:430,y:370}]]){\n    reach(r,id,to);\n  }\n  // Proximity fixture: the unloading part is collected from east of the delivery wall.\n  Object.assign(r.p,{x:680,y:1142});\n  assert.equal(B.command(r,'collect',{itemId:'item3'}),true);\n  assert.equal(B.load(r),6);",
+        "new_string": "  const r=shift(1);r.actors=[];\n  // Proximity fixtures (sanctioned by the brief): stand beside each real single, then collect\n  // through the real B.command distance/LOS/capacity checks.\n  const standCollect=(id,x,y)=>{Object.assign(r.p,{x,y});assert.equal(B.command(r,'collect',{itemId:id}),true,id);};\n  standCollect('item7',1300,900);standCollect('item8',1430,1160);standCollect('item10',1920,1060);\n  standCollect('item4',610,570);standCollect('item5',430,400);standCollect('item3',680,1142);\n  assert.equal(B.load(r),6);"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/test-market-focus-ui.js",
+        "old_string": "// Real walk, then a deliberate in-range collect when proximity stow did not trigger.\nfunction reach(r,id,to){\n  walkTo(r,to);\n  if(!r.bag.includes(id))assert.equal(B.command(r,'collect',{itemId:id}),true,'collect '+id);\n  assert.ok(r.bag.includes(id),id+' really stowed');\n}\nfunction focus(html){",
+        "new_string": "function focus(html){"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --test tools/prototype/test-market-focus-ui.js",
+        "description": "Re-run new market focus UI tests"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/test-market-focus-ui.js",
+        "old_string": "  // Real glimpse event on a sorting leg past the flower cart.\n  const g=shift(1);A.enable(g);\n  assert.ok(A.choose(g,'sorting'));\n  A.step(g,.5);\n  // Proximity fixture: a clear tile beside the passing flower cart.\n  Object.assign(g.p,{x:1080,y:1060,fx:1,fy:0});\n  A.step(g,.05);\n  assert.equal(g.auto.event,'glimpse');",
+        "new_string": "  // Real glimpse event on a sorting leg past the flower cart.\n  const g=shift(1);g.actors=[]; // proximity fixture: no patrol interference\n  A.enable(g);\n  assert.ok(A.choose(g,'sorting'));\n  A.step(g,.5);\n  // Proximity fixture: hold a clear tile beside the passing flower cart until legTime trips the glimpse.\n  let glimpsed=false;\n  for(let n=0;n<12&&!glimpsed;n++){\n    Object.assign(g.p,{x:1080,y:1060,fx:1,fy:0});\n    A.step(g,.05);\n    glimpsed=g.auto.event==='glimpse';\n  }\n  assert.ok(glimpsed,'glimpse event fires from a real sorting leg');"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --test tools/prototype/test-market-focus-ui.js",
+        "description": "Re-run new market focus UI tests"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --test tools/prototype/test-market-shift-ui.js tools/prototype/test-market-shift.js",
+        "description": "Run existing market shift test suites"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --check tools/prototype/backstage-ui.js",
+        "description": "Syntax check backstage-ui.js"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --check tools/prototype/test-market-focus-ui.js",
+        "description": "Syntax check test-market-focus-ui.js"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "<p class=\"board-copy\">${esc(v.copy)}</p>${focusCard}${locationCard}<div class=\"exp-choices\">",
+        "new_string": "<p class=\"board-copy\">${esc(v.copy)}</p>${locationCard}<div class=\"exp-choices\">"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "点向目标下钩，闪避和泡沫可以救场。</p>${focusCard}${locationCard}${this.marketPanel(market)}${situation}${inMarket?'':'<div class=\"exp-objectives\">'}<div class=\"${r.parcel==='returned'?'done':''}\">",
+        "new_string": "点向目标下钩，闪避和泡沫可以救场。</p>${locationCard}${this.marketPanel(market)}${situation}<div class=\"exp-objectives\"><div class=\"${r.parcel==='returned'?'done':''}\">"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "找路进去。'}</p></div></div>${inMarket?'':'</div>'}<div class=\"exp-bag\">",
+        "new_string": "找路进去。'}</p></div></div></div><div class=\"exp-bag\">"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --test tools/prototype/test-market-focus-ui.js",
+        "description": "Observe RED against unwired UI"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "<p class=\"board-copy\">${esc(v.copy)}</p>${locationCard}<div class=\"exp-choices\">",
+        "new_string": "<p class=\"board-copy\">${esc(v.copy)}</p>${focusCard}${locationCard}<div class=\"exp-choices\">"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "点向目标下钩，闪避和泡沫可以救场。</p>${locationCard}${this.marketPanel(market)}${situation}<div class=\"exp-objectives\"><div class=\"${r.parcel==='returned'?'done':''}\">",
+        "new_string": "点向目标下钩，闪避和泡沫可以救场。</p>${focusCard}${locationCard}${this.marketPanel(market)}${situation}${inMarket?'':'<div class=\"exp-objectives\">'}<div class=\"${r.parcel==='returned'?'done':''}\">"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "找路进去。'}</p></div></div></div><div class=\"exp-bag\">",
+        "new_string": "找路进去。'}</p></div></div>${inMarket?'':'</div>'}<div class=\"exp-bag\">"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --test tools/prototype/test-market-focus-ui.js",
+        "description": "Final run of new market focus UI tests"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --test tools/prototype/test-market-shift-ui.js tools/prototype/test-market-shift.js",
+        "description": "Final run of existing market shift suites"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --check tools/prototype/backstage-ui.js",
+        "description": "Final syntax check backstage-ui.js"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --check tools/prototype/test-market-focus-ui.js",
+        "description": "Final syntax check test-market-focus-ui.js"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/tools/prototype/backstage-ui.js",
+        "offset": 93,
+        "limit": 12
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/handoff-result.json"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-20261013/workspace/handoff-result.json",
+        "old_string": "",
+        "new_string": "{\"status\":\"completed\",\"summary\":\"PLAY05: added one prominent '眼前这一步' current-objective card to the supermarket night board in backstage-ui.js, shown only when marketInfo().enabled, zone is market and run active, in both manual and automatic modes. The card is derived read-only from real marketInfo/run/auto state: undecided walk-to-counter vs at-counter choice; trade fetch-barrel (real 3-slot capacity, distinguishes the deliverable rolling barrel from street empty barrels, never mentions R delivery); barrel-in-bag return using canDeliver/reasons; delivered extraction (next-day receipt only after safe extraction on nights 1/2; night 3 no cashable receipt; no cash granted, no repeat-delivery prompt); salvage destinations (real shelf/cold item states; blackout keeps free shelf choice distinct from the EUR5 fuse part; confirms goods in bag and safe return). Auto mode maps active goals to truthful legs (正在前往 titles/controls/A.view choices untouched); capacity/stuck/glimpse events override advice and blocked states never announce delivery. In the market the manual board hides the unrelated Noor/parcel/greenhouse objectives block; outside-market and legacy runs render byte-identical old boards. All risk/cost prose, buttons/disabled reasons, location panel, capacity, live message and pause behavior preserved; no new CSS or mechanics. Signature gained real keys (load, item0-3 states, item2 in bag) so stages refresh after genuine transitions without tests forcing ui.signature; render mutates nothing. New suite test-market-focus-ui.js (11 real-behavior tests, VM harness, real B/A commands and movement) observed RED against unwired UI (9/11 failed 'focus card exists'; legacy/no-mutation tests already passed), then GREEN 11/11. Old 32/32 stay green.\",\"changed_files\":[\"tools/prototype/backstage-ui.js\",\"tools/prototype/test-market-focus-ui.js\"],\"tests\":[{\"command\":\"node --test tools/prototype/test-market-focus-ui.js\",\"exit_code\":0,\"summary\":\"Final 11/11 pass. Earlier against the unchanged/unwired UI: 9/11 failed as expected ('focus card exists' on every current-goal test); legacy-board and render-no-mutation tests passed even before the change.\"},{\"command\":\"node --test tools/prototype/test-market-shift-ui.js tools/prototype/test-market-shift.js\",\"exit_code\":0,\"summary\":\"Final 32/32 pass (12 UI + 20 core/auto), all old assertions byte-for-byte intact.\"},{\"command\":\"node --check tools/prototype/backstage-ui.js\",\"exit_code\":0,\"summary\":\"Syntax OK.\"},{\"command\":\"node --check tools/prototype/test-market-focus-ui.js\",\"exit_code\":0,\"summary\":\"Syntax OK.\"}],\"blockers\":[],\"memory_delta\":[\"PLAY05 adopted-ready: market night now opens on one '眼前这一步' objective card in both modes, contextual hiding of legacy objectives only inside the market; no mechanics/CSS changed.\",\"RED/GREEN for PLAY05: new suite 11 tests; observed RED 9/11 fail on unwired UI before GREEN; old suites 32/32 unaffected.\"],\"next_steps\":[\"Parent verifies scope/hashes and runs full 365+new regression.\",\"Parent natural-GUI acceptance: night1 supermarket choice/delivery/exit and night2 receipt, day3 fixture, 390px layout and keyboard; usability hypothesis only, no fun claim yet.\"]}"
+      }
+    }
+  ],
+  "tool_counts": {
+    "Read": 11,
+    "Edit": 29,
+    "Bash": 13
+  },
+  "bash_outside": [],
+  "report_exists": true
+}

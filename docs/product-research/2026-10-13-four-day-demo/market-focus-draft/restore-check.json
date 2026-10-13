@@ -1,0 +1,12 @@
+{
+  "tools/prototype/backstage-ui.js": {
+    "restored": "7ad195ab9d26a07404d4e86e3ba262b6870792388f8358ac7a38a88b18097d11",
+    "candidate": "7ad195ab9d26a07404d4e86e3ba262b6870792388f8358ac7a38a88b18097d11",
+    "equal": true
+  },
+  "tools/prototype/test-market-focus-ui.js": {
+    "restored": "930f3cbb1628c85025cdecf484ef7ecfd0b53858251d6c6a9d9a9789c2304f8c",
+    "candidate": "930f3cbb1628c85025cdecf484ef7ecfd0b53858251d6c6a9d9a9789c2304f8c",
+    "equal": true
+  }
+}

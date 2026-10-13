@@ -1,0 +1,19 @@
+{
+  "original-result.json": "a0c7704bb9de659db86569e80c1d90ee1adc2aeee2e383a6c7725071b05b7517",
+  "audit.json": "b8bdb2c72bd72bf9df23993fef56b436f54ad4044f21fe6a9e6aea8f6f3bb64e",
+  "old-package.txt.gz": "fde6a4ecae87b343ac4d430d78428d01c8098569708b5a6db05ea98dc2ca6ce1",
+  "parent-validation.md": "2fd46525041e4d1c03fa9feaff7a8566bd7f1935bf790b4fba4a40d4fdc653e6",
+  "full.txt.gz": "85b6b60269d8d7434ce363e1299123ac98c23a6e281e826ee467719418b14618",
+  "stderr.log.gz": "bd1b4f609dd129da8b41b4ea5fea24279a479499084e4445e61f44096ac27c1e",
+  "restore-check.json": "2b0230a3cbf907789415af3be5a46e44d50479e89bdb1c17b468c5fea37036ff",
+  "diagnostic.jsonl": "ca772649654890588235eda013842b5966301c1c230bbffcb874c51250e3fc67",
+  "syntax.txt.gz": "e8717888bd6ab3eae0c13aac84d868fdb4cf99b195a6e4a205e9997a8c40867b",
+  "README.md": "773b1a4ef420fc650fe889cbba894b2ba1d89b4f9cb4c4a953336ae51973e9be",
+  "parent-diagnostic.cjs": "2f190126b0530b6da549c21abecfb43d7ef5cd636350eaafdd2993c39901cd55",
+  "candidate.patch.gz": "4723794a4ceedab48b1ef623c7657303a2a8184df086bd47ddf953295205853f",
+  "red.txt.gz": "e40128c2cc4d987d0e83bec91ea283a6f0de1aa6a2d8d87b4992d0bda740230c",
+  "original-handoff-result.json": "608e12a46961c88f0f77bd48fd74e8e9a4f571f17afb35017159ba9d6a644b02",
+  "events.jsonl.gz": "4f7a422cc4c2322f5235ed274fea2a5b9cb343cd32b6cc2a3c8182c628744b81",
+  "adoption-review.json": "4995b06bc8804fef5c1097b94b46d00b22a1fc249f8ab092629c92d6b2fb50cd",
+  "new.txt.gz": "8eca43dfa28b877c50e8a8aeade2cdcd2c57b0786eb39a4fb80e30d0d05afcf2"
+}

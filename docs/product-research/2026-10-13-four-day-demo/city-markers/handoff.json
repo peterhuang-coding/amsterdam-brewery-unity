@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-city-markers-20261013",
+  "goal": "Make only current-player and active destination city Canvas labels readable at actual CSS sizes, preserving real world anchors and all gameplay.",
+  "memory": {
+    "summary": "D23 clear first-minute scenes; independent city-label package. PLAY03/06/07/11 shelved.",
+    "completed": [
+      "Adopted0178350 with parent411/411 and natural loadout loop."
+    ],
+    "decisions": [
+      "Only two label spans plus dedicated helper and new test",
+      "Only Seed Evolving thinking enabled/high; one business and one correction maximum"
+    ],
+    "known_issues": [
+      "Natural390 canvas360CSS wide: font16 renders2.992px overview/7.780px street",
+      "Green tests do not replace normal execution and legal report"
+    ]
+  },
+  "tasks": [
+    "Focused Read",
+    "Real final behavior tests on unchanged adopted baseline RED",
+    "Implement bounded labels then GREEN, oldtests and syntax",
+    "Return complete legal four-final-command report"
+  ],
+  "acceptance": [
+    "Exactly scoped two outputfiles, readonly bytes unchanged",
+    "Effective font>=11CSS, full bounds, same-point distinction, truthful world anchors",
+    "Final baseline RED and candidate GREEN; all old assertions retained",
+    "Four truthful final commands; parent natural acceptance pending"
+  ],
+  "constraints": [
+    "Public supplied materials only, no network",
+    "Do not revive shelved items or change camera/core/UI",
+    "Read/Edit/four exact Bash only; report.changed_files excludes reserved report itself"
+  ],
+  "workspace": "/tmp/amsterdam-city-markers-20261013/input",
+  "read_files": [
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/test-city.js",
+    "tools/prototype/test-street-atmosphere.js",
+    "tools/prototype/test-city-markers.js",
+    "brief.md",
+    "frame-contract.md"
+  ],
+  "write_files": [
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/test-city-markers.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-city-markers.js",
+    "node --test tools/prototype/test-city.js tools/prototype/test-street-atmosphere.js",
+    "node --check tools/prototype/reopening-scene.js",
+    "node --check tools/prototype/test-city-markers.js"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 1500,
+  "max_turns": 40,
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "play12-city-markers",
+    "task_type": "code",
+    "attempt_kind": "business"
+  }
+}

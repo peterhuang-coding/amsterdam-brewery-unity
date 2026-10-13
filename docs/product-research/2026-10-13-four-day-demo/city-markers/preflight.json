@@ -1,0 +1,15 @@
+{
+  "results": [
+    {
+      "command": "node --test tools/prototype/test-city.js tools/prototype/test-street-atmosphere.js",
+      "exit_code": 0,
+      "log": "preflight-0.log"
+    },
+    {
+      "command": "node --check tools/prototype/reopening-scene.js",
+      "exit_code": 0,
+      "log": "preflight-1.log"
+    }
+  ],
+  "newtest_empty_not_tested": true
+}

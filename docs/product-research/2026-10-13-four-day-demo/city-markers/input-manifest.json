@@ -1,0 +1,44 @@
+[
+  {
+    "path": "tools/prototype/reopening-scene.js",
+    "bytes": 45079,
+    "sha256": "d429ad5760dd8b2d23397a20070d4ebdbdf7704ee3b19ce4f349fec52582dda7",
+    "adopted_exact": true
+  },
+  {
+    "path": "tools/prototype/reopening-city.js",
+    "bytes": 15809,
+    "sha256": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625",
+    "adopted_exact": true
+  },
+  {
+    "path": "tools/prototype/test-city.js",
+    "bytes": 12891,
+    "sha256": "fea0a17524f790b75206d4a51741113439bbea8216d16c04ed5164b5659c4b13",
+    "adopted_exact": true
+  },
+  {
+    "path": "tools/prototype/test-street-atmosphere.js",
+    "bytes": 16601,
+    "sha256": "0e49de693df25cc5f4f9cd2cfb1a8a80ab2cfab27487990748b115f4efcc55b5",
+    "adopted_exact": true
+  },
+  {
+    "path": "tools/prototype/test-city-markers.js",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "adopted_exact": false
+  },
+  {
+    "path": "brief.md",
+    "bytes": 7375,
+    "sha256": "bb12a4e8df3499d575c21ce92b9396070306f4114054daccac92212b2b44f354",
+    "adopted_exact": false
+  },
+  {
+    "path": "frame-contract.md",
+    "bytes": 1429,
+    "sha256": "21b82f50af1126f6d9a5f396c2c3b59fdd1295b1ab61f0258783b43539c888d2",
+    "adopted_exact": false
+  }
+]

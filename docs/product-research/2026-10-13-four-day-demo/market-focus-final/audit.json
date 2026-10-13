@@ -1,0 +1,253 @@
+{
+  "source_checks": {
+    "brief.md": true,
+    "original-brief.md": true,
+    "tools/prototype/backstage-auto.js": true,
+    "tools/prototype/backstage-core.js": true,
+    "tools/prototype/backstage-scene.js": true,
+    "tools/prototype/backstage-ui.js": true,
+    "tools/prototype/backstage.css": true,
+    "tools/prototype/test-market-focus-ui.js": true,
+    "tools/prototype/test-market-shift-ui.js": true,
+    "tools/prototype/test-market-shift.js": true
+  },
+  "readonly_checks": {
+    "brief.md": true,
+    "original-brief.md": true,
+    "tools/prototype/backstage-auto.js": true,
+    "tools/prototype/backstage-core.js": true,
+    "tools/prototype/backstage-scene.js": true,
+    "tools/prototype/backstage.css": true,
+    "tools/prototype/test-market-shift-ui.js": true,
+    "tools/prototype/test-market-shift.js": true
+  },
+  "calls": [
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/brief.md"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/original-brief.md"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/test-market-focus-ui.js"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/backstage-ui.js"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "wc -l tools/prototype/backstage-core.js tools/prototype/backstage-auto.js tools/prototype/backstage-scene.js tools/prototype/test-market-shift-ui.js tools/prototype/test-market-shift.js",
+        "description": "Count lines in read-only source files"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/backstage-core.js"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/test-market-shift-ui.js"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/test-market-shift.js"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/backstage-auto.js",
+        "limit": 120
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/test-market-focus-ui.js",
+        "old_string": "test('rendering guidance never mutates run, items or auto history',()=>{\n  const r=shift(1);r.actors=[];Object.assign(r.p,{x:405,y:1110});\n  B.command(r,'market-trade');\n  const h=harness(r);\n  let snap=structuredClone(r);h.ui.render();assert.deepEqual(r,snap);\n  Object.assign(r.items[2],{x:560,y:1180,vx:0,vy:0});Object.assign(r.p,{x:545,y:1180});\n  B.command(r,'collect',{itemId:'item2'});\n  snap=structuredClone(r);h.ui.render();assert.deepEqual(r,snap);\n  A.enable(r);\n  snap=structuredClone(r);h.ui.render();assert.deepEqual(r,snap);\n});",
+        "new_string": "test('rendering guidance never mutates run, items or auto history',()=>{\n  const r=shift(1);r.actors=[];Object.assign(r.p,{x:405,y:1110});\n  B.command(r,'market-trade');\n  const h=harness(r);\n  let snap=structuredClone(r);h.ui.render();assert.deepEqual(r,snap);\n  Object.assign(r.items[2],{x:560,y:1180,vx:0,vy:0});Object.assign(r.p,{x:545,y:1180});\n  B.command(r,'collect',{itemId:'item2'});\n  snap=structuredClone(r);h.ui.render();assert.deepEqual(r,snap);\n  A.enable(r);\n  snap=structuredClone(r);h.ui.render();assert.deepEqual(r,snap);\n});\n\nconst OBJECTIVE_PROSE=['一箱“进口酵母”','红灯街的 Noor','玻璃后面，有人在生活'];\n\ntest('correction: active market hides the WHOLE unrelated objectives fragment and leads with the focus card',()=>{\n  const r=shift(1);r.actors=[]; // tavern exit sits inside the market zone rectangle\n  const h=harness(r);h.ui.render();\n  let html=h.board();\n  for(const prose of OBJECTIVE_PROSE)assert.ok(!html.includes(prose),'manual market hides child prose: '+prose);\n  assert.ok(!html.includes('exp-objectives'),'wrapper hidden together with its contents');\n  let focusAt=html.indexOf('exp-market-focus'),browAt=html.indexOf('board-eyebrow');\n  assert.ok(focusAt>=0&&focusAt<browAt,'focus card sits ahead of generic exposition in manual');\n  assert.ok(html.includes('data-verb=\"market-salvage\"')&&html.includes('exp-bag'),'market choices and backpack stay visible');\n  // The fragment stays hidden on later manual stages: route chosen, then goods actually taken.\n  Object.assign(r.p,{x:405,y:1110});\n  assert.equal(B.command(r,'market-salvage'),true);\n  h.ui.render();html=h.board();\n  for(const prose of OBJECTIVE_PROSE)assert.ok(!html.includes(prose),'still hidden after salvage choice: '+prose);\n  walkTo(r,{x:405,y:990});\n  h.ui.render();html=h.board();\n  for(const prose of OBJECTIVE_PROSE)assert.ok(!html.includes(prose),'still hidden after taking goods: '+prose);\n  // Automatic market board: same ordering, no unrelated prose, A.view choices remain the controls.\n  const g=shift(1);g.actors=[];A.enable(g);\n  const h2=harness(g);h2.ui.render();html=h2.board();\n  focusAt=html.indexOf('exp-market-focus');browAt=html.indexOf('board-eyebrow');\n  assert.ok(focusAt>=0&&focusAt<browAt,'focus card sits ahead of generic exposition in auto');\n  for(const prose of OBJECTIVE_PROSE)assert.ok(!html.includes(prose),'auto market never shows the prose: '+prose);\n  assert.match(html,/data-verb=\"choice:/,'A.view choices remain the controls in auto');\n  // Legacy run: the exact old fragment with its wrapper is still rendered.\n  const legacy=B.create(42,1);\n  const h3=harness(legacy);h3.ui.render();html=h3.board();\n  assert.ok(html.includes('exp-objectives'),'legacy keeps the wrapper');\n  for(const prose of OBJECTIVE_PROSE)assert.ok(html.includes(prose),'legacy keeps prose: '+prose);\n  // marketShift run currently standing in another zone keeps the old fragment too.\n  const out=shift(1);Object.assign(out.p,{x:1230,y:1000}); // club zone\n  const h4=harness(out);h4.ui.render();html=h4.board();\n  assert.ok(html.includes('exp-objectives'),'outside market keeps the wrapper');\n  for(const prose of OBJECTIVE_PROSE)assert.ok(html.includes(prose),'outside market keeps prose: '+prose);\n});\n\ntest('correction: dropped market goods read as a floor recovery choice, not bag possession; recollect restores the card',()=>{\n  const r=shift(1);r.actors=[];\n  Object.assign(r.p,{x:405,y:1110});\n  assert.equal(B.command(r,'market-salvage'),true);\n  walkTo(r,{x:405,y:990});\n  assert.ok(r.bag.includes('item0'),'shelf goods really stowed');\n  assert.equal(r.marketShift.stockTaken,true);\n  const h=harness(r);h.ui.render();\n  let f=focus(h.board());assertSized(f);\n  assert.match(f.heading,/货已入包/);\n  assert.match(f.action,/€10/);\n  // Real reproduction from the brief: Q drops the carried good. stockTaken is a\n  // historical consequence flag; it must not be presented as current possession.\n  assert.equal(B.command(r,'drop',{x:r.p.x-1,y:r.p.y}),true);\n  assert.equal(r.bag.includes('item0'),false);\n  assert.equal(r.items[0].state,'world');\n  assert.equal(r.marketShift.stockTaken,true,'surcharge consequence remains on record after drop');\n  // No test-forced ui.signature reset: render must refresh from the real state change.\n  h.ui.render();f=focus(h.board());assertSized(f);\n  assert.ok(!f.heading.includes('货已入包'),'no false possession heading while the bag is empty');\n  assert.ok(!f.action.includes('已在包里'),'no false possession sentence while the bag is empty');\n  assert.match(f.action,/重新收下|捡/,'recovery is an actionable choice');\n  assert.match(f.action,/安全撤离/,'safe return remains a choice');\n  assert.match(f.action,/€10/,'next-day one-day surcharge consequence is still stated');\n  assert.match(f.action,/只涨一天/);\n  // Fixture (sanctioned): the thrown good has settled at the player's feet; the real\n  // collect command re-stows it and the card returns to the carried stage.\n  Object.assign(r.items[0],{x:r.p.x+20,y:r.p.y,vx:0,vy:0,lock:0});\n  assert.equal(B.command(r,'collect',{itemId:'item0'}),true,'real re-collect after drop');\n  assert.ok(r.bag.includes('item0'));\n  assert.equal(r.marketShift.stockTaken,true);\n  h.ui.render();f=focus(h.board());assertSized(f);\n  assert.match(f.heading,/货已入包/);\n  assert.match(f.action,/€10/);\n});\n\ntest('correction: one remaining market good keeps truthful guidance; day-3 drop keeps the no-next-day fact',()=>{\n  // Staffed night: shelf goods then cold goods really stowed; drop only the shelf goods.\n  const r=shift(1);r.actors=[];\n  Object.assign(r.p,{x:405,y:1110});\n  assert.equal(B.command(r,'market-salvage'),true);\n  walkTo(r,{x:405,y:990});\n  walkTo(r,{x:740,y:850});\n  assert.ok(r.bag.includes('item0')&&r.bag.includes('item1'),'both market goods really carried');\n  const h=harness(r);h.ui.render();\n  let f=focus(h.board());assertSized(f);\n  assert.match(f.heading,/货已入包/);\n  assert.equal(B.command(r,'drop',{itemId:'item0',x:r.p.x-1,y:r.p.y}),true);\n  assert.equal(r.bag.includes('item0'),false);\n  assert.ok(r.bag.includes('item1'),'cold goods really remain in the bag');\n  h.ui.render();f=focus(h.board());assertSized(f);\n  assert.match(f.heading,/货已入包/,'guidance stays truthful with one good still carried');\n  assert.match(f.action,/安全撤离/);\n  assert.equal(B.command(r,'drop',{itemId:'item1',x:r.p.x-1,y:r.p.y}),true);\n  h.ui.render();f=focus(h.board());assertSized(f);\n  assert.ok(!f.heading.includes('货已入包'),'nothing carried after both goods are dropped');\n  assert.match(f.action,/重新收下|捡/);\n  assert.match(f.action,/安全撤离/);\n  assert.match(f.action,/€10/,'day 1/2 surcharge fact survives even with an empty bag');\n  // Day 3 blackout: free shelf goods taken then dropped; recovery text carries no next-day claim.\n  const d=shift(3);d.actors=[];\n  Object.assign(d.p,{x:405,y:1110});\n  assert.equal(B.command(d,'market-salvage'),true);\n  walkTo(d,{x:405,y:990});\n  assert.ok(d.bag.includes('item0'));\n  const h3=harness(d);h3.ui.render();\n  f=focus(h3.board());assertSized(f);\n  assert.match(f.heading,/撤离/);\n  assert.equal(B.command(d,'drop',{x:d.p.x-1,y:d.p.y}),true);\n  assert.equal(d.marketShift.stockTaken,true);\n  h3.ui.render();f=focus(h3.board());assertSized(f);\n  assert.ok(!f.heading.includes('货已入包'));\n  assert.doesNotMatch(f.action,/次日/);\n  assert.doesNotMatch(f.action,/€10/);\n  assert.match(f.action,/最后一夜/,'day-3 no-next-day fact is kept');\n  assert.match(f.action,/安全撤离/);\n});"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --test tools/prototype/test-market-focus-ui.js",
+        "description": "Run focus UI tests against unchanged candidate (expect new tests red)"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "B.load(r),r.items[0]?.state,r.items[1]?.state,r.items[2]?.state,r.items[3]?.state,r.bag.includes('item2'),this.isPaused()].join('|');",
+        "new_string": "B.load(r),r.items[0]?.state,r.items[1]?.state,r.items[2]?.state,r.items[3]?.state,r.bag.includes('item0'),r.bag.includes('item1'),r.bag.includes('item2'),this.isPaused()].join('|');"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "        board.innerHTML=`<p class=\"board-eyebrow\">${r.auto.event?'YOUR CALL · 等你决定':'ON THE WAY · 自动探索'}</p><h2>${esc(v.title)}</h2><p class=\"board-copy\">${esc(v.copy)}</p>${focusCard}${locationCard}>",
+        "new_string": "        board.innerHTML=`${focusCard}<p class=\"board-eyebrow\">${r.auto.event?'YOUR CALL · 等你决定':'ON THE WAY · 自动探索'}</p><h2>${esc(v.title)}</h2><p class=\"board-copy\">${esc(v.copy)}</p>${locationCard}>"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "<h2>${esc(v.title)}</h2><p class=\"board-copy\">${esc(v.copy)}</p>${focusCard}${locationCard}<div class=\"exp-choices\">",
+        "new_string": "<h2>${esc(v.title)}</h2><p class=\"board-copy\">${esc(v.copy)}</p>${locationCard}<div class=\"exp-choices\">"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "        board.innerHTML=`<p class=\"board-eyebrow\">${r.auto.event?'YOUR CALL · 等你决定':'ON THE WAY · 自动探索'}</p>",
+        "new_string": "        board.innerHTML=`${focusCard}<p class=\"board-eyebrow\">${r.auto.event?'YOUR CALL · 等你决定':'ON THE WAY · 自动探索'}</p>"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "      board.innerHTML=`<p class=\"board-eyebrow\">CITY BACKSTAGE / 第 ${r.day} 趟</p>",
+        "new_string": "      board.innerHTML=`${focusCard}<p class=\"board-eyebrow\">CITY BACKSTAGE / 第 ${r.day} 趟</p>"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "点向目标下钩，闪避和泡沫可以救场。</p>${focusCard}${locationCard}${this.marketPanel(market)}${situation}${inMarket?'':'<div class=\"exp-objectives\">'}<div class=\"${r.parcel==='returned'?'done':''}\">",
+        "new_string": "点向目标下钩，闪避和泡沫可以救场。</p>${locationCard}${this.marketPanel(market)}${situation}${inMarket?'':`<div class=\"exp-objectives\"><div class=\"${r.parcel==='returned'?'done':''}\">"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "${inMarket?'':`<div class=\"exp-objectives\"><div class=\"${r.parcel==='returned'?'done':''}\">`<span>◇</span><div><strong>一箱“进口酵母”</strong>",
+        "new_string": "${inMarket?'':`<div class=\"exp-objectives\"><div class=\"${r.parcel==='returned'?'done':''}\"><span>◇</span><div><strong>一箱“进口酵母”</strong>"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/backstage-ui.js",
+        "offset": 156,
+        "limit": 10
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "'东北的温室亮着灯。拉开外面的维护拉杆，找路进去。'}</p></div></div></div>${inMarket?'':'</div>'}<div class=\"exp-bag\">",
+        "new_string": "'东北的温室亮着灯。拉开外面的维护拉杆，找路进去。'}</p></div></div></div></div>`}<div class=\"exp-bag\">"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "'东北的温室亮着灯。拉开外面的维护拉杆，找路进去。'}</p></div></div>${inMarket?'':'</div>'}<div class=\"exp-bag\">",
+        "new_string": "'东北的温室亮着灯。拉开外面的维护拉杆，找路进去。'}</p></div></div>${inMarket?'':'</div>'}`}<div class=\"exp-bag\">"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/backstage-ui.js",
+        "old_string": "      // salvage route\n      if(market.stockTaken){\n        return out('货已入包，准备撤离',day===3?'拿到的货已在包里；第 3 夜是最后一夜，没有后续涨价，走到出口安全撤离即可。':'拿到的货已在包里，次日收摊酒箱 €8→€10、只涨一天；走到出口安全撤离。');\n      }",
+        "new_string": "      // salvage route: stockTaken is the persistent surcharge consequence; current\n      // possession is derived separately from the two market goods' real bag membership.\n      const stockBag=r.items[0].state==='bag'&&r.bag.includes('item0');\n      const coldBag=r.items[1].state==='bag'&&r.bag.includes('item1');\n      if(market.stockTaken){\n        if(stockBag||coldBag){\n          return out('货已入包，准备撤离',day===3?'拿到的货已在包里；第 3 夜是最后一夜，没有后续涨价，走到出口安全撤离即可。':'拿到的货已在包里，次日收摊酒箱 €8→€10、只涨一天；走到出口安全撤离。');\n        }\n        // Every taken good was dropped back to the world: offer recovery or return\n        // without claiming possession, while keeping the dated consequence on record.\n        return out('货已离包：捡回或撤离',day===3\n          ?'先前收下的货已不在包里、落在超市地上：走回货物旁重新收下，或空手去出口安全撤离；第 3 夜是最后一夜，没有后续涨价。'\n          :'先前收下的货已不在包里、落在超市地上：走回货物旁重新收下，或空手去出口安全撤离；次日收摊酒箱 €8→€10 只涨一天。');\n      }"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --test tools/prototype/test-market-focus-ui.js",
+        "description": "Run focus UI test suite (final)"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --test tools/prototype/test-market-shift-ui.js tools/prototype/test-market-shift.js",
+        "description": "Run old market shift test suites (final)"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --check tools/prototype/backstage-ui.js",
+        "description": "Syntax check backstage-ui.js"
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "node --check tools/prototype/test-market-focus-ui.js",
+        "description": "Syntax check test-market-focus-ui.js"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/tools/prototype/backstage-ui.js",
+        "offset": 161,
+        "limit": 3
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/handoff-result.json"
+      }
+    },
+    {
+      "name": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/handoff-result.json",
+        "old_string": "",
+        "new_string": "{\"status\":\"completed\",\"summary\":\"PLAY05 correction1/1 on the reused two-file candidate: (1) the entire unrelated Noor/parcel/greenhouse objectives fragment (all three headings+prose, not just the exp-objectives wrapper) is now absent in the active manual market board, with byte-identical wrapper+contents preserved outside market and in legacy runs; (2) salvage guidance derives current carried market goods from item0/item1 real bag membership+state separately from the historical market.stockTaken consequence flag - after dropping all taken goods it shows a truthful short re-collect/return choice ('货已离包：捡回或撤离') without claiming possession, keeping the day1/2 one-day EUR8->EUR10 surcharge fact and the day3 no-next-day fact; one remaining carried good keeps truthful carried guidance; collect/drop/recollect refresh through the existing signature cache (item0/item1 bag membership added to signature keys), no forced ui.signature reset or production-state overwrite; (3) the existing focus card now renders ahead of generic board exposition in both manual and auto, with all choices/controls/risks and outside/legacy order unchanged. Three focused regressions were appended (original 11 assertions untouched) and were RED on the unchanged candidate for the exact target defects (11 pass / 3 fail: visible child prose, false '货已入包' after drop both once and after both goods dropped), then GREEN after the fix. No GUI, fun or adoption claim; no core/auto/scene/css/economy/saves/routing change.\",\"changed_files\":[\"tools/prototype/backstage-ui.js\",\"tools/prototype/test-market-focus-ui.js\"],\"tests\":[{\"command\":\"node --test tools/prototype/test-market-focus-ui.js\",\"exit_code\":0,\"summary\":\"Final 14/14 pass (11 original + 3 new correction regressions). Earlier against unchanged candidate: 11 pass / 3 fail as expected - objectives child prose visible in market, and focus card falsely claimed goods in bag after drop (once and after both goods dropped).\"},{\"command\":\"node --test tools/prototype/test-market-shift-ui.js tools/prototype/test-market-shift.js\",\"exit_code\":0,\"summary\":\"Final 32/32 pass across both old market shift suites; all pre-existing assertions unchanged.\"},{\"command\":\"node --check tools/prototype/backstage-ui.js\",\"exit_code\":0,\"summary\":\"Syntax check OK, no output.\"},{\"command\":\"node --check tools/prototype/test-market-focus-ui.js\",\"exit_code\":0,\"summary\":\"Syntax check OK, no output.\"}],\"blockers\":[],\"memory_delta\":[\"D24 PLAY05 correction1/1 reused the original candidate; red-first evidence on unchanged input was real (11/3 fail split), then all green, so the correction succeeds and shelving trigger was not hit.\",\"market.stockTaken is historical surcharge evidence only; possession truth must come from item0/item1 state==='bag' plus r.bag membership (restore validation already treats a moved/world/lock>0 good as stockTaken evidence after a real drop).\",\"The manual board's exp-objectives wrapper ternary had left all three child objective divs visible in market; wrapping the whole fragment in a nested conditional template fixed it while keeping legacy emitted bytes identical.\",\"Focus-card placement is a single ${focusCard} token moved before board-eyebrow in both manual/auto templates; it is '' outside active market so outside/legacy order is untouched.\"],\"next_steps\":[\"Parent independently replays the three new regressions against the original candidate (expect red) and the corrected files (expect green), verifies source/read-only hashes and the exact four commands.\",\"Parent runs the full 365+ suite and natural night1 GUI acceptance (real choice/barrel delivery/safe exit/day2 receipt), day3 fixture, 390px and keyboard checks before any adoption decision.\"]}"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-market-focus-r2-20261013/workspace/handoff-result.json"
+      }
+    }
+  ]
+}

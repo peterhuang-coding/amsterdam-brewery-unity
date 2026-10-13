@@ -1,0 +1,202 @@
+TAP version 13
+# Subtest: market controls enable/disable while walking in and out of range without clearing ui.signature
+ok 1 - market controls enable/disable while walking in and out of range without clearing ui.signature
+  ---
+  duration_ms: 5.464375
+  type: 'test'
+  ...
+# Subtest: paused runs keep every market control frozen and perform changes nothing, even at the points
+ok 2 - paused runs keep every market control frozen and perform changes nothing, even at the points
+  ---
+  duration_ms: 1.152459
+  type: 'test'
+  ...
+# Subtest: old runs without marketShift keep the previous manual board and no market controls
+ok 3 - old runs without marketShift keep the previous manual board and no market controls
+  ---
+  duration_ms: 0.701292
+  type: 'test'
+  ...
+# Subtest: the four new automatic goals render readable Chinese titles with no undefined
+ok 4 - the four new automatic goals render readable Chinese titles with no undefined
+  ---
+  duration_ms: 0.309583
+  type: 'test'
+  ...
+# Subtest: the automatic board never double-places manual market buttons
+ok 5 - the automatic board never double-places manual market buttons
+  ---
+  duration_ms: 10.1635
+  type: 'test'
+  ...
+# Subtest: receipt after a bailed delivery does not grant the safe voucher
+ok 6 - receipt after a bailed delivery does not grant the safe voucher
+  ---
+  duration_ms: 1.055583
+  type: 'test'
+  ...
+# Subtest: actual walking flips the blackout power reason while canPower stays false the whole time
+ok 7 - actual walking flips the blackout power reason while canPower stays false the whole time
+  ---
+  duration_ms: 2.726875
+  type: 'test'
+  ...
+# Subtest: actual walking flips the delivery reason far-away to no-barrel while the control stays disabled
+ok 8 - actual walking flips the delivery reason far-away to no-barrel while the control stays disabled
+  ---
+  duration_ms: 1.895875
+  type: 'test'
+  ...
+# Subtest: market panel prose uses stock-accounting language with no item or stage labels
+ok 9 - market panel prose uses stock-accounting language with no item or stage labels
+  ---
+  duration_ms: 0.945167
+  type: 'test'
+  ...
+# Subtest: safe first and second night receipts are honest next-day records with no claim button
+ok 10 - safe first and second night receipts are honest next-day records with no claim button
+  ---
+  duration_ms: 1.0695
+  type: 'test'
+  ...
+# Subtest: third night receipt honestly says there is no next day to cash it in
+ok 11 - third night receipt honestly says there is no next day to cash it in
+  ---
+  duration_ms: 0.524542
+  type: 'test'
+  ...
+# Subtest: bailed delivery and undelivered trade produce no entitlement, only an honest record
+ok 12 - bailed delivery and undelivered trade produce no entitlement, only an honest record
+  ---
+  duration_ms: 0.954417
+  type: 'test'
+  ...
+# Subtest: marketShift is strict opt-in: old create calls keep the old night run
+ok 13 - marketShift is strict opt-in: old create calls keep the old night run
+  ---
+  duration_ms: 2.05375
+  type: 'test'
+  ...
+# Subtest: the same seed/day reproduces the shift and three nights cover all conditions
+ok 14 - the same seed/day reproduces the shift and three nights cover all conditions
+  ---
+  duration_ms: 0.452333
+  type: 'test'
+  ...
+# Subtest: marketInfo exposes labels, copy, points, facts and operation availability
+ok 15 - marketInfo exposes labels, copy, points, facts and operation availability
+  ---
+  duration_ms: 0.130792
+  type: 'test'
+  ...
+# Subtest: choosing a route needs a physical approach to the counter; remote commands are rejected
+ok 16 - choosing a route needs a physical approach to the counter; remote commands are rejected
+  ---
+  duration_ms: 0.366291
+  type: 'test'
+  ...
+# Subtest: salvage choice at the counter locks the single route; trade can never follow
+ok 17 - salvage choice at the counter locks the single route; trade can never follow
+  ---
+  duration_ms: 0.0905
+  type: 'test'
+  ...
+# Subtest: picking up item0/item1 without a choice is implicitly the salvage route
+ok 18 - picking up item0/item1 without a choice is implicitly the salvage route
+  ---
+  duration_ms: 3.554542
+  type: 'test'
+  ...
+# Subtest: trade route physically blocks shelf and cold goods, which stay in the world
+ok 19 - trade route physically blocks shelf and cold goods, which stay in the world
+  ---
+  duration_ms: 4.3865
+  type: 'test'
+  ...
+# Subtest: delivered barrel is consumed once at the counter and never becomes four cups
+ok 20 - delivered barrel is consumed once at the counter and never becomes four cups
+  ---
+  duration_ms: 0.280333
+  type: 'test'
+  ...
+# Subtest: a delivered barrel yields no receipt fact after bailout or rescue
+ok 21 - a delivered barrel yields no receipt fact after bailout or rescue
+  ---
+  duration_ms: 0.257583
+  type: 'test'
+  ...
+# Subtest: staffed nights make cleaners actually see farther, other shifts do not
+ok 22 - staffed nights make cleaners actually see farther, other shifts do not
+  ---
+  duration_ms: 0.645375
+  type: 'test'
+  ...
+# Subtest: restock nights keep the boosted rolling barrel out of the proximity auto-stow
+ok 23 - restock nights keep the boosted rolling barrel out of the proximity auto-stow
+  ---
+  duration_ms: 0.230625
+  type: 'test'
+  ...
+# Subtest: blackout locks the cold stock until a real part is consumed at the fuse
+ok 24 - blackout locks the cold stock until a real part is consumed at the fuse
+  ---
+  duration_ms: 4.666292
+  type: 'test'
+  ...
+# Subtest: fuse repair consumes exactly one salvage and never swallows unrelated items
+ok 25 - fuse repair consumes exactly one salvage and never swallows unrelated items
+  ---
+  duration_ms: 0.145708
+  type: 'test'
+  ...
+# Subtest: automatic trade route completes with real steps in all three conditions
+ok 26 - automatic trade route completes with real steps in all three conditions
+  ---
+  duration_ms: 84.108334
+  type: 'test'
+  ...
+# Subtest: automatic salvage route in a blackout fetches a part, restores power and takes cold stock
+ok 27 - automatic salvage route in a blackout fetches a part, restores power and takes cold stock
+  ---
+  duration_ms: 58.751833
+  type: 'test'
+  ...
+# Subtest: automatic salvage route on a staffed night takes shelf stock and extracts
+ok 28 - automatic salvage route on a staffed night takes shelf stock and extracts
+  ---
+  duration_ms: 20.314458
+  type: 'test'
+  ...
+# Subtest: reading an automatic choice pauses the whole city
+ok 29 - reading an automatic choice pauses the whole city
+  ---
+  duration_ms: 0.294916
+  type: 'test'
+  ...
+# Subtest: marketShift state roundtrips at every stage; tampered saves are rejected
+ok 30 - marketShift state roundtrips at every stage; tampered saves are rejected
+  ---
+  duration_ms: 1.915208
+  type: 'test'
+  ...
+# Subtest: legacy runs and old versions never gain a marketShift through restore
+ok 31 - legacy runs and old versions never gain a marketShift through restore
+  ---
+  duration_ms: 0.145083
+  type: 'test'
+  ...
+# Subtest: UI renders real manual market controls and failure reasons; scene draws markers
+ok 32 - UI renders real manual market controls and failure reasons; scene draws markers
+  ---
+  duration_ms: 7.999708
+  type: 'test'
+  ...
+1..32
+# tests 32
+# suites 0
+# pass 32
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 254.887

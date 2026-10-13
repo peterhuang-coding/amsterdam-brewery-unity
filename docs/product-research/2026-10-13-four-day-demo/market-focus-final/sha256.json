@@ -1,0 +1,22 @@
+{
+  "original-result.json": "343a0b0cf275556d0caa8916c9dcddb89f87c5ae2a6859bfec4e84bd7fe17ea6",
+  "gui-receipt.txt": "ca7fb541fef7d29aab57d7f0e8d0311f5df088683ef9635336a982a7405717fb",
+  "audit.json": "6f4dda5fdc5d540d5b324096d9ad250d57e7354af651a844194a45794bc4e48c",
+  "parent-validation.md": "98f10b2e63ab316fb6636622ba2e186d763228d29837b8f79528f9d0cdb88da4",
+  "delivery-service.json": "0358682f3cca8c3a15e643177f3f1aa138b756ae2610e45e5b10af45f7aaf182",
+  "old-package.txt": "cf6b2c1defbcce9a8da4b6b9b501dff24a37bab06bbc2807b38be0fd05fa3e27",
+  "restore-check.json": "cdce790813729591ed236ade96a9ac40d5d3c793e8a098120e83568bcd80640e",
+  "diagnostic.jsonl": "6a5464e0ced0770f06bffbbe5b630fcd430cb24e5327cd186d726b6ebfb5832f",
+  "mobile-choice.png": "27db4c458c77d9b777f648d7a04137027441b38bf223302c1b3f78fb906d8b50",
+  "receipt.png": "23ae7980895751de8e02693c9f15975969ecbd1f95a10fce916150cc6d0dab81",
+  "http-resource-check.json": "d00cdda214817a7a93d9b3251e3dcc6d0949af90f306ac642db0603ee3756cec",
+  "candidate.patch.gz": "852f17a47a608e107e1267775b5f413ce95f5445746453c90b5cead4e71de412",
+  "red.txt": "4a8846c194f3ac7875d40b8217634fc4cc734acf984537ad83c111e1b89c62e0",
+  "full.txt": "0d7839bc8d2b9350f283fb1e399ec4a69eb0be5a14076408a953761a926557e5",
+  "original-events.jsonl.gz": "795ccbb859f3e062c2e1ac2cf1e6c8052f5af0dd5e2631a53ba966ca2ae9df47",
+  "gui-refreshed.txt": "eafade6235f63777896fc29fe97cdfad4dc50bdcbb38dba04cb6e2b7d7e7d3b6",
+  "original-handoff-result.json": "46984bc337aeedb26492b3ca8051fdee1f86d7b44ca732ff34fc328d505ecbde",
+  "browser-byte-check.json": "286c1af338d4f7f4499832f253d036800662c82ad2a2d696ce656962587cb38d",
+  "adoption-review.json": "29cf8f3981fe275aaa8b3de5d5d15330b09b6ee290058c105188123412a2c518",
+  "new.txt": "2068e2b36a59b595f3b4f4f1aa6588c95ccec1b59bb691109df609d7a3d424a6"
+}

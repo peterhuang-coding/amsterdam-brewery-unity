@@ -1,0 +1,94 @@
+TAP version 13
+# Subtest: manual supermarket night opens on one undecided counter objective with the real shift label
+ok 1 - manual supermarket night opens on one undecided counter objective with the real shift label
+  ---
+  duration_ms: 3.257417
+  type: 'test'
+  ...
+# Subtest: manual guidance follows undecided -> trade -> barrel -> deliver -> extraction truthfully
+ok 2 - manual guidance follows undecided -> trade -> barrel -> deliver -> extraction truthfully
+  ---
+  duration_ms: 3.721834
+  type: 'test'
+  ...
+# Subtest: salvage guidance names real shelf and cold destinations, then confirms goods and next-day fact
+ok 3 - salvage guidance names real shelf and cold destinations, then confirms goods and next-day fact
+  ---
+  duration_ms: 1.526917
+  type: 'test'
+  ...
+# Subtest: blackout keeps free shelf choice distinct from the EUR5 repair; day3 has no next day
+ok 4 - blackout keeps free shelf choice distinct from the EUR5 repair; day3 has no next day
+  ---
+  duration_ms: 3.41725
+  type: 'test'
+  ...
+# Subtest: third-night delivered trade points to extraction without a cashable receipt
+ok 5 - third-night delivered trade points to extraction without a cashable receipt
+  ---
+  duration_ms: 0.81475
+  type: 'test'
+  ...
+# Subtest: paused night keeps the same current goal, shows the frozen note and performs nothing
+ok 6 - paused night keeps the same current goal, shows the frozen note and performs nothing
+  ---
+  duration_ms: 1.309292
+  type: 'test'
+  ...
+# Subtest: automatic market legs keep one truthful goal, real choices and no early delivery claim
+ok 7 - automatic market legs keep one truthful goal, real choices and no early delivery claim
+  ---
+  duration_ms: 8.31125
+  type: 'test'
+  ...
+# Subtest: a full bag on the trade errand trips a real stuck event that overrides the advice
+ok 8 - a full bag on the trade errand trips a real stuck event that overrides the advice
+  ---
+  duration_ms: 40.818333
+  type: 'test'
+  ...
+# Subtest: real capacity and glimpse auto events override market advice when read inside the market
+ok 9 - real capacity and glimpse auto events override market advice when read inside the market
+  ---
+  duration_ms: 12.683333
+  type: 'test'
+  ...
+# Subtest: legacy runs and outside-market positions keep the old three-objective board unchanged
+ok 10 - legacy runs and outside-market positions keep the old three-objective board unchanged
+  ---
+  duration_ms: 0.974875
+  type: 'test'
+  ...
+# Subtest: rendering guidance never mutates run, items or auto history
+ok 11 - rendering guidance never mutates run, items or auto history
+  ---
+  duration_ms: 0.711542
+  type: 'test'
+  ...
+# Subtest: correction: active market hides the WHOLE unrelated objectives fragment and leads with the focus card
+ok 12 - correction: active market hides the WHOLE unrelated objectives fragment and leads with the focus card
+  ---
+  duration_ms: 1.885125
+  type: 'test'
+  ...
+# Subtest: correction: dropped market goods read as a floor recovery choice, not bag possession; recollect restores the card
+ok 13 - correction: dropped market goods read as a floor recovery choice, not bag possession; recollect restores the card
+  ---
+  duration_ms: 0.798167
+  type: 'test'
+  ...
+# Subtest: correction: one remaining market good keeps truthful guidance; day-3 drop keeps the no-next-day fact
+ok 14 - correction: one remaining market good keeps truthful guidance; day-3 drop keeps the no-next-day fact
+  ---
+  duration_ms: 3.157875
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 153.929

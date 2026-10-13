@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-market-focus-r2-20261013",
+  "receipt_sha256": "343a0b0cf275556d0caa8916c9dcddb89f87c5ae2a6859bfec4e84bd7fe17ea6",
+  "reviewed_at": "2026-10-13T05:46:54Z",
+  "outcome": "accepted_with_changes",
+  "failure_type": "none",
+  "evidence": [
+    {
+      "path": "/tmp/amsterdam-market-focus-r2-review-20261013/parent-validation.md",
+      "sha256": "98f10b2e63ab316fb6636622ba2e186d763228d29837b8f79528f9d0cdb88da4"
+    }
+  ]
+}

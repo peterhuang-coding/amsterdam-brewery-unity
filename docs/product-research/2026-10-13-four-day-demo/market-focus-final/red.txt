@@ -1,0 +1,142 @@
+TAP version 13
+# Subtest: manual supermarket night opens on one undecided counter objective with the real shift label
+ok 1 - manual supermarket night opens on one undecided counter objective with the real shift label
+  ---
+  duration_ms: 3.305125
+  type: 'test'
+  ...
+# Subtest: manual guidance follows undecided -> trade -> barrel -> deliver -> extraction truthfully
+ok 2 - manual guidance follows undecided -> trade -> barrel -> deliver -> extraction truthfully
+  ---
+  duration_ms: 3.756334
+  type: 'test'
+  ...
+# Subtest: salvage guidance names real shelf and cold destinations, then confirms goods and next-day fact
+ok 3 - salvage guidance names real shelf and cold destinations, then confirms goods and next-day fact
+  ---
+  duration_ms: 1.573291
+  type: 'test'
+  ...
+# Subtest: blackout keeps free shelf choice distinct from the EUR5 repair; day3 has no next day
+ok 4 - blackout keeps free shelf choice distinct from the EUR5 repair; day3 has no next day
+  ---
+  duration_ms: 3.536709
+  type: 'test'
+  ...
+# Subtest: third-night delivered trade points to extraction without a cashable receipt
+ok 5 - third-night delivered trade points to extraction without a cashable receipt
+  ---
+  duration_ms: 0.667209
+  type: 'test'
+  ...
+# Subtest: paused night keeps the same current goal, shows the frozen note and performs nothing
+ok 6 - paused night keeps the same current goal, shows the frozen note and performs nothing
+  ---
+  duration_ms: 0.624875
+  type: 'test'
+  ...
+# Subtest: automatic market legs keep one truthful goal, real choices and no early delivery claim
+ok 7 - automatic market legs keep one truthful goal, real choices and no early delivery claim
+  ---
+  duration_ms: 7.88525
+  type: 'test'
+  ...
+# Subtest: a full bag on the trade errand trips a real stuck event that overrides the advice
+ok 8 - a full bag on the trade errand trips a real stuck event that overrides the advice
+  ---
+  duration_ms: 41.43025
+  type: 'test'
+  ...
+# Subtest: real capacity and glimpse auto events override market advice when read inside the market
+ok 9 - real capacity and glimpse auto events override market advice when read inside the market
+  ---
+  duration_ms: 12.7335
+  type: 'test'
+  ...
+# Subtest: legacy runs and outside-market positions keep the old three-objective board unchanged
+ok 10 - legacy runs and outside-market positions keep the old three-objective board unchanged
+  ---
+  duration_ms: 0.9985
+  type: 'test'
+  ...
+# Subtest: rendering guidance never mutates run, items or auto history
+ok 11 - rendering guidance never mutates run, items or auto history
+  ---
+  duration_ms: 0.716708
+  type: 'test'
+  ...
+# Subtest: correction: active market hides the WHOLE unrelated objectives fragment and leads with the focus card
+not ok 12 - correction: active market hides the WHOLE unrelated objectives fragment and leads with the focus card
+  ---
+  duration_ms: 0.652083
+  type: 'test'
+  location: '/private/tmp/amsterdam-market-focus-r2-review-20261013/red/tools/prototype/test-market-focus-ui.js:299:1'
+  failureType: 'testCodeFailure'
+  error: 'manual market hides child prose: 一箱“进口酵母”'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-market-focus-r2-review-20261013/red/tools/prototype/test-market-focus-ui.js:303:45)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: correction: dropped market goods read as a floor recovery choice, not bag possession; recollect restores the card
+not ok 13 - correction: dropped market goods read as a floor recovery choice, not bag possession; recollect restores the card
+  ---
+  duration_ms: 1.025375
+  type: 'test'
+  location: '/private/tmp/amsterdam-market-focus-r2-review-20261013/red/tools/prototype/test-market-focus-ui.js:335:1'
+  failureType: 'testCodeFailure'
+  error: 'no false possession heading while the bag is empty'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-market-focus-r2-review-20261013/red/tools/prototype/test-market-focus-ui.js:354:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: correction: one remaining market good keeps truthful guidance; day-3 drop keeps the no-next-day fact
+not ok 14 - correction: one remaining market good keeps truthful guidance; day-3 drop keeps the no-next-day fact
+  ---
+  duration_ms: 2.357083
+  type: 'test'
+  location: '/private/tmp/amsterdam-market-focus-r2-review-20261013/red/tools/prototype/test-market-focus-ui.js:371:1'
+  failureType: 'testCodeFailure'
+  error: 'nothing carried after both goods are dropped'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-market-focus-r2-review-20261013/red/tools/prototype/test-market-focus-ui.js:390:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 11
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 152.619208

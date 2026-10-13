@@ -3,22 +3,20 @@
   "status": "running",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-16T19:48:33Z",
-  "next_direction_review_at": "2026-10-13T05:48:33Z",
-  "last_direction_review_at": null,
-  "current_task_id": "amsterdam-market-focus-r2-20261013",
-  "logical_task": "PLAY05",
-  "last_adopted_commit": "e3b7ac3d4aa170365988171eeaea8758f64b9e8c",
+  "next_direction_review_at": "2026-10-13T15:48:33Z",
+  "last_direction_review_at": "2026-10-13T05:51:53Z",
+  "current_task_id": "amsterdam-morning-market-20261013",
+  "logical_task": "PLAY06",
+  "last_adopted_commit": "bd614431e31dc44cd3730ef6c0d6c022cd355b1a",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
   "failure_policy_question_pending": false,
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
-  "current_task_terminal": null,
+  "current_task_terminal": "prepared_not_submitted",
   "failure_reason": null,
-  "last_result_at": "2026-10-13T05:06:29.161469Z",
-  "in_flight": [
-    "amsterdam-market-focus-r2-20261013"
-  ],
-  "candidate_path": "/tmp/amsterdam-market-focus-review-20261013/candidate",
+  "last_result_at": "2026-10-13T05:29:29.989870Z",
+  "in_flight": [],
+  "candidate_path": "/tmp/amsterdam-market-focus-r2-review-20261013/candidate",
   "adopted_this_round": 2,
   "policy_decision": "D24",
   "correction_after_r2": {
@@ -31,7 +29,7 @@
     "amsterdam-first-street-20261013",
     "amsterdam-first-street-r2-20261013"
   ],
-  "play_url": "http://127.0.0.1:18837/tools/prototype/index.html?seed=42001&commit=e3b7ac3",
+  "play_url": "http://127.0.0.1:18839/tools/prototype/index.html?seed=42001&commit=bd61443",
   "task_policy_ledger": {
     "PLAY02": {
       "historical_attempts": 3,
@@ -67,11 +65,22 @@
       "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 1,
-      "outcome": "correction_running",
+      "outcome": "accepted_with_changes",
       "task_id": "amsterdam-market-focus-20261013",
       "base_commit": "e3b7ac3d4aa170365988171eeaea8758f64b9e8c",
       "business_terminal": "max_turns_cli1_blocked_report_file_present_semantic_rejected",
       "correction_task_id": "amsterdam-market-focus-r2-20261013",
+      "game_adopted": 2,
+      "game_commit": "bd614431e31dc44cd3730ef6c0d6c022cd355b1a",
+      "correction_outcome": "cli0_verifying_complete_report_parent379_and_gui"
+    },
+    "PLAY06": {
+      "business_attempts_submitted": 0,
+      "corrections_allowed": 1,
+      "corrections_submitted": 0,
+      "outcome": "prepared_not_submitted",
+      "task_id": "amsterdam-morning-market-20261013",
+      "base_commit": "bd614431e31dc44cd3730ef6c0d6c022cd355b1a",
       "game_adopted": 0
     }
   },
@@ -79,8 +88,8 @@
   "provider_cooldown_basis": "parent-chosen30minafter429; notserverRetryAfter",
   "failure_notification_recorded_at": "2026-10-13T05:15:28.092219+00:00",
   "provider_cooldown_completed_at": "2026-10-13T03:27:24Z",
-  "current_submitted_at": "2026-10-13T05:16:38.274940+00:00",
-  "current_worker_pid": 33131,
-  "current_task_packet": "/tmp/amsterdam-market-focus-r2-20261013/handoff.json",
-  "current_task_notion": "https://app.notion.com/p/3f83285284df816fbe51ee8572d9d353"
+  "current_submitted_at": null,
+  "current_worker_pid": null,
+  "current_task_packet": "/tmp/amsterdam-morning-market-20261013/handoff.json",
+  "current_task_notion": "https://app.notion.com/p/3f83285284df81308f5bfe92a6649cf6"
 }

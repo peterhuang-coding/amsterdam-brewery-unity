@@ -1,3 +1,19 @@
+## PLAY06独立次日回报入口包准备
+
+D23/D24自主迭代内，首轮方向review选定PLAY06：日2/3准备阶段的近景街头一张短卡，展示昨夜真实市场后果并用已有步行/入店操作到市场。已领取不再承诺、行动/批次不足及酒花上限/到期/涨价真实；不重写全城或市场面板、不复活PLAY03。
+固定amsterdam-morning-market-20261013，logical play06-morning-market/business；精确基线bd614431e31dc44cd3730ef6c0d6c022cd355b1a。22公开输入556720B、准确暂存旧63/63及UI语法0；新test空文件不当通过。仅reopening-ui.js新只读卡/renderStreetBoard插入和新test-morning-market-ui.js可写，其他输入和旧断言只读。4精确命令、1500秒40轮、Seed Evolving enabled/high，实际Read/Edit/Bash能力按启动核对。
+父级新测试原采用基线红绿、旧379+新增全量、自然日2近景步行市场领取/刷新、日3技术用例、键盘390px后采用。Notion已执行中但此处准备未提交：https://app.notion.com/p/3f83285284df81308f5bfe92a6649cf6 。业务提交0、修正0/1；即时全机容量/固定ID与输入SHA复核后单路启动，不造并发。当前无Amsterdam在途，已采用试玩bd61443/18839。下次方向review15:48:33Z，四天截止不变。
+
+## PLAY05 R2已采用；首轮10小时审查完成
+
+2026-10-13：amsterdam-market-focus-r2-20261013于05:29:29.989870Z正常结束，771.202秒、CLI0、verifying、完整报告。父级新14/14；最终测试放未经修改首包候选11/14（三个针对性红灯）；全34文件379/379=旧365+14，原11测试前缀逐字节保留，旧32/32及两语法通过。源10/只读8 SHA不变，仅两文件。Read12/Edit12/Bash6中有1条表外只读wc，无权限拒绝/写越界；标准review accepted_with_changes，不声称精确命令全合规。执行器提前声称修正已通过仅作自述，父级验收另行成立。
+
+自然新局免费踩点→夜1实际交桶→手动/暂停刷新→安全撤离→返店→第2天市场Enter领取/刷新通过；1行动换3杯品质1金艾尔+1酒花，现金€27不变，不可重复。390px无横向溢出、console错误空。提前打烊0杯用于夜行，非完美首杯/真人趣味验收；第三夜和扔货只做技术用例。历史stockTaken与当前背包分离，全部无关目标正文确实隐藏。
+
+2文件已采用push游戏bd614431e31dc44cd3730ef6c0d6c022cd355b1a，codex/art-pass-20261013。新试玩http://127.0.0.1:18839/tools/prototype/index.html?seed=42001&commit=bd61443，根/tmp/amsterdam-play-bd61443、PID35216，HTTP与浏览器实际17资源均与提交逐字节一致。旧服务/存档保留。PLAY05 correction1/1已用，不再补派。证据docs/product-research/2026-10-13-four-day-demo/market-focus-final。
+
+05:51:53Z完成首轮方向审查（原定05:48:33Z），下次15:48:33Z，固定原10h节奏不滚动延长截止。已采用PLAY02/04/05，PLAY03暂缓；整体美术与乐趣未达成，未新增真人反馈。自然日2近景没有昨夜回报入口，下一包拟PLAY06仅补当前日市场后果提示与真实步行入口，独立于失败首杯包；准备前无Amsterdam在途。
+
 ## PLAY04唯一修正R2已单路提交
 
 2026-10-13T04:04:26Z提交amsterdam-street-atmosphere-r2-20261013，worker PID27770；固定Seed Evolving enabled/high、实际init Read/Edit/Bash/dontAsk，1200秒32轮。logical play04-street-atmosphere/correction，D24修正1/1已使用。即时提交前全机账本/CLI0路，本项1路，非原子保证；原业务进程已结束，新固定ID此前不存在。

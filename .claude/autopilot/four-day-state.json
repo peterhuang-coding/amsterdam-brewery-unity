@@ -6,7 +6,7 @@
   "next_direction_review_at": "2026-10-13T15:48:33Z",
   "last_direction_review_at": "2026-10-13T05:51:53Z",
   "current_task_id": null,
-  "logical_task": "PLAY08",
+  "logical_task": "PLAY09",
   "last_adopted_commit": "231a1326b0a1ab05a1d59da622e7949db1394cdc",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
   "failure_policy_question_pending": false,
@@ -126,6 +126,15 @@
       "correction_outcome": "cli0_verifying_complete_report_parent394_and_natural_gui",
       "correction_ended_at": "2026-10-13T11:02:29.204619Z",
       "correction_duration_seconds": 847.777
+    },
+    "PLAY09": {
+      "task_id": "amsterdam-pub-materials-20261013",
+      "base_commit": "231a1326b0a1ab05a1d59da622e7949db1394cdc",
+      "business_attempts_submitted": 0,
+      "corrections_allowed": 1,
+      "corrections_submitted": 0,
+      "outcome": "prepared",
+      "game_adopted": 0
     }
   },
   "provider_cooldown_until": "2026-10-13T09:55:32Z",
@@ -138,9 +147,9 @@
   "current_task_notion": "https://app.notion.com/p/3f83285284df812590cbecc1b3f8e793",
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
-  "current_task_stage": "accepted",
-  "prepared_task_id": null,
-  "prepared_task_packet": null,
+  "current_task_stage": "prepared",
+  "prepared_task_id": "amsterdam-pub-materials-20261013",
+  "prepared_task_packet": "/tmp/amsterdam-pub-materials-20261013/handoff.json",
   "play_service_pid": 60227,
   "play_root": "/tmp/amsterdam-play-231a132"
 }

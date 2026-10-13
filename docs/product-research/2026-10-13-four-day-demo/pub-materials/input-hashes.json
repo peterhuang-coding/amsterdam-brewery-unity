@@ -1,0 +1,9 @@
+{
+  "tools/prototype/reopening-scene.js": "52c78435be1a47bf2da9a473f883014f29204051f746cd83aa3f495756556d8e",
+  "tools/prototype/reopening-city.js": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625",
+  "tools/prototype/test-city.js": "fea0a17524f790b75206d4a51741113439bbea8216d16c04ed5164b5659c4b13",
+  "tools/prototype/test-street-atmosphere.js": "0e49de693df25cc5f4f9cd2cfb1a8a80ab2cfab27487990748b115f4efcc55b5",
+  "tools/prototype/test-pub-materials.js": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "brief.md": "16d4738ff81faa88cea44e35f1f1c70134194b57a7f1d67f0d7768655aa0babb",
+  "frame-contract.md": "c9b18a443b9e2816bbcffcec4436e6414def262a01de9e9c87eb0e6240fc8ae1"
+}

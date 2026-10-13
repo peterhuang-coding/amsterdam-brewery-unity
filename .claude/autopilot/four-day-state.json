@@ -1,22 +1,24 @@
 {
   "decision": "D23",
-  "status": "provider_cooldown_independent_prepared",
+  "status": "running",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-16T19:48:33Z",
   "next_direction_review_at": "2026-10-13T05:48:33Z",
   "last_direction_review_at": null,
-  "current_task_id": null,
-  "logical_task": null,
+  "current_task_id": "amsterdam-street-atmosphere-20261013",
+  "logical_task": "PLAY04",
   "last_adopted_commit": "6e4f7b3fbb7ad7eca5d3b30b474f61d7437059c7",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
   "failure_policy_question_pending": false,
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
-  "current_task_terminal": "PLAY03 R2 blocked/done, shelved",
-  "failure_reason": "429 System protection triggered by request burst",
+  "current_task_terminal": null,
+  "failure_reason": null,
   "last_result_at": "2026-10-13T02:52:27.767203+00:00",
-  "in_flight": [],
-  "candidate_path": "docs/product-research/2026-10-13-four-day-demo/first-cup-draft",
+  "in_flight": [
+    "amsterdam-street-atmosphere-20261013"
+  ],
+  "candidate_path": null,
   "adopted_this_round": 0,
   "policy_decision": "D24",
   "correction_after_r2": {
@@ -48,19 +50,19 @@
       "game_adopted": 0
     },
     "PLAY04": {
-      "business_attempts_submitted": 0,
+      "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 0,
-      "outcome": "prepared_not_submitted",
+      "outcome": "running",
       "task_id": "amsterdam-street-atmosphere-20261013"
     }
   },
   "provider_cooldown_until": "2026-10-13T03:22:28Z",
   "provider_cooldown_basis": "parent-chosen30minafter429; notserverRetryAfter",
-  "next_task_id": "amsterdam-street-atmosphere-20261013",
-  "next_logical_task": "PLAY04",
-  "next_task_packet": "/tmp/amsterdam-street-atmosphere-20261013/handoff.json",
-  "next_task_status": "prepared_not_submitted",
-  "next_task_notion": "https://app.notion.com/p/3f83285284df8121862cd2feb6f3a7a5",
-  "failure_notification_recorded_at": "2026-10-13T03:05:42.242497+00:00"
+  "failure_notification_recorded_at": "2026-10-13T03:05:42.242497+00:00",
+  "provider_cooldown_completed_at": "2026-10-13T03:27:24Z",
+  "current_submitted_at": "2026-10-13T03:27:24Z",
+  "current_worker_pid": 25035,
+  "current_task_packet": "/tmp/amsterdam-street-atmosphere-20261013/handoff.json",
+  "current_task_notion": "https://app.notion.com/p/3f83285284df8121862cd2feb6f3a7a5"
 }

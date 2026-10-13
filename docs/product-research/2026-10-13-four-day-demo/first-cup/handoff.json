@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-first-cup-20261013",
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "play03-first-cup",
+    "task_type": "code",
+    "attempt_kind": "business"
+  },
+  "goal": "Simplify first-cup service with one accurate current-action cue and progressive choice disclosure. Preserve all game rules and report real tests.",
+  "memory": {
+    "summary": "D23 approved four-day demo usability/art iteration; D24 one targeted correction after failure, then shelve only if correction fails. PLAY02 adopted6e4f7b3; no active Amsterdam request.",
+    "decisions": [
+      "Seed Evolving enabled/high only",
+      "Keep first-cup gameplay manual; preserve economics/save schema",
+      "One new logical PLAY03 package, no legacy task restart"
+    ],
+    "completed": [
+      "PLAY02 natural street/pub/service/refresh/390px verified, full358/358"
+    ],
+    "known_issues": [
+      "First-cup helper still long, hardcodes Marta, choices overwhelm first service",
+      "Player fun and overall visual quality not accepted"
+    ]
+  },
+  "tasks": [
+    "Read brief and scoped UI/test harness",
+    "Add real tests; capture expected red before implementation",
+    "Implement scoped one-cue UI and disclosure; run exact validations",
+    "Produce valid report before budget limit"
+  ],
+  "acceptance": [
+    "Only four allowlisted files; old test changes restricted to named test",
+    "New meaningful tests red before green; old42 targeted tests plus syntax pass",
+    "Accurate guest/pour/no-guest cues and blocked reasons; no hidden irreversible choices",
+    "Actual handoff schema; no invented GUI or fun acceptance"
+  ],
+  "constraints": [
+    "Read/Edit/Bash only, no Write",
+    "No core/scene/city/save/economy changes",
+    "No network/git/logs/new helper/shell commands outside exact list",
+    "Reserve last4 turns for report"
+  ],
+  "workspace": "/tmp/amsterdam-first-cup-20261013/input",
+  "read_files": [
+    "brief.md",
+    "tools/prototype/index.html",
+    "tools/prototype/reopening.css",
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/reopening-core.js",
+    "tools/prototype/journey-core.js",
+    "tools/prototype/journey-ui.js",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/delivery-orders.js",
+    "tools/prototype/character-stories.js",
+    "tools/prototype/flower-network.js",
+    "tools/prototype/test-market-daynight-ui.js",
+    "tools/prototype/test-city.js",
+    "tools/prototype/test-city-bike.js",
+    "tools/prototype/test-first-street-ui.js",
+    "tools/prototype/test-first-cup-ui.js"
+  ],
+  "write_files": [
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/reopening.css",
+    "tools/prototype/test-first-cup-ui.js",
+    "tools/prototype/test-first-street-ui.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-first-cup-ui.js",
+    "node --test tools/prototype/test-first-street-ui.js tools/prototype/test-city.js tools/prototype/test-city-bike.js tools/prototype/test-market-daynight-ui.js",
+    "node --check tools/prototype/reopening-ui.js"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 1500,
+  "max_turns": 48
+}

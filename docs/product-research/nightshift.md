@@ -1,3 +1,7 @@
+## D24后续：PLAY03第一杯简化已具体化，准备派发
+
+固定amsterdam-first-cup-20261013，基线6e4f7b3，4文件精确范围，21输入518846B，旧42/42+语法暂存预跑通过。首杯当前动作/订单摘要/可展开调整，核心只读；一个旧提示测试按新语义授权替换，其他旧断言不变。1500秒48轮，单路首次业务尝试，失败后至多一次定向修正，仍失败搁置。Notion https://app.notion.com/p/3f83285284df819786acfcbcc61693d8 已执行中；完整合同docs/product-research/2026-10-13-four-day-demo/first-cup/README.md。尚未交付，当前可玩仍6e4f7b3/18833。
+
 ## D24最新：PLAY02 R3已采用，后续按新失败策略推进
 
 R3只读恢复交接256.015秒success；父级全量358/358、自然桥边回店/开张倒酒到账/刷新/390px与近景和全城点击通过。原四文件候选已采用push游戏`6e4f7b3fbb7ad7eca5d3b30b474f61d7437059c7`，独立试玩http://127.0.0.1:18833/tools/prototype/index.html?seed=42001&commit=6e4f7b3。首页和16运行资源、浏览器实际三改动资源均字节匹配。第一杯提前收杯满意0；技术通过不当趣味通过。R3报告“验收后搁置”源于父级交接简写，纠正为仍失败才搁置，accepted_with_changes。原失败保留、D24一次修正已使用。后续首杯界面简化待下一包精确定义；四天截止/10h review不变。详见docs/product-research/2026-10-13-four-day-demo/r3-recovery/parent-review.md。

@@ -1,0 +1,6 @@
+### Result
+{"body":"TWEEDE KANS / REOPENING\n\n尚未倒闭，房东表示欣慰\n\n三晚租金结清，余款 €107，满意客人 12 位。街坊约了下一杯，房东约了下一笔。你终于有资格考虑给自己发工资。\n\nOPEN\n留下的现金\n€107 / €100\n满意的客人\n12 / 12\n亲手送出的酒\n12 杯\nLotte\n想念窗边的老位子\nBram\n开始记得你 · 1 次好印象\nMarta\n开始记得你 · 3 次好印象\n这次换一种安排，再试一次 →换一组客人，重新开店\n\n这次，你给这家店留下了一个明天。\n\n票务待付\n€0\n最终净余额\n€107\n白天出行后记\n还没有出行记录。带车去南街花店看看委托。","overflow":false,"phase":"ending"}
+### Ran Playwright code
+```js
+await (async(page)=>{await page.setViewportSize({width:1440,height:1000});await page.screenshot({path:"/tmp/amsterdam-freeze-ui-20261014/ending-desktop.png",fullPage:true});return {body:await page.locator("#action-content").innerText(),overflow:await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),phase:JSON.parse(await page.evaluate(()=>localStorage.getItem("ab_reopening_v1"))).game.phase}})(page);
+```

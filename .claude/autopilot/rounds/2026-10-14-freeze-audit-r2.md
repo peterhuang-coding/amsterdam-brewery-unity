@@ -10,3 +10,7 @@ Parent reviews exactsequence/sourcecitations/facts/limits andsame11sourceSHA. Fa
 ## R2 actual submission and push acknowledgement
 
 2026-10-13T17:54:21.539560Z submitted once, launcher96717/worker96724; stable original ID exists, actual init Seed Evolving/Read/Edit/Bash/dontAsk, settings enabled/high. Global immediate ledger/CLI0 before this1; 11 source SHA matched. Sole correction1/1 now used. The preceding git push emitted HTTP2/RPC disconnect but its shell continued to the launcher; this ordering ambiguity is preserved, not described as a successful pre-launch acknowledgement. At 17:57Z subsequent independent ls-remote confirmed exact b9c5f5e51605385b5a109e7fd06f3ed8f44ba682 on origin. No duplicate launch or game edits. Original report/logs remain immutable.
+
+## Final terminal failure
+
+R2 18:31:57.537Z Request timed out/CLI1/done unknown; worker96724 gone. Read11/no Edit/Bash/report/test, all11 sources and staged SHA unchanged. Result elapsed382.121s differs from recorded timestamp span; cause unknown, originals preserved. HTTPstatusnull not observed429. Parent terminal review in freeze-audit-r2-failure; standard review_requires_finished not recorded rejected. correction1/1 exhausted, analysis shelved/adopted0. Parent natural three-day acceptance remains separate verification. Parent selected cooldown to19:31:58Z; no new task automatically queued.

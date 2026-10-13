@@ -1,0 +1,6 @@
+### Result
+{"body":"TK\nTweede Kans\nAMSTERDAM · SINDS 1986\n♪\n?\nⅡ\n\nDAY 2 / 3 · 营业中\n\n好评与坏账\n手头现金\n€119\n金色艾尔\n6 杯\n运河黑啤\n4 杯\nOPEN · 好评与坏账\n这家店，还没倒。\n柜台前 · 选一位先服务\n已暂停 · 打烊前 2:19\n片刻安静。\n下一位客人正在路上。可以查看库存，准备接单。\n“\n\n这条运河连倒影都在涨房租。给我留杯黑的。\n\n— Lotte\n\nTWEEDE KANS / SERVICE\n\n把杯子擦亮，\n等等下一位。\n\n客人们正在穿过运河上的桥。\n先看看还剩多少酒，今晚的承诺有没有留够。\n\n今晚已收入 €46\n满意 4 位\n提前打烊，看看今天的账 →\n柜台记事\n进度已保存在这台设备\n伊萨接过漂亮的一杯，收入 €11。\n正在给伊萨倒金色艾尔。在浅绿色区域收杯。\nTWEEDE KANS 意为「第二次机会」\n1 / 2 / 3 选客 · E 倒酒 · Space 收杯 · P 暂停\n旧版实验室 ↗\n伊萨接过漂亮的一杯，收入 €11。\n\nEARLY CLOSE\n\n今晚就到这里？\n\n还在等候、以及尚未到店的客人，会错过这晚营业。答应 Lotte 的酒也要记得。\n\n继续招待客人\n提前打烊","buttons":["♪","?","Ⅱ","提前打烊，看看今天的账 →","继续招待客人","提前打烊"]}
+### Ran Playwright code
+```js
+await (async(page)=>{await page.keyboard.press("Escape");await page.getByRole("button",{name:"提前打烊，看看今天的账 →",exact:true}).click();return {body:await page.locator("body").innerText(),buttons:await page.getByRole("button").allTextContents()}})(page);
+```

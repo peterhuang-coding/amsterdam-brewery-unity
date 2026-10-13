@@ -1,0 +1,6 @@
+### Result
+"TWEEDE KANS / REOPENING\n\n第一天 · 可选推荐 / 只看当前这一步\n回酒馆，准备今晚开门\n\n约定已记下：今晚给 Lotte 留一杯黑啤，开门会结束今天剩余的准备机会。\n\n回酒馆开门\nLotte 的桥\n\n桥不收过路费，所以大家还能在桥上碰面。\n\n进去看看 · E\n\n想聊聊：酒馆找 Marta，咖啡馆找 Bram，花店找 Ada；可完全跳过，不影响开门。\n\n打开全城地图 · 其余 5 个去处与景点手册"
+### Ran Playwright code
+```js
+await (async(page)=>{await page.getByRole("button",{name:"答应给 Lotte 留黑啤 · 1 次准备",exact:true}).click();await page.getByRole("button",{name:"前往Tweede Kans",exact:true}).click();await page.waitForFunction(()=>document.body.innerText.includes("进入 Tweede Kans · E"));return await page.locator("#action-content").innerText();})(page);
+```

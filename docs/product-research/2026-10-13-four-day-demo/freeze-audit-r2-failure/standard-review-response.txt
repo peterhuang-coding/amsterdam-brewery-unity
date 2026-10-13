@@ -1,0 +1,2 @@
+review error: review_requires_finished
+No standard rejected review registered; immutable parent terminal review retained separately.

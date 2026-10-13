@@ -1,0 +1,6 @@
+### Result
+{"body":"TWEEDE KANS / REOPENING\n\nTweede Kans\n\n回到自家柜台。酿一批新酒，或者翻开营业牌。\n\n你把营业牌翻过去。账单留下了，门外还有路。\n\n00:40 / 城市背面\n\n这夜的收获，留给明天。\n\n超市后场、红灯街、夜店、失物分拣场与温室。选路线后自动走，关键事情停下来由你决定。每夜一趟。\n\n今晚已经探险过了\n今晚营业账 · 6 杯 / 收入 €64\n睡前改造酒馆 · 免费选一件，直接到明早\n收好东西，睡到明早 →\n← 出去逛逛 · M","buttons":["♪","?","Ⅱ","骑上自行车 · B","打开景点手册","← 出去逛逛 · M","🍺Tweede KansJordaan · 酿酒 / 开门✓","♫Lotte 的桥运河带 · 留酒约定✓","☕Bram 咖啡馆De Pijp · 帮工 / 夜店线索·","⚓北岸码头Noord · 限时打捞·","▥Albert Cuyp 市场De Pijp · 现货 / 卸货路线·","⚘南街花店De Pijp · 配花 / 礼物 / 窗台·","⚗Chen 实验室Science Park · 酒花 / 温室线索·","今晚已经探险过了","收好东西，睡到明早 →","← 出去逛逛 · M"]}
+### Ran Playwright code
+```js
+await (async(page)=>{await page.getByRole("button",{name:"回酒馆，收好这一趟 →",exact:true}).click();return {body:await page.locator("#action-content").innerText(),buttons:await page.getByRole("button").allTextContents()}})(page);
+```

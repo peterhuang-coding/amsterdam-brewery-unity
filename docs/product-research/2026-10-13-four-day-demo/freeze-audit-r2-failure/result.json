@@ -1,0 +1,100 @@
+{
+  "artifact_dir": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-freeze-audit-r2-20261014",
+  "blockers": [
+    "worker reported transport failure; inspect saved execution before recovery"
+  ],
+  "changed_files": [],
+  "claude": {
+    "final_subtype": "success",
+    "is_error": true,
+    "outcome": "completed",
+    "pid": 96724,
+    "returncode": 1,
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 102624,
+      "inference_geo": "",
+      "input_tokens": 66650,
+      "iterations": [],
+      "output_tokens": 8178,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_fetch_requests": 0,
+        "web_search_requests": 0
+      },
+      "service_tier": "standard",
+      "speed": "standard"
+    }
+  },
+  "cost_basis": "client estimate; not Coding Plan charge",
+  "cost_usd": 0.5890120000000001,
+  "deleted_files": [],
+  "disallowed_changes": [],
+  "elapsed_seconds": 382.121,
+  "finished_at": "2026-10-13T18:31:57.537000+00:00",
+  "input_hashes": {
+    "audit.md": "1afe7250ea1c452d979f8e9af11ddeee52d00dcdbfdecaf0db173623e1528582",
+    "brief.md": "45acce12d69b18f0d58908485350f94c939f41da2f8084309903177dcb5b0daf",
+    "correction.md": "f8f33bbf0123f4959478643ebd5f8d9a98e4fba0dcf6b4b544375e585f7c504e",
+    "findings.json": "5207d9667274a4de36c4041dc6802c612f3f4ab0b32705fbb1072dc39e17b725",
+    "tools/prototype/backstage-ui.js": "e3860052e53dd579ee5868b457da8595417e79807bfc227da38bf8c7f2650269",
+    "tools/prototype/index.html": "c70b027d392198e1cf733e2a4bdf88564a679b21f9bdc763b478a1ab0288f3fd",
+    "tools/prototype/reopening-city.js": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625",
+    "tools/prototype/reopening-core.js": "4c31d8a72fe9fd9736e7db57999efd31efb29a2c3b1458e8f96bec5559633c3b",
+    "tools/prototype/reopening-ui.js": "b884234f2bda638ccf6de62e8036eb4b3cdbc73e95325785588c761d38c14985",
+    "tools/prototype/reopening.css": "17d05673d6634eac3b7abd5de41b6ccfe1314fdde8a448a11a93d5fef3c82b56",
+    "validate_audit.py": "760e00e8f01cde3d9b2c1f6e7a1f63e83d565d73cd0863e8949b0d61323e2d71"
+  },
+  "memory_delta": [],
+  "next_steps": [],
+  "observed_models": [
+    "doubao-seed-evolving",
+    "<synthetic>"
+  ],
+  "permission_denials": [],
+  "replayed": false,
+  "report": null,
+  "request_sha256": "334f8b353f8ecd27431535218d12fbb6cb083a3e8fb525db9fb21efc548fc66e",
+  "requested": {
+    "allowed_tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash"
+    ],
+    "basis": "launcher-pinned request; requested, not provider-confirmed; the pinned model is a fixed convention, not a ranking result",
+    "model": "doubao-seed-evolving",
+    "permission_allow": [
+      "Read(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-freeze-audit-r2-20261014/workspace/**)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-freeze-audit-r2-20261014/workspace/audit.md)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-freeze-audit-r2-20261014/workspace/audit.md)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-freeze-audit-r2-20261014/workspace/findings.json)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-freeze-audit-r2-20261014/workspace/findings.json)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-freeze-audit-r2-20261014/workspace/handoff-result.json)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-freeze-audit-r2-20261014/workspace/handoff-result.json)",
+      "Bash(python3 validate_audit.py)"
+    ],
+    "permission_mode": "dontAsk",
+    "provider_base_url": "https://ark.cn-beijing.volces.com/api/coding",
+    "reasoning_effort": "high",
+    "thinking_enabled": true
+  },
+  "session_id": "9a3ba1da-fb62-4ea9-b2cd-fafea7783def",
+  "started_at": "2026-10-13T17:54:21.584280+00:00",
+  "status": "unknown",
+  "summary": "",
+  "task_id": "amsterdam-freeze-audit-r2-20261014",
+  "telemetry": {
+    "attempt_kind": "correction",
+    "logical_task_id": "d25-freeze-audit",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "analysis"
+  },
+  "tests": []
+}

@@ -1,0 +1,6 @@
+### Result
+"眼前这一步 · 带着收获去出口\n\n正走向回酒馆的出口；安全撤离后，这一趟才结算。\n\n补货夜 · 酒桶更难控制\n\nON THE WAY · 自动探索\n\n正在前往回酒馆的出口\n\n角色自动走路、收取沿途普通货物，并用工具应对机器。到地方后，重要的事留给你决定。\n\n超市内部 / 货架 · 冷库 · 卸货口\n\n货架北面通冷库，东边卸货门可以从里面打开。\n\n夜店 · · 静音，空瓶更容易被听见 · 5s 后切换\n正在执行你的选择…\n停下来，重新选路\n运河抢修\n\n中间通路封了一段，留意围挡上下两头的出口。\n\n空瓶 3 / 3 · 青环空桶可拖动\n整理背包 · 选择放下什么\n已装包 · 1 / 12 格\n\n封口艾尔\n\n收好封口艾尔。\n\n放下背包，轻装撤回"
+### Ran Playwright code
+```js
+await (async(page)=>{const b=page.getByRole("button",{name:/带着收获回家/});if(await b.isVisible())await b.click();else {const stop=page.getByRole("button",{name:"停下来，重新选路",exact:true});if(await stop.isVisible()){await stop.click();await page.getByRole("button",{name:/带着收获回家/}).click();}}return await page.locator("#action-content").innerText();})(page);
+```

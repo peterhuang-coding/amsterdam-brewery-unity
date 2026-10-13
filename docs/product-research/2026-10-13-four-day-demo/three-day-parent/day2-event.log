@@ -1,0 +1,5 @@
+### Error
+TimeoutError: locator.waitFor: Timeout 18000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: /提供付款二维码/ }) to be visible[22m
+

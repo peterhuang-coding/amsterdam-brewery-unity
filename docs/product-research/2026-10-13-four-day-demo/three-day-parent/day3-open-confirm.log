@@ -1,0 +1,6 @@
+### Result
+{"body":"TWEEDE KANS / SERVICE\n\nMarta\n预算 €8\n\n“先倒一杯。商业计划晚点再说，泡沫已经在杯子里了。”\n\n想喝 金色艾尔 · 先选一杯\n金色艾尔\n库存 6 杯 · €8 起\n运河黑啤\n库存 4 杯 · €10 起\n选择实际使用的批次（预留酒不卖给散客）\n第 2 天 · 品质 3/3可用 6 杯\n这一杯的报价\n街坊价 €8\n品质加价 €12\n\n加价需品质至少 2；品质 1 仍可按街坊价出售，预算始终明示。\n\n开始倒酒 · €8 · E\n\n每次开始倒酒消耗选定批次的 1 杯。倒进绿色区域，收杯才有好口感。\n\n送杯水，婉拒这一单\n今晚已收入 €0\n满意 0 位\n提前打烊，看看今天的账 →"}
+### Ran Playwright code
+```js
+await (async(page)=>{await page.getByRole("button",{name:"现在开门",exact:true}).click();await page.keyboard.press("p");return {body:await page.locator("#action-content").innerText()}})(page);
+```

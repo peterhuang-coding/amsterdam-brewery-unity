@@ -1,0 +1,661 @@
+diff --git a/tools/prototype/backstage-scene.js b/tools/prototype/backstage-scene.js
+index d6d66be..a69d3d8 100644
+--- a/tools/prototype/backstage-scene.js
++++ b/tools/prototype/backstage-scene.js
+@@ -277,21 +277,89 @@
+       this.text(r.auto?.enabled?(r.status!=='active'?'这一趟已结束':r.auto.event?'时间暂停 · 选择下一步行动':'自动探索中 · 重要的事会停下来问你'):near?near.label:narrow?'WASD 移动 · E 互动 · M 地图':r.message,40,610,narrow?26:14,near?'#e4d29c':'#c1cbd0','left');
+       if(options.overview){this.rect(360,19,380,34,'#172a38ee');this.text(r.street?.barrels?.length?'全图 · 青环为空桶 · M 返回':'城市背面 · M 返回跟随视角',550,42,15,'#e6d5b9');}
+     }
++    // Dedicated minimap silhouettes; only miniMap calls these helpers.
++    mapDiamond(cx,cy,r,fill,edge){
++      const c=this.c;c.fillStyle=fill;c.beginPath();
++      c.moveTo(cx,cy-r);c.lineTo(cx+r,cy);c.lineTo(cx,cy+r);c.lineTo(cx-r,cy);c.closePath();c.fill();
++      c.strokeStyle=edge;c.lineWidth=1;c.stroke();
++    }
++    mapArrow(cx,cy,r,angle,fill,edge){
++      const c=this.c,bx=cx-Math.cos(angle)*r*.68,by=cy-Math.sin(angle)*r*.68,px=-Math.sin(angle),py=Math.cos(angle);
++      c.fillStyle=fill;c.beginPath();
++      c.moveTo(cx+Math.cos(angle)*r,cy+Math.sin(angle)*r);
++      c.lineTo(bx+px*r*.52,by+py*r*.52);
++      c.lineTo(bx-px*r*.52,by-py*r*.52);
++      c.closePath();c.fill();
++      c.strokeStyle=edge;c.lineWidth=1;c.stroke();
++    }
+     miniMap(r){
+-      const x=900,y=20,w=172,h=109,s=w/B.WIDTH;
++      const cssW=this.canvas.getBoundingClientRect().width;
++      const narrow=cssW<600;
++      const s=narrow?0.14:0.08,x=narrow?772:896,y=narrow?18:16;
++      const w=B.WIDTH*s,h=B.HEIGHT*s;
++      const C={solid:'#9fb0b8',water:'#2f6f8f',waterLine:'#86bdcf',street:'#e0ab6f',market:'#d1d5b5',
++        gate:'#d97a5f',open:'#9cdfb6',door:'#e8b684',exit:'#e7b75f',exitEdge:'#f6dc96',
++        player:'#f4f1e4',playerEdge:'#102029'};
+       this.rect(x-6,y-6,w+12,h+12,'#102431dc');
+       for(const z of B.ZONES)this.rect(x+z.x*s,y+z.y*s,z.w*s,z.h*s,z.color);
+-      for(const wall of B.streetInfo?.(r)?.walls||[])this.rect(x+wall.x*s,y+wall.y*s,Math.max(2,wall.w*s),Math.max(2,wall.h*s),'#d4b382');
++      // Real static barriers: canal water reads differently from shelf/building walls.
++      for(const wall of B.WALLS){
++        const wx=x+wall.x*s,wy=y+wall.y*s,ww=wall.w*s,wh=wall.h*s;
++        if(wall.kind==='water'){
++          this.rect(wx,wy,ww,wh,C.water);
++          this.line([[wx,wy+wh/2],[wx+ww,wy+wh/2]],C.waterLine,1);
++        }else this.rect(wx,wy,ww,wh,C.solid);
++      }
++      for(const wall of B.streetInfo?.(r)?.walls||[])this.rect(x+wall.x*s,y+wall.y*s,wall.w*s,wall.h*s,C.street);
+       const location=B.locationInfo?.(r);
+-      for(const w of location?.walls||[])this.rect(x+w.x*s,y+w.y*s,Math.max(1,w.w*s),Math.max(1,w.h*s),'#d1d5b5');
+-      if(location?.door)this.ellipse(x+location.door.x*s,y+(location.door.y+location.door.h/2)*s,2,3,location.door.open?'#9cdfb6':'#e8b684');
+-      for(const barrel of r.street?.barrels||[])this.ring(x+barrel.x*s,y+barrel.y*s,3,3,'#a6e1cd',1.5);
+-      if(r.street?.noise)this.ring(x+r.street.noise.x*s,y+r.street.noise.y*s,5,5,'#edcd93',1.5);
+-      this.ellipse(x+B.EXIT.x*s,y+B.EXIT.y*s,3,3,'#e0c485');
++      for(const mw of location?.walls||[])this.rect(x+mw.x*s,y+mw.y*s,mw.w*s,mw.h*s,C.market);
++      // Loading door at its real rect: closed blocks, open is outlined as passable.
++      if(location?.door){
++        const dx=x+location.door.x*s,dy=y+location.door.y*s,dw=location.door.w*s,dh=location.door.h*s;
++        if(location.door.open){this.c.strokeStyle=C.open;this.c.lineWidth=1;this.c.strokeRect(dx,dy,dw,dh);}
++        else this.rect(dx,dy,dw,dh,C.door);
++      }
++      // Greenhouse maintenance gate: solid bar while closed, green opening afterwards.
++      if(!r.opened)this.rect(x+B.GATE.x*s,y+B.GATE.y*s,B.GATE.w*s,B.GATE.h*s,C.gate);
++      else{this.c.strokeStyle=C.open;this.c.lineWidth=1;this.c.strokeRect(x+B.GATE.x*s,y+B.GATE.y*s,B.GATE.w*s,B.GATE.h*s);}
++      for(const barrel of r.street?.barrels||[])this.ring(x+barrel.x*s,y+barrel.y*s,narrow?4:3,narrow?4:3,'#a6e1cd',1.5);
++      if(r.street?.noise)this.ring(x+r.street.noise.x*s,y+r.street.noise.y*s,narrow?6:5,narrow?6:5,'#edcd93',1.5);
++      // Narrow devices display the fixed 1100px internal canvas at a smaller
++      // CSS width (a 390px viewport shows it at 368 CSS px). Derive the narrow
++      // metrics from the true CSS scale cssW/1100 so 你/回店 stay at >=11 CSS
++      // px, M 全图 >=10 CSS px, and both silhouettes keep a >=6 CSS px short
++      // axis (the arrow's perpendicular half-width is 0.52r -> 1.04r bbox).
++      // The diamond stays 2 internal px larger so its cardinal corners protrude
++      // past the overlapping arrow at the night start. Marker anchors remain at
++      // true projected world positions; only label anchors are clamped below.
++      const cssScale=cssW/1100;
++      const arrow=narrow?Math.ceil(6/(1.04*cssScale)):5;
++      const marker=narrow?arrow+2:5.5;
++      const labelSize=narrow?Math.ceil(11/cssScale):10;
++      const mLabel=narrow?Math.ceil(10/cssScale):11;
++      // Warm diamond marks the southwest return exit; drawn before the player so both
++      // stay readable on the natural night start where player stands exactly at B.EXIT.
++      const ex=x+B.EXIT.x*s,ey=y+B.EXIT.y*s;
++      this.mapDiamond(ex,ey,marker,C.exit,C.exitEdge);
++      this.text('回店',ex+marker+3,ey+labelSize/2+1,labelSize,'#f2d59a','left');
+       this.ellipse(x+B.NOOR.x*s,y+B.NOOR.y*s,3,3,'#e2a1c2');
+       if(!r.discovered.includes('greenhouse'))this.text('?',x+1850*s,y+390*s,13,'#e0e4ba');
+-      this.ellipse(x+r.p.x*s,y+r.p.y*s,4,4,'#fff0c9');
+-      this.text('M 全图',x+w,y+h+18,11,'#b8c2c6','right');
++      // Light arrow is the player: silhouette, color and 你 label all differ from the exit.
++      const d=Math.hypot(r.p.fx,r.p.fy),angle=d>0?Math.atan2(r.p.fy,r.p.fx):0;
++      const px=x+r.p.x*s,py=y+r.p.y*s;
++      this.mapArrow(px,py,arrow,angle,C.player,C.playerEdge);
++      if(narrow){
++        // Put the CJK label just beyond the larger silhouette (4 internal px
++        // clearance); flip below near the top edge, and clamp the horizontal
++        // center so the full glyph extent stays in the panel. Only the label
++        // anchor moves; the marker keeps the true world position.
++        const gap=4,half=labelSize/2,top=y-6;
++        const lx=Math.min(Math.max(px,x-6+half),x+w+6-half);
++        let base=py-arrow-gap-0.2*labelSize;
++        if(base-0.8*labelSize<top)base=py+arrow+gap+0.8*labelSize;
++        this.text('你',lx,base,labelSize,C.player,'center');
++      }else this.text('你',px,Math.max(y+8,py-arrow-3),labelSize,C.player,'center');
++      this.text('M 全图',x+w,y+h+16,mLabel,'#b8c2c6','right');
+     }
+   }
+   root.BackstageScene=BackstageScene;
+diff --git a/tools/prototype/test-night-map-scene.js b/tools/prototype/test-night-map-scene.js
+new file mode 100644
+index 0000000..1f29502
+--- /dev/null
++++ b/tools/prototype/test-night-map-scene.js
+@@ -0,0 +1,552 @@
++'use strict';
++// PLAY08 technical behavior tests for BackstageScene.miniMap.
++// The real backstage-core.js drives geometry; a recording canvas observes actual
++// Canvas2D calls. Synthetic position/facing/noise fixtures below are labelled as
++// technical cases and are not natural gameplay evidence (parent owns GUI acceptance).
++const test=require('node:test');
++const assert=require('node:assert/strict');
++const fs=require('node:fs');
++const vm=require('node:vm');
++const path=require('node:path');
++const B=require('./backstage-core.js');
++const SCENE_SRC=fs.readFileSync(path.join(__dirname,'backstage-scene.js'),'utf8');
++
++// Strict recording 2D context: every required numeric argument is validated as a
++// finite number, paths/rects/text are captured in *transformed* coordinates, and
++// save/translate/scale/restore implement real Canvas post-multiplication.
++function recorder(){
++  const calls=[],rects=[],shapes=[],texts=[];
++  const stack=[];
++  let m=[1,0,0,1,0,0];
++  let verts=null,pending=null,closed=false;
++  const need=(v,what)=>{
++    if(typeof v!=='number'||!Number.isFinite(v))throw new Error('invalid canvas numeric argument '+what+': '+String(v));
++    return v;
++  };
++  const ap=(x,y)=>[m[0]*x+m[2]*y+m[4],m[1]*x+m[3]*y+m[5]];
++  const flush=(mode)=>{
++    if(pending&&pending.kind==='ellipse'){
++      shapes.push({type:'ellipse',mode,x:pending.x,y:pending.y,rx:pending.rx,ry:pending.ry,
++        color:mode==='fill'?ctx.fillStyle:ctx.strokeStyle,lineWidth:ctx.lineWidth});
++    }else if(verts&&verts.length>=2){
++      shapes.push({type:'path',mode,closed,verts:verts.map(p=>({x:p[0],y:p[1]})),
++        color:mode==='fill'?ctx.fillStyle:ctx.strokeStyle,lineWidth:ctx.lineWidth});
++    }
++    pending=null;
++  };
++  const ctx={
++    fillStyle:'#000000',strokeStyle:'#000000',lineWidth:1,font:'10px sans-serif',textAlign:'left',globalAlpha:1,
++    save(){calls.push(['save']);stack.push(m.slice());},
++    restore(){calls.push(['restore']);if(stack.length)m=stack.pop();else throw new Error('restore without save');},
++    translate(tx,ty){need(tx,'translate.tx');need(ty,'translate.ty');calls.push(['translate',tx,ty]);
++      const a=m[0],b=m[1],c=m[2],d=m[3];m[4]+=a*tx+c*ty;m[5]+=b*tx+d*ty;},
++    scale(sx,sy){need(sx,'scale.sx');need(sy,'scale.sy');calls.push(['scale',sx,sy]);m[0]*=sx;m[1]*=sx;m[2]*=sy;m[3]*=sy;},
++    clearRect(x,y,w,h){[x,y,w,h].forEach((v,i)=>need(v,'clearRect'+i));calls.push(['clearRect',x,y,w,h]);
++      const [X,Y]=ap(x,y);rects.push({mode:'clear',x:X,y:Y,w:w*m[0],h:h*m[3]});},
++    fillRect(x,y,w,h){[x,y,w,h].forEach((v,i)=>need(v,'fillRect'+i));calls.push(['fillRect',x,y,w,h]);
++      const [X,Y]=ap(x,y);rects.push({mode:'fill',x:X,y:Y,w:w*m[0],h:h*m[3],color:ctx.fillStyle});},
++    strokeRect(x,y,w,h){[x,y,w,h].forEach((v,i)=>need(v,'strokeRect'+i));calls.push(['strokeRect',x,y,w,h]);
++      const [X,Y]=ap(x,y);rects.push({mode:'stroke',x:X,y:Y,w:w*m[0],h:h*m[3],color:ctx.strokeStyle,lineWidth:ctx.lineWidth});},
++    beginPath(){calls.push(['beginPath']);verts=[];pending=null;closed=false;},
++    moveTo(x,y){need(x,'moveTo.x');need(y,'moveTo.y');calls.push(['moveTo',x,y]);verts.push(ap(x,y));},
++    lineTo(x,y){need(x,'lineTo.x');need(y,'lineTo.y');calls.push(['lineTo',x,y]);if(verts)verts.push(ap(x,y));},
++    closePath(){calls.push(['closePath']);closed=true;},
++    ellipse(x,y,rx,ry){[x,y,rx,ry].forEach((v,i)=>need(v,'ellipse'+i));calls.push(['ellipse',x,y,rx,ry]);
++      const [X,Y]=ap(x,y);pending={kind:'ellipse',x:X,y:Y,rx:rx*Math.hypot(m[0],m[1]),ry:ry*Math.hypot(m[2],m[3])};},
++    arc(x,y,r){[x,y,r].forEach((v,i)=>need(v,'arc'+i));calls.push(['arc',x,y,r]);
++      const [X,Y]=ap(x,y);pending={kind:'arc',x:X,y:Y,rx:r*Math.hypot(m[0],m[1]),ry:r*Math.hypot(m[0],m[1])};},
++    fill(){calls.push(['fill']);flush('fill');},
++    stroke(){calls.push(['stroke']);flush('stroke');},
++    fillText(t,x,y){need(x,'fillText.x');need(y,'fillText.y');calls.push(['fillText',String(t),x,y]);
++      const [X,Y]=ap(x,y);texts.push({text:String(t),x:X,y:Y,font:ctx.font,color:ctx.fillStyle,align:ctx.textAlign});},
++    setLineDash(){calls.push(['setLineDash']);},
++    createLinearGradient(x0,y0,x1,y1){[x0,y0,x1,y1].forEach((v,i)=>need(v,'gradient'+i));return{addColorStop(){}};},
++    createRadialGradient(x0,y0,r0,x1,y1,r1){[x0,y0,r0,x1,y1,r1].forEach((v,i)=>need(v,'radialGradient'+i));
++      return{addColorStop(){}};}
++  };
++  return Object.assign(ctx,{calls,rects,shapes,texts,_stack:stack,matrix:()=>m.slice()});
++}
++
++function load(width=860,reduced=false){
++  const rec=recorder();
++  const canvas={getContext:()=>rec,getBoundingClientRect:()=>({width,height:560,left:0,top:0})};
++  const sandbox={Backstage:B,matchMedia:()=>({matches:reduced})};
++  sandbox.window=sandbox;
++  vm.createContext(sandbox);
++  vm.runInContext(SCENE_SRC,sandbox,{filename:'backstage-scene.js'});
++  return {rec,scene:new sandbox.BackstageScene(canvas)};
++}
++function renderMap(r,width=860,reduced=false){
++  const {rec,scene}=load(width,reduced);
++  scene.miniMap(r);
++  return rec;
++}
++// Derive the actual projection from the drawn panel (largest filled rect),
++// instead of hardcoding the implementation's chosen origin or scale.
++function projection(rec){
++  const panel=rec.rects.filter(q=>q.mode==='fill').slice().sort((a,b)=>b.w*b.h-a.w*a.h)[0];
++  assert.ok(panel,'map panel fillRect missing');
++  const x0=panel.x+6,y0=panel.y+6,w=panel.w-12,h=panel.h-12,s=w/B.WIDTH;
++  return {panel,x0,y0,w,h,s};
++}
++const near=(a,b,e=1e-6)=>Math.abs(a-b)<=e;
++const mapCenter=(o,L)=>({x:L.x0+o.x*L.s,y:L.y0+o.y*L.s});
++function rectAt(rec,o,L,mode){
++  const ex=L.x0+o.x*L.s,ey=L.y0+o.y*L.s,ew=o.w*L.s,eh=o.h*L.s;
++  return rec.rects.find(q=>(!mode||q.mode===mode)&&near(q.x,ex)&&near(q.y,ey)&&near(q.w,ew)&&near(q.h,eh));
++}
++function filledPaths(rec,c,reach,vertexCount=3){
++  return rec.shapes.filter(sh=>sh.type==='path'&&sh.mode==='fill'&&sh.verts.length===vertexCount&&
++    sh.verts.every(v=>Math.hypot(v.x-c.x,v.y-c.y)<=reach));
++}
++function ellipsesAt(rec,c,reach){
++  return rec.shapes.filter(sh=>sh.type==='ellipse'&&Math.hypot(sh.x-c.x,sh.y-c.y)<=reach);
++}
++function allPoints(rec){
++  const pts=[];
++  for(const q of rec.rects)pts.push({x:q.x,y:q.y},{x:q.x+q.w,y:q.y+q.h});
++  for(const t of rec.texts)pts.push({x:t.x,y:t.y});
++  for(const sh of rec.shapes){
++    if(sh.type==='ellipse')pts.push({x:sh.x,y:sh.y});else sh.verts.forEach(v=>pts.push({x:v.x,y:v.y}));
++  }
++  return pts;
++}
++const fontSize=t=>Number((t.font.match(/(\d+(?:\.\d+)?)px/)||[0,NaN])[1]);
++function realRun(seed=42001,day=1,discoveries=[]){
++  return B.create(seed,day,'hook',discoveries,{marketShift:true});
++}
++// Technical fixture helper: move player only onto a core-verified legal cell.
++function legal(r,x,y){
++  assert.equal(B.solid(r,x,y),false,'technical fixture needs a legal cell at '+x+','+y);
++  r.p.x=x;r.p.y=y;
++}
++function restoredLegacy(version){
++  const r=B.create(11,1);
++  r.version=version;
++  delete r.district;
++  if(version<3)delete r.location;
++  if(version===1)delete r.street;
++  const restored=B.restore(r);
++  assert.ok(restored,'real B.restore must accept the legacy v'+version+' fixture');
++  return restored;
++}
++
++test('recorder geometry: translation is not rescaled and save/restore returns to identity',()=>{
++  const {rec}=load();
++  rec.save();rec.translate(10,20);
++  rec.beginPath();rec.moveTo(0,0);rec.lineTo(2,2);rec.stroke(); // transformed origin stays at (10,20)
++  rec.fillRect(0,0,1,1);
++  rec.scale(2,3);
++  rec.fillRect(1,1,4,5);
++  rec.restore();
++  const line=rec.shapes.find(s=>s.type==='path');
++  assert.deepEqual([line.verts[0].x,line.verts[0].y],[10,20]);
++  assert.deepEqual([rec.rects[0].x,rec.rects[0].y,rec.rects[0].w,rec.rects[0].h],[10,20,1,1]);
++  assert.deepEqual([rec.rects[1].x,rec.rects[1].y,rec.rects[1].w,rec.rects[1].h],[12,23,8,15]);
++  rec.fillRect(0,0,2,2);
++  assert.deepEqual([rec.rects[2].x,rec.rects[2].y,rec.rects[2].w,rec.rects[2].h],[0,0,2,2]);
++  assert.deepEqual(rec.matrix(),[1,0,0,1,0,0]);
++  assert.equal(rec._stack.length,0);
++});
++
++test('uniform 2200x1400 projection keeps the whole world on desktop and a larger narrow map in its corner',()=>{
++  const desktop=renderMap(realRun(),860),Ld=projection(desktop);
++  const narrow=renderMap(realRun(),350),Ln=projection(narrow);
++  for(const L of [Ld,Ln]){
++    assert.ok(L.s>0&&Number.isFinite(L.s));
++    assert.ok(near(L.h,L.s*B.HEIGHT,1e-9),'vertical scale must equal horizontal scale');
++    // Same axes / full world: furthest zone edges stay inside the mapped world rectangle.
++    assert.ok(L.x0+2110*L.s<=L.x0+L.w+1e-9);
++    assert.ok(L.y0+1280*L.s<=L.y0+L.h+1e-9);
++    assert.ok(L.x0+2105*L.s<=L.x0+L.w+1e-9); // rightmost glass wall
++    assert.ok(L.y0+1295*L.s<=L.y0+L.h+1e-9); // shop wall bottom
++  }
++  assert.ok(Ln.s>Ld.s,'narrow map must be larger, not the fixed desktop map');
++  // Relative positions and axes are correct.
++  assert.ok(mapCenter(B.EXIT,Ld).y>mapCenter(B.NOOR,Ld).y);
++  assert.ok(mapCenter(B.EXIT,Ld).x<mapCenter({x:1590,y:0},Ld).x);
++  // Desktop clears the center banner and the bottom message bar.
++  for(const p of allPoints(desktop)){
++    assert.ok(p.x>=880&&p.x<=1094,'desktop x outside top-right map area: '+p.x);
++    assert.ok(p.y>=8&&p.y<=300,'desktop y outside map area: '+p.y);
++  }
++  // Narrow stays within the permitted top-right region at a 350px viewport.
++  for(const p of allPoints(narrow)){
++    assert.ok(p.x>=760&&p.x<=1090,'narrow x outside 760..1090: '+p.x);
++    assert.ok(p.y>=12&&p.y<=310,'narrow y outside 12..310: '+p.y);
++  }
++});
++
++test('every real static wall projects at true geometry and water walls read as water, not solid',()=>{
++  const rec=renderMap(realRun()),L=projection(rec);
++  const solids=B.WALLS.filter(w=>w.kind!=='water'),waters=B.WALLS.filter(w=>w.kind==='water');
++  assert.ok(waters.length>=2);
++  const solidColors=new Set(),solidRects=new Set();
++  for(const w of solids){
++    const q=rectAt(rec,w,L,'fill');
++    assert.ok(q,'missing projected static wall '+JSON.stringify(w));
++    solidColors.add(q.color);solidRects.add(q);
++  }
++  assert.equal(solidRects.size,solids.length,'each static wall needs its own distinct rect');
++  const waterColors=new Set();
++  for(const w of waters){
++    const q=rectAt(rec,w,L,'fill');
++    assert.ok(q,'missing projected water wall '+JSON.stringify(w));
++    waterColors.add(q.color);
++    assert.ok(!solidColors.has(q.color),'water must differ in color from solid walls');
++    // Water also carries a waterline across its full projected extent and orientation.
++    const lx1=L.x0+w.x*L.s,lx2=L.x0+(w.x+w.w)*L.s,ly=L.y0+(w.y+w.h/2)*L.s;
++    const waterline=rec.shapes.find(sh=>sh.type==='path'&&sh.mode==='stroke'&&sh.verts.length===2&&
++      near(sh.verts[0].x,lx1)&&near(sh.verts[0].y,ly)&&near(sh.verts[1].x,lx2)&&near(sh.verts[1].y,ly));
++    assert.ok(waterline,'full-extent waterline marker missing for '+JSON.stringify(w));
++  }
++  // Orientation is preserved: the long red-light windows stay wide, not tall.
++  const windows=B.WALLS.find(w=>w.kind==='windows'),q=rectAt(rec,windows,L,'fill');
++  assert.ok(q.w>q.h&&windows.w>windows.h);
++});
++
++test('real delivery/works/closing street walls project, plus day2/day3 and legacy have no dynamic wall',()=>{
++  const cases=[[42000,1,'delivery'],[42001,1,'works'],[42002,1,'closing']];
++  let streetColor=null,waterColor=null;
++  for(const [seed,day,situation] of cases){
++    const r=realRun(seed,day);
++    assert.equal(B.streetInfo(r).id,situation);
++    const rec=renderMap(r),L=projection(rec);
++    for(const w of B.streetInfo(r).walls){
++      const q=rectAt(rec,w,L,'fill');
++      assert.ok(q,'missing '+situation+' wall '+JSON.stringify(w));
++      streetColor=q.color;
++    }
++    waterColor=rectAt(rec,B.WALLS.find(w=>w.kind==='water'),L,'fill').color;
++    assert.notEqual(streetColor,waterColor);
++    assert.ok(B.WALLS.filter(w=>w.kind!=='water').every(w=>rectAt(rec,w,L,'fill').color!==streetColor));
++  }
++  // Real marketShift runs on later days render with every canvas argument finite.
++  for(const day of [2,3]){
++    const r=B.create(42001,day,'hook',[],{marketShift:true});
++    const rec=renderMap(r),L=projection(rec);
++    assert.ok(rectAt(rec,B.GATE,L,'fill'));
++  }
++  // Real restored legacy run has empty legacy street walls.
++  const legacy=restoredLegacy(1),rec=renderMap(legacy),L=projection(rec);
++  assert.equal(B.streetInfo(legacy).walls.length,0);
++  assert.ok(!rec.rects.some(q=>q.mode==='fill'&&q.color===streetColor));
++});
++
++test('market walls and the loading door use its real rect: closed blocks, open is visibly passable',()=>{
++  const r=realRun();
++  let info=B.locationInfo(r);
++  assert.equal(info.enabled,true);
++  let rec=renderMap(r),L=projection(rec);
++  for(const w of info.walls){
++    assert.ok(rectAt(rec,w,L,'fill'),'missing projected market wall '+JSON.stringify(w));
++  }
++  const door=info.door;
++  const closed=rectAt(rec,door,L,'fill');
++  assert.ok(closed,'closed door must be drawn as a filled rect at its real extent');
++  assert.ok(closed.h>closed.w&&door.h>door.w,'vertical door orientation must survive projection');
++  assert.ok(near(closed.x+closed.w/2,L.x0+(door.x+door.w/2)*L.s),'door must center on the real door center');
++  assert.equal(B.solid(r,door.x+3,door.y+door.h/2,2),true,'core: closed door really blocks');
++
++  // Real interact command opens the shortcut door (technical: player placed on a legal cell).
++  const r2=realRun();
++  legal(r2,735,1105);
++  assert.equal(B.command(r2,'interact'),true);
++  info=B.locationInfo(r2);
++  assert.equal(info.door.open,true);
++  rec=renderMap(r2);L=projection(rec);
++  const openStroke=rectAt(rec,info.door,L,'stroke');
++  assert.ok(openStroke,'open door must be outlined at the same real rect');
++  assert.notEqual(openStroke.color,closed.color);
++  assert.ok(!rectAt(rec,info.door,L,'fill'),'open door must not be drawn as a blocking fill');
++  assert.equal(B.solid(r2,info.door.x+3,info.door.y+info.door.h/2,2),false,'core: open door is passable');
++});
++
++test('greenhouse GATE blocks when closed and becomes a passable opening after the real lever',()=>{
++  const r=realRun();
++  assert.equal(r.opened,false);
++  let rec=renderMap(r),L=projection(rec);
++  const gate=rectAt(rec,B.GATE,L,'fill');
++  assert.ok(gate,'closed gate must appear as a blocking rect');
++  assert.ok(gate.w>gate.h,'gate keeps its horizontal orientation');
++  assert.equal(B.solid(r,B.GATE.x+B.GATE.w/2,B.GATE.y+B.GATE.h/2,2),true);
++
++  const r2=realRun();
++  legal(r2,1555,510); // technical fixture: legal cell within lever reach
++  assert.equal(B.command(r2,'interact'),true);
++  assert.equal(r2.opened,true);
++  rec=renderMap(r2);L=projection(rec);
++  assert.ok(!rectAt(rec,B.GATE,L,'fill'),'opened gate must not render as a block');
++  const openGate=rectAt(rec,B.GATE,L,'stroke');
++  assert.ok(openGate,'opened gate must show a passable opening marker at its real rect');
++  assert.equal(B.solid(r2,B.GATE.x+B.GATE.w/2,B.GATE.y+B.GATE.h/2,2),false);
++
++  // Open semantics share one passable color between gate and loading door.
++  const r3=realRun();
++  legal(r3,735,1105);B.command(r3,'interact');
++  legal(r3,1555,510);B.command(r3,'interact');
++  const rec3=renderMap(r3),L3=projection(rec3),door3=B.locationInfo(r3).door;
++  assert.equal(rectAt(rec3,B.GATE,L3,'stroke').color,rectAt(rec3,door3,L3,'stroke').color);
++});
++
++test('player marker follows real position and facing and handles a zero direction finitely',()=>{
++  const r=realRun();
++  let rec=renderMap(r),L=projection(rec);
++  const start=mapCenter(r.p,L);
++  let arrows=filledPaths(rec,start,7);
++  assert.equal(arrows.length,1);
++  assert.equal(arrows[0].verts.length,3,'player is a triangular arrow silhouette');
++
++  // Technical fixture: moved player facing south on a legal cell.
++  legal(r,1100,850);r.p.fx=0;r.p.fy=1;
++  rec=renderMap(r);L=projection(rec);
++  const c=mapCenter(r.p,L);
++  arrows=filledPaths(rec,c,10);
++  assert.equal(arrows.length,1);
++  const tip=arrows[0].verts.slice().sort((a,b)=>b.y-a.y)[0];
++  assert.ok(tip.y>c.y&&near(tip.x,c.x,1),'arrow tip must point along fy=1 (south)');
++
++  // Zero direction must stay finite and still render a non-degenerate arrow.
++  r.p.fx=0;r.p.fy=0;
++  rec=renderMap(r);
++  const c2=mapCenter(r.p,projection(rec));
++  arrows=filledPaths(rec,c2,10);
++  assert.equal(arrows.length,1);
++  const area=Math.abs((arrows[0].verts[1].x-arrows[0].verts[0].x)*(arrows[0].verts[2].y-arrows[0].verts[0].y)
++    -(arrows[0].verts[1].y-arrows[0].verts[0].y)*(arrows[0].verts[2].x-arrows[0].verts[0].x))/2;
++  assert.ok(area>0.5);
++});
++
++test('exit is a different shape and color from the player and both stay visible at the overlapping start',()=>{
++  const r=realRun();
++  assert.equal(r.p.x,B.EXIT.x);assert.equal(r.p.y,B.EXIT.y); // natural night start overlaps the exit
++  const rec=renderMap(r),L=projection(rec),c=mapCenter(B.EXIT,L);
++  const diamonds=filledPaths(rec,c,8,4),arrows=filledPaths(rec,c,8,3);
++  assert.equal(diamonds.length,1,'exit is a four-point diamond silhouette');
++  assert.equal(arrows.length,1,'player arrow is still drawn on top of the exit');
++  assert.notEqual(diamonds[0].color,arrows[0].color,'exit and player colors must differ');
++  const diamondR=Math.max(...diamonds[0].verts.map(v=>Math.hypot(v.x-c.x,v.y-c.y)));
++  const arrowR=Math.max(...arrows[0].verts.map(v=>Math.hypot(v.x-c.x,v.y-c.y)));
++  assert.ok(diamondR>=arrowR-1e-6,'diamond corners remain visible around the overlapping player');
++  const cardinal=[[0,-1],[1,0],[0,1],[-1,0]];
++  for(const [dx,dy] of cardinal){
++    assert.ok(diamonds[0].verts.some(v=>near(v.x,c.x+dx*diamondR)&&near(v.y,c.y+dy*diamondR)),
++      'diamond needs cardinal N/E/S/W points');
++  }
++  const you=rec.texts.filter(t=>t.text==='你'),back=rec.texts.filter(t=>t.text==='回店');
++  assert.equal(you.length,1);assert.equal(back.length,1);
++  assert.ok(!near(you[0].x,back[0].x)||!near(you[0].y,back[0].y),'labels must not sit on top of each other');
++  for(const t of [...you,...back]){
++    assert.ok(fontSize(t)>=9,'labels need a readable size');
++    assert.ok(t.x>=L.panel.x&&t.x<=L.panel.x+L.panel.w&&t.y>=L.panel.y&&t.y<=L.panel.y+L.panel.h+24);
++  }
++
++  // After moving away the diamond stays anchored at the real southwest exit.
++  legal(r,1100,850);
++  const rec2=renderMap(r),L2=projection(rec2);
++  assert.equal(filledPaths(rec2,mapCenter(B.EXIT,L2),8,4).length,1);
++  assert.equal(filledPaths(rec2,mapCenter(r.p,L2),10,3).length,1);
++  assert.ok(rec2.texts.some(t=>t.text==='回店'));
++
++  // At 350px the labels are larger than desktop.
++  const narrowTexts=renderMap(realRun(),350).texts;
++  assert.ok(fontSize(narrowTexts.find(t=>t.text==='你'))>fontSize(you[0]));
++  assert.ok(fontSize(narrowTexts.find(t=>t.text==='回店'))>fontSize(back[0]));
++});
++
++test('existing map cues survive: Noor, street barrels, noise, greenhouse hint and M label',()=>{
++  const r=realRun();
++  let rec=renderMap(r),L=projection(rec);
++  const noor=ellipsesAt(rec,mapCenter(B.NOOR,L),4).find(s=>s.mode==='fill'&&s.color==='#e2a1c2');
++  assert.ok(noor,'Noor marker preserved');
++  for(const b of r.street.barrels){
++    const ring=ellipsesAt(rec,mapCenter(b,L),4).find(s=>s.mode==='stroke'&&s.color==='#a6e1cd');
++    assert.ok(ring,'barrel ring missing at '+b.id);
++  }
++  assert.equal(rec.texts.filter(t=>t.text==='M 全图').length,1);
++  assert.equal(rec.texts.filter(t=>t.text==='?').length,1,'undiscovered greenhouse hint preserved');
++
++  // Technical fixture: synthetic noise event, then cleared.
++  r.street.noise={x:1100,y:1140,life:5};
++  rec=renderMap(r);L=projection(rec);
++  assert.ok(ellipsesAt(rec,mapCenter(r.street.noise,L),6).some(s=>s.mode==='stroke'&&s.color==='#edcd93'));
++  r.street.noise=null;
++  rec=renderMap(r);
++  assert.ok(!rec.shapes.some(s=>s.type==='ellipse'&&s.mode==='stroke'&&s.color==='#edcd93'));
++
++  // Real discovered run hides the hint.
++  const discovered=renderMap(realRun(42001,1,['greenhouse']));
++  assert.equal(discovered.texts.filter(t=>t.text==='?').length,0);
++});
++
++test('minimap is deterministic across calls, motion preference and time, and never mutates state',()=>{
++  const r=realRun();
++  const a=renderMap(r),b=renderMap(r);
++  assert.deepEqual(a.calls,b.calls);
++  assert.deepEqual(renderMap(r,860,false).calls,renderMap(r,860,true).calls);
++  const atZero=renderMap(r).calls;
++  r.time=99.25; // technical: only time changes; map reads no clock-driven decoration
++  assert.deepEqual(renderMap(r).calls,atZero);
++
++  // Read-only against a rich technical state (open gate/door, noise, barrels).
++  const r2=realRun();
++  legal(r2,735,1105);B.command(r2,'interact');
++  legal(r2,1555,510);B.command(r2,'interact');
++  r2.street.noise={x:1100,y:1140,life:4};
++  const before=structuredClone(r2);
++  renderMap(r2);renderMap(r2,350);
++  assert.deepEqual(r2,before);
++});
++
++test('real restored v1/v2/v3 legacy fixtures render without crashing and omit location data when absent',()=>{
++  for(const version of [1,2,3]){
++    const r=restoredLegacy(version),rec=renderMap(r),L=projection(rec);
++    assert.equal(rec.texts.filter(t=>t.text==='你').length,1);
++    assert.equal(rec.texts.filter(t=>t.text==='回店').length,1);
++    assert.equal(filledPaths(rec,mapCenter(B.EXIT,L),8,4).length,1);
++    const info=B.locationInfo(r);
++    if(version<3){
++      assert.equal(info.enabled,false);
++      assert.equal(info.walls.length,0);
++      assert.equal(info.door,null);
++      for(const w of [{x:270,y:800,w:502,h:18},{x:760,y:1060,w:12,h:90}]){
++        assert.ok(!rectAt(rec,w,L,'fill')&&!rectAt(rec,w,L,'stroke'));
++      }
++      if(version===1){ // core upgrades v1 saves to an empty legacy street
++        assert.equal(B.streetInfo(r).id,'legacy');
++        assert.equal(r.street.barrels.length,0);
++      }
++    }else{
++      assert.equal(info.enabled,true);
++      assert.ok(rectAt(rec,info.door,L,'fill'),'v3 restored run keeps its closed loading door');
++    }
++  }
++});
++
++test('full real draw smoke: balanced transforms, finite arguments and minimap markers in screen space',()=>{
++  for(const [width,reduced] of [[860,false],[350,false],[860,true]]){
++    const r=realRun();
++    const before=structuredClone(r);
++    const {rec,scene}=load(width,reduced);
++    scene.draw(r); // real full draw, not just miniMap
++    assert.equal(rec._stack.length,0,'save/restore must stay balanced');
++    assert.deepEqual(rec.matrix(),[1,0,0,1,0,0],'HUD/minimap draw in identity screen space');
++    assert.ok(rec.texts.some(t=>t.text==='你'));
++    assert.ok(rec.texts.some(t=>t.text==='回店'));
++    assert.ok(rec.shapes.some(s=>s.type==='path'&&s.mode==='fill'&&s.verts.length===3));
++    assert.ok(rec.shapes.some(s=>s.type==='path'&&s.mode==='fill'&&s.verts.length===4));
++    assert.deepEqual(r,before,'full draw is read-only on run state');
++  }
++});
++
++// --- D24 regression: true displayed (CSS) legibility on narrow screens.
++// The renderer canvas is fixed at 1100 internal px wide; on a narrow phone the
++// element is displayed at getBoundingClientRect().width CSS px (a 390px phone
++// shows it at 368 CSS px), so one internal px equals width/1100 CSS px.
++const NARROW_WIDTHS=[320,350,368,390];
++// Deterministic recorded metric for the scene's `${size}px sans-serif` font:
++// every full-width CJK glyph advances 1em, 'M' 0.85em and a space 0.3em; ink
++// spans 0.8em above / 0.2em below the fillText baseline (sans/CJK em-square
++// assumption; parent real screenshots remain the final visual check).
++const glyphEm=ch=>ch===' '?0.3:ch.codePointAt(0)<0x2e80?0.85:1;
++function labelExtent(t){
++  const size=fontSize(t),em=[...t.text].reduce((n,ch)=>n+glyphEm(ch),0),wd=size*em;
++  const x0=t.align==='center'?t.x-wd/2:t.align==='right'?t.x-wd:t.x;
++  return {x0,y0:t.y-0.8*size,x1:x0+wd,y1:t.y+0.2*size};
++}
++const overlaps=(a,b)=>a.x0<b.x1&&a.x1>b.x0&&a.y0<b.y1&&a.y1>b.y0;
++function shapeBox(sh){
++  return {x0:Math.min(...sh.verts.map(v=>v.x)),y0:Math.min(...sh.verts.map(v=>v.y)),
++    x1:Math.max(...sh.verts.map(v=>v.x)),y1:Math.max(...sh.verts.map(v=>v.y))};
++}
++
++test('D24 narrow regression: 你/回店 reach >=11 CSS px, M >=10 CSS px, with >=6 CSS px marker short axes at 320/350/368/390',()=>{
++  for(const width of NARROW_WIDTHS){
++    const css=width/1100;
++    const r=realRun(); // natural night start overlaps B.EXIT; initial facing is (1,0)
++    assert.deepEqual([r.p.fx,r.p.fy],[1,0]);
++    const rec=renderMap(r,width),L=projection(rec);
++    const you=rec.texts.find(t=>t.text==='你');
++    const back=rec.texts.find(t=>t.text==='回店');
++    const m=rec.texts.find(t=>t.text==='M 全图');
++    assert.ok(you&&back&&m);
++    assert.ok(fontSize(you)*css>=11,'你 must be >=11 CSS px at '+width+' CSS px, got '+(fontSize(you)*css).toFixed(2));
++    assert.ok(fontSize(back)*css>=11,'回店 must be >=11 CSS px at '+width+' CSS px, got '+(fontSize(back)*css).toFixed(2));
++    assert.ok(fontSize(m)*css>=10,'M 全图 must be >=10 CSS px at '+width+' CSS px, got '+(fontSize(m)*css).toFixed(2));
++    // Full rendered label extents (not just anchors) stay inside the permitted
++    // top-right minimap region: x760..1090, y12..310.
++    for(const t of [you,back,m]){
++      const e=labelExtent(t);
++      assert.ok(e.x0>=760&&e.x1<=1090&&e.y0>=12&&e.y1<=310,
++        'label "'+t.text+'" extent outside region at '+width+' CSS px: '+JSON.stringify(e));
++    }
++    // At the exact start overlap, recorded silhouettes (facing east) keep a
++    // >=6 CSS px short bounding dimension.
++    const c=mapCenter(r.p,L);
++    const arrows=filledPaths(rec,c,40,3),diamonds=filledPaths(rec,c,40,4);
++    assert.equal(arrows.length,1,'one player arrow at the overlapping start ('+width+')');
++    assert.equal(diamonds.length,1,'one exit diamond at the overlapping start ('+width+')');
++    const ab=shapeBox(arrows[0]),db=shapeBox(diamonds[0]);
++    assert.ok(Math.min(ab.x1-ab.x0,ab.y1-ab.y0)*css>=6,
++      'player arrow short axis must be >=6 CSS px at '+width);
++    assert.ok(Math.min(db.x1-db.x0,db.y1-db.y0)*css>=6,
++      'exit diamond short axis must be >=6 CSS px at '+width);
++    // Labels stay separated from each other and from both markers at overlap.
++    const ye=labelExtent(you),be=labelExtent(back);
++    assert.ok(!overlaps(ye,be),'你 and 回店 label extents overlap at '+width);
++    for(const e of [ye,be]){
++      assert.ok(!overlaps(e,ab),'label overlaps the player arrow at '+width);
++      assert.ok(!overlaps(e,db),'label overlaps the exit diamond at '+width);
++    }
++  }
++});
++
++test('narrow overlap: diamond corners protrude beyond the arrow in every facing at every narrow width',()=>{
++  for(const width of NARROW_WIDTHS){
++    for(const [fx,fy] of [[1,0],[0,1],[-1,0],[0,-1]]){
++      const r=realRun();
++      r.p.fx=fx;r.p.fy=fy; // technical fixture: facing only, start cell is a real legal cell
++      const rec=renderMap(r,width),c=mapCenter(B.EXIT,projection(rec));
++      const diamond=filledPaths(rec,c,40,4)[0],arrow=filledPaths(rec,c,40,3)[0];
++      assert.ok(diamond&&arrow,'both silhouettes drawn at facing ('+fx+','+fy+') width '+width);
++      assert.notEqual(diamond.color,arrow.color);
++      const diamondR=Math.max(...diamond.verts.map(v=>Math.hypot(v.x-c.x,v.y-c.y)));
++      const arrowR=Math.max(...arrow.verts.map(v=>Math.hypot(v.x-c.x,v.y-c.y)));
++      assert.ok(diamondR>arrowR,
++        'diamond corners must protrude beyond the arrow at facing ('+fx+','+fy+') width '+width);
++      // Every cardinal diamond corner reaches that radius: nothing fully covers it.
++      for(const [dx,dy] of [[0,-1],[1,0],[0,1],[-1,0]]){
++        assert.ok(diamond.verts.some(v=>near(v.x,c.x+dx*diamondR)&&near(v.y,c.y+dy*diamondR)),
++          'diamond cardinal corner missing at ('+fx+','+fy+') width '+width);
++      }
++      const area=Math.abs((arrow.verts[1].x-arrow.verts[0].x)*(arrow.verts[2].y-arrow.verts[0].y)
++        -(arrow.verts[1].y-arrow.verts[0].y)*(arrow.verts[2].x-arrow.verts[0].x))/2;
++      assert.ok(area>0.5,'player arrow stays a non-degenerate triangle at ('+fx+','+fy+')');
++    }
++  }
++});
++
++test('narrow technical edge fixtures: 你 label is clamped inside the region, never moving the marker',()=>{
++  // Technical fixtures: player moved only onto B.solid-verified legal cells
++  // spanning the projected map edges. Markers keep true world positions; only
++  // the label anchor is clamped/flipped.
++  const spots=[[100,100],[300,300],[1500,250],[1100,1280],[2000,1250],[2137,1317],[100,1300]];
++  for(const width of NARROW_WIDTHS){
++    for(const [wx,wy] of spots){
++      const r=realRun();
++      legal(r,wx,wy);
++      const rec=renderMap(r,width),L=projection(rec);
++      const e=labelExtent(rec.texts.find(t=>t.text==='你'));
++      assert.ok(e.x0>=760&&e.x1<=1090&&e.y0>=12&&e.y1<=310,
++        '你 label extent outside region at ('+wx+','+wy+') width '+width+': '+JSON.stringify(e));
++      // The marker itself still anchors exactly at the projected true position.
++      const c=mapCenter(r.p,L);
++      assert.equal(filledPaths(rec,c,40,3).length,1,'arrow missing at ('+wx+','+wy+')');
++      // Label never overlaps the fixed exit or M labels.
++      for(const name of ['回店','M 全图']){
++        assert.ok(!overlaps(e,labelExtent(rec.texts.find(t=>t.text===name))),
++          '你 overlaps '+name+' at ('+wx+','+wy+') width '+width);
++      }
++    }
++  }
++});

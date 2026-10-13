@@ -1,0 +1,102 @@
+[
+  {
+    "name": "new",
+    "command": [
+      "node",
+      "--test",
+      "tools/prototype/test-night-map-scene.js"
+    ],
+    "exit_code": 0,
+    "tail": "w in every facing at every narrow width\n  ---\n  duration_ms: 3.2205\n  type: 'test'\n  ...\n# Subtest: narrow technical edge fixtures: 你 label is clamped inside the region, never moving the marker\nok 15 - narrow technical edge fixtures: 你 label is clamped inside the region, never moving the marker\n  ---\n  duration_ms: 5.177166\n  type: 'test'\n  ...\n1..15\n# tests 15\n# suites 0\n# pass 15\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 96.447\n",
+    "test_files": null
+  },
+  {
+    "name": "red",
+    "command": [
+      "node",
+      "--test",
+      "tools/prototype/test-night-map-scene.js"
+    ],
+    "exit_code": 1,
+    "tail": "12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: narrow technical edge fixtures: 你 label is clamped inside the region, never moving the marker\nok 15 - narrow technical edge fixtures: 你 label is clamped inside the region, never moving the marker\n  ---\n  duration_ms: 5.74825\n  type: 'test'\n  ...\n1..15\n# tests 15\n# suites 0\n# pass 13\n# fail 2\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 94.665625\n",
+    "test_files": null
+  },
+  {
+    "name": "district",
+    "command": [
+      "node",
+      "--test",
+      "tools/prototype/test-district-core.js"
+    ],
+    "exit_code": 0,
+    "tail": " three daytime clues while v3 keeps its original two-clue schema\n  ---\n  duration_ms: 0.298875\n  type: 'test'\n  ...\n# Subtest: the promised sorting spare starts on the working conveyor and actually travels\nok 18 - the promised sorting spare starts on the working conveyor and actually travels\n  ---\n  duration_ms: 0.688041\n  type: 'test'\n  ...\n1..18\n# tests 18\n# suites 0\n# pass 18\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 84.722375\n",
+    "test_files": null
+  },
+  {
+    "name": "scene-syntax",
+    "command": [
+      "node",
+      "--check",
+      "tools/prototype/backstage-scene.js"
+    ],
+    "exit_code": 0,
+    "tail": "",
+    "test_files": null
+  },
+  {
+    "name": "test-syntax",
+    "command": [
+      "node",
+      "--check",
+      "tools/prototype/test-night-map-scene.js"
+    ],
+    "exit_code": 0,
+    "tail": "",
+    "test_files": null
+  },
+  {
+    "name": "full",
+    "command": [
+      "node",
+      "--test",
+      "tools/prototype/test-algorithm-city-equivalence.js",
+      "tools/prototype/test-algorithm-city.js",
+      "tools/prototype/test-algorithm-history.js",
+      "tools/prototype/test-algorithm-physics.js",
+      "tools/prototype/test-algorithm-replay.js",
+      "tools/prototype/test-algorithm-routes.js",
+      "tools/prototype/test-algorithm-saves.js",
+      "tools/prototype/test-backstage-auto.js",
+      "tools/prototype/test-backstage.js",
+      "tools/prototype/test-character-stories.js",
+      "tools/prototype/test-city-bike.js",
+      "tools/prototype/test-city-consequence-quality.js",
+      "tools/prototype/test-city-journey-quality.js",
+      "tools/prototype/test-city.js",
+      "tools/prototype/test-daynight.js",
+      "tools/prototype/test-delivery-orders.js",
+      "tools/prototype/test-district-auto.js",
+      "tools/prototype/test-district-core.js",
+      "tools/prototype/test-district-daynight.js",
+      "tools/prototype/test-first-street-ui.js",
+      "tools/prototype/test-flower-network.js",
+      "tools/prototype/test-journey-integration.js",
+      "tools/prototype/test-journey.js",
+      "tools/prototype/test-location-daynight.js",
+      "tools/prototype/test-location-depth.js",
+      "tools/prototype/test-market-daynight-ui.js",
+      "tools/prototype/test-market-daynight.js",
+      "tools/prototype/test-market-focus-ui.js",
+      "tools/prototype/test-market-shift-ui.js",
+      "tools/prototype/test-market-shift.js",
+      "tools/prototype/test-night-map-scene.js",
+      "tools/prototype/test-night-streets.js",
+      "tools/prototype/test-phase-e.js",
+      "tools/prototype/test-reopening.js",
+      "tools/prototype/test-street-atmosphere.js"
+    ],
+    "exit_code": 0,
+    "tail": "e\n  ---\n  duration_ms: 0.145208\n  type: 'test'\n  ...\n# Subtest: recorder rejects string, undefined and non-finite geometry while accepting real text, styles and gradients\nok 325 - recorder rejects string, undefined and non-finite geometry while accepting real text, styles and gradients\n  ---\n  duration_ms: 0.975708\n  type: 'test'\n  ...\n1..325\n# tests 394\n# suites 0\n# pass 394\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 13580.063375\n",
+    "test_files": 35
+  }
+]

@@ -1,0 +1,33 @@
+{
+  "natural_path": "new game -> street/pub -> open -> early close 0 cups -> long hook -> natural night start -> manual east movement -> M overview/local -> auto route mode -> pause/reload -> resume -> actual automatic exit -> return pub summary",
+  "screen_css_widths": [
+    320,
+    350,
+    368,
+    390
+  ],
+  "viewport390_actual_canvas_css_width": 368,
+  "logical_canvas_width": 1100,
+  "device_backing_width": 1650,
+  "manual_start": [
+    210,
+    1140
+  ],
+  "manual_after": [
+    456.4099999999998,
+    1140
+  ],
+  "pause_refresh_run_deep_equal": true,
+  "actual_exit_status": "extracted",
+  "actual_exit_position": [
+    227.50699999999998,
+    1140
+  ],
+  "return_phase": "summary",
+  "return_trips": 1,
+  "cash": 27,
+  "cups_taken": 0,
+  "no_horizontal_overflow": true,
+  "console_errors": 0,
+  "limitations": "early close 0 cups only to reach scene; no new human fun feedback; synthetic edge metrics distinct from natural route"
+}

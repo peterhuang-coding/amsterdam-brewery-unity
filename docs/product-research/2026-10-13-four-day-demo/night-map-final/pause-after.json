@@ -1,0 +1,621 @@
+{
+  "saved": {
+    "version": 1,
+    "game": {
+      "version": 1,
+      "seed": 42001,
+      "day": 1,
+      "phase": "explore",
+      "cash": 27,
+      "actions": 0,
+      "trade": {
+        "rulesFromDay": 1,
+        "contracts": []
+      },
+      "stories": {
+        "version": 1,
+        "fromDay": 1,
+        "threads": []
+      },
+      "garden": {
+        "known": false,
+        "source": null,
+        "introduced": false,
+        "visits": []
+      },
+      "batches": [
+        {
+          "id": "starter-blond",
+          "beer": "blond",
+          "cups": 6,
+          "quality": 1,
+          "madeDay": 1,
+          "aged": false
+        },
+        {
+          "id": "starter-stout",
+          "beer": "stout",
+          "cups": 2,
+          "quality": 1,
+          "madeDay": 1,
+          "aged": false
+        }
+      ],
+      "friends": {
+        "lotte": 0,
+        "bram": 0,
+        "marta": 0
+      },
+      "promises": {
+        "lotte": false
+      },
+      "upgrades": [],
+      "hops": 0,
+      "music": false,
+      "log": [
+        "城市背面的门开着。去夜店找冷藏箱，或者沿着陌生的灯走。",
+        "第 1 夜收店：0 位满意的客人，支付租金 €18。",
+        "Marta推门进来，点了金色艾尔。",
+        "门灯亮了。欢迎点酒，创业故事免费，但不能抵酒钱。",
+        "先备酒，再开门。工商表格没有“暂时还不会倒酒”这一栏。"
+      ],
+      "totalSatisfied": 0,
+      "totalServed": 0,
+      "brew": null,
+      "forage": null,
+      "night": {
+        "elapsed": 21.0471999999881,
+        "duration": 165,
+        "orders": [
+          {
+            "id": "d1-guest0",
+            "name": "Marta",
+            "person": "marta",
+            "beer": "blond",
+            "budget": 12,
+            "arrival": 0,
+            "patience": 26,
+            "status": "lost",
+            "portrait": "👩🏼‍🦳",
+            "quote": "先倒一杯。商业计划晚点再说，泡沫已经在杯子里了。"
+          },
+          {
+            "id": "d1-guest1",
+            "name": "泰斯",
+            "person": null,
+            "beer": "blond",
+            "budget": 13,
+            "arrival": 22,
+            "patience": 27,
+            "status": "lost",
+            "portrait": "👩🏽",
+            "quote": "一杯金色艾尔。老板说公司是家，所以加班费算亲情。"
+          },
+          {
+            "id": "d1-guest2",
+            "name": "泰斯",
+            "person": null,
+            "beer": "stout",
+            "budget": 15,
+            "arrival": 43,
+            "patience": 26,
+            "status": "lost",
+            "portrait": "👩🏻",
+            "quote": "一杯黑啤。论文还在返修，我先完成这一杯。"
+          },
+          {
+            "id": "d1-guest3",
+            "name": "米兰",
+            "person": null,
+            "beer": "blond",
+            "budget": 10,
+            "arrival": 62,
+            "patience": 26,
+            "status": "lost",
+            "portrait": "👨🏻",
+            "quote": "一杯金色艾尔。老板说公司是家，所以加班费算亲情。"
+          },
+          {
+            "id": "d1-guest4",
+            "name": "Bram",
+            "person": "bram",
+            "beer": "blond",
+            "budget": 8,
+            "arrival": 82,
+            "patience": 26,
+            "status": "lost",
+            "portrait": "🧔🏼",
+            "quote": "来帮个午市，工钱当天结。理想我也有，不拿它抵工资。"
+          },
+          {
+            "id": "d1-guest5",
+            "name": "诺拉",
+            "person": null,
+            "beer": "stout",
+            "budget": 11,
+            "arrival": 105,
+            "patience": 23,
+            "status": "lost",
+            "portrait": "🧑🏼",
+            "quote": "一杯黑啤。论文还在返修，我先完成这一杯。"
+          },
+          {
+            "id": "d1-guest6",
+            "name": "Lotte",
+            "person": "lotte",
+            "beer": "stout",
+            "budget": 13,
+            "arrival": 127,
+            "patience": 24,
+            "status": "lost",
+            "portrait": "👩🏻‍🎤",
+            "quote": "留杯黑啤给我。我带吉他来，房东的独奏已经够多了。"
+          },
+          {
+            "id": "d1-guest7",
+            "name": "诺拉",
+            "person": null,
+            "beer": "blond",
+            "budget": 10,
+            "arrival": 146,
+            "patience": 27,
+            "status": "lost",
+            "portrait": "🧑🏼",
+            "quote": "一杯金色艾尔。老板说公司是家，所以加班费算亲情。"
+          }
+        ],
+        "pours": [],
+        "earned": 0,
+        "served": 0,
+        "satisfied": 0,
+        "lost": 8,
+        "promiseKept": false,
+        "promiseBroken": false,
+        "event": null,
+        "rentAdjustment": 0
+      },
+      "reports": [
+        {
+          "day": 1,
+          "earned": 0,
+          "served": 0,
+          "satisfied": 0,
+          "lost": 8,
+          "rent": 18,
+          "cash": 27,
+          "promiseKept": false,
+          "promiseBroken": false,
+          "note": "椅子比客人待得久。会计说这是沉淀，你决定先把杯子洗了。  "
+        }
+      ],
+      "lastMessage": "城市背面的门开着。去夜店找冷藏箱，或者沿着陌生的灯走。",
+      "result": null,
+      "prepared": [
+        "explore"
+      ],
+      "backstage": {
+        "run": {
+          "version": 4,
+          "location": {
+            "clues": [],
+            "marketOpen": false,
+            "outcomes": []
+          },
+          "district": {
+            "belt": "east",
+            "irrigation": 0,
+            "repaired": false,
+            "visited": [
+              "market"
+            ]
+          },
+          "seed": 42001,
+          "day": 1,
+          "kit": "hook",
+          "time": 22.198699999999988,
+          "duration": 180,
+          "status": "active",
+          "p": {
+            "x": 456.4099999999998,
+            "y": 1140,
+            "fx": 1,
+            "fy": 0,
+            "hp": 3,
+            "inv": 0,
+            "dash": 0,
+            "hook": 0,
+            "foam": 0
+          },
+          "items": [
+            {
+              "id": "item0",
+              "kind": "bottle",
+              "x": 405,
+              "y": 990,
+              "vx": 0,
+              "vy": 0,
+              "state": "world",
+              "lock": 0
+            },
+            {
+              "id": "item1",
+              "kind": "hops",
+              "x": 740,
+              "y": 850,
+              "vx": 0,
+              "vy": 0,
+              "state": "world",
+              "lock": 0
+            },
+            {
+              "id": "item2",
+              "kind": "barrel",
+              "x": 434.2233360924669,
+              "y": 1120,
+              "vx": 43.51991364435007,
+              "vy": 0,
+              "state": "world",
+              "lock": 0
+            },
+            {
+              "id": "item3",
+              "kind": "salvage",
+              "x": 660,
+              "y": 1180,
+              "vx": 0,
+              "vy": 0,
+              "state": "world",
+              "lock": 0
+            },
+            {
+              "id": "item4",
+              "kind": "bottle",
+              "x": 610,
+              "y": 540,
+              "vx": 0,
+              "vy": 0,
+              "state": "world",
+              "lock": 0
+            },
+            {
+              "id": "item5",
+              "kind": "hops",
+              "x": 430,
+              "y": 370,
+              "vx": 0,
+              "vy": 0,
+              "state": "world",
+              "lock": 0
+            },
+            {
+              "id": "item6",
+              "kind": "parcel",
+              "x": 1230,
+              "y": 1050,
+              "vx": 0,
+              "vy": 0,
+              "state": "world",
+              "lock": 0
+            },
+            {
+              "id": "item7",
+              "kind": "bottle",
+              "x": 1300,
+              "y": 875,
+              "vx": 0,
+              "vy": 0,
+              "state": "world",
+              "lock": 0
+            },
+            {
+              "id": "item8",
+              "kind": "salvage",
+              "x": 1430,
+              "y": 1130,
+              "vx": 0,
+              "vy": 0,
+              "state": "world",
+              "lock": 0
+            },
+            {
+              "id": "item9",
+              "kind": "barrel",
+              "x": 1970.0025199999802,
+              "y": 1020,
+              "vx": -46.800000000000004,
+              "vy": 0,
+              "state": "world",
+              "lock": 0
+            },
+            {
+              "id": "item10",
+              "kind": "salvage",
+              "x": 1970.9940000000004,
+              "y": 1020,
+              "vx": 0,
+              "vy": 0,
+              "state": "world",
+              "lock": 0
+            },
+            {
+              "id": "item11",
+              "kind": "hops",
+              "x": 1960,
+              "y": 480,
+              "vx": 0,
+              "vy": 0,
+              "state": "world",
+              "lock": 0
+            },
+            {
+              "id": "item12",
+              "kind": "bottle",
+              "x": 1840,
+              "y": 440,
+              "vx": 0,
+              "vy": 0,
+              "state": "world",
+              "lock": 0
+            },
+            {
+              "id": "item13",
+              "kind": "bottle",
+              "x": 896.3745804107748,
+              "y": 280,
+              "vx": 0,
+              "vy": 0,
+              "state": "world",
+              "lock": 0
+            },
+            {
+              "id": "item14",
+              "kind": "salvage",
+              "x": 625.5648861906673,
+              "y": 445.7112617783926,
+              "vx": 0,
+              "vy": 0,
+              "state": "world",
+              "lock": 0
+            },
+            {
+              "id": "item15",
+              "kind": "bottle",
+              "x": 899.6240001660772,
+              "y": 740,
+              "vx": 0,
+              "vy": 0,
+              "state": "world",
+              "lock": 0
+            },
+            {
+              "id": "item16",
+              "kind": "salvage",
+              "x": 905.4011976951733,
+              "y": 970,
+              "vx": 0,
+              "vy": 0,
+              "state": "world",
+              "lock": 0
+            }
+          ],
+          "actors": [
+            {
+              "id": "cleaner1",
+              "type": "cleaner",
+              "x": 708.7520000000011,
+              "y": 1090,
+              "homeX": 680,
+              "homeY": 1090,
+              "dir": 1,
+              "mode": "patrol",
+              "timer": 0,
+              "vx": 0,
+              "vy": 0,
+              "stun": 0
+            },
+            {
+              "id": "guard",
+              "type": "guard",
+              "x": 1330,
+              "y": 894.5926000000143,
+              "homeX": 1330,
+              "homeY": 1000,
+              "dir": -1,
+              "mode": "patrol",
+              "timer": 0,
+              "vx": 0,
+              "vy": 0,
+              "stun": 0
+            },
+            {
+              "id": "cleaner2",
+              "type": "cleaner",
+              "x": 1817.6751999999992,
+              "y": 840,
+              "homeX": 1840,
+              "homeY": 840,
+              "dir": -1,
+              "mode": "patrol",
+              "timer": 0,
+              "vx": 0,
+              "vy": 0,
+              "stun": 0
+            },
+            {
+              "id": "gull",
+              "type": "gull",
+              "x": 625.5648861906673,
+              "y": 430.7112617783926,
+              "homeX": 730,
+              "homeY": 480,
+              "dir": 1,
+              "mode": "patrol",
+              "timer": 0,
+              "vx": 0,
+              "vy": 0,
+              "stun": 0
+            },
+            {
+              "id": "dancer0",
+              "type": "dancer",
+              "x": 1149.840087689737,
+              "y": 854.2859110615632,
+              "homeX": 1170,
+              "homeY": 880,
+              "dir": -1,
+              "mode": "patrol",
+              "timer": 0,
+              "vx": 0,
+              "vy": 0,
+              "stun": 0
+            },
+            {
+              "id": "dancer1",
+              "type": "dancer",
+              "x": 1229.840087689737,
+              "y": 835.2137274392845,
+              "homeX": 1250,
+              "homeY": 880,
+              "dir": -1,
+              "mode": "patrol",
+              "timer": 0,
+              "vx": 0,
+              "vy": 0,
+              "stun": 0
+            },
+            {
+              "id": "dancer2",
+              "type": "dancer",
+              "x": 1309.840087689737,
+              "y": 860.0823931260879,
+              "homeX": 1330,
+              "homeY": 880,
+              "dir": 1,
+              "mode": "patrol",
+              "timer": 0,
+              "vx": 0,
+              "vy": 0,
+              "stun": 0
+            },
+            {
+              "id": "dancer3",
+              "type": "dancer",
+              "x": 1173.0894995776182,
+              "y": 1054.2859110615632,
+              "homeX": 1170,
+              "homeY": 1080,
+              "dir": 1,
+              "mode": "patrol",
+              "timer": 0,
+              "vx": 0,
+              "vy": 0,
+              "stun": 0
+            },
+            {
+              "id": "dancer4",
+              "type": "dancer",
+              "x": 1343.0894995776182,
+              "y": 1061.2587569105008,
+              "homeX": 1340,
+              "homeY": 1080,
+              "dir": -1,
+              "mode": "patrol",
+              "timer": 0,
+              "vx": 0,
+              "vy": 0,
+              "stun": 0
+            }
+          ],
+          "street": {
+            "situation": "works",
+            "baits": 3,
+            "lureCooldown": 0,
+            "noise": null,
+            "barrels": [
+              {
+                "id": "street-market",
+                "x": 500,
+                "y": 1160
+              },
+              {
+                "id": "street-club",
+                "x": 1230,
+                "y": 1100
+              }
+            ],
+            "dragging": null
+          },
+          "bag": [],
+          "discovered": [],
+          "opened": false,
+          "parcel": "ground",
+          "patches": [],
+          "fx": [],
+          "sequence": 0,
+          "log": [],
+          "message": "去东边的夜店找冷藏箱。也可以先逛逛，回店口一直在身后。",
+          "hits": 0,
+          "marketShift": {
+            "version": 1,
+            "condition": "restock",
+            "approach": null,
+            "delivered": false,
+            "stockTaken": false,
+            "powerItem": null
+          },
+          "auto": {
+            "enabled": true,
+            "goal": null,
+            "event": "route",
+            "visited": [],
+            "history": [],
+            "speed": 1,
+            "approach": "foam",
+            "legTime": 0
+          }
+        },
+        "discovered": [],
+        "resolution": null,
+        "trips": 0,
+        "from": "summary",
+        "cashAfterClose": 0,
+        "journal": []
+      },
+      "life": {
+        "arrangement": null,
+        "bouquet": null,
+        "flowersDay": 0,
+        "display": null,
+        "gifts": 0,
+        "morning": [],
+        "clues": []
+      },
+      "journeys": {
+        "run": null,
+        "usedDay": 0,
+        "debt": 0,
+        "history": []
+      },
+      "market": {
+        "version": 1,
+        "history": []
+      }
+    },
+    "city": {
+      "x": 290,
+      "y": 590,
+      "visited": [
+        "pub"
+      ],
+      "bike": {
+        "x": 290,
+        "y": 590,
+        "mounted": false
+      }
+    },
+    "brewElapsed": 0,
+    "tutorialSeen": false,
+    "sound": true
+  },
+  "dialog": "\n      PAUSED · 时间停止暂时逃避现实。上次的进度已恢复。准备好后，从上次停下的地方继续。船、酒、客人的耐心都停在这里。房东暂时也不能发明新费用。继续播放 / 回到街上重新开始这三天\n    "
+}

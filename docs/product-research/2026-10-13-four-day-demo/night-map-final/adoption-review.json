@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-night-map-r2-20261013",
+  "receipt_sha256": "c5ee902fe2c7b561b3d304f8f3e5573c049bd4f88ea7b69183528f12aa1a0a90",
+  "reviewed_at": "2026-10-13T11:27:55Z",
+  "outcome": "accepted_with_changes",
+  "failure_type": "other",
+  "evidence": [
+    {
+      "path": "/tmp/amsterdam-night-map-r2-review-20261013/parent-validation.md",
+      "sha256": "f318f8ea43f6b37280390304303f57f1d205bcb66d3e6bc03ff14d20ad25c84c"
+    }
+  ]
+}

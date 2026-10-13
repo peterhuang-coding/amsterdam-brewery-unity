@@ -1,0 +1,176 @@
+{
+  "artifact_dir": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-night-map-r2-20261013",
+  "blockers": [],
+  "changed_files": [
+    {
+      "path": "tools/prototype/backstage-scene.js",
+      "sha256": "153175d48b778960a86a0a43317e49bc1aa64837e78dfb2d108387715428ce0f"
+    },
+    {
+      "path": "tools/prototype/test-night-map-scene.js",
+      "sha256": "e84a1e0b95b840a07814b6c8c5b00520f77fff957753e29f1690f266a043e873"
+    }
+  ],
+  "claude": {
+    "final_subtype": "success",
+    "is_error": false,
+    "outcome": "completed",
+    "pid": 56489,
+    "returncode": 0,
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1157416,
+      "inference_geo": "",
+      "input_tokens": 96929,
+      "iterations": [],
+      "output_tokens": 36122,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_fetch_requests": 0,
+        "web_search_requests": 0
+      },
+      "service_tier": "standard",
+      "speed": "standard"
+    }
+  },
+  "cost_basis": "client estimate; not Coding Plan charge",
+  "cost_usd": 1.9664030000000006,
+  "deleted_files": [],
+  "disallowed_changes": [],
+  "elapsed_seconds": 847.777,
+  "finished_at": "2026-10-13T11:02:29.204619+00:00",
+  "input_hashes": {
+    "brief.md": "252c9aafb2daf697b6edb33297a9aab77136f49601d2ac3e07b4b43c6b80de3a",
+    "frame-contract.md": "904985ec432a0f2a5b3c65989c57ada26eb958bfbbfd21be387bec334613fa72",
+    "parent-findings.md": "7aafb5fd93265d0f7c35b38f1e79da5da09c2347e7c72e9488eaad36a2ffe197",
+    "tools/prototype/backstage-core.js": "335baa752efedabf5771436c23fb5370a40af5aef4b89cdd1793351906219d07",
+    "tools/prototype/backstage-scene.js": "eeb1b2258b151abb47bd112fc79db941eb81c4185874e1052b2ad02c9e9cceee",
+    "tools/prototype/test-district-core.js": "7c24b0f1a9a422ffae5f25c3638e9fe22bf6b0649fa627959d45c882608669e4",
+    "tools/prototype/test-night-map-scene.js": "ffd26171ba3d941c8c96d1ff6fd8daee24844f62cc2b264f2ab54f1ceb8988a9"
+  },
+  "memory_delta": [
+    "D24 correction1 applied to PLAY08 candidate: narrow minimap labels/markers now sized from cssW/1100 (\u4f60/\u56de\u5e97>=11 CSS px, M>=10, arrow/diamond short axis>=6 CSS px at 320/350/368/390); diamond r=arrow+2 fixes pre-existing narrow marker8<arrow9 overlap defect.",
+    "Genuine RED preserved in transcript: unmodified candidate + 3 new tests -> 13 pass/2 fail (test13 \u4f60 3.78 CSS px at 320; test14 diamond 8 < arrow 9), original 1-12 green; post-fix 15/15, district-core 18/18, both --check clean.",
+    "Only the two output files changed; map scale/origin, panel, walls/water/street/market/door/gate geometry, cues, desktop metrics (s .08, marker5.5/arrow5/label10/m11), camera/worldPoint/UI/CSS/core/economy/save untouched.",
+    "Technical text metric documented in test (CJK 1em, M 0.85em, space 0.3em, ascent .8em/descent .2em); edge fixtures are B.solid-verified legal cells and explicitly technical. Parent owns natural GUI visual acceptance."
+  ],
+  "next_steps": [
+    "Parent replays the 3 new regressions against the original candidate (expect RED) and corrected files (expect GREEN), runs full 379+15 suite, audits narrow-only boundary/hashes.",
+    "Parent performs natural 390px night GUI checks: night path/movement, manual-auto, M map, pause-refresh, actual exit, and screenshot label/marker legibility at 320/350/368/390 CSS widths before adoption.",
+    "If parent acceptance fails, shelve PLAY08 per D24; no third request. PLAY03/06/07 remain shelved."
+  ],
+  "observed_models": [
+    "doubao-seed-evolving"
+  ],
+  "permission_denials": [],
+  "replayed": false,
+  "report": {
+    "blockers": [],
+    "changed_files": [
+      "tools/prototype/backstage-scene.js",
+      "tools/prototype/test-night-map-scene.js"
+    ],
+    "memory_delta": [
+      "D24 correction1 applied to PLAY08 candidate: narrow minimap labels/markers now sized from cssW/1100 (\u4f60/\u56de\u5e97>=11 CSS px, M>=10, arrow/diamond short axis>=6 CSS px at 320/350/368/390); diamond r=arrow+2 fixes pre-existing narrow marker8<arrow9 overlap defect.",
+      "Genuine RED preserved in transcript: unmodified candidate + 3 new tests -> 13 pass/2 fail (test13 \u4f60 3.78 CSS px at 320; test14 diamond 8 < arrow 9), original 1-12 green; post-fix 15/15, district-core 18/18, both --check clean.",
+      "Only the two output files changed; map scale/origin, panel, walls/water/street/market/door/gate geometry, cues, desktop metrics (s .08, marker5.5/arrow5/label10/m11), camera/worldPoint/UI/CSS/core/economy/save untouched.",
+      "Technical text metric documented in test (CJK 1em, M 0.85em, space 0.3em, ascent .8em/descent .2em); edge fixtures are B.solid-verified legal cells and explicitly technical. Parent owns natural GUI visual acceptance."
+    ],
+    "next_steps": [
+      "Parent replays the 3 new regressions against the original candidate (expect RED) and corrected files (expect GREEN), runs full 379+15 suite, audits narrow-only boundary/hashes.",
+      "Parent performs natural 390px night GUI checks: night path/movement, manual-auto, M map, pause-refresh, actual exit, and screenshot label/marker legibility at 320/350/368/390 CSS widths before adoption.",
+      "If parent acceptance fails, shelve PLAY08 per D24; no third request. PLAY03/06/07 remain shelved."
+    ],
+    "status": "completed",
+    "summary": "Narrow-only PLAY08 minimap legibility correction in backstage-scene.js miniMap; desktop branch, projection (s=0.14, x=772, y=18), panel, all static/dynamic geometry, colors, cues and core/UI untouched. Narrow marker/label metrics now derive from the true CSS scale cssW/1100: \u4f60/\u56de\u5e97 = ceil(11/cssScale) internal px, M \u5168\u56fe = ceil(10/cssScale); arrow r = ceil(6/(1.04*cssScale)) so its facing-east bbox short axis (1.04r) is >=6 CSS px; diamond r = arrow+2 so all four cardinal corners protrude past the overlapping arrow at every facing (old candidate had marker 8 < arrow 9). \u4f60 label placement is narrow-only: above the silhouette with 4px clearance, flips below near the top edge, and its horizontal center is clamped to the panel so full glyph extents stay inside x760..1090/y12..310; markers are never moved from true projected world positions. \u56de\u5e97 keeps its relative placement (ex+marker+3, ey+labelSize/2+1); M anchor unchanged. Added 3 regressions in test-night-map-scene.js (original 12 assertions/tests preserved verbatim, recorder harness unchanged): effective-CSS font sizes and marker short axes from recorded geometry at 320/350/368/390 with documented CJK text metric (1em CJK/0.85em M/0.3em space, 0.8em ascent/0.2em descent), overlap/extent separation, diamond-protrudes-over-arrow across 4 cardinal facings x 4 widths, and B.solid-verified technical edge fixtures for label clamping. Genuine RED confirmed against unmodified candidate: tests 13 failed at '\u4f60 >=11 CSS px at 320, got 3.78' (parent finding 4.35 at 368 reproduced) and 14 failed 'diamond corners must protrude ... facing (1,0) width 320' (marker8<arrow9), original 1-12 stayed green; after the fix all 15 pass. Final commands: night-map 15/15 pass, district-core 18/18 pass, both node --check clean. Natural GUI screenshots remain parent work; no gameplay/geometry changes made.",
+    "tests": [
+      {
+        "command": "node --test tools/prototype/test-night-map-scene.js",
+        "exit_code": 0,
+        "summary": "15/15 pass: original 12 preserved plus 3 new D24 narrow regressions (CSS label sizes 11/10px, marker short axes 6px at 320/350/368/390, overlap/facing separation, technical edge-label clamp)"
+      },
+      {
+        "command": "node --test tools/prototype/test-district-core.js",
+        "exit_code": 0,
+        "summary": "18/18 pass; backstage-core.js untouched and district behavior unchanged"
+      },
+      {
+        "command": "node --check tools/prototype/backstage-scene.js",
+        "exit_code": 0,
+        "summary": "syntax OK"
+      },
+      {
+        "command": "node --check tools/prototype/test-night-map-scene.js",
+        "exit_code": 0,
+        "summary": "syntax OK"
+      }
+    ]
+  },
+  "request_sha256": "4a7ca82a9e2e75bcb4b5c8b39aa50049667eb9848b447a61e60988b3566b760d",
+  "requested": {
+    "allowed_tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash"
+    ],
+    "basis": "launcher-pinned request; requested, not provider-confirmed; the pinned model is a fixed convention, not a ranking result",
+    "model": "doubao-seed-evolving",
+    "permission_allow": [
+      "Read(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-night-map-r2-20261013/workspace/**)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-night-map-r2-20261013/workspace/tools/prototype/backstage-scene.js)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-night-map-r2-20261013/workspace/tools/prototype/backstage-scene.js)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-night-map-r2-20261013/workspace/tools/prototype/test-night-map-scene.js)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-night-map-r2-20261013/workspace/tools/prototype/test-night-map-scene.js)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-night-map-r2-20261013/workspace/handoff-result.json)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-night-map-r2-20261013/workspace/handoff-result.json)",
+      "Bash(node --test tools/prototype/test-night-map-scene.js)",
+      "Bash(node --test tools/prototype/test-district-core.js)",
+      "Bash(node --check tools/prototype/backstage-scene.js)",
+      "Bash(node --check tools/prototype/test-night-map-scene.js)"
+    ],
+    "permission_mode": "dontAsk",
+    "provider_base_url": "https://ark.cn-beijing.volces.com/api/coding",
+    "reasoning_effort": "high",
+    "thinking_enabled": true
+  },
+  "session_id": "b5139ed0-aea5-45c3-9ecc-b5c59ce6ae46",
+  "started_at": "2026-10-13T10:48:21.414734+00:00",
+  "status": "verifying",
+  "summary": "Narrow-only PLAY08 minimap legibility correction in backstage-scene.js miniMap; desktop branch, projection (s=0.14, x=772, y=18), panel, all static/dynamic geometry, colors, cues and core/UI untouched. Narrow marker/label metrics now derive from the true CSS scale cssW/1100: \u4f60/\u56de\u5e97 = ceil(11/cssScale) internal px, M \u5168\u56fe = ceil(10/cssScale); arrow r = ceil(6/(1.04*cssScale)) so its facing-east bbox short axis (1.04r) is >=6 CSS px; diamond r = arrow+2 so all four cardinal corners protrude past the overlapping arrow at every facing (old candidate had marker 8 < arrow 9). \u4f60 label placement is narrow-only: above the silhouette with 4px clearance, flips below near the top edge, and its horizontal center is clamped to the panel so full glyph extents stay inside x760..1090/y12..310; markers are never moved from true projected world positions. \u56de\u5e97 keeps its relative placement (ex+marker+3, ey+labelSize/2+1); M anchor unchanged. Added 3 regressions in test-night-map-scene.js (original 12 assertions/tests preserved verbatim, recorder harness unchanged): effective-CSS font sizes and marker short axes from recorded geometry at 320/350/368/390 with documented CJK text metric (1em CJK/0.85em M/0.3em space, 0.8em ascent/0.2em descent), overlap/extent separation, diamond-protrudes-over-arrow across 4 cardinal facings x 4 widths, and B.solid-verified technical edge fixtures for label clamping. Genuine RED confirmed against unmodified candidate: tests 13 failed at '\u4f60 >=11 CSS px at 320, got 3.78' (parent finding 4.35 at 368 reproduced) and 14 failed 'diamond corners must protrude ... facing (1,0) width 320' (marker8<arrow9), original 1-12 stayed green; after the fix all 15 pass. Final commands: night-map 15/15 pass, district-core 18/18 pass, both node --check clean. Natural GUI screenshots remain parent work; no gameplay/geometry changes made.",
+  "task_id": "amsterdam-night-map-r2-20261013",
+  "telemetry": {
+    "attempt_kind": "correction",
+    "logical_task_id": "play08-night-map",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "tests": [
+    {
+      "command": "node --test tools/prototype/test-night-map-scene.js",
+      "exit_code": 0,
+      "summary": "15/15 pass: original 12 preserved plus 3 new D24 narrow regressions (CSS label sizes 11/10px, marker short axes 6px at 320/350/368/390, overlap/facing separation, technical edge-label clamp)"
+    },
+    {
+      "command": "node --test tools/prototype/test-district-core.js",
+      "exit_code": 0,
+      "summary": "18/18 pass; backstage-core.js untouched and district behavior unchanged"
+    },
+    {
+      "command": "node --check tools/prototype/backstage-scene.js",
+      "exit_code": 0,
+      "summary": "syntax OK"
+    },
+    {
+      "command": "node --check tools/prototype/test-night-map-scene.js",
+      "exit_code": 0,
+      "summary": "syntax OK"
+    }
+  ]
+}

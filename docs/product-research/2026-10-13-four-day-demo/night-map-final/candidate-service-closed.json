@@ -1,0 +1,6 @@
+{
+  "pid": 58729,
+  "port": 18843,
+  "matched_command": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -m http.server 18843 --bind 127.0.0.1 --directory /tmp/amsterdam-night-map-r2-review-20261013/candidate",
+  "sent_SIGTERM": true
+}

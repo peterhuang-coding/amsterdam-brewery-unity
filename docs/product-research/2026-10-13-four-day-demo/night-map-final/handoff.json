@@ -1,0 +1,65 @@
+{
+  "acceptance": [
+    "Labels11CSSpx/M10CSSpx and distinguishable6CSSpx short-axis markers at320/350/368/390 canvas widths.",
+    "Labels/markers remain clear at overlap and edges, actual geometry unchanged.",
+    "Original12 and all old assertions preserved; genuine original-candidate RED/correction GREEN.",
+    "Only2 files, complete4-command report; parent owns naturalGUI."
+  ],
+  "commands": [
+    "node --test tools/prototype/test-night-map-scene.js",
+    "node --test tools/prototype/test-district-core.js",
+    "node --check tools/prototype/backstage-scene.js",
+    "node --check tools/prototype/test-night-map-scene.js"
+  ],
+  "constraints": [
+    "Only public supplied inputs.",
+    "Narrow label/marker sizing/placement only; preserve projection/static/dynamic geometry/desktop/otherdraw/core/UI/CSS/economy/save.",
+    "Only4exactBash; no grep/ls/wc; no PLAY03/06/07 revival."
+  ],
+  "data_sensitivity": "public",
+  "goal": "Correct only narrow-screen minimap label and marker legibility in the preserved PLAY08 candidate and finish a truthful complete handoff.",
+  "max_turns": 32,
+  "memory": {
+    "completed": [
+      "Original two-file candidate preserved exactly; parent12/12 and old379+12=391/391."
+    ],
+    "decisions": [
+      "Keep successful world projection and all obstacle geometry; fix narrow labels/marker size and placement only.",
+      "Only Seed Evolving enabled/high; correction1/1 on submission; still failing then shelve."
+    ],
+    "known_issues": [
+      "Original valid report exists but adapterunknown/CLI143; no successful business terminal.",
+      "PLAY03/06/07 remain shelved."
+    ],
+    "summary": "One D24 correction for play08-night-map; original worker timeout, candidate391 tests green but natural390px labels only4.35CSSpx."
+  },
+  "read_files": [
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/test-district-core.js",
+    "tools/prototype/test-night-map-scene.js",
+    "brief.md",
+    "frame-contract.md",
+    "parent-findings.md"
+  ],
+  "task_id": "amsterdam-night-map-r2-20261013",
+  "tasks": [
+    "Read focused parent findings and supplied candidate.",
+    "Append true effective-CSS-size regression and run supplied candidate RED.",
+    "Fix narrow label/marker sizing/placement only, preserve original12 assertions, run4 exact commands.",
+    "Complete truthful4-row final report and final response before timeout."
+  ],
+  "telemetry": {
+    "attempt_kind": "correction",
+    "logical_task_id": "play08-night-map",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "timeout_seconds": 1200,
+  "version": 1,
+  "workspace": "/tmp/amsterdam-night-map-r2-20261013/input",
+  "write_files": [
+    "tools/prototype/backstage-scene.js",
+    "tools/prototype/test-night-map-scene.js"
+  ]
+}

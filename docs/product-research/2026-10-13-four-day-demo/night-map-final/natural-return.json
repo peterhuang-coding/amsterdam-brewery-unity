@@ -1,0 +1,257 @@
+{
+  "saved": {
+    "version": 1,
+    "game": {
+      "version": 1,
+      "seed": 42001,
+      "day": 1,
+      "phase": "summary",
+      "cash": 27,
+      "actions": 0,
+      "trade": {
+        "rulesFromDay": 1,
+        "contracts": []
+      },
+      "stories": {
+        "version": 1,
+        "fromDay": 1,
+        "threads": []
+      },
+      "garden": {
+        "known": false,
+        "source": null,
+        "introduced": false,
+        "visits": []
+      },
+      "batches": [
+        {
+          "id": "starter-blond",
+          "beer": "blond",
+          "cups": 6,
+          "quality": 1,
+          "madeDay": 1,
+          "aged": false
+        },
+        {
+          "id": "starter-stout",
+          "beer": "stout",
+          "cups": 2,
+          "quality": 1,
+          "madeDay": 1,
+          "aged": false
+        }
+      ],
+      "friends": {
+        "lotte": 0,
+        "bram": 0,
+        "marta": 0
+      },
+      "promises": {
+        "lotte": false
+      },
+      "upgrades": [],
+      "hops": 0,
+      "music": false,
+      "log": [
+        "探险归来：0 杯艾尔，0 份酒花，€0。收好东西，睡醒后再开门。",
+        "城市背面的门开着。去夜店找冷藏箱，或者沿着陌生的灯走。",
+        "第 1 夜收店：0 位满意的客人，支付租金 €18。",
+        "Marta推门进来，点了金色艾尔。",
+        "门灯亮了。欢迎点酒，创业故事免费，但不能抵酒钱。",
+        "先备酒，再开门。工商表格没有“暂时还不会倒酒”这一栏。"
+      ],
+      "totalSatisfied": 0,
+      "totalServed": 0,
+      "brew": null,
+      "forage": null,
+      "night": {
+        "elapsed": 21.0471999999881,
+        "duration": 165,
+        "orders": [
+          {
+            "id": "d1-guest0",
+            "name": "Marta",
+            "person": "marta",
+            "beer": "blond",
+            "budget": 12,
+            "arrival": 0,
+            "patience": 26,
+            "status": "lost",
+            "portrait": "👩🏼‍🦳",
+            "quote": "先倒一杯。商业计划晚点再说，泡沫已经在杯子里了。"
+          },
+          {
+            "id": "d1-guest1",
+            "name": "泰斯",
+            "person": null,
+            "beer": "blond",
+            "budget": 13,
+            "arrival": 22,
+            "patience": 27,
+            "status": "lost",
+            "portrait": "👩🏽",
+            "quote": "一杯金色艾尔。老板说公司是家，所以加班费算亲情。"
+          },
+          {
+            "id": "d1-guest2",
+            "name": "泰斯",
+            "person": null,
+            "beer": "stout",
+            "budget": 15,
+            "arrival": 43,
+            "patience": 26,
+            "status": "lost",
+            "portrait": "👩🏻",
+            "quote": "一杯黑啤。论文还在返修，我先完成这一杯。"
+          },
+          {
+            "id": "d1-guest3",
+            "name": "米兰",
+            "person": null,
+            "beer": "blond",
+            "budget": 10,
+            "arrival": 62,
+            "patience": 26,
+            "status": "lost",
+            "portrait": "👨🏻",
+            "quote": "一杯金色艾尔。老板说公司是家，所以加班费算亲情。"
+          },
+          {
+            "id": "d1-guest4",
+            "name": "Bram",
+            "person": "bram",
+            "beer": "blond",
+            "budget": 8,
+            "arrival": 82,
+            "patience": 26,
+            "status": "lost",
+            "portrait": "🧔🏼",
+            "quote": "来帮个午市，工钱当天结。理想我也有，不拿它抵工资。"
+          },
+          {
+            "id": "d1-guest5",
+            "name": "诺拉",
+            "person": null,
+            "beer": "stout",
+            "budget": 11,
+            "arrival": 105,
+            "patience": 23,
+            "status": "lost",
+            "portrait": "🧑🏼",
+            "quote": "一杯黑啤。论文还在返修，我先完成这一杯。"
+          },
+          {
+            "id": "d1-guest6",
+            "name": "Lotte",
+            "person": "lotte",
+            "beer": "stout",
+            "budget": 13,
+            "arrival": 127,
+            "patience": 24,
+            "status": "lost",
+            "portrait": "👩🏻‍🎤",
+            "quote": "留杯黑啤给我。我带吉他来，房东的独奏已经够多了。"
+          },
+          {
+            "id": "d1-guest7",
+            "name": "诺拉",
+            "person": null,
+            "beer": "blond",
+            "budget": 10,
+            "arrival": 146,
+            "patience": 27,
+            "status": "lost",
+            "portrait": "🧑🏼",
+            "quote": "一杯金色艾尔。老板说公司是家，所以加班费算亲情。"
+          }
+        ],
+        "pours": [],
+        "earned": 0,
+        "served": 0,
+        "satisfied": 0,
+        "lost": 8,
+        "promiseKept": false,
+        "promiseBroken": false,
+        "event": null,
+        "rentAdjustment": 0
+      },
+      "reports": [
+        {
+          "day": 1,
+          "earned": 0,
+          "served": 0,
+          "satisfied": 0,
+          "lost": 8,
+          "rent": 18,
+          "cash": 27,
+          "promiseKept": false,
+          "promiseBroken": false,
+          "note": "椅子比客人待得久。会计说这是沉淀，你决定先把杯子洗了。  "
+        }
+      ],
+      "lastMessage": "探险归来：0 杯艾尔，0 份酒花，€0。收好东西，睡醒后再开门。",
+      "result": null,
+      "prepared": [
+        "explore"
+      ],
+      "backstage": {
+        "run": null,
+        "discovered": [],
+        "resolution": null,
+        "trips": 1,
+        "from": null,
+        "cashAfterClose": 0,
+        "journal": [
+          {
+            "day": 1,
+            "status": "extracted",
+            "cups": 0,
+            "hops": 0,
+            "cash": 0,
+            "visited": [
+              "market"
+            ],
+            "outcomes": []
+          }
+        ]
+      },
+      "life": {
+        "arrangement": null,
+        "bouquet": null,
+        "flowersDay": 0,
+        "display": null,
+        "gifts": 0,
+        "morning": [
+          "第 1 夜带回 0 杯艾尔、0 份酒花和 €0，已经收进酒馆。"
+        ],
+        "clues": []
+      },
+      "journeys": {
+        "run": null,
+        "usedDay": 0,
+        "debt": 0,
+        "history": []
+      },
+      "market": {
+        "version": 1,
+        "history": []
+      }
+    },
+    "city": {
+      "x": 290,
+      "y": 590,
+      "visited": [
+        "pub"
+      ],
+      "bike": {
+        "x": 290,
+        "y": 590,
+        "mounted": false
+      }
+    },
+    "brewElapsed": 0,
+    "tutorialSeen": false,
+    "sound": true
+  },
+  "overflow": false
+}

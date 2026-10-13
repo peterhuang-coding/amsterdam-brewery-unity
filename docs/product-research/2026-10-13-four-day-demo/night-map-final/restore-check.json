@@ -1,0 +1,12 @@
+[
+  {
+    "path": "tools/prototype/backstage-scene.js",
+    "sha256": "153175d48b778960a86a0a43317e49bc1aa64837e78dfb2d108387715428ce0f",
+    "matches_commit": true
+  },
+  {
+    "path": "tools/prototype/test-night-map-scene.js",
+    "sha256": "e84a1e0b95b840a07814b6c8c5b00520f77fff957753e29f1690f266a043e873",
+    "matches_commit": true
+  }
+]

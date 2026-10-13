@@ -5,21 +5,19 @@
   "deadline": "2026-10-16T19:48:33Z",
   "next_direction_review_at": "2026-10-13T15:48:33Z",
   "last_direction_review_at": "2026-10-13T05:51:53Z",
-  "current_task_id": "amsterdam-night-map-r2-20261013",
+  "current_task_id": null,
   "logical_task": "PLAY08",
-  "last_adopted_commit": "bd614431e31dc44cd3730ef6c0d6c022cd355b1a",
+  "last_adopted_commit": "231a1326b0a1ab05a1d59da622e7949db1394cdc",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
   "failure_policy_question_pending": false,
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
-  "current_task_terminal": null,
+  "current_task_terminal": "accepted_with_changes",
   "failure_reason": null,
-  "last_result_at": "2026-10-13T10:31:45.483465Z",
-  "in_flight": [
-    "amsterdam-night-map-r2-20261013"
-  ],
-  "candidate_path": "/tmp/amsterdam-night-map-review-20261013/candidate",
-  "adopted_this_round": 0,
+  "last_result_at": "2026-10-13T11:02:29.204619Z",
+  "in_flight": [],
+  "candidate_path": "/tmp/amsterdam-night-map-r2-review-20261013/candidate",
+  "adopted_this_round": 2,
   "policy_decision": "D24",
   "correction_after_r2": {
     "allowed": 1,
@@ -31,7 +29,7 @@
     "amsterdam-first-street-20261013",
     "amsterdam-first-street-r2-20261013"
   ],
-  "play_url": "http://127.0.0.1:18839/tools/prototype/index.html?seed=42001&commit=bd61443",
+  "play_url": "http://127.0.0.1:18844/tools/prototype/index.html?seed=42001&commit=231a132",
   "task_policy_ledger": {
     "PLAY02": {
       "historical_attempts": 3,
@@ -111,18 +109,23 @@
       "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 1,
-      "outcome": "correction_running",
+      "outcome": "accepted_with_changes",
       "task_id": "amsterdam-night-map-20261013",
       "base_commit": "bd614431e31dc44cd3730ef6c0d6c022cd355b1a",
-      "game_adopted": 0,
+      "game_adopted": 2,
       "business_submitted_at": "2026-10-13T10:11:45.254565+00:00",
       "worker_pid": 53297,
       "business_terminal": "worker_timeout_cli143_unknown_done_complete_report_file_small_screen_failed",
       "business_ended_at": "2026-10-13T10:31:45.483465Z",
-      "structured_review": "review_requires_finished_not_recorded_parent_audit_saved",
+      "structured_review": "accepted_with_changes/other_readonly_wc",
       "correction_task_id": "amsterdam-night-map-r2-20261013",
       "correction_submitted_at": "2026-10-13T10:48:21.378289+00:00",
-      "correction_worker_pid": 56489
+      "correction_worker_pid": 56489,
+      "business_structured_review": "review_requires_finished_not_recorded_parent_audit_saved",
+      "game_commit": "231a1326b0a1ab05a1d59da622e7949db1394cdc",
+      "correction_outcome": "cli0_verifying_complete_report_parent394_and_natural_gui",
+      "correction_ended_at": "2026-10-13T11:02:29.204619Z",
+      "correction_duration_seconds": 847.777
     }
   },
   "provider_cooldown_until": "2026-10-13T09:55:32Z",
@@ -130,12 +133,14 @@
   "failure_notification_recorded_at": "2026-10-13T10:46:54.694579+00:00",
   "provider_cooldown_completed_at": "2026-10-13T10:11:45.254565+00:00",
   "current_submitted_at": "2026-10-13T10:48:21.378289+00:00",
-  "current_worker_pid": 56489,
+  "current_worker_pid": null,
   "current_task_packet": "/tmp/amsterdam-night-map-r2-20261013/handoff.json",
   "current_task_notion": "https://app.notion.com/p/3f83285284df812590cbecc1b3f8e793",
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
-  "current_task_stage": "running",
+  "current_task_stage": "accepted",
   "prepared_task_id": null,
-  "prepared_task_packet": null
+  "prepared_task_packet": null,
+  "play_service_pid": 60227,
+  "play_root": "/tmp/amsterdam-play-231a132"
 }

@@ -1,0 +1,17 @@
+{
+  "started_at": "2026-10-13T17:09:12+00:00",
+  "worker_pid": 93892,
+  "launcher_pid": 93888,
+  "model": "doubao-seed-evolving",
+  "thinking_enabled": true,
+  "effort": "high",
+  "actual_tools": [
+    "Read",
+    "Edit",
+    "Bash"
+  ],
+  "permission_mode": "dontAsk",
+  "adopted": 0,
+  "global_active_before": 0,
+  "capacity_note": "two other live lanes observed earlier; both terminal by immediate launch recheck; non-atomic guarantee"
+}

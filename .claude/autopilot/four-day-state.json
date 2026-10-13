@@ -13,9 +13,11 @@
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
   "current_task_terminal": null,
-  "failure_reason": "previous business request timed out; sole correction prepared; cooldown",
+  "failure_reason": null,
   "last_result_at": "2026-10-13T07:36:50.637999Z",
-  "in_flight": [],
+  "in_flight": [
+    "amsterdam-pub-guests-r2-20261013"
+  ],
   "candidate_path": null,
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -91,26 +93,27 @@
     "PLAY07": {
       "business_attempts_submitted": 1,
       "corrections_allowed": 1,
-      "corrections_submitted": 0,
-      "outcome": "correction_prepared_cooldown",
+      "corrections_submitted": 1,
+      "outcome": "correction_running",
       "task_id": "amsterdam-pub-guests-20261013",
       "base_commit": "bd614431e31dc44cd3730ef6c0d6c022cd355b1a",
       "game_adopted": 0,
       "business_terminal": "request_timed_out_cli1_unknown_done_no_write_test_report",
       "business_ended_at": "2026-10-13T07:36:50.637999Z",
       "correction_task_id": "amsterdam-pub-guests-r2-20261013",
-      "structured_review": "review_requires_finished_not_recorded_parent_audit_saved"
+      "structured_review": "review_requires_finished_not_recorded_parent_audit_saved",
+      "correction_submitted_at": "2026-10-13T08:47:23.488391+00:00"
     }
   },
   "provider_cooldown_until": "2026-10-13T08:36:51Z",
   "provider_cooldown_basis": "parent60minafter_repeated_api_transport_failures_not_server_RetryAfter",
   "failure_notification_recorded_at": "2026-10-13T07:48:00Z",
-  "provider_cooldown_completed_at": null,
-  "current_submitted_at": null,
-  "current_worker_pid": null,
+  "provider_cooldown_completed_at": "2026-10-13T08:47:23.488391+00:00",
+  "current_submitted_at": "2026-10-13T08:47:23.488391+00:00",
+  "current_worker_pid": 47538,
   "current_task_packet": "/tmp/amsterdam-pub-guests-r2-20261013/handoff.json",
   "current_task_notion": "https://app.notion.com/p/3f83285284df819983d1fe6a03568ddb",
-  "prepared_correction_task_id": "amsterdam-pub-guests-r2-20261013",
-  "prepared_correction_packet": "/tmp/amsterdam-pub-guests-r2-20261013/handoff.json",
-  "current_task_stage": "prepared_correction_cooldown"
+  "prepared_correction_task_id": null,
+  "prepared_correction_packet": null,
+  "current_task_stage": "running"
 }

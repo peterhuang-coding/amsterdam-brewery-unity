@@ -1,3 +1,15 @@
+## PLAY07唯一定向修正已单路提交
+
+2026-10-13T08:47:23.488391+00:00，amsterdam-pub-guests-r2-20261013已启动，worker47538/launcher47537。实际init Seed Evolving/Read/Edit/Bash/dontAsk；launch settings确认thinking enabled/effort high，1200秒32轮。logical play07-pub-guests/correction，业务历史1、唯一修正1/1现已使用；修正或父验仍失败搁置该项，不补派/换ID清零/主代理补写。原首包302.817秒超时/CLI1/无写测试报告完整保留。
+
+父选08:36:51Z冷却已过，不代表服务稳定恢复。提交前即时全机账本/CLI0路、本项1路（非原子保证），7输入96447B SHA一致，采用基线bd61443游戏分支干净；合同30a4bf8，Notion执行中。只改原scene酒馆客人段/helper和新test，其他绘制/UI/CSS/核心/经济/存档/旧断言只读，PLAY03/06仍暂缓。收固定原请求/报告/日志/PID，不凭unknown重发；完整范围/工具/新红绿/旧379+新增全量/自然选客倒酒暂停刷新及390px和前后画面通过才采用。
+
+当前仅在途、采用0，试玩仍bd61443/18839，原服务存档不动。下次方向review15:48:33Z和四天固定截止不变。[实际提交](submission.json)与[即时核对](pre-submit-check.json)已保存于pub-guests-r2目录。以下准备态和先前在途态仅为历史。
+
+## PLAY07唯一修正启动前核对
+
+2026-10-13T08:46Z父选冷却已过，实时Notion PLAY07已设执行中；沿用30a4bf8修正合同与精确bd61443基线、7输入、2输出/4精确命令。下一步即时复核固定ID及全机容量后单路提交amsterdam-pub-guests-r2-20261013；此段为提交意图，尚未实际派发，实际PID/时间以后续原账本为准。D24同项唯一修正，提交才计1/1；当前无新采用，旧首包失败保留。
+
 ## PLAY07首包超时；唯一修正准备待冷却
 
 amsterdam-pub-guests-20261013于2026-10-13T07:36:50.637999Z结束，302.817秒/7轮、Request timed out、CLI1、done/unknown，worker42545退出。subtype success同时is_error=true/terminal_reason=api_error，HTTP状态null。Read6均输入范围；7源与7暂存SHA一致，无Edit/Bash/测试/报告、候选或采用。标准review返回review_requires_finished，未登记rejected，父级终态审查独立保存；原请求/回执/日志不改。证据pub-guests-failure。

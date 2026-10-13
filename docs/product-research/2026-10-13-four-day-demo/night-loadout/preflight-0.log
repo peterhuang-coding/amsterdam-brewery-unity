@@ -1,0 +1,117 @@
+TAP version 13
+# ✓ new expeditions default to a paused automatic choice while manual stays available
+# ✓ reading choices freezes actors, cargo, cooldowns and expedition time
+# ✓ automatic choices travel through the actual city and settle the Noor and greenhouse loop
+# ✓ choosing to keep the box leads to the kept consequence rather than a fake handover
+# ✓ a full bag pauses for an explicit cargo decision and does not silently discard goods
+# ✓ switching control does not teleport or consume time and invalidates the old route
+# ✓ pending and travelling saves resume valid decisions, legacy runs remain valid, malformed auto state rejects
+# ✓ automatic input leaves global pause, help, Escape and browser navigation shortcuts available
+# ✓ delivered parcels are not offered again as a destination that secretly goes somewhere else
+# ✓ a real journey can reveal a greenhouse detour without discarding the original route
+# ✓ following the flower worker replaces the route with an actual greenhouse visit
+# 11 automatic exploration behavioral tests passed.
+# Subtest: tools/prototype/test-backstage-auto.js
+ok 1 - tools/prototype/test-backstage-auto.js
+  ---
+  duration_ms: 367.730625
+  type: 'test'
+  ...
+# ✓ expedition enters after closing and preserves pub stock
+# ✓ seed/day repeat encounters exactly, with different routes on later visits
+# ✓ walking and dash cannot tunnel through shelving or the greenhouse gate
+# ✓ a directional hook retrieves moving goods but respects walls and range
+# ✓ goods auto-stow, capacity is enforced, and dropping frees the last bag slot
+# ✓ foam interrupts a charging machine and expires after its useful window
+# ✓ the greenhouse lever opens a physical route and discovery survives another run
+# ✓ contraband requires deliberate pickup, never enters beer or ingredient rewards
+# ✓ discovering the greenhouse opens a second safe extraction route
+# ✓ Noor receives a physically carried parcel only once
+# ✓ safe extraction preserves cargo; bailout loses cargo but preserves discoveries
+# ✓ time expiration ends a run with recoverable partial cargo, never touches home funds
+# ✓ returning cargo settles once and Noor becomes a recognizable evening guest
+# ✓ older saves migrate without losing cash, batches, day or relationships
+# ✓ refresh roundtrips a running expedition; malformed coordinates and cargo reject
+# ✓ stationary pointer stays aimed to the right as the camera follows a moving player
+# 16 backstage behavioral tests passed.
+# Subtest: tools/prototype/test-backstage.js
+ok 2 - tools/prototype/test-backstage.js
+  ---
+  duration_ms: 144.84725
+  type: 'test'
+  ...
+# Subtest: welcome offers one start CTA and keeps the seed in an accessible native disclosure
+ok 3 - welcome offers one start CTA and keeps the seed in an accessible native disclosure
+  ---
+  duration_ms: 47.690875
+  type: 'test'
+  ...
+# Subtest: day starts in a close following street view; pub/Lotte lead and the overview is one action away
+ok 4 - day starts in a close following street view; pub/Lotte lead and the overview is one action away
+  ---
+  duration_ms: 49.097208
+  type: 'test'
+  ...
+# Subtest: all seven destinations stay genuinely reachable through the overview, and every arrival is recorded
+ok 5 - all seven destinations stay genuinely reachable through the overview, and every arrival is recorded
+  ---
+  duration_ms: 4781.372417
+  type: 'test'
+  ...
+# Subtest: first street recommends the optional Lotte walk whose promise spends exactly one preparation and no cash
+ok 6 - first street recommends the optional Lotte walk whose promise spends exactly one preparation and no cash
+  ---
+  duration_ms: 54.702959
+  type: 'test'
+  ...
+# Subtest: the recommendation can be skipped: the pub door works immediately and opening keeps the preparations warning
+ok 7 - the recommendation can be skipped: the pub door works immediately and opening keeps the preparations warning
+  ---
+  duration_ms: 44.509542
+  type: 'test'
+  ...
+# Subtest: first night shows a short local select/pour/stop cue that can be dismissed once
+ok 8 - first night shows a short local select/pour/stop cue that can be dismissed once
+  ---
+  duration_ms: 43.536083
+  type: 'test'
+  ...
+# Subtest: restoring a saved night keeps the auto-pause; resuming returns to play
+ok 9 - restoring a saved night keeps the auto-pause; resuming returns to play
+  ---
+  duration_ms: 42.283666
+  type: 'test'
+  ...
+# Subtest: camera follows at close scale, and clicks invert the real transform at pub and far boundary
+ok 10 - camera follows at close scale, and clicks invert the real transform at pub and far boundary
+  ---
+  duration_ms: 8.352208
+  type: 'test'
+  ...
+# Subtest: street view labels the pub door and Lotte bridge but not distant destinations; overview labels all seven
+ok 11 - street view labels the pub door and Lotte bridge but not distant destinations; overview labels all seven
+  ---
+  duration_ms: 5.367667
+  type: 'test'
+  ...
+# Subtest: pub route from the card really reaches the pub from the pub, Lotte bridge and a distant place, while E stays nearest
+ok 12 - pub route from the card really reaches the pub from the pub, Lotte bridge and a distant place, while E stays nearest
+  ---
+  duration_ms: 1853.790875
+  type: 'test'
+  ...
+# Subtest: the recommendation advances one honest step at a time and never promises resources it cannot spend
+ok 13 - the recommendation advances one honest step at a time and never promises resources it cannot spend
+  ---
+  duration_ms: 1917.096875
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8926.417583

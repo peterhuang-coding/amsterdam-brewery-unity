@@ -1,0 +1,23 @@
+[
+  {
+    "command": "node --test tools/prototype/test-first-street-ui.js tools/prototype/test-backstage.js tools/prototype/test-backstage-auto.js",
+    "exit": 0,
+    "tail": [
+      "  ...",
+      "1..13",
+      "# tests 13",
+      "# suites 0",
+      "# pass 13",
+      "# fail 0",
+      "# cancelled 0",
+      "# skipped 0",
+      "# todo 0",
+      "# duration_ms 8926.417583"
+    ]
+  },
+  {
+    "command": "node --check tools/prototype/reopening-ui.js",
+    "exit": 0,
+    "tail": []
+  }
+]

@@ -18,5 +18,6 @@
   "new_cc_requests": 0,
   "game_changes": 0,
   "node_regression_rerun": false,
-  "parent_diagnostic": "Initial archive assertion counted directories as files (102 entries versus expected 93). Corrected to regular files: 93=91 source+2 metadata, plus9 directory entries. No package bytes changed."
+  "parent_diagnostic": "Initial archive assertion counted directories as files (102 entries versus expected 93). Corrected to regular files: 93=91 source+2 metadata, plus9 directory entries. No package bytes changed.",
+  "documentation_diagnostic": "Initial cached diff check flagged original console raw trailing blank line; commit c85c793 occurred despite failed check. Follow-up stores identical raw bytes as gzip, preserves history, and reruns cached check before next commit."
 }

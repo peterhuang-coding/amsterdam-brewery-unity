@@ -30,9 +30,9 @@
     "sha256": "63003a883bd27c369233933b6d476a912bde5d6fb7ed2a1fd4daee8ac9beaa93"
   },
   {
-    "path": "console.log",
-    "bytes": 55,
-    "sha256": "d0e5634bb0c1271965327ad2ac18107af18fa7da6d2c9ce13e03eeda6cb603db"
+    "path": "console.log.gz",
+    "bytes": 70,
+    "sha256": "645b9df4302a81e526510e6491588ad6ea6ce3787fd466780c1bd0ffacd0fc8b"
   },
   {
     "path": "package-390.png",
@@ -41,8 +41,8 @@
   },
   {
     "path": "parent-validation.json",
-    "bytes": 952,
-    "sha256": "c1813f3154149014d4863db09597b6cec82b5943e492adcb7debc648785f8bf1"
+    "bytes": 1216,
+    "sha256": "71768427bdd3a67fd7a7cb4002a5598f66bfc9fdc4e13ffa7a7dd31ee8f0d497"
   },
   {
     "path": "receipt.json",

@@ -1,0 +1,25 @@
+{
+  "task_id": "amsterdam-market-focus-r2-20261013",
+  "logical_task_id": "play05-market-focus",
+  "attempt_kind": "correction",
+  "correction_number": 1,
+  "corrections_allowed": 1,
+  "submitted_at": "2026-10-13T05:16:38.274940+00:00",
+  "launcher_pid": 33130,
+  "worker_pid": 33131,
+  "handoff": "/tmp/amsterdam-market-focus-r2-20261013/handoff.json",
+  "base_commit": "e3b7ac3d4aa170365988171eeaea8758f64b9e8c",
+  "candidate_reused_from": "amsterdam-market-focus-20261013",
+  "requested_thinking": "enabled",
+  "requested_effort": "high",
+  "observed_init": {
+    "model": "doubao-seed-evolving",
+    "tools": [
+      "Bash",
+      "Edit",
+      "Read"
+    ],
+    "permissionMode": "dontAsk",
+    "session_id": "fc6808e2-0b9d-4399-9ab1-ffa7dd4181d5"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "decision": "D23",
-  "status": "prepared",
+  "status": "running",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-16T19:48:33Z",
   "next_direction_review_at": "2026-10-13T05:48:33Z",
@@ -13,9 +13,11 @@
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
   "current_task_terminal": null,
-  "failure_reason": "PLAY05 business max_turns; parent semantic defects",
+  "failure_reason": null,
   "last_result_at": "2026-10-13T05:06:29.161469Z",
-  "in_flight": [],
+  "in_flight": [
+    "amsterdam-market-focus-r2-20261013"
+  ],
   "candidate_path": "/tmp/amsterdam-market-focus-review-20261013/candidate",
   "adopted_this_round": 2,
   "policy_decision": "D24",
@@ -64,8 +66,8 @@
     "PLAY05": {
       "business_attempts_submitted": 1,
       "corrections_allowed": 1,
-      "corrections_submitted": 0,
-      "outcome": "correction_prepared",
+      "corrections_submitted": 1,
+      "outcome": "correction_running",
       "task_id": "amsterdam-market-focus-20261013",
       "base_commit": "e3b7ac3d4aa170365988171eeaea8758f64b9e8c",
       "business_terminal": "max_turns_cli1_blocked_report_file_present_semantic_rejected",
@@ -77,8 +79,8 @@
   "provider_cooldown_basis": "parent-chosen30minafter429; notserverRetryAfter",
   "failure_notification_recorded_at": "2026-10-13T05:15:28.092219+00:00",
   "provider_cooldown_completed_at": "2026-10-13T03:27:24Z",
-  "current_submitted_at": null,
-  "current_worker_pid": null,
+  "current_submitted_at": "2026-10-13T05:16:38.274940+00:00",
+  "current_worker_pid": 33131,
   "current_task_packet": "/tmp/amsterdam-market-focus-r2-20261013/handoff.json",
   "current_task_notion": "https://app.notion.com/p/3f83285284df816fbe51ee8572d9d353"
 }

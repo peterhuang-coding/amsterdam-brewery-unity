@@ -1,3 +1,11 @@
+## PLAY05唯一定向修正已单路提交
+
+2026-10-13T05:16:38.274940Z，amsterdam-market-focus-r2-20261013提交，worker33131（launcher33130）；实际init Seed Evolving、Read/Edit/Bash/dontAsk，请求enabled/high，1200秒32轮。logical play05-market-focus/correction，本项唯一修正1/1已用。提交前即时全机账本/CLI0路，本项1路；10输入198057B哈希不变，无全局原子保证。
+
+先查原ID/日志/PID，不重发。复用首包两文件原稿，修完整无关目标正文隐藏、真实扔货后的持货提示及现有目标卡顺序，补回归和完整交接；原11新测试/旧断言/经济核心都保留。首包失败与376绿灯漏检历史归档31212e1，原报告实际存在，不把result.report=null误记为文件缺失。修正或父验仍失败则搁置PLAY05继续真正独立项，不换ID重置次数。
+
+当前包在途、游戏采用0，试玩仍e3b7ac3/18837；PLAY03暂缓。05:48:33Z整体review、四天固定截止与原服务存档不变。
+
 ## PLAY05首包终态与唯一修正准备
 
 原amsterdam-market-focus-20261013已05:06:29.161469Z结束，1377.032秒、48轮上限（最终num_turns49）、error_max_turns/CLI1、state done/blocked，PID30474退出。result.report=null，但workspace/handoff-result.json实际存在且四条最终命令齐全；不是缺文件，也不是正常成功。Read11/Edit29/Bash13全部范围内，9源与7只读SHA不变，无权限拒绝或写越界。

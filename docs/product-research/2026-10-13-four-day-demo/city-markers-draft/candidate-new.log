@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: enhanced current-player and active destination labels are readable at every phone/desktop CSS width, camera and DPR
+ok 1 - enhanced current-player and active destination labels are readable at every phone/desktop CSS width, camera and DPR
+  ---
+  duration_ms: 138.598667
+  type: 'test'
+  ...
+# Subtest: all seven destination names survive with exactly one enhanced active label and six unchanged passive labels
+ok 2 - all seven destination names survive with exactly one enhanced active label and six unchanged passive labels
+  ---
+  duration_ms: 6.524917
+  type: 'test'
+  ...
+# Subtest: map mode with no target never picks an implicit destination: all place labels stay at base size
+ok 3 - map mode with no target never picks an implicit destination: all place labels stay at base size
+  ---
+  duration_ms: 7.933959
+  type: 'test'
+  ...
+# Subtest: coincident player and active pub badges stay on opposite sides of the real anchor without overlapping
+ok 4 - coincident player and active pub badges stay on opposite sides of the real anchor without overlapping
+  ---
+  duration_ms: 6.166583
+  type: 'test'
+  ...
+# Subtest: a coincident above-anchor market badge stacks deterministically clear of the player badge
+ok 5 - a coincident above-anchor market badge stacks deterministically clear of the player badge
+  ---
+  duration_ms: 5.2055
+  type: 'test'
+  ...
+# Subtest: an offscreen active destination keeps its real clipped anchor and is never clamped into a fake on-screen badge
+ok 6 - an offscreen active destination keeps its real clipped anchor and is never clamped into a fake on-screen badge
+  ---
+  duration_ms: 4.262458
+  type: 'test'
+  ...
+# Subtest: near-edge badges move just inside the 4 CSS px margin while their marker icon stays at the real world point
+ok 7 - near-edge badges move just inside the 4 CSS px margin while their marker icon stays at the real world point
+  ---
+  duration_ms: 17.8635
+  type: 'test'
+  ...
+# Subtest: recorders without getBoundingClientRect or with zero width fall back to logical width and stay finite
+ok 8 - recorders without getBoundingClientRect or with zero width fall back to logical width and stay finite
+  ---
+  duration_ms: 6.730708
+  type: 'test'
+  ...
+# Subtest: DPR 1 and 1.5 produce identical effective CSS fonts and badge bounds at the same CSS width
+ok 9 - DPR 1 and 1.5 produce identical effective CSS fonts and badge bounds at the same CSS width
+  ---
+  duration_ms: 7.247458
+  type: 'test'
+  ...
+# Subtest: reduced motion renders deterministic enhanced labels at different times
+ok 10 - reduced motion renders deterministic enhanced labels at different times
+  ---
+  duration_ms: 16.298292
+  type: 'test'
+  ...
+# Subtest: drawCity never mutates its view input or the shared city geometry
+ok 11 - drawCity never mutates its view input or the shared city geometry
+  ---
+  duration_ms: 6.293584
+  type: 'test'
+  ...
+# Subtest: night keeps the same badge palette, effective font and bounds as day
+ok 12 - night keeps the same badge palette, effective font and bounds as day
+  ---
+  duration_ms: 9.133666
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 305.61375

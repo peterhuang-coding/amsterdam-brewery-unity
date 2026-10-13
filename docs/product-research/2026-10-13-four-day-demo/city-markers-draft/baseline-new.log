@@ -1,0 +1,234 @@
+TAP version 13
+# Subtest: enhanced current-player and active destination labels are readable at every phone/desktop CSS width, camera and DPR
+not ok 1 - enhanced current-player and active destination labels are readable at every phone/desktop CSS width, camera and DPR
+  ---
+  duration_ms: 14.1845
+  type: 'test'
+  location: '/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:304:1'
+  failureType: 'testCodeFailure'
+  error: 'Tweede Kans effective font must be at least 11 CSS px'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    assertReadableBadge (/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:287:10)
+    TestContext.<anonymous> (/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:315:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: all seven destination names survive with exactly one enhanced active label and six unchanged passive labels
+not ok 2 - all seven destination names survive with exactly one enhanced active label and six unchanged passive labels
+  ---
+  duration_ms: 9.583125
+  type: 'test'
+  location: '/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:336:1'
+  failureType: 'testCodeFailure'
+  error: 'active label must be enhanced'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:347:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: map mode with no target never picks an implicit destination: all place labels stay at base size
+not ok 3 - map mode with no target never picks an implicit destination: all place labels stay at base size
+  ---
+  duration_ms: 7.83475
+  type: 'test'
+  location: '/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:360:1'
+  failureType: 'testCodeFailure'
+  error: 'player label must still be readable'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:371:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: coincident player and active pub badges stay on opposite sides of the real anchor without overlapping
+not ok 4 - coincident player and active pub badges stay on opposite sides of the real anchor without overlapping
+  ---
+  duration_ms: 9.235458
+  type: 'test'
+  location: '/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:374:1'
+  failureType: 'testCodeFailure'
+  error: '你 effective font must be at least 11 CSS px'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    assertReadableBadge (/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:287:10)
+    TestContext.<anonymous> (/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:379:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: a coincident above-anchor market badge stacks deterministically clear of the player badge
+not ok 5 - a coincident above-anchor market badge stacks deterministically clear of the player badge
+  ---
+  duration_ms: 5.48575
+  type: 'test'
+  location: '/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:393:1'
+  failureType: 'testCodeFailure'
+  error: '你 effective font must be at least 11 CSS px'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    assertReadableBadge (/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:287:10)
+    TestContext.<anonymous> (/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:401:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: an offscreen active destination keeps its real clipped anchor and is never clamped into a fake on-screen badge
+ok 6 - an offscreen active destination keeps its real clipped anchor and is never clamped into a fake on-screen badge
+  ---
+  duration_ms: 7.960542
+  type: 'test'
+  ...
+# Subtest: near-edge badges move just inside the 4 CSS px margin while their marker icon stays at the real world point
+not ok 7 - near-edge badges move just inside the 4 CSS px margin while their marker icon stays at the real world point
+  ---
+  duration_ms: 4.717291
+  type: 'test'
+  location: '/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:430:1'
+  failureType: 'testCodeFailure'
+  error: 'Lotte 的桥 effective font must be at least 11 CSS px'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    assertReadableBadge (/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:287:10)
+    TestContext.<anonymous> (/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:439:19)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: recorders without getBoundingClientRect or with zero width fall back to logical width and stay finite
+not ok 8 - recorders without getBoundingClientRect or with zero width fall back to logical width and stay finite
+  ---
+  duration_ms: 4.179
+  type: 'test'
+  location: '/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:456:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    missing must size from logical 1100 fallback
+    
+    16 !== 19.25
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 19.25
+  actual: 16
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:461:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: DPR 1 and 1.5 produce identical effective CSS fonts and badge bounds at the same CSS width
+not ok 9 - DPR 1 and 1.5 produce identical effective CSS fonts and badge bounds at the same CSS width
+  ---
+  duration_ms: 8.009916
+  type: 'test'
+  location: '/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:468:1'
+  failureType: 'testCodeFailure'
+  error: 'label must have an opaque-backed badge rect directly before its fillText'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    badgeRectOf (/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:251:10)
+    TestContext.<anonymous> (/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:476:36)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: reduced motion renders deterministic enhanced labels at different times
+ok 10 - reduced motion renders deterministic enhanced labels at different times
+  ---
+  duration_ms: 17.413625
+  type: 'test'
+  ...
+# Subtest: drawCity never mutates its view input or the shared city geometry
+ok 11 - drawCity never mutates its view input or the shared city geometry
+  ---
+  duration_ms: 6.7425
+  type: 'test'
+  ...
+# Subtest: night keeps the same badge palette, effective font and bounds as day
+not ok 12 - night keeps the same badge palette, effective font and bounds as day
+  ---
+  duration_ms: 9.892542
+  type: 'test'
+  location: '/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:507:1'
+  failureType: 'testCodeFailure'
+  error: 'Tweede Kans effective font must be at least 11 CSS px'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    assertReadableBadge (/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:287:10)
+    TestContext.<anonymous> (/private/tmp/amsterdam-city-markers-review-20261013/baseline/tools/prototype/test-city-markers.js:518:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 3
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 193.3555

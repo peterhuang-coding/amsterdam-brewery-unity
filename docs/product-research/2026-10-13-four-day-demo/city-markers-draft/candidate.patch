@@ -1,0 +1,604 @@
+--- a/tools/prototype/reopening-scene.js
++++ b/tools/prototype/reopening-scene.js
+@@ -104,6 +104,51 @@
+         const fx=w.x+((i*41+t*5)%Math.max(1,w.w-16)),fy=w.y+(i*59)%w.h;
+         this.rect(fx,fy,13,2,night?'#d9ecea24':'#eef7ee33');
+       }
++    }
++    // PLAY12 readable badge helpers, used only by the active destination name
++    // and the current-player label. Every anchor is a real projected world
++    // point; sizes derive from the canvas's actual displayed CSS width so the
++    // text stays >=11 CSS px on narrow phones without touching the camera.
++    cityCssWidth(){
++      let width=NaN;
++      try{const rect=this.canvas&&typeof this.canvas.getBoundingClientRect==='function'?this.canvas.getBoundingClientRect():null;width=rect?Number(rect.width):NaN;}catch(e){width=NaN;}
++      return Number.isFinite(width)&&width>0?width:1100;
++    }
++    drawCityActiveLabel(place,p){
++      const above=place.id==='market'; // keep the original market-above anchor
++      const stacked=above&&Math.hypot(place.x-p.x,place.y-p.y)<12;
++      return this.cityLabelBadge(place.name,place.x,place.y,above?'above':'below',{base:16,clear:27,stacked,fill:'#edd5a0',ink:'#244334'});
++    }
++    drawCityPlayerBadge(p){
++      if(!this.cityLabelBadge('你',p.x,p.y,'above',{base:16,clear:28,fill:'#253d49',ink:'#fff1c8'})){
++        this.text('你',p.x,p.y-35,16,'#fff1c8','sans-serif'); // off-screen anchor: original clipped label
++      }
++    }
++    // Draws one opaque-backed badge inside the live camera matrix. Returns false
++    // when the world anchor is off the logical canvas so callers keep the
++    // original clipped label; an off-screen marker is never pulled on screen.
++    cityLabelBadge(label,wx,wy,side,o){
++      const c=this.ctx,tr=this.cityTransform;
++      if(!tr||!(tr.scale>0)||!Number.isFinite(wx)||!Number.isFinite(wy))return false;
++      const {scale,tx,ty}=tr;
++      if(wx*scale+tx<0||wx*scale+tx>1100||wy*scale+ty<0||wy*scale+ty>640)return false;
++      const wpc=1100/(scale*this.cityCssWidth()); // world units per displayed CSS px
++      const font=Math.max(o.base,11*wpc),gap=4*wpc,padX=8*wpc,padY=3*wpc;
++      c.font=`${font}px sans-serif`;
++      const measured=typeof c.measureText==='function'?Number((c.measureText(label)||{}).width):NaN;
++      const textW=Number.isFinite(measured)&&measured>0?measured:Array.from(String(label)).length*font;
++      const bw=textW+2*padX,bh=font+2*padY;
++      const margin=4*scale*wpc; // 4 CSS px expressed in logical canvas units
++      let cx=wx;
++      const leftLog=(cx-bw/2)*scale+tx,rightLog=(cx+bw/2)*scale+tx;
++      if(leftLog<margin)cx+=(margin-leftLog)/scale;else if(rightLog>1100-margin)cx-=(rightLog-(1100-margin))/scale;
++      let top=side==='above'?wy-(o.clear||27)-gap-bh:wy+(o.clear||27)+gap;
++      if(o.stacked)top-=bh+gap; // coincident point: lift active badge clear of the player badge
++      const topLog=top*scale+ty,botLog=(top+bh)*scale+ty;
++      if(topLog<margin)top+=(margin-topLog)/scale;else if(botLog>640-margin)top-=(botLog-(640-margin))/scale;
++      c.fillStyle=o.fill;c.fillRect(cx-bw/2,top,bw,bh);
++      c.font=`${font}px sans-serif`;c.fillStyle=o.ink;c.textAlign='center';c.fillText(label,cx,top+padY+font*0.8);
++      return true;
+     }
+     drawCity(view,time) {
+       const C=window.City,c=this.ctx,night=!!view.afterHours;
+@@ -227,9 +272,14 @@
+         this.text(place.icon,place.x,place.y+(dim?5:7),dim?13:21,'#efdbac','sans-serif');
+         if(street&&distance<92)this.ring(place.x,place.y,26+Math.sin(t*3)*2,'#ffd184b8',2);
+         if(!labelled)continue;
+-        const labelWidth=Math.max(120,place.name.length*15+25),labelY=place.id==='market'?place.y-48:place.y+34;
+-        this.rect(place.x-labelWidth/2,labelY-18,labelWidth,29,active?'#edd5a0':'#ece0bfec');
+-        this.text(place.name,place.x,labelY+2,16,active?'#244334':'#3e5647','sans-serif');
++        // PLAY12: only the active destination earns the readable badge. An
++        // off-screen active anchor makes the helper return false, so the exact
++        // original label below still draws and clips at its real world point.
++        if(!active||!this.drawCityActiveLabel(place,p)){
++          const labelWidth=Math.max(120,place.name.length*15+25),labelY=place.id==='market'?place.y-48:place.y+34;
++          this.rect(place.x-labelWidth/2,labelY-18,labelWidth,29,active?'#edd5a0':'#ece0bfec');
++          this.text(place.name,place.x,labelY+2,16,active?'#244334':'#3e5647','sans-serif');
++        }
+       }
+       const isFerry=C.onFerry(p.x,p.y),mounted=p.bike&&p.bike.mounted;
+       if(p.bike&&!mounted)this.bicycle(p.bike.pushing?{...p.bike,x:p.bike.x+19,y:p.bike.y+5}:p.bike,view.bouquet);
+@@ -246,7 +296,7 @@
+       }
+       if(p.bike?.pushing){this.line([[p.x+6,p.y-7],[p.x+27,p.y-9]],'#d4aa73',3);this.text('推行',p.x,p.y-51,11,'#eee1b3','sans-serif');}
+       if(view.bouquet&&!view.bouquet.stored)this.tulips(p.x+16,p.y+3,view.bouquet,.7);
+-      this.text('你',p.x,p.y-35,16,'#fff1c8','sans-serif');
++      this.drawCityPlayerBadge(p);
+       c.restore();
+       this.rect(22,18,240,34,night?'#132e3aed':'#e4d6afea');this.text(night?(street?'深夜 · 街头视角':'深夜 · 全城地图'):(street?'白天 · 街头视角':'白天 · 全城地图'),36,40,15,night?'#e6c784':'#355749','sans-serif','left');
+       const notes=Array.isArray(view.notes)?view.notes.filter(note=>typeof note==='string').slice(-3):[];
+--- /dev/null
++++ b/tools/prototype/test-city-markers.js
+@@ -0,0 +1,520 @@
++'use strict';
++
++// PLAY12 readable city marker labels. Behavioral regressions executing the real
++// PubScene.drawCity with a real City.create()/restore() and a strict recording
++// Canvas2D context (save/restore stack, live matrix, finite-argument checks).
++// Every narrow/wide viewport here is an explicit SYNTHETIC CSS-width/DPR
++// technical fixture, never a claimed natural browser save or screenshot.
++const { test } = require('node:test');
++const assert = require('node:assert/strict');
++const fs = require('node:fs');
++const path = require('node:path');
++const vm = require('node:vm');
++
++const City = require(path.join(__dirname, 'reopening-city.js'));
++const scenePath = path.join(__dirname, 'reopening-scene.js');
++assert.ok(fs.existsSync(scenePath), 'reopening-scene.js must exist');
++const sceneSource = fs.readFileSync(scenePath, 'utf8');
++
++const mediaQuery = { matches: false };
++
++function loadWorld() {
++  const sandbox = {};
++  sandbox.window = sandbox;
++  sandbox.City = City;
++  sandbox.devicePixelRatio = 1;
++  sandbox.matchMedia = () => mediaQuery;
++  vm.createContext(sandbox);
++  vm.runInContext(sceneSource, sandbox);
++  return sandbox;
++}
++
++// Strict recorder copied from test-street-atmosphere.js (the original file is
++// untouched), extended only with a deterministic measureText approximation:
++// full-width glyphs ~1em, latin ~0.56em, spaces ~0.3em. Parent real-browser
++// measurement is separate; technical bounds stay internally consistent.
++const NUMERIC_INDICES = {
++  fillRect: [0, 1, 2, 3], clearRect: [0, 1, 2, 3], rect: [0, 1, 2, 3],
++  ellipse: [0, 1, 2, 3, 4, 5, 6], arc: [0, 1, 2, 3, 4], arcTo: [0, 1, 2, 3, 4],
++  moveTo: [0, 1], lineTo: [0, 1],
++  quadraticCurveTo: [0, 1, 2, 3], bezierCurveTo: [0, 1, 2, 3, 4, 5],
++  fillText: [1, 2], strokeText: [1, 2],
++  translate: [0, 1], scale: [0, 1], rotate: [0],
++  transform: [0, 1, 2, 3, 4, 5], setTransform: [0, 1, 2, 3, 4, 5],
++  createRadialGradient: [0, 1, 2, 3, 4, 5], createLinearGradient: [0, 1, 2, 3],
++  addColorStop: [0]
++};
++const TEXT_METHODS = new Set(['fillText', 'strokeText']);
++const XY_ORIGIN = {
++  fillRect: [0, 1], clearRect: [0, 1], rect: [0, 1],
++  ellipse: [0, 1], arc: [0, 1], arcTo: [0, 1],
++  moveTo: [0, 1], lineTo: [0, 1],
++  quadraticCurveTo: [0, 1], bezierCurveTo: [0, 1],
++  fillText: [1, 2], strokeText: [1, 2]
++};
++
++function createRecorder() {
++  const calls = [];
++  const stack = [];
++  let matrix = [1, 0, 0, 1, 0, 0];
++  let gradientSeq = 0;
++  const style = {
++    fillStyle: '#000000', strokeStyle: '#000000', lineWidth: 1,
++    font: '10px sans-serif', textAlign: 'start', lineDash: [], lineDashOffset: 0
++  };
++
++  function screen(x, y) {
++    return [
++      matrix[0] * x + matrix[2] * y + matrix[4],
++      matrix[1] * x + matrix[3] * y + matrix[5]
++    ];
++  }
++  function tag(value) {
++    return value && typeof value === 'object' && '__gid' in value ? { gradient: value.__gid } : value;
++  }
++  function record(name, args) {
++    const required = NUMERIC_INDICES[name];
++    if (required) {
++      for (const index of required) {
++        const value = args[index];
++        assert.ok(
++          typeof value === 'number' && Number.isFinite(value),
++          name + ' requires finite numeric geometry at argument ' + index + ' but got ' + String(value)
++        );
++      }
++    }
++    if (TEXT_METHODS.has(name)) {
++      assert.ok(typeof args[0] === 'string', name + ' first argument must be the text to draw');
++    } else if (name === 'addColorStop') {
++      assert.ok(typeof args[1] === 'string', 'addColorStop color must be a string');
++    }
++    for (const value of args) {
++      if (typeof value === 'number') {
++        assert.ok(Number.isFinite(value), name + ' received a non-finite number');
++      }
++    }
++    let projected = null;
++    const origin = XY_ORIGIN[name];
++    if (origin) {
++      const [sx, sy] = screen(args[origin[0]], args[origin[1]]);
++      assert.ok(Number.isFinite(sx) && Number.isFinite(sy), name + ' produced non-finite screen coordinates');
++      projected = [sx, sy];
++    }
++    for (const v of matrix) assert.ok(Number.isFinite(v), name + ' corrupted the transform matrix');
++    calls.push({
++      name,
++      args: args.map(tag),
++      fillStyle: tag(style.fillStyle),
++      strokeStyle: tag(style.strokeStyle),
++      lineWidth: style.lineWidth,
++      font: style.font,
++      textAlign: style.textAlign,
++      lineDash: style.lineDash.slice(),
++      lineDashOffset: style.lineDashOffset,
++      screen: projected,
++      matrix: matrix.slice()
++    });
++  }
++
++  function gradient(id) {
++    return { __gid: id, addColorStop(offset, color) { record('addColorStop', [offset, color]); } };
++  }
++
++  const explicit = {
++    save() {
++      stack.push({ matrix: matrix.slice(), style: { ...style, lineDash: style.lineDash.slice() } });
++      record('save', []);
++    },
++    restore() {
++      const previous = stack.pop();
++      assert.ok(previous, 'ctx.restore() called without a matching ctx.save()');
++      matrix = previous.matrix;
++      Object.assign(style, previous.style);
++      record('restore', []);
++    },
++    translate(x, y) {
++      matrix[4] += matrix[0] * x + matrix[2] * y;
++      matrix[5] += matrix[1] * x + matrix[3] * y;
++      record('translate', [x, y]);
++    },
++    scale(sx, sy) {
++      matrix[0] *= sx; matrix[1] *= sx;
++      matrix[2] *= sy; matrix[3] *= sy;
++      record('scale', [sx, sy]);
++    },
++    setLineDash(dash) {
++      const value = Array.isArray(dash) ? dash.slice() : [];
++      for (const entry of value) {
++        assert.ok(typeof entry === 'number' && Number.isFinite(entry), 'setLineDash entries must be finite numbers');
++      }
++      style.lineDash = value;
++      record('setLineDash', value.slice());
++    },
++    measureText(text) {
++      const match = /([\d.]+)px/.exec(style.font);
++      const size = match ? parseFloat(match[1]) : 10;
++      let units = 0;
++      for (const ch of String(text)) {
++        const code = ch.codePointAt(0);
++        units += ch === ' ' ? 0.3 : code > 0x2e80 ? 1 : 0.56;
++      }
++      record('measureText', [String(text)]);
++      return { width: units * size };
++    },
++    createRadialGradient(x0, y0, r0, x1, y1, r1) {
++      record('createRadialGradient', [x0, y0, r0, x1, y1, r1]);
++      return gradient(++gradientSeq);
++    },
++    createLinearGradient(x0, y0, x1, y1) {
++      record('createLinearGradient', [x0, y0, x1, y1]);
++      return gradient(++gradientSeq);
++    }
++  };
++
++  const ctx = new Proxy(explicit, {
++    get(target, key) {
++      if (typeof key === 'symbol') return undefined;
++      if (key in target) return target[key];
++      return (...args) => record(String(key), args);
++    },
++    set(target, key, value) {
++      if (key === 'lineDashOffset') {
++        assert.ok(Number.isFinite(value), 'lineDashOffset must stay finite');
++      }
++      style[key] = value;
++      return true;
++    }
++  });
++
++  return {
++    ctx,
++    calls,
++    depth: () => stack.length,
++    matrix: () => matrix.slice(),
++    dash: () => style.lineDash.slice(),
++    offset: () => style.lineDashOffset
++  };
++}
++
++// CSS-width aware canvas. backing=1100*dpr is set by the untouched constructor;
++// getBoundingClientRect reports the actual displayed CSS width independently of
++// DPR/backing width, exactly like a real DOM canvas.
++function makeCanvas(recorder, cssW, dpr, rectKind) {
++  const canvas = { width: 0, height: 0, getContext: () => recorder.ctx };
++  if (rectKind === 'missing') {
++    // Old non-DOM recorder without a layout box at all.
++  } else if (rectKind === 'zero') {
++    canvas.getBoundingClientRect = () => ({ width: 0, height: 0, left: 0, top: 0 });
++  } else {
++    canvas.getBoundingClientRect = () => ({ width: cssW, height: cssW * 640 / 1100, left: 0, top: 0 });
++  }
++  return canvas;
++}
++
++function render(world, view, time, opts = {}) {
++  const dpr = opts.dpr || 1;
++  const cssW = opts.cssW || 360;
++  world.devicePixelRatio = dpr;
++  const recorder = createRecorder();
++  const canvas = makeCanvas(recorder, cssW, dpr, opts.rectKind);
++  const scene = new world.PubScene(canvas);
++  scene.drawCity(view, time);
++  return { scene, recorder, canvas };
++}
++
++function cityView(extra = {}) {
++  return {
++    position: City.create(), path: [], target: null, mode: 'map',
++    notes: [], camera: 'overview', zoom: 1, afterHours: false, ...extra
++  };
++}
++
++// SYNTHETIC technical position fixture (explicit coordinates, not a natural
++// save); drawCity only needs x/y/visited, and guarded bike fields are absent.
++function techPoint(x, y) {
++  return { x, y, visited: [] };
++}
++
++const PLACE_NAMES = Object.values(City.PLACES).map(place => place.name);
++
++function textCalls(recorder, value) {
++  return recorder.calls.filter(call => call.name === 'fillText' && call.args[0] === value);
++}
++function singleText(recorder, value) {
++  const found = textCalls(recorder, value);
++  assert.equal(found.length, 1, 'expected exactly one fillText for ' + JSON.stringify(value));
++  return found[0];
++}
++function badgeRectOf(recorder, call) {
++  const index = recorder.calls.indexOf(call);
++  const rect = recorder.calls[index - 1];
++  assert.ok(rect && rect.name === 'fillRect', 'label must have an opaque-backed badge rect directly before its fillText');
++  return rect;
++}
++function worldFont(call) {
++  const match = /([\d.]+)px/.exec(call.font);
++  return match ? parseFloat(match[1]) : NaN;
++}
++// Effective CSS px divide recorded BACKING units by the backing width
++// (1100*dpr); DPR must not be counted a second time.
++function toCss(value, call, cssW, dpr) {
++  return value * cssW / (1100 * dpr);
++}
++function fontCss(call, cssW, dpr) {
++  // matrix[0] already carries dpr*camera scale, so this divides DPR out once.
++  return worldFont(call) * call.matrix[0] * cssW / (1100 * dpr);
++}
++function rectCss(recorder, rect, cssW, dpr) {
++  const [x, y, w, h] = rect.args;
++  const m = rect.matrix;
++  const project = (px, py) => [
++    (m[0] * px + m[2] * py + m[4]) * cssW / (1100 * dpr),
++    (m[1] * px + m[3] * py + m[5]) * cssW / (1100 * dpr)
++  ];
++  const [l, t] = project(x, y);
++  const [r, b] = project(x + w, y + h);
++  return { l, t, r, b };
++}
++function worldToCss(call, wx, wy, cssW, dpr) {
++  const m = call.matrix;
++  return [
++    (m[0] * wx + m[2] * wy + m[4]) * cssW / (1100 * dpr),
++    (m[1] * wx + m[3] * wy + m[5]) * cssW / (1100 * dpr)
++  ];
++}
++function assertReadableBadge(recorder, label, cssW, dpr, cssH) {
++  const text = singleText(recorder, label);
++  assert.ok(fontCss(text, cssW, dpr) >= 11 - 1e-6, label + ' effective font must be at least 11 CSS px');
++  assert.ok(worldFont(text) >= 16 - 1e-9, label + ' must never render below the original 16 world-unit base font');
++  const rect = badgeRectOf(recorder, text);
++  const box = rectCss(recorder, rect, cssW, dpr);
++  assert.ok(box.l >= 4 - 1e-6 && box.t >= 4 - 1e-6, label + ' badge crosses the 4 CSS px top/left margin');
++  assert.ok(box.r <= cssW - 4 + 1e-6 && box.b <= cssH - 4 + 1e-6, label + ' badge crosses the 4 CSS px right/bottom margin');
++  assert.ok(box.r - box.l > 0 && box.b - box.t > 0, label + ' badge must have positive measured size');
++  return { text, rect, box };
++}
++
++const WIDTHS = [320, 350, 360, 368, 390, 1100];
++const CAMERAS = [
++  { camera: 'street', zoom: 1 },
++  { camera: 'overview', zoom: 1 },
++  { camera: 'overview', zoom: 2 }
++];
++
++test('enhanced current-player and active destination labels are readable at every phone/desktop CSS width, camera and DPR', () => {
++  const world = loadWorld();
++  mediaQuery.matches = false;
++  for (const cssW of WIDTHS) {
++    for (const cam of CAMERAS) {
++      for (const dpr of [1, 1.5]) {
++        const where = `${cssW}px ${cam.camera} zoom${cam.zoom} dpr${dpr}`;
++        const view = cityView({ camera: cam.camera, zoom: cam.zoom, target: 'pub', mode: 'place' });
++        const { recorder } = render(world, view, 3.2, { cssW, dpr });
++        assert.ok(recorder.calls.length > 200, where + ' did not render a full city frame');
++        const cssH = cssW * 640 / 1100;
++        const name = assertReadableBadge(recorder, 'Tweede Kans', cssW, dpr, cssH);
++        const player = assertReadableBadge(recorder, '你', cssW, dpr, cssH);
++        // Full original names, never truncated.
++        assert.equal(name.text.args[0], City.PLACES.pub.name, where + ' active name was altered');
++        assert.equal(player.text.args[0], '你', where + ' player label was altered');
++        // Existing palette badges only.
++        assert.equal(name.rect.fillStyle, '#edd5a0', where + ' active badge fill changed');
++        assert.equal(name.text.fillStyle, '#244334', where + ' active text color changed');
++        assert.equal(player.rect.fillStyle, '#253d49', where + ' player badge fill changed');
++        assert.equal(player.text.fillStyle, '#fff1c8', where + ' player text color changed');
++        // Keep the base font when it is already larger than the 11 CSS px floor.
++        if (cssW === 1100 && cam.camera === 'street') {
++          assert.equal(worldFont(name.text), 16, where + ' must keep the original base font');
++          assert.equal(worldFont(player.text), 16, where + ' must keep the original base font');
++        }
++        assert.equal(recorder.depth(), 0, where + ' left unbalanced save/restore state');
++      }
++    }
++  }
++});
++
++test('all seven destination names survive with exactly one enhanced active label and six unchanged passive labels', () => {
++  const world = loadWorld();
++  const cssW = 360, dpr = 1;
++  const { recorder } = render(world, cityView({ target: 'noord', mode: 'place' }), 1, { cssW, dpr });
++  for (const place of Object.values(City.PLACES)) {
++    const text = singleText(recorder, place.name);
++    assert.equal(text.textAlign, 'center', place.id + ' label alignment changed');
++    // The destination icon still renders as its own glyph.
++    assert.ok(textCalls(recorder, place.icon).length >= 1, place.id + ' icon missing');
++    const rect = badgeRectOf(recorder, text);
++    if (place.id === 'noord') {
++      assert.ok(fontCss(text, cssW, dpr) >= 11 - 1e-6, 'active label must be enhanced');
++      assert.ok(worldFont(text) > 16, 'active label must enlarge in narrow overview');
++      assert.equal(rect.fillStyle, '#edd5a0', 'active badge fill');
++      assert.equal(text.fillStyle, '#244334', 'active text color');
++    } else {
++      assert.equal(text.font, '16px sans-serif', place.id + ' passive font changed');
++      assert.equal(worldFont(text), 16, place.id + ' passive size changed');
++      assert.equal(rect.fillStyle, '#ece0bfec', place.id + ' passive badge fill changed');
++      assert.equal(text.fillStyle, '#3e5647', place.id + ' passive text color changed');
++    }
++  }
++});
++
++test('map mode with no target never picks an implicit destination: all place labels stay at base size', () => {
++  const world = loadWorld();
++  const { recorder } = render(world, cityView({ camera: 'street' }), 2, { cssW: 360 });
++  for (const name of PLACE_NAMES) {
++    for (const call of textCalls(recorder, name)) {
++      assert.equal(worldFont(call), 16, name + ' was enhanced without an active selection');
++      const rect = badgeRectOf(recorder, call);
++      assert.notEqual(rect.fillStyle, '#edd5a0', name + ' got the active badge without a target');
++    }
++  }
++  // The current player is still enhanced independently of any destination.
++  assert.ok(fontCss(singleText(recorder, '你'), 360, 1) >= 11 - 1e-6, 'player label must still be readable');
++});
++
++test('coincident player and active pub badges stay on opposite sides of the real anchor without overlapping', () => {
++  const world = loadWorld();
++  const cssW = 360, dpr = 1;
++  const p = City.create(); // starts exactly on the pub point (290,590)
++  const { recorder } = render(world, cityView({ camera: 'street', position: p, target: 'pub', mode: 'place' }), 4, { cssW, dpr });
++  const player = assertReadableBadge(recorder, '你', cssW, dpr, cssW * 640 / 1100);
++  const active = assertReadableBadge(recorder, 'Tweede Kans', cssW, dpr, cssW * 640 / 1100);
++  assert.ok(player.box.b <= active.box.t, 'player badge must clear the active name badge');
++  const [anchorX, anchorY] = worldToCss(player.text, p.x, p.y, cssW, dpr);
++  assert.ok(player.box.b < anchorY, 'player badge must sit above the actual avatar');
++  assert.ok(active.box.t > anchorY, 'active name badge must sit below the actual marker');
++  assert.ok(Math.abs((player.box.l + player.box.r) / 2 - anchorX) < 2, 'player badge keeps the avatar x anchor');
++  assert.ok(Math.abs((active.box.l + active.box.r) / 2 - anchorX) < 2, 'active badge keeps the marker x anchor');
++  // The real active marker icon keeps its 27-world radius at the true world point.
++  const icon = recorder.calls.find(call => call.name === 'ellipse' &&
++    call.args[0] === City.PLACES.pub.x && call.args[1] === City.PLACES.pub.y && call.args[2] === 27);
++  assert.ok(icon, 'active marker icon must remain at the unchanged world anchor');
++});
++
++test('a coincident above-anchor market badge stacks deterministically clear of the player badge', () => {
++  const world = loadWorld();
++  const cssW = 360, dpr = 1;
++  // Valid restored save standing on the market point (real City.restore).
++  const atMarket = City.restore({ x: City.PLACES.market.x, y: City.PLACES.market.y, visited: ['pub', 'market'] });
++  assert.equal(atMarket.x, City.PLACES.market.x);
++  assert.equal(atMarket.y, City.PLACES.market.y);
++  const { recorder } = render(world, cityView({ position: atMarket, target: 'market', mode: 'place' }), 5, { cssW, dpr });
++  const player = assertReadableBadge(recorder, '你', cssW, dpr, cssW * 640 / 1100);
++  const market = assertReadableBadge(recorder, City.PLACES.market.name, cssW, dpr, cssW * 640 / 1100);
++  const [, anchorY] = worldToCss(player.text, atMarket.x, atMarket.y, cssW, dpr);
++  assert.ok(player.box.b < anchorY && market.box.b < anchorY, 'both badges stay above the market anchor');
++  assert.ok(market.box.b <= player.box.t + 1e-6, 'stacked active badge must clear the player badge above the same point');
++});
++
++test('an offscreen active destination keeps its real clipped anchor and is never clamped into a fake on-screen badge', () => {
++  const world = loadWorld();
++  const cssW = 360, dpr = 1;
++  const view = cityView({ camera: 'street', target: 'noord' });
++  const { recorder, scene } = render(world, view, 2, { cssW, dpr });
++  const name = City.PLACES.noord.name;
++  const calls = textCalls(recorder, name);
++  assert.equal(calls.length, 1, 'the active name still renders exactly once');
++  const [x, y] = calls[0].screen;
++  const cssX = x * cssW / (1100 * dpr), cssY = y * cssW / (1100 * dpr);
++  assert.ok(cssX < 0 || cssX > cssW || cssY < 0 || cssY > cssW * 640 / 1100, 'offscreen active anchor must not be moved on screen');
++  const rect = badgeRectOf(recorder, calls[0]);
++  const box = rectCss(recorder, rect, cssW, dpr);
++  assert.ok(box.r <= 0 || box.l >= cssW || box.b <= 0 || box.t >= cssW * 640 / 1100, 'no on-screen badge may be invented for an offscreen marker');
++  // The actual active marker icon keeps drawing at the true Noord world point.
++  const icon = recorder.calls.find(call => call.name === 'ellipse' &&
++    call.args[0] === City.PLACES.noord.x && call.args[1] === City.PLACES.noord.y && call.args[2] === 27);
++  assert.ok(icon, 'active marker icon must remain at the unchanged Noord world anchor');
++  // The fallback label anchor is the original marker-relative offset, and it is off screen too.
++  assert.ok(cssX < 0 || cssX > cssW || cssY < 0 || cssY > cssW * 640 / 1100, 'clipped fallback label stays off screen');
++});
++
++test('near-edge badges move just inside the 4 CSS px margin while their marker icon stays at the real world point', () => {
++  const world = loadWorld();
++  const cssW = 320, cssH = cssW * 640 / 1100;
++  // SYNTHETIC edge camera fixtures (explicit coordinates, verified walkable).
++  assert.equal(City.walkable(830, 650), true);
++  assert.equal(City.walkable(290, 80), true);
++  for (const dpr of [1, 1.5]) {
++    // Lotte marker sits near the left edge of the street camera.
++    const right = render(world, cityView({ camera: 'street', position: techPoint(830, 650), target: 'lotte' }), 1, { cssW, dpr });
++    const lotte = assertReadableBadge(right.recorder, City.PLACES.lotte.name, cssW, dpr, cssH);
++    assert.ok(lotte.box.l < 8, 'badge should be pulled just inside the left edge, dpr ' + dpr);
++    const markerX = (City.PLACES.lotte.x * right.scene.cityTransform.scale + right.scene.cityTransform.tx) * cssW / (1100 * dpr);
++    assert.ok((lotte.box.l + lotte.box.r) / 2 > markerX, 'badge may slide inward but never moves the marker');
++    const icon = right.recorder.calls.find(call => call.name === 'ellipse' &&
++      call.args[0] === City.PLACES.lotte.x && call.args[1] === City.PLACES.lotte.y && call.args[2] === 27);
++    assert.ok(icon, 'active icon stays at the unchanged Lotte world point, dpr ' + dpr);
++    // Player near the top world edge: badge clamps to the top margin yet stays
++    // above the avatar.
++    const top = render(world, cityView({ camera: 'street', position: techPoint(290, 80) }), 1, { cssW, dpr });
++    const player = assertReadableBadge(top.recorder, '你', cssW, dpr, cssH);
++    assert.ok(player.box.t < 8, 'player badge should be pulled just inside the top edge, dpr ' + dpr);
++    const [, anchorY] = worldToCss(player.text, 290, 80, cssW, dpr);
++    assert.ok(player.box.b < anchorY - 2, 'clamped player badge still clears the avatar, dpr ' + dpr);
++  }
++});
++
++test('recorders without getBoundingClientRect or with zero width fall back to logical width and stay finite', () => {
++  const world = loadWorld();
++  for (const rectKind of ['missing', 'zero']) {
++    const { recorder } = render(world, cityView({ target: 'pub', mode: 'place' }), 1, { cssW: 1100, dpr: 1, rectKind });
++    const name = singleText(recorder, 'Tweede Kans');
++    assert.equal(worldFont(name), Math.max(16, 11 * 1100 / (0.5714285714285714 * 1100)), rectKind + ' must size from logical 1100 fallback');
++    assert.ok(Math.abs(fontCss(name, 1100, 1) - 11) < 1e-6, rectKind + ' fallback effective font');
++    assert.equal(recorder.depth(), 0, rectKind + ' unbalanced state');
++    assert.deepEqual(recorder.matrix(), [1, 0, 0, 1, 0, 0], rectKind + ' matrix restored');
++  }
++});
++
++test('DPR 1 and 1.5 produce identical effective CSS fonts and badge bounds at the same CSS width', () => {
++  const world = loadWorld();
++  const cssW = 360;
++  const a = render(world, cityView({ target: 'pub', mode: 'place' }), 1, { cssW, dpr: 1 });
++  const b = render(world, cityView({ target: 'pub', mode: 'place' }), 1, { cssW, dpr: 1.5 });
++  for (const label of ['Tweede Kans', '你']) {
++    const ta = singleText(a.recorder, label), tb = singleText(b.recorder, label);
++    assert.ok(Math.abs(fontCss(ta, cssW, 1) - fontCss(tb, cssW, 1.5)) < 1e-9, label + ' CSS font differs by DPR');
++    const ba = rectCss(a.recorder, badgeRectOf(a.recorder, ta), cssW, 1);
++    const bb = rectCss(b.recorder, badgeRectOf(b.recorder, tb), cssW, 1.5);
++    for (const side of ['l', 't', 'r', 'b']) {
++      assert.ok(Math.abs(ba[side] - bb[side]) < 1e-6, label + ' CSS badge ' + side + ' differs by DPR');
++    }
++  }
++});
++
++test('reduced motion renders deterministic enhanced labels at different times', () => {
++  const world = loadWorld();
++  mediaQuery.matches = true;
++  try {
++    const first = render(world, cityView({ target: 'pub', mode: 'place' }), 0.25, { cssW: 360 });
++    const second = render(world, cityView({ target: 'pub', mode: 'place' }), 17.9, { cssW: 360 });
++    assert.deepEqual(first.recorder.calls, second.recorder.calls, 'enhanced labels must be time independent under reduced motion');
++  } finally {
++    mediaQuery.matches = false;
++  }
++});
++
++test('drawCity never mutates its view input or the shared city geometry', () => {
++  const world = loadWorld();
++  const view = cityView({ camera: 'street', target: 'lotte', mode: 'place', notes: ['示例笔记'] });
++  const before = JSON.stringify(view);
++  const cityBefore = JSON.stringify([City.LAND, City.WATERS, City.CROSSINGS, City.PLACES, City.BUILDINGS]);
++  render(world, view, 6.4, { cssW: 350 });
++  render(world, view, 2.1, { cssW: 368 });
++  assert.equal(JSON.stringify(view), before, 'view mutated by rendering');
++  assert.equal(JSON.stringify([City.LAND, City.WATERS, City.CROSSINGS, City.PLACES, City.BUILDINGS]), cityBefore, 'city geometry mutated');
++});
++
++test('night keeps the same badge palette, effective font and bounds as day', () => {
++  const world = loadWorld();
++  const cssW = 360, dpr = 1, cssH = cssW * 640 / 1100;
++  const day = render(world, cityView({ target: 'pub', mode: 'place', afterHours: false }), 1, { cssW, dpr });
++  const night = render(world, cityView({ target: 'pub', mode: 'place', afterHours: true }), 1, { cssW, dpr });
++  for (const label of ['Tweede Kans', '你']) {
++    const td = singleText(day.recorder, label), tn = singleText(night.recorder, label);
++    assert.equal(worldFont(td), worldFont(tn), label + ' font changed at night');
++    const bd = rectCss(day.recorder, badgeRectOf(day.recorder, td), cssW, dpr);
++    const bn = rectCss(night.recorder, badgeRectOf(night.recorder, tn), cssW, dpr);
++    assert.deepEqual(bd, bn, label + ' badge bounds changed at night');
++    assertReadableBadge(night.recorder, label, cssW, dpr, cssH);
++  }
++});

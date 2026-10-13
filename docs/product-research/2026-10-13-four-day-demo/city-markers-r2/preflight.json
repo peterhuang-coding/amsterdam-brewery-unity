@@ -1,0 +1,25 @@
+{
+  "kind": "exact staged local preflight only, not R2 results",
+  "results": [
+    {
+      "command": "node --test tools/prototype/test-city-markers.js",
+      "exit_code": 0,
+      "tail": "type: 'test'\n  ...\n# Subtest: night keeps the same badge palette, effective font and bounds as day\nok 12 - night keeps the same badge palette, effective font and bounds as day\n  ---\n  duration_ms: 9.015\n  type: 'test'\n  ...\n1..12\n# tests 12\n# suites 0\n# pass 12\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 300.14675\n"
+    },
+    {
+      "command": "node --test tools/prototype/test-city.js tools/prototype/test-street-atmosphere.js",
+      "exit_code": 0,
+      "tail": "te geometry while accepting real text, styles and gradients\nok 8 - recorder rejects string, undefined and non-finite geometry while accepting real text, styles and gradients\n  ---\n  duration_ms: 0.880209\n  type: 'test'\n  ...\n1..8\n# tests 8\n# suites 0\n# pass 8\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 2932.536583\n"
+    },
+    {
+      "command": "node --check tools/prototype/reopening-scene.js",
+      "exit_code": 0,
+      "tail": ""
+    },
+    {
+      "command": "node --check tools/prototype/test-city-markers.js",
+      "exit_code": 0,
+      "tail": ""
+    }
+  ]
+}

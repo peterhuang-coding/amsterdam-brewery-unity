@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-city-markers-r2-20261013",
+  "goal": "Fix only PLAY12 badge edge occlusion, preserving existing12tests and all other game bytes, with genuine targeted RED then GREEN and legal four-final-command report.",
+  "memory": {
+    "summary": "D23 clear first-minute scenes; independent city-label package. PLAY03/06/07/11 shelved.",
+    "completed": [
+      "Business normalCLI0/legalreport; parent423/423 but semantic rejected on realflower and synthetic topedge occlusion.",
+      "Supplied scene and original12tests are full business candidate; no restart."
+    ],
+    "decisions": [
+      "Only two label spans plus dedicated helper and new test",
+      "Only Seed Evolving thinking enabled/high; one business and one correction maximum"
+    ],
+    "known_issues": [
+      "CSS font/fullbadge bounds alone missed occlusion. Read brief actual coordinates.",
+      "One separate D24 correction available; this attempt consumes it only when actually submitted."
+    ]
+  },
+  "tasks": [
+    "Read targeted brief",
+    "Append regressions without changing original12-test prefix; RED on unmodified business scene",
+    "Correct dedicated helpers only then GREEN and exact old/syntax commands",
+    "Complete legal report before hard deadline"
+  ],
+  "acceptance": [
+    "Dedicated helper block only; original12test prefix unchanged",
+    "Final targeted RED on original business candidate and GREEN after correction",
+    "All existing font/fullname/margin/truthfulanchor conditions plus actual avatar/icon/label nonocclusion",
+    "Complete legal4finalcommand report; parent natural acceptance pending"
+  ],
+  "constraints": [
+    "Public supplied materials only, no network",
+    "Do not revive shelved items or change camera/core/UI",
+    "Read/Edit/four exact Bash only; report.changed_files excludes reserved report itself"
+  ],
+  "workspace": "/tmp/amsterdam-city-markers-r2-20261013/input",
+  "read_files": [
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/test-city.js",
+    "tools/prototype/test-street-atmosphere.js",
+    "tools/prototype/test-city-markers.js",
+    "brief.md",
+    "frame-contract.md",
+    "original-brief.md"
+  ],
+  "write_files": [
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/test-city-markers.js"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-city-markers.js",
+    "node --test tools/prototype/test-city.js tools/prototype/test-street-atmosphere.js",
+    "node --check tools/prototype/reopening-scene.js",
+    "node --check tools/prototype/test-city-markers.js"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 1500,
+  "max_turns": 40,
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "play12-city-markers",
+    "task_type": "code",
+    "attempt_kind": "correction"
+  }
+}

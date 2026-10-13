@@ -1,0 +1,26 @@
+{
+  "scope_other_bytes_unchanged": true,
+  "report_legal": true,
+  "business_cli": 0,
+  "normal_finish": true,
+  "duration_seconds": 1094.955,
+  "num_turns": 33,
+  "final_new": {
+    "candidate": 12,
+    "baseline": 3,
+    "total": 12
+  },
+  "all": {
+    "pass": 423,
+    "total": 423,
+    "files": 38,
+    "old": 411
+  },
+  "report_errors": [
+    "Original report calls internal measureText implementation fix one targeted correction used; this is within single business request, not D24 correction submission. Durable correction count remains0.",
+    "Original report final baseline2/12 claim was initial test revision; parent final test baseline3/12, nine failures.",
+    "Street count reported8 but actual street7; Node outer8 includes standalone city process."
+  ],
+  "parent_failure": "Natural/technical edge labels overlap the avatar: flower bottom clamp and top walkable y48 player badge. Entire label bounds and fontsize tests do not check non-occlusion at these positions.",
+  "adopted": 0
+}

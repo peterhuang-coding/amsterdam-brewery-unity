@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-city-markers-20261013",
+  "receipt_sha256": "fa59a537c15abda9ac68d7d5386f4a77e499040301048a1d00e44b80b10cfe81",
+  "reviewed_at": "2026-10-13T15:02:28Z",
+  "outcome": "rejected",
+  "failure_type": "semantic",
+  "evidence": [
+    {
+      "path": "/tmp/amsterdam-city-markers-review-20261013/parent-validation.md",
+      "sha256": "ea5b9bfa4fe3a55affdb0776ae15c6380e397c06e970200a3a9171285d3380f0"
+    }
+  ]
+}

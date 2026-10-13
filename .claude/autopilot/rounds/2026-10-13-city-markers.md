@@ -1,3 +1,13 @@
+## PLAY12已单路提交
+
+amsterdam-city-markers-20261013于2026-10-13T14:30:33.336524Z启动，worker76234/launcher76231，logical play12-city-markers/business1、correction0/1。原包/tmp/amsterdam-city-markers-20261013/handoff.json，稳定同ID；恢复查原请求/结果/日志/PID，已提交或unknown不重发。在途不是永久事实。
+
+合同9ff9a8e已push、实时Notion执行中读回后提交。即时全机status账本/claude CLI0路→本项1路，非原子全局保证；7公开输入99184B SHA一致、4既有代码与采用0178350逐字节一致，游戏/工作台干净与远端一致。实际init Seed Evolving/Read/Edit/Bash/dontAsk，launch alwaysThinkingEnabled true、--effort high，1500秒40轮。没有第二成熟独立项，不硬凑并行。
+
+仅城市当前位置与实际active地点全名的两个精确文字段/专用helper、新test-city-markers.js。当前试玩仍0178350/18849，采用0；旧411+新增、最终真红绿、完整合法报告/范围/SHA/工具、自然城市行走/M/zoom/到达/点击/进酒馆/暂停刷新/桌面390通过才采用。API未出现新错误证据，无新冷却；PLAY03/06/07/11仍搁置。PLAY11 R2终态/423绿但不采用/报告校验失败/标准rejected见958d0e5。下次方向review15:48:33Z、四天截止不变。
+
+以下准备状态仅历史。
+
 ## PLAY12城市当前位置与目的地标签｜独立准备
 
 D23首分钟近景清楚和一致视觉授权内，按采用0178350自然日1街头/全图/选桥步行观察选择。390x844实际canvas360CSS宽、逻辑1100，font16投影全图2.992CSSpx、街头7.780CSSpx，当前位置与目标名字很小；DOM按钮可读保持原样。只增强「你」及真实active地点全名的小底色标签到至少11CSSpx，其他原标签/实际坐标图标/路线/点击/镜头不变。同点分辨、真实CSS/DPR尺寸和边缘全名；离屏目标不得夹到屏内造假位置。局部标签方案避免全标签膨胀拥挤，无新教学、导航或机制。PLAY03/06/07/11仍暂缓。

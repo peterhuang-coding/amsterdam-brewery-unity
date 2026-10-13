@@ -1,0 +1,12 @@
+{
+  "worker_pid": 76234,
+  "model": "doubao-seed-evolving",
+  "effort": "high",
+  "alwaysThinkingEnabled": true,
+  "tools": [
+    "Bash",
+    "Edit",
+    "Read"
+  ],
+  "permissionMode": "dontAsk"
+}

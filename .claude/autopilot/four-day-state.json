@@ -16,7 +16,8 @@
   "failure_reason": null,
   "last_result_at": "2026-10-13T18:31:57.537000Z",
   "in_flight": [
-    "amsterdam-map-morphology-design-20261015"
+    "amsterdam-map-morphology-design-20261015",
+    "amsterdam-map-baseline-20261015"
   ],
   "candidate_path": null,
   "adopted_this_round": 0,
@@ -239,11 +240,16 @@
     },
     "MAP02": {
       "logical_task_id": "f02-map-geometry-baseline",
-      "business_attempts_submitted": 0,
+      "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 0,
-      "outcome": "prepared_baseline_only",
-      "game_adopted": 0
+      "outcome": "running_baseline_only",
+      "game_adopted": 0,
+      "task_id": "amsterdam-map-baseline-20261015",
+      "business_submitted_at": "2026-10-14T16:09:46+00:00",
+      "worker_pid": 69583,
+      "contract_commit": "84186f1db52a067498373f54e945cadc6ee31916",
+      "notion_page": "https://app.notion.com/p/3f93285284df81dab79ec65543001a60"
     }
   },
   "provider_cooldown_until": "2026-10-13T19:31:58Z",
@@ -257,8 +263,8 @@
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
   "current_task_stage": "shelved",
-  "prepared_task_id": "amsterdam-map-baseline-20261015",
-  "prepared_task_packet": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-13-four-day-demo/map-baseline/handoff.json",
+  "prepared_task_id": null,
+  "prepared_task_packet": null,
   "play_service_pid": 91799,
   "play_root": "/tmp/amsterdam-play-dad6b38",
   "current_task_submitted_at": "2026-10-13T17:54:21.539560Z",

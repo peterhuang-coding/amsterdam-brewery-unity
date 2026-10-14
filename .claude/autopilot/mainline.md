@@ -1,3 +1,7 @@
+## MAP01 + MAP02 actual parallel wave - 2026-10-14T16:09:46+00:00
+
+User expanded Plan call allowance. Two independent Seed Evolving enabled/high packages now run: MAP01 morphology design worker69042; MAP02 geometry baseline worker69583. MAP02 contract84186f1 pushed/remote verified, Notion executing readback confirmed, immediate capacity check found only original MAP01. No duplicated submission. Read-only game baseline dad6b38 retained. Max2, fixed deadline and per-item correction rules unchanged.
+
 ## MAP01 actual dispatch - 2026-10-14T16:05:18+00:00
 
 Contract 56522c1 pushed and remote verified; Notion MAP01 executing read back. Pre-dispatch global ledger and bare CLI check found no running jobs. Business1/correction0; worker 69042. Design only. Actual F02 clarification is answered, superseding historical pending text. Goal tool still reports blocked; no claimed goal resume or completion. Fixed deadline and review schedule unchanged.

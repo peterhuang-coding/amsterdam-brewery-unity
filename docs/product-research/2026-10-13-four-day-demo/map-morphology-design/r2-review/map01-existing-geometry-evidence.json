@@ -1,0 +1,78 @@
+{
+  "baseline": "dad6b38c54fda94f541764242f61820d8177bd19",
+  "source_sha256": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625",
+  "water_rects": [
+    {
+      "x": 70,
+      "y": 300,
+      "w": 1660,
+      "h": 160
+    },
+    {
+      "x": 450,
+      "y": 460,
+      "w": 60,
+      "h": 620
+    },
+    {
+      "x": 1050,
+      "y": 460,
+      "w": 60,
+      "h": 620
+    },
+    {
+      "x": 70,
+      "y": 770,
+      "w": 1660,
+      "h": 60
+    }
+  ],
+  "edge_or_area_contacts": [
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      1,
+      3
+    ],
+    [
+      2,
+      3
+    ]
+  ],
+  "all_water_rects_in_one_connected_union": true,
+  "narrow_bridge_centers": [
+    {
+      "rect": {
+        "x": 430,
+        "y": 930,
+        "w": 100,
+        "h": 70,
+        "kind": "bridge"
+      },
+      "x": 480,
+      "y": 965,
+      "walkable": true,
+      "rideable": false
+    },
+    {
+      "rect": {
+        "x": 1030,
+        "y": 950,
+        "w": 100,
+        "h": 70,
+        "kind": "bridge"
+      },
+      "x": 1080,
+      "y": 985,
+      "walkable": true,
+      "rideable": false
+    }
+  ],
+  "limitation": "Existing source only; no future geometry or player experience tested. Adjacency refers to the union of the water rectangles, not boat navigation."
+}

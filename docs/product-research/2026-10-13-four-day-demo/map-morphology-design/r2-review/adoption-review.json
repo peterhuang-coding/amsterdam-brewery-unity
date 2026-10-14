@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-map-morphology-design-r2-20261015",
+  "receipt_sha256": "42723dab8d62cea16579c0e8205083aab4fcc48283d74f65233672bb86630c47",
+  "reviewed_at": "2026-10-14T17:00:38Z",
+  "outcome": "rejected",
+  "failure_type": "semantic",
+  "evidence": [
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-13-four-day-demo/map-morphology-design/r2-review/parent-review.md",
+      "sha256": "29ae3692a1f39aab9b19abdd42cb16007adece4cd0e717baae7fdc19680b88eb"
+    }
+  ]
+}

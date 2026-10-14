@@ -1,0 +1,24 @@
+{
+  "status": "completed",
+  "summary": "MAP02 correction 1/1 delivered as design-only revision. Replaced rejected one-bend draft with B1 bounded 'half-ring canal belt': the three southern straight canals are wholly reshaped into three fan arcs connecting to the IJ (6 overlapping collision rects each, 19 water rects total), six bridges on two radial quays plus the retained ferry (4 rideable, 2 push-bike, crossings still 7), and 20 scattered blocks replaced by 36 continuous quay-side row houses (42 buildings); seven place IDs/actions/cost, ENTRY, CART and day/night loop are unchanged, with only a <=90 Lotte anchor move onto bridge B3. concept.svg is a full labelled map (existing vs ghost-baseline, all 7 places plus distinct garden gate and cart markers, real crossing routes, north arrow, legend, current-skeleton inset and gable-row close-up) with matching counts. Corrected per parent review: first cup is in-pub pour/cash/inventory service (not pub-to-Lotte walk), scene:192 are 9 pedestrians not boats, self routes route(a,a) must be empty, contradictory ENTRY segment-7/48px clearance table removed in favour of probe-measured dry-pocket acceptance, and migration is preservation-first (v2-walkable saves untouched, only invalid points snap preferring dual-walkable nodes) with honest old-build rollback residual risk. All geometry/navigation/migration checks are marked PROPOSED, never run; no game files touched.",
+  "changed_files": ["design.md", "findings.json", "concept.svg"],
+  "tests": [
+    {
+      "command": "python3 validate_design.py",
+      "exit_code": 0,
+      "summary": "PASS design structure, 1-3 issues, 2-3 alternatives, declared scope, standalone SVG; semantic and visual review still required"
+    }
+  ],
+  "blockers": [],
+  "memory_delta": [
+    "Corrected baseline facts for future work: scene:192 draws 9 pedestrians (not boats); scene:190-191 has 1 crane and 3 moored boats; first cup is the in-pub Marta pour-to-cash/inventory path, parent-verified natural-first-cup at dad6b38, not a map navigation task.",
+    "Adopted design direction B1: bounded connected half-ring canal belt (3 fan arcs from IJ, 6 rect segments each, 6 bridges on two radial streets, 36 row houses replacing 20 scattered blocks) is the accepted middle path between decorative paint (B0) and whole-city rebuild (B2); only Lotte may move <=90, ENTRY/CART fixed, counts 19 waters/7 crossings/42 buildings contractual.",
+    "Migration principle recorded: preservation-first geo:2 restore with dual-walkable preferred snapping; old-build rollback can reset city visited on v2-only points and must not be claimed safe via mutual re-snapping; game economy save is independent.",
+    "Design-only deliverable; structural validator passing is not human visual/fun acceptance, and no geometry/navigation/migration probes have been run."
+  ],
+  "next_steps": [
+    "Parent independently reviews evidence separation, B0/B1/B2 alternatives, spatial schematic readability and compatibility/migration sections before any implementation decision.",
+    "If approved, implementation increment 1 builds the B1 tables plus GEO_VERSION and migration in reopening-city.js, gated by the proposed city-geo probes (static geometry, ENTRY dry-pocket clearance, 81-pair reachability with 9 empty self routes, grid-enumerated migration).",
+    "Human visual review of day/night desktop and mobile screenshots and a first-read playtest remain required; parent should also re-run the natural-first-cup functional check after any implementation."
+  ]
+}

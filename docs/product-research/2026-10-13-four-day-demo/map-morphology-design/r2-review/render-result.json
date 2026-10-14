@@ -1,0 +1,6 @@
+{
+  "command": "rsvg-convert -w 1600",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

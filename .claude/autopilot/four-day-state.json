@@ -1,6 +1,6 @@
 {
   "decision": "D23",
-  "status": "running",
+  "status": "map_design_shelved_requires_new_authorization",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-16T19:48:33Z",
   "next_direction_review_at": "2026-10-14T21:48:33Z",
@@ -12,12 +12,10 @@
   "failure_policy_question_pending": false,
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
-  "current_task_terminal": null,
-  "failure_reason": null,
-  "last_result_at": "2026-10-14T16:36:59.127030Z",
-  "in_flight": [
-    "amsterdam-map-morphology-design-r2-20261015"
-  ],
+  "current_task_terminal": "cli0_complete_report_parent_semantic_rejected",
+  "failure_reason": "MAP01 correction exhausted; factual/rideability/render contradictions. MAP02 correction also exhausted.",
+  "last_result_at": "2026-10-14T16:58:40.031524Z",
+  "in_flight": [],
   "candidate_path": null,
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -229,7 +227,7 @@
       "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 1,
-      "outcome": "correction_running",
+      "outcome": "shelved",
       "game_adopted": 0,
       "notion_page": "https://app.notion.com/p/3f93285284df81c88672d18fc35ff901",
       "task_id": "amsterdam-map-morphology-design-20261015",
@@ -246,8 +244,12 @@
       "correction_prepared": false,
       "correction_submitted_at": "2026-10-14T16:33:30+00:00",
       "correction_worker_pid": 72043,
-      "correction_outcome": "running",
-      "correction_contract_commit": "d3528b6503931188f8aea6e4452f8f87c00cf587"
+      "correction_outcome": "cli0_verifying_complete_report_parent_semantic_visual_rejected",
+      "correction_contract_commit": "d3528b6503931188f8aea6e4452f8f87c00cf587",
+      "correction_ended_at": "2026-10-14T16:58:40.031524Z",
+      "correction_elapsed_seconds": 1509.736,
+      "structured_review": "rejected/semantic",
+      "correction_evidence": "docs/product-research/2026-10-13-four-day-demo/map-morphology-design/r2-review"
     },
     "MAP02": {
       "logical_task_id": "f02-map-geometry-baseline",
@@ -365,7 +367,18 @@
     "hub_sync": "source /tmp/amsterdam-map-wave-hub.md equals latest and session20261015-001236-69814.md,5106bytes",
     "automation_sync": "Same amsterdam id/thread/ACTIVE/15min; updated actual F02 clarification and two original running IDs, verified live config.",
     "goal_tool_observed_at": "2026-10-14T16:17:48.990692+00:00",
-    "goal_resume_evidence": "get_goal on explicit goal continuation returned active; previous blocked observations preserved historically"
+    "goal_resume_evidence": "get_goal on explicit goal continuation returned active; previous blocked observations preserved historically",
+    "map_extra_correction_authorization": {
+      "status": "question_prepared_not_yet_asked",
+      "logical_task_id": "f02-map-morphology-design",
+      "scope": "One additional targeted correction for three parent-reviewed issues; MAP02 remains shelved",
+      "authorization_source_required": "explicit human exception to retained D24 policy"
+    },
+    "blocked_audit": {
+      "reason": "map_design_correction_limit_exhausted_new_authorization_required",
+      "consecutive_goal_turns": 1,
+      "first_observed_at": "2026-10-14T17:02:20.786803+00:00"
+    }
   },
   "current_task_worker_pid": null,
   "freeze_audit_attempt": {

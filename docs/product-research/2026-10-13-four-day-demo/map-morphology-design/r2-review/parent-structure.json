@@ -1,0 +1,8 @@
+{
+  "command": "python3 validate_design.py",
+  "cwd": "/tmp/amsterdam-map01-r2-parent",
+  "exit_code": 0,
+  "stdout": "PASS design structure, 1-3 issues, 2-3 alternatives, declared scope, standalone SVG; semantic and visual review still required\n",
+  "stderr": "",
+  "scope": "Structural validation only; parent semantic and rendered image review still required."
+}

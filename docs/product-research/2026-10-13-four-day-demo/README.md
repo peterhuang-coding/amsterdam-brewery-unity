@@ -1,3 +1,7 @@
+## F02 唯一修正波已实际启动
+
+MAP01R2实际2026-10-14T16:33:30Z启动worker72043；MAP02R2实际16:33:31Z启动worker72064。合同d3528b6已push/远端核对，提交前全机无在途，第二路前即时仅第一路运行。两路Seed Evolving enabled/high，原同逻辑各唯一修正1/1已提交；MAP01上限2400秒40轮，MAP02上限900秒24轮。只设计/说明，游戏仍dad6b38/18860，尚无采用。收齐本波再决定后续，不另开波次绕过并发。
+
 ## F02 clarified: MAP01 design and MAP02 measured baseline in progress
 
 Actual user clarification now confirms the map is too simple, lacks neighbourhood detail and does not feel sufficiently like Amsterdam. The old pending-clarification text below is historical. Two independent Seed Evolving enabled/high packages are running: [MAP01 contract](map-morphology-design/handoff.json), [MAP02 contract](map-baseline/handoff.json). Only analysis artifacts, no game changes; adopted dad6b38/18860 unchanged. Latest goal continuation returned active; goal not complete. See four-day-state and raw task IDs for live state.

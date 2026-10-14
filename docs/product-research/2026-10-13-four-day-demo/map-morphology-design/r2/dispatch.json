@@ -1,0 +1,15 @@
+{
+  "task_id": "amsterdam-map-morphology-design-r2-20261015",
+  "started_at": "2026-10-14T16:33:30+00:00",
+  "worker_pid": 72043,
+  "contract_commit": "d3528b6503931188f8aea6e4452f8f87c00cf587",
+  "model": "doubao-seed-evolving",
+  "thinking_enabled": true,
+  "effort": "high",
+  "configuration_basis": "actual launch argv/settings; provider quality not inferred",
+  "timeout_seconds": 2400,
+  "max_turns": 40,
+  "status_observed": "running",
+  "correction": 1,
+  "corrections_allowed": 1
+}

@@ -1,11 +1,11 @@
 {
   "decision": "D23",
-  "status": "corrections_prepared",
+  "status": "running",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-16T19:48:33Z",
   "next_direction_review_at": "2026-10-14T21:48:33Z",
   "last_direction_review_at": "2026-10-14T12:03:21.281163+00:00",
-  "current_task_id": "amsterdam-map-morphology-design-20261015",
+  "current_task_id": "amsterdam-map-morphology-design-r2-20261015",
   "logical_task": "f02-map-morphology-design",
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
@@ -15,7 +15,10 @@
   "current_task_terminal": null,
   "failure_reason": null,
   "last_result_at": "2026-10-14T16:26:01.533051Z",
-  "in_flight": [],
+  "in_flight": [
+    "amsterdam-map-morphology-design-r2-20261015",
+    "amsterdam-map-baseline-r2-20261015"
+  ],
   "candidate_path": null,
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -226,8 +229,8 @@
       "logical_task_id": "f02-map-morphology-design",
       "business_attempts_submitted": 1,
       "corrections_allowed": 1,
-      "corrections_submitted": 0,
-      "outcome": "business_timeout_partial_unadopted",
+      "corrections_submitted": 1,
+      "outcome": "correction_running",
       "game_adopted": 0,
       "notion_page": "https://app.notion.com/p/3f93285284df81c88672d18fc35ff901",
       "task_id": "amsterdam-map-morphology-design-20261015",
@@ -241,14 +244,18 @@
       "correction_next": "one targeted correction after original wave collected",
       "business_structured_review": "review_requires_finished_not_recorded_parent_audit_saved",
       "correction_task_id": "amsterdam-map-morphology-design-r2-20261015",
-      "correction_prepared": true
+      "correction_prepared": false,
+      "correction_submitted_at": "2026-10-14T16:33:30+00:00",
+      "correction_worker_pid": 72043,
+      "correction_outcome": "running",
+      "correction_contract_commit": "d3528b6503931188f8aea6e4452f8f87c00cf587"
     },
     "MAP02": {
       "logical_task_id": "f02-map-geometry-baseline",
       "business_attempts_submitted": 1,
       "corrections_allowed": 1,
-      "corrections_submitted": 0,
-      "outcome": "business_semantic_rejected_inventory_only",
+      "corrections_submitted": 1,
+      "outcome": "correction_running",
       "game_adopted": 0,
       "task_id": "amsterdam-map-baseline-20261015",
       "business_submitted_at": "2026-10-14T16:09:46+00:00",
@@ -260,7 +267,11 @@
       "business_elapsed_seconds": 974.639,
       "business_structured_review": "rejected/semantic",
       "correction_task_id": "amsterdam-map-baseline-r2-20261015",
-      "correction_prepared": true
+      "correction_prepared": false,
+      "correction_submitted_at": "2026-10-14T16:33:31+00:00",
+      "correction_worker_pid": 72064,
+      "correction_outcome": "running",
+      "correction_contract_commit": "d3528b6503931188f8aea6e4452f8f87c00cf587"
     }
   },
   "provider_cooldown_until": "2026-10-13T19:31:58Z",

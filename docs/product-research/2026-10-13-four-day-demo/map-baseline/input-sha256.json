@@ -1,0 +1,12 @@
+{
+  "tools/prototype/reopening-city.js": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625",
+  "tools/prototype/reopening-scene.js": "d429ad5760dd8b2d23397a20070d4ebdbdf7704ee3b19ce4f349fec52582dda7",
+  "tools/prototype/reopening-ui.js": "b884234f2bda638ccf6de62e8036eb4b3cdbc73e95325785588c761d38c14985",
+  "tools/prototype/flower-network.js": "e6febfd844da0107ca9079251ddbb4fd81e30cc5979f696bdba8f3b493027f80",
+  "integration-excerpts.md": "a83e0ea1edae6113c1493a7ba87f3dacb09a3c5e065d04bf912352afebce349f",
+  "brief.md": "e6aa4e3ddb9a860fb87e67b51f0ba333fa38632f4eff42211e0cc3f7a27dc96f",
+  "validate_baseline.py": "953341e0adadf955d87b573729cb865eccae8fd9af8d56cc9cd32e8b4b014f65",
+  "baseline-probe.js": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "baseline.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "inventory.md": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

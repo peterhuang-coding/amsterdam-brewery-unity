@@ -236,6 +236,14 @@
       "business_submitted_at": "2026-10-14T16:05:18+00:00",
       "worker_pid": 69042,
       "contract_commit": "56522c181fefdc47d7a638ddf7acd3e42ecba702"
+    },
+    "MAP02": {
+      "logical_task_id": "f02-map-geometry-baseline",
+      "business_attempts_submitted": 0,
+      "corrections_allowed": 1,
+      "corrections_submitted": 0,
+      "outcome": "prepared_baseline_only",
+      "game_adopted": 0
     }
   },
   "provider_cooldown_until": "2026-10-13T19:31:58Z",
@@ -249,8 +257,8 @@
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
   "current_task_stage": "shelved",
-  "prepared_task_id": null,
-  "prepared_task_packet": null,
+  "prepared_task_id": "amsterdam-map-baseline-20261015",
+  "prepared_task_packet": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-13-four-day-demo/map-baseline/handoff.json",
   "play_service_pid": 91799,
   "play_root": "/tmp/amsterdam-play-dad6b38",
   "current_task_submitted_at": "2026-10-13T17:54:21.539560Z",
@@ -316,6 +324,11 @@
       "new_game_adoptions": 0,
       "notion_sync": "Home updated/read back 2026-10-14T12:04:37.154Z with exact 9493d86 review link; feedback F02 remains pending.",
       "automation_sync": "Same id/thread/ACTIVE/15min and all other fields preserved; prompt byte-exact to /tmp/amsterdam-heartbeat-review04.txt."
+    },
+    "plan_volume_authorization": {
+      "quote": "plan call volume can be larger; unlimited firepower permitted",
+      "recorded_at": "2026-10-14T16:09:02.133019+00:00",
+      "application": "Use two genuinely independent CC packages where useful. No cancellation/restart of running MAP01. No change to fixed deadline or per-item failure policy."
     }
   },
   "current_task_worker_pid": null,

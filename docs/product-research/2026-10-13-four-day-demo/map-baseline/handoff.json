@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-map-baseline-20261015",
+  "goal": "Quantify existing map geometry/routes/save dependencies at dad6b38 for future F02 map redesign; facts only, no game changes or competing design.",
+  "memory": {
+    "summary": "User now allows more Coding Plan use. Run as second independent package beside MAP01 design. Current map too simple and lacking Amsterdam detail, but this output only establishes exact technical baseline.",
+    "decisions": [
+      "Only Seed Evolving thinking enabled/high. Global maximum two real CC jobs; one business plus at most one correction per logical task.",
+      "Keep all source immutable. Preserve 7 City place IDs plus separate garden and cart semantics.",
+      "This is not a revival of shelved map markers, market fixtures or freeze audit."
+    ],
+    "known_issues": [
+      "C.restore may reset visits on invalid positions except special flower-facade fallback.",
+      "Walking route samples are not human playtime, fun or a cycle-optimal path."
+    ]
+  },
+  "tasks": [
+    "Read brief and provided source. Author/run standalone probe; inspect actual generated baseline.",
+    "Write concise Chinese coordinate dependency and compatibility inventory with source line evidence and exact baseline metrics.",
+    "Run exact validator and deliver legal reserved report with two latest command outcomes."
+  ],
+  "acceptance": [
+    "node baseline-probe.js and python3 validate_baseline.py exit0.",
+    "Parent independently reviews probe source, reruns it, checks actual module results and immutable inputs."
+  ],
+  "constraints": [
+    "Only three declared output files may change. No game implementation or design proposals.",
+    "No network, tools outside Read/Write/Edit/exact Bash commands, package installation or filesystem exploration.",
+    "Use actual supplied City and FlowerNetwork modules; no made-up geographic metres or human validation."
+  ],
+  "workspace": "/tmp/amsterdam-map-baseline-20261015/input",
+  "read_files": [
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/flower-network.js",
+    "integration-excerpts.md",
+    "brief.md",
+    "validate_baseline.py",
+    "baseline-probe.js",
+    "baseline.json",
+    "inventory.md"
+  ],
+  "write_files": [
+    "baseline-probe.js",
+    "baseline.json",
+    "inventory.md"
+  ],
+  "commands": [
+    "node baseline-probe.js",
+    "python3 validate_baseline.py"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 1200,
+  "max_turns": 40,
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "f02-map-geometry-baseline",
+    "task_type": "analysis",
+    "attempt_kind": "business"
+  }
+}

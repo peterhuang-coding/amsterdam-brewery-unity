@@ -3,8 +3,8 @@
   "status": "map_extra_correction_failed_shelved",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-16T19:48:33Z",
-  "next_direction_review_at": "2026-10-14T21:48:33Z",
-  "last_direction_review_at": "2026-10-14T12:03:21.281163+00:00",
+  "next_direction_review_at": "2026-10-15T07:48:33Z",
+  "last_direction_review_at": "2026-10-14T22:04:36.245704+00:00",
   "current_task_id": "amsterdam-map-morphology-design-r3-20261015",
   "logical_task": "f02-map-morphology-design",
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
@@ -311,7 +311,7 @@
   "current_task_submitted_at": "2026-10-14T17:23:09+00:00",
   "worker_pid": null,
   "last_submitted_at": "2026-10-14T17:23:09+00:00",
-  "direction_review_count": 4,
+  "direction_review_count": 5,
   "next_independent_observation": "Explicit MAP01 extra correction approved; no other shelved task revival.",
   "weekly_goal": {
     "decision": "D25",
@@ -380,7 +380,7 @@
     },
     "hub_sync": "source /tmp/amsterdam-map-r3-terminal-hub.md equals latest and session20261015-035705-79567.md byte-for-byte,5144bytes,one next-step; project method/index appended.",
     "automation_sync": "Same amsterdam id/thread/ACTIVE/15min and creation fields preserved; R3 terminal prompt byte-exact readback verified.",
-    "goal_tool_observed_at": "2026-10-14T19:36:48.631248+00:00",
+    "goal_tool_observed_at": "2026-10-14T22:04:36.245704+00:00",
     "goal_resume_evidence": "get_goal on explicit goal continuation returned active; previous blocked observations preserved historically",
     "map_extra_correction_authorization": {
       "status": "consumed_terminal_failure",
@@ -421,6 +421,27 @@
       "human_direction_or_new_exception_required_for_redispatch": true,
       "new_question_sent": false,
       "notified_this_turn": true
+    },
+    "direction_review_05": {
+      "planned_at": "2026-10-14T21:48:33Z",
+      "completed_at": "2026-10-14T22:04:36.245704+00:00",
+      "document": "docs/product-research/2026-10-13-four-day-demo/direction-review-05.md",
+      "cc_requests_since_previous_review": 5,
+      "business_requests": 2,
+      "standard_corrections": 2,
+      "explicit_extra_corrections": 1,
+      "new_cc_this_review": 0,
+      "new_design_adoptions": 0,
+      "new_game_adoptions": 0,
+      "ledger_count": 49,
+      "all_ledger_state_done": true,
+      "entry_http_status": 200,
+      "entry_html_bytes": 7136,
+      "game_retested": false,
+      "new_screenshots": false,
+      "notion_sync": "pending",
+      "hub_sync": "pending",
+      "automation_sync": "pending"
     }
   },
   "current_task_worker_pid": null,
@@ -463,8 +484,8 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-14T17:23:30.452080+00:00",
+  "updated_at": "2026-10-14T22:04:36.245704+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
-  "last_checked_at": "2026-10-14T19:58:40.959644+00:00"
+  "last_checked_at": "2026-10-14T22:04:36.245704+00:00"
 }

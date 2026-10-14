@@ -3,8 +3,8 @@
   "status": "running",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-16T19:48:33Z",
-  "next_direction_review_at": "2026-10-14T01:48:33Z",
-  "last_direction_review_at": "2026-10-13T15:50:11.532633+00:00",
+  "next_direction_review_at": "2026-10-14T11:48:33Z",
+  "last_direction_review_at": "2026-10-14T01:51:52.611343+00:00",
   "current_task_id": "amsterdam-freeze-audit-r2-20261014",
   "logical_task": "d25-freeze-audit",
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
@@ -241,22 +241,22 @@
   "current_task_submitted_at": "2026-10-13T17:54:21.539560Z",
   "worker_pid": null,
   "last_submitted_at": "2026-10-13T17:54:21.539560Z",
-  "direction_review_count": 2,
-  "next_independent_observation": "Human first-time feedback pending; parent full-order day2/day3 and inspector recovery now covered. No new implementation selected.",
+  "direction_review_count": 3,
+  "next_independent_observation": "Received F02 map complexity/fidelity; clarify density versus readability and fidelity scope before bounded design. No new CC package.",
   "weekly_goal": {
     "decision": "D25",
     "source": "用户2026-10-14本周敲定demo再走Steam发行",
     "week_end_beijing": "2026-10-18T23:59:59+08:00",
     "candidate_target_beijing": "2026-10-16",
     "execution_deadline_unchanged": true,
-    "status": "blocked_waiting_human_playtest_feedback",
+    "status": "feedback_received_scope_clarification",
     "document": "docs/product-research/2026-10-13-four-day-demo/week-demo-freeze.md",
     "scope_priority": "parent_acceptance_then_whole_natural_loop_then_top3_freeze_blockers",
     "steam_next_phase": "preparation_after_demo_direction_confirmation",
-    "human_play_feedback": "not_received",
+    "human_play_feedback": "received_map_complexity_fidelity_needs_clarification",
     "current_candidate": "dad6b38c54fda94f541764242f61820d8177bd19",
     "natural_loop_evidence": "cargo-choice-final: real first cup Marta, night duplicate pickup/drop, safe return, day2 inventory and market price; pause used for tool inspection, no human fun validation",
-    "next_priority": "fixed dad6b38 human first-time usability/visual/fun feedback, at most3 proven blockers; no new technical blocker in checked branch",
+    "next_priority": "Clarify F02 map complexity/fidelity, then at most3 evidence-based freeze blockers and reviewable design; no automatic revival.",
     "three_day_parent_evidence": "three-day-parent: seed42001 same natural save, day1 actual6services+night1salvage/extracted/day2consequence; day2/3earlyclose; ending107cash12satisfied/won; exactrefresh; replay exactnaturalending isolatedcontexts",
     "notion_sync": "candidate snapshot 5ff164f home readback2026-10-13T21:17:27.449Z",
     "full_service_parent_evidence": "full-service-parent: exact prior natural day2 restore branch; day2 all10/day3 all12 served and natural automatic settlement; pending inspector pagehide restore exact, paid10/9patiences+12; won281cash28satisfied, endingrefresh exact,390/1440 nooverflow,17 browserbytes matched; pauses/DOM assistance,no humanfun.",
@@ -277,7 +277,19 @@
     "feedback_page": "https://app.notion.com/p/3f73285284df818b9a5dce5687a0aeaa",
     "feedback_page_current_candidate_synced": true,
     "blocked_at": "2026-10-13T23:32:23.696781+00:00",
-    "blocked_reason": "First-time usability, visual acceptance and desire to continue require human playtest confirmation; no new feedback across consecutive goal turns. Existing technical verification and candidate preservation complete within checked scope; no authorized independent necessary task selected."
+    "feedback_record": {
+      "id": "PLAY01-F02",
+      "quote": "地图的复杂度和还原度",
+      "recorded_at": "2026-10-14T01:51:52.611343+00:00",
+      "source": "direct reply to existing asynchronous playtest question",
+      "prompt_candidate": "dad6b38/18860",
+      "actual_played_version": "not independently confirmed",
+      "clarification_status": "pending",
+      "document": "docs/product-research/2026-10-13-four-day-demo/map-feedback-f02.md"
+    },
+    "prior_blocked_reason": "First-time usability, visual acceptance and desire to continue require human playtest confirmation; no new feedback across consecutive goal turns. Existing technical verification and candidate preservation complete within checked scope; no authorized independent necessary task selected.",
+    "goal_tool_last_observed_status": "blocked",
+    "feedback_received_after_blocked": true
   },
   "current_task_worker_pid": null,
   "freeze_audit_attempt": {
@@ -319,6 +331,6 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-13T23:32:23.696781+00:00",
+  "updated_at": "2026-10-14T01:51:52.611343+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00"
 }

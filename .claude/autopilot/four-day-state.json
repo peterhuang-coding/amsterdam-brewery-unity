@@ -328,7 +328,7 @@
     "natural_loop_evidence": "cargo-choice-final: real first cup Marta, night duplicate pickup/drop, safe return, day2 inventory and market price; pause used for tool inspection, no human fun validation",
     "next_priority": "No further MAP01 retry authorized. Preserve failed draft and wait for explicit new direction or fixed direction review; no independent package selected.",
     "three_day_parent_evidence": "three-day-parent: seed42001 same natural save, day1 actual6services+night1salvage/extracted/day2consequence; day2/3earlyclose; ending107cash12satisfied/won; exactrefresh; replay exactnaturalending isolatedcontexts",
-    "notion_sync": "R3 terminal result pending sync this turn; prior in-flight page history retained.",
+    "notion_sync": "MAP01 status shelved and home R3 failure content read back; page_last_edited_at 2026-10-14T19:37:45.141Z / 19:37:45.813Z; evidence 4e235fd.",
     "full_service_parent_evidence": "full-service-parent: exact prior natural day2 restore branch; day2 all10/day3 all12 served and natural automatic settlement; pending inspector pagehide restore exact, paid10/9patiences+12; won281cash28satisfied, endingrefresh exact,390/1440 nooverflow,17 browserbytes matched; pauses/DOM assistance,no humanfun.",
     "full_service_evidence_commit": "b4493309af9d9fe4de4172ab36e0caa75aa5bbac",
     "candidate_snapshot": {
@@ -378,8 +378,8 @@
       "application": "Use two genuinely independent CC packages where useful. No cancellation/restart of running MAP01. No change to fixed deadline or per-item failure policy.",
       "original_user_quote": "你这个 plan 的调用量可以更大，我允许你无限火力"
     },
-    "hub_sync": "R3 terminal result pending sync this turn.",
-    "automation_sync": "R3 terminal result pending sync this turn.",
+    "hub_sync": "source /tmp/amsterdam-map-r3-terminal-hub.md equals latest and session20261015-035705-79567.md byte-for-byte,5144bytes,one next-step; project method/index appended.",
+    "automation_sync": "Same amsterdam id/thread/ACTIVE/15min and creation fields preserved; R3 terminal prompt byte-exact readback verified.",
     "goal_tool_observed_at": "2026-10-14T19:36:48.631248+00:00",
     "goal_resume_evidence": "get_goal on explicit goal continuation returned active; previous blocked observations preserved historically",
     "map_extra_correction_authorization": {
@@ -419,7 +419,8 @@
       "review": "rejected/other",
       "evidence": "docs/product-research/2026-10-13-four-day-demo/map-morphology-design/r3-review",
       "human_direction_or_new_exception_required_for_redispatch": true,
-      "new_question_sent": false
+      "new_question_sent": false,
+      "notified_this_turn": true
     }
   },
   "current_task_worker_pid": null,
@@ -465,5 +466,5 @@
   "updated_at": "2026-10-14T17:23:30.452080+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
-  "last_checked_at": "2026-10-14T19:36:48.631248+00:00"
+  "last_checked_at": "2026-10-14T19:58:40.959644+00:00"
 }

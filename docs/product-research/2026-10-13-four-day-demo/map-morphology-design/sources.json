@@ -1,0 +1,42 @@
+{
+  "accessed_date_utc": "2026-10-14",
+  "type": "parent-verified concise paraphrases of primary sources; no image reuse licence inferred",
+  "sources": [
+    {
+      "id": "S1",
+      "title": "UNESCO canal ring",
+      "url": "https://whc.unesco.org/en/list/1349/",
+      "summary": "The historic canal district extends west and south of the old town. Its planned concentric canal arcs and intermediate urban blocks form a coherent ensemble of gabled houses. This supports spatial morphology, not exact game coordinates or a whole-city replica."
+    },
+    {
+      "id": "S2",
+      "title": "I amsterdam architecture",
+      "url": "https://www.iamsterdam.com/en/see-and-do/attractions-and-sights/amsterdams-architectural-style",
+      "summary": "Canal houses use varied gable forms; Herengracht, Keizersgracht and Prinsengracht and smaller connecting canals are characteristic. Amsterdam School brickwork and modern architecture provide other city identities. No measured facade dimensions are supplied."
+    },
+    {
+      "id": "S3",
+      "title": "I amsterdam Jordaan",
+      "url": "https://www.iamsterdam.com/en/explore/neighbourhoods/centrum/things-to-do-in-the-jordaan",
+      "summary": "Canal streets, independent shops, galleries and cafes/terraces characterize the district; Noordermarkt and the Prinsengracht/Brouwersgracht area are references. This is a qualitative reference, not surveyed map data."
+    },
+    {
+      "id": "S4",
+      "title": "I amsterdam Noord",
+      "url": "https://www.iamsterdam.com/en/explore/neighbourhoods/noord",
+      "summary": "Noord is across the IJ, with ferries behind Central Station. It mixes green areas, village traces, contemporary architecture and waterside places. NDSM is one part of Noord, not the identity of every north-bank neighbourhood."
+    },
+    {
+      "id": "S5",
+      "title": "I amsterdam De Pijp",
+      "url": "https://www.iamsterdam.com/en/explore/neighbourhoods/de-pijp/things-to-do",
+      "summary": "Albert Cuypmarkt is a street market running through the neighbourhood and a focus of daily life. Sarphatipark and Amsterdam School buildings are other reference points. Do not infer an exact street graph from this text."
+    },
+    {
+      "id": "S6",
+      "title": "NDSM site organisation",
+      "url": "https://www.ndsm.nl/en/over",
+      "summary": "NDSM in Amsterdam North developed from a shipyard into a place for makers, studios, exhibitions, cafes and creative businesses. Shipyard structures support an industrial waterside visual vocabulary; do not label all Noord as NDSM."
+    }
+  ]
+}

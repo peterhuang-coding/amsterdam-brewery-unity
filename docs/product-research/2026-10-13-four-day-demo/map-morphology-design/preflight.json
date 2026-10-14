@@ -1,0 +1,5 @@
+{
+  "validator_syntax": "pass",
+  "empty_outputs_rejected": true,
+  "outputs_expected_empty_before_cc": true
+}

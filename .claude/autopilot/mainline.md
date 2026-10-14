@@ -1,3 +1,7 @@
+## MAP01 actual dispatch - 2026-10-14T16:05:18+00:00
+
+Contract 56522c1 pushed and remote verified; Notion MAP01 executing read back. Pre-dispatch global ledger and bare CLI check found no running jobs. Business1/correction0; worker 69042. Design only. Actual F02 clarification is answered, superseding historical pending text. Goal tool still reports blocked; no claimed goal resume or completion. Fixed deadline and review schedule unchanged.
+
 ## 当前新增：F02方向已回答，MAP01设计包准备中
 
 真人答复：**地图太简单、街区细节少，不够像真实阿姆斯特丹**。这是原异步问题的实际回答；下方 pending 记载为历史。实际试玩版本/存档/画面仍未确认。当前基线仍 `dad6b38c54fda94f541764242f61820d8177bd19` /18860。

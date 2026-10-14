@@ -7,3 +7,5 @@
 原账本第一次以state.json文件名检索返回0，不据此推断无在途；随后定位status.json，12:02:11.947086Z核对44份原记录state全部done，result_status分布blocked12/unknown15/verifying15/invalid_output2。原记录未改，历史终态不等于验收通过。当前state无在途/准备包。
 
 方向判断见direction-review-04.md；复用已有技术证据，未重跑418/GUI/17资源或截图，无新增方法。同步状态将在Notion、现有心跳与Hub实际完成后记录。
+
+同步：方向review提交9493d86bd74c6dee76a1d05925fda0fbcb4bdf3d已push并核对远端。Notion主页12:04:37.154Z读回第4次review原文/精确提交链接/F02待澄清/下一时点；反馈页原文未改。现有amsterdam同ID/thread/ACTIVE/15min及其余字段保持，提示与/tmp/amsterdam-heartbeat-review04.txt逐字节一致，无新增调度。

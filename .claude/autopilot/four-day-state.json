@@ -296,8 +296,8 @@
       "document": "docs/product-research/2026-10-13-four-day-demo/direction-review-04.md",
       "new_cc": 0,
       "new_game_adoptions": 0,
-      "notion_sync": "pending",
-      "automation_sync": "pending"
+      "notion_sync": "Home updated/read back 2026-10-14T12:04:37.154Z with exact 9493d86 review link; feedback F02 remains pending.",
+      "automation_sync": "Same id/thread/ACTIVE/15min and all other fields preserved; prompt byte-exact to /tmp/amsterdam-heartbeat-review04.txt."
     }
   },
   "current_task_worker_pid": null,
@@ -340,6 +340,6 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-14T12:03:21.281163+00:00",
+  "updated_at": "2026-10-14T12:05:39.831652+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00"
 }

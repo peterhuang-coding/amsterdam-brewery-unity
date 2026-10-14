@@ -1,0 +1,162 @@
+{
+  "artifact_dir": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015",
+  "blockers": [],
+  "changed_files": [
+    {
+      "path": "baseline-probe.js",
+      "sha256": "122c8a88856253ed68ed315ce0e3401c838b6b97430df4793f7f7149e692aec6"
+    },
+    {
+      "path": "baseline.json",
+      "sha256": "0d59cef4542e3e9e21547a8b76a19564c5e8b235605862d6920f3bd4661fd534"
+    },
+    {
+      "path": "inventory.md",
+      "sha256": "cd90b3c5ad9a93b69b565462096c16bf90350cc875ede9763dbf8cc36bd500d4"
+    }
+  ],
+  "claude": {
+    "final_subtype": "success",
+    "is_error": false,
+    "outcome": "completed",
+    "pid": 69583,
+    "returncode": 0,
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 2370880,
+      "inference_geo": "",
+      "input_tokens": 168580,
+      "iterations": [],
+      "output_tokens": 39336,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_fetch_requests": 0,
+        "web_search_requests": 0
+      },
+      "service_tier": "standard",
+      "speed": "standard"
+    }
+  },
+  "cost_basis": "client estimate; not Coding Plan charge",
+  "cost_usd": 3.0117399999999996,
+  "deleted_files": [],
+  "disallowed_changes": [],
+  "elapsed_seconds": 974.639,
+  "finished_at": "2026-10-14T16:26:01.533051+00:00",
+  "input_hashes": {
+    "baseline-probe.js": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "baseline.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "brief.md": "e6aa4e3ddb9a860fb87e67b51f0ba333fa38632f4eff42211e0cc3f7a27dc96f",
+    "integration-excerpts.md": "a83e0ea1edae6113c1493a7ba87f3dacb09a3c5e065d04bf912352afebce349f",
+    "inventory.md": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tools/prototype/flower-network.js": "e6febfd844da0107ca9079251ddbb4fd81e30cc5979f696bdba8f3b493027f80",
+    "tools/prototype/reopening-city.js": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625",
+    "tools/prototype/reopening-scene.js": "d429ad5760dd8b2d23397a20070d4ebdbdf7704ee3b19ce4f349fec52582dda7",
+    "tools/prototype/reopening-ui.js": "b884234f2bda638ccf6de62e8036eb4b3cdbc73e95325785588c761d38c14985",
+    "validate_baseline.py": "953341e0adadf955d87b573729cb865eccae8fd9af8d56cc9cd32e8b4b014f65"
+  },
+  "memory_delta": [
+    "MAP02 baseline at dad6b38 measured: 9 anchors all walkable/rideable; every off-diagonal pair among the 7 places plus garden ENTRY and cart is reachable; no empty different-point routes exist at these anchors.",
+    "C.route outputs are direction-asymmetric due to per-endpoint closestConnector and FIFO BFS tie order (reopening-city.js:152-236); treat polylines as grid-hop facts, not optimal or timed paths.",
+    "C.restore resets position/visits/bike for any non-walkable point except a point hit-testing the flowers facade, which relocates to the pub anchor while preserving visited ids and the parked bike (reopening-city.js:349-370); invalid bike alone resets only the bike."
+  ],
+  "next_steps": [
+    "Parent reviews baseline-probe.js source and reruns node baseline-probe.js and python3 validate_baseline.py independently.",
+    "Parent spot-checks baseline.json route points/facts against the immutable City/FlowerNetwork modules and confirms supplied inputs were not modified.",
+    "Hand the baseline metrics and compatibility inventory to the separate F02 redesign package; any future topology acceptance for old walkable positions, parked/carried bikes and cart/garden entry remains a proposal outside this package."
+  ],
+  "observed_models": [
+    "doubao-seed-evolving"
+  ],
+  "permission_denials": [],
+  "replayed": false,
+  "report": {
+    "blockers": [],
+    "changed_files": [
+      "baseline-probe.js",
+      "baseline.json",
+      "inventory.md"
+    ],
+    "memory_delta": [
+      "MAP02 baseline at dad6b38 measured: 9 anchors all walkable/rideable; every off-diagonal pair among the 7 places plus garden ENTRY and cart is reachable; no empty different-point routes exist at these anchors.",
+      "C.route outputs are direction-asymmetric due to per-endpoint closestConnector and FIFO BFS tie order (reopening-city.js:152-236); treat polylines as grid-hop facts, not optimal or timed paths.",
+      "C.restore resets position/visits/bike for any non-walkable point except a point hit-testing the flowers facade, which relocates to the pub anchor while preserving visited ids and the parked bike (reopening-city.js:349-370); invalid bike alone resets only the bike."
+    ],
+    "next_steps": [
+      "Parent reviews baseline-probe.js source and reruns node baseline-probe.js and python3 validate_baseline.py independently.",
+      "Parent spot-checks baseline.json route points/facts against the immutable City/FlowerNetwork modules and confirms supplied inputs were not modified.",
+      "Hand the baseline metrics and compatibility inventory to the separate F02 redesign package; any future topology acceptance for old walkable positions, parked/carried bikes and cart/garden entry remains a proposal outside this package."
+    ],
+    "status": "completed",
+    "summary": "Established the dad6b38 factual geometry/route/save baseline without touching game source: standalone baseline-probe.js uses only node:fs/path/assert plus the real City and FlowerNetwork modules; baseline.json holds 9 anchors (7 PLACES + garden ENTRY 1510,690 + cart 1310,1040, cart not a place id), 81 ordered route rows (9 self-empty correct, all 72 off-diagonal reachable, 8 single-segment, 64 grid, all <=4-unit polyline samples walkable, endpoint gap 0), 9 synthetic C.restore checks with all fields preserved plus 3 documented reset/fallback probes (water and decorative block fully reset; flowers facade relocates to pub while keeping visits and bike), and facts/limitations. Measured: 2424 walkable 20-unit grid nodes, 26 buildings (6 derived facades + 20 decorative), 4 waters, 6 bridges + 1 ferry, 16 noord-related pairs touch ferry samples, off-diagonal lengths 70.00-1802.48 total 67264.00 logical units, and direction-asymmetric routes from independent connector choice/FIFO BFS. inventory.md (Chinese) maps owners/consumers, separates collision anchors from render-only hardcoded coordinates with file:line evidence, documents cross-file ID/threshold dependencies and restore fallback, and tabulates all 81 route rows and 9 restore checks; future items are explicitly labeled proposals.",
+    "tests": [
+      {
+        "command": "node baseline-probe.js",
+        "exit_code": 0,
+        "summary": "Wrote baseline.json (186365 bytes): 9 anchors, 81 routes (self-empty=9, off-diagonal empty=0, direct=8, grid=64), all polyline samples walkable, 2424 walkable grid nodes, 16 ferry pairs, 9/9 restore checks fields-preserved; deterministic on rerun."
+      },
+      {
+        "command": "python3 validate_baseline.py",
+        "exit_code": 0,
+        "summary": "PASS baseline structure: 9 anchors,81 ordered pairs,9 synthetic restore checks; parent source and semantic review still required"
+      }
+    ]
+  },
+  "request_sha256": "6519d7d0a19a4b680e9aa0e986f868155efd88fe35d1173cff6757f5f063aff4",
+  "requested": {
+    "allowed_tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash"
+    ],
+    "basis": "launcher-pinned request; requested, not provider-confirmed; the pinned model is a fixed convention, not a ranking result",
+    "model": "doubao-seed-evolving",
+    "permission_allow": [
+      "Read(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/**)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/baseline-probe.js)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/baseline-probe.js)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/baseline.json)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/baseline.json)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/inventory.md)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/inventory.md)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/handoff-result.json)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/handoff-result.json)",
+      "Bash(node baseline-probe.js)",
+      "Bash(python3 validate_baseline.py)"
+    ],
+    "permission_mode": "dontAsk",
+    "provider_base_url": "https://ark.cn-beijing.volces.com/api/coding",
+    "reasoning_effort": "high",
+    "thinking_enabled": true
+  },
+  "session_id": "5849393d-b2bd-48b8-8c06-cf4b2821a81f",
+  "started_at": "2026-10-14T16:09:46.871149+00:00",
+  "status": "verifying",
+  "summary": "Established the dad6b38 factual geometry/route/save baseline without touching game source: standalone baseline-probe.js uses only node:fs/path/assert plus the real City and FlowerNetwork modules; baseline.json holds 9 anchors (7 PLACES + garden ENTRY 1510,690 + cart 1310,1040, cart not a place id), 81 ordered route rows (9 self-empty correct, all 72 off-diagonal reachable, 8 single-segment, 64 grid, all <=4-unit polyline samples walkable, endpoint gap 0), 9 synthetic C.restore checks with all fields preserved plus 3 documented reset/fallback probes (water and decorative block fully reset; flowers facade relocates to pub while keeping visits and bike), and facts/limitations. Measured: 2424 walkable 20-unit grid nodes, 26 buildings (6 derived facades + 20 decorative), 4 waters, 6 bridges + 1 ferry, 16 noord-related pairs touch ferry samples, off-diagonal lengths 70.00-1802.48 total 67264.00 logical units, and direction-asymmetric routes from independent connector choice/FIFO BFS. inventory.md (Chinese) maps owners/consumers, separates collision anchors from render-only hardcoded coordinates with file:line evidence, documents cross-file ID/threshold dependencies and restore fallback, and tabulates all 81 route rows and 9 restore checks; future items are explicitly labeled proposals.",
+  "task_id": "amsterdam-map-baseline-20261015",
+  "telemetry": {
+    "attempt_kind": "business",
+    "logical_task_id": "f02-map-geometry-baseline",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "analysis"
+  },
+  "tests": [
+    {
+      "command": "node baseline-probe.js",
+      "exit_code": 0,
+      "summary": "Wrote baseline.json (186365 bytes): 9 anchors, 81 routes (self-empty=9, off-diagonal empty=0, direct=8, grid=64), all polyline samples walkable, 2424 walkable grid nodes, 16 ferry pairs, 9/9 restore checks fields-preserved; deterministic on rerun."
+    },
+    {
+      "command": "python3 validate_baseline.py",
+      "exit_code": 0,
+      "summary": "PASS baseline structure: 9 anchors,81 ordered pairs,9 synthetic restore checks; parent source and semantic review still required"
+    }
+  ]
+}

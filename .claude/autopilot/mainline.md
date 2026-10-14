@@ -1,3 +1,7 @@
+## F02 两首包收齐，唯一修正已准备（2026-10-15 北京）
+
+MAP01业务硬超时1200.126s/CLI143/doneunknown，部分正文未采用、SVG空、无报告；标准review_requires_finished未登记拒收。MAP02业务974.639s/CLI0完整报告，父级复跑精确186365字节相同，但渡轮方向/分组与UI说明错误，标准rejected/semantic。两worker退出，无在途。两份同逻辑R2合同已准备：MAP01三份设计输出2400s40轮；MAP02仅说明文档900s24轮，probe/data只读。Seed enabled/high、各唯一修正，尚未提交。游戏仍dad6b38/18860、修改/采用0。既定截止、下次review、搁置项不变。goal最近实读active，旧blocked为历史。
+
 ## MAP01 + MAP02 actual parallel wave - 2026-10-14T16:09:46+00:00
 
 User expanded Plan call allowance. Two independent Seed Evolving enabled/high packages now run: MAP01 morphology design worker69042; MAP02 geometry baseline worker69583. MAP02 contract84186f1 pushed/remote verified, Notion executing readback confirmed, immediate capacity check found only original MAP01. No duplicated submission. Read-only game baseline dad6b38 retained. Max2, fixed deadline and per-item correction rules unchanged.

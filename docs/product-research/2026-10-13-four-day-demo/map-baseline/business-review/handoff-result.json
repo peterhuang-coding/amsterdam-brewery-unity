@@ -1,0 +1,32 @@
+{
+  "status": "completed",
+  "summary": "Established the dad6b38 factual geometry/route/save baseline without touching game source: standalone baseline-probe.js uses only node:fs/path/assert plus the real City and FlowerNetwork modules; baseline.json holds 9 anchors (7 PLACES + garden ENTRY 1510,690 + cart 1310,1040, cart not a place id), 81 ordered route rows (9 self-empty correct, all 72 off-diagonal reachable, 8 single-segment, 64 grid, all <=4-unit polyline samples walkable, endpoint gap 0), 9 synthetic C.restore checks with all fields preserved plus 3 documented reset/fallback probes (water and decorative block fully reset; flowers facade relocates to pub while keeping visits and bike), and facts/limitations. Measured: 2424 walkable 20-unit grid nodes, 26 buildings (6 derived facades + 20 decorative), 4 waters, 6 bridges + 1 ferry, 16 noord-related pairs touch ferry samples, off-diagonal lengths 70.00-1802.48 total 67264.00 logical units, and direction-asymmetric routes from independent connector choice/FIFO BFS. inventory.md (Chinese) maps owners/consumers, separates collision anchors from render-only hardcoded coordinates with file:line evidence, documents cross-file ID/threshold dependencies and restore fallback, and tabulates all 81 route rows and 9 restore checks; future items are explicitly labeled proposals.",
+  "changed_files": [
+    "baseline-probe.js",
+    "baseline.json",
+    "inventory.md"
+  ],
+  "tests": [
+    {
+      "command": "node baseline-probe.js",
+      "exit_code": 0,
+      "summary": "Wrote baseline.json (186365 bytes): 9 anchors, 81 routes (self-empty=9, off-diagonal empty=0, direct=8, grid=64), all polyline samples walkable, 2424 walkable grid nodes, 16 ferry pairs, 9/9 restore checks fields-preserved; deterministic on rerun."
+    },
+    {
+      "command": "python3 validate_baseline.py",
+      "exit_code": 0,
+      "summary": "PASS baseline structure: 9 anchors,81 ordered pairs,9 synthetic restore checks; parent source and semantic review still required"
+    }
+  ],
+  "blockers": [],
+  "memory_delta": [
+    "MAP02 baseline at dad6b38 measured: 9 anchors all walkable/rideable; every off-diagonal pair among the 7 places plus garden ENTRY and cart is reachable; no empty different-point routes exist at these anchors.",
+    "C.route outputs are direction-asymmetric due to per-endpoint closestConnector and FIFO BFS tie order (reopening-city.js:152-236); treat polylines as grid-hop facts, not optimal or timed paths.",
+    "C.restore resets position/visits/bike for any non-walkable point except a point hit-testing the flowers facade, which relocates to the pub anchor while preserving visited ids and the parked bike (reopening-city.js:349-370); invalid bike alone resets only the bike."
+  ],
+  "next_steps": [
+    "Parent reviews baseline-probe.js source and reruns node baseline-probe.js and python3 validate_baseline.py independently.",
+    "Parent spot-checks baseline.json route points/facts against the immutable City/FlowerNetwork modules and confirms supplied inputs were not modified.",
+    "Hand the baseline metrics and compatibility inventory to the separate F02 redesign package; any future topology acceptance for old walkable positions, parked/carried bikes and cart/garden entry remains a proposal outside this package."
+  ]
+}

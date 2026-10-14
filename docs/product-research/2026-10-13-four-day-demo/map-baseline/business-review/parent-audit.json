@@ -1,0 +1,236 @@
+{
+  "input_checks": {
+    "tools/prototype/reopening-city.js": {
+      "source_unchanged": true,
+      "staged_unchanged": true,
+      "writable": false
+    },
+    "tools/prototype/reopening-scene.js": {
+      "source_unchanged": true,
+      "staged_unchanged": true,
+      "writable": false
+    },
+    "tools/prototype/reopening-ui.js": {
+      "source_unchanged": true,
+      "staged_unchanged": true,
+      "writable": false
+    },
+    "tools/prototype/flower-network.js": {
+      "source_unchanged": true,
+      "staged_unchanged": true,
+      "writable": false
+    },
+    "integration-excerpts.md": {
+      "source_unchanged": true,
+      "staged_unchanged": true,
+      "writable": false
+    },
+    "brief.md": {
+      "source_unchanged": true,
+      "staged_unchanged": true,
+      "writable": false
+    },
+    "validate_baseline.py": {
+      "source_unchanged": true,
+      "staged_unchanged": true,
+      "writable": false
+    },
+    "baseline-probe.js": {
+      "source_unchanged": true,
+      "staged_unchanged": false,
+      "writable": true
+    },
+    "baseline.json": {
+      "source_unchanged": true,
+      "staged_unchanged": false,
+      "writable": true
+    },
+    "inventory.md": {
+      "source_unchanged": true,
+      "staged_unchanged": false,
+      "writable": true
+    }
+  },
+  "actual_tool_uses": [
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/brief.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/integration-excerpts.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/tools/prototype/reopening-city.js"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/validate_baseline.py"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/tools/prototype/flower-network.js"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/tools/prototype/reopening-scene.js"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/tools/prototype/reopening-ui.js"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/tools/prototype/reopening-ui.js"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/baseline-probe.js"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/baseline.json"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/inventory.md"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/baseline-probe.js"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "node baseline-probe.js"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/baseline-probe.js"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "node baseline-probe.js"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/baseline.json"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/baseline.json"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/baseline.json"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/baseline.json"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/baseline.json"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/baseline.json"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/baseline.json"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "python3 validate_baseline.py"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/inventory.md"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "python3 validate_baseline.py"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/inventory.md"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "node baseline-probe.js"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "python3 validate_baseline.py"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-baseline-20261015/workspace/handoff-result.json"
+      }
+    }
+  ],
+  "worker_exited": true,
+  "rerun_exact_bytes": true,
+  "rerun_exit_codes": [
+    0,
+    0
+  ]
+}

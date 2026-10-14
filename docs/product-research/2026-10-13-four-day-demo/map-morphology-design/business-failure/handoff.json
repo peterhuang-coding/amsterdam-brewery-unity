@@ -1,0 +1,62 @@
+{
+  "acceptance": [
+    "python3 validate_design.py exits 0; this is structural validation only.",
+    "Parent independently reviews evidence, alternatives, spatial schematic and compatibility; no game adoption claimed."
+  ],
+  "commands": [
+    "python3 validate_design.py"
+  ],
+  "constraints": [
+    "Only modify the three output files. Never modify sources, excerpts, brief, references or validator.",
+    "No network, credentials, filesystem exploration, shell variants, or new tools.",
+    "No implementation, game patch, or rewriting previously shelved tasks.",
+    "Report product concerns in findings, execution blockers only in report.blockers."
+  ],
+  "data_sensitivity": "public",
+  "goal": "F02\u5730\u56fe\u592a\u7b80\u5355\u4e14\u7f3a\u5c11\u771f\u5b9e\u57ce\u5e02\u8857\u533a\u7ec6\u8282\uff1a\u5f62\u6210\u6700\u591a\u4e09\u4e2a\u8bc1\u636e\u660e\u786e\u95ee\u9898\u3001\u53ef\u5ba1\u9605\u7a7a\u95f4\u8bbe\u8ba1\u4e0e\u72ec\u7acb\u6982\u5ff5\u56fe\u3002\u4ec5\u8bbe\u8ba1\uff0c\u4e0d\u4fee\u6539\u6e38\u620f\u3002",
+  "max_turns": 40,
+  "memory": {
+    "completed": [],
+    "decisions": [
+      "Only Coding Plan Seed Evolving thinking enabled/high.",
+      "Business attempt and at most one targeted correction; failed correction shelves this logical item.",
+      "Keep existing first-play clarity and current gameplay semantics; no full-city replica."
+    ],
+    "known_issues": [
+      "Previously shelved marker/fixture/freeze-audit work is excluded; no failed drafts supplied.",
+      "Technical tests do not establish human visual acceptance or fun."
+    ],
+    "summary": "User clarified map lacks complexity, neighbourhood detail and Amsterdam authenticity. Exact adopted public web demo baseline is dad6b38. Need bounded reviewable map design before implementation."
+  },
+  "read_files": [
+    "brief.md",
+    "sources.json",
+    "integration-excerpts.md",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/reopening-scene.js",
+    "validate_design.py",
+    "design.md",
+    "findings.json",
+    "concept.svg"
+  ],
+  "task_id": "amsterdam-map-morphology-design-20261015",
+  "tasks": [
+    "Read brief, source files, integration excerpts and verified source cards.",
+    "Author design.md, findings.json and concept.svg following the brief. Self-check source claims, spatial consistency, collisions/saves and proposed acceptance.",
+    "Run the exact validator; finish a legal handoff report, with one latest final command row."
+  ],
+  "telemetry": {
+    "attempt_kind": "business",
+    "logical_task_id": "f02-map-morphology-design",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "analysis"
+  },
+  "timeout_seconds": 1200,
+  "version": 1,
+  "workspace": "/tmp/amsterdam-map-morphology-design-20261015/input",
+  "write_files": [
+    "design.md",
+    "findings.json",
+    "concept.svg"
+  ]
+}

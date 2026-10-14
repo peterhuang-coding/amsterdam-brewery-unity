@@ -1,0 +1,7 @@
+{
+  "command": "python3 validate_design.py",
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/amsterdam-map-morphology-design-r2-20261015/input/validate_design.py\", line 19, in <module>\n    v=Path(\"concept.svg\").read_text(); root=ET.fromstring(v)\n  File \"/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/xml/etree/ElementTree.py\", line 1348, in XML\n    return parser.close()\nxml.etree.ElementTree.ParseError: no element found: line 1, column 0\n",
+  "interpretation": "Expected MAP01 RED: missing SVG; MAP02 structurally green but prose correction remains. This is parent preflight, not CC execution."
+}

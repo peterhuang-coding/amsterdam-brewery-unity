@@ -1,0 +1,94 @@
+{
+  "input_checks": {
+    "brief.md": {
+      "source_unchanged": true,
+      "staged_unchanged": true,
+      "writable": false
+    },
+    "sources.json": {
+      "source_unchanged": true,
+      "staged_unchanged": true,
+      "writable": false
+    },
+    "integration-excerpts.md": {
+      "source_unchanged": true,
+      "staged_unchanged": true,
+      "writable": false
+    },
+    "tools/prototype/reopening-city.js": {
+      "source_unchanged": true,
+      "staged_unchanged": true,
+      "writable": false
+    },
+    "tools/prototype/reopening-scene.js": {
+      "source_unchanged": true,
+      "staged_unchanged": true,
+      "writable": false
+    },
+    "validate_design.py": {
+      "source_unchanged": true,
+      "staged_unchanged": true,
+      "writable": false
+    },
+    "design.md": {
+      "source_unchanged": true,
+      "staged_unchanged": false,
+      "writable": true
+    },
+    "findings.json": {
+      "source_unchanged": true,
+      "staged_unchanged": false,
+      "writable": true
+    },
+    "concept.svg": {
+      "source_unchanged": true,
+      "staged_unchanged": true,
+      "writable": true
+    }
+  },
+  "actual_tool_uses": [
+    {
+      "tool": "Read",
+      "file": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-morphology-design-20261015/workspace/brief.md",
+      "command": null
+    },
+    {
+      "tool": "Read",
+      "file": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-morphology-design-20261015/workspace/sources.json",
+      "command": null
+    },
+    {
+      "tool": "Read",
+      "file": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-morphology-design-20261015/workspace/integration-excerpts.md",
+      "command": null
+    },
+    {
+      "tool": "Read",
+      "file": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-morphology-design-20261015/workspace/tools/prototype/reopening-city.js",
+      "command": null
+    },
+    {
+      "tool": "Read",
+      "file": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-morphology-design-20261015/workspace/validate_design.py",
+      "command": null
+    },
+    {
+      "tool": "Read",
+      "file": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-morphology-design-20261015/workspace/tools/prototype/reopening-scene.js",
+      "command": null
+    },
+    {
+      "tool": "Edit",
+      "file": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-morphology-design-20261015/workspace/design.md",
+      "command": null
+    },
+    {
+      "tool": "Edit",
+      "file": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-morphology-design-20261015/workspace/findings.json",
+      "command": null
+    }
+  ],
+  "worker_exited": true,
+  "adopted": false,
+  "svg_bytes": 0
+}

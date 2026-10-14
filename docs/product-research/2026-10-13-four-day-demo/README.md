@@ -1,3 +1,7 @@
+## F02 clarified: MAP01 design and MAP02 measured baseline in progress
+
+Actual user clarification now confirms the map is too simple, lacks neighbourhood detail and does not feel sufficiently like Amsterdam. The old pending-clarification text below is historical. Two independent Seed Evolving enabled/high packages are running: [MAP01 contract](map-morphology-design/handoff.json), [MAP02 contract](map-baseline/handoff.json). Only analysis artifacts, no game changes; adopted dad6b38/18860 unchanged. Latest goal continuation returned active; goal not complete. See four-day-state and raw task IDs for live state.
+
 ## D25最新：第4次方向review；地图反馈仍待方向澄清
 
 F02“地图的复杂度和还原度”已收到，原异步澄清仍待答，没有默认答案。本轮新CC0、游戏修改/采用0；当前dad6b38/18860，入口HTTP 200，游戏与文档远端已核对。44份原Amsterdam账本state均done，主线无在途/准备包；done不等于通过，PLAY03/06/07/11/12/FREEZE01继续搁置。未重跑418/GUI/17资源验收或拍新截图。

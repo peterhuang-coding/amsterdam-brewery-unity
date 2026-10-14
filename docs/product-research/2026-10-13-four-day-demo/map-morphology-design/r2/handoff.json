@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-map-morphology-design-r2-20261015",
+  "goal": "F02地图太简单且缺少真实城市街区细节：形成最多三个证据明确问题、可审阅空间设计与独立概念图。仅设计，不修改游戏。",
+  "memory": {
+    "summary": "User clarified map lacks complexity, neighbourhood detail and Amsterdam authenticity. Exact adopted public web demo baseline is dad6b38. Need bounded reviewable map design before implementation.",
+    "decisions": [
+      "Only Coding Plan Seed Evolving thinking enabled/high.",
+      "Business attempt and at most one targeted correction; failed correction shelves this logical item.",
+      "Keep existing first-play clarity and current gameplay semantics; no full-city replica.",
+      "This is correction 1/1 under the original logical task. Original outcomes are retained. No further correction if this fails."
+    ],
+    "known_issues": [
+      "Previously shelved marker/fixture/freeze-audit work is excluded; no failed drafts supplied.",
+      "Technical tests do not establish human visual acceptance or fun."
+    ]
+  },
+  "tasks": [
+    "Read correction-brief.md and parent-review.md first; they specify the sole targeted correction.",
+    "Complete only the permitted output revisions; preserve immutable files.",
+    "Run exact authorized validator and finish reserved legal report."
+  ],
+  "acceptance": [
+    "python3 validate_design.py exits 0; this is structural validation only.",
+    "Parent independently reviews evidence, alternatives, spatial schematic and compatibility; no game adoption claimed."
+  ],
+  "constraints": [
+    "Only modify the three output files. Never modify sources, excerpts, brief, references or validator.",
+    "No network, credentials, filesystem exploration, shell variants, or new tools.",
+    "No implementation, game patch, or rewriting previously shelved tasks.",
+    "Report product concerns in findings, execution blockers only in report.blockers."
+  ],
+  "workspace": "/tmp/amsterdam-map-morphology-design-r2-20261015/input",
+  "read_files": [
+    "brief.md",
+    "sources.json",
+    "integration-excerpts.md",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/reopening-scene.js",
+    "validate_design.py",
+    "design.md",
+    "findings.json",
+    "concept.svg",
+    "parent-review.md",
+    "correction-brief.md",
+    "measured-baseline-facts.json"
+  ],
+  "write_files": [
+    "design.md",
+    "findings.json",
+    "concept.svg"
+  ],
+  "commands": [
+    "python3 validate_design.py"
+  ],
+  "data_sensitivity": "public",
+  "timeout_seconds": 2400,
+  "max_turns": 40,
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "f02-map-morphology-design",
+    "task_type": "analysis",
+    "attempt_kind": "correction"
+  }
+}

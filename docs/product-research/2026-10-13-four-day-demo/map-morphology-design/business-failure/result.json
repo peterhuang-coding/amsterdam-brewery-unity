@@ -1,0 +1,87 @@
+{
+  "artifact_dir": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-morphology-design-20261015",
+  "blockers": [
+    "worker timeout"
+  ],
+  "changed_files": [
+    {
+      "path": "design.md",
+      "sha256": "9cba230dff39bee9a411f049a6e3fb83e96daaa999bcb4f2e51ca5a746e762ff"
+    },
+    {
+      "path": "findings.json",
+      "sha256": "a01cb89a706da08d2d01c90aeaeefdcc22628a13781e5420fb2d2d76c0f16743"
+    }
+  ],
+  "claude": {
+    "final_subtype": null,
+    "is_error": null,
+    "outcome": "timeout",
+    "pid": 69042,
+    "returncode": 143,
+    "usage": null
+  },
+  "cost_usd": null,
+  "deleted_files": [],
+  "disallowed_changes": [],
+  "elapsed_seconds": 1200.126,
+  "finished_at": "2026-10-14T16:25:18.666462+00:00",
+  "input_hashes": {
+    "brief.md": "f2a25555a692da970b40abf52f09f5cbbdfdf85b045009bbf937557ef2870042",
+    "concept.svg": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "design.md": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "findings.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "integration-excerpts.md": "a83e0ea1edae6113c1493a7ba87f3dacb09a3c5e065d04bf912352afebce349f",
+    "sources.json": "5615ebbb838261374f0870e27da4c7b54f1d1800e9d054d4ca703304420b3510",
+    "tools/prototype/reopening-city.js": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625",
+    "tools/prototype/reopening-scene.js": "d429ad5760dd8b2d23397a20070d4ebdbdf7704ee3b19ce4f349fec52582dda7",
+    "validate_design.py": "b07efa33544725958fa16f06f01e014897dd5d54e217fbc702789d66a28cd150"
+  },
+  "memory_delta": [],
+  "next_steps": [],
+  "observed_models": [
+    "doubao-seed-evolving"
+  ],
+  "permission_denials": [],
+  "replayed": false,
+  "report": null,
+  "request_sha256": "2e18c4333e66c9137b606d6c412b8bbb577507cf2466cb4466081fd054cbbf30",
+  "requested": {
+    "allowed_tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash"
+    ],
+    "basis": "launcher-pinned request; requested, not provider-confirmed; the pinned model is a fixed convention, not a ranking result",
+    "model": "doubao-seed-evolving",
+    "permission_allow": [
+      "Read(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-morphology-design-20261015/workspace/**)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-morphology-design-20261015/workspace/design.md)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-morphology-design-20261015/workspace/design.md)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-morphology-design-20261015/workspace/findings.json)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-morphology-design-20261015/workspace/findings.json)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-morphology-design-20261015/workspace/concept.svg)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-morphology-design-20261015/workspace/concept.svg)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-morphology-design-20261015/workspace/handoff-result.json)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-map-morphology-design-20261015/workspace/handoff-result.json)",
+      "Bash(python3 validate_design.py)"
+    ],
+    "permission_mode": "dontAsk",
+    "provider_base_url": "https://ark.cn-beijing.volces.com/api/coding",
+    "reasoning_effort": "high",
+    "thinking_enabled": true
+  },
+  "session_id": "ab4343a6-939d-49d9-9614-e6c72273a390",
+  "started_at": "2026-10-14T16:05:18.516133+00:00",
+  "status": "unknown",
+  "summary": "",
+  "task_id": "amsterdam-map-morphology-design-20261015",
+  "telemetry": {
+    "attempt_kind": "business",
+    "logical_task_id": "f02-map-morphology-design",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "analysis"
+  },
+  "tests": []
+}

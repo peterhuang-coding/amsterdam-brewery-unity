@@ -1,0 +1,125 @@
+{
+  "baseline": "dad6b38c54fda94f541764242f61820d8177bd19",
+  "feedback": "地图太简单、街区细节少，不够像真实阿姆斯特丹",
+  "evidence_legend": {
+    "code_fact": "可由所给源码 file:line 复核",
+    "external_fact": "sources.json S1-S6 定性资料，非测绘数据",
+    "inference": "设计推断",
+    "proposed_threshold": "待评审的拟议验收数值"
+  },
+  "issues": [
+    {
+      "id": "I1",
+      "claim": "水网是 4 个轴对齐全跨矩形组成的正交井字格，缺少阿姆斯特丹最具辨识度的同心弧运河带与宽度层级；画面 7 纵 5 横正交路带也不绕水，进一步强化直尺格网感。",
+      "code_evidence": [
+        "tools/prototype/reopening-city.js:16-21 WATERS 仅 IJ 横带、两竖渠、一横渠，全部轴对齐且渠宽均为 60",
+        "tools/prototype/reopening-city.js:22-30 CROSSINGS 为 7 个轴对齐矩形",
+        "tools/prototype/reopening-scene.js:143-144 7 纵 5 横 PATH 色带为正交网格，先于水体绘制且不绕水",
+        "tools/prototype/reopening-scene.js:156 'H E T   I J' 文字标注，北部 IJ 大关系已存在"
+      ],
+      "source_ids": ["S1", "S2"],
+      "inference": "【设计推断】S1 的规划同心弧与 S2 的 Herengracht/Keizersgracht/Prinsengracht 序列是首要形态识别线索；等宽平直十字格可属于许多城市，地域信号弱。问题集中在南部三渠，北部 IJ+渡轮关系正确应保留。",
+      "proposal": "采用 A1：将 y770 平直横渠替换为 7 段折线组成的风格化浅弧（中心线 y=805-58*((x-900)/830)^2，每段约 237x60，相邻段垂向搭接约 36），2 座横渠桥随弧落位（约 (612,750,100,100) 与 (1324,736,100,100)，仍可骑行），WATERS 4->10；IJ、两竖渠、渡轮与其余 5 跨点不动。明示是折线简化而非真曲线或等比例复刻。"
+    },
+    {
+      "id": "I2",
+      "claim": "20 个装饰建筑块宽大、零散、疏密失衡，形不成沿运河连续联排的山墙屋整体；承载 flowers/lab 的下东岸象限仅 1 个装饰块；渲染层每栋楼只画 1 个山墙开间。",
+      "code_evidence": [
+        "tools/prototype/reopening-city.js:47-70 BUILDINGS=6 立面+20 装饰块 block-01..20，块宽约 70-180",
+        "tools/prototype/reopening-city.js:68 下东岸（x>1110,y>830）仅 block-20(1590,900,90,100) 一个装饰块",
+        "tools/prototype/reopening-city.js:80-87 facade/block 均为单矩形碰撞",
+        "tools/prototype/reopening-scene.js:286-339 drawFacade 对每栋建筑只绘制单开间、单山墙"
+      ],
+      "source_ids": ["S1", "S2"],
+      "inference": "【设计推断】真实感来自窄面宽、沿渠连续、山墙节奏有变化的屋列（S1 ensemble、S2 varied gables）；加大孤立方块反而同时让俯瞰和街景显空。",
+      "proposal": "新增 18 栋窄装饰块（北岸 6、南岸 6、下东岸空缺 6），BUILDINGS 26->44；放置须满足桥轴 60px 无建筑走廊、堤岸 56px 连续行走带、不压 7 立面/ENTRY/CART；scene 把宽楼渲染为 2-3 窄开间并轮换 stepped/pitched/neck 山墙（纯渲染，碰撞不变）。"
+    },
+    {
+      "id": "I3",
+      "claim": "Albert Cuyp 在游戏里只是单个地点门面加 4 个篷，未表达 S5 所述贯穿街区的街道市场；Jordaan/De Pijp 社区身份主要靠俯瞰文字标签。Noord 的渡轮+吊臂+工作船已与 S4/S6 相符，不属缺失。",
+      "code_evidence": [
+        "tools/prototype/reopening-city.js:40 market 为单点 PLACES(930,1010)",
+        "tools/prototype/reopening-scene.js:194 街市仅 i<4 共 4 个篷，止于 x1030（竖渠 x1050 之前）",
+        "tools/prototype/reopening-scene.js:195 咖啡座仅 2 桌",
+        "tools/prototype/reopening-scene.js:155-159 NOORD/JORDAAN/CENTRUM/DE PIJP/SCIENCE PARK 仅为俯瞰文字",
+        "tools/prototype/reopening-scene.js:160-164,190-192 免费渡轮、吊臂、3 系船、9 小船已存在，应保留"
+      ],
+      "source_ids": ["S5", "S3"],
+      "inference": "【设计推断】把市场表达成一条止于渠边的篷街比增加招牌更能传递 De Pijp；Jordaan 靠 I2 的联排与小尺度街面提升即可，无需任何新系统或新地点。",
+      "proposal": "街市篷 4->8，沿 x 约 600-1020、y 约 1052 排成街并诚实止于竖渠 x1050（过桥才到 flowers）；下东岸新增 1 处小绿地（公园 3->4，纯视觉可行走面）；不动地点 ID、成本与任何 place 动作。"
+    }
+  ],
+  "alternatives": [
+    {
+      "id": "A1",
+      "summary": "折线弧+联排加密（受限真实结构）：7 段折线弧替换横渠，2 桥随移，+18 窄屋，宽楼多开间渲染，街市 8 篷、公园+1，配套 geo 版本与就近吸附存档迁移。",
+      "tradeoff": "碰撞真实改变，寻路与视觉一致、每步可回滚；工作量中等；弧为风格化折线非真曲线；scene 需对弧段分组渲染，否则段间出现堤岸缝线；旧存档必须迁移，不能承诺位置无感。"
+    },
+    {
+      "id": "A2",
+      "summary": "仅装饰密度、零碰撞改动：只在 scene 加屋、加篷并在不变的水/碰撞上画弧线。",
+      "tradeoff": "最快、零存档与寻路风险；但画面弧线与可行走区域不符，会显示不存在的岸/桥，不能宣称为忠实或安全导航，I1 的结构问题原样保留；只能作为 A1 的渲染层，不能单独交付。"
+    },
+    {
+      "id": "A3",
+      "summary": "完整同心环重建：多边形水体引擎、3 条同心弧+放射渠、街区与坐标全面重排。",
+      "tradeoff": "保真最高但超出 demo 边界：需重写 walkable、重放 scene 全部硬编码坐标、迁移 ENTRY/CART 与七地点、重调首杯路径与教学清晰度，风险不可接受，明确不做。"
+    }
+  ],
+  "recommendation": "A1",
+  "retained_lost": {
+    "retained_real_world_features": ["北部 IJ+免费渡轮（S4）", "工业吊臂/工作船码头词汇（S6，不泛称 NDSM）", "stepped/pitched 山墙屋并增加变化（S2）", "运河街市与咖啡座（S3/S5）", "七地点坐标/ID/语义、日夜循环、garden ENTRY/CART 流程"],
+    "lost_or_deferred": ["三弧层级仅保留 1 条外环", "真曲线以 7 段折线表达", "放射连接渠", "Jordaan 内院小巷", "Centraal 车站与真实街名/比例", "Sarphatipark 精确形状", "Amsterdam School 砖饰细节"]
+  },
+  "proposed_counts": {
+    "waters_rectangles": "4->10 (IJ 1 + 竖渠 2 + 弧段 7)",
+    "crossings": "7 不变，2 座横渠桥随弧移位，渡轮保持数组末位",
+    "buildings": "26->44 (6 立面不变，装饰块 20->38，新增 18 窄屋: 北岸6/南岸6/下东岸6)",
+    "market_stalls": "4->8，止于竖渠 x1050 前",
+    "parks": "3->4",
+    "place_ids": "7 个全部不变 (pub/lotte/coffee/noord/market/flowers/lab)"
+  },
+  "migration_rollback": [
+    "city 存档新增 geo 版本字段；restore 容忍缺字段旧档",
+    "旧档落入新水/新块时就近吸附到 180px 内最近 20px 可行走节点，否则回 pub，保留 visited",
+    "非法 bike 在吸附点停车或回 pub；现行 flowers 一次性迁移并入通用吸附",
+    "GEO_VERSION 开关与 v1 表保留一个版本用于回滚，新旧档相互再吸附"
+  ],
+  "acceptance": [
+    "【拟议】静态不变量脚本：所有水/块/跨点位于 LAND 内；7 个跨点中心 walkable 且两侧各有 20px 网格可行走邻点；渡轮居 CROSSINGS 末位并与 IJ/两岸相接；7 地点+ENTRY(1510,690)+CART(1310,1040)+create() 起点均 walkable；新桥 h>=80、两窄桥保持 h=70；ENTRY 周边 48px 可行走净空；每桥轴 60px 走廊无建筑。通过条件：断言全部为真。",
+    "【拟议】可达性：route(pub,p) 对 7 地点及 ENTRY 非空，route(CART,ENTRY) 非空，仅 noord 必须经渡轮；pub->lotte 路径长度相对基线变化<=5%（几何未动应近 0%）；pub->coffee 与 pub->market 跨水次数保持 2 次。",
+    "【拟议】存档迁移：对旧几何网格抽样的旧存档（含人在旧渠/旧块、骑行/推行/停车 bike）执行 restore 不抛错且 visited 不丢、落点与 bike 合法；visited 含未知 ID 仍回 create()。",
+    "【拟议-人工】桌面 1100x640 与 <=800px 移动、日/夜、俯瞰/街景截图评审：7 段弧读作弯曲运河带、窄屋有联排节奏、8 篷止于渠边、路线虚线不跨越无桥水体、数量与设计一致。技术测试不能建立视觉接受度，必须人审。",
+    "【拟议-人工】首次游玩试玩：不缩放即可读懂去 Lotte 桥的第一杯路线，无新教程、语义无变化；技术测试不能建立好玩判断。"
+  ],
+  "scope": {
+    "included": [
+      "基线 dad6b38 白天城市地图面的形态评审与 v2 设计",
+      "至多 3 个带 file:line 与 S1-S6 出处的地图缺口",
+      "A1 受限方案的几何、数量、路线、存档兼容设计",
+      "concept.svg 现状 vs 拟议对照示意与全部拟议验收"
+    ],
+    "excluded": [
+      "任何代码实现、游戏补丁或经济/玩法/place 动作/教程变更",
+      "全城等比例复刻与真实街名/测量数据",
+      "夜间探索/backstage 独立界面改动",
+      "已搁置的 PLAY11 市集道具、PLAY12 标注字体、FREEZE01 冻结审计",
+      "栅格素材、外部引用与实际存档/屏幕假设"
+    ],
+    "compatibility": [
+      "restore() 现行行为会因新水/新块把旧档重置 create()（仅 flowers 例外，reopening-city.js:349-370），必须以 geo 版本+就近吸附迁移承接",
+      "七地点 ID 不可增删改，否则 visited 校验清空城市存档（reopening-city.js:352-355）",
+      "渡轮必须保持 CROSSINGS 末位（onFerry 取末位，city.js:107-111）；窄桥 h<80 推行语义保持（city.js:133-135）",
+      "网格在模块加载时由 walkable 预建（city.js:137-146），改几何自动重建；cityPath 不落盘无持久路径",
+      "scene 硬编码坐标须审计对位：PATH:143-144、公园:146-150、跨点:160-182、吊臂系船:190-192、篷:194、桌:195、灯:198、温室花车:210-217、乐手:188、标签:155-159",
+      "near/进门半径 60/65 与 gardenVisit 的 0..1800/0..1120、ENTRY<=60 校验（reopening-core.js:300）不变；ENTRY/CART 坐标冻结于 flower-network.js:7-9"
+    ],
+    "future_files": [
+      "tools/prototype/reopening-city.js：WATERS/CROSSINGS/BUILDINGS v2 表、GEO_VERSION、restore(value, geoVersion) 与内部 migratePoint",
+      "tools/prototype/reopening-scene.js：弧段分组水体渲染、宽楼多开间/多山墙、8 篷、新增绿地、PATH 接桥、标签路灯对位",
+      "tools/prototype/reopening-ui.js：存档透传 geo 版本字段（迁移逻辑仍在 City.restore）",
+      "tools/prototype/city-geo.test.js：拟议新增 node --test 几何/可达性/迁移测试",
+      "tools/prototype/flower-network.js 与 reopening-core.js：预期零改动，作为约束复核对象"
+    ]
+  }
+}

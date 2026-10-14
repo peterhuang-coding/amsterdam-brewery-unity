@@ -1,0 +1,6 @@
+{
+  "command": "plan_observability.py review --task-id amsterdam-map-morphology-design-20261015 --outcome rejected --failure-type material_missing --evidence parent-review.md",
+  "exit_code": 1,
+  "stderr": "review error: review_requires_finished",
+  "registered": false
+}

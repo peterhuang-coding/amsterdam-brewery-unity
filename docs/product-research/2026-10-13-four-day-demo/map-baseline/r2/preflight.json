@@ -1,0 +1,7 @@
+{
+  "command": "python3 validate_baseline.py",
+  "exit_code": 0,
+  "stdout": "PASS baseline structure: 9 anchors,81 ordered pairs,9 synthetic restore checks; parent source and semantic review still required\n",
+  "stderr": "",
+  "interpretation": "Expected MAP01 RED: missing SVG; MAP02 structurally green but prose correction remains. This is parent preflight, not CC execution."
+}

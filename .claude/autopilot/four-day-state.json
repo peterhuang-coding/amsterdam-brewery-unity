@@ -1,6 +1,6 @@
 {
   "decision": "D23",
-  "status": "running",
+  "status": "corrections_prepared",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-16T19:48:33Z",
   "next_direction_review_at": "2026-10-14T21:48:33Z",
@@ -14,11 +14,8 @@
   "schedule": "existing amsterdam heartbeat every15minutes",
   "current_task_terminal": null,
   "failure_reason": null,
-  "last_result_at": "2026-10-13T18:31:57.537000Z",
-  "in_flight": [
-    "amsterdam-map-morphology-design-20261015",
-    "amsterdam-map-baseline-20261015"
-  ],
+  "last_result_at": "2026-10-14T16:26:01.533051Z",
+  "in_flight": [],
   "candidate_path": null,
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -230,26 +227,40 @@
       "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 0,
-      "outcome": "running_design_only",
+      "outcome": "business_timeout_partial_unadopted",
       "game_adopted": 0,
       "notion_page": "https://app.notion.com/p/3f93285284df81c88672d18fc35ff901",
       "task_id": "amsterdam-map-morphology-design-20261015",
       "business_submitted_at": "2026-10-14T16:05:18+00:00",
       "worker_pid": 69042,
-      "contract_commit": "56522c181fefdc47d7a638ddf7acd3e42ecba702"
+      "contract_commit": "56522c181fefdc47d7a638ddf7acd3e42ecba702",
+      "business_terminal": "worker_timeout1200_cli143_doneunknown_missing_svg_report",
+      "business_ended_at": "2026-10-14T16:25:18.666462+00:00",
+      "business_elapsed_seconds": 1200.126,
+      "failure_evidence": "docs/product-research/2026-10-13-four-day-demo/map-morphology-design/business-failure",
+      "correction_next": "one targeted correction after original wave collected",
+      "business_structured_review": "review_requires_finished_not_recorded_parent_audit_saved",
+      "correction_task_id": "amsterdam-map-morphology-design-r2-20261015",
+      "correction_prepared": true
     },
     "MAP02": {
       "logical_task_id": "f02-map-geometry-baseline",
       "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 0,
-      "outcome": "running_baseline_only",
+      "outcome": "business_semantic_rejected_inventory_only",
       "game_adopted": 0,
       "task_id": "amsterdam-map-baseline-20261015",
       "business_submitted_at": "2026-10-14T16:09:46+00:00",
       "worker_pid": 69583,
       "contract_commit": "84186f1db52a067498373f54e945cadc6ee31916",
-      "notion_page": "https://app.notion.com/p/3f93285284df81dab79ec65543001a60"
+      "notion_page": "https://app.notion.com/p/3f93285284df81dab79ec65543001a60",
+      "business_terminal": "cli0_verifying_complete_report_parent_rerun_exact_inventory_semantic_rejected",
+      "business_ended_at": "2026-10-14T16:26:01.533051Z",
+      "business_elapsed_seconds": 974.639,
+      "business_structured_review": "rejected/semantic",
+      "correction_task_id": "amsterdam-map-baseline-r2-20261015",
+      "correction_prepared": true
     }
   },
   "provider_cooldown_until": "2026-10-13T19:31:58Z",
@@ -320,7 +331,7 @@
       "clarification_source": "direct asynchronous user answer call_6f1cd3ffd4f543de8600783e3e57b7eb item0"
     },
     "prior_blocked_reason": "First-time usability, visual acceptance and desire to continue require human playtest confirmation; no new feedback across consecutive goal turns. Existing technical verification and candidate preservation complete within checked scope; no authorized independent necessary task selected.",
-    "goal_tool_last_observed_status": "blocked",
+    "goal_tool_last_observed_status": "active",
     "feedback_received_after_blocked": true,
     "direction_review_04": {
       "planned_at": "2026-10-14T11:48:33Z",
@@ -338,7 +349,9 @@
       "original_user_quote": "你这个 plan 的调用量可以更大，我允许你无限火力"
     },
     "hub_sync": "source /tmp/amsterdam-map-wave-hub.md equals latest and session20261015-001236-69814.md,5106bytes",
-    "automation_sync": "Same amsterdam id/thread/ACTIVE/15min; updated actual F02 clarification and two original running IDs, verified live config."
+    "automation_sync": "Same amsterdam id/thread/ACTIVE/15min; updated actual F02 clarification and two original running IDs, verified live config.",
+    "goal_tool_observed_at": "2026-10-14T16:17:48.990692+00:00",
+    "goal_resume_evidence": "get_goal on explicit goal continuation returned active; previous blocked observations preserved historically"
   },
   "current_task_worker_pid": null,
   "freeze_audit_attempt": {

@@ -3,8 +3,8 @@
   "status": "running",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-16T19:48:33Z",
-  "next_direction_review_at": "2026-10-14T11:48:33Z",
-  "last_direction_review_at": "2026-10-14T01:51:52.611343+00:00",
+  "next_direction_review_at": "2026-10-14T21:48:33Z",
+  "last_direction_review_at": "2026-10-14T12:03:21.281163+00:00",
   "current_task_id": "amsterdam-freeze-audit-r2-20261014",
   "logical_task": "d25-freeze-audit",
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
@@ -241,7 +241,7 @@
   "current_task_submitted_at": "2026-10-13T17:54:21.539560Z",
   "worker_pid": null,
   "last_submitted_at": "2026-10-13T17:54:21.539560Z",
-  "direction_review_count": 3,
+  "direction_review_count": 4,
   "next_independent_observation": "Received F02 map complexity/fidelity; clarify density versus readability and fidelity scope before bounded design. No new CC package.",
   "weekly_goal": {
     "decision": "D25",
@@ -289,7 +289,16 @@
     },
     "prior_blocked_reason": "First-time usability, visual acceptance and desire to continue require human playtest confirmation; no new feedback across consecutive goal turns. Existing technical verification and candidate preservation complete within checked scope; no authorized independent necessary task selected.",
     "goal_tool_last_observed_status": "blocked",
-    "feedback_received_after_blocked": true
+    "feedback_received_after_blocked": true,
+    "direction_review_04": {
+      "planned_at": "2026-10-14T11:48:33Z",
+      "completed_at": "2026-10-14T12:03:21.281163+00:00",
+      "document": "docs/product-research/2026-10-13-four-day-demo/direction-review-04.md",
+      "new_cc": 0,
+      "new_game_adoptions": 0,
+      "notion_sync": "pending",
+      "automation_sync": "pending"
+    }
   },
   "current_task_worker_pid": null,
   "freeze_audit_attempt": {
@@ -331,6 +340,6 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-14T01:51:52.611343+00:00",
+  "updated_at": "2026-10-14T12:03:21.281163+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00"
 }

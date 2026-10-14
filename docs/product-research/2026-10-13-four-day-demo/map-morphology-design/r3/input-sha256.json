@@ -1,0 +1,46 @@
+{
+  "revision-brief.md": {
+    "bytes": 5298,
+    "sha256": "6d6aa01d46eef04b6dd83d63003ae23183e7c17b14308f1aece8a66928c864b0"
+  },
+  "existing-geometry-evidence.json": {
+    "bytes": 1304,
+    "sha256": "c293e43e1ce7632db6915c508f9aa700b75ae87ecbc36db9b2368adc4f4cd365"
+  },
+  "design.md": {
+    "bytes": 22346,
+    "sha256": "3c61e5903e6f56b1d373244abc9c5300ae363b88819cfb83196da6187b9dbc05"
+  },
+  "findings.json": {
+    "bytes": 15723,
+    "sha256": "eba4e8659e6c8fe5a508338e30dd6d5b4aafbbacd06037150138bcdf9c1e4a15"
+  },
+  "concept.svg": {
+    "bytes": 22037,
+    "sha256": "7bc963565b041858942f7772c2828a4cfc0a5dffa9badf5fc1b7c08077fd9788"
+  },
+  "sources.json": {
+    "bytes": 2583,
+    "sha256": "5615ebbb838261374f0870e27da4c7b54f1d1800e9d054d4ca703304420b3510"
+  },
+  "integration-excerpts.md": {
+    "bytes": 13568,
+    "sha256": "a83e0ea1edae6113c1493a7ba87f3dacb09a3c5e065d04bf912352afebce349f"
+  },
+  "tools/prototype/reopening-city.js": {
+    "bytes": 15809,
+    "sha256": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625"
+  },
+  "tools/prototype/reopening-scene.js": {
+    "bytes": 45079,
+    "sha256": "d429ad5760dd8b2d23397a20070d4ebdbdf7704ee3b19ce4f349fec52582dda7"
+  },
+  "validate_design.py": {
+    "bytes": 1534,
+    "sha256": "b07efa33544725958fa16f06f01e014897dd5d54e217fbc702789d66a28cd150"
+  },
+  "measured-baseline-facts.json": {
+    "bytes": 16350,
+    "sha256": "3d0563db31c6a1012c6cb3ea0015bf9e6379c26234217e0b9a223b56461adf87"
+  }
+}

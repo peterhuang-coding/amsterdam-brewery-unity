@@ -1,0 +1,17 @@
+{
+  "scope": "Dependency and structural preflight on unchanged rejected R2, not proof of correction or semantic/visual acceptance",
+  "checks": [
+    {
+      "command": "python3 validate_design.py",
+      "exit_code": 0,
+      "stdout": "PASS design structure, 1-3 issues, 2-3 alternatives, declared scope, standalone SVG; semantic and visual review still required\n",
+      "stderr": ""
+    },
+    {
+      "command": "/opt/homebrew/bin/rsvg-convert -w 1600 concept.svg -o concept-preview.png",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ]
+}

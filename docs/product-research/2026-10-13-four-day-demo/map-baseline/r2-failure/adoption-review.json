@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-map-baseline-r2-20261015",
+  "receipt_sha256": "1e9fe697b76a0663e0af5b83eb35d64d8df0375c559b719a8c9f6aa100c85926",
+  "reviewed_at": "2026-10-14T16:38:57Z",
+  "outcome": "rejected",
+  "failure_type": "other",
+  "evidence": [
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-13-four-day-demo/map-baseline/r2-failure/parent-review.md",
+      "sha256": "1e2ec34fa6d9bbedfe3ed103a5f7fa7a1a54a89b88445773daad2ce56f2c64a1"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "acceptance": [
+    "Validator exits0; probe/data/source exact immutable SHA preserved.",
+    "Parent checks corrected prose against actual JSON groups and UI/City sources; reuses prior independent successful probe rerun."
+  ],
+  "commands": [
+    "python3 validate_baseline.py"
+  ],
+  "constraints": [
+    "Only inventory.md and reserved legal report may be written; probe and baseline.json immutable.",
+    "No network, extra commands, new design, game changes or spawning."
+  ],
+  "data_sensitivity": "public",
+  "goal": "Quantify existing map geometry/routes/save dependencies at dad6b38 for future F02 map redesign; facts only, no game changes or competing design.",
+  "max_turns": 24,
+  "memory": {
+    "completed": [],
+    "decisions": [
+      "Only Seed Evolving thinking enabled/high. Global maximum two real CC jobs; one business plus at most one correction per logical task.",
+      "Keep all source immutable. Preserve 7 City place IDs plus separate garden and cart semantics.",
+      "This is not a revival of shelved map markers, market fixtures or freeze audit.",
+      "This is correction 1/1 under the original logical task. Original outcomes are retained. No further correction if this fails."
+    ],
+    "known_issues": [
+      "C.restore may reset visits on invalid positions except special flower-facade fallback.",
+      "Walking route samples are not human playtime, fun or a cycle-optimal path."
+    ],
+    "summary": "User now allows more Coding Plan use. Run as second independent package beside MAP01 design. Current map too simple and lacking Amsterdam detail, but this output only establishes exact technical baseline."
+  },
+  "read_files": [
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/reopening-scene.js",
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/flower-network.js",
+    "integration-excerpts.md",
+    "brief.md",
+    "validate_baseline.py",
+    "baseline-probe.js",
+    "baseline.json",
+    "inventory.md",
+    "parent-review.md",
+    "correction-brief.md"
+  ],
+  "task_id": "amsterdam-map-baseline-r2-20261015",
+  "tasks": [
+    "Read correction-brief.md and parent-review.md first; they specify the sole targeted correction.",
+    "Complete only the permitted output revisions; preserve immutable files.",
+    "Run exact authorized validator and finish reserved legal report."
+  ],
+  "telemetry": {
+    "attempt_kind": "correction",
+    "logical_task_id": "f02-map-geometry-baseline",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "analysis"
+  },
+  "timeout_seconds": 900,
+  "version": 1,
+  "workspace": "/tmp/amsterdam-map-baseline-r2-20261015/input",
+  "write_files": [
+    "inventory.md"
+  ]
+}

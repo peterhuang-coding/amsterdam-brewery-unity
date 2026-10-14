@@ -14,10 +14,9 @@
   "schedule": "existing amsterdam heartbeat every15minutes",
   "current_task_terminal": null,
   "failure_reason": null,
-  "last_result_at": "2026-10-14T16:26:01.533051Z",
+  "last_result_at": "2026-10-14T16:36:59.127030Z",
   "in_flight": [
-    "amsterdam-map-morphology-design-r2-20261015",
-    "amsterdam-map-baseline-r2-20261015"
+    "amsterdam-map-morphology-design-r2-20261015"
   ],
   "candidate_path": null,
   "adopted_this_round": 0,
@@ -255,7 +254,7 @@
       "business_attempts_submitted": 1,
       "corrections_allowed": 1,
       "corrections_submitted": 1,
-      "outcome": "correction_running",
+      "outcome": "shelved",
       "game_adopted": 0,
       "task_id": "amsterdam-map-baseline-20261015",
       "business_submitted_at": "2026-10-14T16:09:46+00:00",
@@ -270,8 +269,12 @@
       "correction_prepared": false,
       "correction_submitted_at": "2026-10-14T16:33:31+00:00",
       "correction_worker_pid": 72064,
-      "correction_outcome": "running",
-      "correction_contract_commit": "d3528b6503931188f8aea6e4452f8f87c00cf587"
+      "correction_outcome": "max_turns_cli1_blocked_no_changes_report_tests",
+      "correction_contract_commit": "d3528b6503931188f8aea6e4452f8f87c00cf587",
+      "correction_ended_at": "2026-10-14T16:36:59.127030Z",
+      "correction_elapsed_seconds": 207.615,
+      "structured_review": "rejected/other",
+      "correction_evidence": "docs/product-research/2026-10-13-four-day-demo/map-baseline/r2-failure"
     }
   },
   "provider_cooldown_until": "2026-10-13T19:31:58Z",

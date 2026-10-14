@@ -1,0 +1,70 @@
+{
+  "acceptance": [
+    "Existing design structure validator exits 0.",
+    "Water connectivity and geographic claims agree with supplied primary-source cards and exact existing geometry evidence.",
+    "Lotte/narrow-bridge slot, walkability and rideability requirements agree across prose, findings and diagram without changing the existing push-bike rule.",
+    "Actual rendered SVG has no unintended spanning line, clipped captions or overlapping text; parent independently inspects PNG.",
+    "No game edits or claims of human design/fun acceptance."
+  ],
+  "commands": [
+    "python3 validate_design.py",
+    "/opt/homebrew/bin/rsvg-convert -w 1600 concept.svg -o concept-preview.png"
+  ],
+  "constraints": [
+    "Only four allowed output paths may change, plus adapter-reserved handoff-result.json.",
+    "No network, credentials, filesystem exploration, shell variants or derived agents.",
+    "No implementation and no reopening other shelved tasks.",
+    "Keep final report command entries exact, changed_files excludes reserved report, blockers only for execution inability."
+  ],
+  "data_sensitivity": "public",
+  "goal": "Apply the single explicitly authorized extra MAP01 correction to existing design: accurate water/source facts, consistent narrow-bridge bike acceptance, and readable SVG. Design only, no game implementation.",
+  "max_turns": 40,
+  "memory": {
+    "completed": [],
+    "decisions": [
+      "Only Coding Plan Seed Evolving thinking enabled/high.",
+      "Same logical task; original business and correction failures retained. Human explicitly authorized one additional targeted correction for these three issues.",
+      "MAP02 and previously shelved game tasks are excluded.",
+      "No further retry is authorized by this packet."
+    ],
+    "known_issues": [
+      "Structural validator passed R2 but did not detect factual contradictions or actual SVG overflow.",
+      "Original report mistakenly said MAP02 and adopted; neither is true."
+    ],
+    "summary": "F02 map lacks neighbourhood detail and Amsterdam fidelity. Exact adopted baseline dad6b38. Preserve current B1 proposal; parent rejected final R2 on three specific issues."
+  },
+  "read_files": [
+    "revision-brief.md",
+    "existing-geometry-evidence.json",
+    "design.md",
+    "findings.json",
+    "concept.svg",
+    "sources.json",
+    "integration-excerpts.md",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/reopening-scene.js",
+    "validate_design.py",
+    "measured-baseline-facts.json"
+  ],
+  "task_id": "amsterdam-map-morphology-design-r3-20261015",
+  "tasks": [
+    "Read revision-brief.md first. Correct only its three issues and all corresponding statements in the existing outputs.",
+    "Preserve immutable sources and the rest of the bounded B1 scope; do not start over.",
+    "Run the two exact final commands and produce the reserved legal report."
+  ],
+  "telemetry": {
+    "attempt_kind": "correction",
+    "logical_task_id": "f02-map-morphology-design",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "analysis"
+  },
+  "timeout_seconds": 2400,
+  "version": 1,
+  "workspace": "/tmp/amsterdam-map-morphology-design-r3-20261015/input",
+  "write_files": [
+    "design.md",
+    "findings.json",
+    "concept.svg",
+    "concept-preview.png"
+  ]
+}

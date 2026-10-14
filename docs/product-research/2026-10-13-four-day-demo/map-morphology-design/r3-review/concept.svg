@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1620 1080" font-family="sans-serif">
+  <title>F02 B1 半环运河带概念示意</title>
+  <defs>
+    <g id="houseG">
+      <rect x="-5" y="-3" width="10" height="8" fill="#c98d63" stroke="#7a4a32" stroke-width="0.7"/>
+      <path d="M-6 -3 L0 -9 L6 -3 Z" fill="#8a4f38" stroke="#7a4a32" stroke-width="0.5"/>
+    </g>
+    <g id="placeDot">
+      <circle r="11" fill="#2f5d50" stroke="#f3ead0" stroke-width="2.5"/>
+    </g>
+    <marker id="arrowGold" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#e0a93e"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#3f7a4e"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#6f6296"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1620" height="1080" fill="#f4efe2"/>
+  <text x="24" y="38" font-size="24" font-weight="bold" fill="#1f3742">F02 推荐方案 B1：半环运河带 · 受限空间重构（保留七地点 ID/语义，仅设计不改游戏）</text>
+  <text x="24" y="66" font-size="16" fill="#7a3b2e">概念示意 · 非游戏截图 · 非等比例地图　｜　灵感来自 Amsterdam grachtengordel（S1/S2），弧位/槽位为拟议，验收以未来几何探针为准</text>
+
+  <!-- ===================== MAIN MAP PANEL ===================== -->
+  <!-- 游戏世界 1800x1120 以 0.68 比例示意：screen = (60 + x*0.68, 110 + y*0.68) -->
+  <g id="main-map">
+    <!-- sea beyond land -->
+    <rect x="80" y="100" width="1180" height="780" fill="#bcd3cf"/>
+    <!-- land: game LAND (70,40,1660,1040) -->
+    <rect x="107.6" y="137.2" width="1128.8" height="707.2" fill="#e7dcc0" stroke="#a99a6f" stroke-width="2"/>
+
+    <!-- 现状（dad6b38 实测）直渠与旧桥位：灰虚线虚影 -->
+    <g id="baseline-ghost" opacity="0.55">
+      <rect x="366" y="422.8" width="40.8" height="421.6" fill="#8f8d82" fill-opacity="0.16" stroke="#6f6d64" stroke-width="1.4" stroke-dasharray="7 6"/>
+      <rect x="774" y="422.8" width="40.8" height="421.6" fill="#8f8d82" fill-opacity="0.16" stroke="#6f6d64" stroke-width="1.4" stroke-dasharray="7 6"/>
+      <rect x="107.6" y="633.6" width="1128.8" height="40.8" fill="#8f8d82" fill-opacity="0.16" stroke="#6f6d64" stroke-width="1.4" stroke-dasharray="7 6"/>
+      <g fill="#efe9d6" stroke="#6f6d64" stroke-width="1.2" stroke-dasharray="4 3">
+        <rect x="352.4" y="518" width="68" height="54.4"/>
+        <rect x="352.4" y="742.4" width="68" height="47.6"/>
+        <rect x="760.4" y="538.4" width="68" height="54.4"/>
+        <rect x="760.4" y="756" width="68" height="47.6"/>
+        <rect x="508.8" y="620" width="68" height="68"/>
+        <rect x="1018.8" y="620" width="68" height="68"/>
+      </g>
+    </g>
+
+    <!-- district labels -->
+    <g font-family="Georgia" fill="#6b7050" opacity="0.62" text-anchor="middle">
+      <text x="896" y="180" font-size="30">NOORD</text>
+      <text x="250" y="648" font-size="24">JORDAAN</text>
+      <text x="610" y="442" font-size="20">CENTRUM</text>
+      <text x="760" y="900" font-size="26">DE PIJP</text>
+      <text x="1150" y="690" font-size="16">SCIENCE PARK</text>
+    </g>
+
+    <!-- IJ (retained, unchanged) -->
+    <rect x="107.6" y="314" width="1128.8" height="108.8" fill="#2f7d8c"/>
+    <rect x="107.6" y="308" width="1128.8" height="7" fill="#c8b88f"/>
+    <rect x="107.6" y="422.8" width="1128.8" height="7" fill="#c8b88f"/>
+    <text x="300" y="382" font-family="Georgia" font-size="26" fill="#dceee6" opacity="0.85" text-anchor="middle">H E T　I J（保留）</text>
+
+    <!-- three fan arcs: stone coping under-strokes then water -->
+    <g id="arcs" fill="none" stroke-linecap="round">
+      <!-- outer / Prinsengracht-inspired -->
+      <path d="M132,425 C150,455 200,520 300,545 C420,552 560,585 700,625 C830,660 905,620 948,578" stroke="#c8b88f" stroke-width="51"/>
+      <path d="M132,425 C150,455 200,520 300,545 C420,552 560,585 700,625 C830,660 905,620 948,578" stroke="#378e9b" stroke-width="43"/>
+      <!-- middle / Keizersgracht-inspired -->
+      <path d="M192,425 C260,462 360,500 480,516 C660,540 820,576 972,536" stroke="#c8b88f" stroke-width="51"/>
+      <path d="M192,425 C260,462 360,500 480,516 C660,540 820,576 972,536" stroke="#378e9b" stroke-width="43"/>
+      <!-- inner / Herengracht-inspired -->
+      <path d="M252,425 C330,445 420,460 540,472 C720,490 880,506 992,488" stroke="#c8b88f" stroke-width="51"/>
+      <path d="M252,425 C330,445 420,460 540,472 C720,490 880,506 992,488" stroke="#378e9b" stroke-width="43"/>
+    </g>
+    <g font-size="12" fill="#23545f" font-style="italic">
+      <text x="712" y="655">外弧·Prinsengracht 灵感</text>
+      <text x="700" y="572">中弧·Keizersgracht 灵感</text>
+      <text x="712" y="500">内弧·Herengracht 灵感</text>
+    </g>
+    <text x="120" y="465" font-size="12" fill="#5b5640">拟议三弧弧尾接入 IJ（刻意风格化，非真实接港关系）</text>
+    <text x="886" y="556" font-size="12" fill="#5b5640">弧端封于堤岸——虚构压缩，非真实走向</text>
+
+    <!-- 36 proposed row houses: 6 rows x 6 (representative glyphs, count is contractual) -->
+    <g id="row-houses" opacity="0.95">
+      <use href="#houseG" x="556" y="490"/><use href="#houseG" x="584" y="493"/><use href="#houseG" x="612" y="496"/><use href="#houseG" x="640" y="498"/><use href="#houseG" x="668" y="499"/><use href="#houseG" x="696" y="499"/>
+      <use href="#houseG" x="556" y="512"/><use href="#houseG" x="584" y="516"/><use href="#houseG" x="612" y="520"/><use href="#houseG" x="640" y="523"/><use href="#houseG" x="668" y="525"/><use href="#houseG" x="696" y="526"/>
+      <use href="#houseG" x="556" y="542"/><use href="#houseG" x="584" y="546"/><use href="#houseG" x="612" y="550"/><use href="#houseG" x="640" y="553"/><use href="#houseG" x="668" y="555"/><use href="#houseG" x="700" y="556"/>
+      <use href="#houseG" x="560" y="572"/><use href="#houseG" x="590" y="578"/><use href="#houseG" x="620" y="584"/><use href="#houseG" x="650" y="590"/><use href="#houseG" x="680" y="596"/><use href="#houseG" x="706" y="602"/>
+      <use href="#houseG" x="560" y="610"/><use href="#houseG" x="592" y="616"/><use href="#houseG" x="624" y="621"/><use href="#houseG" x="656" y="626"/><use href="#houseG" x="688" y="628"/><use href="#houseG" x="716" y="628"/>
+      <use href="#houseG" x="150" y="582"/><use href="#houseG" x="176" y="590"/><use href="#houseG" x="202" y="597"/><use href="#houseG" x="228" y="604"/><use href="#houseG" x="254" y="612"/><use href="#houseG" x="280" y="620"/>
+    </g>
+    <!-- ferry: retained, last crossing, crosses IJ -->
+    <g id="ferry">
+      <rect x="644.8" y="300.4" width="54.4" height="136" fill="#efe3bd" stroke="#6f6296" stroke-width="2.5" stroke-dasharray="8 7"/>
+      <text x="710" y="330" font-size="13" fill="#574b78">免费渡轮（保留，跨点末位）</text>
+    </g>
+
+    <!-- bridges: stone under + deck; B1/B2/B4/B5 wide rideable, B3/B6 narrow push-bike -->
+    <g id="bridges" stroke-linecap="round">
+      <g><line x1="486" y1="452" x2="514" y2="480" stroke="#b3a276" stroke-width="40"/><line x1="486" y1="452" x2="514" y2="480" stroke="#d8c48e" stroke-width="26"/></g>
+      <g><line x1="441" y1="488" x2="471" y2="518" stroke="#b3a276" stroke-width="40"/><line x1="441" y1="488" x2="471" y2="518" stroke="#d8c48e" stroke-width="26"/></g>
+      <g><line x1="318" y1="538" x2="352" y2="562" stroke="#a05a3c" stroke-width="32"/><line x1="318" y1="538" x2="352" y2="562" stroke="#e0c48e" stroke-width="18"/></g>
+      <g><line x1="754" y1="474" x2="788" y2="506" stroke="#b3a276" stroke-width="40"/><line x1="754" y1="474" x2="788" y2="506" stroke="#d8c48e" stroke-width="26"/></g>
+      <g><line x1="768" y1="538" x2="802" y2="566" stroke="#b3a276" stroke-width="40"/><line x1="768" y1="538" x2="802" y2="566" stroke="#d8c48e" stroke-width="26"/></g>
+      <g><line x1="722" y1="616" x2="756" y2="646" stroke="#a05a3c" stroke-width="32"/><line x1="722" y1="616" x2="756" y2="646" stroke="#e0c48e" stroke-width="18"/></g>
+    </g>
+    <g font-size="12" fill="#5b4a24">
+      <text x="516" y="455">B1 宽桥</text>
+      <text x="408" y="500">B2 宽桥</text>
+      <text x="250" y="545">B3 窄桥·推车（Lotte 的桥）</text>
+      <text x="792" y="470">B4 宽桥</text>
+      <text x="806" y="560">B5 宽桥</text>
+      <text x="760" y="668">B6 窄桥·推车</text>
+    </g>
+
+    <!-- routes: existing semantics, proposed geometry -->
+    <g id="routes" fill="none">
+      <path d="M257,511 C290,530 310,540 335,550 C380,532 420,514 455,502 C478,484 490,474 500,466 C560,448 610,440 645,432" stroke="#e0a93e" stroke-width="3.4" stroke-dasharray="11 8" marker-end="url(#arrowGold)"/>
+      <path d="M335,550 C350,600 400,660 470,690 C510,712 535,730 556,742" stroke="#e0a93e" stroke-width="2.6" stroke-dasharray="9 8"/>
+      <path d="M645,432 C690,440 730,455 770,490 C778,520 782,540 785,552 C770,590 748,615 738,632 C724,690 708,750 692,797" stroke="#e0a93e" stroke-width="3.4" stroke-dasharray="11 8"/>
+      <path d="M692,797 C780,812 850,816 903,817 L951,817" stroke="#e0a93e" stroke-width="2.6" stroke-dasharray="9 8"/>
+      <path d="M903,817 C980,790 1040,755 1073,729" stroke="#e0a93e" stroke-width="2.6" stroke-dasharray="9 8"/>
+      <path d="M951,817 C990,795 1025,755 1048,705 C1068,660 1080,620 1087,579" stroke="#3f7a4e" stroke-width="3" stroke-dasharray="10 7" marker-end="url(#arrowGreen)"/>
+      <path d="M672,430 L672,300 C720,265 820,245 896,226" stroke="#6f6296" stroke-width="3" stroke-dasharray="10 7" marker-end="url(#arrowPurple)"/>
+    </g>
+
+    <!-- ENTRY dry-pocket zone -->
+    <rect x="985" y="556" width="240" height="270" fill="#7fa867" fill-opacity="0.12" stroke="#3f7a4e" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <text x="1105" y="610" font-size="12" fill="#2f5d3a" text-anchor="middle">温室后街干地保留区（拟议探针量净空，不预设坐标承诺）</text>
+
+    <!-- seven semantic places (existing) -->
+    <g id="places">
+      <use href="#placeDot" x="257.2" y="511.2"/>
+      <use href="#placeDot" x="335" y="550"/>
+      <use href="#placeDot" x="556.4" y="742.4"/>
+      <use href="#placeDot" x="896.4" y="225.6"/>
+      <use href="#placeDot" x="692.4" y="796.8"/>
+      <use href="#placeDot" x="903.2" y="817.2"/>
+      <use href="#placeDot" x="1073.2" y="728.8"/>
+    </g>
+    <g font-size="13" fill="#1f3742">
+      <g><rect x="171" y="478" width="172" height="22" rx="4" fill="#f6f0dc"/><text x="180" y="494">pub · Tweede Kans（不动）</text></g>
+      <g><rect x="236" y="556" width="246" height="40" rx="4" fill="#f6f0dc" stroke="#a05a3c" stroke-width="1.2"/><text x="244" y="572">lotte · Lotte 的桥（微移≤90）</text><text x="244" y="590" font-size="11.5" fill="#7a3b2e">下车推行/桥头停车（h=70·不可骑行）</text></g>
+      <g><rect x="430" y="752" width="190" height="22" rx="4" fill="#f6f0dc"/><text x="438" y="768">coffee · Bram 咖啡馆</text></g>
+      <g><rect x="838" y="186" width="160" height="22" rx="4" fill="#f6f0dc"/><text x="846" y="202">noord · 北岸码头</text></g>
+      <g><rect x="600" y="800" width="200" height="22" rx="4" fill="#f6f0dc"/><text x="608" y="816">market · Albert Cuyp</text></g>
+      <g><rect x="912" y="826" width="160" height="22" rx="4" fill="#f6f0dc"/><text x="920" y="842">flowers · 南街花店</text></g>
+      <g><rect x="1010" y="694" width="160" height="22" rx="4" fill="#f6f0dc"/><text x="1018" y="710">lab · Chen 实验室</text></g>
+    </g>
+
+    <!-- garden ENTRY: visually distinct gate marker (existing, separate flow) -->
+    <g id="garden-marker">
+      <rect x="1076" y="568" width="22" height="22" fill="#3f7a4e" stroke="#f3ead0" stroke-width="2"/>
+      <path d="M1074,568 L1087,557 L1100,568" fill="none" stroke="#3f7a4e" stroke-width="3"/>
+      <rect x="1108" y="560" width="130" height="22" rx="4" fill="#e7f0dc"/><text x="1116" y="576" font-size="13" fill="#234d2e">garden · 温室侧门 ENTRY</text>
+    </g>
+    <!-- flower cart anchor: visually distinct, not a place id -->
+    <g id="cart-marker">
+      <rect x="943" y="810" width="18" height="11" fill="#927752" stroke="#5e4a30"/>
+      <circle cx="947" cy="825" r="4" fill="#294b51"/><circle cx="957" cy="825" r="4" fill="#294b51"/>
+      <rect x="968" y="812" width="140" height="22" rx="4" fill="#f1e8cf"/><text x="976" y="828" font-size="13" fill="#5e4a30">cart · 搬花车锚点（非地点 ID）</text>
+    </g>
+
+    <!-- north arrow -->
+    <g id="north-arrow" transform="translate(1200,150)">
+      <circle r="26" fill="#f6f0dc" stroke="#6f6d64" stroke-width="1.5"/>
+      <path d="M0,-17 L7,12 L0,5 L-7,12 Z" fill="#1f3742"/>
+      <text x="0" y="-30" font-size="15" font-weight="bold" text-anchor="middle" fill="#1f3742">N</text>
+    </g>
+  </g>
+
+  <!-- ===================== LEGEND ===================== -->
+  <g id="legend">
+    <rect x="1268" y="96" width="328" height="448" rx="8" fill="#fbf7e9" stroke="#a99a6f" stroke-width="1.5"/>
+    <text x="1284" y="122" font-size="16" font-weight="bold" fill="#1f3742">图例</text>
+    <g font-size="13" fill="#1f3742">
+      <circle cx="1292" cy="146" r="8" fill="#2f5d50" stroke="#f3ead0" stroke-width="2"/>
+      <text x="1310" y="150">现有 7 地点（ID/语义/动作不变）</text>
+      <rect x="1284" y="164" width="16" height="13" fill="#3f7a4e"/><path d="M1282,164 L1292,156 L1302,164" fill="none" stroke="#3f7a4e" stroke-width="2"/>
+      <text x="1310" y="176">garden 温室侧门（现有，独立流程）</text>
+      <rect x="1286" y="190" width="14" height="8" fill="#927752"/><circle cx="1289" cy="201" r="3" fill="#294b51"/><circle cx="1297" cy="201" r="3" fill="#294b51"/>
+      <text x="1310" y="201">cart 搬花车锚点（非地点）</text>
+      <line x1="1282" y1="222" x2="1306" y2="222" stroke="#c8b88f" stroke-width="13" stroke-linecap="round"/><line x1="1282" y1="222" x2="1306" y2="222" stroke="#378e9b" stroke-width="9" stroke-linecap="round"/>
+      <text x="1316" y="219">拟议弧渠（3 条，各 6 个折线</text><text x="1316" y="234">碰撞矩形近似，共 18 矩形）</text>
+      <rect x="1284" y="248" width="22" height="9" fill="#378e9b"/><rect x="1284" y="244" width="22" height="4" fill="#c8b88f"/><rect x="1284" y="257" width="22" height="4" fill="#c8b88f"/>
+      <text x="1316" y="259">IJ（保留不动）</text>
+      <line x1="1284" y1="281" x2="1308" y2="281" stroke="#b3a276" stroke-width="12" stroke-linecap="round"/><line x1="1284" y1="281" x2="1308" y2="281" stroke="#d8c48e" stroke-width="7" stroke-linecap="round"/>
+      <text x="1318" y="285">宽桥 ×4（h≥80，可骑行 B1/B2/B4/B5）</text>
+      <line x1="1284" y1="306" x2="1308" y2="306" stroke="#a05a3c" stroke-width="9" stroke-linecap="round"/><line x1="1284" y1="306" x2="1308" y2="306" stroke="#e0c48e" stroke-width="4.5" stroke-linecap="round"/>
+      <text x="1318" y="310">窄桥 ×2（h=70，下车推行 B3/B6）</text>
+      <text x="1318" y="326" font-size="12" fill="#7a3b2e">Lotte 锚点在 B3→仅步行/推行（桥头停车）</text>
+      <rect x="1284" y="341" width="22" height="20" fill="#efe3bd" stroke="#6f6296" stroke-width="1.6" stroke-dasharray="5 4"/>
+      <text x="1316" y="349">渡轮 ×1（保留，CROSSINGS 末位）</text>
+      <rect x="1284" y="369" width="22" height="9" fill="#8f8d82" fill-opacity="0.25" stroke="#6f6d64" stroke-dasharray="4 3"/>
+      <text x="1316" y="378">现状直渠/旧桥位（dad6b38 实测虚影）</text>
+      <use href="#houseG" x="1295" y="403"/>
+      <text x="1316" y="406">拟议联排窄屋（36 栋 6 排，替换 20 散块）</text>
+      <line x1="1284" y1="427" x2="1308" y2="427" stroke="#e0a93e" stroke-width="3" stroke-dasharray="8 6"/>
+      <text x="1318" y="431">拟议路线（虚线；窄桥/渡轮段步行推行）</text>
+      <line x1="1284" y1="451" x2="1308" y2="451" stroke="#3f7a4e" stroke-width="3" stroke-dasharray="8 6"/>
+      <text x="1318" y="455">搬花车 → 温室侧门路线</text>
+      <line x1="1284" y1="475" x2="1308" y2="475" stroke="#6f6296" stroke-width="3" stroke-dasharray="8 6"/>
+      <text x="1318" y="479">渡轮路线（仅 noord 方向需渡轮）</text>
+      <rect x="1284" y="495" width="22" height="14" fill="#7fa867" fill-opacity="0.25" stroke="#3f7a4e" stroke-dasharray="4 3"/>
+      <text x="1316" y="506">ENTRY 干地净空保留区（探针验收）</text>
+      <text x="1284" y="530" font-size="11" fill="#7a6a48">桥/弧/屋均为拟议；数量与 design.md §4 一致</text>
+    </g>
+  </g>
+
+  <!-- ===================== INSET 1: current skeleton ===================== -->
+  <g id="inset-current">
+    <rect x="1268" y="552" width="328" height="220" rx="8" fill="#fbf7e9" stroke="#a99a6f" stroke-width="1.5"/>
+    <text x="1284" y="575" font-size="14" font-weight="bold" fill="#1f3742">现状骨架（dad6b38）：连通但全正交直尺格</text>
+    <g transform="translate(1292,580)">
+      <rect x="0" y="0" width="279" height="168" fill="#e7dcc0" stroke="#a99a6f"/>
+      <rect x="10.5" y="45" width="258" height="24" fill="#378e9b"/>
+      <rect x="67.5" y="69" width="9" height="93" fill="#378e9b"/>
+      <rect x="157.5" y="69" width="9" height="93" fill="#378e9b"/>
+      <rect x="10.5" y="115.5" width="258" height="9" fill="#378e9b"/>
+      <g fill="#e8dcae" stroke="#7a6a48" stroke-width="0.6">
+        <rect x="64.5" y="90" width="15" height="12"/><rect x="64.5" y="139.5" width="15" height="10.5"/>
+        <rect x="154.5" y="94.5" width="15" height="12"/><rect x="154.5" y="142.5" width="15" height="10.5"/>
+        <rect x="99" y="112.5" width="15" height="15"/><rect x="211.5" y="112.5" width="15" height="15"/>
+      </g>
+      <rect x="129" y="42" width="12" height="30" fill="#efe3bd" stroke="#6f6296" stroke-dasharray="3 2"/>
+      <g fill="#2f5d50">
+        <circle cx="43.5" cy="88.5" r="3.2"/><circle cx="73.5" cy="97.5" r="3.2"/><circle cx="109.5" cy="139.5" r="3.2"/>
+        <circle cx="184.5" cy="25.5" r="3.2"/><circle cx="139.5" cy="151.5" r="3.2"/><circle cx="186" cy="156" r="3.2"/>
+        <circle cx="223.5" cy="136.5" r="3.2"/>
+      </g>
+      <rect x="226.5" y="103.5" width="6" height="6" fill="#3f7a4e"/>
+      <circle cx="196.5" cy="156" r="2.4" fill="#927752"/>
+    </g>
+    <text x="1284" y="752" font-size="11" fill="#5b5640">实测：4 水矩形连通成一个并集——两竖渠 y=460</text>
+    <text x="1284" y="768" font-size="11" fill="#5b5640">边接 IJ、横渠接竖渠；无弧无层级｜72 非自对可达</text>
+  </g>
+
+  <!-- ===================== INSET 2: block close-up ===================== -->
+  <g id="inset-blocks">
+    <rect x="1268" y="780" width="328" height="244" rx="8" fill="#fbf7e9" stroke="#a99a6f" stroke-width="1.5"/>
+    <text x="1284" y="804" font-size="14" font-weight="bold" fill="#1f3742">街区放大：沿渠联排山墙屋替换零散大方块</text>
+    <path d="M1292,952 C1380,920 1480,924 1568,948" fill="none" stroke="#c8b88f" stroke-width="26" stroke-linecap="round"/>
+    <path d="M1292,952 C1380,920 1480,924 1568,948" fill="none" stroke="#378e9b" stroke-width="20" stroke-linecap="round"/>
+    <path d="M1292,930 C1380,898 1480,902 1568,926" fill="none" stroke="#378e9b" stroke-width="14" stroke-linecap="round" opacity="0.55"/>
+    <g>
+      <use href="#houseG" x="1310" y="912"/><use href="#houseG" x="1326" y="908"/><use href="#houseG" x="1342" y="904"/><use href="#houseG" x="1358" y="901"/>
+      <use href="#houseG" x="1374" y="899"/><use href="#houseG" x="1390" y="898"/><use href="#houseG" x="1406" y="898"/><use href="#houseG" x="1422" y="899"/>
+    </g>
+    <!-- legacy raw bridge lines with an invalid y2 attribute byte sequence are neutralised in this comment and rewritten after it
+    <line x1="1450" y1="876" x2="1450" y="940" stroke="#b3a276" stroke-width="13" stroke-linecap="round"/>
+    <line x1="1450" y1="876" x2="1450" y2="940" stroke="#d8c48e" stroke-width="8" stroke-linecap="round"/>
+    -->
+    <line x1="1450" y1="876" x2="1450" y2="940" stroke="#b3a276" stroke-width="13" stroke-linecap="round"/>
+    <line x1="1450" y1="876" x2="1450" y2="940" stroke="#d8c48e" stroke-width="8" stroke-linecap="round"/>
+    <text x="1462" y="884" font-size="11.5" fill="#5b4a24">宽桥落位</text>
+    <text x="1284" y="990" font-size="11" fill="#5b5640">窄面宽、随弧连续、山墙节奏变化（S1/S2）</text>
+    <text x="1284" y="1007" font-size="11" fill="#5b5640">碰撞仍为矩形块；scene 宽楼渲染 2–3 开间</text>
+  </g>
+
+  <!-- ===================== BOTTOM COUNTS ===================== -->
+  <g id="counts">
+    <rect x="24" y="888" width="1236" height="178" rx="8" fill="#fbf7e9" stroke="#a99a6f" stroke-width="1.5"/>
+    <text x="40" y="910" font-size="14.5" font-weight="bold" fill="#1f3742">数量契约（概念图 = design.md = findings.json；全部为拟议，非地理事实，未运行任何测试）</text>
+    <text x="40" y="930" font-size="11" fill="#1f3742">命名水体 4：IJ 1（原位不动）+ 弧渠 3；碰撞水矩形 19 = 1 + 3×6 搭接矩形（弧尾接 IJ、东端封堤，拟议）。</text>
+    <text x="40" y="946" font-size="11" fill="#1f3742">现状 4 片水（dad6b38 几何实测）：两竖渠 y=460 边接 IJ 南缘、横渠面交两竖渠，为一个连通并集；缺口是全正交、等宽、无弯曲弧带，不是水道断连；实测只证矩形邻接，不证行船通航。</text>
+    <text x="40" y="962" font-size="11" fill="#1f3742">跨点仍 7：宽桥 4（h≥80，可骑行 B1/B2/B4/B5）+ 窄桥 2（h=70，下车推行 B3/B6）+ 渡轮 1（CROSSINGS 末位，不动）。</text>
+    <text x="40" y="978" font-size="11" fill="#7a3b2e">Lotte 例外（9 锚点唯一）：微移≤90 落 B3 桥面，walkable=true、rideable=false；骑车到桥头下车推行（既有 pushing，ui:435 有提示）或 42 内 parkBike 停车步行；规则、桥数不改。</text>
+    <text x="40" y="994" font-size="11" fill="#1f3742">建筑 26→42：6 目的地立面原位不动（PLACES 含 lotte 但 BUILDINGS 不生成 lotte 立面，不新增第七立面），20 装饰块替换为 36 联排窄屋（6 排×6）。</text>
+    <text x="40" y="1010" font-size="11" fill="#1f3742">可达性契约：9 锚点均步行可达；72 非自对路由非空且采样 walkable、9 自对为 []；宽桥段 rideable=true，B3/B6/渡轮采样 rideable=false；渡轮仅 noord 方向。</text>
+    <text x="40" y="1026" font-size="11" fill="#1f3742">真实关系保留：IJ 隔岸+免费渡轮（S4）、工业水岸词汇（S6，不泛称 NDSM）、山墙屋/运河带 ensemble（S1/S2）、街市走廊（S3/S5）；弧尾接 IJ、东端封死均为风格化，无真实接港地名，非等比例。</text>
+    <text x="40" y="1042" font-size="10.5" fill="#7a3b2e">画面既有清点（scene 实测）：行人 9（:192，非小船）、小艇 3（:191）、吊臂 1（:190）、乐手 1（:188 随 B3）、篷 4（:194 不新增）、桌 2（:195）、路灯 6（:198）、公园 3（:146-150）。</text>
+    <text x="40" y="1058" font-size="10.5" fill="#7a6a48">首杯纠正：夜间酒馆内为 Marta 等客人倒酒→现金/库存变化（dad6b38 父验 natural-first-cup，本包未重跑）；City 仅 prep/summary 挂载，pub→Lotte 步行不是首杯。</text>
+  </g>
+</svg>

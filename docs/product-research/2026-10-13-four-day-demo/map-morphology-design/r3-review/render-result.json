@@ -1,0 +1,10 @@
+{
+  "command": "/opt/homebrew/bin/rsvg-convert -w 1600 concept.svg -o concept-preview.png",
+  "cwd": "/tmp/amsterdam-map01-r3-parent",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "",
+  "worker_preview_sha256": "debfd84c5fde3f3dd69d7d052997e9fc76b92478727ffdd6a3e9ba7cde8f7fb9",
+  "parent_render_sha256": "debfd84c5fde3f3dd69d7d052997e9fc76b92478727ffdd6a3e9ba7cde8f7fb9",
+  "preview_matches_parent": true
+}

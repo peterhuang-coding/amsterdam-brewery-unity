@@ -305,7 +305,7 @@
     "week_end_beijing": "2026-10-18T23:59:59+08:00",
     "candidate_target_beijing": "2026-10-16",
     "execution_deadline_unchanged": true,
-    "status": "map_design_shelved_pending_explicit_exception",
+    "status": "blocked_map_correction_exception_pending",
     "document": "docs/product-research/2026-10-13-four-day-demo/week-demo-freeze.md",
     "scope_priority": "parent_acceptance_then_whole_natural_loop_then_top3_freeze_blockers",
     "steam_next_phase": "preparation_after_demo_direction_confirmation",
@@ -366,7 +366,7 @@
     },
     "hub_sync": "source /tmp/amsterdam-map-wave-hub.md equals latest and session20261015-001236-69814.md,5106bytes",
     "automation_sync": "Same amsterdam ID/thread/ACTIVE/15min; prompt updated to both MAP packages terminal, exception asked once pending; old running text is history.",
-    "goal_tool_observed_at": "2026-10-14T16:17:48.990692+00:00",
+    "goal_tool_observed_at": "2026-10-14T17:10:36.430001+00:00",
     "goal_resume_evidence": "get_goal on explicit goal continuation returned active; previous blocked observations preserved historically",
     "map_extra_correction_authorization": {
       "status": "pending_explicit_human_reply",
@@ -383,13 +383,15 @@
     },
     "blocked_audit": {
       "reason": "map_design_correction_limit_exhausted_new_authorization_required",
-      "consecutive_goal_turns": 2,
+      "consecutive_goal_turns": 3,
       "first_observed_at": "2026-10-14T17:02:20.786803+00:00",
-      "last_revalidated_at": "2026-10-14T17:09:17.598246+00:00",
-      "previous_goal_turn_classification": "progress: completed final MAP01 parent review and preserved original outputs; asked one bounded exception",
-      "current_goal_turn_classification": "no_progress: same required human exception still unanswered",
-      "evidence": "Live worktable clean at 6584794 before this audit; 48 Amsterdam status files all done; no prepared package; Notion home pending explicit reply; next review not due; no new human reply in conversation."
-    }
+      "last_revalidated_at": "2026-10-14T17:10:36.430001+00:00",
+      "previous_goal_turn_classification": "no_progress: same required human exception remained unanswered",
+      "current_goal_turn_classification": "no_progress: same blocker revalidated; threshold met; goal marked blocked",
+      "evidence": "Worktable and live Notion still pending same single exception; 48 Amsterdam status files done; no prepared task; no actual reply; review and deadline not due.",
+      "goal_status": "blocked"
+    },
+    "goal_tool_observed_status": "blocked"
   },
   "current_task_worker_pid": null,
   "freeze_audit_attempt": {
@@ -431,6 +433,6 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-14T17:09:17.598246+00:00",
+  "updated_at": "2026-10-14T17:10:36.430001+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00"
 }

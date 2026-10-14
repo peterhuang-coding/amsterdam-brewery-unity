@@ -439,9 +439,15 @@
       "entry_html_bytes": 7136,
       "game_retested": false,
       "new_screenshots": false,
-      "notion_sync": "pending",
-      "hub_sync": "pending",
-      "automation_sync": "pending"
+      "notion_sync": "Home updated and read back at 2026-10-14T22:07:14.906Z; review summary and pending GitHub push explicitly recorded, no nonexistent commit link.",
+      "hub_sync": "source /tmp/amsterdam-review05-hub.md equals latest and session20261015-060749-88445.md byte-for-byte,6513 bytes,one next-step; no new method.",
+      "automation_sync": "Same id/name/kind/thread/ACTIVE/15min/created_at and all other fields preserved; prompt byte-exact readback verified with review05 and pending push recovery.",
+      "local_review_commit": "466a454e6d4e8dfd4a47a12bfe94e33ecb4bdf33",
+      "push_status": "blocked_github_auth_invalid",
+      "push_failure": "git push: could not read Username for https://github.com; gh auth status: active default account token invalid",
+      "remote_document_head_before_push": "8015f9c5ecd38409d00deeb4ffd40ae860eff6dd",
+      "sync_next_action": "After existing GitHub login is restored, push these existing documentation commits and replace the Notion pending-push note with the exact review link. Do not repeat review05 or dispatch.",
+      "review_notification_planned": true
     }
   },
   "current_task_worker_pid": null,
@@ -484,7 +490,7 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-14T22:04:36.245704+00:00",
+  "updated_at": "2026-10-14T22:08:38.366466+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
   "last_checked_at": "2026-10-14T22:04:36.245704+00:00"

@@ -1,0 +1,8 @@
+{
+  "ledger_not_done": [],
+  "bare_live": [],
+  "new_id_absent": true,
+  "all_input_sha_match": true,
+  "limit": 2,
+  "atomic_capacity_guarantee": false
+}

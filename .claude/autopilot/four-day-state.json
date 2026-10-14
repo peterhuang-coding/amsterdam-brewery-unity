@@ -285,8 +285,8 @@
   "provider_cooldown_completed_at": "2026-10-13T10:11:45.254565+00:00",
   "current_submitted_at": "2026-10-13T17:54:21.539560Z",
   "current_worker_pid": null,
-  "current_task_packet": "/tmp/amsterdam-freeze-audit-r2-20261014/handoff.json",
-  "current_task_notion": "https://app.notion.com/p/3f83285284df819e87b2ca01f84cb95b",
+  "current_task_packet": "docs/product-research/2026-10-13-four-day-demo/map-morphology-design/r2/handoff.json",
+  "current_task_notion": "https://app.notion.com/p/3f93285284df81c88672d18fc35ff901",
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
   "current_task_stage": "shelved",
@@ -298,23 +298,23 @@
   "worker_pid": null,
   "last_submitted_at": "2026-10-13T17:54:21.539560Z",
   "direction_review_count": 4,
-  "next_independent_observation": "Received F02 map complexity/fidelity; clarify density versus readability and fidelity scope before bounded design. No new CC package.",
+  "next_independent_observation": "F02 clarified; both MAP packages and sole corrections collected. Only actual answer to pending MAP01 exception or scheduled direction review warrants action.",
   "weekly_goal": {
     "decision": "D25",
     "source": "用户2026-10-14本周敲定demo再走Steam发行",
     "week_end_beijing": "2026-10-18T23:59:59+08:00",
     "candidate_target_beijing": "2026-10-16",
     "execution_deadline_unchanged": true,
-    "status": "feedback_clarified_design_in_progress",
+    "status": "map_design_shelved_pending_explicit_exception",
     "document": "docs/product-research/2026-10-13-four-day-demo/week-demo-freeze.md",
     "scope_priority": "parent_acceptance_then_whole_natural_loop_then_top3_freeze_blockers",
     "steam_next_phase": "preparation_after_demo_direction_confirmation",
     "human_play_feedback": "map_too_simple_lacks_neighbourhood_detail_and_amsterdam_fidelity",
     "current_candidate": "dad6b38c54fda94f541764242f61820d8177bd19",
     "natural_loop_evidence": "cargo-choice-final: real first cup Marta, night duplicate pickup/drop, safe return, day2 inventory and market price; pause used for tool inspection, no human fun validation",
-    "next_priority": "MAP01 bounded morphology design and reviewable schematic, at most3 evidenced gaps; no shelved-task revival.",
+    "next_priority": "Wait for actual answer to one MAP01 extra-correction exception request; no automatic redispatch.",
     "three_day_parent_evidence": "three-day-parent: seed42001 same natural save, day1 actual6services+night1salvage/extracted/day2consequence; day2/3earlyclose; ending107cash12satisfied/won; exactrefresh; replay exactnaturalending isolatedcontexts",
-    "notion_sync": "Actual F02 answer on feedback/home; MAP01+MAP02 executing readback; launch additions written.",
+    "notion_sync": "MAP01 and MAP02 shelved and home terminal update verified; one explicit exception request now pending.",
     "full_service_parent_evidence": "full-service-parent: exact prior natural day2 restore branch; day2 all10/day3 all12 served and natural automatic settlement; pending inspector pagehide restore exact, paid10/9patiences+12; won281cash28satisfied, endingrefresh exact,390/1440 nooverflow,17 browserbytes matched; pauses/DOM assistance,no humanfun.",
     "full_service_evidence_commit": "b4493309af9d9fe4de4172ab36e0caa75aa5bbac",
     "candidate_snapshot": {
@@ -365,14 +365,21 @@
       "original_user_quote": "你这个 plan 的调用量可以更大，我允许你无限火力"
     },
     "hub_sync": "source /tmp/amsterdam-map-wave-hub.md equals latest and session20261015-001236-69814.md,5106bytes",
-    "automation_sync": "Same amsterdam id/thread/ACTIVE/15min; updated actual F02 clarification and two original running IDs, verified live config.",
+    "automation_sync": "Same amsterdam ID/thread/ACTIVE/15min; prompt updated to both MAP packages terminal, exception asked once pending; old running text is history.",
     "goal_tool_observed_at": "2026-10-14T16:17:48.990692+00:00",
     "goal_resume_evidence": "get_goal on explicit goal continuation returned active; previous blocked observations preserved historically",
     "map_extra_correction_authorization": {
-      "status": "question_prepared_not_yet_asked",
+      "status": "pending_explicit_human_reply",
       "logical_task_id": "f02-map-morphology-design",
       "scope": "One additional targeted correction for three parent-reviewed issues; MAP02 remains shelved",
-      "authorization_source_required": "explicit human exception to retained D24 policy"
+      "authorization_source_required": "explicit human exception to retained D24 policy",
+      "asked_at": "2026-10-14T17:05:00Z",
+      "asked_at_precision": "approximate_minute",
+      "question_count": 1,
+      "options": [
+        "One extra targeted MAP01 correction",
+        "Keep shelved"
+      ]
     },
     "blocked_audit": {
       "reason": "map_design_correction_limit_exhausted_new_authorization_required",
@@ -420,6 +427,6 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-14T12:05:39.831652+00:00",
+  "updated_at": "2026-10-14T17:07:20.793226+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00"
 }

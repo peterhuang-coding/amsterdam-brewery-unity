@@ -6,6 +6,8 @@
 
 城市形态/街区细节没有合格设计可采用；首次体验/整体视觉/乐趣仍未经人审认可。完整D25目标实读blocked、未完成，非用户暂停。本轮无必要独立重验或成熟已授权新包，不造任务、不重写失败稿。下次固定review2026-10-15T17:48:33Z（北京10月16日01:48:33），截止2026-10-16T19:48:33Z、final_report_sent=false及同ID/thread/ACTIVE/15min保持。本次方向审查通知一次，无变化静默；下方旧时点与状态为历史。
 
+同步回执：审查提交9c1a209c042a50eea5d9223279b04bb620d0c533已push并核对远端；[第6次审查精确记录](https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/9c1a209c042a50eea5d9223279b04bb620d0c533/docs/product-research/2026-10-13-four-day-demo/direction-review-06.md)已回填Notion主页，2026-10-15T08:10:13.679Z读回确认。Hub源摘要/latest/session20261015-161134-29601.md逐字节一致，8553字节、一个下一步；本轮无新增方法。现有自动化只追加本轮恢复前缀，完整旧提示与其余字段保持并读回核对。
+
 # 第5次审查同步恢复（不重做审查）
 
 2026-10-15T02:01:36Z实查既有peterhuang-coding GitHub登录已有效。原本地提交466a454e6d4e8dfd4a47a12bfe94e33ecb4bdf33和ee10cf0ef22d62b411a79b0b7ba62f6ace297158已补推；02:02:38Z远端分支实读确认ee10cf0ef22d62b411a79b0b7ba62f6ace297158。原推送失败和无效token记录保留为历史，不再是当前同步阻碍。

@@ -439,15 +439,34 @@
       "entry_html_bytes": 7136,
       "game_retested": false,
       "new_screenshots": false,
-      "notion_sync": "Home updated and read back at 2026-10-14T22:07:14.906Z; review summary and pending GitHub push explicitly recorded, no nonexistent commit link.",
+      "notion_sync": "Exact review05 commit link added to home and read back at 2026-10-15T02:02:39.842Z; initial pending-push note superseded, failure history retained.",
       "hub_sync": "source /tmp/amsterdam-review05-hub.md equals latest and session20261015-060749-88445.md byte-for-byte,6513 bytes,one next-step; no new method.",
       "automation_sync": "Same id/name/kind/thread/ACTIVE/15min/created_at and all other fields preserved; prompt byte-exact readback verified with review05 and pending push recovery.",
       "local_review_commit": "466a454e6d4e8dfd4a47a12bfe94e33ecb4bdf33",
-      "push_status": "blocked_github_auth_invalid",
+      "push_status": "pushed_after_auth_recovery",
       "push_failure": "git push: could not read Username for https://github.com; gh auth status: active default account token invalid",
       "remote_document_head_before_push": "8015f9c5ecd38409d00deeb4ffd40ae860eff6dd",
-      "sync_next_action": "After existing GitHub login is restored, push these existing documentation commits and replace the Notion pending-push note with the exact review link. Do not repeat review05 or dispatch.",
-      "review_notification_planned": true
+      "sync_next_action": "No pending review05 push or Notion backlink; preserve shelved tasks and respond only to actual new instructions or the next fixed direction review.",
+      "review_notification_planned": true,
+      "sync_recovery": {
+        "auth_observed_at": "2026-10-15T02:01:36.620215Z",
+        "account": "peterhuang-coding",
+        "push_exit_code": 0,
+        "remote_verified_at": "2026-10-15T02:02:38Z",
+        "remote_document_head": "ee10cf0ef22d62b411a79b0b7ba62f6ace297158",
+        "existing_commits": [
+          "466a454e6d4e8dfd4a47a12bfe94e33ecb4bdf33",
+          "ee10cf0ef22d62b411a79b0b7ba62f6ace297158"
+        ],
+        "review_url": "https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/ee10cf0ef22d62b411a79b0b7ba62f6ace297158/docs/product-research/2026-10-13-four-day-demo/direction-review-05.md",
+        "notion_readback_at": "2026-10-15T02:02:39.842Z",
+        "new_cc": 0,
+        "game_changes": 0,
+        "review_repeated": false,
+        "new_game_tests": false,
+        "hub_sync": "latest and sessions/20261015-100405-4093.md verified byte-for-byte against recovery source, 6824 bytes, one next-step; no new method.",
+        "automation_sync": "Same id/name/kind/thread/ACTIVE/15min/created_at and all other fields preserved; recovery prefix and full historical prompt verified byte-for-byte."
+      }
     }
   },
   "current_task_worker_pid": null,
@@ -490,8 +509,8 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-14T22:08:38.366466+00:00",
+  "updated_at": "2026-10-15T02:03:52.735923+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
-  "last_checked_at": "2026-10-14T22:04:36.245704+00:00"
+  "last_checked_at": "2026-10-15T02:03:52.735923+00:00"
 }

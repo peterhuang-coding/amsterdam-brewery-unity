@@ -3,8 +3,8 @@
   "status": "map_extra_correction_failed_shelved",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-16T19:48:33Z",
-  "next_direction_review_at": "2026-10-15T17:48:33Z",
-  "last_direction_review_at": "2026-10-15T08:08:32.207279+00:00",
+  "next_direction_review_at": "2026-10-16T03:48:33Z",
+  "last_direction_review_at": "2026-10-15T17:51:52.687694+00:00",
   "current_task_id": "amsterdam-map-morphology-design-r3-20261015",
   "logical_task": "f02-map-morphology-design",
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
@@ -311,7 +311,7 @@
   "current_task_submitted_at": "2026-10-14T17:23:09+00:00",
   "worker_pid": null,
   "last_submitted_at": "2026-10-14T17:23:09+00:00",
-  "direction_review_count": 6,
+  "direction_review_count": 7,
   "next_independent_observation": "Explicit MAP01 extra correction approved; no other shelved task revival.",
   "weekly_goal": {
     "decision": "D25",
@@ -492,6 +492,28 @@
       "local_review_commit": "9c1a209c042a50eea5d9223279b04bb620d0c533",
       "review_url": "https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/9c1a209c042a50eea5d9223279b04bb620d0c533/docs/product-research/2026-10-13-four-day-demo/direction-review-06.md",
       "review_notification_planned": true
+    },
+    "direction_review_07": {
+      "planned_at": "2026-10-15T17:48:33Z",
+      "completed_at": "2026-10-15T17:51:52.687694+00:00",
+      "document": "docs/product-research/2026-10-13-four-day-demo/direction-review-07.md",
+      "cc_requests_since_previous_review": 0,
+      "new_cc_this_review": 0,
+      "new_design_adoptions": 0,
+      "new_game_adoptions": 0,
+      "game_changes": 0,
+      "ledger_count": 49,
+      "all_ledger_state_done": true,
+      "goal_tool_observed_status": "blocked",
+      "entry_observed_at": "2026-10-15T17:49:47.333845+00:00",
+      "entry_http_status": 200,
+      "entry_html_bytes": 7136,
+      "game_retested": false,
+      "new_screenshots": false,
+      "push_status": "pending",
+      "notion_sync": "pending",
+      "hub_sync": "pending",
+      "automation_sync": "pending"
     }
   },
   "current_task_worker_pid": null,
@@ -534,8 +556,8 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-15T08:12:20.733103+00:00",
+  "updated_at": "2026-10-15T17:51:52.687694+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
-  "last_checked_at": "2026-10-15T08:08:32.207279+00:00"
+  "last_checked_at": "2026-10-15T17:51:52.687694+00:00"
 }

@@ -510,10 +510,13 @@
       "entry_html_bytes": 7136,
       "game_retested": false,
       "new_screenshots": false,
-      "push_status": "pending",
-      "notion_sync": "pending",
-      "hub_sync": "pending",
-      "automation_sync": "pending"
+      "push_status": "pushed_remote_verified",
+      "notion_sync": "Exact review07 commit link added to home and read back at 2026-10-15T17:53:05.021Z; previous content retained.",
+      "hub_sync": "source /tmp/amsterdam-review07-hub.md equals latest and sessions/20261016-015417-63798.md, 10279 bytes, one next-step; no new method.",
+      "automation_sync": "Same id/name/kind/thread/ACTIVE/15min/created_at and other fields preserved; review07 prefix and complete historical prompt byte-exact readback verified.",
+      "local_review_commit": "1a2bd36e9aec4f2d6231159b7dce1249e3e7ef02",
+      "review_url": "https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/1a2bd36e9aec4f2d6231159b7dce1249e3e7ef02/docs/product-research/2026-10-13-four-day-demo/direction-review-07.md",
+      "review_notification_planned": true
     }
   },
   "current_task_worker_pid": null,
@@ -556,7 +559,7 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-15T17:51:52.687694+00:00",
+  "updated_at": "2026-10-15T17:54:59.066058+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
   "last_checked_at": "2026-10-15T17:51:52.687694+00:00"

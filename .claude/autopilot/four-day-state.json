@@ -1,19 +1,19 @@
 {
-  "decision": "D23",
-  "status": "map_extra_correction_failed_shelved",
+  "decision": "D26",
+  "status": "renewed_map_implementation_preparing",
   "start_at": "2026-10-12T19:48:33Z",
-  "deadline": "2026-10-16T19:48:33Z",
+  "deadline": "2026-10-17T02:03:03Z",
   "next_direction_review_at": "2026-10-16T23:48:33Z",
   "last_direction_review_at": "2026-10-16T13:55:56.910455+00:00",
-  "current_task_id": "amsterdam-map-morphology-design-r3-20261015",
-  "logical_task": "f02-map-morphology-design",
+  "current_task_id": null,
+  "logical_task": "d26-real-geography",
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
   "failure_policy_question_pending": false,
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
   "current_task_terminal": null,
-  "failure_reason": "MAP01 correction exhausted; factual/rideability/render contradictions. MAP02 correction also exhausted.",
+  "failure_reason": null,
   "last_result_at": "2026-10-14T16:58:40.031524Z",
   "in_flight": [],
   "candidate_path": null,
@@ -319,7 +319,7 @@
     "week_end_beijing": "2026-10-18T23:59:59+08:00",
     "candidate_target_beijing": "2026-10-16",
     "execution_deadline_unchanged": true,
-    "status": "map_design_failed_shelved",
+    "status": "renewed_map_work_preparing",
     "document": "docs/product-research/2026-10-13-four-day-demo/week-demo-freeze.md",
     "scope_priority": "parent_acceptance_then_whole_natural_loop_then_top3_freeze_blockers",
     "steam_next_phase": "preparation_after_demo_direction_confirmation",
@@ -614,5 +614,30 @@
   "updated_at": "2026-10-16T13:58:36.668493+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
-  "last_checked_at": "2026-10-16T13:55:56.910455+00:00"
+  "last_checked_at": "2026-10-16T13:55:56.910455+00:00",
+  "prior_four_day_window": {
+    "start_at": "2026-10-12T19:48:33Z",
+    "deadline": "2026-10-16T19:48:33Z",
+    "final_report_sent": false,
+    "state_snapshot": "docs/product-research/2026-10-17-ten-hour-map/pre-d26-four-day-state.json",
+    "superseded_stop_by": "D26 explicit human ten-hour renewal"
+  },
+  "renewal": {
+    "started_at": "2026-10-16T16:03:03Z",
+    "deadline": "2026-10-17T02:03:03Z",
+    "source": "真人明确：那你继续啊，我给你权限无限火力干 10 小时",
+    "supersedes_prior_stop_for_current_map_work": true,
+    "decision": "D26",
+    "final_report_sent": false,
+    "scope": "real geography and existing playable map integration",
+    "previous_map_failure_history_preserved": true,
+    "new_attempt_policy": "one business attempt plus at most one targeted correction per concrete implementation package",
+    "plan_dispatch_count": 0,
+    "game_adopted": 0
+  },
+  "capacity_observation": {
+    "at": "2026-10-16T16:10:00Z",
+    "other_live_cc": 4,
+    "dispatch_waiting_for_capacity": true
+  }
 }

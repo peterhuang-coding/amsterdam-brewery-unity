@@ -1,0 +1,25 @@
+{
+  "status": "candidate only; parent acceptance pending, not game adoption",
+  "task": "amsterdam-d26-runtime-pack-r2-20261017",
+  "source_sha256": "3a18d70c3dd6e77e10af71b71ab54ca0fb59b74e8287d2c358933475dcf199f5",
+  "files": [
+    {
+      "file": "runtime.json",
+      "bytes": 397004443,
+      "sha256": "f9263bbf5b31af6dda30bd002130d8ada11957fddd202120dd2bd0b1fff8c146",
+      "source_destination_equal": true
+    },
+    {
+      "file": "runtime.json.gz",
+      "bytes": 101347149,
+      "sha256": "f780b0d71c5129871614b3e5ae938ef31d673da52f62e6dd5d6bab9de12c5d98",
+      "source_destination_equal": true
+    },
+    {
+      "file": "runtime-audit.json",
+      "bytes": 104982,
+      "sha256": "246ae3a835c81f3cb51efeb9f098e25fbe27c3b34b4d7019184845eb54bc5dea",
+      "source_destination_equal": true
+    }
+  ]
+}

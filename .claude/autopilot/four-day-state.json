@@ -12,35 +12,10 @@
   "failure_policy_question_pending": true,
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
-  "current_task_terminal": null,
+  "current_task_terminal": true,
   "failure_reason": null,
   "last_result_at": "2026-10-14T16:58:40.031524Z",
-  "in_flight": [
-    {
-      "task_id": "amsterdam-d26-runtime-pack-r2-20261017",
-      "label": "PACK01-R2",
-      "submitted_at": "2026-10-16T18:26:45+00:00",
-      "worker_pid": 67806,
-      "launcher_pid": 67805,
-      "outer_session": 48603,
-      "contract_commit": "3d106f6d2a1353370627d02224592276c16954f3",
-      "timeout_seconds": 2400,
-      "max_turns": 70,
-      "model": "doubao-seed-evolving",
-      "effort": "high",
-      "thinking_enabled": true,
-      "public_input_files": 13,
-      "public_input_bytes": 565114,
-      "business_attempt": 1,
-      "correction_submitted": 1,
-      "correction_limit": 1,
-      "input": "/tmp/amsterdam-d26-runtime-pack-r2-20261017/input",
-      "ledger": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-r2-20261017",
-      "prelaunch": "docs/product-research/2026-10-17-ten-hour-map/PACK01/r2/prelaunch.json",
-      "state_observed": "running",
-      "observed_at": "2026-10-16T18:31:55.784668+00:00"
-    }
-  ],
+  "in_flight": [],
   "candidate_path": null,
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -328,7 +303,7 @@
   "current_task_notion": null,
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
-  "current_task_stage": "PACK01-R2 running, RENDER01-R2 terminal rejected, NAV extra question awaiting human",
+  "current_task_stage": "no_inflight",
   "prepared_task_id": null,
   "prepared_task_packet": null,
   "play_service_pid": 91799,
@@ -636,10 +611,10 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-16T19:00:04.697405+00:00",
+  "updated_at": "2026-10-16T19:28:36.547563+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
-  "last_checked_at": "2026-10-16T18:31:55.784668+00:00",
+  "last_checked_at": "2026-10-16T19:28:36.547563+00:00",
   "prior_four_day_window": {
     "start_at": "2026-10-12T19:48:33Z",
     "deadline": "2026-10-16T19:48:33Z",
@@ -697,7 +672,18 @@
       "answer": null
     },
     "render01_correction_review": "rejected/semantic: original label overlap fixed in 12 full browser cases; demo canvas height drifts 214.8125→274.484375 in100frames; 1/1 exhausted, adopted0",
-    "render01_next": "Shelved; no third request or new exception question. Original report/code preserved."
+    "render01_next": "Shelved; no third request or new exception question. Original report/code preserved.",
+    "fourth_wave_collected_at": "2026-10-16T19:28:36.547563+00:00",
+    "pack01_correction_review": "rejected/semantic: full original seams retained but11 new overlaps; size397004443B/gzip101347149B; correction1/1 exhausted, adopted0",
+    "pack01_next": "Shelved. Additional one-shot correction proposal prepared, not yet asked/authorized/submitted.",
+    "full_runtime_candidate_r2": {
+      "json_bytes": 397004443,
+      "gzip_bytes": 101347149,
+      "json_sha256": "f9263bbf5b31af6dda30bd002130d8ada11957fddd202120dd2bd0b1fff8c146",
+      "path": "/Volumes/SanDisk2TB/amsterdam-geodata/d26-bgt-20261017/runtime-candidate-pack01-r2",
+      "adopted": false
+    },
+    "runtime_limit_observation": "128/192MiB reject; explicit512MiB browser loads7.427/8.273s, blocks6.889/7.576s; old192MiB boot assumption invalid"
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",
@@ -709,6 +695,6 @@
   },
   "prepared_tasks": [],
   "awaiting_parent_review": [],
-  "current_stage": "pack_r2_running_nav_and_render_shelved_nav_exception_pending",
+  "current_stage": "wave4_collected_pack_and_render_shelved_nav_exception_pending",
   "prepared": []
 }

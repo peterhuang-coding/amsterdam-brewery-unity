@@ -1,0 +1,174 @@
+{
+  "generated_at_utc": "2026-10-16T19:14:33.177737Z",
+  "input": {
+    "bytes": 237043,
+    "path": "/tmp/amsterdam-d26-pack-r2-parent-20261017/sample/real-pub-source.json",
+    "sha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598"
+  },
+  "layers": {
+    "bridges": {
+      "fallback_reasons": {},
+      "features_fallback": 0,
+      "features_invalid_original": 0,
+      "features_simplified": 0,
+      "features_unchanged": 1,
+      "features_valid_original": 1,
+      "input": {
+        "features": 1,
+        "polygons": 1,
+        "rings": 1,
+        "vertices": 15
+      },
+      "max_hausdorff_m": 0.0,
+      "output": {
+        "features": 1,
+        "polygons": 1,
+        "rings": 1,
+        "vertices": 15
+      },
+      "removed_vertices": 0
+    },
+    "buildings": {
+      "fallback_reasons": {},
+      "features_fallback": 0,
+      "features_invalid_original": 0,
+      "features_simplified": 12,
+      "features_unchanged": 11,
+      "features_valid_original": 23,
+      "input": {
+        "features": 23,
+        "polygons": 24,
+        "rings": 24,
+        "vertices": 428
+      },
+      "max_hausdorff_m": 0.0458463673466856,
+      "output": {
+        "features": 23,
+        "polygons": 24,
+        "rings": 24,
+        "vertices": 407
+      },
+      "removed_vertices": 21
+    },
+    "roads": {
+      "fallback_reasons": {
+        "hausdorff_exceeded": 2
+      },
+      "features_fallback": 2,
+      "features_invalid_original": 0,
+      "features_simplified": 23,
+      "features_unchanged": 11,
+      "features_valid_original": 36,
+      "input": {
+        "features": 36,
+        "polygons": 36,
+        "rings": 36,
+        "vertices": 9443
+      },
+      "max_hausdorff_m": 0.049624914739666966,
+      "output": {
+        "features": 36,
+        "polygons": 36,
+        "rings": 36,
+        "vertices": 7141
+      },
+      "removed_vertices": 2302
+    },
+    "water": {
+      "fallback_reasons": {},
+      "features_fallback": 0,
+      "features_invalid_original": 0,
+      "features_simplified": 2,
+      "features_unchanged": 0,
+      "features_valid_original": 2,
+      "input": {
+        "features": 2,
+        "polygons": 2,
+        "rings": 2,
+        "vertices": 663
+      },
+      "max_hausdorff_m": 0.049100122340655826,
+      "output": {
+        "features": 2,
+        "polygons": 2,
+        "rings": 2,
+        "vertices": 68
+      },
+      "removed_vertices": 595
+    }
+  },
+  "options": {
+    "coordinates_re_rounded": false,
+    "gzip_compresslevel": 9,
+    "gzip_mtime": 0,
+    "hausdorff_guard_m": 0.050000010000000004,
+    "preserve_topology": true,
+    "tolerance_m": 0.05
+  },
+  "output": {
+    "gunzip_bytes": 179945,
+    "gunzip_matches_json": true,
+    "gunzip_sha256": "3733746f74b44d4d29d0590a7bd093990997520e7229640bd2d3b668a256b149",
+    "gzip": {
+      "bytes": 46840,
+      "path": "/tmp/amsterdam-d26-pack-r2-parent-20261017/real-pub-packed.json.gz",
+      "sha256": "49531408467c1d262f69a40f85f2f85a40deeacad1e2b8065b5383d2582ee50f"
+    },
+    "json": {
+      "bytes": 179945,
+      "path": "/tmp/amsterdam-d26-pack-r2-parent-20261017/real-pub-packed.json",
+      "sha256": "3733746f74b44d4d29d0590a7bd093990997520e7229640bd2d3b668a256b149"
+    }
+  },
+  "performance": {
+    "elapsed_seconds": 0.11148187494836748,
+    "peak_rss_bytes": 45481984,
+    "peak_rss_note": "ru_maxrss reported in bytes on macOS"
+  },
+  "schema_version": 1,
+  "shared_boundaries": {
+    "force_safe_features": 0,
+    "locked_vertices": 6681,
+    "min_seam_length_m": 1e-06,
+    "pairs": 132
+  },
+  "source": {
+    "complete": false,
+    "inputs": [],
+    "license": "CC0-1.0",
+    "limitations": [
+      "Parent diagnostic feature subset by bounds for one near-pub route. Original complete source manifest SHA stored in parent evidence, not complete city coverage.",
+      "Derivative asset: Shapely/GEOS Douglas-Peucker simplification with preserve_topology=True at tolerance 0.05 metres (0 means geometrically unchanged); coordinates stay in projected metres and are not re-rounded.",
+      "Shared seam vertices are locked across neighbouring polygons (including holes and multi-polygon components) so original shared borders are retained exactly without buffering, enlargement or new connection lines; when seam safety cannot be proved the feature stays unchanged.",
+      "Shared-boundary locking does not establish inter-feature network continuity; parents must independently test routes."
+    ],
+    "provider": "Kadaster / PDOK BGT",
+    "snapshot": "2026-10-16T00:00:00Z",
+    "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/"
+  },
+  "tool": "pack_geo.py",
+  "totals": {
+    "fallback_reasons": {
+      "hausdorff_exceeded": 2
+    },
+    "features_fallback": 2,
+    "features_invalid_original": 0,
+    "features_simplified": 37,
+    "features_unchanged": 23,
+    "features_valid_original": 62,
+    "input": {
+      "features": 62,
+      "polygons": 63,
+      "rings": 63,
+      "vertices": 10549
+    },
+    "max_hausdorff_m": 0.049624914739666966,
+    "output": {
+      "features": 62,
+      "polygons": 63,
+      "rings": 63,
+      "vertices": 7631
+    },
+    "removed_vertices": 2918
+  }
+}

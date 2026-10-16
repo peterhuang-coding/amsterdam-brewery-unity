@@ -1,0 +1,20 @@
+[
+  {
+    "path": "parent.html",
+    "bytes": 238,
+    "sha256": "53028aca661ff9aa29ce41dd11ad758d4835c8d68e4b096befe3b60e93ff449a",
+    "http_matches_file": true
+  },
+  {
+    "path": "sample/geo-loader.js",
+    "bytes": 23865,
+    "sha256": "b4e9cfb8e8b0dfc505364609d8c8a825f403ccbe990d2bed1c33181f351792ca",
+    "http_matches_file": true
+  },
+  {
+    "path": "sample/sample-runtime.json.gz",
+    "bytes": 42069,
+    "sha256": "b573d98d44a6543cba7e72e7e61f184ef6ae91a7224f1e4e15423a34d4c241eb",
+    "http_matches_file": true
+  }
+]

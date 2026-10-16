@@ -1,0 +1,73 @@
+{
+  "acceptance": [
+    "Original test intentions retained; targeted HTTP and schema regressions fail original and pass corrected output.",
+    "Geometry simplification/fallback invariants unchanged; no relaxed tolerance or deleted source objects.",
+    "Parent full-source and browser validation remains required before adoption."
+  ],
+  "commands": [
+    "/tmp/amsterdam-d26-geo-tools-venv/bin/python -m unittest -v test_pack_geo.py",
+    "/tmp/amsterdam-d26-geo-tools-venv/bin/python pack_geo.py --input sample-input.json --json sample-runtime.json --gzip sample-runtime.json.gz --audit runtime-audit.json --tolerance 0.05",
+    "node --check geo-loader.js",
+    "node --test test-geo-loader.cjs"
+  ],
+  "constraints": [
+    "Only listed files plus reserved handoff-result.json are writable. Read supplied public material and own outputs only.",
+    "Only exact four Bash commands. Tests may bind ephemeral127.0.0.1 HTTP servers and fetch those; no external network or installs.",
+    "Use Edit for file modifications; do not list handoff-result.json in changed_files."
+  ],
+  "data_sensitivity": "public",
+  "goal": "D26 PACK01 one correction: actual HTTP decoding, strict schema and shared-boundary-safe real geometry packing",
+  "max_turns": 70,
+  "memory": {
+    "completed": [],
+    "decisions": [
+      "Coding Plan Seed Evolving thinking enabled/high",
+      "Keep source geometry and0.05m conservative simplification",
+      "Actual full JSON140520240B requires explicit192MiB load option in later integration"
+    ],
+    "known_issues": [
+      "Native fetch already decodes Content-Encoding gzip. Query-suffixed raw .gz fails current loader.",
+      "Malformed required schemas accepted in original code; strict validation must not reject structurally valid invalid-source fallback."
+    ],
+    "summary": "D26 human-authorized actual map work. PACK01 business rejected by parent despite passing fake-fetch tests. One correction available; prior failure history retained."
+  },
+  "read_files": [
+    "brief.md",
+    "geo-interface.md",
+    "sample-input.json",
+    "pack_geo.py",
+    "test_pack_geo.py",
+    "geo-loader.js",
+    "test-geo-loader.cjs",
+    "correction.md",
+    "parent-http-loader-check.cjs",
+    "parent-packer-schema-check.py",
+    "full-parent-metrics.json",
+    "real-pub-source.json",
+    "parent-shared-edge-failure.json"
+  ],
+  "task_id": "amsterdam-d26-runtime-pack-r2-20261017",
+  "tasks": [
+    "Read correction and original contract; preserve successful geometric behavior.",
+    "Correct loader handling of actual HTTP/body formats and required schema validation; add meaningful failure regressions.",
+    "Run four exact final commands and return a complete legal report."
+  ],
+  "telemetry": {
+    "attempt_kind": "correction",
+    "logical_task_id": "f02-geo-runtime-pack-d26",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "timeout_seconds": 2400,
+  "version": 1,
+  "workspace": "/tmp/amsterdam-d26-runtime-pack-r2-20261017/input",
+  "write_files": [
+    "pack_geo.py",
+    "test_pack_geo.py",
+    "geo-loader.js",
+    "test-geo-loader.cjs",
+    "sample-runtime.json",
+    "sample-runtime.json.gz",
+    "runtime-audit.json"
+  ]
+}

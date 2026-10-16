@@ -1,0 +1,111 @@
+{
+  "readMs": 3062.826708,
+  "buildMs": 489.6216250000002,
+  "anchors": {
+    "pub": {
+      "walk": true,
+      "bike": true
+    },
+    "market": {
+      "walk": true,
+      "bike": true
+    },
+    "coffee": {
+      "walk": true,
+      "bike": false
+    },
+    "flowers": {
+      "walk": true,
+      "bike": true
+    },
+    "lab": {
+      "walk": true,
+      "bike": true
+    },
+    "lotte": {
+      "walk": true,
+      "bike": true
+    },
+    "ferrySouth": {
+      "walk": true,
+      "bike": false
+    },
+    "ferryNorth": {
+      "walk": true,
+      "bike": false
+    },
+    "flowerCart": {
+      "walk": true,
+      "bike": false
+    },
+    "garden": {
+      "walk": true,
+      "bike": true
+    }
+  },
+  "to": "lotte",
+  "routeMs": 76.094333,
+  "route": {
+    "found": true,
+    "reason": "ok",
+    "points": [
+      {
+        "x": 1100.211,
+        "y": 3243.117
+      },
+      {
+        "x": 1084,
+        "y": 3248
+      },
+      {
+        "x": 1060,
+        "y": 3254
+      },
+      {
+        "x": 1056.057,
+        "y": 3247.41
+      }
+    ],
+    "length": 49.3486268404053,
+    "visited": 60,
+    "startSnap": null,
+    "endSnap": null
+  },
+  "stats": {
+    "options": {
+      "cellSize": 2,
+      "maxNodes": 250000,
+      "bucketSize": 64,
+      "radius": 0.4
+    },
+    "features": {
+      "water": 1805,
+      "buildings": 71463,
+      "roads": 70085,
+      "bridges": 2350,
+      "bridgeDeckFeatures": 697,
+      "ignoredNonDeckBridgeParts": 1653,
+      "polygonsIndexed": 147289
+    },
+    "buckets": 12017,
+    "globalPolygons": 46,
+    "passabilityCacheEntries": 138,
+    "cacheHits": 624,
+    "cacheMisses": 138,
+    "segmentChecks": 551,
+    "segmentCacheEntries": 195,
+    "segmentCacheHits": 356,
+    "searches": 1,
+    "snaps": 0,
+    "lastVisited": 60,
+    "totalExpanded": 60,
+    "lastReason": "ok"
+  },
+  "memory": {
+    "rss": 2579480576,
+    "heapTotal": 1855979520,
+    "heapUsed": 1813050768,
+    "external": 1297627,
+    "arrayBuffers": 10475
+  }
+}

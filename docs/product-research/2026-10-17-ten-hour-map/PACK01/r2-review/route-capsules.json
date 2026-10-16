@@ -1,0 +1,46 @@
+{
+  "basis": "Independent GEOS clearance for three segments from diagnostic NAV-R2 route, using 62 real features extracted from full PACK-R2 output. NAV-R2 remains rejected for other cases; not full-city routing/game acceptance.",
+  "route_length_m": 49.3486268404053,
+  "segments": [
+    {
+      "from": [
+        1100.211,
+        3243.117
+      ],
+      "to": [
+        1084,
+        3248
+      ],
+      "centreline_covered": true,
+      "min_clearance_m": 0.7364962783982035,
+      "radius_0_4_capsule_safe": true
+    },
+    {
+      "from": [
+        1084,
+        3248
+      ],
+      "to": [
+        1060,
+        3254
+      ],
+      "centreline_covered": true,
+      "min_clearance_m": 0.5995480650899757,
+      "radius_0_4_capsule_safe": true
+    },
+    {
+      "from": [
+        1060,
+        3254
+      ],
+      "to": [
+        1056.057,
+        3247.41
+      ],
+      "centreline_covered": true,
+      "min_clearance_m": 2.0042166747550167,
+      "radius_0_4_capsule_safe": true
+    }
+  ],
+  "all_safe": true
+}

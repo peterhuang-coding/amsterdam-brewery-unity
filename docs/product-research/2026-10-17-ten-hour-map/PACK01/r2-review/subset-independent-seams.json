@@ -1,0 +1,20 @@
+{
+  "features": 62,
+  "bbox_neighbor_pairs": 302,
+  "shared_seam_pairs": 132,
+  "layer_pairs": {
+    "bridges/roads": 9,
+    "bridges/water": 2,
+    "buildings/buildings": 21,
+    "buildings/roads": 27,
+    "roads/roads": 60,
+    "roads/water": 12,
+    "water/water": 1
+  },
+  "verification_buffer_metres": 1e-07,
+  "max_uncovered_seam_length_m": 0,
+  "lost_shared_seams": [],
+  "new_overlaps_on_shared_seams": [],
+  "geos_exceptions": [],
+  "seconds": 0.09811041702050716
+}

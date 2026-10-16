@@ -1,0 +1,17 @@
+[
+  {
+    "name": "two_distinct_vertices",
+    "rejected": true,
+    "error": "layer='water' feature_index=0 id='waterdeel:277b370a-8bc1-5b04-ab9d-322f74d46bed' polygon_index=0 ring=outer: closed ring needs at least 3 distinct finite vertices"
+  },
+  {
+    "name": "string_completeness",
+    "rejected": true,
+    "error": "source.complete must be a boolean, got str"
+  },
+  {
+    "name": "invalid_projection",
+    "rejected": true,
+    "error": "projection.type must be 'local-equirectangular', got 'wrong'"
+  }
+]

@@ -1,0 +1,148 @@
+TAP version 13
+# Subtest: real generated gzip loads through fake fetch (.gz url, one chunk)
+ok 1 - real generated gzip loads through fake fetch (.gz url, one chunk)
+  ---
+  duration_ms: 10.202709
+  type: 'test'
+  ...
+# Subtest: real generated gzip loads when split into tiny chunks
+ok 2 - real generated gzip loads when split into tiny chunks
+  ---
+  duration_ms: 31.622417
+  type: 'test'
+  ...
+# Subtest: content-encoding: gzip header triggers decompression for plain url
+ok 3 - content-encoding: gzip header triggers decompression for plain url
+  ---
+  duration_ms: 2.495584
+  type: 'test'
+  ...
+# Subtest: plain JSON asset loads when no gzip encoding or suffix
+ok 4 - plain JSON asset loads when no gzip encoding or suffix
+  ---
+  duration_ms: 0.765958
+  type: 'test'
+  ...
+# Subtest: HTTP error status rejects and names the status
+ok 5 - HTTP error status rejects and names the status
+  ---
+  duration_ms: 0.188042
+  type: 'test'
+  ...
+# Subtest: HTTP 404 without ok rejects
+ok 6 - HTTP 404 without ok rejects
+  ---
+  duration_ms: 0.046625
+  type: 'test'
+  ...
+# Subtest: garbage body at .gz url (no gzip magic) rejects as decode failure
+ok 7 - garbage body at .gz url (no gzip magic) rejects as decode failure
+  ---
+  duration_ms: 0.195625
+  type: 'test'
+  ...
+# Subtest: real gzip magic followed by corrupt payload rejects gzip decode
+ok 8 - real gzip magic followed by corrupt payload rejects gzip decode
+  ---
+  duration_ms: 1.004459
+  type: 'test'
+  ...
+# Subtest: garbage gzip body in tiny chunks still rejects (readers released)
+ok 9 - garbage gzip body in tiny chunks still rejects (readers released)
+  ---
+  duration_ms: 0.318125
+  type: 'test'
+  ...
+# Subtest: schema-invalid gzip payload rejects gracefully
+ok 10 - schema-invalid gzip payload rejects gracefully
+  ---
+  duration_ms: 0.797625
+  type: 'test'
+  ...
+# Subtest: malformed plain data rejects on schema
+ok 11 - malformed plain data rejects on schema
+  ---
+  duration_ms: 0.178459
+  type: 'test'
+  ...
+# Subtest: invalid JSON text rejects cleanly
+ok 12 - invalid JSON text rejects cleanly
+  ---
+  duration_ms: 0.08025
+  type: 'test'
+  ...
+# Subtest: feature with non-finite ring rejects schema validation
+ok 13 - feature with non-finite ring rejects schema validation
+  ---
+  duration_ms: 1.090916
+  type: 'test'
+  ...
+# Subtest: maxDecodedBytes bound rejects oversized decoded stream
+ok 14 - maxDecodedBytes bound rejects oversized decoded stream
+  ---
+  duration_ms: 5.972708
+  type: 'test'
+  ...
+# Subtest: invalid maxDecodedBytes and url reject without fetching
+ok 15 - invalid maxDecodedBytes and url reject without fetching
+  ---
+  duration_ms: 0.092166
+  type: 'test'
+  ...
+# Subtest: missing fetch implementation rejects
+ok 16 - missing fetch implementation rejects
+  ---
+  duration_ms: 0.585291
+  type: 'test'
+  ...
+# Subtest: UMD browser global identity and no auto-fetch on import
+ok 17 - UMD browser global identity and no auto-fetch on import
+  ---
+  duration_ms: 11.44675
+  type: 'test'
+  ...
+# Subtest: CommonJS export is the sole global form under Node
+ok 18 - CommonJS export is the sole global form under Node
+  ---
+  duration_ms: 0.053458
+  type: 'test'
+  ...
+# Subtest: repeated loads are independent and deterministic
+ok 19 - repeated loads are independent and deterministic
+  ---
+  duration_ms: 9.397083
+  type: 'test'
+  ...
+# Subtest: real HTTP: raw/query/hash .gz, pre-decoded content-encoding, split magic
+ok 20 - real HTTP: raw/query/hash .gz, pre-decoded content-encoding, split magic
+  ---
+  duration_ms: 44.909375
+  type: 'test'
+  ...
+# Subtest: strict schema regressions rejected with feature identity
+ok 21 - strict schema regressions rejected with feature identity
+  ---
+  duration_ms: 5.518583
+  type: 'test'
+  ...
+# Subtest: GEOS-invalid bowtie stays structurally valid (no category confusion)
+ok 22 - GEOS-invalid bowtie stays structurally valid (no category confusion)
+  ---
+  duration_ms: 1.039833
+  type: 'test'
+  ...
+# Subtest: malformed schema rejects through the full load path (real Response)
+ok 23 - malformed schema rejects through the full load path (real Response)
+  ---
+  duration_ms: 3.003166
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 192.529208

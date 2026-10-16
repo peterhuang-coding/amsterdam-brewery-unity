@@ -1,0 +1,29 @@
+{
+  "case": "default128",
+  "url": "/full/runtime.json.gz?check=r2",
+  "capMiB": null,
+  "loaded": false,
+  "error": "geo-loader: decoded size 134266020 bytes exceeds maxDecodedBytes 134217728",
+  "ms": 211.70000004768372,
+  "maxObservedEventLoopGapMs": 38.5,
+  "observedLongTasksMs": [],
+  "heap": {
+    "used": 153727501,
+    "total": 155430349,
+    "limit": 4395630592
+  },
+  "resources": [
+    {
+      "name": "http://127.0.0.1:18863/sample/geo-loader.js",
+      "transferSize": 24165,
+      "encodedBodySize": 23865,
+      "decodedBodySize": 23865
+    },
+    {
+      "name": "http://127.0.0.1:18863/full/runtime.json.gz?check=r2",
+      "transferSize": 300,
+      "encodedBodySize": 0,
+      "decodedBodySize": 0
+    }
+  ]
+}

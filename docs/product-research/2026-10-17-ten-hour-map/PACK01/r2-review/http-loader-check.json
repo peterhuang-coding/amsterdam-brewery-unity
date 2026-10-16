@@ -1,0 +1,44 @@
+[
+  {
+    "url": "/raw.gz",
+    "expected": "load the valid generated sample",
+    "ok": true,
+    "ms": 33.91487500000001
+  },
+  {
+    "url": "/raw.gz?commit=parent",
+    "expected": "load the valid generated sample",
+    "ok": true,
+    "ms": 3.5517499999999984
+  },
+  {
+    "url": "/encoded.json",
+    "expected": "load the valid generated sample",
+    "ok": true,
+    "ms": 3.8115000000000094
+  },
+  {
+    "url": "/encoded.gz",
+    "expected": "load the valid generated sample",
+    "ok": true,
+    "ms": 3.3171250000000043
+  },
+  {
+    "name": "unclosed_ring",
+    "expected": "reject malformed frozen schema",
+    "rejected": true,
+    "error": "geo-loader: feature 'waterdeel:277b370a-8bc1-5b04-ab9d-322f74d46bed' polygon 0 outer ring is not exactly closed (first != last)"
+  },
+  {
+    "name": "empty_polygons",
+    "expected": "reject malformed frozen schema",
+    "rejected": true,
+    "error": "geo-loader: feature 'waterdeel:277b370a-8bc1-5b04-ab9d-322f74d46bed' polygons must be a non-empty array"
+  },
+  {
+    "name": "string_completeness",
+    "expected": "reject malformed frozen schema",
+    "rejected": true,
+    "error": "geo-loader: source.complete must be a boolean, got string"
+  }
+]

@@ -1,0 +1,44 @@
+{
+  "case": "raw512",
+  "url": "/full/runtime.json.gz?check=r2#raw",
+  "capMiB": 512,
+  "loaded": true,
+  "counts": {
+    "bridges": 2350,
+    "buildings": 71463,
+    "roads": 70085,
+    "water": 1805
+  },
+  "complete": true,
+  "limitations": [
+    "Completeness covers only the listed manifest bbox and the 585 listed collection input page(s); any other bbox, area or collection is outside this completeness claim.",
+    "Source geometry intersecting the request bbox is retained whole and unclipped; polygons may extend outside the request bbox and the renderer is expected to clip them.",
+    "Derivative asset: Shapely/GEOS Douglas-Peucker simplification with preserve_topology=True at tolerance 0.05 metres (0 means geometrically unchanged); coordinates stay in projected metres and are not re-rounded.",
+    "Shared seam vertices are locked across neighbouring polygons (including holes and multi-polygon components) so original shared borders are retained exactly without buffering, enlargement or new connection lines; when seam safety cannot be proved the feature stays unchanged.",
+    "Shared-boundary locking does not establish inter-feature network continuity; parents must independently test routes."
+  ],
+  "ms": 7426.800000071526,
+  "maxObservedEventLoopGapMs": 6888.799999952316,
+  "observedLongTasksMs": [
+    6887
+  ],
+  "heap": {
+    "used": 2487716480,
+    "total": 2555685524,
+    "limit": 4395630592
+  },
+  "resources": [
+    {
+      "name": "http://127.0.0.1:18863/sample/geo-loader.js",
+      "transferSize": 24165,
+      "encodedBodySize": 23865,
+      "decodedBodySize": 23865
+    },
+    {
+      "name": "http://127.0.0.1:18863/full/runtime.json.gz?check=r2#raw",
+      "transferSize": 101347449,
+      "encodedBodySize": 101347149,
+      "decodedBodySize": 101347149
+    }
+  ]
+}

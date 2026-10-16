@@ -1,0 +1,22 @@
+[
+  {
+    "command": "/tmp/amsterdam-d26-geo-tools-venv/bin/python -m unittest -v test_pack_geo.py",
+    "exit_code": 0,
+    "seconds": 0.65981925
+  },
+  {
+    "command": "/tmp/amsterdam-d26-geo-tools-venv/bin/python pack_geo.py --input sample-input.json --json sample-runtime.json --gzip sample-runtime.json.gz --audit runtime-audit.json --tolerance 0.05",
+    "exit_code": 0,
+    "seconds": 0.14445991599999997
+  },
+  {
+    "command": "node --check geo-loader.js",
+    "exit_code": 0,
+    "seconds": 0.07826533300000005
+  },
+  {
+    "command": "node --test test-geo-loader.cjs",
+    "exit_code": 0,
+    "seconds": 0.2538194589999999
+  }
+]

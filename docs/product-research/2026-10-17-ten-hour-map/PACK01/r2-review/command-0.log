@@ -1,0 +1,54 @@
+test_curved_ring_simplified_within_measured_error (test_pack_geo.DenseRingTests.test_curved_ring_simplified_within_measured_error) ... ok
+test_gzip_bytes_deterministic_and_lossless (test_pack_geo.DeterminismTests.test_gzip_bytes_deterministic_and_lossless) ... ok
+test_json_bytes_deterministic_and_compact_sorted (test_pack_geo.DeterminismTests.test_json_bytes_deterministic_and_compact_sorted) ... ok
+test_repacked_limitations_are_not_duplicated (test_pack_geo.DeterminismTests.test_repacked_limitations_are_not_duplicated) ... ok
+test_empty_layers_pack_cleanly (test_pack_geo.EmptyLayersTests.test_empty_layers_pack_cleanly) ... ok
+test_bounds_recomputed_accurately (test_pack_geo.IdentityPreservationTests.test_bounds_recomputed_accurately) ... ok
+test_ids_properties_order_and_cardinality_preserved (test_pack_geo.IdentityPreservationTests.test_ids_properties_order_and_cardinality_preserved) ... ok
+test_schema_projection_and_completeness_preserved (test_pack_geo.IdentityPreservationTests.test_schema_projection_and_completeness_preserved) ... ok
+test_simplified_coordinates_are_subset_of_input (test_pack_geo.IdentityPreservationTests.test_simplified_coordinates_are_subset_of_input)
+DP selects existing vertices: no fabricated/rounded points. ... ok
+test_bowtie_falls_back_unchanged_without_repair (test_pack_geo.InvalidOriginalTests.test_bowtie_falls_back_unchanged_without_repair) ... ok
+test_invalid_polygon_alongside_valid_feature_isolated (test_pack_geo.InvalidOriginalTests.test_invalid_polygon_alongside_valid_feature_isolated) ... ok
+test_infinity_coordinate_rejected_with_feature_id (test_pack_geo.MalformedInputTests.test_infinity_coordinate_rejected_with_feature_id) ... ok
+test_malformed_coordinate_pair_rejected (test_pack_geo.MalformedInputTests.test_malformed_coordinate_pair_rejected) ... ok
+test_missing_id_rejected (test_pack_geo.MalformedInputTests.test_missing_id_rejected) ... ok
+test_missing_layer_rejected (test_pack_geo.MalformedInputTests.test_missing_layer_rejected) ... ok
+test_nan_coordinate_rejected_with_feature_id (test_pack_geo.MalformedInputTests.test_nan_coordinate_rejected_with_feature_id) ... ok
+test_unclosed_ring_rejected (test_pack_geo.MalformedInputTests.test_unclosed_ring_rejected) ... ok
+test_cli_end_to_end_on_real_sample (test_pack_geo.RealSampleTests.test_cli_end_to_end_on_real_sample) ... ok
+test_cli_rejects_bad_tolerance (test_pack_geo.RealSampleTests.test_cli_rejects_bad_tolerance) ... ok
+test_cli_rejects_malformed_file_with_feature_id (test_pack_geo.RealSampleTests.test_cli_rejects_malformed_file_with_feature_id) ... ok
+test_preservation_and_measured_error_on_real_sample (test_pack_geo.RealSampleTests.test_preservation_and_measured_error_on_real_sample) ... ok
+test_sample_is_the_real_non_empty_53_feature_subset (test_pack_geo.RealSampleTests.test_sample_is_the_real_non_empty_53_feature_subset) ... ok
+test_all_62_features_and_cardinality_retained (test_pack_geo.RealSharedBoundaryRegressionTests.test_all_62_features_and_cardinality_retained) ... ok
+test_max_hausdorff_still_within_tolerance (test_pack_geo.RealSharedBoundaryRegressionTests.test_max_hausdorff_still_within_tolerance) ... ok
+test_no_new_overlaps_open_across_real_gaps (test_pack_geo.RealSharedBoundaryRegressionTests.test_no_new_overlaps_open_across_real_gaps) ... ok
+test_original_touching_pairs_remain_touching_with_exact_seams (test_pack_geo.RealSharedBoundaryRegressionTests.test_original_touching_pairs_remain_touching_with_exact_seams) ... ok
+test_parent_evidence_adjacencies_are_restored (test_pack_geo.RealSharedBoundaryRegressionTests.test_parent_evidence_adjacencies_are_restored) ... ok
+test_seams_were_detected_and_locked (test_pack_geo.RealSharedBoundaryRegressionTests.test_seams_were_detected_and_locked) ... ok
+test_real_gap_between_disjoint_polygons_is_not_buffered_away (test_pack_geo.SharedBoundarySyntheticTests.test_real_gap_between_disjoint_polygons_is_not_buffered_away) ... ok
+test_shared_seam_is_locked_exactly_on_both_sides (test_pack_geo.SharedBoundarySyntheticTests.test_shared_seam_is_locked_exactly_on_both_sides) ... ok
+test_boolean_complete_true_is_accepted_and_preserved (test_pack_geo.StrictSchemaTests.test_boolean_complete_true_is_accepted_and_preserved) ... ok
+test_bounds_required_and_ordered (test_pack_geo.StrictSchemaTests.test_bounds_required_and_ordered) ... ok
+test_localId_must_be_string_or_null (test_pack_geo.StrictSchemaTests.test_localId_must_be_string_or_null) ... ok
+test_malformed_source_input_rejected (test_pack_geo.StrictSchemaTests.test_malformed_source_input_rejected) ... ok
+test_misordered_bbox_rejected (test_pack_geo.StrictSchemaTests.test_misordered_bbox_rejected) ... ok
+test_missing_projection_field_rejected (test_pack_geo.StrictSchemaTests.test_missing_projection_field_rejected) ... ok
+test_missing_required_source_field_rejected (test_pack_geo.StrictSchemaTests.test_missing_required_source_field_rejected) ... ok
+test_non_positive_dimensions_rejected (test_pack_geo.StrictSchemaTests.test_non_positive_dimensions_rejected) ... ok
+test_ring_with_two_distinct_vertices_rejected (test_pack_geo.StrictSchemaTests.test_ring_with_two_distinct_vertices_rejected) ... ok
+test_sourceId_required (test_pack_geo.StrictSchemaTests.test_sourceId_required) ... ok
+test_string_completeness_rejected (test_pack_geo.StrictSchemaTests.test_string_completeness_rejected) ... ok
+test_structurally_valid_bowtie_is_not_a_schema_error (test_pack_geo.StrictSchemaTests.test_structurally_valid_bowtie_is_not_a_schema_error) ... ok
+test_wrong_projection_type_rejected (test_pack_geo.StrictSchemaTests.test_wrong_projection_type_rejected) ... ok
+test_thin_bridge_deck_polygon_preserved (test_pack_geo.ThinGeometryTests.test_thin_bridge_deck_polygon_preserved) ... ok
+test_thin_hole_is_never_dropped (test_pack_geo.ThinGeometryTests.test_thin_hole_is_never_dropped) ... ok
+test_invalid_tolerances (test_pack_geo.ToleranceTests.test_invalid_tolerances) ... ok
+test_valid_tolerances (test_pack_geo.ToleranceTests.test_valid_tolerances) ... ok
+test_tolerance_zero_is_geometrically_unchanged (test_pack_geo.ToleranceZeroTests.test_tolerance_zero_is_geometrically_unchanged) ... ok
+
+----------------------------------------------------------------------
+Ran 48 tests in 0.443s
+
+OK

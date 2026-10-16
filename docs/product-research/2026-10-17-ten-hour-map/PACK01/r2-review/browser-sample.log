@@ -1,0 +1,8 @@
+### Result
+{"rows":[{"url":"/sample/sample-runtime.json.gz?commit=r2#test","ok":true,"counts":{"bridges":6,"buildings":16,"roads":27,"water":4},"ms":10.899999976158142},{"url":"/encoded-sample.json","ok":true,"counts":{"bridges":6,"buildings":16,"roads":27,"water":4},"ms":2.799999952316284},{"url":"/encoded-sample.gz","ok":true,"counts":{"bridges":6,"buildings":16,"roads":27,"water":4},"ms":1.7000000476837158}],"userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36"}
+### Ran Playwright code
+```js
+await (async (page) => {return await page.evaluate(async()=>{const rows=[];for(const url of ['/sample/sample-runtime.json.gz?commit=r2#test','/encoded-sample.json','/encoded-sample.gz']){const t=performance.now();try{const d=await AmsterdamGeoLoader.load(url);rows.push({url,ok:true,counts:Object.fromEntries(Object.entries(d.layers).map(([k,v])=>[k,v.length])),ms:performance.now()-t});}catch(e){rows.push({url,ok:false,error:e.message});}}document.querySelector('#results').textContent=JSON.stringify(rows,null,2);return {rows,userAgent:navigator.userAgent};});})(page);
+```
+### Events
+- New console entries: .playwright-cli/console-2026-10-16T19-13-06-942Z.log#L1

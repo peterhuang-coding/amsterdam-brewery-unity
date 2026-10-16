@@ -1,0 +1,6 @@
+{
+  "pid": 71467,
+  "observed_command": "node /tmp/amsterdam-d26-pack-r2-parent-20261017/server.cjs",
+  "expected_script": "/tmp/amsterdam-d26-pack-r2-parent-20261017/server.cjs",
+  "terminated_owned_server": true
+}

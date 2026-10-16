@@ -1,0 +1,30 @@
+progress 0 0 0 15.973119208938442
+progress 50000 0 9 31.277868667035364
+progress 100000 0 9 47.32692408398725
+progress 150000 0 10 74.31598829198629
+progress 200000 0 11 117.65774295898154
+progress 250000 0 11 160.37110833392944
+{
+  "features": 145703,
+  "bbox_neighbor_pairs": 843220,
+  "shared_seam_pairs": 284123,
+  "layer_pairs": {
+    "bridges/roads": 3196,
+    "bridges/water": 1172,
+    "bridges/bridges": 185,
+    "bridges/buildings": 165,
+    "buildings/roads": 66165,
+    "buildings/buildings": 66747,
+    "buildings/water": 750,
+    "roads/roads": 139053,
+    "roads/water": 4930,
+    "water/water": 1760
+  },
+  "verification_buffer_metres": 1e-07,
+  "max_uncovered_seam_length_m": 0,
+  "lost_shared_seams": 0,
+  "new_overlaps_on_shared_seams": 11,
+  "source_geos_exceptions": 0,
+  "output_geos_exceptions": 0,
+  "seconds": 187.64337370893918
+}

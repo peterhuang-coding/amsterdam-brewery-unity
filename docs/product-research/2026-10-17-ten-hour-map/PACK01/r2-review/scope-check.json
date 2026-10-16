@@ -1,0 +1,96 @@
+{
+  "finished_at": "2026-10-16T19:04:01.253801+00:00",
+  "elapsed_seconds": 2235.329,
+  "cli_returncode": 0,
+  "is_error": false,
+  "report_valid": true,
+  "tool_counts": {
+    "Read": 29,
+    "Bash": 6,
+    "Edit": 29
+  },
+  "extra_bash_attempts": 1,
+  "permission_denials": [],
+  "disallowed_changes": [],
+  "input_sha": [
+    {
+      "file": "brief.md",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "correction.md",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "full-parent-metrics.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "geo-interface.md",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "geo-loader.js",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": false
+    },
+    {
+      "file": "pack_geo.py",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": false
+    },
+    {
+      "file": "parent-http-loader-check.cjs",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "parent-packer-schema-check.py",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "parent-shared-edge-failure.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "real-pub-source.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "sample-input.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "test-geo-loader.cjs",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": false
+    },
+    {
+      "file": "test_pack_geo.py",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": false
+    }
+  ],
+  "path_violations": []
+}

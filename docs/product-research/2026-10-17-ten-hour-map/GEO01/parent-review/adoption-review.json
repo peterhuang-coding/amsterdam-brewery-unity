@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-d26-bgt-import-20261017",
+  "receipt_sha256": "bb36ff2fa55cbf2aff83304e5bffb7b618c2d55d6c96afe34270ba2e69babc02",
+  "reviewed_at": "2026-10-16T16:45:13Z",
+  "outcome": "rejected",
+  "failure_type": "semantic",
+  "evidence": [
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/GEO01/parent-review/parent-review.md",
+      "sha256": "e84d6ec756797217f010c4e7f8cab80ff33dacc8dd01d2027ac64871b2c86b03"
+    }
+  ]
+}

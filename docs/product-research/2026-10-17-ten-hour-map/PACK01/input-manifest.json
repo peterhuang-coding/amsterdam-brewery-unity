@@ -1,0 +1,17 @@
+[
+  {
+    "file": "brief.md",
+    "bytes": 4788,
+    "sha256": "794e5466e368070900224b2ba16f96e77983e43c0b1d9d1968f39d926e6cb82e"
+  },
+  {
+    "file": "geo-interface.md",
+    "bytes": 6525,
+    "sha256": "35e5148f8f6ef04c3b379f268f7ca9faf806e7a0b17275d7717a15373fbed0af"
+  },
+  {
+    "file": "sample-input.json",
+    "bytes": 229408,
+    "sha256": "82d99e326853a1db63670179b0cb5c34f410347c6b7704d63b28fa525167397a"
+  }
+]

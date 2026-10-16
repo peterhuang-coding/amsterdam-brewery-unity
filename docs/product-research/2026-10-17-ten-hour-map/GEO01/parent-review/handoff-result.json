@@ -1,0 +1,45 @@
+{
+  "status": "completed",
+  "summary": "Implemented stdlib-only import_bgt.py per frozen geo-interface v1: validates manifest bbox/snapshot, per-file sha256 and BGT collection identity (self link), maps only waterdeel/pand/wegdeel/overbruggingsdeel, supports Polygon/MultiPolygon with holes, rejects nonfinite/malformed/non-closed/degenerate rings and unsupported geometry with feature IDs, applies creation_date/termination_date validity at the 2026-10-16 snapshot (null dates respected, invalid dates excluded not repaired), dedups byte-identical repeated page features, hard-errors on conflicting same-id versions or same-lokaal_id current versions, projects to local equirectangular metres rounded to 3 decimals without clamping crossing geometry, and emits deterministic sorted geo-data.json plus a no-dependency UMD geo-data.js (globalThis.AmsterdamGeoData / module.exports) and import-audit.json with counts, shas, bbox, per-layer rings/vertices/extents and explicit complete:false limitations. Python convert(manifest,base_dir) API covered by 37 unittest cases over the real 18-feature sample pages (3/5/5/5, bytes 67729/7106/23180/19984 matching sample-properties.md; real water polygons genuinely contain holes: 7 rings over 3 polygons) plus synthetic fixtures for holes, MultiPolygons, dedup, conflicts, history, bad dates, tampered SHA, unknown layer and malformed geometry. Early RED preserved: first unittest run failed 1/37 (test_crossing_boundary_geometry_is_retained_unclipped used an incorrect expectation comparing a small edge-straddling polygon against 90% of city width); the test assertion was corrected to verify the polygon is retained on both sides of the bbox edges, after which all 37 passed; no converter change was needed for that failure. Node suite (9 tests) verifies wrapper/JSON deep identity, UMD globals, exact schema/projection math, source SHA/count traceability, finite closed rings, bounds consistency and deterministic id ordering. This is source conversion code for incomplete first API pages, not a complete city map or game integration; no out-of-scope files were modified.",
+  "changed_files": [
+    "import_bgt.py",
+    "test_bgt_import.py",
+    "test_geo_data.cjs",
+    "geo-data.json",
+    "geo-data.js",
+    "import-audit.json"
+  ],
+  "tests": [
+    {
+      "command": "python3 -m unittest -v test_bgt_import.py",
+      "exit_code": 0,
+      "summary": "Ran 37 tests in 0.037s, OK. Real-sample tests verify counts 3/5/5/5 (18 features), SHA/collection verification, known building UUID traceability, independent projection formula on a known coordinate, closed finite 3-decimal rings, audit counts and byte-deterministic reruns; synthetic tests cover holes, MultiPolygon, unclipped crossing geometry, unsupported/malformed geometry, 3D position rejection, page dedup, conflicting ids and lokaal_ids, historical-version exclusion, snapshot date rules, tampered SHA, collection mismatch, unknown layer, invalid bbox, property selection, sorting and CLI exit codes. Earlier run in this execution had 1 failing assertion (crossing-boundary test expectation), corrected before the final run."
+    },
+    {
+      "command": "python3 import_bgt.py --manifest source-manifest.json --json geo-data.json --js geo-data.js --audit import-audit.json",
+      "exit_code": 0,
+      "summary": "No output; generated geo-data.json, geo-data.js and import-audit.json. Audit: inputFeatures 18, exclusions [], duplicates 0, outputFeatures 18; per layer features/polygons/rings/vertices water 3/3/7/1665, buildings 5/5/5/50, roads 5/5/5/394, bridges 5/5/5/334; width 7127.775 m, height 6671.705 m, referenceLat 52.375; all four input shas verified against the manifest and byte sizes match sample-properties.md; complete stays false with explicit incomplete-page limitation."
+    },
+    {
+      "command": "node --check geo-data.js",
+      "exit_code": 0,
+      "summary": "Syntax check of the generated UMD wrapper passed with no output."
+    },
+    {
+      "command": "node --test test_geo_data.cjs",
+      "exit_code": 0,
+      "summary": "9/9 node:test cases passed: required wrapper deep-identical to geo-data.json, globalThis.AmsterdamGeoData/module.exports UMD identity with no require() dependencies, exact top-level schema and independent projection/width/height math, source metadata and 64-hex shas for the four inputs, exact real counts 3/5/5/5 with complete:false, traceable collection-prefixed UUID ids for every feature, closed finite rings with >=3 distinct points and recomputed bounds, known building/bridge-dek/parkeervlak/waterloop source properties, deterministic source-id ordering, and NaN/Infinity-free JSON round-trip."
+    }
+  ],
+  "blockers": [],
+  "memory_delta": [
+    "Actual BGT water samples contain genuine polygon holes (3 water features, 7 rings total), so hole preservation is exercised on real data, not only synthetic fixtures.",
+    "Real first-page byte sizes and counts exactly match sample-properties.md (water 67729B/3, buildings 7106B/5, roads 23180B/5, bridges 19984B/5); every page has a next link and the converter verifies collection via the self link href.",
+    "Full target bbox projects to roughly 7127.8 m x 6671.7 m at referenceLat 52.375 with radius 6371008.8 m; sample extents occupy only a small area around lon 4.88-4.89, confirming the outputs must not be read as city-wide coverage."
+  ],
+  "next_steps": [
+    "Parent reruns the exact accepted CLI with the same manifest schema on full BGT API pages (and independently verifies SHAs/source provenance, since the executor had no network).",
+    "Parent reviews the converted full map and anchor/snap realism before any adoption; the separate navigation package (project/unproject/pointInPolygon/createNavigator) remains an independent implementation under the frozen interface.",
+    "Game integration, UI/save migration and ferry transit remain later dependent packages; dad6b38 play/save stays untouched and this package changes no game or source files."
+  ]
+}

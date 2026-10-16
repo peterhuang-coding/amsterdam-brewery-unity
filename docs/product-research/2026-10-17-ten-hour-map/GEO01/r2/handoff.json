@@ -1,0 +1,71 @@
+{
+  "acceptance": [
+    "All exact final commands exit0 with meaningful geometric regression coverage.",
+    "Shared schema and interfaces exact; no game/source modifications; no fabricated geographic or performance claims.",
+    "Complete valid handoff report; parent will independently verify before adoption."
+  ],
+  "commands": [
+    "python3 -m unittest -v test_bgt_import.py",
+    "python3 import_bgt.py --manifest source-manifest.json --json geo-data.json --js geo-data.js --audit import-audit.json",
+    "node --check geo-data.js",
+    "node --test test_geo_data.cjs"
+  ],
+  "constraints": [
+    "Read only supplied public/synthetic inputs; edit only listed outputs plus reserved handoff-result.json.",
+    "Bash only exact listed commands; no extra discovery commands, network, dependencies, credentials, subagents or git.",
+    "Never put reserved handoff-result.json in changed_files. Report test rows describe final runs; earlier RED belongs in summary."
+  ],
+  "data_sensitivity": "public",
+  "goal": "D26 GEO01 one targeted correction: truthful strict completeness metadata, preserve geometry",
+  "max_turns": 40,
+  "memory": {
+    "completed": [],
+    "decisions": [
+      "Coding Plan Seed Evolving thinking enabled/high",
+      "Fixed schema shared by two independent packages",
+      "No claim of full-city 1:1 or player fun"
+    ],
+    "known_issues": [
+      "Parent rejects hardcoded incomplete sample limitations on complete=true and nonboolean complete coercion.",
+      "Original full conversion was structurally successful; do not rewrite."
+    ],
+    "summary": "D26 explicitly authorizes renewed map implementation after earlier failed SVG designs. This is one bounded new implementation package; old failures are not reset. Game remains dad6b38 until independent parent adoption."
+  },
+  "read_files": [
+    "geo-interface.md",
+    "brief.md",
+    "source-manifest.json",
+    "sample-properties.md",
+    "samples/water.json",
+    "samples/buildings.json",
+    "samples/roads.json",
+    "samples/bridges.json",
+    "import_bgt.py",
+    "test_bgt_import.py",
+    "test_geo_data.cjs",
+    "correction.md"
+  ],
+  "task_id": "amsterdam-d26-bgt-import-r2-20261017",
+  "tasks": [
+    "Read correction.md and existing code/tests. Repair only completeness metadata/type handling with targeted tests.",
+    "Run the four exact commands; preserve existing geometry and input SHA.",
+    "Produce a valid final handoff-result.json with final results and prior failures separated."
+  ],
+  "telemetry": {
+    "attempt_kind": "correction",
+    "logical_task_id": "f02-real-geodata-import-d26",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "timeout_seconds": 1200,
+  "version": 1,
+  "workspace": "/tmp/amsterdam-d26-bgt-import-r2-20261017/input",
+  "write_files": [
+    "import_bgt.py",
+    "test_bgt_import.py",
+    "test_geo_data.cjs",
+    "geo-data.json",
+    "geo-data.js",
+    "import-audit.json"
+  ]
+}

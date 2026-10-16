@@ -1,0 +1,5 @@
+{
+  "input_complete": "false",
+  "actual_output_complete": true,
+  "expected": "BgtImportError for nonboolean complete"
+}

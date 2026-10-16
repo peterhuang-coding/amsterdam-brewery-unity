@@ -1,0 +1,35 @@
+{
+  "bbox": [
+    4.865,
+    52.345,
+    4.97,
+    52.405
+  ],
+  "snapshot": "2026-10-16T00:00:00Z",
+  "complete": false,
+  "provider": "Kadaster / PDOK BGT",
+  "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/",
+  "license": "CC0-1.0",
+  "inputs": [
+    {
+      "file": "samples/water.json",
+      "collection": "waterdeel",
+      "sha256": "24b409fc7ae427c09912fe69db66e3ac2737d3f884cd8598b4d1af565d39d79d"
+    },
+    {
+      "file": "samples/buildings.json",
+      "collection": "pand",
+      "sha256": "867ff90cf8e32f4fadbd5534aae722a753cf3d2cc339e3d0860032a5e314c385"
+    },
+    {
+      "file": "samples/roads.json",
+      "collection": "wegdeel",
+      "sha256": "be1f1448c760eea6e9d7caf63f091a3f968269692e567c37520c5e61630144de"
+    },
+    {
+      "file": "samples/bridges.json",
+      "collection": "overbruggingsdeel",
+      "sha256": "5bd619a6c8a64daa890062a9370f90cacecc416e3d3c572a3cc8f3de69998faf"
+    }
+  ]
+}

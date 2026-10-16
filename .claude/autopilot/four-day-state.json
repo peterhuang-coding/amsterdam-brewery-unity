@@ -626,7 +626,7 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-16T16:41:49.384698+00:00",
+  "updated_at": "2026-10-16T16:48:47.447908+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
   "last_checked_at": "2026-10-16T16:41:49.384698+00:00",
@@ -650,7 +650,8 @@
     "plan_dispatch_count": 2,
     "game_adopted": 0,
     "source_download_complete": true,
-    "source_download_finished_at": "2026-10-16T16:38:18.837886Z"
+    "source_download_finished_at": "2026-10-16T16:38:18.837886Z",
+    "geo01_business_review": "rejected/semantic: completeness metadata/type, full geometry preserved"
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",
@@ -660,26 +661,25 @@
     "before_NAV01_bare_pids": [],
     "actual_process_overlap_not_claimed": true
   },
-  "prepared_tasks": [],
-  "awaiting_parent_review": [
+  "prepared_tasks": [
     {
-      "id": "amsterdam-d26-bgt-import-20261017",
-      "label": "GEO01",
+      "id": "amsterdam-d26-bgt-import-r2-20261017",
+      "label": "GEO01-R2",
       "logical_task_id": "f02-real-geodata-import-d26",
-      "notion_page": "https://app.notion.com/p/3fb3285284df8124bc6aee0fe070111b",
-      "submitted_at": "2026-10-16T16:22:42Z",
-      "launcher_pid": 52110,
-      "worker_pid": 52111,
-      "outer_session_id": 82351,
-      "business_attempts_submitted": 1,
-      "corrections_allowed": 1,
-      "corrections_submitted": 0,
-      "contract_commit": "a9ee9cab04c71e030cc2d75f27f203c03c60d3e5",
-      "state": "returned_parent_review",
-      "finished_at": "2026-10-16T16:37:29.753776Z",
-      "result_status": "verifying",
-      "sample_parent_tests": "37 Python + 9 Node pass; complete-source parent run pending",
-      "adopted": false
+      "attempt_kind": "correction",
+      "submitted": false,
+      "blocked_until": "NAV01 first-wave returned and reviewed",
+      "input_dir": "/tmp/amsterdam-d26-bgt-import-r2-20261017/input"
+    },
+    {
+      "id": "amsterdam-d26-runtime-pack-20261017",
+      "label": "PACK01",
+      "logical_task_id": "f02-geo-runtime-pack-d26",
+      "attempt_kind": "business",
+      "submitted": false,
+      "blocked_until": "NAV01 first-wave returned and reviewed",
+      "input_dir": "/tmp/amsterdam-d26-runtime-pack-20261017/input"
     }
-  ]
+  ],
+  "awaiting_parent_review": []
 }

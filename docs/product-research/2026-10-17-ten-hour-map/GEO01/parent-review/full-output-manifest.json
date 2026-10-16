@@ -1,0 +1,12 @@
+[
+  {
+    "path": "/tmp/amsterdam-d26-geo-parent-20261017/full/geo-data.json",
+    "bytes": 514313101,
+    "sha256": "461dd086ac06755055793837ccc63251d04ecee87842acecf1dbf5b793dcce6a"
+  },
+  {
+    "path": "/tmp/amsterdam-d26-geo-parent-20261017/full/geo-data.js",
+    "bytes": 514313580,
+    "sha256": "d896c1e2ede8c77a3a759a9888938c34aef8349522fb65e6ed528bf7c7dcf701"
+  }
+]

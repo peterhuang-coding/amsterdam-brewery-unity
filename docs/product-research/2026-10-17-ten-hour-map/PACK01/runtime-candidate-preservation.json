@@ -1,0 +1,37 @@
+{
+  "preserved_at": "2026-10-16T17:52:10.997622+00:00",
+  "status": "Parent full-data artifact only; PACK01 whole package rejected, loader/schema correction pending. Not adopted into game.",
+  "source_commit": "3c9bb0e15dc3d7ce3f33d96aaf2873cddf0d43d1",
+  "artifacts": [
+    {
+      "file": "runtime.json",
+      "bytes": 140520240,
+      "sha256": "601e6df96c5575ac9fa1243d47be263de6048319558f0998cff599956c371a46"
+    },
+    {
+      "file": "runtime.json.gz",
+      "bytes": 36376205,
+      "sha256": "c0611dae04bcf109d76f46f295f2f8f92237b88cf2a64421a41bff508dfacde9"
+    },
+    {
+      "file": "runtime-audit.json",
+      "bytes": 104583,
+      "sha256": "aef379807c6015edcccb1c57658a41bc6f58abbcad1c585be0498508370097e6"
+    },
+    {
+      "file": "independent-geometry-check.json",
+      "bytes": 443,
+      "sha256": "45cc88d708ff488772d198d2311c397ee4462df2b13fd922c4649ddc71d780ec"
+    },
+    {
+      "file": "loader-check.json",
+      "bytes": 726,
+      "sha256": "ada13f3cb55e255b6656356d47e005d4de2cc6424c663682c4444cf7ece5ecc2"
+    },
+    {
+      "file": "run.json",
+      "bytes": 563,
+      "sha256": "9f5f54cfe6d7767b8a4b89c2650893ced778fb6fd74337baebff576059bdb800"
+    }
+  ]
+}

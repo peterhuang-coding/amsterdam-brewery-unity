@@ -1,0 +1,37 @@
+{
+  "checked_at": "2026-10-16T17:51:42.862310+00:00",
+  "input_sha256": "601e6df96c5575ac9fa1243d47be263de6048319558f0998cff599956c371a46",
+  "road_functions": {
+    "parkeervlak": 17906,
+    "voetpad": 26748,
+    "fietspad": 4500,
+    "rijbaan lokale weg": 12697,
+    "inrit": 3188,
+    "OV-baan": 974,
+    "voetpad op trap": 1688,
+    "rijbaan regionale weg": 1074,
+    "voetgangersgebied": 452,
+    "spoorbaan": 380,
+    "overweg": 187,
+    "woonerf": 68,
+    "rijbaan autosnelweg": 138,
+    "rijbaan autoweg": 84,
+    "baan voor vliegverkeer": 1
+  },
+  "road_height": {
+    "0": 67470,
+    "1": 2454,
+    "2": 95,
+    "-1": 50,
+    "3": 2,
+    "-3": 2,
+    "-2": 12
+  },
+  "bridge_types": {
+    "dek": 697,
+    "pijler": 1372,
+    "None": 250,
+    "landhoofd": 31
+  },
+  "note": "Full observed source spells motorway functions rijbaan autosnelweg and rijbaan autoweg. Original contract named bare autosnelweg/autoweg. Check finished NAV against these actual source names; never mutate in-flight inputs or conceal source-contract mismatch. Geometry retention is separate from navigation surface eligibility."
+}

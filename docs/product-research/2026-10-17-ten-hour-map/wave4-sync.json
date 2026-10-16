@@ -1,0 +1,25 @@
+{
+  "recorded_at": "2026-10-16T18:37:34.361280+00:00",
+  "dispatch_commit": "d15bade159c863546be8c3305639398ffa38f0a3",
+  "remote_verified": true,
+  "game_commit": "3c9bb0e15dc3d7ce3f33d96aaf2873cddf0d43d1",
+  "notion_pack_readback_at": "2026-10-16T18:32:45.590Z",
+  "notion_render_readback_at": "2026-10-16T18:32:46.318Z",
+  "notion_home_readback_at": "2026-10-16T18:32:46.881Z",
+  "hub_session": "20261017-023604-68643.md",
+  "hub_bytes": 10250,
+  "hub_source_latest_session_byte_equal": true,
+  "methods_added": "translation invariance, shared-edge connectivity, actual Canvas label-pair occlusion; fixes pending",
+  "automation_id": "amsterdam",
+  "same_thread_and_created_at_preserved": true,
+  "status": "ACTIVE",
+  "rrule": "FREQ=MINUTELY;INTERVAL=15",
+  "automation_prompt_byte_exact_readback": true,
+  "actual_process_check_at": "2026-10-16T18:37:13.330625+00:00",
+  "running_pids": [
+    67806,
+    67847
+  ],
+  "nav_extra_exception": "asked once; no actual answer yet",
+  "game_map_adoptions": 0
+}

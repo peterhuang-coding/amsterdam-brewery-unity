@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-16T16:22:42.147327+00:00",
+  "unfinished": [
+    "beer-20261017-responses-q1"
+  ],
+  "bare_pids": [
+    50384
+  ],
+  "source_sha_match": true,
+  "contract_commit": "a9ee9ca",
+  "notion_executing_readback": true
+}

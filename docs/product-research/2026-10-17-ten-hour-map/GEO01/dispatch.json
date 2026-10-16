@@ -1,0 +1,14 @@
+{
+  "id": "amsterdam-d26-bgt-import-20261017",
+  "label": "GEO01",
+  "logical_task_id": "f02-real-geodata-import-d26",
+  "notion_page": "https://app.notion.com/p/3fb3285284df8124bc6aee0fe070111b",
+  "submitted_at": "2026-10-16T16:22:42Z",
+  "launcher_pid": 52110,
+  "worker_pid": 52111,
+  "outer_session_id": 82351,
+  "business_attempts_submitted": 1,
+  "corrections_allowed": 1,
+  "corrections_submitted": 0,
+  "contract_commit": "a9ee9cab04c71e030cc2d75f27f203c03c60d3e5"
+}

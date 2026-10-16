@@ -6,5 +6,9 @@
   "brief.md": {
     "sha256": "fa639fb4932944d027bff1fb3a845bd25e3b746b436f3b46f61deaba83100c91",
     "bytes": 1357
+  },
+  "source-classification.md": {
+    "sha256": "c39582ff3e62c869a1d7dab351e028890c04df08f6efe310dc6cfaddeef3a617",
+    "bytes": 1277
   }
 }

@@ -1,3 +1,9 @@
+# D26执行进展：GEO01已实际提交，NAV01待容量
+
+2026-10-16T16:22:42Z GEO01 amsterdam-d26-bgt-import-20261017已启动，launcher52110/worker52111/外层82351，Seed Evolving enabled/high，2400秒70轮；合同a9ee9cab04c71e030cc2d75f27f203c03c60d3e5已push并远端核对，Notion执行中读回。提交前全机另1个真实CC、8公开输入133847字节SHA一致。NAV01固定amsterdam-d26-geo-navigation-20261017待容量，未提交；增加真实BGT voetgangersgebied拼写与bridge deck/pier分类说明后3输入9159字节，需以本轮更新合同为准。无新采用/游戏修改，dad6b38保持。
+
+官方BGT完整区下载父级一次性工具运行，外层92467，目录/tmp/amsterdam-d26-bgt-full-20261017；仅manifest.complete=true且四层终页才称完整。先查原ID/进程，不重发；恢复读state/本轮目录/Hub。新截止仍2026-10-17T02:03:03Z，旧停止时点已由D26覆盖。
+
 # D26 最新真人授权：真实地理地图继续执行10小时
 
 用户明确“那你继续啊，我给你权限无限火力干 10 小时”。新窗口2026-10-16T16:03:03Z至2026-10-17T02:03:03Z（北京10月17日00:03:03—10:03:03）。本授权覆盖旧地图停止和旧截止，原四天及全部失败记录保留；不得再按旧无授权/次数用尽只巡检。当前准备真实地理输入与两独立实现合同，尚未提交新CC，采用仍dad6b38。全机另有4个真实CC进程，等待可用容量但持续完成准备。仅Seed Evolving enabled/high、最多2全机并发、新包各一次定向修正，未知先查原ID；不按量兜底/主代理重写失败稿，不复活无关搁置项。现有amsterdam同ID/thread/ACTIVE/15min已更新新窗口并Notion主页读回。详细方案与后续实时任务见 docs/product-research/2026-10-17-ten-hour-map/README.md。下方均为保留历史。

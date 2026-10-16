@@ -1,11 +1,11 @@
 {
   "decision": "D26",
-  "status": "renewed_map_two_packages_prepared",
+  "status": "renewed_map_implementation_running",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-17T02:03:03Z",
   "next_direction_review_at": "2026-10-16T23:48:33Z",
   "last_direction_review_at": "2026-10-16T13:55:56.910455+00:00",
-  "current_task_id": null,
+  "current_task_id": "amsterdam-d26-bgt-import-20261017",
   "logical_task": "d26-real-geography",
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
@@ -15,7 +15,22 @@
   "current_task_terminal": null,
   "failure_reason": null,
   "last_result_at": "2026-10-14T16:58:40.031524Z",
-  "in_flight": [],
+  "in_flight": [
+    {
+      "id": "amsterdam-d26-bgt-import-20261017",
+      "label": "GEO01",
+      "logical_task_id": "f02-real-geodata-import-d26",
+      "notion_page": "https://app.notion.com/p/3fb3285284df8124bc6aee0fe070111b",
+      "submitted_at": "2026-10-16T16:22:42Z",
+      "launcher_pid": 52110,
+      "worker_pid": 52111,
+      "outer_session_id": 82351,
+      "business_attempts_submitted": 1,
+      "corrections_allowed": 1,
+      "corrections_submitted": 0,
+      "contract_commit": "a9ee9cab04c71e030cc2d75f27f203c03c60d3e5"
+    }
+  ],
   "candidate_path": null,
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -632,21 +647,18 @@
     "scope": "real geography and existing playable map integration",
     "previous_map_failure_history_preserved": true,
     "new_attempt_policy": "one business attempt plus at most one targeted correction per concrete implementation package",
-    "plan_dispatch_count": 0,
+    "plan_dispatch_count": 1,
     "game_adopted": 0
   },
   "capacity_observation": {
-    "at": "2026-10-16T16:10:00Z",
-    "other_live_cc": 4,
-    "dispatch_waiting_for_capacity": true
+    "at": "2026-10-16T16:23:12.161786+00:00",
+    "own_live_cc": 1,
+    "other_at_submit": 1,
+    "prepared_waiting_for_capacity": [
+      "NAV01"
+    ]
   },
   "prepared_tasks": [
-    {
-      "id": "amsterdam-d26-bgt-import-20261017",
-      "label": "GEO01",
-      "logical_task_id": "f02-real-geodata-import-d26",
-      "notion_page": "https://app.notion.com/p/3fb3285284df8124bc6aee0fe070111b"
-    },
     {
       "id": "amsterdam-d26-geo-navigation-20261017",
       "label": "NAV01",

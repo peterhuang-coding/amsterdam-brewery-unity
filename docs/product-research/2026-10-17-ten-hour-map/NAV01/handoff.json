@@ -5,7 +5,8 @@
   "goal": "D26 NAV01: implement safe polygon navigation for real BGT map geometry using synthetic fixtures",
   "read_files": [
     "geo-interface.md",
-    "brief.md"
+    "brief.md",
+    "source-classification.md"
   ],
   "write_files": [
     "geo-navigation.js",
@@ -14,6 +15,7 @@
   ],
   "tasks": [
     "Read brief.md and frozen geo-interface.md; implement scoped deliverables with regression tests.",
+    "Read source-classification.md: actual BGT voetgangersgebied spelling is authoritative; both aliases excluded in bike mode.",
     "Run all exact commands and correct within this one execution; preserve failed test observations.",
     "Finish handoff-result.json with final command results, honest limitations and no out-of-scope changed_files."
   ],

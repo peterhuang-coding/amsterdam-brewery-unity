@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "/opt/homebrew/bin/claude",
+    "--bare",
+    "-p",
+    "--model",
+    "doubao-seed-evolving",
+    "--effort",
+    "high",
+    "--settings",
+    "{\"apiKeyHelper\": \"/usr/bin/security find-generic-password -s llm-hub -a volcengine-plan -w\", \"alwaysThinkingEnabled\": true, \"permissions\": {\"allow\": [\"Read(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-20261017/workspace/**)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-20261017/workspace/pack_geo.py)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-20261017/workspace/pack_geo.py)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-20261017/workspace/test_pack_geo.py)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-20261017/workspace/test_pack_geo.py)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-20261017/workspace/geo-loader.js)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-20261017/workspace/geo-loader.js)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-20261017/workspace/test-geo-loader.cjs)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-20261017/workspace/test-geo-loader.cjs)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-20261017/workspace/sample-runtime.json)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-20261017/workspace/sample-runtime.json)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-20261017/workspace/sample-runtime.json.gz)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-20261017/workspace/sample-runtime.json.gz)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-20261017/workspace/runtime-audit.json)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-20261017/workspace/runtime-audit.json)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-20261017/workspace/handoff-result.json)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-20261017/workspace/handoff-result.json)\", \"Bash(/tmp/amsterdam-d26-geo-tools-venv/bin/python -m unittest -v test_pack_geo.py)\", \"Bash(/tmp/amsterdam-d26-geo-tools-venv/bin/python pack_geo.py --input sample-input.json --json sample-runtime.json --gzip sample-runtime.json.gz --audit runtime-audit.json --tolerance 0.05)\", \"Bash(node --check geo-loader.js)\", \"Bash(node --test test-geo-loader.cjs)\"]}}",
+    "--setting-sources",
+    "",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\": {}}",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--session-id",
+    "d3d10f77-d6e3-4bea-abe1-ff929cc3021b",
+    "--max-turns",
+    "70",
+    "--permission-mode",
+    "dontAsk",
+    "--tools",
+    "Read,Write,Edit,Bash"
+  ],
+  "cwd": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-runtime-pack-20261017/workspace",
+  "pid": 60879,
+  "pid_pending": false,
+  "started_epoch": 1792170338
+}

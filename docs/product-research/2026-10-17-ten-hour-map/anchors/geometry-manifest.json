@@ -1,0 +1,23 @@
+[
+  {
+    "key": "north",
+    "file": "north-geometry.json",
+    "url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/lookup?id=weg-0b596409d0b2495e6468bb7f132ee901&fl=id%2Cweergavenaam%2Cgeometrie_ll%2Ccentroide_ll%2Cstraatnaam%2Cidentificatie",
+    "sha256": "d87a806847726cb004b20d2c87cf229c8bf49c24d80b422871a98b1747b96459",
+    "bytes": 1453
+  },
+  {
+    "key": "south_ferry",
+    "file": "south_ferry-geometry.json",
+    "url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/lookup?id=weg-15e09fef0c9bb5b3255863d4d43ae627&fl=id%2Cweergavenaam%2Cgeometrie_ll%2Ccentroide_ll%2Cstraatnaam%2Cidentificatie",
+    "sha256": "9a16e63fcfd7275d7e50725275c273ec0c68599b2665f2dfebfe748626813776",
+    "bytes": 2186
+  },
+  {
+    "key": "jordaan",
+    "file": "jordaan-geometry.json",
+    "url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/lookup?id=weg-a62f03b20213a13d0dafb55914e0cca6&fl=id%2Cweergavenaam%2Cgeometrie_ll%2Ccentroide_ll%2Cstraatnaam%2Cidentificatie",
+    "sha256": "665e0affbdb52656692b50ca2dd6c3a18aee8f2598ca9ad1de76932f6d96af89",
+    "bytes": 479
+  }
+]

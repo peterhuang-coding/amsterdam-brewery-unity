@@ -1,0 +1,14 @@
+[
+  {
+    "name": "two_distinct_vertices",
+    "rejected": false
+  },
+  {
+    "name": "string_completeness",
+    "rejected": false
+  },
+  {
+    "name": "invalid_projection",
+    "rejected": false
+  }
+]

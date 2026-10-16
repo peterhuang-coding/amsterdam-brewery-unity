@@ -1,0 +1,48 @@
+{
+  "status": "completed",
+  "summary": "D26 PACK01 implemented as an independent packer+browser loader; no game/source/converter edits. pack_geo.py validates the frozen v1 schema, preserves every feature id/sourceId/localId/properties, polygon/hole counts, ring winding/start order and metre units, and simplifies valid polygons per-feature with Shapely 2.1.2 simplify(preserve_topology=True) at tolerance 0.05 m. Guards reject any result changing polygon/hole cardinality, validity or dimension, or with measured Hausdorff > tolerance+1e-8 m; invalid originals (e.g. self-intersecting bowtie) are copied through byte-for-byte with no silent repair; tolerance 0 is geometrically unchanged; NaN/Inf/malformed structure exits rc=2 naming the feature id. Output JSON is compact sorted-key UTF-8 and gzip is mtime 0/no-filename/level 9; two CLI regenerations produced byte-identical assets (json sha cafa5c7ca041fbdad07fd2c0c8d9db538fc13c38cd7bce696bcc1364d933535c, gzip sha 66234cd01318abb1117123851761d0791941bd9d555f419622176742f8e30146; gunzip_matches_json true). Real 53-feature subset measurements only (sample, complete=false, not full Amsterdam): water 4 / buildings 16 / roads 27 / bridges 6 features, 53 polygons, 54 rings (one hole), vertices 6617 -> 758 (37 simplified, 16 unchanged, 0 fallback, 0 invalid), measured max Hausdorff 0.049274049476768236 m; JSON 229408 -> 113915 bytes, gzip 36545 bytes; elapsed ~0.015 s, peak RSS ~40 MiB (ru_maxrss, macOS bytes). runtime-audit.json records real hashes/sizes, per-layer counts, reasons and provenance (full 585-page source manifest retained; sample limitation text preserved plus derivative-tolerance and no-inter-feature-continuity limitations). geo-loader.js is UMD (globalThis.AmsterdamGeoLoader / module.exports), uses native fetch + DecompressionStream('gzip'), streams with decoded-byte counting bounded at 128 MiB default, checks response.ok, releases/cancels readers on errors, rejects bad gzip/JSON/schema, does not auto-fetch on import, contains no eval or executable data and never substitutes an old map. Earlier RED preserved honestly: first Python run 14 errors from test-fixture nesting bugs ([ring] vs [[ring]]) plus two real findings fixed (Shapely reorients holes / GEOS rotates ring start -> packer now restores original winding and start vertex); first Node run 13 failures from passing a reader instead of a stream into drainBounded, and an over-strict cross-serializer stringify assertion relaxed to deep object equality (1540.0 vs 1540 same JSON number). Final exact commands: Python 27/27 OK; packer CLI rc 0; node --check rc 0; node --test 18/18 pass. Nothing here claims full-source packaging, playable map or 1:1 appearance; parent runs full data and route/browser acceptance.",
+  "changed_files": [
+    "pack_geo.py",
+    "test_pack_geo.py",
+    "geo-loader.js",
+    "test-geo-loader.cjs",
+    "sample-runtime.json",
+    "sample-runtime.json.gz",
+    "runtime-audit.json"
+  ],
+  "tests": [
+    {
+      "command": "/tmp/amsterdam-d26-geo-tools-venv/bin/python -m unittest -v test_pack_geo.py",
+      "exit_code": 0,
+      "summary": "27/27 tests OK: identity/property/hole/cardinality/order preservation, tolerance 0 unchanged, dense curved rings within independently measured Hausdorff error, invalid bowtie fallback without repair, thin slit hole and narrow bridge deck never dropped, NaN/Inf/malformed/unclosed rejection with feature id (in-process and CLI rc=2), invalid tolerance rejection, empty layers, deterministic compact JSON and mtime-0 gzip lossless roundtrip, limitation idempotence, real sample 53 features with CLI end-to-end audit hash/roundtrip verification."
+    },
+    {
+      "command": "/tmp/amsterdam-d26-geo-tools-venv/bin/python pack_geo.py --input sample-input.json --json sample-runtime.json --gzip sample-runtime.json.gz --audit runtime-audit.json --tolerance 0.05",
+      "exit_code": 0,
+      "summary": "Assets generated; sample 229408 B input -> 113915 B JSON -> 36545 B gzip; 53 features, 54 rings, 6617 -> 758 vertices; 37 simplified / 16 unchanged / 0 fallback; measured max Hausdorff 0.049274049 m; gunzip byte-identical to JSON; repeated run reproduced identical json/gzip sha256, only audit timestamps/elapsed/RSS vary."
+    },
+    {
+      "command": "node --check geo-loader.js",
+      "exit_code": 0,
+      "summary": "geo-loader.js parses with no syntax errors."
+    },
+    {
+      "command": "node --test test-geo-loader.cjs",
+      "exit_code": 0,
+      "summary": "18/18 tests pass: real generated gzip via fake fetch (single and 37-byte chunks), content-encoding gzip detection, plain JSON, HTTP 503/404 rejection, garbage gzip decode failure (single and chunked) with reader cleanup, schema-invalid gzip and malformed/invalid JSON rejection, non-finite ring rejection, maxDecodedBytes bound (4096) rejection, option/url validation without fetching, missing fetch rejection, UMD browser global in vm with no auto-fetch and end-to-end load, CommonJS identity without global leak, concurrent independent deterministic loads deep-equal to parsed asset."
+    }
+  ],
+  "blockers": [],
+  "memory_delta": [
+    "PACK01 packer behavior: invalid original geometry is preserved unchanged (never repaired); safety guards (polygon/hole cardinality, validity, 2D dimension, Hausdorff <= tolerance+1e-8) cause whole-feature fallback with labeled reason in runtime-audit.json.",
+    "Shapely orients shells/holes and GEOS can rotate ring start during simplification; packer restores each output ring to the original winding and first surviving start vertex, and output vertices are always a subset of input vertices (no re-rounding).",
+    "Sample asset measurements at tolerance 0.05 m: 53 features / 54 rings / vertices 6617 -> 758 / max measured Hausdorff 0.04927 m / 113915 B JSON / 36545 B gzip; sample is complete=false and the 585-page source manifest is provenance for the larger parent source, not sample coverage.",
+    "geo-loader.js UMD contract: load(url,{fetchImpl,maxDecodedBytes}) -> Promise<parsed v1 object>; gzip selected by content-encoding: gzip or .gz suffix; default decoded bound 128 MiB; all failures reject explicitly and release readers; importing never fetches.",
+    "Cross-serializer note: Python writes whole floats as 1540.0 while JSON.stringify prints 1540; same JSON number, use numeric/deep equality rather than cross-language text comparison."
+  ],
+  "next_steps": [
+    "Parent runs the exact pack_geo.py CLI on the full 514 MB / 145703-feature converted source with an accepted tolerance and audits measured max Hausdorff, counts, fallback reasons, elapsed and peak RSS against the <100 MB JSON / <20 MB gzip measurement targets (targets are not permission to exceed tolerance or drop objects).",
+    "Parent independently verifies browser loading of the produced gzip asset and inter-feature route/network continuity, including shared-boundary effects flagged in source.limitations; per-feature topology preservation does not establish network continuity.",
+    "Later work (not this package): game script order/loading UI integration and any explicit ferry transit; existing dad6b38 play/save remains untouched."
+  ]
+}

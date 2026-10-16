@@ -1,0 +1,277 @@
+{
+  "at": "2026-10-16T16:50:22.343859+00:00",
+  "queries": [
+    {
+      "key": "jordaan",
+      "query": "Egelantiersgracht Amsterdam",
+      "url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=Egelantiersgracht+Amsterdam&rows=3&fq=type%3Aweg",
+      "code": 0,
+      "file": "/tmp/amsterdam-d26-anchor-source-20261017/jordaan.json",
+      "sha256": "dc5e90aa0c3466131dab4ec63bb20b85acc25d3de47d8d8b526e8a88830d5fa1",
+      "hits": [
+        {
+          "id": "weg-a62f03b20213a13d0dafb55914e0cca6",
+          "weergavenaam": "Egelantiersgracht, Amsterdam",
+          "centroide_ll": "POINT(4.88120733 52.37583399)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        },
+        {
+          "id": "weg-77216b4b28a7af5944cd684cece5dd67",
+          "weergavenaam": "Amsterdam Rijnkanaalkade, Amsterdam",
+          "centroide_ll": "POINT(4.95506756 52.36778243)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        },
+        {
+          "id": "weg-3bb4f29a5ca9f7830b5d9b74c846c4bc",
+          "weergavenaam": "Amsterdam-Westerpark, Amsterdam",
+          "centroide_ll": "POINT(4.84504454 52.38128665)",
+          "geometrie_ll": null,
+          "bron": "NWB",
+          "type": "weg"
+        }
+      ]
+    },
+    {
+      "key": "lotte",
+      "query": "Prinsengracht Amsterdam",
+      "url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=Prinsengracht+Amsterdam&rows=3&fq=type%3Aweg",
+      "code": 0,
+      "file": "/tmp/amsterdam-d26-anchor-source-20261017/lotte.json",
+      "sha256": "78a7ff711e90eba7bac57091dce2c5aee7cba55db7161ec5c1dff43225747323",
+      "hits": [
+        {
+          "id": "weg-50669b487b4fbf0992469d8ae923b5b2",
+          "weergavenaam": "Prinsengracht, Amsterdam",
+          "centroide_ll": "POINT(4.88286399 52.36877398)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        },
+        {
+          "id": "weg-81d49ecf9d19ceb08f499fb870b22ba6",
+          "weergavenaam": "Korte Prinsengracht, Amsterdam",
+          "centroide_ll": "POINT(4.88936264 52.38121922)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        },
+        {
+          "id": "weg-9b1b23dc3b78c82e7f9d3245447a6d89",
+          "weergavenaam": "Nieuwe Prinsengracht, Amsterdam",
+          "centroide_ll": "POINT(4.90784072 52.36356852)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        }
+      ]
+    },
+    {
+      "key": "market",
+      "query": "Albert Cuypstraat Amsterdam",
+      "url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=Albert+Cuypstraat+Amsterdam&rows=3&fq=type%3Aweg",
+      "code": 0,
+      "file": "/tmp/amsterdam-d26-anchor-source-20261017/market.json",
+      "sha256": "4bbf5c8cf2ce138e651670308bbd2e15ed54bd92b039b3097ce24a7856df0448",
+      "hits": [
+        {
+          "id": "weg-b8e0bdea536094b68fd5166ff24cd3a9",
+          "weergavenaam": "Albert Cuypstraat, Amsterdam",
+          "centroide_ll": "POINT(4.89344405 52.3555554)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        },
+        {
+          "id": "weg-e7771bd149abf2179130f44b30b3570f",
+          "weergavenaam": "Albert Cuijpstraat, Amersfoort",
+          "centroide_ll": "POINT(5.38993225 52.14841891)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        },
+        {
+          "id": "weg-6a053463720175af87397a4efd657ffe",
+          "weergavenaam": "Albert Cuijpstraat, Rotterdam",
+          "centroide_ll": "POINT(4.42741697 51.93797573)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        }
+      ]
+    },
+    {
+      "key": "coffee",
+      "query": "Gerard Douplein Amsterdam",
+      "url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=Gerard+Douplein+Amsterdam&rows=3&fq=type%3Aweg",
+      "code": 0,
+      "file": "/tmp/amsterdam-d26-anchor-source-20261017/coffee.json",
+      "sha256": "fe6a37a9ecebc341088e0f38721d16e03a310988d1c9ec35149a970acba639e7",
+      "hits": [
+        {
+          "id": "weg-c2ccf2e4212504f90f635c2784c79a70",
+          "weergavenaam": "Gerard Douplein, Amsterdam",
+          "centroide_ll": "POINT(4.89285041 52.35597773)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        },
+        {
+          "id": "weg-1dbf23c7f04a887708562a6143bfc2e9",
+          "weergavenaam": "Gerard Douplein, Maassluis",
+          "centroide_ll": "POINT(4.26421288 51.9189772)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        },
+        {
+          "id": "weg-ebd8a1b4712bb551b4bc3518c111b674",
+          "weergavenaam": "Gerard Borstkade, Amsterdam",
+          "centroide_ll": "POINT(4.86979082 52.36438749)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        }
+      ]
+    },
+    {
+      "key": "flowers",
+      "query": "Ferdinand Bolstraat Amsterdam",
+      "url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=Ferdinand+Bolstraat+Amsterdam&rows=3&fq=type%3Aweg",
+      "code": 0,
+      "file": "/tmp/amsterdam-d26-anchor-source-20261017/flowers.json",
+      "sha256": "f2961e2f1745800b21d15f3e7932b8d75010d201712fd22fc97b125db49a7ad4",
+      "hits": [
+        {
+          "id": "weg-3e8b45125617952cf19dd73bf5fc4e20",
+          "weergavenaam": "Ferdinand Bolstraat, Amsterdam",
+          "centroide_ll": "POINT(4.89132947 52.35220738)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        },
+        {
+          "id": "weg-c7ea2b04f89359b0856c16133e1ddcf4",
+          "weergavenaam": "Ferdinand Bolstraat, Alblasserdam",
+          "centroide_ll": "POINT(4.66892096 51.86994077)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        },
+        {
+          "id": "weg-8993872ca6c01d06c98f2db8da8b67f5",
+          "weergavenaam": "Ferdinand Bolstraat, Alkmaar",
+          "centroide_ll": "POINT(4.72793724 52.63798065)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        }
+      ]
+    },
+    {
+      "key": "science",
+      "query": "Science Park Amsterdam",
+      "url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=Science+Park+Amsterdam&rows=3&fq=type%3Aweg",
+      "code": 0,
+      "file": "/tmp/amsterdam-d26-anchor-source-20261017/science.json",
+      "sha256": "48eec637c97e0e821551ec43778edbfbc65a6105afa926cee1e8626479f11d00",
+      "hits": [
+        {
+          "id": "weg-5642a4dc529430597983055c244896d2",
+          "weergavenaam": "Science Park, Amsterdam",
+          "centroide_ll": "POINT(4.95571762 52.35598548)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        },
+        {
+          "id": "weg-c9542d95701f2b05acf6b08004dbfa26",
+          "weergavenaam": "P+R Science Park, Utrecht",
+          "centroide_ll": "POINT(5.17886998 52.09138222)",
+          "geometrie_ll": null,
+          "bron": "NWB",
+          "type": "weg"
+        },
+        {
+          "id": "weg-e6e547c6cbd6171d77bdb7b5cffed502",
+          "weergavenaam": "Utrecht-Science Park 2, Utrecht",
+          "centroide_ll": "POINT(5.18200327 52.09208071)",
+          "geometrie_ll": null,
+          "bron": "NWB",
+          "type": "weg"
+        }
+      ]
+    },
+    {
+      "key": "north",
+      "query": "Buiksloterweg Amsterdam",
+      "url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=Buiksloterweg+Amsterdam&rows=3&fq=type%3Aweg",
+      "code": 0,
+      "file": "/tmp/amsterdam-d26-anchor-source-20261017/north.json",
+      "sha256": "1a98302f2e3c284f9efe9978078ba16290d5a65e6505ffc17ef4db490f4f7de0",
+      "hits": [
+        {
+          "id": "weg-0b596409d0b2495e6468bb7f132ee901",
+          "weergavenaam": "Buiksloterweg, Amsterdam",
+          "centroide_ll": "POINT(4.91355131 52.38764498)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        },
+        {
+          "id": "weg-77216b4b28a7af5944cd684cece5dd67",
+          "weergavenaam": "Amsterdam Rijnkanaalkade, Amsterdam",
+          "centroide_ll": "POINT(4.95506756 52.36778243)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        },
+        {
+          "id": "weg-3bb4f29a5ca9f7830b5d9b74c846c4bc",
+          "weergavenaam": "Amsterdam-Westerpark, Amsterdam",
+          "centroide_ll": "POINT(4.84504454 52.38128665)",
+          "geometrie_ll": null,
+          "bron": "NWB",
+          "type": "weg"
+        }
+      ]
+    },
+    {
+      "key": "south_ferry",
+      "query": "De Ruijterkade Amsterdam",
+      "url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=De+Ruijterkade+Amsterdam&rows=3&fq=type%3Aweg",
+      "code": 0,
+      "file": "/tmp/amsterdam-d26-anchor-source-20261017/south_ferry.json",
+      "sha256": "57471607ce9ba971552601d7013a99c30217002ee840b054b185efe2cebbefb9",
+      "hits": [
+        {
+          "id": "weg-15e09fef0c9bb5b3255863d4d43ae627",
+          "weergavenaam": "De Ruijterkade, Amsterdam",
+          "centroide_ll": "POINT(4.90168602 52.37965531)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        },
+        {
+          "id": "weg-ca529a1c5b2e11975f48d83d5cdf5898",
+          "weergavenaam": "de Ruijterkade, Wormerveer",
+          "centroide_ll": "POINT(4.79297612 52.49757664)",
+          "geometrie_ll": null,
+          "bron": "BAG/NWB",
+          "type": "weg"
+        },
+        {
+          "id": "weg-70c7e91a8555cefb529f047fb66b75c3",
+          "weergavenaam": "D'Orminiusstraat, Amsterdam",
+          "centroide_ll": "POINT(4.92896415 52.33825439)",
+          "geometrie_ll": null,
+          "bron": "BAG",
+          "type": "weg"
+        }
+      ]
+    }
+  ]
+}

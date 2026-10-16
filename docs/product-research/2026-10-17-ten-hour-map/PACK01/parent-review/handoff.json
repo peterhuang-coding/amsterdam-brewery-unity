@@ -1,0 +1,64 @@
+{
+  "acceptance": [
+    "Preserve feature identity/topology cardinality, bounded measured geometry error, deterministic lossless gzip roundtrip.",
+    "All exact commands pass; report real subset measurements and limits, no full-source or game success claims."
+  ],
+  "commands": [
+    "/tmp/amsterdam-d26-geo-tools-venv/bin/python -m unittest -v test_pack_geo.py",
+    "/tmp/amsterdam-d26-geo-tools-venv/bin/python pack_geo.py --input sample-input.json --json sample-runtime.json --gzip sample-runtime.json.gz --audit runtime-audit.json --tolerance 0.05",
+    "node --check geo-loader.js",
+    "node --test test-geo-loader.cjs"
+  ],
+  "constraints": [
+    "Read/write only provided scoped public/synthetic files.",
+    "Bash only exact listed commands, no installs/network/subagents/git/credentials.",
+    "Installed interpreter available; no external dependency discovery needed."
+  ],
+  "data_sensitivity": "public",
+  "goal": "D26 PACK01: measured conservative geometry simplification, deterministic gzip assets and bounded browser loader",
+  "max_turns": 70,
+  "memory": {
+    "completed": [
+      "Full source downloaded and converted locally; game still dad6b38."
+    ],
+    "decisions": [
+      "Only Seed Evolving thinking enabled/high.",
+      "Preserve real metre scale and source provenance.",
+      "No coverage topology assumption; no silently fabricated geography."
+    ],
+    "known_issues": [
+      "Full data514MB JSON and20.7million road vertices; sample not full region.",
+      "Simplification can affect shared boundaries; parent route acceptance required."
+    ],
+    "summary": "D26 actual real map implementation renewed; full faithful source too large for browser. Packer is an independent next-wave package after first-wave collection, not a rewrite of the converter."
+  },
+  "read_files": [
+    "brief.md",
+    "geo-interface.md",
+    "sample-input.json"
+  ],
+  "task_id": "amsterdam-d26-runtime-pack-20261017",
+  "tasks": [
+    "Read brief and frozen input schema. Implement only scoped packer/loader and meaningful regression tests.",
+    "Run all four exact final commands, preserve early failures.",
+    "Write valid handoff-result.json, no reserved report in changed_files."
+  ],
+  "telemetry": {
+    "attempt_kind": "business",
+    "logical_task_id": "f02-geo-runtime-pack-d26",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "timeout_seconds": 2400,
+  "version": 1,
+  "workspace": "/tmp/amsterdam-d26-runtime-pack-20261017/input",
+  "write_files": [
+    "pack_geo.py",
+    "test_pack_geo.py",
+    "geo-loader.js",
+    "test-geo-loader.cjs",
+    "sample-runtime.json",
+    "sample-runtime.json.gz",
+    "runtime-audit.json"
+  ]
+}

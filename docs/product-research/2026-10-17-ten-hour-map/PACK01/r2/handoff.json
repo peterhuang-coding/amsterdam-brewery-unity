@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-d26-runtime-pack-r2-20261017",
+  "goal": "D26 PACK01 targeted correction: actual HTTP gzip semantics and strict frozen schema without changing faithful geometry",
+  "workspace": "/tmp/amsterdam-d26-runtime-pack-r2-20261017/input",
+  "read_files": [
+    "brief.md",
+    "geo-interface.md",
+    "sample-input.json",
+    "pack_geo.py",
+    "test_pack_geo.py",
+    "geo-loader.js",
+    "test-geo-loader.cjs",
+    "correction.md",
+    "parent-http-loader-check.cjs",
+    "parent-packer-schema-check.py",
+    "full-parent-metrics.json"
+  ],
+  "write_files": [
+    "pack_geo.py",
+    "test_pack_geo.py",
+    "geo-loader.js",
+    "test-geo-loader.cjs",
+    "sample-runtime.json",
+    "sample-runtime.json.gz",
+    "runtime-audit.json"
+  ],
+  "commands": [
+    "/tmp/amsterdam-d26-geo-tools-venv/bin/python -m unittest -v test_pack_geo.py",
+    "/tmp/amsterdam-d26-geo-tools-venv/bin/python pack_geo.py --input sample-input.json --json sample-runtime.json --gzip sample-runtime.json.gz --audit runtime-audit.json --tolerance 0.05",
+    "node --check geo-loader.js",
+    "node --test test-geo-loader.cjs"
+  ],
+  "tasks": [
+    "Read correction and original contract; preserve successful geometric behavior.",
+    "Correct loader handling of actual HTTP/body formats and required schema validation; add meaningful failure regressions.",
+    "Run four exact final commands and return a complete legal report."
+  ],
+  "acceptance": [
+    "Original test intentions retained; targeted HTTP and schema regressions fail original and pass corrected output.",
+    "Geometry simplification/fallback invariants unchanged; no relaxed tolerance or deleted source objects.",
+    "Parent full-source and browser validation remains required before adoption."
+  ],
+  "constraints": [
+    "Only listed files plus reserved handoff-result.json are writable. Read supplied public material and own outputs only.",
+    "Only exact four Bash commands. Tests may bind ephemeral127.0.0.1 HTTP servers and fetch those; no external network or installs.",
+    "Use Edit for file modifications; do not list handoff-result.json in changed_files."
+  ],
+  "memory": {
+    "summary": "D26 human-authorized actual map work. PACK01 business rejected by parent despite passing fake-fetch tests. One correction available; prior failure history retained.",
+    "decisions": [
+      "Coding Plan Seed Evolving thinking enabled/high",
+      "Keep source geometry and0.05m conservative simplification",
+      "Actual full JSON140520240B requires explicit192MiB load option in later integration"
+    ],
+    "known_issues": [
+      "Native fetch already decodes Content-Encoding gzip. Query-suffixed raw .gz fails current loader.",
+      "Malformed required schemas accepted in original code; strict validation must not reject structurally valid invalid-source fallback."
+    ]
+  },
+  "data_sensitivity": "public",
+  "timeout_seconds": 1800,
+  "max_turns": 55,
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "f02-geo-runtime-pack-d26",
+    "task_type": "code",
+    "attempt_kind": "correction"
+  }
+}

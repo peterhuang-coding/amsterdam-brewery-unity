@@ -1,0 +1,44 @@
+[
+  {
+    "url": "/raw.gz",
+    "expected": "load the valid generated sample",
+    "ok": true,
+    "ms": 45.006792000000004
+  },
+  {
+    "url": "/raw.gz?commit=parent",
+    "expected": "load the valid generated sample",
+    "ok": false,
+    "error": "geo-loader: asset is not valid UTF-8: The encoded data was not valid for encoding utf-8",
+    "ms": 1.267792
+  },
+  {
+    "url": "/encoded.json",
+    "expected": "load the valid generated sample",
+    "ok": false,
+    "error": "geo-loader: gzip decode failed: stream error",
+    "ms": 2.2495839999999987
+  },
+  {
+    "url": "/encoded.gz",
+    "expected": "load the valid generated sample",
+    "ok": false,
+    "error": "geo-loader: gzip decode failed: stream error",
+    "ms": 1.7423339999999996
+  },
+  {
+    "name": "unclosed_ring",
+    "expected": "reject malformed frozen schema",
+    "rejected": false
+  },
+  {
+    "name": "empty_polygons",
+    "expected": "reject malformed frozen schema",
+    "rejected": false
+  },
+  {
+    "name": "string_completeness",
+    "expected": "reject malformed frozen schema",
+    "rejected": false
+  }
+]

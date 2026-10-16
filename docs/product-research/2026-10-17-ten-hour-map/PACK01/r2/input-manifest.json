@@ -1,0 +1,57 @@
+[
+  {
+    "file": "brief.md",
+    "bytes": 4788,
+    "sha256": "794e5466e368070900224b2ba16f96e77983e43c0b1d9d1968f39d926e6cb82e"
+  },
+  {
+    "file": "geo-interface.md",
+    "bytes": 6525,
+    "sha256": "35e5148f8f6ef04c3b379f268f7ca9faf806e7a0b17275d7717a15373fbed0af"
+  },
+  {
+    "file": "sample-input.json",
+    "bytes": 229408,
+    "sha256": "82d99e326853a1db63670179b0cb5c34f410347c6b7704d63b28fa525167397a"
+  },
+  {
+    "file": "pack_geo.py",
+    "bytes": 26878,
+    "sha256": "c5996918d16ad4056f5f300fc83c01e89b1f0dfedb9b819f5150c81cc56f2c43"
+  },
+  {
+    "file": "test_pack_geo.py",
+    "bytes": 26060,
+    "sha256": "cc65bfd1c6553cc33f1d7162303cbdc540d018637a968d0e1e982c67ee4c73f0"
+  },
+  {
+    "file": "geo-loader.js",
+    "bytes": 15414,
+    "sha256": "cb42205265ea29e9066fa87c0ca9c85732ae5578ab1d8822d0e5d870115534a9"
+  },
+  {
+    "file": "test-geo-loader.cjs",
+    "bytes": 9536,
+    "sha256": "5f45e23fe47927aa07f8ea8aadb40ed7bab2bdeda65c7b27b202ea31e85dddbe"
+  },
+  {
+    "file": "correction.md",
+    "bytes": 3399,
+    "sha256": "fd55fdba30780e702738465208578e60212a1c5d9d022f4c1799a838649e47aa"
+  },
+  {
+    "file": "parent-http-loader-check.cjs",
+    "bytes": 1894,
+    "sha256": "8e4b317272effbbca96f7a851c17d2aaf19b33775c8b8f36307586c72680616f"
+  },
+  {
+    "file": "parent-packer-schema-check.py",
+    "bytes": 833,
+    "sha256": "17c735f2a73d7868ca0bc210759fc5b7c51d52ce085b7aa78d10ebf44e0c58ac"
+  },
+  {
+    "file": "full-parent-metrics.json",
+    "bytes": 914,
+    "sha256": "7c01273711a253c8369e1ca8b1b4dd92d9a7999a7e9531422647a52c3997e103"
+  }
+]

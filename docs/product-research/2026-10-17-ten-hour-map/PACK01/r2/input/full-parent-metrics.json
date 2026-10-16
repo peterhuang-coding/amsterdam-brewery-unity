@@ -1,0 +1,32 @@
+{
+  "inputBytes": 514313066,
+  "outputBytes": 140520240,
+  "gzipBytes": 36376205,
+  "geometry": {
+    "fallback_reasons": {
+      "hausdorff_exceeded": 840,
+      "invalid_original": 2693
+    },
+    "features_fallback": 3533,
+    "features_invalid_original": 2693,
+    "features_simplified": 99680,
+    "features_unchanged": 42490,
+    "features_valid_original": 143010,
+    "input": {
+      "features": 145703,
+      "polygons": 148942,
+      "rings": 163268,
+      "vertices": 22977546
+    },
+    "max_hausdorff_m": 0.049999999999272404,
+    "output": {
+      "features": 145703,
+      "polygons": 148942,
+      "rings": 163268,
+      "vertices": 3785297
+    },
+    "removed_vertices": 19192249
+  },
+  "full_parent_seconds": 51.377001208,
+  "note": "Parent full-source measurement only. Full data is not in this handoff. Preserve0.05m tolerance and all geometry; size targets are not permission to drop data."
+}

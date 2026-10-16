@@ -1,0 +1,266 @@
+[
+  {
+    "key": "jordaan",
+    "source_name": "Egelantiersgracht, Amsterdam",
+    "source_id": "weg-a62f03b20213a13d0dafb55914e0cca6",
+    "source_centroid": [
+      4.88120733,
+      52.37583399
+    ],
+    "query_url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=Egelantiersgracht+Amsterdam&rows=3&fq=type%3Aweg",
+    "candidates": [
+      {
+        "distance_m": 0.0,
+        "feature_id": "wegdeel:b5910e46-8d27-5ba7-982d-41b311e24e21",
+        "x": 1100.211,
+        "y": 3243.117,
+        "functie": "rijbaan lokale weg"
+      },
+      {
+        "distance_m": 2.069,
+        "feature_id": "wegdeel:4ef414c3-03b3-56d0-acd7-22f85a1e6f8b",
+        "x": 1100.903,
+        "y": 3245.067,
+        "functie": "voetpad"
+      },
+      {
+        "distance_m": 2.543,
+        "feature_id": "wegdeel:c7384aed-c91b-5319-8622-737e9c5a7d40",
+        "x": 1098.167,
+        "y": 3241.604,
+        "functie": "parkeervlak"
+      }
+    ]
+  },
+  {
+    "key": "lotte",
+    "source_name": "Prinsengracht, Amsterdam",
+    "source_id": "weg-50669b487b4fbf0992469d8ae923b5b2",
+    "source_centroid": [
+      4.88286399,
+      52.36877398
+    ],
+    "query_url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=Prinsengracht+Amsterdam&rows=3&fq=type%3Aweg",
+    "candidates": [
+      {
+        "distance_m": 0.0,
+        "feature_id": "wegdeel:45b66281-070d-5235-a860-2fb79cba3a45",
+        "x": 1212.671,
+        "y": 4028.155,
+        "functie": "rijbaan lokale weg"
+      },
+      {
+        "distance_m": 2.26,
+        "feature_id": "wegdeel:cbae5096-9c31-5fc8-87fb-215ab1940372",
+        "x": 1210.416,
+        "y": 4028.018,
+        "functie": "parkeervlak"
+      },
+      {
+        "distance_m": 2.436,
+        "feature_id": "wegdeel:d1c983ef-488f-5223-994a-f272d9ca8a01",
+        "x": 1212.655,
+        "y": 4025.719,
+        "functie": "rijbaan lokale weg"
+      }
+    ]
+  },
+  {
+    "key": "market",
+    "source_name": "Albert Cuypstraat, Amsterdam",
+    "source_id": "weg-b8e0bdea536094b68fd5166ff24cd3a9",
+    "source_centroid": [
+      4.89344405,
+      52.3555554
+    ],
+    "query_url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=Albert+Cuypstraat+Amsterdam&rows=3&fq=type%3Aweg",
+    "candidates": [
+      {
+        "distance_m": 0.0,
+        "feature_id": "wegdeel:10c3b1e8-8cab-5e25-aced-07c5e975d08b",
+        "x": 1930.884,
+        "y": 5497.996,
+        "functie": "rijbaan lokale weg"
+      },
+      {
+        "distance_m": 3.249,
+        "feature_id": "wegdeel:90473e43-1b13-514d-8a74-2424feae258a",
+        "x": 1929.909,
+        "y": 5494.896,
+        "functie": "parkeervlak"
+      },
+      {
+        "distance_m": 3.266,
+        "feature_id": "wegdeel:1107ea40-24bf-5842-be21-ec4f8c8e7134",
+        "x": 1931.836,
+        "y": 5501.12,
+        "functie": "parkeervlak"
+      }
+    ]
+  },
+  {
+    "key": "coffee",
+    "source_name": "Gerard Douplein, Amsterdam",
+    "source_id": "weg-c2ccf2e4212504f90f635c2784c79a70",
+    "source_centroid": [
+      4.89285041,
+      52.35597773
+    ],
+    "query_url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=Gerard+Douplein+Amsterdam&rows=3&fq=type%3Aweg",
+    "candidates": [
+      {
+        "distance_m": 0.0,
+        "feature_id": "wegdeel:523cd265-0270-5555-a739-b8e1cc451754",
+        "x": 1890.585,
+        "y": 5451.035,
+        "functie": "voetpad"
+      },
+      {
+        "distance_m": 4.915,
+        "feature_id": "wegdeel:b90fcebe-fe5a-5c49-b548-b2955a3ff2be",
+        "x": 1892.088,
+        "y": 5455.715,
+        "functie": "rijbaan lokale weg"
+      },
+      {
+        "distance_m": 10.315,
+        "feature_id": "wegdeel:364f58f3-0419-5d08-aa20-5f80da4c88c8",
+        "x": 1889.169,
+        "y": 5461.252,
+        "functie": "voetgangersgebied"
+      }
+    ]
+  },
+  {
+    "key": "flowers",
+    "source_name": "Ferdinand Bolstraat, Amsterdam",
+    "source_id": "weg-3e8b45125617952cf19dd73bf5fc4e20",
+    "source_centroid": [
+      4.89132947,
+      52.35220738
+    ],
+    "query_url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=Ferdinand+Bolstraat+Amsterdam&rows=3&fq=type%3Aweg",
+    "candidates": [
+      {
+        "distance_m": 0.0,
+        "feature_id": "wegdeel:f643a552-96d1-5d10-8fca-ef33e6298948",
+        "x": 1787.339,
+        "y": 5870.28,
+        "functie": "rijbaan lokale weg"
+      },
+      {
+        "distance_m": 3.678,
+        "feature_id": "wegdeel:8e8f2d86-68d4-5a74-bd67-d6fe5b6a11f1",
+        "x": 1790.924,
+        "y": 5869.46,
+        "functie": "fietspad"
+      },
+      {
+        "distance_m": 3.691,
+        "feature_id": "wegdeel:189162dd-c479-55fa-9c0a-3395a7eb723d",
+        "x": 1783.742,
+        "y": 5871.11,
+        "functie": "fietspad"
+      }
+    ]
+  },
+  {
+    "key": "science",
+    "source_name": "Science Park, Amsterdam",
+    "source_id": "weg-5642a4dc529430597983055c244896d2",
+    "source_centroid": [
+      4.95571762,
+      52.35598548
+    ],
+    "query_url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=Science+Park+Amsterdam&rows=3&fq=type%3Aweg",
+    "candidates": [
+      {
+        "distance_m": 0.0,
+        "feature_id": "wegdeel:035ca0a8-9093-53f7-9be3-2c9adb5942fb",
+        "x": 6158.236,
+        "y": 5450.173,
+        "functie": "woonerf"
+      },
+      {
+        "distance_m": 20.939,
+        "feature_id": "wegdeel:28cb4ee6-8124-5d57-86bb-03e4247e4da1",
+        "x": 6137.393,
+        "y": 5448.178,
+        "functie": "parkeervlak"
+      },
+      {
+        "distance_m": 34.672,
+        "feature_id": "wegdeel:a554f88c-4052-5421-baf3-fb861228e303",
+        "x": 6182.608,
+        "y": 5474.835,
+        "functie": "woonerf"
+      }
+    ]
+  },
+  {
+    "key": "north",
+    "source_name": "Buiksloterweg, Amsterdam",
+    "source_id": "weg-0b596409d0b2495e6468bb7f132ee901",
+    "source_centroid": [
+      4.91355131,
+      52.38764498
+    ],
+    "query_url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=Buiksloterweg+Amsterdam&rows=3&fq=type%3Aweg",
+    "candidates": [
+      {
+        "distance_m": 0.581,
+        "feature_id": "wegdeel:26b2e11c-b14d-5c21-9aff-d1c88268d056",
+        "x": 3296.411,
+        "y": 1929.881,
+        "functie": "rijbaan lokale weg"
+      },
+      {
+        "distance_m": 0.619,
+        "feature_id": "wegdeel:951a67d8-0bf0-5796-b741-d04920041dcb",
+        "x": 3295.224,
+        "y": 1929.699,
+        "functie": "rijbaan lokale weg"
+      },
+      {
+        "distance_m": 1.544,
+        "feature_id": "wegdeel:398de32f-a6b8-5a9c-8038-fe3ee0c9861d",
+        "x": 3295.444,
+        "y": 1928.3,
+        "functie": "rijbaan lokale weg"
+      }
+    ]
+  },
+  {
+    "key": "south_ferry",
+    "source_name": "De Ruijterkade, Amsterdam",
+    "source_id": "weg-15e09fef0c9bb5b3255863d4d43ae627",
+    "source_centroid": [
+      4.90168602,
+      52.37965531
+    ],
+    "query_url": "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=De+Ruijterkade+Amsterdam&rows=3&fq=type%3Aweg",
+    "candidates": [
+      {
+        "distance_m": 0.0,
+        "feature_id": "wegdeel:26a9e57e-c7ea-5971-9e2c-4fd20d08876f",
+        "x": 2490.378,
+        "y": 2818.205,
+        "functie": "fietspad"
+      },
+      {
+        "distance_m": 1.991,
+        "feature_id": "wegdeel:996bc7ee-1774-5777-8f96-055b469340d3",
+        "x": 2491.398,
+        "y": 2816.495,
+        "functie": "voetpad"
+      },
+      {
+        "distance_m": 3.372,
+        "feature_id": "wegdeel:dcfd7907-7aae-5a92-a089-d69ed70f30dc",
+        "x": 2488.649,
+        "y": 2821.099,
+        "functie": "voetpad"
+      }
+    ]
+  }
+]

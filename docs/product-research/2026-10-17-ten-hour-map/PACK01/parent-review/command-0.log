@@ -1,0 +1,33 @@
+test_curved_ring_simplified_within_measured_error (test_pack_geo.DenseRingTests.test_curved_ring_simplified_within_measured_error) ... ok
+test_gzip_bytes_deterministic_and_lossless (test_pack_geo.DeterminismTests.test_gzip_bytes_deterministic_and_lossless) ... ok
+test_json_bytes_deterministic_and_compact_sorted (test_pack_geo.DeterminismTests.test_json_bytes_deterministic_and_compact_sorted) ... ok
+test_repacked_limitations_are_not_duplicated (test_pack_geo.DeterminismTests.test_repacked_limitations_are_not_duplicated) ... ok
+test_empty_layers_pack_cleanly (test_pack_geo.EmptyLayersTests.test_empty_layers_pack_cleanly) ... ok
+test_bounds_recomputed_accurately (test_pack_geo.IdentityPreservationTests.test_bounds_recomputed_accurately) ... ok
+test_ids_properties_order_and_cardinality_preserved (test_pack_geo.IdentityPreservationTests.test_ids_properties_order_and_cardinality_preserved) ... ok
+test_schema_projection_and_completeness_preserved (test_pack_geo.IdentityPreservationTests.test_schema_projection_and_completeness_preserved) ... ok
+test_simplified_coordinates_are_subset_of_input (test_pack_geo.IdentityPreservationTests.test_simplified_coordinates_are_subset_of_input)
+DP selects existing vertices: no fabricated/rounded points. ... ok
+test_bowtie_falls_back_unchanged_without_repair (test_pack_geo.InvalidOriginalTests.test_bowtie_falls_back_unchanged_without_repair) ... ok
+test_invalid_polygon_alongside_valid_feature_isolated (test_pack_geo.InvalidOriginalTests.test_invalid_polygon_alongside_valid_feature_isolated) ... ok
+test_infinity_coordinate_rejected_with_feature_id (test_pack_geo.MalformedInputTests.test_infinity_coordinate_rejected_with_feature_id) ... ok
+test_malformed_coordinate_pair_rejected (test_pack_geo.MalformedInputTests.test_malformed_coordinate_pair_rejected) ... ok
+test_missing_id_rejected (test_pack_geo.MalformedInputTests.test_missing_id_rejected) ... ok
+test_missing_layer_rejected (test_pack_geo.MalformedInputTests.test_missing_layer_rejected) ... ok
+test_nan_coordinate_rejected_with_feature_id (test_pack_geo.MalformedInputTests.test_nan_coordinate_rejected_with_feature_id) ... ok
+test_unclosed_ring_rejected (test_pack_geo.MalformedInputTests.test_unclosed_ring_rejected) ... ok
+test_cli_end_to_end_on_real_sample (test_pack_geo.RealSampleTests.test_cli_end_to_end_on_real_sample) ... ok
+test_cli_rejects_bad_tolerance (test_pack_geo.RealSampleTests.test_cli_rejects_bad_tolerance) ... ok
+test_cli_rejects_malformed_file_with_feature_id (test_pack_geo.RealSampleTests.test_cli_rejects_malformed_file_with_feature_id) ... ok
+test_preservation_and_measured_error_on_real_sample (test_pack_geo.RealSampleTests.test_preservation_and_measured_error_on_real_sample) ... ok
+test_sample_is_the_real_non_empty_53_feature_subset (test_pack_geo.RealSampleTests.test_sample_is_the_real_non_empty_53_feature_subset) ... ok
+test_thin_bridge_deck_polygon_preserved (test_pack_geo.ThinGeometryTests.test_thin_bridge_deck_polygon_preserved) ... ok
+test_thin_hole_is_never_dropped (test_pack_geo.ThinGeometryTests.test_thin_hole_is_never_dropped) ... ok
+test_invalid_tolerances (test_pack_geo.ToleranceTests.test_invalid_tolerances) ... ok
+test_valid_tolerances (test_pack_geo.ToleranceTests.test_valid_tolerances) ... ok
+test_tolerance_zero_is_geometrically_unchanged (test_pack_geo.ToleranceZeroTests.test_tolerance_zero_is_geometrically_unchanged) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 0.190s
+
+OK

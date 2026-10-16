@@ -15,23 +15,7 @@
   "current_task_terminal": null,
   "failure_reason": null,
   "last_result_at": "2026-10-14T16:58:40.031524Z",
-  "in_flight": [
-    {
-      "id": "amsterdam-d26-runtime-pack-20261017",
-      "label": "PACK01",
-      "logical_task_id": "f02-geo-runtime-pack-d26",
-      "notion_page": "https://app.notion.com/p/3fb3285284df813ab400f01ffb4017b1",
-      "submitted_at": "2026-10-16T17:05:38+00:00",
-      "worker_pid": 60879,
-      "launcher_pid": 60878,
-      "outer_session_id": 21646,
-      "contract_commit": "e2397762e405f29cc5190f356df32a5260a0e6aa",
-      "dispatch_head": "bd6556eefcf6ef531d5bf620827a2614b5c871f1",
-      "business_attempts_submitted": 1,
-      "corrections_submitted": 0,
-      "corrections_allowed": 1
-    }
-  ],
+  "in_flight": [],
   "candidate_path": null,
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -660,7 +644,10 @@
     "nav01_next": "NAV01-R2 and RENDER01 prepared but unsubmitted; collect PACK01 before third wave.",
     "geo01_correction_review": "accepted_with_changes/other: source geometry unchanged, complete metadata corrected, denied extra report shell attempt recorded",
     "accepted_component_count": 1,
-    "accepted_component_commit": "3c9bb0e15dc3d7ce3f33d96aaf2873cddf0d43d1"
+    "accepted_component_commit": "3c9bb0e15dc3d7ce3f33d96aaf2873cddf0d43d1",
+    "pack01_business_review": "rejected/semantic: query-suffixed raw gzip and already-decoded HTTP fail; required schema holes",
+    "pack01_corrections_submitted": 0,
+    "second_wave_collected_at": "2026-10-16T17:38:02.983697+00:00"
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",
@@ -683,8 +670,15 @@
       "packet": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/RENDER01/handoff.json",
       "notion_page": "https://app.notion.com/p/3fb3285284df81e88424df0488d60354",
       "submitted": false
+    },
+    {
+      "id": "amsterdam-d26-runtime-pack-r2-20261017",
+      "label": "PACK01-R2",
+      "packet": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/PACK01/r2/handoff.json",
+      "submitted": false,
+      "order": "after NAV01-R2/RENDER01 wave; only one correction"
     }
   ],
   "awaiting_parent_review": [],
-  "current_stage": "geo_converter_accepted_pack_running_next_wave_prepared"
+  "current_stage": "wave2_collected_nav_correction_renderer_ready"
 }

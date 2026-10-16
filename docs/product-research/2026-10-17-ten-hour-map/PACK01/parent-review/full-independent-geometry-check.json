@@ -1,0 +1,11 @@
+{
+  "features": 145703,
+  "invalid_original_features_preserved_whole": 2693,
+  "vertices_before": 22977546,
+  "vertices_after": 3785297,
+  "max_independent_hausdorff_metres": 0.049999999999272404,
+  "all_identity_properties_cardinality_vertex_origin_bounds_checks_passed": true,
+  "gzip_decoded_bytes": 140520240,
+  "gzip_matches_json_sha": "601e6df96c5575ac9fa1243d47be263de6048319558f0998cff599956c371a46",
+  "seconds": 43.382260916987434
+}

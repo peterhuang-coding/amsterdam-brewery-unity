@@ -1,0 +1,415 @@
+{
+  "basis": "Official PDOK street end vertices; selected game boarding candidates, not surveyed GVB platform coordinates. Road-inset geometry only; NAV safety/connectivity not yet accepted.",
+  "decks_near_pub": [
+    {
+      "id": "overbruggingsdeel:8b1d9302-4306-51af-ae31-9b60532e81c5",
+      "distance_m": 40.000533508942155,
+      "point": [
+        1056.057,
+        3247.41
+      ],
+      "properties": {
+        "creation_date": "2021-03-08T23:00:00Z",
+        "eind_registratie": null,
+        "hoort_bij_typeoverbrugging": "brug",
+        "relatieve_hoogteligging": 1,
+        "status": "bestaand",
+        "termination_date": null,
+        "tijdstip_registratie": "2021-03-23T04:06:52Z",
+        "type_overbruggingsdeel": "dek"
+      }
+    },
+    {
+      "id": "overbruggingsdeel:e6112897-f6d0-5f8d-abdf-eb12417d269c",
+      "distance_m": 88.5058430839458,
+      "point": [
+        1183.07,
+        3202.472
+      ],
+      "properties": {
+        "creation_date": "2021-03-08T23:00:00Z",
+        "eind_registratie": null,
+        "hoort_bij_typeoverbrugging": "brug",
+        "relatieve_hoogteligging": 1,
+        "status": "bestaand",
+        "termination_date": null,
+        "tijdstip_registratie": "2021-03-23T04:06:52Z",
+        "type_overbruggingsdeel": "dek"
+      }
+    },
+    {
+      "id": "overbruggingsdeel:2693d312-93f5-5bc0-a221-f98021b9a71e",
+      "distance_m": 110.49663275412476,
+      "point": [
+        1097.281,
+        3358.805
+      ],
+      "properties": {
+        "creation_date": "2021-03-08T23:00:00Z",
+        "eind_registratie": null,
+        "hoort_bij_typeoverbrugging": "brug",
+        "relatieve_hoogteligging": 1,
+        "status": "bestaand",
+        "termination_date": null,
+        "tijdstip_registratie": "2021-03-23T04:06:52Z",
+        "type_overbruggingsdeel": "dek"
+      }
+    },
+    {
+      "id": "overbruggingsdeel:b559da4d-8451-5f24-977a-cf02eb3a2971",
+      "distance_m": 151.25974201022555,
+      "point": [
+        1241.65,
+        3311.207
+      ],
+      "properties": {
+        "creation_date": "2021-03-08T23:00:00Z",
+        "eind_registratie": null,
+        "hoort_bij_typeoverbrugging": "brug",
+        "relatieve_hoogteligging": 1,
+        "status": "bestaand",
+        "termination_date": null,
+        "tijdstip_registratie": "2021-03-23T04:06:52Z",
+        "type_overbruggingsdeel": "dek"
+      }
+    },
+    {
+      "id": "overbruggingsdeel:86770553-6131-5aa2-947a-47e953e67fb6",
+      "distance_m": 199.65615052384447,
+      "point": [
+        900.478,
+        3195.38
+      ],
+      "properties": {
+        "creation_date": "2021-03-08T23:00:00Z",
+        "eind_registratie": null,
+        "hoort_bij_typeoverbrugging": "brug",
+        "relatieve_hoogteligging": 1,
+        "status": "bestaand",
+        "termination_date": null,
+        "tijdstip_registratie": "2021-03-23T04:06:52Z",
+        "type_overbruggingsdeel": "dek"
+      }
+    },
+    {
+      "id": "overbruggingsdeel:f7e3ca6a-2c59-5853-8116-d4666f99d64d",
+      "distance_m": 204.78794327791854,
+      "point": [
+        1312.815,
+        3218.175
+      ],
+      "properties": {
+        "creation_date": "2021-03-08T23:00:00Z",
+        "eind_registratie": null,
+        "hoort_bij_typeoverbrugging": "brug",
+        "relatieve_hoogteligging": 1,
+        "status": "bestaand",
+        "termination_date": null,
+        "tijdstip_registratie": "2021-03-23T04:06:52Z",
+        "type_overbruggingsdeel": "dek"
+      }
+    },
+    {
+      "id": "overbruggingsdeel:7be22d8e-81b8-5d48-9e22-f1654aa05303",
+      "distance_m": 205.58914509282812,
+      "point": [
+        967.851,
+        3406.07
+      ],
+      "properties": {
+        "creation_date": "2021-03-08T23:00:00Z",
+        "eind_registratie": null,
+        "hoort_bij_typeoverbrugging": "brug",
+        "relatieve_hoogteligging": 1,
+        "status": "bestaand",
+        "termination_date": null,
+        "tijdstip_registratie": "2021-03-23T04:06:52Z",
+        "type_overbruggingsdeel": "dek"
+      }
+    },
+    {
+      "id": "overbruggingsdeel:0f721f8c-88a8-5db9-93b6-c19359602e9e",
+      "distance_m": 219.83160044224763,
+      "point": [
+        1324.514,
+        3237.939
+      ],
+      "properties": {
+        "creation_date": "2015-03-09T23:00:00Z",
+        "eind_registratie": null,
+        "hoort_bij_typeoverbrugging": null,
+        "relatieve_hoogteligging": 1,
+        "status": "bestaand",
+        "termination_date": null,
+        "tijdstip_registratie": "2015-03-11T10:27:05Z",
+        "type_overbruggingsdeel": "dek"
+      }
+    }
+  ],
+  "candidates": {
+    "ferry_north_road_end": {
+      "query": [
+        2584.328,
+        2533.024
+      ],
+      "candidates": [
+        {
+          "id": "wegdeel:62cc967a-355f-5d50-ae7e-1bacb568682b",
+          "point": [
+            2590.929,
+            2528.07
+          ],
+          "distance_m": 8.254,
+          "functie": "voetpad",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:8f019a22-4f00-5216-983f-91d78d4e9a4d",
+          "point": [
+            2595.573,
+            2534.257
+          ],
+          "distance_m": 11.312,
+          "functie": "voetpad",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:ff9a3ec5-0738-5350-b5f7-02c9011617d9",
+          "point": [
+            2595.635,
+            2522.445
+          ],
+          "distance_m": 15.484,
+          "functie": "rijbaan lokale weg",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:0a339e0f-ce02-5066-a1ba-1e1a448d9f5a",
+          "point": [
+            2576.17,
+            2519.712
+          ],
+          "distance_m": 15.613,
+          "functie": "voetpad",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:5e7a2491-1437-51d7-b00b-4abc4a52b683",
+          "point": [
+            2603.783,
+            2518.85
+          ],
+          "distance_m": 24.071,
+          "functie": "rijbaan lokale weg",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:953cd723-bdf2-5b62-9f40-a1b70899b991",
+          "point": [
+            2602.515,
+            2517.108
+          ],
+          "distance_m": 24.167,
+          "functie": "voetpad",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:bf1265ed-1eb9-5146-acc6-74759d9019ba",
+          "point": [
+            2600.985,
+            2515.007
+          ],
+          "distance_m": 24.537,
+          "functie": "voetpad",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:a90b58e5-f87e-5ec0-9a40-d08e07e82005",
+          "point": [
+            2615.246,
+            2519.793
+          ],
+          "distance_m": 33.63,
+          "functie": "voetpad",
+          "level": 0
+        }
+      ]
+    },
+    "ferry_south_road_end": {
+      "query": [
+        2344.02,
+        2705.376
+      ],
+      "candidates": [
+        {
+          "id": "wegdeel:c163c06b-1650-5bb9-979c-321aabee488e",
+          "point": [
+            2336.407,
+            2714.803
+          ],
+          "distance_m": 12.117,
+          "functie": "voetpad",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:ee04b4dd-0489-5df0-bdda-0f0db241b248",
+          "point": [
+            2360.13,
+            2718.276
+          ],
+          "distance_m": 20.638,
+          "functie": "voetpad",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:aca39654-8ad5-5d65-bed5-56d014b56206",
+          "point": [
+            2351.184,
+            2734.09
+          ],
+          "distance_m": 29.594,
+          "functie": "fietspad",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:ca6a9840-2260-5951-bd3c-be07683f3801",
+          "point": [
+            2326.977,
+            2734.383
+          ],
+          "distance_m": 33.644,
+          "functie": "fietspad",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:f013a420-af40-555f-a58b-177eeac76a72",
+          "point": [
+            2328.262,
+            2736.725
+          ],
+          "distance_m": 35.087,
+          "functie": "voetpad",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:2af118aa-cae4-572c-805e-6711802d6f22",
+          "point": [
+            2323.376,
+            2733.808
+          ],
+          "distance_m": 35.136,
+          "functie": "voetpad",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:e5f1450f-5288-5796-b86b-fafff28c712f",
+          "point": [
+            2310.155,
+            2720.711
+          ],
+          "distance_m": 37.176,
+          "functie": "rijbaan lokale weg",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:afccacfb-3a07-52ac-af39-1e152b6936c6",
+          "point": [
+            2314.425,
+            2728.468
+          ],
+          "distance_m": 37.538,
+          "functie": "parkeervlak",
+          "level": 0
+        }
+      ]
+    },
+    "lotte_near_pub_deck": {
+      "query": [
+        1056.057,
+        3247.41
+      ],
+      "candidates": [
+        {
+          "id": "wegdeel:ae8d639d-acf9-5ffa-8469-5df44622d7c9",
+          "point": [
+            1054.311,
+            3242.386
+          ],
+          "distance_m": 5.319,
+          "functie": "rijbaan lokale weg",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:efcc66b2-c61e-5f1e-a74b-7dca858058fe",
+          "point": [
+            1057.87,
+            3252.445
+          ],
+          "distance_m": 5.352,
+          "functie": "rijbaan lokale weg",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:1f13d5fa-486a-5f7c-93d9-3886a0ac161e",
+          "point": [
+            1056.039,
+            3253.105
+          ],
+          "distance_m": 5.695,
+          "functie": "voetpad",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:eea5d251-c465-5486-b514-dc1e3c660d41",
+          "point": [
+            1056.352,
+            3241.675
+          ],
+          "distance_m": 5.743,
+          "functie": "voetpad",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:ed563483-cd1f-5a00-88f0-bde6a579c811",
+          "point": [
+            1052.103,
+            3243.154
+          ],
+          "distance_m": 5.809,
+          "functie": "voetpad",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:a15ae580-47f7-5e24-a635-14dc17ea2701",
+          "point": [
+            1060.137,
+            3251.628
+          ],
+          "distance_m": 5.868,
+          "functie": "voetpad",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:473b770c-8e92-5cb5-b38a-271b1d3db1c4",
+          "point": [
+            1055.535,
+            3239.451
+          ],
+          "distance_m": 7.976,
+          "functie": "rijbaan lokale weg",
+          "level": 0
+        },
+        {
+          "id": "wegdeel:b5910e46-8d27-5ba7-982d-41b311e24e21",
+          "point": [
+            1061.71,
+            3254.402
+          ],
+          "distance_m": 8.992,
+          "functie": "rijbaan lokale weg",
+          "level": 0
+        }
+      ]
+    }
+  }
+}

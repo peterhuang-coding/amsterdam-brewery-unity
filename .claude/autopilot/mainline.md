@@ -1,3 +1,11 @@
+# D26最新：渲染修正终态拒收，数据修正继续
+
+RENDER01唯一修正 amsterdam-d26-geo-map-renderer-r2-20261017 于2026-10-16T18:50:37.836963Z正常CLI0交回，1414.012秒，worker67847已退出、session60268已收回。完整报告、37/37与4最终命令通过，Read11/Edit12/Bash8含两条表外只读，10源/6只读SHA不变。父级实际全量12组原标签互遮已解决，但原始demo在390×844/DPR1静止100帧画布高度214.8125→274.484375，原首稿212.609375保持；含边框外框尺寸反复写回height:auto引发反馈。实际两次复现与before/after截图已读，标准rejected/semantic、采用0、修正1/1耗尽，RENDER01搁置，不自动第三次。完整证据RENDER01/r2-review，原报告/实现不改。
+
+父级最初matrix误读未公开lines/fp字段已纠正，实际fillText重新采集；11CSS序列化误差4.73e-6不当字体失败。原测试rectHits混用w/h与width/height导致部分断言无效，隔离副本仅纠维度后37仍绿，未改原稿或游戏。拒收依据是实际画布高度回退。
+
+本波仅PACK01-R2仍在运行，固定worker67806/session48603，继续查原ID/日志/PID，先收齐后下一波。NAV额外一次原问题仍无真人答复，不重问/不预选。D26实际Plan8次，采用转换组件1、游戏地图0；游戏3c9bb0e仅工具、试玩dad6b38/18860未换图。固定截止02:03:03Z与review23:48:33Z不变，继续已授权数据开发，不是最终报告。
+
 # D26最新：第四波数据与渲染修正已实际并行
 
 PACK01唯一修正 amsterdam-d26-runtime-pack-r2-20261017 已于2026-10-16T18:26:45Z实际启动，worker67806/launcher67805/session48603，2400秒70轮，13公开输入565114B。RENDER01唯一修正 amsterdam-d26-geo-map-renderer-r2-20261017 于18:27:03Z实际启动，worker67847/launcher67846/session60268，1800秒55轮，10公开输入403669B。两包均Seed Evolving thinking enabled/effort high，修正各1/1已用；合同3d106f6已push且启动前远端一致。首路前全机0，第二路前仅PACK-R2，所有输入SHA一致；先查原ID/账本/PID并收齐本波，不重发。PACK补修真实道路共享边界/HTTP/schema，RENDER补修标签遮挡/实际CSS宽度。

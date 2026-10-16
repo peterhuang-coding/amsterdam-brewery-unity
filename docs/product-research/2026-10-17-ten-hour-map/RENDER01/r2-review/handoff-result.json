@@ -1,0 +1,42 @@
+{
+  "status": "completed",
+  "summary": "RENDER01 targeted correction only; qualified geometry/index/cache pipeline, UMD API and even-odd holes untouched. (1) Label occlusion: layoutLabels now places the at-most-two chips jointly. The selected destination chip is reserved first at full name (>=11 CSS px, wrapping long CJK/ASCII names, never shrunk/truncated); the nearest label is drawn only when a clamped candidate clears the selected chip, the avatar box, viewport margins and HUD zones (mode chip, scale bar, source credit), otherwise it is skipped while its marker is always returned. Reserved widths use the live ctx.measureText via a shared label font, floored by the validated conservative estimator so rects never undercut real glyphs; null/fake contexts keep the estimator (deterministic). (2) Responsive demo sizing: added exported pure helper resolveFrameSize(canvas, requested) that reads the canvas's own post-layout getBoundingClientRect (clientWidth fallback; requested number only as no-DOM fallback). renderer-demo.html now styles the requested width as a hint, re-measures the actual CSS size after layout/resize/width-buttons every frame, resizes the backing store only on true size/DPR change, keeps DPR transform owned by the caller, and draws with width=height-space equal to measured cssWidth (d=1, street ~2 CSS px/m), fixing requested-1100/actual-362 tiny text; subset/non-game warning preserved. Baseline before edits was 31/31 tests passing (no failures to carry); after edits 37/37 pass: all 31 original intents preserved plus 6 focused regressions (sizing helper/DOM stub, measured-width end-to-end street scale, 120-frame matrix on the real 7127.775x6671.705 fixture at actual CSS 292/320/362/390/1100 x street/city z1/z2 x day/night x pub/nw/se/lotte positions asserting both labels render for the recorded pub case without mutual/avatar/HUD overlap and markers retained, long CJK/ASCII wrap matrix, white-box nearest-skipped-with-marker case, and measureText-metric bounds). Benchmark file unchanged and still green; its numbers are local null-context CPU measurements, not game or full-source performance proof. No 1:1 facade, visual-readability, human-approval or adoption claims.",
+  "changed_files": [
+    "geo-map-renderer.js",
+    "test-geo-map-renderer.cjs",
+    "renderer-demo.html"
+  ],
+  "tests": [
+    {
+      "command": "node --check geo-map-renderer.js",
+      "exit_code": 0,
+      "summary": "Syntax check passes with no output."
+    },
+    {
+      "command": "node --test test-geo-map-renderer.cjs",
+      "exit_code": 0,
+      "summary": "37/37 subtests pass (31 pre-existing intents preserved + 6 new correction regressions); 0 fail."
+    },
+    {
+      "command": "node benchmark-geo-map-renderer.cjs",
+      "exit_code": 0,
+      "summary": "20,000 synthetic features on 7127.775x6671.705 m world; all five printed invariants PASS (all indexed, <=4 live cache canvases, max side 2048 px, street reuses > rebuilds, 3 direct frames); local null-context measurements only."
+    },
+    {
+      "command": "node --check benchmark-geo-map-renderer.cjs",
+      "exit_code": 0,
+      "summary": "Syntax check passes with no output."
+    }
+  ],
+  "blockers": [],
+  "memory_delta": [
+    "RENDER01 r2 correction landed: selected-first joint chip placement (selected wraps at >=11 CSS px and always renders; nearest skipped but marker kept when selected/avatar/viewport/HUD cannot be cleared); ctx.measureText floored by the conservative estimator drives returned rects.",
+    "Renderer exports additive helper resolveFrameSize(canvas,{width,height}) for true post-layout CSS size; demo pattern is backing=actualCss*dpr plus caller DPR transform and options width=cssWidth=measured width (d=1).",
+    "Parent-recorded 12 overlap cases (CSS 292/362/1100, street/city, day/night) are covered by a 120-frame regression matrix on real-pub-sample.json; browser Canvas verification with the packed 145703-feature source remains parent-only acceptance."
+  ],
+  "next_steps": [
+    "Parent runs the full packed 145703-feature dataset in a real browser Canvas at CSS 292/362/1100 (street/city, zoom 1/2, day/night, edges) to confirm selected/nearest label readability, true measureText metrics and cache performance before any adoption.",
+    "Parent confirms the responsive demo flow (requested 1100 clamped to actual 362 at viewport 390) renders >=11 CSS px labels and the intended ~2 CSS px/m street scale, and reviews the joint-placement fallback at extreme aspect ratios.",
+    "Any game integration, DOM list changes, ferry transit and save migration remain separate later tasks per geo-interface.md; existing dad6b38 play/save stays preserved."
+  ]
+}

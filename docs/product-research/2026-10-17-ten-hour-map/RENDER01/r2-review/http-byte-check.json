@@ -1,0 +1,20 @@
+[
+  {
+    "file": "geo-map-renderer.js",
+    "bytes": 55699,
+    "sha256": "7e60695d5e4307f819a3def38b1d67f4d904d2be2d583e11356926460056292c",
+    "local_equal": true
+  },
+  {
+    "file": "renderer-demo.html",
+    "bytes": 8358,
+    "sha256": "e56b9ac796034709dcfc9f4f6f36bfccb55ce809b342e07292b5a72d36e01f48",
+    "local_equal": true
+  },
+  {
+    "file": "parent-full.html",
+    "bytes": 2742,
+    "sha256": "39c016eb33c87f670a87f5d01d0507bed3529efe50d63a9dc22d643afb82606d",
+    "local_equal": true
+  }
+]

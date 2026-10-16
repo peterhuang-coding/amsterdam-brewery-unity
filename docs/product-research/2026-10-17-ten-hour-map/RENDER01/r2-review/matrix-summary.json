@@ -1,0 +1,8 @@
+{
+  "cases": 12,
+  "mutual_overlap_cases": 0,
+  "both_labels_present": 12,
+  "text_bounds_pass_with_0_001css_rounding": true,
+  "min_effective_css_font": 10.999995272727274,
+  "initial_parent_diagnostic": "first matrix mistakenly read non-public lines/fp fields; fixed parent capture only, original error preserved; initial1e-6 font tolerance tripped browser serialization rounding4.73e-6CSSpx, final1e-3 tolerance passes"
+}

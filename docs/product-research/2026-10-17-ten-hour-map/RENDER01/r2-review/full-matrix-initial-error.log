@@ -1,0 +1,7 @@
+### Error
+Error: page.evaluate: TypeError: Cannot read properties of undefined (reading 'map')
+    at eval (eval at evaluate (:368:30), <anonymous>:5:201)
+    at Array.map (<anonymous>)
+    at eval (eval at evaluate (:368:30), <anonymous>:5:28)
+    at UtilityScript.evaluate (<anonymous>:370:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)

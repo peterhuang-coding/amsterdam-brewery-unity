@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-d26-geo-map-renderer-r2-20261017",
+  "receipt_sha256": "fa36360e807e416e75335ca81857e1b1563fa6763d972c9483035867d461f0ff",
+  "reviewed_at": "2026-10-16T18:59:29Z",
+  "outcome": "rejected",
+  "failure_type": "semantic",
+  "evidence": [
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/RENDER01/r2-review/parent-review.md",
+      "sha256": "29354659e8c1e5d79765bdf5e51c15ccd0b4a8bc938a5e1f46513b112baac405"
+    }
+  ]
+}

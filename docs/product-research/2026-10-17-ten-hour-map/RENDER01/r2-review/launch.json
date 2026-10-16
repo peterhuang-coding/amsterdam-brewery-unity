@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "/opt/homebrew/bin/claude",
+    "--bare",
+    "-p",
+    "--model",
+    "doubao-seed-evolving",
+    "--effort",
+    "high",
+    "--settings",
+    "{\"apiKeyHelper\": \"/usr/bin/security find-generic-password -s llm-hub -a volcengine-plan -w\", \"alwaysThinkingEnabled\": true, \"permissions\": {\"allow\": [\"Read(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/**)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/geo-map-renderer.js)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/geo-map-renderer.js)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/test-geo-map-renderer.cjs)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/test-geo-map-renderer.cjs)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/benchmark-geo-map-renderer.cjs)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/benchmark-geo-map-renderer.cjs)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/renderer-demo.html)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/renderer-demo.html)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/handoff-result.json)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/handoff-result.json)\", \"Bash(node --check geo-map-renderer.js)\", \"Bash(node --test test-geo-map-renderer.cjs)\", \"Bash(node benchmark-geo-map-renderer.cjs)\", \"Bash(node --check benchmark-geo-map-renderer.cjs)\"]}}",
+    "--setting-sources",
+    "",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\": {}}",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--session-id",
+    "58e50c0a-d875-47fd-acb8-528d2e6db702",
+    "--max-turns",
+    "55",
+    "--permission-mode",
+    "dontAsk",
+    "--tools",
+    "Read,Write,Edit,Bash"
+  ],
+  "cwd": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace",
+  "pid": 67847,
+  "pid_pending": false,
+  "started_epoch": 1792175223
+}

@@ -1,0 +1,186 @@
+{
+  "artifact_dir": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017",
+  "blockers": [],
+  "changed_files": [
+    {
+      "path": "geo-map-renderer.js",
+      "sha256": "7e60695d5e4307f819a3def38b1d67f4d904d2be2d583e11356926460056292c"
+    },
+    {
+      "path": "test-geo-map-renderer.cjs",
+      "sha256": "50c4629a32830a2470b8352c68582778d569b2a005fd4698fabdcd808c83c4af"
+    },
+    {
+      "path": "renderer-demo.html",
+      "sha256": "e56b9ac796034709dcfc9f4f6f36bfccb55ce809b342e07292b5a72d36e01f48"
+    }
+  ],
+  "claude": {
+    "final_subtype": "success",
+    "is_error": false,
+    "outcome": "completed",
+    "pid": 67847,
+    "returncode": 0,
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 2210936,
+      "inference_geo": "",
+      "input_tokens": 137645,
+      "iterations": [],
+      "output_tokens": 62533,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_fetch_requests": 0,
+        "web_search_requests": 0
+      },
+      "service_tier": "standard",
+      "speed": "standard"
+    }
+  },
+  "cost_basis": "client estimate; not Coding Plan charge",
+  "cost_usd": 3.357017999999999,
+  "deleted_files": [],
+  "disallowed_changes": [],
+  "elapsed_seconds": 1414.012,
+  "finished_at": "2026-10-16T18:50:37.836963+00:00",
+  "input_hashes": {
+    "benchmark-geo-map-renderer.cjs": "202ab0677e09d7a4e4fcc934e31ae0b92f101b22fcff4be0bc3d30a58b8efc27",
+    "brief.md": "dbcfe1e9244f043ca6ab87b2913824ab9a09ac45e2ef3858e5f315986df1bd43",
+    "correction.md": "ee6c65b0ca77db1beb8572ffd78f50f2cdc4c3797b50906b4855f5f0f53e284d",
+    "geo-interface.md": "35e5148f8f6ef04c3b379f268f7ca9faf806e7a0b17275d7717a15373fbed0af",
+    "geo-map-renderer.js": "1e6d6b96a4e9bf36b31bd0a1f61db9dc36ad3021fee5b1a4c67f1e9e624796e3",
+    "parent-label-overlap.json": "14f2c0e530fa335c7104fa91b74bd7624238a2a945dbdb43a5e8c684d68e22bb",
+    "real-pub-sample.json": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598",
+    "renderer-demo.html": "f3e6b2f18f83a03b9c541fb29459f84a50378b04c97d865db60f9cb587e2765e",
+    "reopening-scene-reference.js": "d429ad5760dd8b2d23397a20070d4ebdbdf7704ee3b19ce4f349fec52582dda7",
+    "test-geo-map-renderer.cjs": "47c20c978442b95499a1d86e801a43102abeb32e4d8df159f77e6ab482a379f9"
+  },
+  "memory_delta": [
+    "RENDER01 r2 correction landed: selected-first joint chip placement (selected wraps at >=11 CSS px and always renders; nearest skipped but marker kept when selected/avatar/viewport/HUD cannot be cleared); ctx.measureText floored by the conservative estimator drives returned rects.",
+    "Renderer exports additive helper resolveFrameSize(canvas,{width,height}) for true post-layout CSS size; demo pattern is backing=actualCss*dpr plus caller DPR transform and options width=cssWidth=measured width (d=1).",
+    "Parent-recorded 12 overlap cases (CSS 292/362/1100, street/city, day/night) are covered by a 120-frame regression matrix on real-pub-sample.json; browser Canvas verification with the packed 145703-feature source remains parent-only acceptance."
+  ],
+  "next_steps": [
+    "Parent runs the full packed 145703-feature dataset in a real browser Canvas at CSS 292/362/1100 (street/city, zoom 1/2, day/night, edges) to confirm selected/nearest label readability, true measureText metrics and cache performance before any adoption.",
+    "Parent confirms the responsive demo flow (requested 1100 clamped to actual 362 at viewport 390) renders >=11 CSS px labels and the intended ~2 CSS px/m street scale, and reviews the joint-placement fallback at extreme aspect ratios.",
+    "Any game integration, DOM list changes, ferry transit and save migration remain separate later tasks per geo-interface.md; existing dad6b38 play/save stays preserved."
+  ],
+  "observed_models": [
+    "doubao-seed-evolving"
+  ],
+  "permission_denials": [],
+  "replayed": false,
+  "report": {
+    "blockers": [],
+    "changed_files": [
+      "geo-map-renderer.js",
+      "test-geo-map-renderer.cjs",
+      "renderer-demo.html"
+    ],
+    "memory_delta": [
+      "RENDER01 r2 correction landed: selected-first joint chip placement (selected wraps at >=11 CSS px and always renders; nearest skipped but marker kept when selected/avatar/viewport/HUD cannot be cleared); ctx.measureText floored by the conservative estimator drives returned rects.",
+      "Renderer exports additive helper resolveFrameSize(canvas,{width,height}) for true post-layout CSS size; demo pattern is backing=actualCss*dpr plus caller DPR transform and options width=cssWidth=measured width (d=1).",
+      "Parent-recorded 12 overlap cases (CSS 292/362/1100, street/city, day/night) are covered by a 120-frame regression matrix on real-pub-sample.json; browser Canvas verification with the packed 145703-feature source remains parent-only acceptance."
+    ],
+    "next_steps": [
+      "Parent runs the full packed 145703-feature dataset in a real browser Canvas at CSS 292/362/1100 (street/city, zoom 1/2, day/night, edges) to confirm selected/nearest label readability, true measureText metrics and cache performance before any adoption.",
+      "Parent confirms the responsive demo flow (requested 1100 clamped to actual 362 at viewport 390) renders >=11 CSS px labels and the intended ~2 CSS px/m street scale, and reviews the joint-placement fallback at extreme aspect ratios.",
+      "Any game integration, DOM list changes, ferry transit and save migration remain separate later tasks per geo-interface.md; existing dad6b38 play/save stays preserved."
+    ],
+    "status": "completed",
+    "summary": "RENDER01 targeted correction only; qualified geometry/index/cache pipeline, UMD API and even-odd holes untouched. (1) Label occlusion: layoutLabels now places the at-most-two chips jointly. The selected destination chip is reserved first at full name (>=11 CSS px, wrapping long CJK/ASCII names, never shrunk/truncated); the nearest label is drawn only when a clamped candidate clears the selected chip, the avatar box, viewport margins and HUD zones (mode chip, scale bar, source credit), otherwise it is skipped while its marker is always returned. Reserved widths use the live ctx.measureText via a shared label font, floored by the validated conservative estimator so rects never undercut real glyphs; null/fake contexts keep the estimator (deterministic). (2) Responsive demo sizing: added exported pure helper resolveFrameSize(canvas, requested) that reads the canvas's own post-layout getBoundingClientRect (clientWidth fallback; requested number only as no-DOM fallback). renderer-demo.html now styles the requested width as a hint, re-measures the actual CSS size after layout/resize/width-buttons every frame, resizes the backing store only on true size/DPR change, keeps DPR transform owned by the caller, and draws with width=height-space equal to measured cssWidth (d=1, street ~2 CSS px/m), fixing requested-1100/actual-362 tiny text; subset/non-game warning preserved. Baseline before edits was 31/31 tests passing (no failures to carry); after edits 37/37 pass: all 31 original intents preserved plus 6 focused regressions (sizing helper/DOM stub, measured-width end-to-end street scale, 120-frame matrix on the real 7127.775x6671.705 fixture at actual CSS 292/320/362/390/1100 x street/city z1/z2 x day/night x pub/nw/se/lotte positions asserting both labels render for the recorded pub case without mutual/avatar/HUD overlap and markers retained, long CJK/ASCII wrap matrix, white-box nearest-skipped-with-marker case, and measureText-metric bounds). Benchmark file unchanged and still green; its numbers are local null-context CPU measurements, not game or full-source performance proof. No 1:1 facade, visual-readability, human-approval or adoption claims.",
+    "tests": [
+      {
+        "command": "node --check geo-map-renderer.js",
+        "exit_code": 0,
+        "summary": "Syntax check passes with no output."
+      },
+      {
+        "command": "node --test test-geo-map-renderer.cjs",
+        "exit_code": 0,
+        "summary": "37/37 subtests pass (31 pre-existing intents preserved + 6 new correction regressions); 0 fail."
+      },
+      {
+        "command": "node benchmark-geo-map-renderer.cjs",
+        "exit_code": 0,
+        "summary": "20,000 synthetic features on 7127.775x6671.705 m world; all five printed invariants PASS (all indexed, <=4 live cache canvases, max side 2048 px, street reuses > rebuilds, 3 direct frames); local null-context measurements only."
+      },
+      {
+        "command": "node --check benchmark-geo-map-renderer.cjs",
+        "exit_code": 0,
+        "summary": "Syntax check passes with no output."
+      }
+    ]
+  },
+  "request_sha256": "7acd44cab58273d36d1f0567f05a91a5b9b3fcbec5370b3f4a7e5d0fa0530824",
+  "requested": {
+    "allowed_tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash"
+    ],
+    "basis": "launcher-pinned request; requested, not provider-confirmed; the pinned model is a fixed convention, not a ranking result",
+    "model": "doubao-seed-evolving",
+    "permission_allow": [
+      "Read(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/**)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/geo-map-renderer.js)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/geo-map-renderer.js)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/test-geo-map-renderer.cjs)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/test-geo-map-renderer.cjs)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/benchmark-geo-map-renderer.cjs)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/benchmark-geo-map-renderer.cjs)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/renderer-demo.html)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/renderer-demo.html)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/handoff-result.json)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017/workspace/handoff-result.json)",
+      "Bash(node --check geo-map-renderer.js)",
+      "Bash(node --test test-geo-map-renderer.cjs)",
+      "Bash(node benchmark-geo-map-renderer.cjs)",
+      "Bash(node --check benchmark-geo-map-renderer.cjs)"
+    ],
+    "permission_mode": "dontAsk",
+    "provider_base_url": "https://ark.cn-beijing.volces.com/api/coding",
+    "reasoning_effort": "high",
+    "thinking_enabled": true
+  },
+  "session_id": "58e50c0a-d875-47fd-acb8-528d2e6db702",
+  "started_at": "2026-10-16T18:27:03.811993+00:00",
+  "status": "verifying",
+  "summary": "RENDER01 targeted correction only; qualified geometry/index/cache pipeline, UMD API and even-odd holes untouched. (1) Label occlusion: layoutLabels now places the at-most-two chips jointly. The selected destination chip is reserved first at full name (>=11 CSS px, wrapping long CJK/ASCII names, never shrunk/truncated); the nearest label is drawn only when a clamped candidate clears the selected chip, the avatar box, viewport margins and HUD zones (mode chip, scale bar, source credit), otherwise it is skipped while its marker is always returned. Reserved widths use the live ctx.measureText via a shared label font, floored by the validated conservative estimator so rects never undercut real glyphs; null/fake contexts keep the estimator (deterministic). (2) Responsive demo sizing: added exported pure helper resolveFrameSize(canvas, requested) that reads the canvas's own post-layout getBoundingClientRect (clientWidth fallback; requested number only as no-DOM fallback). renderer-demo.html now styles the requested width as a hint, re-measures the actual CSS size after layout/resize/width-buttons every frame, resizes the backing store only on true size/DPR change, keeps DPR transform owned by the caller, and draws with width=height-space equal to measured cssWidth (d=1, street ~2 CSS px/m), fixing requested-1100/actual-362 tiny text; subset/non-game warning preserved. Baseline before edits was 31/31 tests passing (no failures to carry); after edits 37/37 pass: all 31 original intents preserved plus 6 focused regressions (sizing helper/DOM stub, measured-width end-to-end street scale, 120-frame matrix on the real 7127.775x6671.705 fixture at actual CSS 292/320/362/390/1100 x street/city z1/z2 x day/night x pub/nw/se/lotte positions asserting both labels render for the recorded pub case without mutual/avatar/HUD overlap and markers retained, long CJK/ASCII wrap matrix, white-box nearest-skipped-with-marker case, and measureText-metric bounds). Benchmark file unchanged and still green; its numbers are local null-context CPU measurements, not game or full-source performance proof. No 1:1 facade, visual-readability, human-approval or adoption claims.",
+  "task_id": "amsterdam-d26-geo-map-renderer-r2-20261017",
+  "telemetry": {
+    "attempt_kind": "correction",
+    "logical_task_id": "f02-real-geo-renderer-d26",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "tests": [
+    {
+      "command": "node --check geo-map-renderer.js",
+      "exit_code": 0,
+      "summary": "Syntax check passes with no output."
+    },
+    {
+      "command": "node --test test-geo-map-renderer.cjs",
+      "exit_code": 0,
+      "summary": "37/37 subtests pass (31 pre-existing intents preserved + 6 new correction regressions); 0 fail."
+    },
+    {
+      "command": "node benchmark-geo-map-renderer.cjs",
+      "exit_code": 0,
+      "summary": "20,000 synthetic features on 7127.775x6671.705 m world; all five printed invariants PASS (all indexed, <=4 live cache canvases, max side 2048 px, street reuses > rebuilds, 3 direct frames); local null-context measurements only."
+    },
+    {
+      "command": "node --check benchmark-geo-map-renderer.cjs",
+      "exit_code": 0,
+      "summary": "Syntax check passes with no output."
+    }
+  ]
+}

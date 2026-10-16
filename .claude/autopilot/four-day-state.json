@@ -39,30 +39,6 @@
       "prelaunch": "docs/product-research/2026-10-17-ten-hour-map/PACK01/r2/prelaunch.json",
       "state_observed": "running",
       "observed_at": "2026-10-16T18:31:55.784668+00:00"
-    },
-    {
-      "task_id": "amsterdam-d26-geo-map-renderer-r2-20261017",
-      "label": "RENDER01-R2",
-      "submitted_at": "2026-10-16T18:27:03+00:00",
-      "worker_pid": 67847,
-      "launcher_pid": 67846,
-      "outer_session": 60268,
-      "contract_commit": "3d106f6d2a1353370627d02224592276c16954f3",
-      "timeout_seconds": 1800,
-      "max_turns": 55,
-      "model": "doubao-seed-evolving",
-      "effort": "high",
-      "thinking_enabled": true,
-      "public_input_files": 10,
-      "public_input_bytes": 403669,
-      "business_attempt": 1,
-      "correction_submitted": 1,
-      "correction_limit": 1,
-      "input": "/tmp/amsterdam-d26-geo-map-renderer-r2-20261017/input",
-      "ledger": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r2-20261017",
-      "prelaunch": "docs/product-research/2026-10-17-ten-hour-map/RENDER01/r2/prelaunch.json",
-      "state_observed": "running",
-      "observed_at": "2026-10-16T18:31:55.784668+00:00"
     }
   ],
   "candidate_path": null,
@@ -352,7 +328,7 @@
   "current_task_notion": null,
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
-  "current_task_stage": "PACK01-R2 and RENDER01-R2 running; NAV01 shelved pending one actual human exception answer",
+  "current_task_stage": "PACK01-R2 running, RENDER01-R2 terminal rejected, NAV extra question awaiting human",
   "prepared_task_id": null,
   "prepared_task_packet": null,
   "play_service_pid": 91799,
@@ -660,7 +636,7 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-16T18:31:55.784668+00:00",
+  "updated_at": "2026-10-16T19:00:04.697405+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
   "last_checked_at": "2026-10-16T18:31:55.784668+00:00",
@@ -719,7 +695,9 @@
       "proposed_task_id": "amsterdam-d26-geo-navigation-r3-20261017",
       "submitted": false,
       "answer": null
-    }
+    },
+    "render01_correction_review": "rejected/semantic: original label overlap fixed in 12 full browser cases; demo canvas height drifts 214.8125→274.484375 in100frames; 1/1 exhausted, adopted0",
+    "render01_next": "Shelved; no third request or new exception question. Original report/code preserved."
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",
@@ -731,6 +709,6 @@
   },
   "prepared_tasks": [],
   "awaiting_parent_review": [],
-  "current_stage": "wave4_pack_and_render_corrections_running_nav_extra_exception_pending",
+  "current_stage": "pack_r2_running_nav_and_render_shelved_nav_exception_pending",
   "prepared": []
 }

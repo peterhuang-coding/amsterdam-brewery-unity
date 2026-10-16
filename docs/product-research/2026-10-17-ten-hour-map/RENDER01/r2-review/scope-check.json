@@ -1,0 +1,78 @@
+{
+  "finished_at": "2026-10-16T18:50:37.836963+00:00",
+  "elapsed_seconds": 1414.012,
+  "cli_returncode": 0,
+  "is_error": false,
+  "report_valid": true,
+  "tool_counts": {
+    "Read": 11,
+    "Bash": 8,
+    "Edit": 12
+  },
+  "extra_bash_attempts": 2,
+  "permission_denials": [],
+  "disallowed_changes": [],
+  "input_sha": [
+    {
+      "file": "benchmark-geo-map-renderer.cjs",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": true
+    },
+    {
+      "file": "brief.md",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "correction.md",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "geo-interface.md",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "geo-map-renderer.js",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": false
+    },
+    {
+      "file": "parent-label-overlap.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "real-pub-sample.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "renderer-demo.html",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": false
+    },
+    {
+      "file": "reopening-scene-reference.js",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "test-geo-map-renderer.cjs",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": false
+    }
+  ],
+  "path_violations": []
+}

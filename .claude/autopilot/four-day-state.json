@@ -5,7 +5,7 @@
   "deadline": "2026-10-17T02:03:03Z",
   "next_direction_review_at": "2026-10-16T23:48:33Z",
   "last_direction_review_at": "2026-10-16T13:55:56.910455+00:00",
-  "current_task_id": "amsterdam-d26-geo-navigation-20261017",
+  "current_task_id": null,
   "logical_task": "d26-real-geography",
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
@@ -15,22 +15,7 @@
   "current_task_terminal": null,
   "failure_reason": null,
   "last_result_at": "2026-10-14T16:58:40.031524Z",
-  "in_flight": [
-    {
-      "id": "amsterdam-d26-geo-navigation-20261017",
-      "label": "NAV01",
-      "logical_task_id": "f02-polygon-navigation-d26",
-      "notion_page": "https://app.notion.com/p/3fb3285284df813c90d5f14904c6ecc8",
-      "submitted_at": "2026-10-16T16:34:28Z",
-      "launcher_pid": 55395,
-      "worker_pid": 55396,
-      "outer_session_id": 9606,
-      "business_attempts_submitted": 1,
-      "corrections_allowed": 1,
-      "corrections_submitted": 0,
-      "contract_commit": "81378feb6cfab384608d255479bd945ad84917bc"
-    }
-  ],
+  "in_flight": [],
   "candidate_path": null,
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -651,7 +636,9 @@
     "game_adopted": 0,
     "source_download_complete": true,
     "source_download_finished_at": "2026-10-16T16:38:18.837886Z",
-    "geo01_business_review": "rejected/semantic: completeness metadata/type, full geometry preserved"
+    "geo01_business_review": "rejected/semantic: completeness metadata/type, full geometry preserved",
+    "nav01_business_review": "rejected/semantic: positive-radius road-hole clearance; synthetic30pass, actual49m radius0 route821ms",
+    "first_wave_collected_at": "2026-10-16T17:04:17.651203+00:00"
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",
@@ -668,7 +655,7 @@
       "logical_task_id": "f02-real-geodata-import-d26",
       "attempt_kind": "correction",
       "submitted": false,
-      "blocked_until": "NAV01 first-wave returned and reviewed",
+      "blocked_until": null,
       "input_dir": "/tmp/amsterdam-d26-bgt-import-r2-20261017/input"
     },
     {
@@ -677,9 +664,10 @@
       "logical_task_id": "f02-geo-runtime-pack-d26",
       "attempt_kind": "business",
       "submitted": false,
-      "blocked_until": "NAV01 first-wave returned and reviewed",
+      "blocked_until": null,
       "input_dir": "/tmp/amsterdam-d26-runtime-pack-20261017/input"
     }
   ],
-  "awaiting_parent_review": []
+  "awaiting_parent_review": [],
+  "current_stage": "first_wave_collected_next_wave_ready"
 }

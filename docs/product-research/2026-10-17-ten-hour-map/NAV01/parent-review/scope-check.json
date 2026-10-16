@@ -1,0 +1,64 @@
+{
+  "finished_at": "2026-10-16T17:02:15.060452+00:00",
+  "cli": {
+    "final_subtype": "success",
+    "is_error": false,
+    "outcome": "completed",
+    "pid": 55396,
+    "returncode": 0,
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1657776,
+      "inference_geo": "",
+      "input_tokens": 107763,
+      "iterations": [],
+      "output_tokens": 71940,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_fetch_requests": 0,
+        "web_search_requests": 0
+      },
+      "service_tier": "standard",
+      "speed": "standard"
+    }
+  },
+  "status": "verifying",
+  "counts": {
+    "Read": 8,
+    "Edit": 15,
+    "Bash": 12
+  },
+  "extra_commands": [],
+  "input_sha": [
+    {
+      "file": "brief.md",
+      "expected": "fa639fb4932944d027bff1fb3a845bd25e3b746b436f3b46f61deaba83100c91",
+      "source": "fa639fb4932944d027bff1fb3a845bd25e3b746b436f3b46f61deaba83100c91",
+      "staged": "fa639fb4932944d027bff1fb3a845bd25e3b746b436f3b46f61deaba83100c91",
+      "match": true
+    },
+    {
+      "file": "geo-interface.md",
+      "expected": "35e5148f8f6ef04c3b379f268f7ca9faf806e7a0b17275d7717a15373fbed0af",
+      "source": "35e5148f8f6ef04c3b379f268f7ca9faf806e7a0b17275d7717a15373fbed0af",
+      "staged": "35e5148f8f6ef04c3b379f268f7ca9faf806e7a0b17275d7717a15373fbed0af",
+      "match": true
+    },
+    {
+      "file": "source-classification.md",
+      "expected": "c39582ff3e62c869a1d7dab351e028890c04df08f6efe310dc6cfaddeef3a617",
+      "source": "c39582ff3e62c869a1d7dab351e028890c04df08f6efe310dc6cfaddeef3a617",
+      "staged": "c39582ff3e62c869a1d7dab351e028890c04df08f6efe310dc6cfaddeef3a617",
+      "match": true
+    }
+  ],
+  "disallowed_changes": [],
+  "permission_denials": [],
+  "report_valid": true
+}

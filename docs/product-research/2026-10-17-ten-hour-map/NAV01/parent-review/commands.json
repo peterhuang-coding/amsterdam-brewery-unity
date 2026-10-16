@@ -1,0 +1,22 @@
+[
+  {
+    "command": "node --check geo-navigation.js",
+    "exit_code": 0,
+    "seconds": 0.039795
+  },
+  {
+    "command": "node --test test-geo-navigation.cjs",
+    "exit_code": 0,
+    "seconds": 0.199898208
+  },
+  {
+    "command": "node benchmark-geo-navigation.cjs",
+    "exit_code": 0,
+    "seconds": 3.232985916
+  },
+  {
+    "command": "node --check benchmark-geo-navigation.cjs",
+    "exit_code": 0,
+    "seconds": 0.04862958300000031
+  }
+]

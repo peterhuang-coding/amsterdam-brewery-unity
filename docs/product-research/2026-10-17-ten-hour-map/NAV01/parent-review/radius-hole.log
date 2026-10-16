@@ -1,0 +1,1 @@
+{"fixture":"road hole wholly inside actor disk","center":{"x":0,"y":0},"radius":1,"holeBounds":[0.6,0.6,0.7,0.7],"expected":false,"actual":true}

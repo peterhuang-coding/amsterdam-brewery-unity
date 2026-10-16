@@ -1,0 +1,46 @@
+{
+  "status": "completed",
+  "summary": "Implemented the frozen D26 NAV01 geometry/navigation interface as a dependency-free UMD module (globalThis.AmsterdamGeoNavigation / module.exports): project/unproject (local equirectangular, metres rounded to 3 decimals, <1e-7 degree round-trip), pointInPolygon (outer boundary inside, hole boundary excluded, concave rings, holes, strict ring validation), and createNavigator with options cellSize=2, maxNodes=250000, bucketSize=64, radius=0. Walkability policy per frozen spec + source-classification amendment: roads or bridge deck only; buildings always reject; water rejects unless covered by type_overbruggingsdeel==='dek'; pijler/landhoofd/null bridge parts never override water; roads with functie autosnelweg/autoweg/spoorbaan/OV-baan/baan voor vliegverkeer excluded for both modes; bike additionally rejects voetpad, voetpad op trap, voetgangergebied AND the authoritative BGT spelling voetgangersgebied, and ruiterpad; null functie stays distinguishable and is allowed. segmentWalkable combines <=0.5 m sampling with exact polygon-edge crossing splits (midpoint classification between every boundary intersection), so sub-0.5 m thin water/building strips cannot be jumped; radius>0 adds circumference sampling plus exact blocker-edge distance checks on points and the swept capsule. snap is a bounded deterministic lattice search (default maxDistance 80, nearest then coordinate tie-break, no unbounded scan). route is deterministic A* on a sparse 2 m lattice with cached passability and sparse spatial buckets, 8-neighbour moves with strict no-corner-cut side checks, explicit maxNodes budget (reasons invalid/unwalkable/unreachable/limit), snapDistance opt-in only (never silently moves callers at 0), actual endpoints preserved, zero-length same-point routes, disconnected-component failure, and safety-gated string-pull simplification; stats exposes only measured observations. 30 node:test regression cases cover projection round-trip, holes/multipolygons/concave rings, invalid coordinates with feature IDs, functie table, deck vs pier/landhoofd/null, building precedence, 0.10-0.20 m thin barriers under sampling spacing, diagonal corner cuts, radius tangent clearance, bounded snap incl. null results, same point, blocked endpoints, explicit snap in routes, junctions, disconnected islands, water shortcut prevention and deck reconnection, limit termination, shorter-of-two-corridors, walk-vs-bike detour on voetpad/voetgangersgebied, and post-route per-segment/dense-point safety audits. Benchmark builds a deterministic 1 km synthetic tiled city (23 roads, 100 block buildings, one canal, two dek bridges at y=300 voetpad and y=700 open, one pijler at y=500, one disconnected island) and asserts geometric invariants rather than timing an empty call: walk crosses only via deck300 (length 1598.963 m, 15 points, visited 16712), bike forced to deck700 (1702.853 m, visited 13570, ~104 m measured detour), every route segment and every 0.25 m sampled point is walkable in mode, pier/open-water/voetpad-deck-approach crossings blocked for the correct modes, maxNodes=50 yields reason limit (visited<=51), island is unreachable after a bounded 33661 expansions, snap honours its 80 m bound. Early RED observations preserved: (1) first 'node --check geo-navigation.js' failed with a missing closing paren on the UMD wrapper, fixed; (2) first test run was 24/30 - three failures came from a nesting bug in the test-only poly() helper (donut/hole tests), one from assuming radius=width/2 tangency was allowed even though water boundary belongs to water (corrected semantics: tangent contact blocks), one from a miscalculated bike-corridor length expectation; (3) second test run was 27/30 - the 'unclosed ring' case accidentally used the auto-closing helper (now a raw literal), a supposedly clear segment actually crossed the 0.2 m building wall, and simplified walk geometry legitimately reaches y=-8 not y<=-9; (4) first benchmark run failed an over-tight length bound (>1600) derived wrongly from Manhattan movement despite 8-neighbour Euclidean costs, replaced with straight-line/upper-bound plus bike>walk+50 m and exact bridge-band invariants. No game/index/UI/source files touched; no network, dependencies, installs, git, or BGT data used - all geometry synthetic.",
+  "changed_files": [
+    "geo-navigation.js",
+    "test-geo-navigation.cjs",
+    "benchmark-geo-navigation.cjs"
+  ],
+  "tests": [
+    {
+      "command": "node --check geo-navigation.js",
+      "exit_code": 0,
+      "summary": "Syntax OK on final module bytes (initial run during development had failed with a missing UMD closing paren; fixed before final runs)."
+    },
+    {
+      "command": "node --test test-geo-navigation.cjs",
+      "exit_code": 0,
+      "summary": "30/30 tests pass, 0 fail (TAP, ~117 ms): projection round-trip/axes/invalid input; pointInPolygon holes, boundaries, concavity, malformed rings; navigator validation with feature IDs; 16-row walk/bike functie table incl. both voetgangersgebied spellings; deck vs pijler/landhoofd/null; building precedence; multipolygon; donut hole; 0.10/0.20 m thin barriers and thin wall; corner cutting; pier vs deck crossings; mode-specific segments; radius 1.4/1.5/1.6 clearance; bounded snap and nulls; route invalid/same-point/unwalkable/snapDistance/junction/unreachable/water+deck/limit/alternatives/walk-vs-bike/voetgangersgebied endpoints/radius; stats and default options. Each successful route is re-audited segment-by-segment and at dense samples."
+    },
+    {
+      "command": "node benchmark-geo-navigation.cjs",
+      "exit_code": 0,
+      "summary": "Single-line JSON, ok:true. Deterministic 1 km tiled synthetic city: walk found length 1598.963 m / 15 points / visited 16712 crossing canal at y=301.351 (deck300); bike found length 1702.853 m / 14 points / visited 13570 crossing at y=698 (deck700, ~104 m detour because y=300 approach is voetpad); invariants allRouteSegmentsWalkable, walkUsesDeck300, bikeUsesDeck700, pier500NotCrossable, searchBounded (visited<100000), budgetTerminates (maxNodes 50 -> limit, visited<=51), islandUnreachable (33661 expanded), snapBounded all true; dense 0.25 m point audit passed; stats include 126 polygons indexed, 315 buckets, 79314 cache entries, 0 global polygons. elapsedMs values are observations only."
+    },
+    {
+      "command": "node --check benchmark-geo-navigation.cjs",
+      "exit_code": 0,
+      "summary": "Syntax OK on final benchmark bytes."
+    }
+  ],
+  "blockers": [],
+  "memory_delta": [
+    "NAV01 navigator exists and is independently testable on frozen schema feature objects; it does not parse BGT itself - that remains the separate converter package's job.",
+    "Water/building outer boundary belongs to the obstacle, so positive-radius clearance blocks on tangent contact (circle touching the boundary), not only strict overlap; tests encode radius 1.4 allowed vs 1.5 blocked for a 3 m gap.",
+    "Thin-barrier safety comes from splitting segments at every polygon-edge crossing (plus 0.5 m samples), not from finer sampling; 0.10 m strips are reliably rejected.",
+    "8-neighbour A* with true Euclidean diagonal costs produces routes shorter than Manhattan grid estimates; benchmark bounds must use straight-line/geometric invariants rather than Manhattan-derived numbers.",
+    "Bridge part type pijler (1372 in parent's BGT count), landhoofd and null are indexed-counted but never treated as surface; only exact type_overbruggingsdeel 'dek' overrides water. A deck whose only approaches are voetpad is physically walkable for bikes but unreachable for them, which the lattice correctly isolates.",
+    "bucketSize is interpreted as a 64 m spatial-bucket cell edge and also as the fan-out threshold (polygons covering more bucket cells go to a short global list); cellSize=2 m is the routing lattice and snap granularity."
+  ],
+  "next_steps": [
+    "Parent independently reviews and adopts module bytes; baseline game dad6b38 stays untouched until adoption.",
+    "Run the same navigator against real converted BGT fixtures (all four collections, full rings, holes, real relatieve_hoogteligging) to validate behaviour beyond synthetic data; samples must not be presented as complete city coverage.",
+    "Separate later packages: GEO01 converter adoption/contract, explicit ferry/IJ transit with sourced endpoints (no invented water crossing exists in this package), and only then game/UI/save integration.",
+    "If integration needs sub-lattice snap precision or actors wider than current road widths, tune cellSize/radius against real BGT road widths and re-run the regression suite plus benchmark."
+  ]
+}

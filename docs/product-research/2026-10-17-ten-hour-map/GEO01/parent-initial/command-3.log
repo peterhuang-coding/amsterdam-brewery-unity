@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: wrapper object is deep-identical to geo-data.json
+ok 1 - wrapper object is deep-identical to geo-data.json
+  ---
+  duration_ms: 1.971625
+  type: 'test'
+  ...
+# Subtest: UMD wrapper exposes globalThis.AmsterdamGeoData and module.exports
+ok 2 - UMD wrapper exposes globalThis.AmsterdamGeoData and module.exports
+  ---
+  duration_ms: 0.124083
+  type: 'test'
+  ...
+# Subtest: top-level schema and projection block
+ok 3 - top-level schema and projection block
+  ---
+  duration_ms: 0.057833
+  type: 'test'
+  ...
+# Subtest: source metadata, shas and explicit incomplete limitation
+ok 4 - source metadata, shas and explicit incomplete limitation
+  ---
+  duration_ms: 0.161459
+  type: 'test'
+  ...
+# Subtest: exact real sample counts (no full-city claim)
+ok 5 - exact real sample counts (no full-city claim)
+  ---
+  duration_ms: 0.079417
+  type: 'test'
+  ...
+# Subtest: every feature has traceable source id, valid rings and bounds
+ok 6 - every feature has traceable source id, valid rings and bounds
+  ---
+  duration_ms: 2.197042
+  type: 'test'
+  ...
+# Subtest: known source features survive with original properties
+ok 7 - known source features survive with original properties
+  ---
+  duration_ms: 0.121791
+  type: 'test'
+  ...
+# Subtest: features are deterministically ordered by source id
+ok 8 - features are deterministically ordered by source id
+  ---
+  duration_ms: 0.046708
+  type: 'test'
+  ...
+# Subtest: whole document is finite and JSON round-trips
+ok 9 - whole document is finite and JSON round-trips
+  ---
+  duration_ms: 0.831167
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 62.888375

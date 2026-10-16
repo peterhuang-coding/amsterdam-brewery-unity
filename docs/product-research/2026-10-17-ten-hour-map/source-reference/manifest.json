@@ -1,0 +1,25 @@
+{
+  "at": "2026-10-16T16:32:15.709244+00:00",
+  "bbox": [
+    4.865,
+    52.345,
+    4.97,
+    52.405
+  ],
+  "width_m": 7127.775302404328,
+  "height_m": 6671.704814012227,
+  "source_root": "/tmp/amsterdam-d26-bgt-full-20261017",
+  "layers": {
+    "waterdeel": {
+      "features": 1805,
+      "vertices": 795905,
+      "complete": true
+    },
+    "pand": {
+      "features": 71463,
+      "vertices": 1302758,
+      "complete": true
+    }
+  },
+  "game_changed": false
+}

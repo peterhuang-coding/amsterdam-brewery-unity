@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-16T16:36:07.228230+00:00",
+  "bare_corrected": [],
+  "note": "Earlier filter excluded commands containing python3 anywhere in full argument text, which can exclude Claude whose allowed commands include Python. Original prelaunch retained. Ledger counted GEO01 unfinished so capacity guard allowed only one added job. Corrected scan filters executable basename; ps bytes use replacement decoding because unrelated process text may not be UTF-8.",
+  "prior_correction_scan_still_false_negative": true,
+  "prior_note_correction": "Executable-basename scan using ps mixed comm/args columns also returned zero while explicit PID query at16:36 showed GEO52111 and NAV55396 both Ss. Do not rely on that earlier scan.",
+  "two_query_scan": {
+    "at": "2026-10-16T16:40:39.277392+00:00",
+    "processes": [
+      {
+        "pid": 55396,
+        "comm": "/opt/homebrew/bin/claude",
+        "bare": true
+      }
+    ],
+    "method": "First ps pid,comm only; then inspect args by exact candidate PID without printing arguments."
+  }
+}

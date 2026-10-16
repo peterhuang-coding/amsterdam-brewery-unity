@@ -1,0 +1,22 @@
+[
+  {
+    "command": "python3 -m unittest -v test_bgt_import.py",
+    "exit_code": 0,
+    "output_tail": "semantic_properties_present (test_bgt_import.RealSampleTests) ... ok\ntest_sha_and_collection_identity_verified (test_bgt_import.RealSampleTests) ... ok\ntest_crossing_boundary_geometry_is_retained_unclipped (test_bgt_import.SyntheticGeometryTests) ... ok\ntest_malformed_rings_error_with_id (test_bgt_import.SyntheticGeometryTests) ... ok\ntest_multipolygon_two_polygons_one_with_hole (test_bgt_import.SyntheticGeometryTests) ... ok\ntest_polygon_hole_preserved_and_bounds (test_bgt_import.SyntheticGeometryTests) ... ok\ntest_three_dimensional_positions_rejected (test_bgt_import.SyntheticGeometryTests) ... ok\ntest_unsupported_geometry_types_error_with_id (test_bgt_import.SyntheticGeometryTests) ... ok\n\n----------------------------------------------------------------------\nRan 37 tests in 0.036s\n\nOK\n"
+  },
+  {
+    "command": "python3 import_bgt.py --manifest source-manifest.json --json geo-data.json --js geo-data.js --audit import-audit.json",
+    "exit_code": 0,
+    "output_tail": ""
+  },
+  {
+    "command": "node --check geo-data.js",
+    "exit_code": 0,
+    "output_tail": ""
+  },
+  {
+    "command": "node --test test_geo_data.cjs",
+    "exit_code": 0,
+    "output_tail": ": every feature has traceable source id, valid rings and bounds\nok 6 - every feature has traceable source id, valid rings and bounds\n  ---\n  duration_ms: 2.197042\n  type: 'test'\n  ...\n# Subtest: known source features survive with original properties\nok 7 - known source features survive with original properties\n  ---\n  duration_ms: 0.121791\n  type: 'test'\n  ...\n# Subtest: features are deterministically ordered by source id\nok 8 - features are deterministically ordered by source id\n  ---\n  duration_ms: 0.046708\n  type: 'test'\n  ...\n# Subtest: whole document is finite and JSON round-trips\nok 9 - whole document is finite and JSON round-trips\n  ---\n  duration_ms: 0.831167\n  type: 'test'\n  ...\n1..9\n# tests 9\n# suites 0\n# pass 9\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 62.888375\n"
+  }
+]

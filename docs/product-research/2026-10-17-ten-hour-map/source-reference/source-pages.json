@@ -1,0 +1,2654 @@
+{
+  "preview_layers_only": [
+    "waterdeel",
+    "pand"
+  ],
+  "pages": [
+    {
+      "file": "waterdeel/0001.json",
+      "collection": "waterdeel",
+      "sha256": "c22871bf8c7293d09619c9106d5ab998478cec59df70b1df53756e6fe33e18fb",
+      "bytes": 4389440,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/waterdeel/items?f=json&bbox=4.865%2C52.345%2C4.97%2C52.405&limit=250&datetime=2026-10-16T00%3A00%3A00Z",
+      "retrieved_at": "2026-10-16T16:22:07.648819+00:00"
+    },
+    {
+      "file": "waterdeel/0002.json",
+      "collection": "waterdeel",
+      "sha256": "67927f4f759c226ba17635612e7c873d5276e7e6ff3ed01575b6212d16b73212",
+      "bytes": 3699406,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/waterdeel/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=DG6m%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:29.848848+00:00"
+    },
+    {
+      "file": "waterdeel/0003.json",
+      "collection": "waterdeel",
+      "sha256": "3c3762f3c2d388c6d79ac7cf55f54baa399bddc52f407c9a55cc27404d7ebef4",
+      "bytes": 4363837,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/waterdeel/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=IZG1%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:36.647495+00:00"
+    },
+    {
+      "file": "waterdeel/0004.json",
+      "collection": "waterdeel",
+      "sha256": "11f865566d4ab78806b037326a303f1a99501601354c2d2ef8b472c3fba55681",
+      "bytes": 8355023,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/waterdeel/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=NA8W%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:45.481436+00:00"
+    },
+    {
+      "file": "waterdeel/0005.json",
+      "collection": "waterdeel",
+      "sha256": "0a026d831abba82c1f6419f2eb8d5688dfdb676be24b5cb3c0757fe54899c493",
+      "bytes": 4383524,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/waterdeel/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=QFcv%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:03.195756+00:00"
+    },
+    {
+      "file": "waterdeel/0006.json",
+      "collection": "waterdeel",
+      "sha256": "76f27e597b7a887a3d7e9ceb887ecb86eb2bff826dd767597b3a3675929ace09",
+      "bytes": 3482052,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/waterdeel/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=QubB%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:06.807062+00:00"
+    },
+    {
+      "file": "waterdeel/0007.json",
+      "collection": "waterdeel",
+      "sha256": "edc18e0bed53a223640ac9a8df87e4a16e075a49c92e409826d2b40b791101d5",
+      "bytes": 2243456,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/waterdeel/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=QwFa%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:09.456195+00:00"
+    },
+    {
+      "file": "waterdeel/0008.json",
+      "collection": "waterdeel",
+      "sha256": "fd7cb024e7910250b9cc27d6c19270571b7754d2653b820cab1d71a7ea90114c",
+      "bytes": 1348954,
+      "features": 55,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/waterdeel/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=RQKu%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:11.829041+00:00"
+    },
+    {
+      "file": "pand/0001.json",
+      "collection": "pand",
+      "sha256": "9ef289553587da98a761509f29b00da9a8c3ce5e4c4f7d4490ef5bd528efc750",
+      "bytes": 362987,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?f=json&bbox=4.865%2C52.345%2C4.97%2C52.405&limit=250&datetime=2026-10-16T00%3A00%3A00Z",
+      "retrieved_at": "2026-10-16T16:22:03.735504+00:00"
+    },
+    {
+      "file": "pand/0002.json",
+      "collection": "pand",
+      "sha256": "8348b368d693fe56334649942e1a83030576e601da1347c2a6df3f1247823be2",
+      "bytes": 294532,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=K_Ls%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:05.926417+00:00"
+    },
+    {
+      "file": "pand/0003.json",
+      "collection": "pand",
+      "sha256": "e78f678d81bf0bacd1851f743546ac5af518a6f8dabaa275c631bd92fe7ea908",
+      "bytes": 306977,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=K_Rc%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:07.387863+00:00"
+    },
+    {
+      "file": "pand/0004.json",
+      "collection": "pand",
+      "sha256": "755dc50ca83776a1dfd594cf8be7e6f7326f2c79a491c109650cad92b724d567",
+      "bytes": 356144,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LAFc%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:08.772595+00:00"
+    },
+    {
+      "file": "pand/0005.json",
+      "collection": "pand",
+      "sha256": "23bc3b9f08315f39e776e67f45b7c242920fad1ec7bdc7d45c872643015af0cc",
+      "bytes": 318783,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LALz%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:10.753487+00:00"
+    },
+    {
+      "file": "pand/0006.json",
+      "collection": "pand",
+      "sha256": "769b0f5fce52a0abf9de40320cab88456bee13bec144fc59bded1e4062d1a15d",
+      "bytes": 370240,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LASB%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:12.134795+00:00"
+    },
+    {
+      "file": "pand/0007.json",
+      "collection": "pand",
+      "sha256": "1bbcb820f48c2eb0611e91a3ffd83fcee9f0e0cd24ed255d1b7c3877fd7e5fdf",
+      "bytes": 379827,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LAYd%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:14.289856+00:00"
+    },
+    {
+      "file": "pand/0008.json",
+      "collection": "pand",
+      "sha256": "573f91f9fff9b349184d80b05ae37af6365c8e7b5082f5c263d29debc7284a8a",
+      "bytes": 366257,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LAeo%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:15.707163+00:00"
+    },
+    {
+      "file": "pand/0009.json",
+      "collection": "pand",
+      "sha256": "358bca3f549b972134fb72833758d62187056d9a87f3db1c52ab657ad3de50b8",
+      "bytes": 352773,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LAk_%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:17.086460+00:00"
+    },
+    {
+      "file": "pand/0010.json",
+      "collection": "pand",
+      "sha256": "761c90571d08731ce0dd3e188609dabc0c4d2d3bf1736017e16246e1f66ba05b",
+      "bytes": 348271,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LArW%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:18.550967+00:00"
+    },
+    {
+      "file": "pand/0011.json",
+      "collection": "pand",
+      "sha256": "41a9d37e57e4192a2c2ce5868b097587b0daf64b3870276e67c943026210af87",
+      "bytes": 362341,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LAxz%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:20.000840+00:00"
+    },
+    {
+      "file": "pand/0012.json",
+      "collection": "pand",
+      "sha256": "4f1261ce2faf790488ddda3e17885c237b7d48149bc3a36e53bbcb0cf5e7621f",
+      "bytes": 295849,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LA4E%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:21.391786+00:00"
+    },
+    {
+      "file": "pand/0013.json",
+      "collection": "pand",
+      "sha256": "40a7abda0b9551473545c3c3eafb0b390e070173c3893c511fdbe36e54790bd4",
+      "bytes": 372281,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LA9-%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:22.763560+00:00"
+    },
+    {
+      "file": "pand/0014.json",
+      "collection": "pand",
+      "sha256": "8cb46e10462e3f455eaa12892b9198446eaba82aca3d16253b155bd74f578677",
+      "bytes": 338252,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LBEX%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:24.162856+00:00"
+    },
+    {
+      "file": "pand/0015.json",
+      "collection": "pand",
+      "sha256": "d3f73c98d91d4c338af0314482b0d2caf66a028f1659fef1a4b7349acb1b782b",
+      "bytes": 322500,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LBKi%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:25.609695+00:00"
+    },
+    {
+      "file": "pand/0016.json",
+      "collection": "pand",
+      "sha256": "4f7479f92ccea8d373f827af0030ebc406ecd55eaf2d15f5ad5396e87da3820f",
+      "bytes": 323548,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LBQd%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:27.028471+00:00"
+    },
+    {
+      "file": "pand/0017.json",
+      "collection": "pand",
+      "sha256": "f2eac42b34355911223b424f326f18791b279bdcd7e53a9e4a57d0f616dc8c0e",
+      "bytes": 359635,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LBWl%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:28.446996+00:00"
+    },
+    {
+      "file": "pand/0018.json",
+      "collection": "pand",
+      "sha256": "c297f4d99a7a05ea796df50e500148243e6a66d7c1bd6de82f0be6288f0c19ad",
+      "bytes": 312736,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LBcc%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:29.848949+00:00"
+    },
+    {
+      "file": "pand/0019.json",
+      "collection": "pand",
+      "sha256": "c781710990898fa63fce8eb93cef27a66e99f863bf55b9bb2442fb7defb8d3b3",
+      "bytes": 316521,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LBjJ%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:31.211188+00:00"
+    },
+    {
+      "file": "pand/0020.json",
+      "collection": "pand",
+      "sha256": "b4c8fde3df9608c15817ef5cb2b1b0f6a99b6af6f6530737dfdc35e34290b62e",
+      "bytes": 423871,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LBpx%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:32.653731+00:00"
+    },
+    {
+      "file": "pand/0021.json",
+      "collection": "pand",
+      "sha256": "12f4ae73f5ab4ef9c2033c2360a9f93212ef17f054b6ad32bf3ee99d0a0a5f11",
+      "bytes": 319010,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LBxV%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:34.017902+00:00"
+    },
+    {
+      "file": "pand/0022.json",
+      "collection": "pand",
+      "sha256": "2623d6e72cb69f07a504005e9bbe87aee774109898feda05fe46a8b4f6c11057",
+      "bytes": 454351,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LB5N%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:35.432486+00:00"
+    },
+    {
+      "file": "pand/0023.json",
+      "collection": "pand",
+      "sha256": "c9f1b1cb86b3a303c73b77f92588585227ae6a93e178f0541ba0cd37255307d3",
+      "bytes": 378610,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LCBE%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:36.860368+00:00"
+    },
+    {
+      "file": "pand/0024.json",
+      "collection": "pand",
+      "sha256": "27159dbd1e8dc3b6a6ced9688c616504424e586e4b7aae434ab34b3ad9111799",
+      "bytes": 474422,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LCJi%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:38.287109+00:00"
+    },
+    {
+      "file": "pand/0025.json",
+      "collection": "pand",
+      "sha256": "61347938bf81ac55a33080df201ede12ed18d673b6873a7ea18d0571c8e4d12b",
+      "bytes": 437700,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LCR1%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:39.795699+00:00"
+    },
+    {
+      "file": "pand/0026.json",
+      "collection": "pand",
+      "sha256": "09ba3d64e0ea2f3811e21d71369f2d914739f2a38cb13b0315b36bf613cfdf37",
+      "bytes": 362417,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LCaM%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:41.254862+00:00"
+    },
+    {
+      "file": "pand/0027.json",
+      "collection": "pand",
+      "sha256": "04ef1fb098cb6068c5c91927f064938981ccf8a8212ae3cac6f4df541f0361cb",
+      "bytes": 317551,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LCiX%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:42.649780+00:00"
+    },
+    {
+      "file": "pand/0028.json",
+      "collection": "pand",
+      "sha256": "cad95a344693ea272d546f9cbc0e6640cd0d67f888dd8369ad862ded909a1b0e",
+      "bytes": 305101,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LCoc%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:44.050290+00:00"
+    },
+    {
+      "file": "pand/0029.json",
+      "collection": "pand",
+      "sha256": "e865dc93932eff7565ab605007ce92c13df834cdfd16afd9d1bb64c3af4da3e6",
+      "bytes": 340518,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LCuU%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:45.479726+00:00"
+    },
+    {
+      "file": "pand/0030.json",
+      "collection": "pand",
+      "sha256": "dee0981573cdfbe38ed80247bdb75ae3421d4923a7cfc34cc8f1ccf2f86c4496",
+      "bytes": 390172,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LC0R%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:46.882721+00:00"
+    },
+    {
+      "file": "pand/0031.json",
+      "collection": "pand",
+      "sha256": "1951589e0577d8599d3e116b60c75d109e9a538a3cbcaa0fec84807e31c97f4f",
+      "bytes": 414675,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LC6E%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:48.304894+00:00"
+    },
+    {
+      "file": "pand/0032.json",
+      "collection": "pand",
+      "sha256": "f1c1b2d9832ed212f6d30b6309cbc0f08a8e8dc03d39139178ce696b331552ad",
+      "bytes": 327689,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LDA3%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:49.703470+00:00"
+    },
+    {
+      "file": "pand/0033.json",
+      "collection": "pand",
+      "sha256": "678269ddd5a9c32f056dc7c6f0c21b142342e67fa3478ba0873a7a97289e9541",
+      "bytes": 349520,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LDHJ%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:51.101753+00:00"
+    },
+    {
+      "file": "pand/0034.json",
+      "collection": "pand",
+      "sha256": "978ff6bf38bbb1188d99b80a4744504471ebade3c2369f9b9b7c0e572f4e9804",
+      "bytes": 318811,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LDNJ%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:52.475442+00:00"
+    },
+    {
+      "file": "pand/0035.json",
+      "collection": "pand",
+      "sha256": "54681e4a1868c26727e53cb828eafdef2b116f7cb9e890e6d9013180953e502d",
+      "bytes": 599941,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LDTE%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:54.106962+00:00"
+    },
+    {
+      "file": "pand/0036.json",
+      "collection": "pand",
+      "sha256": "2d972105ceb1d2be50ad70ea80604c1ce4fb1b3db7248361214b6bf61431aa18",
+      "bytes": 361265,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LDbb%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:55.486065+00:00"
+    },
+    {
+      "file": "pand/0037.json",
+      "collection": "pand",
+      "sha256": "addd1f564ad0bc5a3144ef45c344ebb4012a6e1ffeff15bdd9c2c3d272988c7d",
+      "bytes": 340915,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LDjo%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:56.860015+00:00"
+    },
+    {
+      "file": "pand/0038.json",
+      "collection": "pand",
+      "sha256": "2c9909cb4c469b1f0273e22a9857f9f9cb9c1c5c94d0e01d611dfe2d87d1d542",
+      "bytes": 511832,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LDrr%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:58.313507+00:00"
+    },
+    {
+      "file": "pand/0039.json",
+      "collection": "pand",
+      "sha256": "339e602cf26dca882eb0c4fc1e96c16cfb5af8e6731758df2a85e6c8870fdd4f",
+      "bytes": 486710,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LDz3%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:22:59.722914+00:00"
+    },
+    {
+      "file": "pand/0040.json",
+      "collection": "pand",
+      "sha256": "9cab30cb35dd3f0cd91d6f3526e4a0bbe8e435439c9387f1462d3bf88d9e8fe5",
+      "bytes": 373040,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LD7s%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:01.130669+00:00"
+    },
+    {
+      "file": "pand/0041.json",
+      "collection": "pand",
+      "sha256": "fb7532e4e29fb70deee2cd2d8ab36d76e773702062e422b0bf0656c87b49e481",
+      "bytes": 477852,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LED1%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:02.579691+00:00"
+    },
+    {
+      "file": "pand/0042.json",
+      "collection": "pand",
+      "sha256": "4dd05b4729ec41cea318f386db6cb34ddbd9fd16839562921f34f4cd90d13867",
+      "bytes": 338206,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LEME%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:03.950007+00:00"
+    },
+    {
+      "file": "pand/0043.json",
+      "collection": "pand",
+      "sha256": "3a198d4a1a3e323113065f8e2d112788bb02439c2d473b059dc28547b86922ab",
+      "bytes": 427142,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LEUj%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:05.414600+00:00"
+    },
+    {
+      "file": "pand/0044.json",
+      "collection": "pand",
+      "sha256": "2808eeaeaf824a1a70e3d87a76c5019307986a6b20f8d9a172d47400b40e212a",
+      "bytes": 339851,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LEb8%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:06.817174+00:00"
+    },
+    {
+      "file": "pand/0045.json",
+      "collection": "pand",
+      "sha256": "a84ad564921af817192563e5cd444522f34cee1b14c8abe06648c3548cebd92c",
+      "bytes": 415079,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LEkt%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:08.225023+00:00"
+    },
+    {
+      "file": "pand/0046.json",
+      "collection": "pand",
+      "sha256": "eff87b9483a31729ed412bbf5b0b3b91bd0b2dfea50c326a9b7306c7b49fbe77",
+      "bytes": 376536,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LEs0%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:09.609187+00:00"
+    },
+    {
+      "file": "pand/0047.json",
+      "collection": "pand",
+      "sha256": "cacd717f3c3467b14f6b3f7b895216e7f13253e46f394017d94c4ce537d40e97",
+      "bytes": 442820,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LE1q%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:11.006107+00:00"
+    },
+    {
+      "file": "pand/0048.json",
+      "collection": "pand",
+      "sha256": "0538c6cfd699b48e9a58d5085a75e1e2b7576b20bdddb4b82a166f15d694f869",
+      "bytes": 384269,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LFrp%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:12.408692+00:00"
+    },
+    {
+      "file": "pand/0049.json",
+      "collection": "pand",
+      "sha256": "22746674d03bcc7e69fa2576ef994751d14e865e178636b13dda9b4d5e76e61a",
+      "bytes": 345087,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LFzo%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:13.838578+00:00"
+    },
+    {
+      "file": "pand/0050.json",
+      "collection": "pand",
+      "sha256": "b76f5cc0e77d21f52f73218115c1dca48d2394769281d65a64082a7aa3e85d33",
+      "bytes": 345947,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=LF7L%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:15.359457+00:00"
+    },
+    {
+      "file": "pand/0051.json",
+      "collection": "pand",
+      "sha256": "4d3b9d946d0161ce2f6f428ef5a7db22f94b0a61f9d85d1ea6b262bc6f2103ea",
+      "bytes": 455484,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N8KG%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:16.827929+00:00"
+    },
+    {
+      "file": "pand/0052.json",
+      "collection": "pand",
+      "sha256": "cd177feedba5d90f613195660b6824a90ee6e2a56bcb884486bd487822e26266",
+      "bytes": 332885,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N8Os%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:18.225718+00:00"
+    },
+    {
+      "file": "pand/0053.json",
+      "collection": "pand",
+      "sha256": "12c54d6a07033c03ad52c5a2c13cd1b4ca4422b780f15902b68b02d77432b5e2",
+      "bytes": 389320,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N8TO%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:19.851129+00:00"
+    },
+    {
+      "file": "pand/0054.json",
+      "collection": "pand",
+      "sha256": "7d1e64be92545519262526f4dc24f739f1f92aa375f86fd00b2d8af760a1e19a",
+      "bytes": 371414,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N8Xw%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:21.330907+00:00"
+    },
+    {
+      "file": "pand/0055.json",
+      "collection": "pand",
+      "sha256": "9255e51a6b84a6c3c39e9ec9e3e0b78591544fb2fcf706ea78ed67b9a18a9fe1",
+      "bytes": 387314,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N8cP%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:22.745842+00:00"
+    },
+    {
+      "file": "pand/0056.json",
+      "collection": "pand",
+      "sha256": "268b6aa5f37af0d0943a235b6ad2ff6749c50f90476c752f06c4eae72c972e55",
+      "bytes": 418836,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N8g3%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:24.168054+00:00"
+    },
+    {
+      "file": "pand/0057.json",
+      "collection": "pand",
+      "sha256": "653f1db3bd2cc4cd9d212716939943d19b2f9526eba85b8c15aec6b6437f7b72",
+      "bytes": 309798,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N8lT%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:25.536346+00:00"
+    },
+    {
+      "file": "pand/0058.json",
+      "collection": "pand",
+      "sha256": "9aa283b27e9c8eacb42817ba354c24fe0e2c7a103d9b410b2cad3685447329c1",
+      "bytes": 381111,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N8p0%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:26.941983+00:00"
+    },
+    {
+      "file": "pand/0059.json",
+      "collection": "pand",
+      "sha256": "2cf54eed162b76463417bbf0de78800386457bd484669695a76b83314f3d6d94",
+      "bytes": 350070,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N8uW%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:28.317998+00:00"
+    },
+    {
+      "file": "pand/0060.json",
+      "collection": "pand",
+      "sha256": "18203af837bb7f0b5a1a199f041db9ff65c4533ee3830988c67d98f220a3e3f5",
+      "bytes": 431050,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N8y5%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:29.762856+00:00"
+    },
+    {
+      "file": "pand/0061.json",
+      "collection": "pand",
+      "sha256": "62c02c280d27b5423b9868ce54fbf8cc5af64023b3935675051fdba5462deb54",
+      "bytes": 417092,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N83R%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:31.209961+00:00"
+    },
+    {
+      "file": "pand/0062.json",
+      "collection": "pand",
+      "sha256": "f11c7b8c889c6d3b588a68141718ee4c6334d4115259a063bced1387d9a3cfc2",
+      "bytes": 410656,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N872%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:32.641482+00:00"
+    },
+    {
+      "file": "pand/0063.json",
+      "collection": "pand",
+      "sha256": "87f9a23aa8c60ee9700588969a55aaea32252264ca330987c1db32c7ebcd4429",
+      "bytes": 347045,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N96r%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:34.062968+00:00"
+    },
+    {
+      "file": "pand/0064.json",
+      "collection": "pand",
+      "sha256": "6989f50a3a47bfe6ea712a572efb43b795953bc49eeadb9b30a447a423c04b7d",
+      "bytes": 323771,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N_Aa%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:35.510464+00:00"
+    },
+    {
+      "file": "pand/0065.json",
+      "collection": "pand",
+      "sha256": "2367f0d2a9c2a1dc4045cbe5bca99118c732f2c19b2d07a183e756b902713acb",
+      "bytes": 367613,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N_Ev%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:37.004603+00:00"
+    },
+    {
+      "file": "pand/0066.json",
+      "collection": "pand",
+      "sha256": "00d2a87166fc2790da8f641546591439c8bb1cb927afe6360900600af6d358f3",
+      "bytes": 396243,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N_Iz%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:38.425988+00:00"
+    },
+    {
+      "file": "pand/0067.json",
+      "collection": "pand",
+      "sha256": "388fcfd5988f8e9c25f4a3f781d566f73f052b85b1135af4d5dee4a8dfebe849",
+      "bytes": 364164,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N_NB%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:39.802673+00:00"
+    },
+    {
+      "file": "pand/0068.json",
+      "collection": "pand",
+      "sha256": "0a5acd81a1ef2d303e1d755bf65e1db39d770504e8392c3823931e1c139b2bce",
+      "bytes": 341850,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N_RO%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:41.208564+00:00"
+    },
+    {
+      "file": "pand/0069.json",
+      "collection": "pand",
+      "sha256": "a25d1a8200f9f804b04326b6b0fcb694309b981110f3a38cdc9d7928a15209c8",
+      "bytes": 323632,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N_Vc%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:42.622477+00:00"
+    },
+    {
+      "file": "pand/0070.json",
+      "collection": "pand",
+      "sha256": "7372bdd8c41073b6509f23788f107f3c3ed3142d0a92d2e79c0ee5e9fa407df6",
+      "bytes": 328807,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N_Zn%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:44.003092+00:00"
+    },
+    {
+      "file": "pand/0071.json",
+      "collection": "pand",
+      "sha256": "0dbc1bd2d6556cc562289d03ed2fda459e2c95c1549c5bd27e8743f41d4ec94a",
+      "bytes": 373528,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N_d3%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:45.380656+00:00"
+    },
+    {
+      "file": "pand/0072.json",
+      "collection": "pand",
+      "sha256": "9d77e042e1a3a05b963ed5d8e9006be539cfb51c16a08c23d500cbfa65850615",
+      "bytes": 355824,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N_iH%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:46.745012+00:00"
+    },
+    {
+      "file": "pand/0073.json",
+      "collection": "pand",
+      "sha256": "59f12c9f68a694dec34cbec8398c23ffa0cd93609030620081711d27b76a4acb",
+      "bytes": 354195,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N_mV%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:48.170324+00:00"
+    },
+    {
+      "file": "pand/0074.json",
+      "collection": "pand",
+      "sha256": "fa2aa2592610bea1c0a9c086e84d05150dcf58e84291e80060c49e3727deeef4",
+      "bytes": 356236,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N_qo%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:49.579888+00:00"
+    },
+    {
+      "file": "pand/0075.json",
+      "collection": "pand",
+      "sha256": "b024e1585e3d79a316c05096ffa5cc6a57e4cbd3fd95d6dc279531c3a97293e5",
+      "bytes": 337539,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=N_u-%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:50.934636+00:00"
+    },
+    {
+      "file": "pand/0076.json",
+      "collection": "pand",
+      "sha256": "c78296e9824f334b9d1034786a2136ffafb58a6050c52fdef9e3626e5259bf3c",
+      "bytes": 385407,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OAD6%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:52.303213+00:00"
+    },
+    {
+      "file": "pand/0077.json",
+      "collection": "pand",
+      "sha256": "782757d6927eeb980a92616bdb357b071b3daacd57e80e37cded3c2d1fc036a5",
+      "bytes": 322659,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OAIL%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:53.721855+00:00"
+    },
+    {
+      "file": "pand/0078.json",
+      "collection": "pand",
+      "sha256": "50611fe91ef42f22efee0c8b4337f385d9172b367fa164f640b7be0ff0a160b5",
+      "bytes": 423681,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OAMa%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:55.121417+00:00"
+    },
+    {
+      "file": "pand/0079.json",
+      "collection": "pand",
+      "sha256": "1716d910629cdb58915c52361bbeb178c00ed30ac8c2c7c76b7bf7642dc369b0",
+      "bytes": 326071,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OAQo%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:56.514082+00:00"
+    },
+    {
+      "file": "pand/0080.json",
+      "collection": "pand",
+      "sha256": "d24f05abc3c3e701542fcb2520e78538fd5e8da38d6bd9230c456df3fe6aadde",
+      "bytes": 344134,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OAU8%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:57.886844+00:00"
+    },
+    {
+      "file": "pand/0081.json",
+      "collection": "pand",
+      "sha256": "9ee000b77df1d4c218e9a4937df84e8da09cfce2cd241ef87eff91b11b4a31e8",
+      "bytes": 311145,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OAZM%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:23:59.316740+00:00"
+    },
+    {
+      "file": "pand/0082.json",
+      "collection": "pand",
+      "sha256": "1789c5ad757a3af92e3033bcc76bc9e867be43192d6d988b78ce482472d948a9",
+      "bytes": 310517,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OAdb%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:00.711371+00:00"
+    },
+    {
+      "file": "pand/0083.json",
+      "collection": "pand",
+      "sha256": "e2c2eaefc757c66bd8e2d085e9c62c237651d2fd253040fed8e380b15cf69f71",
+      "bytes": 350657,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OAhv%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:02.119535+00:00"
+    },
+    {
+      "file": "pand/0084.json",
+      "collection": "pand",
+      "sha256": "2bf6a4075732ad2825115ca355183306c0312c779df54ad5cfa04848af7b2658",
+      "bytes": 332645,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OAmA%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:03.562214+00:00"
+    },
+    {
+      "file": "pand/0085.json",
+      "collection": "pand",
+      "sha256": "ef89e90c6d5483e9b2dc4c2226e589ddedea4c4143728a8c86bded9d39a49df5",
+      "bytes": 320475,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OAqQ%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:04.980440+00:00"
+    },
+    {
+      "file": "pand/0086.json",
+      "collection": "pand",
+      "sha256": "18279a36936f4cde98ff61fa520d52a4e560b5b6e95ec85a10732859d10851e2",
+      "bytes": 326952,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OAuf%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:06.446046+00:00"
+    },
+    {
+      "file": "pand/0087.json",
+      "collection": "pand",
+      "sha256": "0596e8c19b6dbf1aaaf8e68583425e44a3b494bb328cea70b6c6bf6d24677f99",
+      "bytes": 323641,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OAyo%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:07.810567+00:00"
+    },
+    {
+      "file": "pand/0088.json",
+      "collection": "pand",
+      "sha256": "ffe0a9f95bac83ba9a00a9f7e940c3fb98be1ffaa009292651223d05b20c4247",
+      "bytes": 352412,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OA27%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:09.229008+00:00"
+    },
+    {
+      "file": "pand/0089.json",
+      "collection": "pand",
+      "sha256": "e06d4982aa723a21eacb904ee85573f074ac98e4a0e66911b2b870ad7bb13aef",
+      "bytes": 339381,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OA7C%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:10.600456+00:00"
+    },
+    {
+      "file": "pand/0090.json",
+      "collection": "pand",
+      "sha256": "4f515dc589a80e133e3e99785041687b78d5f80000cf3970fd8e3fa5014f8c71",
+      "bytes": 331402,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OA_I%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:11.994611+00:00"
+    },
+    {
+      "file": "pand/0091.json",
+      "collection": "pand",
+      "sha256": "ad77a35b3177a02ab054337eda91f67ae71361195d31f20f99a21c4f4c24baf8",
+      "bytes": 325220,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OBDQ%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:13.429094+00:00"
+    },
+    {
+      "file": "pand/0092.json",
+      "collection": "pand",
+      "sha256": "9e746403858a82942f6499c4cefd94eee24b67e0999029860c973a0cfc705ec0",
+      "bytes": 310480,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OBTs%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:14.825104+00:00"
+    },
+    {
+      "file": "pand/0093.json",
+      "collection": "pand",
+      "sha256": "e35dceeef7c831c5fcb5b1e657c9081fcd57cd2c01fd153543b50e8d5373e825",
+      "bytes": 348958,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OBX7%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:16.211576+00:00"
+    },
+    {
+      "file": "pand/0094.json",
+      "collection": "pand",
+      "sha256": "8ae9503d67f9f48ae1d51129f5c2085d98b6d91f36ed807a143ad88a0409d45e",
+      "bytes": 330669,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OBcN%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:17.608034+00:00"
+    },
+    {
+      "file": "pand/0095.json",
+      "collection": "pand",
+      "sha256": "412578dd6cd601f1d1512d6b49624f6706154f0d454f704c70ccbd6f9428c16f",
+      "bytes": 365920,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OBge%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:19.029574+00:00"
+    },
+    {
+      "file": "pand/0096.json",
+      "collection": "pand",
+      "sha256": "dc85a9d271fd48e1ed71ce38b2739b87553bd721d1f0f784b443acc3f2df393d",
+      "bytes": 313148,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OBkr%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:20.435476+00:00"
+    },
+    {
+      "file": "pand/0097.json",
+      "collection": "pand",
+      "sha256": "ea68134f759ec6f53becdaf9cd18c6b12e0430dbf4506fd71102a9a7a8706bd3",
+      "bytes": 359082,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OBo2%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:21.814215+00:00"
+    },
+    {
+      "file": "pand/0098.json",
+      "collection": "pand",
+      "sha256": "f88ff7da8457b3a5cd995f5c5c781514c036c1476363f5fa5dd3005574761402",
+      "bytes": 319175,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OBtB%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:23.220567+00:00"
+    },
+    {
+      "file": "pand/0099.json",
+      "collection": "pand",
+      "sha256": "f06f8a7475191758ae0f83041008bbdff54e0e77038810ead0415737f1a4e98e",
+      "bytes": 323402,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OBxP%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:24.608199+00:00"
+    },
+    {
+      "file": "pand/0100.json",
+      "collection": "pand",
+      "sha256": "88f2c08f1d14418963df9d58b59ad4bc74a511efc8e88608c264452a9bee7e4c",
+      "bytes": 377896,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OB1f%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:26.009378+00:00"
+    },
+    {
+      "file": "pand/0101.json",
+      "collection": "pand",
+      "sha256": "7dfc4d92cf812b371c1770a6d726cc145e3bef37956e1a962787ed7fc156ba0b",
+      "bytes": 400075,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OB50%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:27.398457+00:00"
+    },
+    {
+      "file": "pand/0102.json",
+      "collection": "pand",
+      "sha256": "a4401fab7a6e0c819e3b235e032051b80cbfcf7f0a6ec79a203a4e6468134ce1",
+      "bytes": 353872,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OB99%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:28.828729+00:00"
+    },
+    {
+      "file": "pand/0103.json",
+      "collection": "pand",
+      "sha256": "1afade3db56290bbbc56adf0d5fa406b43c61ea3b4ee39bdda8f09080747307d",
+      "bytes": 331515,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OCCJ%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:30.200991+00:00"
+    },
+    {
+      "file": "pand/0104.json",
+      "collection": "pand",
+      "sha256": "6a1dc524cbba5f20db3d21932f81c1cf15e63807987dce2bf410680a6701fefb",
+      "bytes": 399540,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OCGj%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:31.604538+00:00"
+    },
+    {
+      "file": "pand/0105.json",
+      "collection": "pand",
+      "sha256": "f7130dda8e45b94204c215bc63ab80035389c829ecd5dd72dcd38891f7040496",
+      "bytes": 341209,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OCK8%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:32.975155+00:00"
+    },
+    {
+      "file": "pand/0106.json",
+      "collection": "pand",
+      "sha256": "b68202c6498198c39e18faa70ef1dc740935cfc6698bbdf76f40fd3b2a9bc0c5",
+      "bytes": 315602,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ODe3%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:34.377925+00:00"
+    },
+    {
+      "file": "pand/0107.json",
+      "collection": "pand",
+      "sha256": "1505293a44f8a083c878c166ebfd506810692dbaa1976881a5b83765fb64cd50",
+      "bytes": 322046,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ODoF%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:35.820655+00:00"
+    },
+    {
+      "file": "pand/0108.json",
+      "collection": "pand",
+      "sha256": "10eb24a772f991e2622827ddb14773affb7b4f01a9e26e119ef95909f3bbe219",
+      "bytes": 328363,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ODxz%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:37.235350+00:00"
+    },
+    {
+      "file": "pand/0109.json",
+      "collection": "pand",
+      "sha256": "7cc3901df4ff9e8840e1b4fcf658e0ca34aebba3ab4c029b3f26cd1555ecb8a5",
+      "bytes": 348263,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OD6g%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:38.671302+00:00"
+    },
+    {
+      "file": "pand/0110.json",
+      "collection": "pand",
+      "sha256": "06137707ae89a885311b399df5fd04d17e9ecfc20a8d233cadea0be62e1d1dbe",
+      "bytes": 390007,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OEEY%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:40.062956+00:00"
+    },
+    {
+      "file": "pand/0111.json",
+      "collection": "pand",
+      "sha256": "ce639ce3ea60dc990a71257c1d4a80777120fb274461076ddbc89b5040547c29",
+      "bytes": 314015,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OENh%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:41.456065+00:00"
+    },
+    {
+      "file": "pand/0112.json",
+      "collection": "pand",
+      "sha256": "3de7213209d9a211a1e97ae92bd9735166fd7556c388917ff3fbd2ddfea2ce59",
+      "bytes": 342209,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OEWk%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:42.832959+00:00"
+    },
+    {
+      "file": "pand/0113.json",
+      "collection": "pand",
+      "sha256": "14490ce3942ef3b72be4d4e19102b487a9ea3cee4b7a069b5d9b15fb9e4a6b2d",
+      "bytes": 315678,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OEgA%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:44.200955+00:00"
+    },
+    {
+      "file": "pand/0114.json",
+      "collection": "pand",
+      "sha256": "31093f43e2c9d62c1c6e3202146de067ec2da479edee07e11f4a941f22aa261c",
+      "bytes": 308371,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OEo8%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:45.570703+00:00"
+    },
+    {
+      "file": "pand/0115.json",
+      "collection": "pand",
+      "sha256": "428a51c8c280b1d51062306b7c0ce47b7ccc396136976c85f9752c41e5eccf4f",
+      "bytes": 348069,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OExy%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:46.941639+00:00"
+    },
+    {
+      "file": "pand/0116.json",
+      "collection": "pand",
+      "sha256": "3fe6155c5c5d69d7ce02f1e4fd7982dbd876fb345f2330a9d1d9440f029dfadb",
+      "bytes": 316435,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OE7D%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:48.311553+00:00"
+    },
+    {
+      "file": "pand/0117.json",
+      "collection": "pand",
+      "sha256": "da6f435b84dfa8e57384baac2ee583301a94412a38532f0cabd2574c77d17445",
+      "bytes": 366279,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OFE5%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:49.747200+00:00"
+    },
+    {
+      "file": "pand/0118.json",
+      "collection": "pand",
+      "sha256": "ec7fe23c0c4dce9603b5781b294d462fa46b9f5aeeb0974ec4be8fcaee1baa1e",
+      "bytes": 403129,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OFOf%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:51.172205+00:00"
+    },
+    {
+      "file": "pand/0119.json",
+      "collection": "pand",
+      "sha256": "4be653d3f8468581928f7a6839b058a2c0d28deed77d53a469e001363c6ee041",
+      "bytes": 329612,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OFYL%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:52.585327+00:00"
+    },
+    {
+      "file": "pand/0120.json",
+      "collection": "pand",
+      "sha256": "7f92fcd42f8e24a267cf0a0f08ece683788d6e1632075a121696be7406e44462",
+      "bytes": 417188,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OFgc%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:53.964831+00:00"
+    },
+    {
+      "file": "pand/0121.json",
+      "collection": "pand",
+      "sha256": "4a66467e4ce20f3ff127da320d966a1aab5001ec988d5b7bea63a315bdd68507",
+      "bytes": 521857,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OFn1%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:55.429486+00:00"
+    },
+    {
+      "file": "pand/0122.json",
+      "collection": "pand",
+      "sha256": "67fd432ecd8463aeb10df084ac78aed2f58eb32ae2b12e517571ef209f5f0ced",
+      "bytes": 455282,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OFtD%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:56.846695+00:00"
+    },
+    {
+      "file": "pand/0123.json",
+      "collection": "pand",
+      "sha256": "91945ed9421ea89b4324b0e33c2132d4ccc546040ece54bece9a2e96a79093c9",
+      "bytes": 366932,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OFx8%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:58.240486+00:00"
+    },
+    {
+      "file": "pand/0124.json",
+      "collection": "pand",
+      "sha256": "54122787e5252846d24273e6667a04814a5228e5b434c1047a240a4028027c1b",
+      "bytes": 382951,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OF5C%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:24:59.644726+00:00"
+    },
+    {
+      "file": "pand/0125.json",
+      "collection": "pand",
+      "sha256": "a60a2ff72caf8c772d8a4bb4581ce427f5d83184ddadc256c34223bd9083a59b",
+      "bytes": 323329,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OGBf%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:01.052228+00:00"
+    },
+    {
+      "file": "pand/0126.json",
+      "collection": "pand",
+      "sha256": "761b9edeb36f1b1745e1bb033a50e425278b3e7a4890c4fce105ca3f2ad3a162",
+      "bytes": 381939,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OHcN%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:02.460730+00:00"
+    },
+    {
+      "file": "pand/0127.json",
+      "collection": "pand",
+      "sha256": "48dc8d5fc612c005aba0a49c9a58f0886fe6fead6529d86a1e6bb4311823c405",
+      "bytes": 407985,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OHhM%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:03.856899+00:00"
+    },
+    {
+      "file": "pand/0128.json",
+      "collection": "pand",
+      "sha256": "d96a83ec491527384702ad01e88ce2aa581424b17d8791b27b1114a8eda3c9e9",
+      "bytes": 373500,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OHl9%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:05.251962+00:00"
+    },
+    {
+      "file": "pand/0129.json",
+      "collection": "pand",
+      "sha256": "9ef444f097d22b7b558c8ec2af6e021afda4275b1b8c486cbb1ef7e25dff9603",
+      "bytes": 426774,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OHrL%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:06.689699+00:00"
+    },
+    {
+      "file": "pand/0130.json",
+      "collection": "pand",
+      "sha256": "a7910cd4a10e2675b2ad4f375b5cf4680c4cf7d22e5dff1594b1316e86656e03",
+      "bytes": 270377,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=OHwH%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:08.169821+00:00"
+    },
+    {
+      "file": "pand/0131.json",
+      "collection": "pand",
+      "sha256": "2313e419a07cf536697872fce463bce803a1ab7db0d8312faddbbfbcec1a5096",
+      "bytes": 270185,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Snoc%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:09.470440+00:00"
+    },
+    {
+      "file": "pand/0132.json",
+      "collection": "pand",
+      "sha256": "f3bbf96acbe820ae661790851953c1486a724f8ec40a0a21bd58e5d49cce8118",
+      "bytes": 321777,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=SnvJ%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:11.170979+00:00"
+    },
+    {
+      "file": "pand/0133.json",
+      "collection": "pand",
+      "sha256": "fb5619c3010d6ffdb6c94a7fd005e9aa19729dfe17729ecb55899ec4df8c28a8",
+      "bytes": 311756,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Tp0M%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:14.254774+00:00"
+    },
+    {
+      "file": "pand/0134.json",
+      "collection": "pand",
+      "sha256": "2d22a8f1865e68076706777f40b7644c29d1e942aad428d665adc40c8d88ffb1",
+      "bytes": 313008,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Tp4l%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:15.654131+00:00"
+    },
+    {
+      "file": "pand/0135.json",
+      "collection": "pand",
+      "sha256": "ca1b0e30217a45451ca879dba3fa5b9ba302830cbab6b20edc2374a554dfe6aa",
+      "bytes": 324872,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Tp8v%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:17.030276+00:00"
+    },
+    {
+      "file": "pand/0136.json",
+      "collection": "pand",
+      "sha256": "59e9204b00420c174045887f48f1e9a1383c439c99776fd063cdf81d4128c11f",
+      "bytes": 319220,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=TqBT%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:18.398839+00:00"
+    },
+    {
+      "file": "pand/0137.json",
+      "collection": "pand",
+      "sha256": "9b61a0895efb962b1fcabfb548bb349ca18306187b6fdc5c3caf8bf385cbf9a6",
+      "bytes": 394079,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=TqPU%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:19.827017+00:00"
+    },
+    {
+      "file": "pand/0138.json",
+      "collection": "pand",
+      "sha256": "82df6b4099f72ffd1a85568ef16c329e9b1af1d71717a509ee6631c4e54d08b2",
+      "bytes": 329556,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=TqTt%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:21.206599+00:00"
+    },
+    {
+      "file": "pand/0139.json",
+      "collection": "pand",
+      "sha256": "50f1f8cd3fd57c4631434e46e7153b6136ec98033bf2bc3a6da95c3469867848",
+      "bytes": 374948,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=TqYM%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:22.601199+00:00"
+    },
+    {
+      "file": "pand/0140.json",
+      "collection": "pand",
+      "sha256": "90fbb6befc0934ab6c56fb1fb7cf494ef1c71c12fb0c3fcdc8d98a3fe0e8d8c6",
+      "bytes": 327366,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Tqcl%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:24.071753+00:00"
+    },
+    {
+      "file": "pand/0141.json",
+      "collection": "pand",
+      "sha256": "1ee4db1753f61cf2f52b9d31b6e07bdc09ee2059caa42e9cdb21e1e0c3fc46d5",
+      "bytes": 308166,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Ujxl%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:26.865232+00:00"
+    },
+    {
+      "file": "pand/0142.json",
+      "collection": "pand",
+      "sha256": "8694c68ae68a9fd23471bf31dd0698a1f149ca7c6d055659790658b644184814",
+      "bytes": 313582,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Uto0%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:28.263790+00:00"
+    },
+    {
+      "file": "pand/0143.json",
+      "collection": "pand",
+      "sha256": "cbfc14d19aa85fb2c0b40177dacbcd9f999f1bdbffdbf86e658c3510c88d88ce",
+      "bytes": 292080,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Utvu%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:29.694192+00:00"
+    },
+    {
+      "file": "pand/0144.json",
+      "collection": "pand",
+      "sha256": "0392053c538016310c2c9eae232eb0808b67b674ba2193d50ec279c2786adc01",
+      "bytes": 301904,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Ut18%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:31.125535+00:00"
+    },
+    {
+      "file": "pand/0145.json",
+      "collection": "pand",
+      "sha256": "d24bf6cf95223860bb5e9991d1040cae21d7e26eb147c4b1c2187b52def61880",
+      "bytes": 291912,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Ut8P%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:32.523524+00:00"
+    },
+    {
+      "file": "pand/0146.json",
+      "collection": "pand",
+      "sha256": "3448dc574f7118d57e51513e52abc87d691b174909077e55f64128dcf8a930d1",
+      "bytes": 439334,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UuN3%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:33.931088+00:00"
+    },
+    {
+      "file": "pand/0147.json",
+      "collection": "pand",
+      "sha256": "9498ddc5d886b2d91054ed9a4fe6cad72204cd32786889ad2f52011ee8ceee5d",
+      "bytes": 283031,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UuUa%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:35.385258+00:00"
+    },
+    {
+      "file": "pand/0148.json",
+      "collection": "pand",
+      "sha256": "c3a8df05e0f87a180fcbf09c86844bbf91809d82923d4998b7ec97d16f4f7c20",
+      "bytes": 292186,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Uuaz%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:36.787910+00:00"
+    },
+    {
+      "file": "pand/0149.json",
+      "collection": "pand",
+      "sha256": "b623182e9535107f81ef9e326b2c337628bf5fe6e919cfcbf2d550227c110878",
+      "bytes": 321673,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Uug6%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:38.244591+00:00"
+    },
+    {
+      "file": "pand/0150.json",
+      "collection": "pand",
+      "sha256": "6c941523bf171a5f16afd87b5e65fbb8703a98689c4b277ee91df8f4f43bc8dd",
+      "bytes": 304409,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UunU%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:39.801035+00:00"
+    },
+    {
+      "file": "pand/0151.json",
+      "collection": "pand",
+      "sha256": "0b03f92ab62db33704ccfad86165f6168d2761e2d2ccac5886c4f30a844dd041",
+      "bytes": 304374,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Uutz%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:41.179686+00:00"
+    },
+    {
+      "file": "pand/0152.json",
+      "collection": "pand",
+      "sha256": "32a8812112ba69660190d8b7adb17a55fb1426e9249d40f94920023a748d7f1e",
+      "bytes": 292761,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Uuz-%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:42.562438+00:00"
+    },
+    {
+      "file": "pand/0153.json",
+      "collection": "pand",
+      "sha256": "cf68bc100dbd32f0e77a35c0b98df7c324492950d684089188463c6892d588e7",
+      "bytes": 371477,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Uu6Q%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:43.970123+00:00"
+    },
+    {
+      "file": "pand/0154.json",
+      "collection": "pand",
+      "sha256": "f0da884eddfc7322aba16df707269caddf5fc9ea9c38b28be1a6163ec0801536",
+      "bytes": 301818,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UvA5%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:45.327382+00:00"
+    },
+    {
+      "file": "pand/0155.json",
+      "collection": "pand",
+      "sha256": "2283d3e983d2ceaa8227a3a99f88fb1e77cab703dc747229d397578d1c22a269",
+      "bytes": 305499,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UvHT%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:46.691646+00:00"
+    },
+    {
+      "file": "pand/0156.json",
+      "collection": "pand",
+      "sha256": "2fce6e4a32c990a698438eb30f165dffe76c41137ae11596056f0753e5139741",
+      "bytes": 318398,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UvNn%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:48.105084+00:00"
+    },
+    {
+      "file": "pand/0157.json",
+      "collection": "pand",
+      "sha256": "8606f728e0702ed8b980ace48c54abf09cb16809a85e4f3c4f1b14b32c6de5bb",
+      "bytes": 317616,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UvTm%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:49.485578+00:00"
+    },
+    {
+      "file": "pand/0158.json",
+      "collection": "pand",
+      "sha256": "cc44d27168a6b2931ba72ed4b92edb4d86985ddbb7b906b11e42ee6248670bf6",
+      "bytes": 348016,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UvaL%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:50.912035+00:00"
+    },
+    {
+      "file": "pand/0159.json",
+      "collection": "pand",
+      "sha256": "e1d256cebc657c6deee0d8abcb0fb2923759d7f8adf5afeee5779f3cde2da44c",
+      "bytes": 287953,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UvgF%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:52.289744+00:00"
+    },
+    {
+      "file": "pand/0160.json",
+      "collection": "pand",
+      "sha256": "7a084eb891a87f1df15ca0eb63a745be02aa06a0b5e4b2cad13378ac85ff71dc",
+      "bytes": 297298,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UvmX%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:53.707942+00:00"
+    },
+    {
+      "file": "pand/0161.json",
+      "collection": "pand",
+      "sha256": "a5d9a2a0b0916634d47b7289378853d28ed78cc7569dd738f9f1fe5fefb33c3e",
+      "bytes": 403745,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Uvsh%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:55.117205+00:00"
+    },
+    {
+      "file": "pand/0162.json",
+      "collection": "pand",
+      "sha256": "d345ebd75df817f97757e251a8b9a0f07dc61e8c37f634945bd373b5ae8f3728",
+      "bytes": 314458,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Uvyd%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:56.523172+00:00"
+    },
+    {
+      "file": "pand/0163.json",
+      "collection": "pand",
+      "sha256": "b19ff20896d349824f9db475fa87001fb6aa7b22a96eb988603572e62c7408a6",
+      "bytes": 304500,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Uv5T%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:57.919658+00:00"
+    },
+    {
+      "file": "pand/0164.json",
+      "collection": "pand",
+      "sha256": "dd92e847408a2c130eb6887d32f7a347f2f39c6d1a2e0236c160ca3bb2c984e3",
+      "bytes": 317624,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UxMh%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:25:59.326420+00:00"
+    },
+    {
+      "file": "pand/0165.json",
+      "collection": "pand",
+      "sha256": "32a1aa9f2cc189ac84fa64e605290b28a4144fe32cf6cf2c58f80e16ba918a8e",
+      "bytes": 328245,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UxTS%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:00.709438+00:00"
+    },
+    {
+      "file": "pand/0166.json",
+      "collection": "pand",
+      "sha256": "33f3f7109588d1dcd273d2596589f6ebaf6e0945fbeaf1a435cd17ff63146bc5",
+      "bytes": 311099,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UxZ8%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:02.095952+00:00"
+    },
+    {
+      "file": "pand/0167.json",
+      "collection": "pand",
+      "sha256": "ff339ee52c0a88fe2047a2aee14a0e18af5a9c8e245a6578d48953dc93946e98",
+      "bytes": 329668,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UxvE%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:03.490949+00:00"
+    },
+    {
+      "file": "pand/0168.json",
+      "collection": "pand",
+      "sha256": "5561a88ed934304b157348ca17e5cd861254fffbb44578b80062d26e782c6f40",
+      "bytes": 350256,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Ux2Q%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:04.895370+00:00"
+    },
+    {
+      "file": "pand/0169.json",
+      "collection": "pand",
+      "sha256": "06ddb284dafb43541db0d6c54dc36b2c7e353fbf3a97bf64273d75f82761e08e",
+      "bytes": 383941,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Ux9B%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:06.330907+00:00"
+    },
+    {
+      "file": "pand/0170.json",
+      "collection": "pand",
+      "sha256": "73e9f0fe232444e59fc57a14f3e09f26a6532883673541c821e6459f2c30cb81",
+      "bytes": 466571,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UyEH%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:07.762831+00:00"
+    },
+    {
+      "file": "pand/0171.json",
+      "collection": "pand",
+      "sha256": "0529683711cde185dbb92fda7cb07d28d1141dab645b7774c2e726a5c25cd875",
+      "bytes": 307669,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UyK6%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:09.149639+00:00"
+    },
+    {
+      "file": "pand/0172.json",
+      "collection": "pand",
+      "sha256": "78f8d6bd643f6b66838222156aeaad83fab08c99d0269e4a3a6867ddd4d976f2",
+      "bytes": 314144,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UyR1%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:10.547949+00:00"
+    },
+    {
+      "file": "pand/0173.json",
+      "collection": "pand",
+      "sha256": "126e94151a3776a4a6a8ea010ad94f184826026523ba2e0912173cfde0f76235",
+      "bytes": 283103,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UyYx%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:11.956154+00:00"
+    },
+    {
+      "file": "pand/0174.json",
+      "collection": "pand",
+      "sha256": "e7d2b09cfb67a3c2748f0a50744e9cf64e8ea7605ebac90d3cc3a4133b9d5515",
+      "bytes": 315443,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Uyft%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:13.375027+00:00"
+    },
+    {
+      "file": "pand/0175.json",
+      "collection": "pand",
+      "sha256": "b810eebe04e59f929cefb3c24dffa5040f435063930f80c095aec489eacae29b",
+      "bytes": 351503,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Uymq%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:14.775415+00:00"
+    },
+    {
+      "file": "pand/0176.json",
+      "collection": "pand",
+      "sha256": "ada985d54a55cdbb147b5dcbf3c6af666c8a58622713634fd3387e9d9be5c850",
+      "bytes": 309352,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Uyt-%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:16.149712+00:00"
+    },
+    {
+      "file": "pand/0177.json",
+      "collection": "pand",
+      "sha256": "f050ac377a5a39076023feaa5035f199065a96d091d877368572c9c1e97f9db0",
+      "bytes": 310389,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Uy1J%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:17.537290+00:00"
+    },
+    {
+      "file": "pand/0178.json",
+      "collection": "pand",
+      "sha256": "6bc18f83de9d1fe4ba4b8008ad81fbf6d5e723150bdee01df0ddd6c6a687df7d",
+      "bytes": 361717,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Uy8R%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:18.919371+00:00"
+    },
+    {
+      "file": "pand/0179.json",
+      "collection": "pand",
+      "sha256": "14a75879b06fa6041886bfc6aef7f36e811ad1731e939a2eec9d988cfddb3b1e",
+      "bytes": 362830,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UzDi%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:20.281138+00:00"
+    },
+    {
+      "file": "pand/0180.json",
+      "collection": "pand",
+      "sha256": "a946e12ac6d0c0131de476728538f7d01dff5884102091d84fb8ac94d6d29078",
+      "bytes": 293463,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UzKX%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:21.644470+00:00"
+    },
+    {
+      "file": "pand/0181.json",
+      "collection": "pand",
+      "sha256": "04a85190fae4938088d46d8779ff700ba6ed657bc1ccd4655ba7e8af96d12e76",
+      "bytes": 295648,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UzRS%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:23.037922+00:00"
+    },
+    {
+      "file": "pand/0182.json",
+      "collection": "pand",
+      "sha256": "bbf344235f03c4436134d91afb638fa0d82c652fda812975155955de4dfc3691",
+      "bytes": 456472,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UzX3%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:24.477630+00:00"
+    },
+    {
+      "file": "pand/0183.json",
+      "collection": "pand",
+      "sha256": "e39c3696517fbdc2f6e3d403d69999e80a7ac8a60896ed5fab57f16a819c4506",
+      "bytes": 307924,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UzfX%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:25.854002+00:00"
+    },
+    {
+      "file": "pand/0184.json",
+      "collection": "pand",
+      "sha256": "4af359ccbc5bcd3f1e83eaebe1593d57d27a5f2b1546169e566e74b4f47d534a",
+      "bytes": 344657,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=UzmS%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:27.260250+00:00"
+    },
+    {
+      "file": "pand/0185.json",
+      "collection": "pand",
+      "sha256": "71211e7e21c7826708f5db5822a53cfa75cfe9d7ca7ba9543433470a77a7c85e",
+      "bytes": 312655,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Uzte%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:28.639557+00:00"
+    },
+    {
+      "file": "pand/0186.json",
+      "collection": "pand",
+      "sha256": "d13168b45d570814a498481a3ad8ff98902efa40a8107eff5ce6fc97f8d893d5",
+      "bytes": 345535,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=Uz0f%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:30.023374+00:00"
+    },
+    {
+      "file": "pand/0187.json",
+      "collection": "pand",
+      "sha256": "b108eb6520379d782b28403edb5d959873cc724c0ccbb1d20bdbada789b435f8",
+      "bytes": 302362,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=U0F_%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:31.417624+00:00"
+    },
+    {
+      "file": "pand/0188.json",
+      "collection": "pand",
+      "sha256": "c0a1d204dd206fe1dff6d6afb450e8da789ef711f2a0bbed5bdeb70c772bcec8",
+      "bytes": 445639,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=U0NZ%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:32.840091+00:00"
+    },
+    {
+      "file": "pand/0189.json",
+      "collection": "pand",
+      "sha256": "da83f75138fc032f72c14cc0ec0e0fc969a23b5e3d06c58ecb21787f82037fe8",
+      "bytes": 517764,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=U0UY%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:34.273940+00:00"
+    },
+    {
+      "file": "pand/0190.json",
+      "collection": "pand",
+      "sha256": "a517d37b6e885ee610a2ec1e3996b87932a50b5d828934d9a5efedcb12c9d1a3",
+      "bytes": 333172,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=U0bV%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:35.756598+00:00"
+    },
+    {
+      "file": "pand/0191.json",
+      "collection": "pand",
+      "sha256": "e3d5125b500b7b58ed7190bdfcb2fb9adeb7b8b3c8b323828e39aa2dd6b993f4",
+      "bytes": 279417,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W467%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:37.200707+00:00"
+    },
+    {
+      "file": "pand/0192.json",
+      "collection": "pand",
+      "sha256": "ee0f3d99bdc1d3255bdf3b08fbe11a039917a0e0ddea29b7dcb64755cecc0d56",
+      "bytes": 299552,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W4_d%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:38.586062+00:00"
+    },
+    {
+      "file": "pand/0193.json",
+      "collection": "pand",
+      "sha256": "c246992010e5c470c9e4c465924bc706ed8ab3e9b4e9ddfb072332ccbd12fff7",
+      "bytes": 291667,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W5D7%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:39.956814+00:00"
+    },
+    {
+      "file": "pand/0194.json",
+      "collection": "pand",
+      "sha256": "a28939cbb805d21d0702ae0c03195e4de7451c9e08a4dffdf0c791818244d32d",
+      "bytes": 312090,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W5IY%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:41.472551+00:00"
+    },
+    {
+      "file": "pand/0195.json",
+      "collection": "pand",
+      "sha256": "0028d4a828f187ca2df54acfbf2400ded233bac2a1303de935ee066469413d04",
+      "bytes": 320669,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W5Mt%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:42.877828+00:00"
+    },
+    {
+      "file": "pand/0196.json",
+      "collection": "pand",
+      "sha256": "ca00883e66b756dd997af6e34b987f277d4b367c3b518c3a219b0e926566767d",
+      "bytes": 362962,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W5RP%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:44.298920+00:00"
+    },
+    {
+      "file": "pand/0197.json",
+      "collection": "pand",
+      "sha256": "e5ae18deba9baf4903991cc85f7f8c70758b4974432f55b6b3a32106a9607714",
+      "bytes": 282969,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W5V-%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:45.664184+00:00"
+    },
+    {
+      "file": "pand/0198.json",
+      "collection": "pand",
+      "sha256": "3e68417e791c17d55fef4650ed3f1be8775db7450827dd21acd612807c72a18f",
+      "bytes": 303219,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W5ak%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:47.055524+00:00"
+    },
+    {
+      "file": "pand/0199.json",
+      "collection": "pand",
+      "sha256": "20e36ebb6a68c447905e3622f0d507608b7379f9e9157e614579643ee19ec742",
+      "bytes": 289477,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W5fM%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:48.411207+00:00"
+    },
+    {
+      "file": "pand/0200.json",
+      "collection": "pand",
+      "sha256": "51b560c295e5be819cabed109f321649ac481d62fbfd90cc0bbc5b8c69feafe0",
+      "bytes": 334327,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W5jn%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:49.802893+00:00"
+    },
+    {
+      "file": "pand/0201.json",
+      "collection": "pand",
+      "sha256": "613f8b5d73c823f807e7e67c56c93bf862d0f080ef3f5b78838bc192fdb36ce7",
+      "bytes": 284584,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W5oB%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:51.216039+00:00"
+    },
+    {
+      "file": "pand/0202.json",
+      "collection": "pand",
+      "sha256": "3fe150a23fa26a434cde677263be1aeea16e8dcf3a1388ddfb0fc23e0ede581b",
+      "bytes": 302149,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W5sk%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:52.623974+00:00"
+    },
+    {
+      "file": "pand/0203.json",
+      "collection": "pand",
+      "sha256": "00c5be17619c702667cf53eda8a8d07a6e296403d990a79ccfe3012a6322883d",
+      "bytes": 292189,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W5xB%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:54.022213+00:00"
+    },
+    {
+      "file": "pand/0204.json",
+      "collection": "pand",
+      "sha256": "94175320bd8748ce335695d9194df698aaa5a1af2f655de57818dd35d374571c",
+      "bytes": 274902,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W51o%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:55.361053+00:00"
+    },
+    {
+      "file": "pand/0205.json",
+      "collection": "pand",
+      "sha256": "ee4977de9aa7a4ceab068241a18b076b972c3c8927822837f68007e40e75f823",
+      "bytes": 286503,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W56L%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:56.741217+00:00"
+    },
+    {
+      "file": "pand/0206.json",
+      "collection": "pand",
+      "sha256": "ec93173e753f20136cf29cc16c517f805ee3443843d711504b9c1b1ce05cd9df",
+      "bytes": 286088,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W5-n%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:58.125135+00:00"
+    },
+    {
+      "file": "pand/0207.json",
+      "collection": "pand",
+      "sha256": "63a194f30374f04ac84dee1bd76c57aab26cfa83134912b32d4f418323db329b",
+      "bytes": 286337,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W6DM%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:26:59.481822+00:00"
+    },
+    {
+      "file": "pand/0208.json",
+      "collection": "pand",
+      "sha256": "752a1ef8c35813e855d27d916400d7bc4d9c876b1539a5a28a89386de0a46524",
+      "bytes": 290973,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W6Hz%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:00.871474+00:00"
+    },
+    {
+      "file": "pand/0209.json",
+      "collection": "pand",
+      "sha256": "94a08cc7867a9479ab6ac9eb3ea977c47f3fd2cca7a33eb358f86109f1754f76",
+      "bytes": 276611,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W6MQ%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:02.261490+00:00"
+    },
+    {
+      "file": "pand/0210.json",
+      "collection": "pand",
+      "sha256": "1ee36d387793ad958a39359b100f3a26e6266e89e2d765dbab5f68f6c452008d",
+      "bytes": 326983,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W6Qt%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:03.664611+00:00"
+    },
+    {
+      "file": "pand/0211.json",
+      "collection": "pand",
+      "sha256": "a9c4f197b6c48bb751713ef13587b82d09d8339ad98ab5771d55f282e96861b0",
+      "bytes": 301474,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W6VL%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:05.099661+00:00"
+    },
+    {
+      "file": "pand/0212.json",
+      "collection": "pand",
+      "sha256": "f0297c7bcd01a5b0dc7995a8fb3522247955e46869423cc6d05ea943144db4b0",
+      "bytes": 283453,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W6Zn%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:06.492219+00:00"
+    },
+    {
+      "file": "pand/0213.json",
+      "collection": "pand",
+      "sha256": "5aa2ac908a47fb35d93ef2f4a6ae841adfd4d0a88930a296752ef7421baf0a47",
+      "bytes": 279457,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W6d9%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:07.879069+00:00"
+    },
+    {
+      "file": "pand/0214.json",
+      "collection": "pand",
+      "sha256": "801c1ce062d9240f07db77fd1a77dae05309a9bf5b1185093b73e069be4b15ae",
+      "bytes": 289734,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W6ie%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:09.305402+00:00"
+    },
+    {
+      "file": "pand/0215.json",
+      "collection": "pand",
+      "sha256": "b8879f9c405f7cc3eb6d87d5bb3e20939ea12b99978deb036eaa08cd7acb3793",
+      "bytes": 285124,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W6m6%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:10.706676+00:00"
+    },
+    {
+      "file": "pand/0216.json",
+      "collection": "pand",
+      "sha256": "1dd823ce2baab3972f4afb77675dcc82fe1c4920bc3eb2c89498cd760e24cfda",
+      "bytes": 307142,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W6rf%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:12.057486+00:00"
+    },
+    {
+      "file": "pand/0217.json",
+      "collection": "pand",
+      "sha256": "f69de45739d92b8393869b78d34a83aa2f89bd2fa93c34e998e1d5075b3f2f5d",
+      "bytes": 427799,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W6v9%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:13.496835+00:00"
+    },
+    {
+      "file": "pand/0218.json",
+      "collection": "pand",
+      "sha256": "0000d3e07ec9eb25afeda4b04c65c69bc24203bfc4d930a7097b8d364ddce91d",
+      "bytes": 310431,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W60a%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:14.912140+00:00"
+    },
+    {
+      "file": "pand/0219.json",
+      "collection": "pand",
+      "sha256": "5c3724797f5a8ecc0cca4e1efc2bcf0af39c3775d3227819663c7c01cad2a72a",
+      "bytes": 297641,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W65A%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:16.275946+00:00"
+    },
+    {
+      "file": "pand/0220.json",
+      "collection": "pand",
+      "sha256": "42c5049fe403b920ba32600dc621f9824dfbf1162c804409fa48e646a6283cd4",
+      "bytes": 284092,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W69h%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:17.670574+00:00"
+    },
+    {
+      "file": "pand/0221.json",
+      "collection": "pand",
+      "sha256": "f363f9da10f3eab218434e1c7e372704d366959edd924667bdaeaece3d8492ed",
+      "bytes": 280367,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W7B8%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:19.026727+00:00"
+    },
+    {
+      "file": "pand/0222.json",
+      "collection": "pand",
+      "sha256": "a624a65dc71dac5ffdc5d3182006fc58666be52337e5dfa94c1b7cf15ba70bef",
+      "bytes": 294561,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W7Gc%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:20.411068+00:00"
+    },
+    {
+      "file": "pand/0223.json",
+      "collection": "pand",
+      "sha256": "c272f1ccb4b75693f1dc9ab70f56e6792366f635bd169c620fea93670ac49fa9",
+      "bytes": 297884,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W7K8%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:21.781744+00:00"
+    },
+    {
+      "file": "pand/0224.json",
+      "collection": "pand",
+      "sha256": "082f3b67c40759b2ab44bf5aabe0e4c2fb4fb0d1ae76568bfa039590b0efffb9",
+      "bytes": 297042,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W7Sh%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:24.195218+00:00"
+    },
+    {
+      "file": "pand/0225.json",
+      "collection": "pand",
+      "sha256": "2f9c744376298f3f4324f0e0a77332aaac39d9f423f189a3502eec2e8f73470c",
+      "bytes": 309781,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W7XG%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:25.685397+00:00"
+    },
+    {
+      "file": "pand/0226.json",
+      "collection": "pand",
+      "sha256": "838d46b9273daa4d0670a3b152b9df14ed172af131e559df8432a8c59fb34cc9",
+      "bytes": 307433,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W7bn%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:27.094614+00:00"
+    },
+    {
+      "file": "pand/0227.json",
+      "collection": "pand",
+      "sha256": "aa3349e1192ea23eeb694713e6375a7936d28af18ae273d00072909d457f4ac7",
+      "bytes": 323901,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W7gE%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:28.526690+00:00"
+    },
+    {
+      "file": "pand/0228.json",
+      "collection": "pand",
+      "sha256": "e6ca42f338f8d36c9269cfa8caf146f0531f86223bae8ab71f2fab8d8f485ea5",
+      "bytes": 273084,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W7kh%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:29.984612+00:00"
+    },
+    {
+      "file": "pand/0229.json",
+      "collection": "pand",
+      "sha256": "7727e701d0c6f9fd6f0d80a8ba5a11f0e7d705acd2b02b64c7d43fe16c010edd",
+      "bytes": 313861,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=W7pB%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:31.782333+00:00"
+    },
+    {
+      "file": "pand/0230.json",
+      "collection": "pand",
+      "sha256": "506ab03be7e7b049824ca2a11e03256557a04759829a56db10e001eb043c0787",
+      "bytes": 342903,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=dZXG%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:35.576985+00:00"
+    },
+    {
+      "file": "pand/0231.json",
+      "collection": "pand",
+      "sha256": "0db4f1d30fed49e6a4b66da0edb2b58881d17486fd362f8ed64aaab998ad8eef",
+      "bytes": 354826,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=fzsU%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:37.142065+00:00"
+    },
+    {
+      "file": "pand/0232.json",
+      "collection": "pand",
+      "sha256": "13586794b964b86d05c945f6b4ab8cb5ff688a67bc890d2584f50fe3baac72a1",
+      "bytes": 529160,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=i0oq%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:38.879797+00:00"
+    },
+    {
+      "file": "pand/0233.json",
+      "collection": "pand",
+      "sha256": "3836311b493e27b206efa5e7f18a4ad14702be393814c38e024ddfd529030231",
+      "bytes": 376583,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=li6w%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:44.326626+00:00"
+    },
+    {
+      "file": "pand/0234.json",
+      "collection": "pand",
+      "sha256": "c629948b05a817f44bce00d9bcb64a3fb38b78413038d915a20db00f83d49d15",
+      "bytes": 719629,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=nP5J%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:46.434904+00:00"
+    },
+    {
+      "file": "pand/0235.json",
+      "collection": "pand",
+      "sha256": "9408f3244152f90bb92ea59c3e8fd6f782b653677faba45da89b6b2bac2e70f6",
+      "bytes": 536955,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=oKjH%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:48.342285+00:00"
+    },
+    {
+      "file": "pand/0236.json",
+      "collection": "pand",
+      "sha256": "5af6ffe16df65ec642e8c9800eae20f7473b35ac3b0df65d8ee1b32b1a067661",
+      "bytes": 1012168,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=pILz%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:51.576146+00:00"
+    },
+    {
+      "file": "pand/0237.json",
+      "collection": "pand",
+      "sha256": "f29a03dbd041d2cbaac2bc7ed869950bd9baa87420568807388f4a1fffcdc193",
+      "bytes": 539995,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=qfVK%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:55.749953+00:00"
+    },
+    {
+      "file": "pand/0238.json",
+      "collection": "pand",
+      "sha256": "23e93801e1e5ac20956ff40ce85a13789091e89f214cc5ab06f47400a953e51c",
+      "bytes": 516373,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=reYm%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:27:57.487532+00:00"
+    },
+    {
+      "file": "pand/0239.json",
+      "collection": "pand",
+      "sha256": "1333e1c6e3ca81850df49ceaddb4839758798881f7af3a2fce7a0d4eafa1ad18",
+      "bytes": 761126,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=t3wm%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:02.744844+00:00"
+    },
+    {
+      "file": "pand/0240.json",
+      "collection": "pand",
+      "sha256": "cbb6e10ffcfeba224eddcabfb87c693a604cf3a4f9c021034e51f5e1173b2cdb",
+      "bytes": 751082,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=u3y8%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:04.636819+00:00"
+    },
+    {
+      "file": "pand/0241.json",
+      "collection": "pand",
+      "sha256": "01751e8c78c27c40406e391552ebc857bd58e8069503c6894cb6a1404b7bf067",
+      "bytes": 759259,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=xALi%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:09.694066+00:00"
+    },
+    {
+      "file": "pand/0242.json",
+      "collection": "pand",
+      "sha256": "cd06f0119a4fdb397b9d78badefb631509c5da84b51330690c46a99a554501d4",
+      "bytes": 463118,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=yQvi%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:11.595213+00:00"
+    },
+    {
+      "file": "pand/0243.json",
+      "collection": "pand",
+      "sha256": "cfc20bea57ee8d8951ac27f8763fc968f37f277555d409ece25901928e8afda7",
+      "bytes": 474731,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=yr2Z%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:13.498091+00:00"
+    },
+    {
+      "file": "pand/0244.json",
+      "collection": "pand",
+      "sha256": "ea2d880258b46949bd1d8027e5132032faf376c05e1840b9d6ee20b6507ba1d5",
+      "bytes": 470246,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=zNmU%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:16.567130+00:00"
+    },
+    {
+      "file": "pand/0245.json",
+      "collection": "pand",
+      "sha256": "eac2f5afa512686a28312faf5e5eea3308e6934da18bdf327d3eb53a09972a1f",
+      "bytes": 625832,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=z4XJ%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:18.472993+00:00"
+    },
+    {
+      "file": "pand/0246.json",
+      "collection": "pand",
+      "sha256": "321a7ce0a67644abf86fcea48cdc12938354aaca3a5137b286719dfcb12fb79c",
+      "bytes": 388958,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=0T7p%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:20.018714+00:00"
+    },
+    {
+      "file": "pand/0247.json",
+      "collection": "pand",
+      "sha256": "1efd606e61622cf7c1d478abad97843b488b50e8db09fe6c68f5b2b30155f9f5",
+      "bytes": 444947,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=1QyE%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:22.198810+00:00"
+    },
+    {
+      "file": "pand/0248.json",
+      "collection": "pand",
+      "sha256": "4f1c5f6e25bcd0b92f7d63a0a84a259d5cb94c5af486adfe0a77747a66717152",
+      "bytes": 420466,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=2SLw%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:24.007491+00:00"
+    },
+    {
+      "file": "pand/0249.json",
+      "collection": "pand",
+      "sha256": "e72a09a5426724260b4129f53d516c588bf969d0acc020aa7a862a13a44f40eb",
+      "bytes": 383279,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=28BD%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:25.946990+00:00"
+    },
+    {
+      "file": "pand/0250.json",
+      "collection": "pand",
+      "sha256": "436c64bb95bb5b6795f1f0ea30d6c583a7caccef66eed2603a822eaccc40d3da",
+      "bytes": 473755,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=3YlX%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:27.909123+00:00"
+    },
+    {
+      "file": "pand/0251.json",
+      "collection": "pand",
+      "sha256": "86712f9b792d318fb2b23270e2a8415842e364c92e54dad9913ef76997d962dd",
+      "bytes": 403085,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=53MZ%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:33.229975+00:00"
+    },
+    {
+      "file": "pand/0252.json",
+      "collection": "pand",
+      "sha256": "e52522a9344dd2fc775a5cc0f26364eaa395c8db30865e6729d037fc03fb5f24",
+      "bytes": 452693,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=6pIq%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:36.730823+00:00"
+    },
+    {
+      "file": "pand/0253.json",
+      "collection": "pand",
+      "sha256": "7ad22b9d7614f67d87d2500ca14b95ae6f9d57148ce8cadef10052d158001ff6",
+      "bytes": 455013,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=72cb%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:38.706386+00:00"
+    },
+    {
+      "file": "pand/0254.json",
+      "collection": "pand",
+      "sha256": "14b841a7d48ab67703cab357858b6ae8115be27bf158d493d45c86b2ef468b91",
+      "bytes": 426552,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=8psf%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:40.324604+00:00"
+    },
+    {
+      "file": "pand/0255.json",
+      "collection": "pand",
+      "sha256": "07d43d13b662c2821a917be257701b5efc96e08f7c5d6825b1380fae5ffcfeff",
+      "bytes": 677466,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=90f_%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:44.756660+00:00"
+    },
+    {
+      "file": "pand/0256.json",
+      "collection": "pand",
+      "sha256": "9a139e5e5caa9d3ae36caeb0df1981784c6f373026ae8f7d8f27009ef78fa4b1",
+      "bytes": 1303112,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=-_bW%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:47.549743+00:00"
+    },
+    {
+      "file": "pand/0257.json",
+      "collection": "pand",
+      "sha256": "b60398b25a664db9319c9f61aea30dea8afa848d4bec9e90c14a19036dbb7073",
+      "bytes": 426311,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=AQOzAg%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:49.377340+00:00"
+    },
+    {
+      "file": "pand/0258.json",
+      "collection": "pand",
+      "sha256": "492649d7f44780ab646852fe58e3cd6e229d5629ec8031d2f1d6be40e3111744",
+      "bytes": 469701,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=AQdJJQ%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:28:57.011459+00:00"
+    },
+    {
+      "file": "pand/0259.json",
+      "collection": "pand",
+      "sha256": "8e672ce0d7a351a95e6cc3fe9e3564f044005db7f1fb04d9f7d65216a500ea18",
+      "bytes": 422505,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=AQoOug%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:00.519115+00:00"
+    },
+    {
+      "file": "pand/0260.json",
+      "collection": "pand",
+      "sha256": "fcd28c691072872de8ae6eb561dbd87184baa9bab1b02fa63c4e12f2ce3c8aa2",
+      "bytes": 502056,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ARCUYg%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:04.467971+00:00"
+    },
+    {
+      "file": "pand/0261.json",
+      "collection": "pand",
+      "sha256": "73f3806b8c7fc98bc84b3b947e1bf377a2a0399416cff36f6ad99fa2e83eda7c",
+      "bytes": 593323,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=AREnig%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:06.377904+00:00"
+    },
+    {
+      "file": "pand/0262.json",
+      "collection": "pand",
+      "sha256": "d008cd95639e8feafcc8bbee8ed695bd84ec5244c10c9877a07888e54c3c1d06",
+      "bytes": 368705,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ARgLSg%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:15.806340+00:00"
+    },
+    {
+      "file": "pand/0263.json",
+      "collection": "pand",
+      "sha256": "4cce58de14b0671f12e0716e5c60968d7551cb6cedf1311a9c00b498a5d10f1c",
+      "bytes": 328756,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ARoZfA%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:17.294767+00:00"
+    },
+    {
+      "file": "pand/0264.json",
+      "collection": "pand",
+      "sha256": "e9017fc5a56b08a3f878e41084c536443e856946055ca3abaf650df7c67f1891",
+      "bytes": 325550,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ARqXUg%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:18.746058+00:00"
+    },
+    {
+      "file": "pand/0265.json",
+      "collection": "pand",
+      "sha256": "65b4e83cc3260af47d4e728dc44b551046e6c3b530954a74889172bdcceadc7e",
+      "bytes": 397162,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ARqZXA%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:20.171619+00:00"
+    },
+    {
+      "file": "pand/0266.json",
+      "collection": "pand",
+      "sha256": "76ffc8582745c841982dcf29aba3a7828048cb5422e89bdc241bfee49fe7d08b",
+      "bytes": 337362,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ARridA%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:21.625880+00:00"
+    },
+    {
+      "file": "pand/0267.json",
+      "collection": "pand",
+      "sha256": "608eecbb9214118ae517bd45f0b460c8110303a0efe28c21931e0d8d31152a27",
+      "bytes": 285165,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ARteow%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:23.150761+00:00"
+    },
+    {
+      "file": "pand/0268.json",
+      "collection": "pand",
+      "sha256": "32b81acd392e99b8449dbe7daa382ba4ce5cb76768bf6696adb24e2a7e481d7e",
+      "bytes": 287574,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ARtg4w%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:24.561764+00:00"
+    },
+    {
+      "file": "pand/0269.json",
+      "collection": "pand",
+      "sha256": "cdec3318b5401aeb2239624f6e8df73c8754db664d9731b5bbd74e0d8ed3d3c6",
+      "bytes": 314366,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ARti6Q%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:26.054066+00:00"
+    },
+    {
+      "file": "pand/0270.json",
+      "collection": "pand",
+      "sha256": "6594302b3b14c44d4982a6e003fac853f746b49eeb622c016faeb52b5599207a",
+      "bytes": 308344,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ARtnyQ%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:27.496438+00:00"
+    },
+    {
+      "file": "pand/0271.json",
+      "collection": "pand",
+      "sha256": "4689a00fd6d613647edae5dbc0f8ad8501c77e4c64e6d342fd0fd295bdedc50a",
+      "bytes": 304810,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ARtrGw%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:28.890785+00:00"
+    },
+    {
+      "file": "pand/0272.json",
+      "collection": "pand",
+      "sha256": "637291e21375bfada65d859f3cd39d7302a109b1f4eca358461cb8d90ea80b5a",
+      "bytes": 323971,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ARt1qQ%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:30.270200+00:00"
+    },
+    {
+      "file": "pand/0273.json",
+      "collection": "pand",
+      "sha256": "adc3b559fa385e75f1e9f1b78881579dc38f01c303a83b7bc2de8e9e8eb61780",
+      "bytes": 293807,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ARvAGw%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:31.674683+00:00"
+    },
+    {
+      "file": "pand/0274.json",
+      "collection": "pand",
+      "sha256": "7ad3ac57131def82fe6301feef3d888fc2cfd2d9d7eb056413bfac310f975ffb",
+      "bytes": 294252,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ARx2fA%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:33.041978+00:00"
+    },
+    {
+      "file": "pand/0275.json",
+      "collection": "pand",
+      "sha256": "7f7a2c97c08cb5825ccc7b3711511bdf5a43d249d58ee22579153466fcbd9432",
+      "bytes": 296503,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ARx4nA%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:34.450687+00:00"
+    },
+    {
+      "file": "pand/0276.json",
+      "collection": "pand",
+      "sha256": "256812dc470bc9ef7dc1b13e4c8cdac1c6a1271e218a2eff65677cc41f2fd385",
+      "bytes": 357963,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ARx6vA%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:35.948969+00:00"
+    },
+    {
+      "file": "pand/0277.json",
+      "collection": "pand",
+      "sha256": "100b3c31f6c560c24a8106c9bd29839ce5b50e01f699fddfb45bc224f40a2120",
+      "bytes": 828494,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=AR_2ZQ%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:38.158770+00:00"
+    },
+    {
+      "file": "pand/0278.json",
+      "collection": "pand",
+      "sha256": "c271c9560df2d6de4916403235fcedcfabcb59977713c9c3769675375d7be167",
+      "bytes": 675141,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ASJjbg%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:39.925267+00:00"
+    },
+    {
+      "file": "pand/0279.json",
+      "collection": "pand",
+      "sha256": "e9d6d80273d0f9dc9cd0b5db9bcdbcfcea67458fd8dd767196dbcfc469e02034",
+      "bytes": 425064,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ASivIA%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:41.478865+00:00"
+    },
+    {
+      "file": "pand/0280.json",
+      "collection": "pand",
+      "sha256": "9d71876b7b1b59fe21eb98681d6982406a02cc3f7fe143c296455eae2f45d69b",
+      "bytes": 1037742,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=AS4H6g%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:44.906197+00:00"
+    },
+    {
+      "file": "pand/0281.json",
+      "collection": "pand",
+      "sha256": "ff9508424b11fd7c58046dfd1edd7cb64ca626a5d7e6f483f4f92f974ca7f2f9",
+      "bytes": 592286,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ATUP1A%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:56.814377+00:00"
+    },
+    {
+      "file": "pand/0282.json",
+      "collection": "pand",
+      "sha256": "30becdc113459f927a8e538652d373ba68bc136293d33e59509f5dacc98cca62",
+      "bytes": 693378,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ATkyiQ%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:29:58.587003+00:00"
+    },
+    {
+      "file": "pand/0283.json",
+      "collection": "pand",
+      "sha256": "8e3f8c4d128cf97ad5e01aad1a9cc63902977b841d599dbb868b9c8fd6686e0a",
+      "bytes": 444577,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=ATzznA%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:30:02.447726+00:00"
+    },
+    {
+      "file": "pand/0284.json",
+      "collection": "pand",
+      "sha256": "a8bbf5449a3bbdb25626c294dace29c59bb5d57906a3f33db64a784822c09cf0",
+      "bytes": 878091,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=AUErCg%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:30:04.230701+00:00"
+    },
+    {
+      "file": "pand/0285.json",
+      "collection": "pand",
+      "sha256": "98740dda1e410448aa2b69f4fc3cc37c7ccd4b257d5154b1f718e78001328479",
+      "bytes": 1662983,
+      "features": 250,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=AUNUbQ%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:30:10.891693+00:00"
+    },
+    {
+      "file": "pand/0286.json",
+      "collection": "pand",
+      "sha256": "2f94763f9ef512d7f67a56464c553b2ebf5a0fea9547dde364945f1e64c68b22",
+      "bytes": 742849,
+      "features": 213,
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/collections/pand/items?bbox=4.865%2C52.345%2C4.97%2C52.405&cursor=AUXV7w%7CjZowfA&datetime=2026-10-16T00%3A00%3A00Z&f=json&limit=250",
+      "retrieved_at": "2026-10-16T16:30:12.653394+00:00"
+    }
+  ]
+}

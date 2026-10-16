@@ -1,0 +1,174 @@
+{
+  "checked_at": "2026-10-16T16:40:17.186791+00:00",
+  "hashes": [
+    {
+      "file": "brief.md",
+      "source_sha_ok": true,
+      "staged_sha_ok": true
+    },
+    {
+      "file": "geo-interface.md",
+      "source_sha_ok": true,
+      "staged_sha_ok": true
+    },
+    {
+      "file": "sample-properties.md",
+      "source_sha_ok": true,
+      "staged_sha_ok": true
+    },
+    {
+      "file": "samples/bridges.json",
+      "source_sha_ok": true,
+      "staged_sha_ok": true
+    },
+    {
+      "file": "samples/buildings.json",
+      "source_sha_ok": true,
+      "staged_sha_ok": true
+    },
+    {
+      "file": "samples/roads.json",
+      "source_sha_ok": true,
+      "staged_sha_ok": true
+    },
+    {
+      "file": "samples/water.json",
+      "source_sha_ok": true,
+      "staged_sha_ok": true
+    },
+    {
+      "file": "source-manifest.json",
+      "source_sha_ok": true,
+      "staged_sha_ok": true
+    }
+  ],
+  "tools": {
+    "Read": 9,
+    "Edit": 19,
+    "Bash": 5
+  },
+  "commands": [
+    "python3 -m unittest -v test_bgt_import.py",
+    "python3 -m unittest -v test_bgt_import.py",
+    "python3 import_bgt.py --manifest source-manifest.json --json geo-data.json --js geo-data.js --audit import-audit.json",
+    "node --check geo-data.js",
+    "node --test test_geo_data.cjs"
+  ],
+  "unlisted_commands": [],
+  "paths": [
+    {
+      "tool": "Read",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/brief.md"
+    },
+    {
+      "tool": "Read",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/geo-interface.md"
+    },
+    {
+      "tool": "Read",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/source-manifest.json"
+    },
+    {
+      "tool": "Read",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/sample-properties.md"
+    },
+    {
+      "tool": "Read",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/samples/buildings.json"
+    },
+    {
+      "tool": "Read",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/samples/water.json"
+    },
+    {
+      "tool": "Read",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/import_bgt.py"
+    },
+    {
+      "tool": "Read",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/test_bgt_import.py"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/import_bgt.py"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/import_bgt.py"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/import_bgt.py"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/import_bgt.py"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/import_bgt.py"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/test_bgt_import.py"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/import_bgt.py"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/test_bgt_import.py"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/test_bgt_import.py"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/test_bgt_import.py"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/test_bgt_import.py"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/test_bgt_import.py"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/test_bgt_import.py"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/test_bgt_import.py"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/test_bgt_import.py"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/test_bgt_import.py"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/test_bgt_import.py"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/test_geo_data.cjs"
+    },
+    {
+      "tool": "Read",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/import-audit.json"
+    },
+    {
+      "tool": "Edit",
+      "path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-20261017/workspace/handoff-result.json"
+    }
+  ],
+  "permission_denials": [],
+  "disallowed_changes": []
+}

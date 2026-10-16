@@ -1,3 +1,9 @@
+# D26 latest: actual Plan first wave and full official source
+
+2026-10-16T16:41:49Z: new human 10-hour window remains 16:03:03Z to 2026-10-17T02:03:03Z. NAV01 amsterdam-d26-geo-navigation-20261017 launched16:34:28Z worker55396/launcher55395/session9606, contract81378fe pushed. GEO01 returned16:37:29.753776Z CLI0 complete report, parent sample37+9 pass, eight input SHA unchanged; full source conversion session75545 still under review. Hardcoded incomplete-sample limitations on complete manifests found; no adoption yet. Collect first wave before next dispatch; original IDs and one correction per renewed package retained. Both workers overlapped at16:36 by explicit PID query; earlier ps mixed-column false negatives preserved in NAV01/process-check-correction.json.
+
+BGT finite download completed16:38:18.837886Z:585 pages,water1805/buildings71463/roads70085/bridge parts2350. Bbox [4.865,52.345,4.970,52.405], snapshot2026-10-16T00:00Z, four collections complete; not all Amsterdam. Real source water/building preview inspected and shown, not game screenshot. Game dad6b38/18860 unchanged. Plan submitted2, game adoption0. State and docs/product-research/2026-10-17-ten-hour-map authoritative; prior four-day cutoff is history under D26.
+
 # D26执行进展：GEO01已实际提交，NAV01待容量
 
 2026-10-16T16:22:42Z GEO01 amsterdam-d26-bgt-import-20261017已启动，launcher52110/worker52111/外层82351，Seed Evolving enabled/high，2400秒70轮；合同a9ee9cab04c71e030cc2d75f27f203c03c60d3e5已push并远端核对，Notion执行中读回。提交前全机另1个真实CC、8公开输入133847字节SHA一致。NAV01固定amsterdam-d26-geo-navigation-20261017待容量，未提交；增加真实BGT voetgangersgebied拼写与bridge deck/pier分类说明后3输入9159字节，需以本轮更新合同为准。无新采用/游戏修改，dad6b38保持。

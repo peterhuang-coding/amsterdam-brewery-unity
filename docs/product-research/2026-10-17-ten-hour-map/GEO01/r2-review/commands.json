@@ -1,0 +1,22 @@
+[
+  {
+    "command": "python3 -m unittest -v test_bgt_import.py",
+    "exit_code": 0,
+    "seconds": 0.08712375
+  },
+  {
+    "command": "python3 import_bgt.py --manifest source-manifest.json --json geo-data.json --js geo-data.js --audit import-audit.json",
+    "exit_code": 0,
+    "seconds": 0.04872708299999999
+  },
+  {
+    "command": "node --check geo-data.js",
+    "exit_code": 0,
+    "seconds": 0.048253624999999994
+  },
+  {
+    "command": "node --test test_geo_data.cjs",
+    "exit_code": 0,
+    "seconds": 0.14386462500000002
+  }
+]

@@ -1,0 +1,43 @@
+[
+  {
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "-v",
+      "test_bgt_import.py"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python3",
+      "import_bgt.py",
+      "--manifest",
+      "source-manifest.json",
+      "--json",
+      "geo-data.json",
+      "--js",
+      "geo-data.js",
+      "--audit",
+      "import-audit.json"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "geo-data.js"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "node",
+      "--test",
+      "test_geo_data.cjs"
+    ],
+    "exit_code": 0
+  }
+]

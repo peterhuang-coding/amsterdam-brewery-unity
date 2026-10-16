@@ -1,0 +1,42 @@
+[
+  {
+    "file": "geo-interface.md",
+    "bytes": 6525,
+    "sha256": "35e5148f8f6ef04c3b379f268f7ca9faf806e7a0b17275d7717a15373fbed0af"
+  },
+  {
+    "file": "source-classification.md",
+    "bytes": 1277,
+    "sha256": "c39582ff3e62c869a1d7dab351e028890c04df08f6efe310dc6cfaddeef3a617"
+  },
+  {
+    "file": "geo-navigation.js",
+    "bytes": 35770,
+    "sha256": "1a2917e276224aef2633529ef339e63f61e7c98c10df5cca1867551535b84bea"
+  },
+  {
+    "file": "test-geo-navigation.cjs",
+    "bytes": 28099,
+    "sha256": "adc16cb3885e3d0188953d3e8dab6268813845b4794b0e28ce174455cba73d5d"
+  },
+  {
+    "file": "benchmark-geo-navigation.cjs",
+    "bytes": 10808,
+    "sha256": "bc97f9b8c57ff14f765acfa2a334ecda900823558c85389d94d5a07be473142b"
+  },
+  {
+    "file": "real-pub-sample.json",
+    "bytes": 237043,
+    "sha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598"
+  },
+  {
+    "file": "parent-radius-hole-repro.cjs",
+    "bytes": 519,
+    "sha256": "35d76e01ea715fca82604f0f2c2cff5059976d300bd67c78d63250741770c2fc"
+  },
+  {
+    "file": "correction.md",
+    "bytes": 2872,
+    "sha256": "3f020d77859a0f46f461316ef5f2288ac3684cf32bf0cf552f3aa9b0339ccf26"
+  }
+]

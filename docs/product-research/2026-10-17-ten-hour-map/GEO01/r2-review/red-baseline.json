@@ -1,0 +1,11 @@
+{
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "-v",
+    "test_bgt_import.CompletenessMetadataTests"
+  ],
+  "exit_code": 1,
+  "note": "Final seven new tests against unchanged rejected business importer; expected failure, not a new task attempt."
+}

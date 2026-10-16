@@ -1,0 +1,50 @@
+test_cli_error_returns_nonzero (test_bgt_import.CliTests) ... import_bgt: error: cannot read manifest /private/tmp/amsterdam-d26-geo-r2-parent-20261017/sample/does-not-exist.json: [Errno 2] No such file or directory: '/private/tmp/amsterdam-d26-geo-r2-parent-20261017/sample/does-not-exist.json'
+ok
+test_cli_writes_json_js_audit (test_bgt_import.CliTests) ... ok
+test_complete_false_all_next_links_verified (test_bgt_import.CompletenessMetadataTests) ... ok
+test_complete_false_partial_next_links_wording (test_bgt_import.CompletenessMetadataTests) ... ok
+test_complete_false_without_next_link_makes_no_next_claim (test_bgt_import.CompletenessMetadataTests) ... ok
+test_complete_true_is_strict_bool_and_scoped_not_incomplete (test_bgt_import.CompletenessMetadataTests) ... ok
+test_geometry_sha_and_counts_unchanged_between_true_and_false (test_bgt_import.CompletenessMetadataTests) ... ok
+test_invalid_completeness_types_rejected_without_coercion (test_bgt_import.CompletenessMetadataTests) ... ok
+test_real_samples_false_with_four_verified_next_links (test_bgt_import.CompletenessMetadataTests) ... ok
+test_creation_exactly_at_snapshot_is_current (test_bgt_import.DateValidityTests) ... ok
+test_future_creation_excluded (test_bgt_import.DateValidityTests) ... ok
+test_invalid_date_string_excluded_not_repaired (test_bgt_import.DateValidityTests) ... ok
+test_null_dates_kept_without_invention (test_bgt_import.DateValidityTests) ... ok
+test_terminated_before_snapshot_excluded (test_bgt_import.DateValidityTests) ... ok
+test_duplicate_local_id_two_current_versions_errors (test_bgt_import.DedupConflictTests) ... ok
+test_historical_version_excluded_current_geometry_kept (test_bgt_import.DedupConflictTests) ... ok
+test_identical_repeated_feature_across_pages_deduped (test_bgt_import.DedupConflictTests) ... ok
+test_same_id_different_bytes_errors (test_bgt_import.DedupConflictTests) ... ok
+test_collection_identity_mismatch_errors (test_bgt_import.IntegrityTests) ... ok
+test_invalid_bbox_errors (test_bgt_import.IntegrityTests) ... ok
+test_missing_feature_id_errors (test_bgt_import.IntegrityTests) ... ok
+test_not_feature_collection_errors (test_bgt_import.IntegrityTests) ... ok
+test_tampered_sha_errors (test_bgt_import.IntegrityTests) ... ok
+test_unknown_layer_errors (test_bgt_import.IntegrityTests) ... ok
+test_deterministic_byte_ordering (test_bgt_import.OutputSchemaTests) ... ok
+test_feature_shape (test_bgt_import.OutputSchemaTests) ... ok
+test_properties_selected_only_when_present (test_bgt_import.OutputSchemaTests) ... ok
+test_sorted_by_source_id (test_bgt_import.OutputSchemaTests) ... ok
+test_all_real_rings_closed_finite_and_projected (test_bgt_import.RealSampleTests) ... ok
+test_audit_geometry_counts_consistent (test_bgt_import.RealSampleTests) ... ok
+test_deterministic_bytes_on_repeated_conversion (test_bgt_import.RealSampleTests) ... ok
+test_explicit_incomplete_limitation (test_bgt_import.RealSampleTests) ... ok
+test_known_building_feature_traceable_to_source (test_bgt_import.RealSampleTests) ... ok
+test_layer_counts_match_actual_pages (test_bgt_import.RealSampleTests) ... ok
+test_projection_block_and_dimensions (test_bgt_import.RealSampleTests) ... ok
+test_projection_matches_independent_formula_on_known_point (test_bgt_import.RealSampleTests) ... ok
+test_real_semantic_properties_present (test_bgt_import.RealSampleTests) ... ok
+test_sha_and_collection_identity_verified (test_bgt_import.RealSampleTests) ... ok
+test_crossing_boundary_geometry_is_retained_unclipped (test_bgt_import.SyntheticGeometryTests) ... ok
+test_malformed_rings_error_with_id (test_bgt_import.SyntheticGeometryTests) ... ok
+test_multipolygon_two_polygons_one_with_hole (test_bgt_import.SyntheticGeometryTests) ... ok
+test_polygon_hole_preserved_and_bounds (test_bgt_import.SyntheticGeometryTests) ... ok
+test_three_dimensional_positions_rejected (test_bgt_import.SyntheticGeometryTests) ... ok
+test_unsupported_geometry_types_error_with_id (test_bgt_import.SyntheticGeometryTests) ... ok
+
+----------------------------------------------------------------------
+Ran 44 tests in 0.047s
+
+OK

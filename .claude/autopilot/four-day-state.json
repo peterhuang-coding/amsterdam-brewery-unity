@@ -17,21 +17,6 @@
   "last_result_at": "2026-10-14T16:58:40.031524Z",
   "in_flight": [
     {
-      "id": "amsterdam-d26-bgt-import-r2-20261017",
-      "label": "GEO01-R2",
-      "logical_task_id": "f02-real-geodata-import-d26",
-      "notion_page": "https://app.notion.com/p/3fb3285284df8124bc6aee0fe070111b",
-      "submitted_at": "2026-10-16T17:05:28+00:00",
-      "worker_pid": 60858,
-      "launcher_pid": 60857,
-      "outer_session_id": 80228,
-      "contract_commit": "e2397762e405f29cc5190f356df32a5260a0e6aa",
-      "dispatch_head": "bd6556eefcf6ef531d5bf620827a2614b5c871f1",
-      "business_attempts_submitted": 1,
-      "corrections_submitted": 1,
-      "corrections_allowed": 1
-    },
-    {
       "id": "amsterdam-d26-runtime-pack-20261017",
       "label": "PACK01",
       "logical_task_id": "f02-geo-runtime-pack-d26",
@@ -642,10 +627,10 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-16T16:48:47.447908+00:00",
+  "updated_at": "2026-10-16T17:27:37.367745+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
-  "last_checked_at": "2026-10-16T16:41:49.384698+00:00",
+  "last_checked_at": "2026-10-16T17:27:37.367745+00:00",
   "prior_four_day_window": {
     "start_at": "2026-10-12T19:48:33Z",
     "deadline": "2026-10-16T19:48:33Z",
@@ -672,7 +657,10 @@
     "first_wave_collected_at": "2026-10-16T17:04:17.651203+00:00",
     "geo01_corrections_submitted": 1,
     "nav01_corrections_submitted": 0,
-    "nav01_next": "One targeted correction after real packing fixture; rejected radius-hole case preserved, no redispatch yet."
+    "nav01_next": "NAV01-R2 and RENDER01 prepared but unsubmitted; collect PACK01 before third wave.",
+    "geo01_correction_review": "accepted_with_changes/other: source geometry unchanged, complete metadata corrected, denied extra report shell attempt recorded",
+    "accepted_component_count": 1,
+    "accepted_component_commit": "3c9bb0e15dc3d7ce3f33d96aaf2873cddf0d43d1"
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",
@@ -682,7 +670,21 @@
     "before_NAV01_bare_pids": [],
     "actual_process_overlap_not_claimed": true
   },
-  "prepared_tasks": [],
+  "prepared_tasks": [
+    {
+      "id": "amsterdam-d26-geo-navigation-r2-20261017",
+      "label": "NAV01-R2",
+      "packet": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/NAV01/r2/handoff.json",
+      "submitted": false
+    },
+    {
+      "id": "amsterdam-d26-geo-map-renderer-20261017",
+      "label": "RENDER01",
+      "packet": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/RENDER01/handoff.json",
+      "notion_page": "https://app.notion.com/p/3fb3285284df81e88424df0488d60354",
+      "submitted": false
+    }
+  ],
   "awaiting_parent_review": [],
-  "current_stage": "wave2_geo_metadata_correction_and_runtime_pack_running"
+  "current_stage": "geo_converter_accepted_pack_running_next_wave_prepared"
 }

@@ -1,0 +1,8 @@
+{
+  "commit": "3c9bb0e15dc3d7ce3f33d96aaf2873cddf0d43d1",
+  "branch": "codex/real-map-20261017",
+  "component": "tools/geo/bgt",
+  "game_runtime_changed": false,
+  "playable_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
+  "tests": "44 Python + 9 Node passed in adopted directory; fresh baseline418/418 before adoption"
+}

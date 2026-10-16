@@ -1,0 +1,45 @@
+{
+  "status": "completed",
+  "summary": "D26 GEO01 targeted completeness-metadata correction only; no geometry, projection, dedup, date or source-property logic changed. import_bgt.py now (1) validates manifest.complete with a strict isinstance(value, bool) check and rejects 'false'/'true' strings, 0/1 integers, null, etc. instead of bool() coercion; (2) replaces the hardcoded LIMITATIONS with build_limitations(): complete=true scopes the claim to the listed manifest bbox and listed collection inputs only (no incomplete/sample/first-page/next-page or city-wide language), complete=false describes incomplete listed inputs and mentions next pages only when actually verified from each parsed page's links array (new per-input audit field nextLink; partial counts worded 'N of M', zero verified makes no next-page claim); (3) one shared limitation list is emitted in both source metadata and audit, and the unclipped-bbox limitation is retained on both branches. test_bgt_import.py gains 7 tests (44 total; the original 37 test intentions preserved): true scoping, false all-next verified, false without next link, partial 1-of-2 wording, seven invalid completeness types rejected, deep geometry/SHA/audit-count equivalence between true and false (documents differ only in complete+limitations), and the four real sample pages all showing verified nextLink=true. No early RED was run in this handoff; the behaviors under test correspond to the prior parent rejection (hardcoded incomplete limitation on complete=true; non-boolean complete coercion), which remains the recorded failure history. Artifacts regenerated from the unchanged manifest: 18 features, 0 duplicates/exclusions, identical input SHAs and bytes; only completeness metadata changed. test_geo_data.cjs unchanged; its nine checks still pass against the real complete=false artifact. This is source-conversion evidence, not adoption: game remains dad6b38, no full-city 1:1 or fun claim, full-run packaging is out of scope.",
+  "changed_files": [
+    "import_bgt.py",
+    "test_bgt_import.py",
+    "geo-data.json",
+    "geo-data.js",
+    "import-audit.json"
+  ],
+  "tests": [
+    {
+      "command": "python3 -m unittest -v test_bgt_import.py",
+      "exit_code": 0,
+      "summary": "Ran 44 tests in 0.048s, OK: 37 preserved regression tests plus 7 new completeness tests (true scoped, false verified-next, false no-next-no-claim, partial 1-of-2 next links, 7 invalid complete types rejected, true/false geometry+SHA deep equivalence, real 4-page nextLink verification)."
+    },
+    {
+      "command": "python3 import_bgt.py --manifest source-manifest.json --json geo-data.json --js geo-data.js --audit import-audit.json",
+      "exit_code": 0,
+      "summary": "Regenerated all three artifacts from the unchanged manifest; 18 input/18 output features, 0 duplicates/exclusions, 4 SHAs verified, per-input nextLink=true, strict complete=false with truthful verified-next limitation; geometry counts unchanged (water rings 7/vertices 1665, buildings 5/50, roads 5/394, bridges 5/334)."
+    },
+    {
+      "command": "node --check geo-data.js",
+      "exit_code": 0,
+      "summary": "Generated UMD wrapper geo-data.js passes Node syntax check with no output."
+    },
+    {
+      "command": "node --test test_geo_data.cjs",
+      "exit_code": 0,
+      "summary": "9/9 Node tests pass: wrapper deep-identical to JSON, UMD globals/no require, schema/projection dimensions, incomplete metadata regexes still truthful for the real false artifact, exact 3/5/5/5 counts, all rings closed finite and bounds exact, known source features/properties, deterministic ordering, finite JSON round-trip."
+    }
+  ],
+  "blockers": [],
+  "memory_delta": [
+    "All four real sample pages (waterdeel/pand/wegdeel/overbruggingsdeel) actually carry a rel=next link; next-page wording is now derived from parsed links, not hardcoded.",
+    "Python bool is an int subclass: strict completeness validation requires isinstance(value, bool); bool() coercion accepted 0/1 and non-empty strings and was the rejected behavior.",
+    "Frozen source schema inputs stay exactly {file,sha256,collection}; the new nextLink evidence field is added only to import-audit.json per-input entries.",
+    "With sorted-keys deterministic dumps, flipping complete true/false changes only source.complete, source.limitations, audit.complete and audit.limitations; layers, geometry, counts and SHAs are byte-identical (covered by an equivalence test)."
+  ],
+  "next_steps": [
+    "Parent independently verifies the four final commands and reviews the truthful complete=true/false limitation wording and strict boolean validation before any adoption.",
+    "Parent reruns the accepted CLI against the full 585-page bbox set with complete=true; full-city packaging/browser size handling is a separate task and was not touched.",
+    "Game remains at baseline dad6b38c54fda94f541764242f61820d8177bd19; no game/source/manifest files were modified and adoption is the parent's separate decision."
+  ]
+}

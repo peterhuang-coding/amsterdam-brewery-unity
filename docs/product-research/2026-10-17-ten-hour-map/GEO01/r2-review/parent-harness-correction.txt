@@ -1,0 +1,1 @@
+Initial parent tool-audit loop raised AttributeError on an event with message as string, before test/full-run execution. Fixed type guard; original worker files and result unchanged.

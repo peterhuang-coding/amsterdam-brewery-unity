@@ -1,0 +1,10 @@
+{
+  "geometry_and_other_prefix_identical": true,
+  "width_suffix_identical": true,
+  "old_bytes": 514313101,
+  "new_bytes": 514313066,
+  "old_sha256": "461dd086ac06755055793837ccc63251d04ecee87842acecf1dbf5b793dcce6a",
+  "new_sha256": "3a18d70c3dd6e77e10af71b71ab54ca0fb59b74e8287d2c358933475dcf199f5",
+  "source_offset_old": 514239125,
+  "source_offset_new": 514239125
+}

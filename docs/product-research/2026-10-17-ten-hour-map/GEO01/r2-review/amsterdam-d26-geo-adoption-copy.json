@@ -1,0 +1,57 @@
+[
+  {
+    "file": "source-manifest.json",
+    "sha256": "d7d9e622ef67586083d5dac21460c166761717f9037af7081802e58d8c86571a",
+    "matches_worker": true
+  },
+  {
+    "file": "test_bgt_import.py",
+    "sha256": "cf3660c69f7578142b91d39f67bfbea984fa7dfb3617cd8db34d1ac5ff69d9e9",
+    "matches_worker": true
+  },
+  {
+    "file": "test_geo_data.cjs",
+    "sha256": "5ab63d979882a0edbba1d180b42e13243bf0761dbc77eee62086027710a87f7d",
+    "matches_worker": true
+  },
+  {
+    "file": "geo-data.json",
+    "sha256": "aac102495ae89a3aba6eb032140fb52ce7c19f1d6ee040447dd149a4e8b6eb67",
+    "matches_worker": true
+  },
+  {
+    "file": "import_bgt.py",
+    "sha256": "e3041cac21fab11fa7b3a7d1dfad8de0f4ed0d98d13a13df37b168364a87d74a",
+    "matches_worker": true
+  },
+  {
+    "file": "geo-data.js",
+    "sha256": "b260948324220fbe661b0602fce6f1abc9e80101f9fba725af0fbfc835cf2303",
+    "matches_worker": true
+  },
+  {
+    "file": "import-audit.json",
+    "sha256": "9d2f35d693b59ea2c232443dfd7acc0a8f36aee08676f9150c2e67873b256478",
+    "matches_worker": true
+  },
+  {
+    "file": "samples/buildings.json",
+    "sha256": "867ff90cf8e32f4fadbd5534aae722a753cf3d2cc339e3d0860032a5e314c385",
+    "matches_worker": true
+  },
+  {
+    "file": "samples/bridges.json",
+    "sha256": "5bd619a6c8a64daa890062a9370f90cacecc416e3d3c572a3cc8f3de69998faf",
+    "matches_worker": true
+  },
+  {
+    "file": "samples/water.json",
+    "sha256": "24b409fc7ae427c09912fe69db66e3ac2737d3f884cd8598b4d1af565d39d79d",
+    "matches_worker": true
+  },
+  {
+    "file": "samples/roads.json",
+    "sha256": "be1f1448c760eea6e9d7caf63f091a3f968269692e567c37520c5e61630144de",
+    "matches_worker": true
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "command": [
+    "python3",
+    "/tmp/amsterdam-d26-geo-r2-parent-20261017/sample/import_bgt.py",
+    "--manifest",
+    "/Volumes/SanDisk2TB/amsterdam-geodata/d26-bgt-20261017/source/source-manifest.json",
+    "--json",
+    "/tmp/amsterdam-d26-geo-r2-parent-20261017/full/geo-data.json",
+    "--js",
+    "/tmp/amsterdam-d26-geo-r2-parent-20261017/full/geo-data.js",
+    "--audit",
+    "/tmp/amsterdam-d26-geo-r2-parent-20261017/full/import-audit.json"
+  ],
+  "exit_code": 0,
+  "seconds": 120.70566029199999
+}

@@ -1,0 +1,62 @@
+test_complete_false_all_next_links_verified (test_bgt_import.CompletenessMetadataTests) ... FAIL
+test_complete_false_partial_next_links_wording (test_bgt_import.CompletenessMetadataTests) ... FAIL
+test_complete_false_without_next_link_makes_no_next_claim (test_bgt_import.CompletenessMetadataTests) ... FAIL
+test_complete_true_is_strict_bool_and_scoped_not_incomplete (test_bgt_import.CompletenessMetadataTests) ... FAIL
+test_geometry_sha_and_counts_unchanged_between_true_and_false (test_bgt_import.CompletenessMetadataTests) ... ok
+test_invalid_completeness_types_rejected_without_coercion (test_bgt_import.CompletenessMetadataTests) ... FAIL
+test_real_samples_false_with_four_verified_next_links (test_bgt_import.CompletenessMetadataTests) ... ERROR
+
+======================================================================
+ERROR: test_real_samples_false_with_four_verified_next_links (test_bgt_import.CompletenessMetadataTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/amsterdam-d26-geo-r2-parent-20261017/red-baseline/test_bgt_import.py", line 492, in test_real_samples_false_with_four_verified_next_links
+    self.assertTrue(all(item["nextLink"] for item in audit["inputs"]))
+  File "/private/tmp/amsterdam-d26-geo-r2-parent-20261017/red-baseline/test_bgt_import.py", line 492, in <genexpr>
+    self.assertTrue(all(item["nextLink"] for item in audit["inputs"]))
+KeyError: 'nextLink'
+
+======================================================================
+FAIL: test_complete_false_all_next_links_verified (test_bgt_import.CompletenessMetadataTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/amsterdam-d26-geo-r2-parent-20261017/red-baseline/test_bgt_import.py", line 356, in test_complete_false_all_next_links_verified
+    self.assertIn("verified", joined)
+AssertionError: 'verified' not found in 'Incomplete sample: the listed inputs are small first API pages and every sample source reports a next page; feature counts describe only the listed pages, not the full target bbox or all of Amsterdam. Source geometry intersecting the request bbox is retained whole and unclipped; polygons may extend outside the request bbox and the renderer is expected to clip them.'
+
+======================================================================
+FAIL: test_complete_false_partial_next_links_wording (test_bgt_import.CompletenessMetadataTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/amsterdam-d26-geo-r2-parent-20261017/red-baseline/test_bgt_import.py", line 396, in test_complete_false_partial_next_links_wording
+    self.assertIn("1 of the 2 listed source pages", joined)
+AssertionError: '1 of the 2 listed source pages' not found in 'Incomplete sample: the listed inputs are small first API pages and every sample source reports a next page; feature counts describe only the listed pages, not the full target bbox or all of Amsterdam. Source geometry intersecting the request bbox is retained whole and unclipped; polygons may extend outside the request bbox and the renderer is expected to clip them.'
+
+======================================================================
+FAIL: test_complete_false_without_next_link_makes_no_next_claim (test_bgt_import.CompletenessMetadataTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/amsterdam-d26-geo-r2-parent-20261017/red-baseline/test_bgt_import.py", line 372, in test_complete_false_without_next_link_makes_no_next_claim
+    self.assertNotIn("next page", joined.lower())
+AssertionError: 'next page' unexpectedly found in 'incomplete sample: the listed inputs are small first api pages and every sample source reports a next page; feature counts describe only the listed pages, not the full target bbox or all of amsterdam. source geometry intersecting the request bbox is retained whole and unclipped; polygons may extend outside the request bbox and the renderer is expected to clip them.'
+
+======================================================================
+FAIL: test_complete_true_is_strict_bool_and_scoped_not_incomplete (test_bgt_import.CompletenessMetadataTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/amsterdam-d26-geo-r2-parent-20261017/red-baseline/test_bgt_import.py", line 331, in test_complete_true_is_strict_bool_and_scoped_not_incomplete
+    self.assertNotIn("incomplete", lower)
+AssertionError: 'incomplete' unexpectedly found in 'incomplete sample: the listed inputs are small first api pages and every sample source reports a next page; feature counts describe only the listed pages, not the full target bbox or all of amsterdam. source geometry intersecting the request bbox is retained whole and unclipped; polygons may extend outside the request bbox and the renderer is expected to clip them.'
+
+======================================================================
+FAIL: test_invalid_completeness_types_rejected_without_coercion (test_bgt_import.CompletenessMetadataTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/amsterdam-d26-geo-r2-parent-20261017/red-baseline/test_bgt_import.py", line 413, in test_invalid_completeness_types_rejected_without_coercion
+    ib.convert(workspace.manifest, workspace.base)
+AssertionError: BgtImportError not raised
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.015s
+
+FAILED (failures=5, errors=1)

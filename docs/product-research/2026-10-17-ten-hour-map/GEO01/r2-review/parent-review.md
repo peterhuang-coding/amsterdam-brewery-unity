@@ -1,0 +1,13 @@
+# GEO01-R2 parent acceptance
+
+Accepted with a recorded command exception; game integration remains separate. Original task amsterdam-d26-bgt-import-r2-20261017 finished 2026-10-16T17:12:42.161913Z, CLI0 / is_error false / valid four-command final report, 433.525s. Business attempt1 and targeted correction1/1 used; no further dispatch required.
+
+Independent copied-workspace reruns passed 44 Python tests, 9 Node tests, the sample generator and syntax check. The final seven new tests against the unchanged rejected business importer returned exit1: five failures, one missing-field error and one pass. These distinguish targeted metadata/type corrections; they are not seven new functional failures. The original report states no worker RED run, retained unchanged.
+
+Actual Read13/Edit11/Bash5. Twelve original input SHA hashes and nine readonly staged SHA hashes match. All24 Read/Edit paths are scoped. One extra Bash report-writing heredoc was permission-denied and did not execute; the report was then written using Edit. No disallowed file changes. Do not describe all attempted commands as compliant. Parent audit script initially assumed every event message was an object; a type guard corrected only the parent harness before verification, preserved in parent-harness-correction.txt.
+
+Only completeness validation/limitations and seven tests changed; test_geo_data.cjs is unchanged. Strict JSON boolean rejects string false/true and numeric0/1/null. Incomplete wording uses observed next links, with accurate zero/partial/all counts. Complete wording is scoped to the listed bbox and inputs, and does not claim whole Amsterdam. Source and audit share the same limitations.
+
+Identical final converter independently ran against all585 durable source pages: exit0, 120.705660292s, every page SHA verified. Input/current/output145703, zero duplicates or exclusions. Water1805/buildings71463/roads70085/bridge-parts2350. Full output514313066 bytes, SHA256 3a18d70c3dd6e77e10af71b71ab54ca0fb59b74e8287d2c358933475dcf199f5. Compared with the prior full output, all geometry and other content before source metadata are byte-identical through offset514239125; the width suffix is identical. The 35-byte difference is truthful metadata only. Geometry remains unclipped, so some features extend beyond the request bbox.
+
+This accepts a reproducible real-data conversion component. It does not prove browser loading, navigation safety, game integration, full-city/facade1:1 reconstruction or human enjoyment. PACK01 is still executing in the same second wave; NAV01 correction and RENDER01 may launch only after that wave is collected. Full data stays in the local durable geodata area, not as a500MB Git asset.

@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "/opt/homebrew/bin/claude",
+    "--bare",
+    "-p",
+    "--model",
+    "doubao-seed-evolving",
+    "--effort",
+    "high",
+    "--settings",
+    "{\"apiKeyHelper\": \"/usr/bin/security find-generic-password -s llm-hub -a volcengine-plan -w\", \"alwaysThinkingEnabled\": true, \"permissions\": {\"allow\": [\"Read(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-r2-20261017/workspace/**)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-r2-20261017/workspace/import_bgt.py)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-r2-20261017/workspace/import_bgt.py)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-r2-20261017/workspace/test_bgt_import.py)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-r2-20261017/workspace/test_bgt_import.py)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-r2-20261017/workspace/test_geo_data.cjs)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-r2-20261017/workspace/test_geo_data.cjs)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-r2-20261017/workspace/geo-data.json)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-r2-20261017/workspace/geo-data.json)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-r2-20261017/workspace/geo-data.js)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-r2-20261017/workspace/geo-data.js)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-r2-20261017/workspace/import-audit.json)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-r2-20261017/workspace/import-audit.json)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-r2-20261017/workspace/handoff-result.json)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-r2-20261017/workspace/handoff-result.json)\", \"Bash(python3 -m unittest -v test_bgt_import.py)\", \"Bash(python3 import_bgt.py --manifest source-manifest.json --json geo-data.json --js geo-data.js --audit import-audit.json)\", \"Bash(node --check geo-data.js)\", \"Bash(node --test test_geo_data.cjs)\"]}}",
+    "--setting-sources",
+    "",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\": {}}",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--session-id",
+    "0b18f357-5828-44fa-990f-d9c214d4e800",
+    "--max-turns",
+    "40",
+    "--permission-mode",
+    "dontAsk",
+    "--tools",
+    "Read,Write,Edit,Bash"
+  ],
+  "cwd": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-bgt-import-r2-20261017/workspace",
+  "pid": 60858,
+  "pid_pending": false,
+  "started_epoch": 1792170328
+}

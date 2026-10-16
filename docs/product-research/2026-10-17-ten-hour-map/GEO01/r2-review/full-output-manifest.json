@@ -1,0 +1,10 @@
+{
+  "converter_task": "amsterdam-d26-bgt-import-r2-20261017",
+  "data": {
+    "path": "/Volumes/SanDisk2TB/amsterdam-geodata/d26-bgt-20261017/converted/geo-data.json",
+    "bytes": 514313066,
+    "sha256": "3a18d70c3dd6e77e10af71b71ab54ca0fb59b74e8287d2c358933475dcf199f5"
+  },
+  "source_manifest": "/Volumes/SanDisk2TB/amsterdam-geodata/d26-bgt-20261017/source/source-manifest.json",
+  "parent_review": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/GEO01/r2-review/parent-review.md"
+}

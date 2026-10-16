@@ -1,0 +1,63 @@
+{
+  "at": "2026-10-16T18:26:55.814367+00:00",
+  "task_id": "amsterdam-d26-geo-map-renderer-r2-20261017",
+  "unfinished": [
+    {
+      "id": "amsterdam-d26-runtime-pack-r2-20261017",
+      "state": "running"
+    }
+  ],
+  "bare": [
+    {
+      "pid": 67806,
+      "comm": "/opt/homebrew/bin/claude",
+      "bare": true
+    }
+  ],
+  "source_checks": [
+    {
+      "file": "brief.md",
+      "match": true
+    },
+    {
+      "file": "geo-interface.md",
+      "match": true
+    },
+    {
+      "file": "real-pub-sample.json",
+      "match": true
+    },
+    {
+      "file": "reopening-scene-reference.js",
+      "match": true
+    },
+    {
+      "file": "geo-map-renderer.js",
+      "match": true
+    },
+    {
+      "file": "test-geo-map-renderer.cjs",
+      "match": true
+    },
+    {
+      "file": "benchmark-geo-map-renderer.cjs",
+      "match": true
+    },
+    {
+      "file": "renderer-demo.html",
+      "match": true
+    },
+    {
+      "file": "parent-label-overlap.json",
+      "match": true
+    },
+    {
+      "file": "correction.md",
+      "match": true
+    }
+  ],
+  "head": "3d106f6d2a1353370627d02224592276c16954f3",
+  "remote": "3d106f6d2a1353370627d02224592276c16954f3",
+  "fresh_id": true,
+  "pass": true
+}

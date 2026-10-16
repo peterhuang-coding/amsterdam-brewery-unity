@@ -1,0 +1,64 @@
+{
+  "at": "2026-10-16T18:26:27.322513+00:00",
+  "task_id": "amsterdam-d26-runtime-pack-r2-20261017",
+  "unfinished": [],
+  "bare": [],
+  "source_checks": [
+    {
+      "file": "brief.md",
+      "match": true
+    },
+    {
+      "file": "geo-interface.md",
+      "match": true
+    },
+    {
+      "file": "sample-input.json",
+      "match": true
+    },
+    {
+      "file": "pack_geo.py",
+      "match": true
+    },
+    {
+      "file": "test_pack_geo.py",
+      "match": true
+    },
+    {
+      "file": "geo-loader.js",
+      "match": true
+    },
+    {
+      "file": "test-geo-loader.cjs",
+      "match": true
+    },
+    {
+      "file": "correction.md",
+      "match": true
+    },
+    {
+      "file": "parent-http-loader-check.cjs",
+      "match": true
+    },
+    {
+      "file": "parent-packer-schema-check.py",
+      "match": true
+    },
+    {
+      "file": "full-parent-metrics.json",
+      "match": true
+    },
+    {
+      "file": "real-pub-source.json",
+      "match": true
+    },
+    {
+      "file": "parent-shared-edge-failure.json",
+      "match": true
+    }
+  ],
+  "head": "3d106f6d2a1353370627d02224592276c16954f3",
+  "remote": "3d106f6d2a1353370627d02224592276c16954f3",
+  "fresh_id": true,
+  "pass": true
+}

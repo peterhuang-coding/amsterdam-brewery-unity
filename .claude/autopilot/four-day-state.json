@@ -15,7 +15,46 @@
   "current_task_terminal": null,
   "failure_reason": null,
   "last_result_at": "2026-10-14T16:58:40.031524Z",
-  "in_flight": [],
+  "in_flight": [
+    {
+      "id": "amsterdam-d26-geo-navigation-r2-20261017",
+      "label": "NAV01-R2",
+      "logical_task_id": "f02-polygon-navigation-d26",
+      "notion_page": "https://app.notion.com/p/3fb3285284df813c90d5f14904c6ecc8",
+      "submitted_at": "2026-10-16T17:38:45+00:00",
+      "worker_pid": 63702,
+      "launcher_pid": 63701,
+      "outer_session_id": 63200,
+      "contract_commit": "a47cf38",
+      "dispatch_head": "0bbe33b80c8fbd4e6973d6afe4eca069ac3540ec",
+      "business_attempts_submitted": 1,
+      "corrections_submitted": 1,
+      "corrections_allowed": 1,
+      "thinking_enabled": true,
+      "effort": "high",
+      "timeout_seconds": 2400,
+      "max_turns": 70
+    },
+    {
+      "id": "amsterdam-d26-geo-map-renderer-20261017",
+      "label": "RENDER01",
+      "logical_task_id": "f02-real-geo-renderer-d26",
+      "notion_page": "https://app.notion.com/p/3fb3285284df81e88424df0488d60354",
+      "submitted_at": "2026-10-16T17:39:01+00:00",
+      "worker_pid": 63746,
+      "launcher_pid": 63745,
+      "outer_session_id": 22283,
+      "contract_commit": "a47cf38",
+      "dispatch_head": "0bbe33b80c8fbd4e6973d6afe4eca069ac3540ec",
+      "business_attempts_submitted": 1,
+      "corrections_submitted": 0,
+      "corrections_allowed": 1,
+      "thinking_enabled": true,
+      "effort": "high",
+      "timeout_seconds": 2400,
+      "max_turns": 70
+    }
+  ],
   "candidate_path": null,
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -611,7 +650,7 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-16T17:27:37.367745+00:00",
+  "updated_at": "2026-10-16T17:39:41.481793+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
   "last_checked_at": "2026-10-16T17:27:37.367745+00:00",
@@ -632,7 +671,7 @@
     "scope": "real geography and existing playable map integration",
     "previous_map_failure_history_preserved": true,
     "new_attempt_policy": "one business attempt plus at most one targeted correction per concrete implementation package",
-    "plan_dispatch_count": 4,
+    "plan_dispatch_count": 6,
     "game_adopted": 0,
     "source_download_complete": true,
     "source_download_finished_at": "2026-10-16T16:38:18.837886Z",
@@ -640,14 +679,15 @@
     "nav01_business_review": "rejected/semantic: positive-radius road-hole clearance; synthetic30pass, actual49m radius0 route821ms",
     "first_wave_collected_at": "2026-10-16T17:04:17.651203+00:00",
     "geo01_corrections_submitted": 1,
-    "nav01_corrections_submitted": 0,
-    "nav01_next": "NAV01-R2 and RENDER01 prepared but unsubmitted; collect PACK01 before third wave.",
+    "nav01_corrections_submitted": 1,
+    "nav01_next": "Original fixed NAV01-R2 is running; do not redispatch.",
     "geo01_correction_review": "accepted_with_changes/other: source geometry unchanged, complete metadata corrected, denied extra report shell attempt recorded",
     "accepted_component_count": 1,
     "accepted_component_commit": "3c9bb0e15dc3d7ce3f33d96aaf2873cddf0d43d1",
     "pack01_business_review": "rejected/semantic: query-suffixed raw gzip and already-decoded HTTP fail; required schema holes",
     "pack01_corrections_submitted": 0,
-    "second_wave_collected_at": "2026-10-16T17:38:02.983697+00:00"
+    "second_wave_collected_at": "2026-10-16T17:38:02.983697+00:00",
+    "render01_business_submitted": 1
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",
@@ -659,19 +699,6 @@
   },
   "prepared_tasks": [
     {
-      "id": "amsterdam-d26-geo-navigation-r2-20261017",
-      "label": "NAV01-R2",
-      "packet": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/NAV01/r2/handoff.json",
-      "submitted": false
-    },
-    {
-      "id": "amsterdam-d26-geo-map-renderer-20261017",
-      "label": "RENDER01",
-      "packet": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/RENDER01/handoff.json",
-      "notion_page": "https://app.notion.com/p/3fb3285284df81e88424df0488d60354",
-      "submitted": false
-    },
-    {
       "id": "amsterdam-d26-runtime-pack-r2-20261017",
       "label": "PACK01-R2",
       "packet": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/PACK01/r2/handoff.json",
@@ -680,5 +707,5 @@
     }
   ],
   "awaiting_parent_review": [],
-  "current_stage": "wave2_collected_nav_correction_renderer_ready"
+  "current_stage": "wave3_nav_correction_and_real_renderer_running"
 }

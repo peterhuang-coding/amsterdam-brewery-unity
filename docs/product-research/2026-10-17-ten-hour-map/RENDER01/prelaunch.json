@@ -1,0 +1,39 @@
+{
+  "at": "2026-10-16T17:38:53.547969+00:00",
+  "task_id": "amsterdam-d26-geo-map-renderer-20261017",
+  "unfinished": [
+    {
+      "id": "amsterdam-d26-geo-navigation-r2-20261017",
+      "state": "running"
+    }
+  ],
+  "bare": [
+    {
+      "pid": 63702,
+      "comm": "/opt/homebrew/bin/claude",
+      "bare": true
+    }
+  ],
+  "source_checks": [
+    {
+      "file": "brief.md",
+      "match": true
+    },
+    {
+      "file": "geo-interface.md",
+      "match": true
+    },
+    {
+      "file": "real-pub-sample.json",
+      "match": true
+    },
+    {
+      "file": "reopening-scene-reference.js",
+      "match": true
+    }
+  ],
+  "head": "0bbe33b80c8fbd4e6973d6afe4eca069ac3540ec",
+  "remote": "0bbe33b80c8fbd4e6973d6afe4eca069ac3540ec",
+  "fresh_id": true,
+  "pass": true
+}

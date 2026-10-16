@@ -1,0 +1,19 @@
+{
+  "id": "amsterdam-d26-geo-map-renderer-20261017",
+  "label": "RENDER01",
+  "logical_task_id": "f02-real-geo-renderer-d26",
+  "notion_page": "https://app.notion.com/p/3fb3285284df81e88424df0488d60354",
+  "submitted_at": "2026-10-16T17:39:01+00:00",
+  "worker_pid": 63746,
+  "launcher_pid": 63745,
+  "outer_session_id": 22283,
+  "contract_commit": "a47cf38",
+  "dispatch_head": "0bbe33b80c8fbd4e6973d6afe4eca069ac3540ec",
+  "business_attempts_submitted": 1,
+  "corrections_submitted": 0,
+  "corrections_allowed": 1,
+  "thinking_enabled": true,
+  "effort": "high",
+  "timeout_seconds": 2400,
+  "max_turns": 70
+}

@@ -1,0 +1,19 @@
+{
+  "id": "amsterdam-d26-geo-navigation-r2-20261017",
+  "label": "NAV01-R2",
+  "logical_task_id": "f02-polygon-navigation-d26",
+  "notion_page": "https://app.notion.com/p/3fb3285284df813c90d5f14904c6ecc8",
+  "submitted_at": "2026-10-16T17:38:45+00:00",
+  "worker_pid": 63702,
+  "launcher_pid": 63701,
+  "outer_session_id": 63200,
+  "contract_commit": "a47cf38",
+  "dispatch_head": "0bbe33b80c8fbd4e6973d6afe4eca069ac3540ec",
+  "business_attempts_submitted": 1,
+  "corrections_submitted": 1,
+  "corrections_allowed": 1,
+  "thinking_enabled": true,
+  "effort": "high",
+  "timeout_seconds": 2400,
+  "max_turns": 70
+}

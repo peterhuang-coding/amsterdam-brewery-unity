@@ -8,6 +8,8 @@
 
 下一10h网格为2026-10-16T23:48:33Z（北京10月17日07:48:33），已晚于固定截止2026-10-16T19:48:33Z（北京10月17日03:48:33）；截止优先，不延长窗口等待下一review。届时只收已有、一次汇总实际采用/试玩/限制/人工问题并恢复同一amsterdam每日北京22点新审批检查。当前final_report_sent=false、同ID/thread/ACTIVE/15min保持。本次不是定版或四天最终报告；审查通知一次，无变化静默。下方旧时点及状态保留为历史。
 
+同步回执：审查提交e91c01a048c4ab7aaf5edcaf8c17d14a3a49d968已push并实读远端一致；[第9次审查精确记录](https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/e91c01a048c4ab7aaf5edcaf8c17d14a3a49d968/docs/product-research/2026-10-13-four-day-demo/direction-review-09.md)已回填Notion主页，2026-10-16T13:56:56.489Z读回确认且原正文保留。Hub源摘要/latest/20261016-215809-35166.md逐字节一致，9449字节、一个下一步；第6至8次审查压缩为历史索引，原会话和关键失败/授权证据保留，本轮无新增方法。现有心跳只追加review09恢复前缀，完整旧提示与其余字段保持并读回核对。
+
 # 第8次固定方向审查：候选与两项定版缺口保持
 
 计划2026-10-16T03:48:33Z；实际2026-10-16T03:52:17.914887+00:00。详情：docs/product-research/2026-10-13-four-day-demo/direction-review-08.md。自第7次以来新CC0、设计/游戏采用0、游戏修改0，没有新的真人反馈或授权。

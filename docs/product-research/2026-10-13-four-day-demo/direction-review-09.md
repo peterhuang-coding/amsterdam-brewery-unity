@@ -22,3 +22,5 @@ MAP01原业务1、标准修正1/1、真人额外1/1全部用尽，原例外已�
 当前已到原窗口最后一段。到期只收已有任务，汇总实际采用、固定试玩、限制与人工问题，发出一次四天报告，标记final_report_sent并将同一amsterdam恢复为每日北京时间22点新审批检查。下一10小时网格落在截止后，不能把它当成延长执行期或必须补做第10次审查的理由。现在仍为同ID/thread/ACTIVE/15min，final_report_sent=false。
 
 完整D25目标本轮工具实读blocked、未完成，非用户暂停。本次是方向审查，不是定版或四天最终报告。周五固定候选与已知缺口、周末用户确认玩法/视觉/范围的安排保留；用户认可后才评估正式引擎与Steam发行准备。
+
+同步回执：审查提交e91c01a048c4ab7aaf5edcaf8c17d14a3a49d968已push并实读远端一致；[第9次审查精确记录](https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/e91c01a048c4ab7aaf5edcaf8c17d14a3a49d968/docs/product-research/2026-10-13-four-day-demo/direction-review-09.md)已回填Notion主页，2026-10-16T13:56:56.489Z读回确认且原正文保留。Hub源摘要/latest/20261016-215809-35166.md逐字节一致，9449字节、一个下一步；第6至8次审查压缩为历史索引，原会话和关键失败/授权证据保留，本轮无新增方法。现有心跳只追加review09恢复前缀，完整旧提示与其余字段保持并读回核对。

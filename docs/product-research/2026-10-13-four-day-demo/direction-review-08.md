@@ -18,3 +18,5 @@
 下一优先仍为地图反馈及人审缺口。目前没有成熟已授权独立包或必要未覆盖重验，不为调用量新增任务。收到真实新指示后按原逻辑与失败历史判断授权范围；当前只维护固定候选、真实缺口和定时审查。
 
 完整D25目标本轮工具实读blocked、未完成，非用户暂停；本次不是定版或四天最终报告。周五固定候选与已知缺口、周末用户确认玩法/视觉/范围的安排保留；用户认可后才评估正式引擎与Steam发行准备。现有amsterdam同ID/thread/ACTIVE/15min、final_report_sent=false保持。下次审查按固定13:48:33Z网格，不按本轮实际时间顺延。
+
+同步回执：审查提交eca9c6bece08bb8919868bd0b6441b9d37cfc21b已push并实读远端一致；[第8次审查精确记录](https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/eca9c6bece08bb8919868bd0b6441b9d37cfc21b/docs/product-research/2026-10-13-four-day-demo/direction-review-08.md)已回填Notion主页，2026-10-16T03:53:09.797Z读回确认且原正文保留。Hub源摘要/latest/20261016-115415-99665.md逐字节一致，11750字节、一个下一步；本轮无新增方法。现有心跳只追加review08恢复前缀，完整旧提示与其余字段保持并读回核对。

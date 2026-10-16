@@ -1,0 +1,35 @@
+{
+  "at": "2026-10-16T17:05:31.076145+00:00",
+  "task_id": "amsterdam-d26-runtime-pack-20261017",
+  "unfinished": [
+    {
+      "id": "amsterdam-d26-bgt-import-r2-20261017",
+      "state": "running"
+    }
+  ],
+  "bare": [
+    {
+      "pid": 60858,
+      "comm": "/opt/homebrew/bin/claude",
+      "bare": true
+    }
+  ],
+  "source_checks": [
+    {
+      "file": "brief.md",
+      "match": true
+    },
+    {
+      "file": "geo-interface.md",
+      "match": true
+    },
+    {
+      "file": "sample-input.json",
+      "match": true
+    }
+  ],
+  "head": "bd6556eefcf6ef531d5bf620827a2614b5c871f1",
+  "remote": "bd6556eefcf6ef531d5bf620827a2614b5c871f1",
+  "fresh_id": true,
+  "pass": true
+}

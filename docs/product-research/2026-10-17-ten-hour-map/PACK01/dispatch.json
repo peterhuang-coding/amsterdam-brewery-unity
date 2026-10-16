@@ -1,0 +1,15 @@
+{
+  "id": "amsterdam-d26-runtime-pack-20261017",
+  "label": "PACK01",
+  "logical_task_id": "f02-geo-runtime-pack-d26",
+  "notion_page": "https://app.notion.com/p/3fb3285284df813ab400f01ffb4017b1",
+  "submitted_at": "2026-10-16T17:05:38+00:00",
+  "worker_pid": 60879,
+  "launcher_pid": 60878,
+  "outer_session_id": 21646,
+  "contract_commit": "e2397762e405f29cc5190f356df32a5260a0e6aa",
+  "dispatch_head": "bd6556eefcf6ef531d5bf620827a2614b5c871f1",
+  "business_attempts_submitted": 1,
+  "corrections_submitted": 0,
+  "corrections_allowed": 1
+}

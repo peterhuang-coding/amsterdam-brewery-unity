@@ -1,0 +1,60 @@
+{
+  "at": "2026-10-16T17:05:22.836740+00:00",
+  "task_id": "amsterdam-d26-bgt-import-r2-20261017",
+  "unfinished": [],
+  "bare": [],
+  "source_checks": [
+    {
+      "file": "geo-interface.md",
+      "match": true
+    },
+    {
+      "file": "brief.md",
+      "match": true
+    },
+    {
+      "file": "source-manifest.json",
+      "match": true
+    },
+    {
+      "file": "sample-properties.md",
+      "match": true
+    },
+    {
+      "file": "samples/water.json",
+      "match": true
+    },
+    {
+      "file": "samples/buildings.json",
+      "match": true
+    },
+    {
+      "file": "samples/roads.json",
+      "match": true
+    },
+    {
+      "file": "samples/bridges.json",
+      "match": true
+    },
+    {
+      "file": "import_bgt.py",
+      "match": true
+    },
+    {
+      "file": "test_bgt_import.py",
+      "match": true
+    },
+    {
+      "file": "test_geo_data.cjs",
+      "match": true
+    },
+    {
+      "file": "correction.md",
+      "match": true
+    }
+  ],
+  "head": "bd6556eefcf6ef531d5bf620827a2614b5c871f1",
+  "remote": "bd6556eefcf6ef531d5bf620827a2614b5c871f1",
+  "fresh_id": true,
+  "pass": true
+}

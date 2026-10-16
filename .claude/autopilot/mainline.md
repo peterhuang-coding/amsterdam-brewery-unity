@@ -1,3 +1,11 @@
+# D26最新：第二波两路Plan实际在途
+
+2026-10-16T17:05:28Z GEO01唯一修正 amsterdam-d26-bgt-import-r2-20261017 已启动worker60858/session80228；17:05:38Z PACK01 amsterdam-d26-runtime-pack-20261017 已启动worker60879/session21646。合同e239776已push，派发时远端bd6556e一致，Notion执行中读回，12+3公开输入SHA全一致。首路前全机0、次路前仅GEO01-R2一条账本/真实bare进程；当前全机两路。GEO01修正1/1已用，PACK01业务1修正0/1，先收齐本波后继续，不换ID重发。
+
+第一波均已收齐并父验：GEO01完整585页/145703对象转换保留全部几何，但complete声明和类型错误rejected/semantic；NAV01正常CLI0于17:02:15.060452Z结束，1666.919秒，Read8/Edit15/Bash12范围内、3源SHA一致，父级30测试和合成基准通过，半径1覆盖道路内部孔洞仍返回可走，rejected/semantic。NAV修正0/1待运行时样本后一次针对修正；未采用。真实Jordaan局部49.337米radius0路线找到、821ms，仅局部诊断。证据NAV01/parent-review，首波收齐提交bd6556e。
+
+完整BGT源585页已复制并逐页SHA核对至 /Volumes/SanDisk2TB/amsterdam-geodata/d26-bgt-20261017/source。新10小时截止仍2026-10-17T02:03:03Z（北京10:03:03），旧四天截止不停止D26；下次方向review23:48:33Z。D26累计实际Plan4次、游戏采用0，游戏dad6b38/18860不变。当地真实街道/桥头/渡轮两岸候选正在父级核对，未当最终地图接入。下方为保留历史，实时state和本轮目录优先。
+
 # D26 latest: actual Plan first wave and full official source
 
 2026-10-16T16:41:49Z: new human 10-hour window remains 16:03:03Z to 2026-10-17T02:03:03Z. NAV01 amsterdam-d26-geo-navigation-20261017 launched16:34:28Z worker55396/launcher55395/session9606, contract81378fe pushed. GEO01 returned16:37:29.753776Z CLI0 complete report, parent sample37+9 pass, eight input SHA unchanged; full source conversion session75545 still under review. Hardcoded incomplete-sample limitations on complete manifests found; no adoption yet. Collect first wave before next dispatch; original IDs and one correction per renewed package retained. Both workers overlapped at16:36 by explicit PID query; earlier ps mixed-column false negatives preserved in NAV01/process-check-correction.json.

@@ -5,7 +5,7 @@
   "deadline": "2026-10-17T02:03:03Z",
   "next_direction_review_at": "2026-10-16T23:48:33Z",
   "last_direction_review_at": "2026-10-16T13:55:56.910455+00:00",
-  "current_task_id": null,
+  "current_task_id": "amsterdam-d26-bgt-import-r2-20261017",
   "logical_task": "d26-real-geography",
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
@@ -15,7 +15,38 @@
   "current_task_terminal": null,
   "failure_reason": null,
   "last_result_at": "2026-10-14T16:58:40.031524Z",
-  "in_flight": [],
+  "in_flight": [
+    {
+      "id": "amsterdam-d26-bgt-import-r2-20261017",
+      "label": "GEO01-R2",
+      "logical_task_id": "f02-real-geodata-import-d26",
+      "notion_page": "https://app.notion.com/p/3fb3285284df8124bc6aee0fe070111b",
+      "submitted_at": "2026-10-16T17:05:28+00:00",
+      "worker_pid": 60858,
+      "launcher_pid": 60857,
+      "outer_session_id": 80228,
+      "contract_commit": "e2397762e405f29cc5190f356df32a5260a0e6aa",
+      "dispatch_head": "bd6556eefcf6ef531d5bf620827a2614b5c871f1",
+      "business_attempts_submitted": 1,
+      "corrections_submitted": 1,
+      "corrections_allowed": 1
+    },
+    {
+      "id": "amsterdam-d26-runtime-pack-20261017",
+      "label": "PACK01",
+      "logical_task_id": "f02-geo-runtime-pack-d26",
+      "notion_page": "https://app.notion.com/p/3fb3285284df813ab400f01ffb4017b1",
+      "submitted_at": "2026-10-16T17:05:38+00:00",
+      "worker_pid": 60879,
+      "launcher_pid": 60878,
+      "outer_session_id": 21646,
+      "contract_commit": "e2397762e405f29cc5190f356df32a5260a0e6aa",
+      "dispatch_head": "bd6556eefcf6ef531d5bf620827a2614b5c871f1",
+      "business_attempts_submitted": 1,
+      "corrections_submitted": 0,
+      "corrections_allowed": 1
+    }
+  ],
   "candidate_path": null,
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -632,13 +663,16 @@
     "scope": "real geography and existing playable map integration",
     "previous_map_failure_history_preserved": true,
     "new_attempt_policy": "one business attempt plus at most one targeted correction per concrete implementation package",
-    "plan_dispatch_count": 2,
+    "plan_dispatch_count": 4,
     "game_adopted": 0,
     "source_download_complete": true,
     "source_download_finished_at": "2026-10-16T16:38:18.837886Z",
     "geo01_business_review": "rejected/semantic: completeness metadata/type, full geometry preserved",
     "nav01_business_review": "rejected/semantic: positive-radius road-hole clearance; synthetic30pass, actual49m radius0 route821ms",
-    "first_wave_collected_at": "2026-10-16T17:04:17.651203+00:00"
+    "first_wave_collected_at": "2026-10-16T17:04:17.651203+00:00",
+    "geo01_corrections_submitted": 1,
+    "nav01_corrections_submitted": 0,
+    "nav01_next": "One targeted correction after real packing fixture; rejected radius-hole case preserved, no redispatch yet."
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",
@@ -648,26 +682,7 @@
     "before_NAV01_bare_pids": [],
     "actual_process_overlap_not_claimed": true
   },
-  "prepared_tasks": [
-    {
-      "id": "amsterdam-d26-bgt-import-r2-20261017",
-      "label": "GEO01-R2",
-      "logical_task_id": "f02-real-geodata-import-d26",
-      "attempt_kind": "correction",
-      "submitted": false,
-      "blocked_until": null,
-      "input_dir": "/tmp/amsterdam-d26-bgt-import-r2-20261017/input"
-    },
-    {
-      "id": "amsterdam-d26-runtime-pack-20261017",
-      "label": "PACK01",
-      "logical_task_id": "f02-geo-runtime-pack-d26",
-      "attempt_kind": "business",
-      "submitted": false,
-      "blocked_until": null,
-      "input_dir": "/tmp/amsterdam-d26-runtime-pack-20261017/input"
-    }
-  ],
+  "prepared_tasks": [],
   "awaiting_parent_review": [],
-  "current_stage": "first_wave_collected_next_wave_ready"
+  "current_stage": "wave2_geo_metadata_correction_and_runtime_pack_running"
 }

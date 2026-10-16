@@ -1,0 +1,34 @@
+{
+  "geo-interface.md": {
+    "sha256": "35e5148f8f6ef04c3b379f268f7ca9faf806e7a0b17275d7717a15373fbed0af",
+    "bytes": 6525
+  },
+  "brief.md": {
+    "sha256": "71dda0162fbcb51bc26d62d229aac1d89a495eb25e03c2164bde35d90d3bb37b",
+    "bytes": 2357
+  },
+  "source-manifest.json": {
+    "sha256": "d7d9e622ef67586083d5dac21460c166761717f9037af7081802e58d8c86571a",
+    "bytes": 922
+  },
+  "sample-properties.md": {
+    "sha256": "047647cd4c41af3863b930ddab5c3a4342c443f206b9e85a478f106c8039720c",
+    "bytes": 6044
+  },
+  "samples/water.json": {
+    "sha256": "24b409fc7ae427c09912fe69db66e3ac2737d3f884cd8598b4d1af565d39d79d",
+    "bytes": 67729
+  },
+  "samples/buildings.json": {
+    "sha256": "867ff90cf8e32f4fadbd5534aae722a753cf3d2cc339e3d0860032a5e314c385",
+    "bytes": 7106
+  },
+  "samples/roads.json": {
+    "sha256": "be1f1448c760eea6e9d7caf63f091a3f968269692e567c37520c5e61630144de",
+    "bytes": 23180
+  },
+  "samples/bridges.json": {
+    "sha256": "5bd619a6c8a64daa890062a9370f90cacecc416e3d3c572a3cc8f3de69998faf",
+    "bytes": 19984
+  }
+}

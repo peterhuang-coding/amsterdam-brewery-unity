@@ -1,6 +1,6 @@
 {
   "decision": "D26",
-  "status": "renewed_map_implementation_preparing",
+  "status": "renewed_map_two_packages_prepared",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-17T02:03:03Z",
   "next_direction_review_at": "2026-10-16T23:48:33Z",
@@ -613,7 +613,7 @@
   },
   "updated_at": "2026-10-16T13:58:36.668493+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
-  "current_task_prepared": false,
+  "current_task_prepared": true,
   "last_checked_at": "2026-10-16T13:55:56.910455+00:00",
   "prior_four_day_window": {
     "start_at": "2026-10-12T19:48:33Z",
@@ -639,5 +639,19 @@
     "at": "2026-10-16T16:10:00Z",
     "other_live_cc": 4,
     "dispatch_waiting_for_capacity": true
-  }
+  },
+  "prepared_tasks": [
+    {
+      "id": "amsterdam-d26-bgt-import-20261017",
+      "label": "GEO01",
+      "logical_task_id": "f02-real-geodata-import-d26",
+      "notion_page": "https://app.notion.com/p/3fb3285284df8124bc6aee0fe070111b"
+    },
+    {
+      "id": "amsterdam-d26-geo-navigation-20261017",
+      "label": "NAV01",
+      "logical_task_id": "f02-polygon-navigation-d26",
+      "notion_page": "https://app.notion.com/p/3fb3285284df813c90d5f14904c6ecc8"
+    }
+  ]
 }

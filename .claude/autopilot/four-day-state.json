@@ -15,46 +15,7 @@
   "current_task_terminal": null,
   "failure_reason": null,
   "last_result_at": "2026-10-14T16:58:40.031524Z",
-  "in_flight": [
-    {
-      "id": "amsterdam-d26-geo-navigation-r2-20261017",
-      "label": "NAV01-R2",
-      "logical_task_id": "f02-polygon-navigation-d26",
-      "notion_page": "https://app.notion.com/p/3fb3285284df813c90d5f14904c6ecc8",
-      "submitted_at": "2026-10-16T17:38:45+00:00",
-      "worker_pid": 63702,
-      "launcher_pid": 63701,
-      "outer_session_id": 63200,
-      "contract_commit": "a47cf38",
-      "dispatch_head": "0bbe33b80c8fbd4e6973d6afe4eca069ac3540ec",
-      "business_attempts_submitted": 1,
-      "corrections_submitted": 1,
-      "corrections_allowed": 1,
-      "thinking_enabled": true,
-      "effort": "high",
-      "timeout_seconds": 2400,
-      "max_turns": 70
-    },
-    {
-      "id": "amsterdam-d26-geo-map-renderer-20261017",
-      "label": "RENDER01",
-      "logical_task_id": "f02-real-geo-renderer-d26",
-      "notion_page": "https://app.notion.com/p/3fb3285284df81e88424df0488d60354",
-      "submitted_at": "2026-10-16T17:39:01+00:00",
-      "worker_pid": 63746,
-      "launcher_pid": 63745,
-      "outer_session_id": 22283,
-      "contract_commit": "a47cf38",
-      "dispatch_head": "0bbe33b80c8fbd4e6973d6afe4eca069ac3540ec",
-      "business_attempts_submitted": 1,
-      "corrections_submitted": 0,
-      "corrections_allowed": 1,
-      "thinking_enabled": true,
-      "effort": "high",
-      "timeout_seconds": 2400,
-      "max_turns": 70
-    }
-  ],
+  "in_flight": [],
   "candidate_path": null,
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -680,14 +641,18 @@
     "first_wave_collected_at": "2026-10-16T17:04:17.651203+00:00",
     "geo01_corrections_submitted": 1,
     "nav01_corrections_submitted": 1,
-    "nav01_next": "Original fixed NAV01-R2 is running; do not redispatch.",
+    "nav01_next": "Shelved; concrete extra-correction proposal prepared, no permission requested or received yet.",
     "geo01_correction_review": "accepted_with_changes/other: source geometry unchanged, complete metadata corrected, denied extra report shell attempt recorded",
     "accepted_component_count": 1,
     "accepted_component_commit": "3c9bb0e15dc3d7ce3f33d96aaf2873cddf0d43d1",
     "pack01_business_review": "rejected/semantic: query-suffixed raw gzip and already-decoded HTTP fail; required schema holes",
     "pack01_corrections_submitted": 0,
     "second_wave_collected_at": "2026-10-16T17:38:02.983697+00:00",
-    "render01_business_submitted": 1
+    "render01_business_submitted": 1,
+    "nav01_correction_review": "rejected/semantic: translation-dependent containment and one GEOS false-safe; correction1/1 exhausted",
+    "render01_business_review": "rejected/semantic: selected label occluded by nearest label; demo actualCSS mismatch",
+    "third_wave_collected_at": "2026-10-16T18:25:34.538180+00:00",
+    "pack01_new_parent_issue": "Shared-edge simplification loses real adjacency; correction amended before dispatch"
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",
@@ -707,5 +672,21 @@
     }
   ],
   "awaiting_parent_review": [],
-  "current_stage": "wave3_nav_correction_and_real_renderer_running"
+  "current_stage": "wave3_collected_nav_shelved_pack_render_corrections_prepared",
+  "prepared": [
+    {
+      "id": "amsterdam-d26-runtime-pack-r2-20261017",
+      "label": "PACK01-R2",
+      "correction_submitted": false,
+      "timeout_seconds": 2400,
+      "max_turns": 70
+    },
+    {
+      "id": "amsterdam-d26-geo-map-renderer-r2-20261017",
+      "label": "RENDER01-R2",
+      "correction_submitted": false,
+      "timeout_seconds": 1800,
+      "max_turns": 55
+    }
+  ]
 }

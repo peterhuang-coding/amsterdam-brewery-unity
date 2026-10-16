@@ -1,0 +1,196 @@
+TAP version 13
+# Subtest: UMD exports frozen API surface
+ok 1 - UMD exports frozen API surface
+  ---
+  duration_ms: 0.617666
+  type: 'test'
+  ...
+# Subtest: rejects invalid required data with offending feature context
+ok 2 - rejects invalid required data with offending feature context
+  ---
+  duration_ms: 0.413
+  type: 'test'
+  ...
+# Subtest: rejects non-finite player positions and bad place rows
+ok 3 - rejects non-finite player positions and bad place rows
+  ---
+  duration_ms: 0.326917
+  type: 'test'
+  ...
+# Subtest: city zoom 1 works without a player position
+ok 4 - city zoom 1 works without a player position
+  ---
+  duration_ms: 0.599583
+  type: 'test'
+  ...
+# Subtest: transform inverse is exact at css widths 320/390/1100 across cameras
+ok 5 - transform inverse is exact at css widths 320/390/1100 across cameras
+  ---
+  duration_ms: 15.216209
+  type: 'test'
+  ...
+# Subtest: street scale derives from cssWidth even when logical width differs
+ok 6 - street scale derives from cssWidth even when logical width differs
+  ---
+  duration_ms: 3.701292
+  type: 'test'
+  ...
+# Subtest: city zoom1 fits the whole world and reports its bounds
+ok 7 - city zoom1 fits the whole world and reports its bounds
+  ---
+  duration_ms: 3.95775
+  type: 'test'
+  ...
+# Subtest: zoom2 follows the player but clamps at world edges
+ok 8 - zoom2 follows the player but clamps at world edges
+  ---
+  duration_ms: 2.948375
+  type: 'test'
+  ...
+# Subtest: street camera clamps at edges and letterboxes a tiny world centered
+ok 9 - street camera clamps at edges and letterboxes a tiny world centered
+  ---
+  duration_ms: 0.3825
+  type: 'test'
+  ...
+# Subtest: every hole ring is traced and filled even-odd; multipolygon gaps stay open
+ok 10 - every hole ring is traced and filled even-odd; multipolygon gaps stay open
+  ---
+  duration_ms: 0.518
+  type: 'test'
+  ...
+# Subtest: index culls distant features and stats measure indexed/culled/drawn
+ok 11 - index culls distant features and stats measure indexed/culled/drawn
+  ---
+  duration_ms: 0.448125
+  type: 'test'
+  ...
+# Subtest: city cache builds once and reuses for unchanged frames
+ok 12 - city cache builds once and reuses for unchanged frames
+  ---
+  duration_ms: 0.137
+  type: 'test'
+  ...
+# Subtest: night and camera-area changes invalidate; street surface is reused
+ok 13 - night and camera-area changes invalidate; street surface is reused
+  ---
+  duration_ms: 0.192333
+  type: 'test'
+  ...
+# Subtest: offscreen allocation stays bounded on long cross-city pans, day and night
+ok 14 - offscreen allocation stays bounded on long cross-city pans, day and night
+  ---
+  duration_ms: 1.260375
+  type: 'test'
+  ...
+# Subtest: dispose releases caches; drawing afterwards rebuilds
+ok 15 - dispose releases caches; drawing afterwards rebuilds
+  ---
+  duration_ms: 0.076417
+  type: 'test'
+  ...
+# Subtest: without offscreen capability the renderer draws directly
+ok 16 - without offscreen capability the renderer draws directly
+  ---
+  duration_ms: 0.090167
+  type: 'test'
+  ...
+# Subtest: never mutates data or view and preserves caller context state
+ok 17 - never mutates data or view and preserves caller context state
+  ---
+  duration_ms: 0.434958
+  type: 'test'
+  ...
+# Subtest: caller styles survive the frame via save/restore
+ok 18 - caller styles survive the frame via save/restore
+  ---
+  duration_ms: 0.0625
+  type: 'test'
+  ...
+# Subtest: full readable label rectangles at every css width; avatar never covered
+ok 19 - full readable label rectangles at every css width; avatar never covered
+  ---
+  duration_ms: 8.327209
+  type: 'test'
+  ...
+# Subtest: single-line label rectangles match the estimator exactly
+ok 20 - single-line label rectangles match the estimator exactly
+  ---
+  duration_ms: 4.361083
+  type: 'test'
+  ...
+# Subtest: street shows at most selected plus nearest within 60 m
+ok 21 - street shows at most selected plus nearest within 60 m
+  ---
+  duration_ms: 4.125167
+  type: 'test'
+  ...
+# Subtest: overview labels selected plus nearest even when far; nonfitting names are skipped
+ok 22 - overview labels selected plus nearest even when far; nonfitting names are skipped
+  ---
+  duration_ms: 0.166084
+  type: 'test'
+  ...
+# Subtest: all destination markers are always returned with screen-space radii
+ok 23 - all destination markers are always returned with screen-space radii
+  ---
+  duration_ms: 1.990125
+  type: 'test'
+  ...
+# Subtest: garden entry is a fictional marker only when view.garden is set; no footprint invented
+ok 24 - garden entry is a fictional marker only when view.garden is set; no footprint invented
+  ---
+  duration_ms: 0.089167
+  type: 'test'
+  ...
+# Subtest: reduced-motion frames are deterministic regardless of time
+ok 25 - reduced-motion frames are deterministic regardless of time
+  ---
+  duration_ms: 0.214
+  type: 'test'
+  ...
+# Subtest: ferry connections use a distinct cool dashed line and never a land fill
+ok 26 - ferry connections use a distinct cool dashed line and never a land fill
+  ---
+  duration_ms: 0.155833
+  type: 'test'
+  ...
+# Subtest: avatar 14-18 css px; parked bike and cart use passed coordinates
+ok 27 - avatar 14-18 css px; parked bike and cart use passed coordinates
+  ---
+  duration_ms: 2.552167
+  type: 'test'
+  ...
+# Subtest: the supplied real sample validates and renders (2 water, 23 buildings, 36 roads, 1 bridge)
+ok 28 - the supplied real sample validates and renders (2 water, 23 buildings, 36 roads, 1 bridge)
+  ---
+  duration_ms: 5.891791
+  type: 'test'
+  ...
+# Subtest: bridge deck is rendered as a deck; piers never take deck colours
+ok 29 - bridge deck is rendered as a deck; piers never take deck colours
+  ---
+  duration_ms: 2.2495
+  type: 'test'
+  ...
+# Subtest: source credit is exact and scale bar uses round metres
+ok 30 - source credit is exact and scale bar uses round metres
+  ---
+  duration_ms: 4.378709
+  type: 'test'
+  ...
+# Subtest: returned geometry never escapes the world clip and night palette renders
+ok 31 - returned geometry never escapes the world clip and night palette renders
+  ---
+  duration_ms: 0.088833
+  type: 'test'
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 128.675042

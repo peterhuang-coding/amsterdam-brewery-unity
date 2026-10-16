@@ -1,0 +1,1349 @@
+{
+  "rows": [
+    {
+      "transform": {
+        "scale": 7.534246575342466,
+        "tx": -7739.260958904109,
+        "ty": -24114.443150684932
+      },
+      "markers": [
+        {
+          "id": "pub",
+          "x": 550,
+          "y": 320,
+          "radius": 39.554794520547944
+        },
+        {
+          "id": "market",
+          "x": 6808.495205479452,
+          "y": 17308.814383561647,
+          "radius": 39.554794520547944
+        },
+        {
+          "id": "coffee",
+          "x": 6504.872602739726,
+          "y": 16954.998630136983,
+          "radius": 39.554794520547944
+        },
+        {
+          "id": "flowers",
+          "x": 5726.991780821918,
+          "y": 20113.693835616436,
+          "radius": 39.554794520547944
+        },
+        {
+          "id": "lab",
+          "x": 38658.40753424657,
+          "y": 16948.504109589037,
+          "radius": 39.554794520547944
+        },
+        {
+          "id": "lotte",
+          "x": 217.33287671232938,
+          "y": 352.34452054794383,
+          "radius": 45.205479452054796
+        },
+        {
+          "id": "ferrySouth",
+          "x": 9863.805479452058,
+          "y": -3660.44794520548,
+          "radius": 39.554794520547944
+        },
+        {
+          "id": "ferryNorth",
+          "x": 11781.43698630137,
+          "y": -5067.340410958903,
+          "radius": 39.554794520547944
+        }
+      ],
+      "labels": [
+        {
+          "id": "lotte",
+          "text": "Lotte \u7684\u6865",
+          "x": 72.97671232876775,
+          "y": 194.57739726027256,
+          "width": 288.71232876712327,
+          "height": 86.1917808219178,
+          "fontCssPx": 12
+        },
+        {
+          "id": "pub",
+          "text": "\u9152\u9986 Tweede Kans",
+          "x": 348.7602739726027,
+          "y": 172.55479452054794,
+          "width": 402.4794520547946,
+          "height": 81.52054794520548,
+          "fontCssPx": 11
+        }
+      ],
+      "visibleBounds": [
+        1027.211,
+        3200.644272727273,
+        1173.211,
+        3285.5897272727275
+      ],
+      "elapsedMs": 2.399999976158142,
+      "cssWidth": 292,
+      "camera": "street",
+      "night": false,
+      "avatar": {
+        "x": 550,
+        "y": 320
+      },
+      "overlap": false,
+      "stats": {
+        "frames": 2,
+        "cacheBuilds": 2,
+        "cacheReuses": 0,
+        "directFrames": 0,
+        "indexedFeatures": 145703,
+        "indexBuckets": 1023,
+        "canvasesCreated": 2,
+        "activeCanvases": 1,
+        "maxCanvasSide": 1540,
+        "lastFrame": {
+          "indexed": 326,
+          "culled": 27,
+          "drawn": 299,
+          "reused": false,
+          "kind": "street",
+          "night": false
+        }
+      },
+      "overflow": false
+    },
+    {
+      "transform": {
+        "scale": 7.534246575342466,
+        "tx": -7739.260958904109,
+        "ty": -24114.443150684932
+      },
+      "markers": [
+        {
+          "id": "pub",
+          "x": 550,
+          "y": 320,
+          "radius": 39.554794520547944
+        },
+        {
+          "id": "market",
+          "x": 6808.495205479452,
+          "y": 17308.814383561647,
+          "radius": 39.554794520547944
+        },
+        {
+          "id": "coffee",
+          "x": 6504.872602739726,
+          "y": 16954.998630136983,
+          "radius": 39.554794520547944
+        },
+        {
+          "id": "flowers",
+          "x": 5726.991780821918,
+          "y": 20113.693835616436,
+          "radius": 39.554794520547944
+        },
+        {
+          "id": "lab",
+          "x": 38658.40753424657,
+          "y": 16948.504109589037,
+          "radius": 39.554794520547944
+        },
+        {
+          "id": "lotte",
+          "x": 217.33287671232938,
+          "y": 352.34452054794383,
+          "radius": 45.205479452054796
+        },
+        {
+          "id": "ferrySouth",
+          "x": 9863.805479452058,
+          "y": -3660.44794520548,
+          "radius": 39.554794520547944
+        },
+        {
+          "id": "ferryNorth",
+          "x": 11781.43698630137,
+          "y": -5067.340410958903,
+          "radius": 39.554794520547944
+        }
+      ],
+      "labels": [
+        {
+          "id": "lotte",
+          "text": "Lotte \u7684\u6865",
+          "x": 72.97671232876775,
+          "y": 194.57739726027256,
+          "width": 288.71232876712327,
+          "height": 86.1917808219178,
+          "fontCssPx": 12
+        },
+        {
+          "id": "pub",
+          "text": "\u9152\u9986 Tweede Kans",
+          "x": 348.7602739726027,
+          "y": 172.55479452054794,
+          "width": 402.4794520547946,
+          "height": 81.52054794520548,
+          "fontCssPx": 11
+        }
+      ],
+      "visibleBounds": [
+        1027.211,
+        3200.644272727273,
+        1173.211,
+        3285.5897272727275
+      ],
+      "elapsedMs": 1.899999976158142,
+      "cssWidth": 292,
+      "camera": "street",
+      "night": true,
+      "avatar": {
+        "x": 550,
+        "y": 320
+      },
+      "overlap": false,
+      "stats": {
+        "frames": 3,
+        "cacheBuilds": 3,
+        "cacheReuses": 0,
+        "directFrames": 0,
+        "indexedFeatures": 145703,
+        "indexBuckets": 1023,
+        "canvasesCreated": 3,
+        "activeCanvases": 1,
+        "maxCanvasSide": 1540,
+        "lastFrame": {
+          "indexed": 326,
+          "culled": 27,
+          "drawn": 299,
+          "reused": false,
+          "kind": "street",
+          "night": true
+        }
+      },
+      "overflow": false
+    },
+    {
+      "transform": {
+        "scale": 0.09592750278976664,
+        "tx": 208.12517190133553,
+        "ty": 0
+      },
+      "markers": [
+        {
+          "id": "pub",
+          "x": 313.6656656731675,
+          "y": 311.10411506503965,
+          "radius": 32.02054794520548
+        },
+        {
+          "id": "market",
+          "x": 393.35005219805134,
+          "y": 527.4090266281258,
+          "radius": 32.02054794520548
+        },
+        {
+          "id": "coffee",
+          "x": 389.48426976312646,
+          "y": 522.9041751696155,
+          "radius": 32.02054794520548
+        },
+        {
+          "id": "flowers",
+          "x": 379.58013881009424,
+          "y": 563.1213010767112,
+          "radius": 32.02054794520548
+        },
+        {
+          "id": "lab",
+          "x": 798.8693729713768,
+          "y": 522.8214856622108,
+          "radius": 32.02054794520548
+        },
+        {
+          "id": "lotte",
+          "x": 309.4300827149881,
+          "y": 311.51593183451604,
+          "radius": 37.67123287671233
+        },
+        {
+          "id": "ferrySouth",
+          "x": 432.25086091186586,
+          "y": 260.42427235616685,
+          "radius": 32.02054794520548
+        },
+        {
+          "id": "ferryNorth",
+          "x": 456.6665207769228,
+          "y": 242.51144197772535,
+          "radius": 32.02054794520548
+        }
+      ],
+      "labels": [
+        {
+          "id": "lotte",
+          "text": "Lotte \u7684\u6865",
+          "x": 165.07391833142646,
+          "y": 161.28305512218728,
+          "width": 288.71232876712327,
+          "height": 86.1917808219178,
+          "fontCssPx": 12
+        },
+        {
+          "id": "pub",
+          "text": "\u9152\u9986 Tweede Kans",
+          "x": 112.4259396457702,
+          "y": 171.19315616093007,
+          "width": 402.4794520547946,
+          "height": 81.52054794520548,
+          "fontCssPx": 11
+        }
+      ],
+      "visibleBounds": [
+        -2169.6089843749996,
+        0,
+        9297.383984375,
+        6671.705
+      ],
+      "elapsedMs": 494.39999997615814,
+      "cssWidth": 292,
+      "camera": "city",
+      "night": false,
+      "avatar": {
+        "x": 313.6656656731675,
+        "y": 311.10411506503965
+      },
+      "overlap": false,
+      "stats": {
+        "frames": 4,
+        "cacheBuilds": 4,
+        "cacheReuses": 0,
+        "directFrames": 0,
+        "indexedFeatures": 145703,
+        "indexBuckets": 1023,
+        "canvasesCreated": 4,
+        "activeCanvases": 2,
+        "maxCanvasSide": 2048,
+        "lastFrame": {
+          "indexed": 145703,
+          "culled": 0,
+          "drawn": 145703,
+          "reused": false,
+          "kind": "city1",
+          "night": false
+        }
+      },
+      "overflow": false
+    },
+    {
+      "transform": {
+        "scale": 0.09592750278976664,
+        "tx": 208.12517190133553,
+        "ty": 0
+      },
+      "markers": [
+        {
+          "id": "pub",
+          "x": 313.6656656731675,
+          "y": 311.10411506503965,
+          "radius": 32.02054794520548
+        },
+        {
+          "id": "market",
+          "x": 393.35005219805134,
+          "y": 527.4090266281258,
+          "radius": 32.02054794520548
+        },
+        {
+          "id": "coffee",
+          "x": 389.48426976312646,
+          "y": 522.9041751696155,
+          "radius": 32.02054794520548
+        },
+        {
+          "id": "flowers",
+          "x": 379.58013881009424,
+          "y": 563.1213010767112,
+          "radius": 32.02054794520548
+        },
+        {
+          "id": "lab",
+          "x": 798.8693729713768,
+          "y": 522.8214856622108,
+          "radius": 32.02054794520548
+        },
+        {
+          "id": "lotte",
+          "x": 309.4300827149881,
+          "y": 311.51593183451604,
+          "radius": 37.67123287671233
+        },
+        {
+          "id": "ferrySouth",
+          "x": 432.25086091186586,
+          "y": 260.42427235616685,
+          "radius": 32.02054794520548
+        },
+        {
+          "id": "ferryNorth",
+          "x": 456.6665207769228,
+          "y": 242.51144197772535,
+          "radius": 32.02054794520548
+        }
+      ],
+      "labels": [
+        {
+          "id": "lotte",
+          "text": "Lotte \u7684\u6865",
+          "x": 165.07391833142646,
+          "y": 161.28305512218728,
+          "width": 288.71232876712327,
+          "height": 86.1917808219178,
+          "fontCssPx": 12
+        },
+        {
+          "id": "pub",
+          "text": "\u9152\u9986 Tweede Kans",
+          "x": 112.4259396457702,
+          "y": 171.19315616093007,
+          "width": 402.4794520547946,
+          "height": 81.52054794520548,
+          "fontCssPx": 11
+        }
+      ],
+      "visibleBounds": [
+        -2169.6089843749996,
+        0,
+        9297.383984375,
+        6671.705
+      ],
+      "elapsedMs": 465.2000000476837,
+      "cssWidth": 292,
+      "camera": "city",
+      "night": true,
+      "avatar": {
+        "x": 313.6656656731675,
+        "y": 311.10411506503965
+      },
+      "overlap": false,
+      "stats": {
+        "frames": 5,
+        "cacheBuilds": 5,
+        "cacheReuses": 0,
+        "directFrames": 0,
+        "indexedFeatures": 145703,
+        "indexBuckets": 1023,
+        "canvasesCreated": 5,
+        "activeCanvases": 2,
+        "maxCanvasSide": 2048,
+        "lastFrame": {
+          "indexed": 145703,
+          "culled": 0,
+          "drawn": 145703,
+          "reused": false,
+          "kind": "city1",
+          "night": true
+        }
+      },
+      "overflow": false
+    },
+    {
+      "transform": {
+        "scale": 6.077348066298343,
+        "tx": -6136.365193370166,
+        "ty": -19389.550828729283
+      },
+      "markers": [
+        {
+          "id": "pub",
+          "x": 550,
+          "y": 320,
+          "radius": 31.906077348066297
+        },
+        {
+          "id": "market",
+          "x": 5598.288950276243,
+          "y": 14023.684530386738,
+          "radius": 31.906077348066297
+        },
+        {
+          "id": "coffee",
+          "x": 5353.377900552487,
+          "y": 13738.286187845304,
+          "radius": 31.906077348066297
+        },
+        {
+          "id": "flowers",
+          "x": 4725.916022099447,
+          "y": 16286.183977900553,
+          "radius": 31.906077348066297
+        },
+        {
+          "id": "lab",
+          "x": 31289.378453038673,
+          "y": 13733.047513812155,
+          "radius": 31.906077348066297
+        },
+        {
+          "id": "lotte",
+          "x": 281.660773480663,
+          "y": 346.0900552486164,
+          "radius": 36.46408839779006
+        },
+        {
+          "id": "ferrySouth",
+          "x": 8062.793370165748,
+          "y": -2890.7480662983435,
+          "radius": 31.906077348066297
+        },
+        {
+          "id": "ferryNorth",
+          "x": 9609.612154696133,
+          "y": -4025.589502762432,
+          "radius": 31.906077348066297
+        }
+      ],
+      "labels": [
+        {
+          "id": "lotte",
+          "text": "Lotte \u7684\u6865",
+          "x": 165.21878453038676,
+          "y": 218.8303867403291,
+          "width": 232.88397790055248,
+          "height": 69.52486187845304,
+          "fontCssPx": 12
+        },
+        {
+          "id": "pub",
+          "text": "\u9152\u9986 Tweede Kans",
+          "x": 387.67403314917124,
+          "y": 201.06629834254147,
+          "width": 324.6519337016575,
+          "height": 65.75690607734806,
+          "fontCssPx": 11
+        }
+      ],
+      "visibleBounds": [
+        1009.711,
+        3190.462454545455,
+        1190.711,
+        3295.771545454546
+      ],
+      "elapsedMs": 0.9000000953674316,
+      "cssWidth": 362,
+      "camera": "street",
+      "night": false,
+      "avatar": {
+        "x": 550,
+        "y": 320
+      },
+      "overlap": false,
+      "stats": {
+        "frames": 6,
+        "cacheBuilds": 6,
+        "cacheReuses": 0,
+        "directFrames": 0,
+        "indexedFeatures": 145703,
+        "indexBuckets": 1023,
+        "canvasesCreated": 6,
+        "activeCanvases": 2,
+        "maxCanvasSide": 2048,
+        "lastFrame": {
+          "indexed": 464,
+          "culled": 34,
+          "drawn": 430,
+          "reused": false,
+          "kind": "street",
+          "night": false
+        }
+      },
+      "overflow": false
+    },
+    {
+      "transform": {
+        "scale": 6.077348066298343,
+        "tx": -6136.365193370166,
+        "ty": -19389.550828729283
+      },
+      "markers": [
+        {
+          "id": "pub",
+          "x": 550,
+          "y": 320,
+          "radius": 31.906077348066297
+        },
+        {
+          "id": "market",
+          "x": 5598.288950276243,
+          "y": 14023.684530386738,
+          "radius": 31.906077348066297
+        },
+        {
+          "id": "coffee",
+          "x": 5353.377900552487,
+          "y": 13738.286187845304,
+          "radius": 31.906077348066297
+        },
+        {
+          "id": "flowers",
+          "x": 4725.916022099447,
+          "y": 16286.183977900553,
+          "radius": 31.906077348066297
+        },
+        {
+          "id": "lab",
+          "x": 31289.378453038673,
+          "y": 13733.047513812155,
+          "radius": 31.906077348066297
+        },
+        {
+          "id": "lotte",
+          "x": 281.660773480663,
+          "y": 346.0900552486164,
+          "radius": 36.46408839779006
+        },
+        {
+          "id": "ferrySouth",
+          "x": 8062.793370165748,
+          "y": -2890.7480662983435,
+          "radius": 31.906077348066297
+        },
+        {
+          "id": "ferryNorth",
+          "x": 9609.612154696133,
+          "y": -4025.589502762432,
+          "radius": 31.906077348066297
+        }
+      ],
+      "labels": [
+        {
+          "id": "lotte",
+          "text": "Lotte \u7684\u6865",
+          "x": 165.21878453038676,
+          "y": 218.8303867403291,
+          "width": 232.88397790055248,
+          "height": 69.52486187845304,
+          "fontCssPx": 12
+        },
+        {
+          "id": "pub",
+          "text": "\u9152\u9986 Tweede Kans",
+          "x": 387.67403314917124,
+          "y": 201.06629834254147,
+          "width": 324.6519337016575,
+          "height": 65.75690607734806,
+          "fontCssPx": 11
+        }
+      ],
+      "visibleBounds": [
+        1009.711,
+        3190.462454545455,
+        1190.711,
+        3295.771545454546
+      ],
+      "elapsedMs": 0.8000000715255737,
+      "cssWidth": 362,
+      "camera": "street",
+      "night": true,
+      "avatar": {
+        "x": 550,
+        "y": 320
+      },
+      "overlap": false,
+      "stats": {
+        "frames": 7,
+        "cacheBuilds": 7,
+        "cacheReuses": 0,
+        "directFrames": 0,
+        "indexedFeatures": 145703,
+        "indexBuckets": 1023,
+        "canvasesCreated": 7,
+        "activeCanvases": 2,
+        "maxCanvasSide": 2048,
+        "lastFrame": {
+          "indexed": 464,
+          "culled": 34,
+          "drawn": 430,
+          "reused": false,
+          "kind": "street",
+          "night": true
+        }
+      },
+      "overflow": false
+    },
+    {
+      "transform": {
+        "scale": 0.09592750278976664,
+        "tx": 208.12517190133553,
+        "ty": 0
+      },
+      "markers": [
+        {
+          "id": "pub",
+          "x": 313.6656656731675,
+          "y": 311.10411506503965,
+          "radius": 25.828729281767956
+        },
+        {
+          "id": "market",
+          "x": 393.35005219805134,
+          "y": 527.4090266281258,
+          "radius": 25.828729281767956
+        },
+        {
+          "id": "coffee",
+          "x": 389.48426976312646,
+          "y": 522.9041751696155,
+          "radius": 25.828729281767956
+        },
+        {
+          "id": "flowers",
+          "x": 379.58013881009424,
+          "y": 563.1213010767112,
+          "radius": 25.828729281767956
+        },
+        {
+          "id": "lab",
+          "x": 798.8693729713768,
+          "y": 522.8214856622108,
+          "radius": 25.828729281767956
+        },
+        {
+          "id": "lotte",
+          "x": 309.4300827149881,
+          "y": 311.51593183451604,
+          "radius": 30.386740331491712
+        },
+        {
+          "id": "ferrySouth",
+          "x": 432.25086091186586,
+          "y": 260.42427235616685,
+          "radius": 25.828729281767956
+        },
+        {
+          "id": "ferryNorth",
+          "x": 456.6665207769228,
+          "y": 242.51144197772535,
+          "radius": 25.828729281767956
+        }
+      ],
+      "labels": [
+        {
+          "id": "lotte",
+          "text": "Lotte \u7684\u6865",
+          "x": 192.98809376471183,
+          "y": 190.3336113925271,
+          "width": 232.88397790055248,
+          "height": 69.52486187845304,
+          "fontCssPx": 12
+        },
+        {
+          "id": "pub",
+          "text": "\u9152\u9986 Tweede Kans",
+          "x": 151.33969882233873,
+          "y": 198.24776147387945,
+          "width": 324.6519337016575,
+          "height": 65.75690607734806,
+          "fontCssPx": 11
+        }
+      ],
+      "visibleBounds": [
+        -2169.6089843749996,
+        0,
+        9297.383984375,
+        6671.705
+      ],
+      "elapsedMs": 451.7999999523163,
+      "cssWidth": 362,
+      "camera": "city",
+      "night": false,
+      "avatar": {
+        "x": 313.6656656731675,
+        "y": 311.10411506503965
+      },
+      "overlap": false,
+      "stats": {
+        "frames": 8,
+        "cacheBuilds": 8,
+        "cacheReuses": 0,
+        "directFrames": 0,
+        "indexedFeatures": 145703,
+        "indexBuckets": 1023,
+        "canvasesCreated": 8,
+        "activeCanvases": 2,
+        "maxCanvasSide": 2048,
+        "lastFrame": {
+          "indexed": 145703,
+          "culled": 0,
+          "drawn": 145703,
+          "reused": false,
+          "kind": "city1",
+          "night": false
+        }
+      },
+      "overflow": false
+    },
+    {
+      "transform": {
+        "scale": 0.09592750278976664,
+        "tx": 208.12517190133553,
+        "ty": 0
+      },
+      "markers": [
+        {
+          "id": "pub",
+          "x": 313.6656656731675,
+          "y": 311.10411506503965,
+          "radius": 25.828729281767956
+        },
+        {
+          "id": "market",
+          "x": 393.35005219805134,
+          "y": 527.4090266281258,
+          "radius": 25.828729281767956
+        },
+        {
+          "id": "coffee",
+          "x": 389.48426976312646,
+          "y": 522.9041751696155,
+          "radius": 25.828729281767956
+        },
+        {
+          "id": "flowers",
+          "x": 379.58013881009424,
+          "y": 563.1213010767112,
+          "radius": 25.828729281767956
+        },
+        {
+          "id": "lab",
+          "x": 798.8693729713768,
+          "y": 522.8214856622108,
+          "radius": 25.828729281767956
+        },
+        {
+          "id": "lotte",
+          "x": 309.4300827149881,
+          "y": 311.51593183451604,
+          "radius": 30.386740331491712
+        },
+        {
+          "id": "ferrySouth",
+          "x": 432.25086091186586,
+          "y": 260.42427235616685,
+          "radius": 25.828729281767956
+        },
+        {
+          "id": "ferryNorth",
+          "x": 456.6665207769228,
+          "y": 242.51144197772535,
+          "radius": 25.828729281767956
+        }
+      ],
+      "labels": [
+        {
+          "id": "lotte",
+          "text": "Lotte \u7684\u6865",
+          "x": 192.98809376471183,
+          "y": 190.3336113925271,
+          "width": 232.88397790055248,
+          "height": 69.52486187845304,
+          "fontCssPx": 12
+        },
+        {
+          "id": "pub",
+          "text": "\u9152\u9986 Tweede Kans",
+          "x": 151.33969882233873,
+          "y": 198.24776147387945,
+          "width": 324.6519337016575,
+          "height": 65.75690607734806,
+          "fontCssPx": 11
+        }
+      ],
+      "visibleBounds": [
+        -2169.6089843749996,
+        0,
+        9297.383984375,
+        6671.705
+      ],
+      "elapsedMs": 439.89999997615814,
+      "cssWidth": 362,
+      "camera": "city",
+      "night": true,
+      "avatar": {
+        "x": 313.6656656731675,
+        "y": 311.10411506503965
+      },
+      "overlap": false,
+      "stats": {
+        "frames": 9,
+        "cacheBuilds": 9,
+        "cacheReuses": 0,
+        "directFrames": 0,
+        "indexedFeatures": 145703,
+        "indexBuckets": 1023,
+        "canvasesCreated": 9,
+        "activeCanvases": 2,
+        "maxCanvasSide": 2048,
+        "lastFrame": {
+          "indexed": 145703,
+          "culled": 0,
+          "drawn": 145703,
+          "reused": false,
+          "kind": "city1",
+          "night": true
+        }
+      },
+      "overflow": false
+    },
+    {
+      "transform": {
+        "scale": 2,
+        "tx": -1650.422,
+        "ty": -6166.234
+      },
+      "markers": [
+        {
+          "id": "pub",
+          "x": 550,
+          "y": 320,
+          "radius": 10.5
+        },
+        {
+          "id": "market",
+          "x": 2211.346,
+          "y": 4829.758,
+          "radius": 10.5
+        },
+        {
+          "id": "coffee",
+          "x": 2130.748,
+          "y": 4735.835999999999,
+          "radius": 10.5
+        },
+        {
+          "id": "flowers",
+          "x": 1924.2559999999999,
+          "y": 5574.325999999999,
+          "radius": 10.5
+        },
+        {
+          "id": "lab",
+          "x": 10666.05,
+          "y": 4734.111999999999,
+          "radius": 10.5
+        },
+        {
+          "id": "lotte",
+          "x": 461.692,
+          "y": 328.58599999999933,
+          "radius": 12
+        },
+        {
+          "id": "ferrySouth",
+          "x": 3022.3920000000003,
+          "y": -736.6280000000006,
+          "radius": 10.5
+        },
+        {
+          "id": "ferryNorth",
+          "x": 3531.436,
+          "y": -1110.094,
+          "radius": 10.5
+        }
+      ],
+      "labels": [
+        {
+          "id": "lotte",
+          "text": "Lotte \u7684\u6865",
+          "x": 423.372,
+          "y": 286.70599999999934,
+          "width": 76.64,
+          "height": 22.88,
+          "fontCssPx": 12
+        },
+        {
+          "id": "pub",
+          "text": "\u9152\u9986 Tweede Kans",
+          "x": 496.58,
+          "y": 280.86,
+          "width": 106.83999999999999,
+          "height": 21.64,
+          "fontCssPx": 11
+        }
+      ],
+      "visibleBounds": [
+        825.211,
+        3083.117,
+        1375.211,
+        3403.117
+      ],
+      "elapsedMs": 4.799999952316284,
+      "cssWidth": 1100,
+      "camera": "street",
+      "night": false,
+      "avatar": {
+        "x": 550,
+        "y": 320
+      },
+      "overlap": false,
+      "stats": {
+        "frames": 10,
+        "cacheBuilds": 10,
+        "cacheReuses": 0,
+        "directFrames": 0,
+        "indexedFeatures": 145703,
+        "indexBuckets": 1023,
+        "canvasesCreated": 10,
+        "activeCanvases": 2,
+        "maxCanvasSide": 2048,
+        "lastFrame": {
+          "indexed": 2721,
+          "culled": 65,
+          "drawn": 2656,
+          "reused": false,
+          "kind": "street",
+          "night": false
+        }
+      },
+      "overflow": false
+    },
+    {
+      "transform": {
+        "scale": 2,
+        "tx": -1650.422,
+        "ty": -6166.234
+      },
+      "markers": [
+        {
+          "id": "pub",
+          "x": 550,
+          "y": 320,
+          "radius": 10.5
+        },
+        {
+          "id": "market",
+          "x": 2211.346,
+          "y": 4829.758,
+          "radius": 10.5
+        },
+        {
+          "id": "coffee",
+          "x": 2130.748,
+          "y": 4735.835999999999,
+          "radius": 10.5
+        },
+        {
+          "id": "flowers",
+          "x": 1924.2559999999999,
+          "y": 5574.325999999999,
+          "radius": 10.5
+        },
+        {
+          "id": "lab",
+          "x": 10666.05,
+          "y": 4734.111999999999,
+          "radius": 10.5
+        },
+        {
+          "id": "lotte",
+          "x": 461.692,
+          "y": 328.58599999999933,
+          "radius": 12
+        },
+        {
+          "id": "ferrySouth",
+          "x": 3022.3920000000003,
+          "y": -736.6280000000006,
+          "radius": 10.5
+        },
+        {
+          "id": "ferryNorth",
+          "x": 3531.436,
+          "y": -1110.094,
+          "radius": 10.5
+        }
+      ],
+      "labels": [
+        {
+          "id": "lotte",
+          "text": "Lotte \u7684\u6865",
+          "x": 423.372,
+          "y": 286.70599999999934,
+          "width": 76.64,
+          "height": 22.88,
+          "fontCssPx": 12
+        },
+        {
+          "id": "pub",
+          "text": "\u9152\u9986 Tweede Kans",
+          "x": 496.58,
+          "y": 280.86,
+          "width": 106.83999999999999,
+          "height": 21.64,
+          "fontCssPx": 11
+        }
+      ],
+      "visibleBounds": [
+        825.211,
+        3083.117,
+        1375.211,
+        3403.117
+      ],
+      "elapsedMs": 5.900000095367432,
+      "cssWidth": 1100,
+      "camera": "street",
+      "night": true,
+      "avatar": {
+        "x": 550,
+        "y": 320
+      },
+      "overlap": false,
+      "stats": {
+        "frames": 11,
+        "cacheBuilds": 11,
+        "cacheReuses": 0,
+        "directFrames": 0,
+        "indexedFeatures": 145703,
+        "indexBuckets": 1023,
+        "canvasesCreated": 11,
+        "activeCanvases": 2,
+        "maxCanvasSide": 2048,
+        "lastFrame": {
+          "indexed": 2721,
+          "culled": 65,
+          "drawn": 2656,
+          "reused": false,
+          "kind": "street",
+          "night": true
+        }
+      },
+      "overflow": false
+    },
+    {
+      "transform": {
+        "scale": 0.09592750278976664,
+        "tx": 208.12517190133553,
+        "ty": 0
+      },
+      "markers": [
+        {
+          "id": "pub",
+          "x": 313.6656656731675,
+          "y": 311.10411506503965,
+          "radius": 8.5
+        },
+        {
+          "id": "market",
+          "x": 393.35005219805134,
+          "y": 527.4090266281258,
+          "radius": 8.5
+        },
+        {
+          "id": "coffee",
+          "x": 389.48426976312646,
+          "y": 522.9041751696155,
+          "radius": 8.5
+        },
+        {
+          "id": "flowers",
+          "x": 379.58013881009424,
+          "y": 563.1213010767112,
+          "radius": 8.5
+        },
+        {
+          "id": "lab",
+          "x": 798.8693729713768,
+          "y": 522.8214856622108,
+          "radius": 8.5
+        },
+        {
+          "id": "lotte",
+          "x": 309.4300827149881,
+          "y": 311.51593183451604,
+          "radius": 10
+        },
+        {
+          "id": "ferrySouth",
+          "x": 432.25086091186586,
+          "y": 260.42427235616685,
+          "radius": 8.5
+        },
+        {
+          "id": "ferryNorth",
+          "x": 456.6665207769228,
+          "y": 242.51144197772535,
+          "radius": 8.5
+        }
+      ],
+      "labels": [
+        {
+          "id": "lotte",
+          "text": "Lotte \u7684\u6865",
+          "x": 271.1100827149881,
+          "y": 271.63593183451604,
+          "width": 76.64,
+          "height": 22.88,
+          "fontCssPx": 12
+        },
+        {
+          "id": "pub",
+          "text": "\u9152\u9986 Tweede Kans",
+          "x": 260.2456656731675,
+          "y": 273.96411506503966,
+          "width": 106.83999999999999,
+          "height": 21.64,
+          "fontCssPx": 11
+        }
+      ],
+      "visibleBounds": [
+        -2169.6089843749996,
+        0,
+        9297.383984375,
+        6671.705
+      ],
+      "elapsedMs": 453.39999997615814,
+      "cssWidth": 1100,
+      "camera": "city",
+      "night": false,
+      "avatar": {
+        "x": 313.6656656731675,
+        "y": 311.10411506503965
+      },
+      "overlap": false,
+      "stats": {
+        "frames": 12,
+        "cacheBuilds": 12,
+        "cacheReuses": 0,
+        "directFrames": 0,
+        "indexedFeatures": 145703,
+        "indexBuckets": 1023,
+        "canvasesCreated": 12,
+        "activeCanvases": 2,
+        "maxCanvasSide": 2048,
+        "lastFrame": {
+          "indexed": 145703,
+          "culled": 0,
+          "drawn": 145703,
+          "reused": false,
+          "kind": "city1",
+          "night": false
+        }
+      },
+      "overflow": false
+    },
+    {
+      "transform": {
+        "scale": 0.09592750278976664,
+        "tx": 208.12517190133553,
+        "ty": 0
+      },
+      "markers": [
+        {
+          "id": "pub",
+          "x": 313.6656656731675,
+          "y": 311.10411506503965,
+          "radius": 8.5
+        },
+        {
+          "id": "market",
+          "x": 393.35005219805134,
+          "y": 527.4090266281258,
+          "radius": 8.5
+        },
+        {
+          "id": "coffee",
+          "x": 389.48426976312646,
+          "y": 522.9041751696155,
+          "radius": 8.5
+        },
+        {
+          "id": "flowers",
+          "x": 379.58013881009424,
+          "y": 563.1213010767112,
+          "radius": 8.5
+        },
+        {
+          "id": "lab",
+          "x": 798.8693729713768,
+          "y": 522.8214856622108,
+          "radius": 8.5
+        },
+        {
+          "id": "lotte",
+          "x": 309.4300827149881,
+          "y": 311.51593183451604,
+          "radius": 10
+        },
+        {
+          "id": "ferrySouth",
+          "x": 432.25086091186586,
+          "y": 260.42427235616685,
+          "radius": 8.5
+        },
+        {
+          "id": "ferryNorth",
+          "x": 456.6665207769228,
+          "y": 242.51144197772535,
+          "radius": 8.5
+        }
+      ],
+      "labels": [
+        {
+          "id": "lotte",
+          "text": "Lotte \u7684\u6865",
+          "x": 271.1100827149881,
+          "y": 271.63593183451604,
+          "width": 76.64,
+          "height": 22.88,
+          "fontCssPx": 12
+        },
+        {
+          "id": "pub",
+          "text": "\u9152\u9986 Tweede Kans",
+          "x": 260.2456656731675,
+          "y": 273.96411506503966,
+          "width": 106.83999999999999,
+          "height": 21.64,
+          "fontCssPx": 11
+        }
+      ],
+      "visibleBounds": [
+        -2169.6089843749996,
+        0,
+        9297.383984375,
+        6671.705
+      ],
+      "elapsedMs": 419.2999999523163,
+      "cssWidth": 1100,
+      "camera": "city",
+      "night": true,
+      "avatar": {
+        "x": 313.6656656731675,
+        "y": 311.10411506503965
+      },
+      "overlap": false,
+      "stats": {
+        "frames": 13,
+        "cacheBuilds": 13,
+        "cacheReuses": 0,
+        "directFrames": 0,
+        "indexedFeatures": 145703,
+        "indexBuckets": 1023,
+        "canvasesCreated": 13,
+        "activeCanvases": 2,
+        "maxCanvasSide": 2048,
+        "lastFrame": {
+          "indexed": 145703,
+          "culled": 0,
+          "drawn": 145703,
+          "reused": false,
+          "kind": "city1",
+          "night": true
+        }
+      },
+      "overflow": false
+    }
+  ],
+  "errors": []
+}

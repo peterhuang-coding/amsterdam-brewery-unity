@@ -1,0 +1,66 @@
+{
+  "finished_at": "2026-10-16T18:03:10.541154+00:00",
+  "elapsed_seconds": 1465.439,
+  "cli_returncode": 0,
+  "is_error": false,
+  "report_valid": true,
+  "tool_counts": {
+    "Read": 9,
+    "Bash": 14,
+    "Edit": 19
+  },
+  "extra_bash_attempts": 1,
+  "permission_denials": [],
+  "disallowed_changes": [],
+  "input_sha": [
+    {
+      "file": "benchmark-geo-navigation.cjs",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": false
+    },
+    {
+      "file": "correction.md",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "geo-interface.md",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "geo-navigation.js",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": false
+    },
+    {
+      "file": "parent-radius-hole-repro.cjs",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "real-pub-sample.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "source-classification.md",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "test-geo-navigation.cjs",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": false
+    }
+  ],
+  "path_violations": []
+}

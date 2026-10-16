@@ -1,0 +1,6 @@
+### Result
+{"times":[0.20000004768371582,0,0,0,0.10000002384185791,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.10000002384185791,0,0,0,0.10000002384185791,0,0.10000002384185791,0,0,0.10000002384185791,0],"stats":{"frames":43,"cacheBuilds":13,"cacheReuses":30,"directFrames":0,"indexedFeatures":145703,"indexBuckets":1023,"canvasesCreated":13,"activeCanvases":2,"maxCanvasSide":2048,"lastFrame":{"indexed":145703,"culled":0,"drawn":145703,"reused":true,"kind":"city1","night":true}},"errors":[]}
+### Ran Playwright code
+```js
+await (async page => { return await page.evaluate(()=>{const a=[];for(let i=0;i<30;i++)a.push(drawTest("city",true).elapsedMs);return {times:a,stats:renderer.stats(),errors};}); })(page);
+```

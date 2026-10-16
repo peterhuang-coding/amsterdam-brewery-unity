@@ -1,0 +1,23 @@
+{
+  "basis": "Original vs tolerance0.05 packed real62-feature source: per-feature preservation does not guarantee shared boundaries.",
+  "lostAdjacencies": [
+    {
+      "a": "wegdeel:b5910e46-8d27-5ba7-982d-41b311e24e21",
+      "b": "wegdeel:c7384aed-c91b-5319-8622-737e9c5a7d40",
+      "originalIntersectionLength": 11.972785306686028,
+      "packedGap": 0.004628700275729079
+    },
+    {
+      "a": "wegdeel:a875e61c-e42f-51b0-b6b1-12894e79f887",
+      "b": "wegdeel:b5910e46-8d27-5ba7-982d-41b311e24e21",
+      "originalIntersectionLength": 5.7176278297908025,
+      "packedGap": 0.004150427574579555
+    },
+    {
+      "a": "overbruggingsdeel:8b1d9302-4306-51af-ae31-9b60532e81c5",
+      "b": "wegdeel:a15ae580-47f7-5e24-a635-14dc17ea2701",
+      "originalIntersectionLength": 1.2735101098930814,
+      "packedGap": 0.0003570755040286914
+    }
+  ]
+}

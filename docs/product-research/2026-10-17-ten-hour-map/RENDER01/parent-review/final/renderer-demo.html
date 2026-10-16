@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>D26 RENDER01 · 局部真实地理测试</title>
+<style>
+  :root { color-scheme: light; }
+  body { margin: 0; background: #14293a; color: #e6d5a9;
+    font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; }
+  header { padding: 10px 14px 6px; }
+  h1 { font-size: 15px; margin: 0 0 4px; font-weight: 600; }
+  .warn { display: inline-block; background: #b86b4c; color: #18232b;
+    font-weight: 700; font-size: 12px; padding: 3px 9px; border-radius: 3px; }
+  .sub { font-size: 12px; opacity: .8; margin-left: 8px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 14px; }
+  button { background: #23475a; color: #f0e2bd; border: 1px solid #3f6577;
+    border-radius: 4px; padding: 5px 11px; font-size: 12px; cursor: pointer; }
+  button[aria-pressed="true"] { background: #ffd184; color: #23303a; border-color: #ffd184; }
+  label { font-size: 12px; display: inline-flex; gap: 5px; align-items: center; margin-left: 6px; }
+  .frame { padding: 0 14px 16px; }
+  canvas { background: #102733; max-width: 100%; height: auto;
+    border: 1px solid #33505e; border-radius: 4px; display: block; }
+  .err { color: #ffb59c; font-size: 12px; padding: 10px 14px; }
+  footer { font-size: 11px; opacity: .65; padding: 0 14px 16px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>D26 RENDER01 · AmsterdamGeoRenderer 真实 BGT 渲染器演示</h1>
+  <span class="warn">局部真实地理测试，非游戏交付</span>
+  <span class="sub">数据：Kadaster / PDOK BGT · CC0（酒馆周边 62 个要素的诊断子集，非全城覆盖）</span>
+</header>
+
+<div class="controls">
+  <button id="cam-street">街头视角</button>
+  <button id="cam-city">全城总览</button>
+  <button id="zoom-1">缩放 1</button>
+  <button id="zoom-2">缩放 2</button>
+  <button id="night">夜间</button>
+  <button id="w1100">CSS 1100</button>
+  <button id="w390">CSS 390</button>
+  <button id="w320">CSS 320</button>
+  <label><input type="checkbox" id="reduced"> 减少动态</label>
+</div>
+
+<div class="frame"><canvas id="map" width="1100" height="640" style="width:1100px"></canvas></div>
+<div class="err" id="err" hidden></div>
+<footer>
+  起点酒馆 (1100.211, 3243.117)；Lotte 的桥 (1056.057, 3247.41)。
+  几何来自官方 BGT 多边形（含孔洞/多部件 even-odd 填充），玩法 venues 仍为虚构。
+</footer>
+
+<script src="./geo-map-renderer.js"></script>
+<script>
+(function () {
+  'use strict';
+  var PUB = { x: 1100.211, y: 3243.117 };
+  var LOTTE = { x: 1056.057, y: 3247.41 };
+  var canvas = document.getElementById('map');
+  var ctx = canvas.getContext('2d');
+
+  var state = {
+    camera: 'street', zoom: 1, night: false,
+    cssWidth: 1100, reduced: false, time: 0
+  };
+
+  var places = [
+    { id: 'pub', name: '酒馆 Tweede Kans（游戏 venue）', district: 'Amsterdam', icon: '🍺', x: PUB.x, y: PUB.y },
+    { id: 'lotte', name: 'Lotte 的桥', district: 'Amsterdam', icon: '♪', x: LOTTE.x, y: LOTTE.y }
+  ];
+  var gardenEntry = { id: 'garden', name: '玻璃屋后的门（虚构）', icon: '✿', x: PUB.x + 26, y: PUB.y - 18 };
+
+  // Demo-only straight guide line from the pub toward Lotte's bridge.
+  var path = [
+    { x: 1088, y: 3244 },
+    { x: 1074, y: 3246 },
+    { x: LOTTE.x, y: LOTTE.y }
+  ];
+
+  function dpr() { return Math.min(window.devicePixelRatio || 1, 2); }
+  function resizeBacking() {
+    var scale = dpr();
+    canvas.width = Math.round(1100 * scale);
+    canvas.height = Math.round(640 * scale);
+    canvas.style.width = state.cssWidth + 'px';
+  }
+  resizeBacking();
+
+  function view() {
+    return {
+      position: { x: PUB.x, y: PUB.y, visited: ['pub'], bike: { x: PUB.x + 14, y: PUB.y + 2, mounted: false } },
+      path: path,
+      target: 'lotte',
+      zoom: state.zoom,
+      camera: state.camera,
+      mode: 'map',
+      afterHours: state.night,
+      flowerCart: { x: PUB.x - 16, y: PUB.y + 6 },
+      garden: false,
+      reducedMotion: state.reduced,
+      time: state.time
+    };
+  }
+  function options() {
+    return {
+      width: 1100, height: 640, cssWidth: Number(state.cssWidth),
+      places: places, gardenEntry: gardenEntry
+    };
+  }
+
+  var renderer = null;
+  function frame() {
+    var scale = dpr();
+    ctx.setTransform(scale, 0, 0, scale, 0, 0); // caller owns the DPR transform
+    renderer.draw(ctx, view(), options());
+  }
+
+  function loop(t) {
+    state.time = (t || 0) / 1000;
+    frame();
+    requestAnimationFrame(loop);
+  }
+
+  function bind(id, apply, pressed) {
+    var el = document.getElementById(id);
+    el.addEventListener('click', function () { apply(); syncButtons(); frame(); });
+    el._pressed = pressed;
+  }
+  function syncButtons() {
+    document.getElementById('cam-street').setAttribute('aria-pressed', String(state.camera === 'street'));
+    document.getElementById('cam-city').setAttribute('aria-pressed', String(state.camera === 'city'));
+    document.getElementById('zoom-1').setAttribute('aria-pressed', String(state.zoom === 1));
+    document.getElementById('zoom-2').setAttribute('aria-pressed', String(state.zoom === 2));
+    document.getElementById('night').setAttribute('aria-pressed', String(state.night));
+    document.getElementById('w1100').setAttribute('aria-pressed', String(state.cssWidth === 1100));
+    document.getElementById('w390').setAttribute('aria-pressed', String(state.cssWidth === 390));
+    document.getElementById('w320').setAttribute('aria-pressed', String(state.cssWidth === 320));
+  }
+  bind('cam-street', function () { state.camera = 'street'; });
+  bind('cam-city', function () { state.camera = 'city'; });
+  bind('zoom-1', function () { state.zoom = 1; state.camera = 'city'; });
+  bind('zoom-2', function () { state.zoom = 2; state.camera = 'city'; });
+  bind('night', function () { state.night = !state.night; });
+  bind('w1100', function () { state.cssWidth = 1100; });
+  bind('w390', function () { state.cssWidth = 390; });
+  bind('w320', function () { state.cssWidth = 320; });
+  document.getElementById('reduced').addEventListener('change', function (e) {
+    state.reduced = e.target.checked; frame();
+  });
+  window.addEventListener('resize', function () { resizeBacking(); frame(); });
+
+  fetch('./real-pub-sample.json')
+    .then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function (data) {
+      renderer = AmsterdamGeoRenderer.create(data, {
+        canvasFactory: function (w, h) {
+          var c = document.createElement('canvas');
+          c.width = w; c.height = h;
+          return c;
+        }
+      });
+      syncButtons();
+      requestAnimationFrame(loop);
+    })
+    .catch(function (err) {
+      var box = document.getElementById('err');
+      box.hidden = false;
+      box.textContent = '无法读取 real-pub-sample.json（' + err.message +
+        '）。请用本地 HTTP 服务打开本目录，例如 python3 -m http.server。';
+    });
+})();
+</script>
+</body>
+</html>

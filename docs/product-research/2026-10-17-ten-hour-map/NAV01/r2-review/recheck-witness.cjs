@@ -1,0 +1,4 @@
+const fs=require('node:fs'),G=require('./final/geo-navigation.js');const d=JSON.parse(fs.readFileSync('./final/real-pub-sample.json')),f=JSON.parse(fs.readFileSync('./recheck-failure.json'));const nav=G.createNavigator(d),w=f.firstWitness[0];const a=f.case.start,b=f.case.end;
+const out={capsule:nav.segmentWalkable(a,b,{radius:.4}),firstDenseWitness:w,diskAtWitness:nav.isWalkable({x:w.center[0],y:w.center[1]},{radius:.4}),oldHoleExpectedFalse:null};
+const R=(a,b,c,d)=>[[a,b],[c,b],[c,d],[a,d],[a,b]];out.highwayContractGap={};for(const fn of ['autosnelweg','rijbaan autosnelweg','autoweg','rijbaan autoweg']){const n=G.createNavigator({layers:{roads:[{id:'x',properties:{functie:fn},polygons:[[R(0,0,10,10)]]}]}});out.highwayContractGap[fn]=n.isWalkable({x:5,y:5},{radius:.4});}
+fs.writeFileSync('recheck-witness.json',JSON.stringify(out,null,2));console.log(JSON.stringify(out));

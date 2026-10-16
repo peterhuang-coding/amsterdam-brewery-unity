@@ -1,0 +1,22 @@
+[
+  {
+    "command": "node --check geo-map-renderer.js",
+    "exit_code": 0,
+    "seconds": 0.047844125
+  },
+  {
+    "command": "node --test test-geo-map-renderer.cjs",
+    "exit_code": 0,
+    "seconds": 0.185338375
+  },
+  {
+    "command": "node benchmark-geo-map-renderer.cjs",
+    "exit_code": 0,
+    "seconds": 0.147389834
+  },
+  {
+    "command": "node --check benchmark-geo-map-renderer.cjs",
+    "exit_code": 0,
+    "seconds": 0.04571904200000004
+  }
+]

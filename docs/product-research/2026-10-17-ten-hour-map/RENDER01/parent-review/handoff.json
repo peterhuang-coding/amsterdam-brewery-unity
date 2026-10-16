@@ -1,0 +1,63 @@
+{
+  "acceptance": [
+    "All final commands exit0; source files unchanged; shared API and polygon holes correct.",
+    "Parent independently verifies full-source Canvas performance and visual readability before adoption.",
+    "Valid report without unsupported1:1, fun or performance claims."
+  ],
+  "commands": [
+    "node --check geo-map-renderer.js",
+    "node --test test-geo-map-renderer.cjs",
+    "node benchmark-geo-map-renderer.cjs",
+    "node --check benchmark-geo-map-renderer.cjs"
+  ],
+  "constraints": [
+    "Read only supplied public source and synthetic data. Edit only listed outputs and reserved handoff-result.json.",
+    "Run only exact allowed Bash commands. No extra queries, network access, dependencies, credentials, git or subagents.",
+    "Never list reserved handoff-result.json in changed_files. Test rows describe final runs."
+  ],
+  "data_sensitivity": "public",
+  "goal": "D26 RENDER01: efficient actual-polygon city and near-street renderer with readable screen-space player/labels",
+  "max_turns": 70,
+  "memory": {
+    "completed": [
+      "Parent downloaded585 official BGT pages retaining145703 features; runtime packing in progress."
+    ],
+    "decisions": [
+      "Coding Plan Seed Evolving thinking enabled/high",
+      "Use shared schema and preserve visual continuity",
+      "Independent parent GUI and source verification required"
+    ],
+    "known_issues": [
+      "Accurate footprints do not imply facade1:1 reconstruction. Game venues remain fictional.",
+      "World-scaled labels previously failed small-screen readability; use CSS-space text."
+    ],
+    "summary": "D26 human authorization resumes actual map implementation for10hours. Existing game dad6b38 is preserved; conversion, navigation and rendering are separate packages."
+  },
+  "read_files": [
+    "brief.md",
+    "geo-interface.md",
+    "real-pub-sample.json",
+    "reopening-scene-reference.js"
+  ],
+  "task_id": "amsterdam-d26-geo-map-renderer-20261017",
+  "tasks": [
+    "Read the brief and shared schema; implement the independent renderer with the existing palette.",
+    "Add meaningful geometry, transform, cache and label tests, a real-sample demo and a bounded synthetic benchmark.",
+    "Run the four exact commands and return a valid final handoff report."
+  ],
+  "telemetry": {
+    "attempt_kind": "business",
+    "logical_task_id": "f02-real-geo-renderer-d26",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "timeout_seconds": 2400,
+  "version": 1,
+  "workspace": "/tmp/amsterdam-d26-geo-map-renderer-20261017/input",
+  "write_files": [
+    "geo-map-renderer.js",
+    "test-geo-map-renderer.cjs",
+    "benchmark-geo-map-renderer.cjs",
+    "renderer-demo.html"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "capsule": true,
+  "firstDenseWitness": {
+    "fraction": 0.0368,
+    "center": [
+      1056.947506279177,
+      3242.3567329974026
+    ],
+    "centerCovered": true,
+    "clearance": 0.3999952809883016
+  },
+  "diskAtWitness": true,
+  "oldHoleExpectedFalse": null,
+  "highwayContractGap": {
+    "autosnelweg": false,
+    "rijbaan autosnelweg": true,
+    "autoweg": false,
+    "rijbaan autoweg": true
+  }
+}

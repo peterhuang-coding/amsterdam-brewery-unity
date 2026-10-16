@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-d26-geo-navigation-r2-20261017",
+  "receipt_sha256": "8e6c9c463ac0a4964de643cdc9af522d7bf4e1d1b93a397bfa9077db51558855",
+  "reviewed_at": "2026-10-16T18:19:21Z",
+  "outcome": "rejected",
+  "failure_type": "semantic",
+  "evidence": [
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/NAV01/r2-review/parent-review.md",
+      "sha256": "2babeb9580a01ecd4006ad0261fd914862ba639a20e2c3a284f5676c12f5ba1e"
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "readMs": 761.014916,
+  "buildMs": 228.07025,
+  "anchors": {
+    "pub": {
+      "walk": true,
+      "bike": true
+    },
+    "market": {
+      "walk": true,
+      "bike": true
+    },
+    "coffee": {
+      "walk": true,
+      "bike": false
+    },
+    "flowers": {
+      "walk": true,
+      "bike": true
+    },
+    "lab": {
+      "walk": true,
+      "bike": true
+    },
+    "lotte": {
+      "walk": true,
+      "bike": true
+    },
+    "ferrySouth": {
+      "walk": true,
+      "bike": false
+    },
+    "ferryNorth": {
+      "walk": true,
+      "bike": false
+    },
+    "flowerCart": {
+      "walk": true,
+      "bike": false
+    },
+    "garden": {
+      "walk": true,
+      "bike": true
+    }
+  },
+  "to": "lotte",
+  "routeMs": 57.43204199999991,
+  "route": {
+    "found": false,
+    "reason": "unreachable",
+    "points": [],
+    "length": 0,
+    "visited": 370,
+    "startSnap": null,
+    "endSnap": null
+  },
+  "stats": {
+    "options": {
+      "cellSize": 2,
+      "maxNodes": 250000,
+      "bucketSize": 64,
+      "radius": 0.4
+    },
+    "features": {
+      "water": 1805,
+      "buildings": 71463,
+      "roads": 70085,
+      "bridges": 2350,
+      "bridgeDeckFeatures": 697,
+      "ignoredNonDeckBridgeParts": 1653,
+      "polygonsIndexed": 147289
+    },
+    "buckets": 12017,
+    "globalPolygons": 46,
+    "passabilityCacheEntries": 831,
+    "cacheHits": 3722,
+    "cacheMisses": 831,
+    "segmentChecks": 2710,
+    "segmentCacheEntries": 826,
+    "segmentCacheHits": 1884,
+    "searches": 1,
+    "snaps": 0,
+    "lastVisited": 370,
+    "totalExpanded": 370,
+    "lastReason": "unreachable"
+  },
+  "memory": {
+    "rss": 1098956800,
+    "heapTotal": 636092416,
+    "heapUsed": 602129832,
+    "external": 1297627,
+    "arrayBuffers": 10475
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "acceptance": [
+    "All exact final commands exit0 with meaningful geometric regression coverage.",
+    "Shared schema and interfaces exact; no game/source modifications; no fabricated geographic or performance claims.",
+    "Complete valid handoff report; parent will independently verify before adoption."
+  ],
+  "commands": [
+    "node --check geo-navigation.js",
+    "node --test test-geo-navigation.cjs",
+    "node benchmark-geo-navigation.cjs",
+    "node --check benchmark-geo-navigation.cjs"
+  ],
+  "constraints": [
+    "Read only supplied public/synthetic inputs; edit only listed outputs plus reserved handoff-result.json.",
+    "Bash only exact listed commands; no extra discovery commands, network, dependencies, credentials, subagents or git.",
+    "Never put reserved handoff-result.json in changed_files. Report test rows describe final runs; earlier RED belongs in summary."
+  ],
+  "data_sensitivity": "synthetic",
+  "goal": "D26 NAV01 one correction: whole-body road-union clearance and exact geometry validation, real fixture measurement",
+  "max_turns": 70,
+  "memory": {
+    "completed": [],
+    "decisions": [
+      "Coding Plan Seed Evolving thinking enabled/high",
+      "Fixed schema shared by two independent packages",
+      "No claim of full-city 1:1 or player fun"
+    ],
+    "known_issues": [
+      "Earlier hand-drawn map is not real geography",
+      "Small BGT samples do not prove complete dataset",
+      "Existing game integration is a later dependent package"
+    ],
+    "summary": "D26 explicitly authorizes renewed map implementation after earlier failed SVG designs. This is one bounded new implementation package; old failures are not reset. Game remains dad6b38 until independent parent adoption."
+  },
+  "read_files": [
+    "geo-interface.md",
+    "source-classification.md",
+    "geo-navigation.js",
+    "test-geo-navigation.cjs",
+    "benchmark-geo-navigation.cjs",
+    "real-pub-sample.json",
+    "parent-radius-hole-repro.cjs",
+    "correction.md"
+  ],
+  "task_id": "amsterdam-d26-geo-navigation-r2-20261017",
+  "tasks": [
+    "Read correction.md and original files; reproduce parent radius-hole failure inside allowed tests.",
+    "Make targeted clearance and validation corrections while preserving prior30 test intents and safety invariants.",
+    "Run exact4commands, include actual real-fixture metrics, return valid final report."
+  ],
+  "telemetry": {
+    "attempt_kind": "correction",
+    "logical_task_id": "f02-polygon-navigation-d26",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "timeout_seconds": 2400,
+  "version": 1,
+  "workspace": "/tmp/amsterdam-d26-geo-navigation-r2-20261017/input",
+  "write_files": [
+    "geo-navigation.js",
+    "test-geo-navigation.cjs",
+    "benchmark-geo-navigation.cjs"
+  ]
+}

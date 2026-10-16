@@ -1,0 +1,42 @@
+{
+  "finished_at": "2026-10-16T18:18:55.611624+00:00",
+  "elapsed_seconds": 2393.623,
+  "cli_returncode": 0,
+  "is_error": false,
+  "report_valid": true,
+  "tool_counts": {
+    "Read": 8,
+    "Bash": 20,
+    "Edit": 45
+  },
+  "extra_bash_attempts": 3,
+  "permission_denials": [],
+  "disallowed_changes": [],
+  "input_sha": [
+    {
+      "file": "brief.md",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "geo-interface.md",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "real-pub-sample.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "reopening-scene-reference.js",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    }
+  ],
+  "path_violations": []
+}

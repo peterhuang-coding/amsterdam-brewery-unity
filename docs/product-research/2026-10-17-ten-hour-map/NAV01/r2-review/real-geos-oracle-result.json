@@ -1,0 +1,56 @@
+{
+  "cases": 3000,
+  "failed": 1,
+  "falseSafe": 1,
+  "falseBlocked": 0,
+  "indexMs": 1.765459,
+  "queryMs": 191.21491600000002,
+  "failures": [
+    {
+      "i": 1475,
+      "kind": "segment",
+      "mode": "walk",
+      "radius": 0.4,
+      "start": {
+        "x": 1057.2199094918608,
+        "y": 3242.5560772147514
+      },
+      "end": {
+        "x": 1049.8176482776287,
+        "y": 3237.1391147867976
+      },
+      "expected": false,
+      "actual": true
+    }
+  ],
+  "stats": {
+    "options": {
+      "cellSize": 2,
+      "maxNodes": 250000,
+      "bucketSize": 64,
+      "radius": 0.4
+    },
+    "features": {
+      "water": 2,
+      "buildings": 23,
+      "roads": 36,
+      "bridges": 1,
+      "bridgeDeckFeatures": 1,
+      "ignoredNonDeckBridgeParts": 0,
+      "polygonsIndexed": 63
+    },
+    "buckets": 16,
+    "globalPolygons": 0,
+    "passabilityCacheEntries": 0,
+    "cacheHits": 0,
+    "cacheMisses": 0,
+    "segmentChecks": 1000,
+    "segmentCacheEntries": 1000,
+    "segmentCacheHits": 0,
+    "searches": 0,
+    "snaps": 0,
+    "lastVisited": 0,
+    "totalExpanded": 0,
+    "lastReason": null
+  }
+}

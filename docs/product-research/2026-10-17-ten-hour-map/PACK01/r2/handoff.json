@@ -1,7 +1,7 @@
 {
   "version": 1,
   "task_id": "amsterdam-d26-runtime-pack-r2-20261017",
-  "goal": "D26 PACK01 targeted correction: actual HTTP gzip semantics and strict frozen schema without changing faithful geometry",
+  "goal": "D26 PACK01 one correction: actual HTTP decoding, strict schema and shared-boundary-safe real geometry packing",
   "workspace": "/tmp/amsterdam-d26-runtime-pack-r2-20261017/input",
   "read_files": [
     "brief.md",
@@ -14,7 +14,9 @@
     "correction.md",
     "parent-http-loader-check.cjs",
     "parent-packer-schema-check.py",
-    "full-parent-metrics.json"
+    "full-parent-metrics.json",
+    "real-pub-source.json",
+    "parent-shared-edge-failure.json"
   ],
   "write_files": [
     "pack_geo.py",
@@ -59,8 +61,8 @@
     ]
   },
   "data_sensitivity": "public",
-  "timeout_seconds": 1800,
-  "max_turns": 55,
+  "timeout_seconds": 2400,
+  "max_turns": 70,
   "telemetry": {
     "project_id": "amsterdam-brewery-unity",
     "logical_task_id": "f02-geo-runtime-pack-d26",

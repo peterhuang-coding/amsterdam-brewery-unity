@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "/opt/homebrew/bin/claude",
+    "--bare",
+    "-p",
+    "--model",
+    "doubao-seed-evolving",
+    "--effort",
+    "high",
+    "--settings",
+    "{\"apiKeyHelper\": \"/usr/bin/security find-generic-password -s llm-hub -a volcengine-plan -w\", \"alwaysThinkingEnabled\": true, \"permissions\": {\"allow\": [\"Read(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-navigation-r2-20261017/workspace/**)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-navigation-r2-20261017/workspace/geo-navigation.js)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-navigation-r2-20261017/workspace/geo-navigation.js)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-navigation-r2-20261017/workspace/test-geo-navigation.cjs)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-navigation-r2-20261017/workspace/test-geo-navigation.cjs)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-navigation-r2-20261017/workspace/benchmark-geo-navigation.cjs)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-navigation-r2-20261017/workspace/benchmark-geo-navigation.cjs)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-navigation-r2-20261017/workspace/handoff-result.json)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-navigation-r2-20261017/workspace/handoff-result.json)\", \"Bash(node --check geo-navigation.js)\", \"Bash(node --test test-geo-navigation.cjs)\", \"Bash(node benchmark-geo-navigation.cjs)\", \"Bash(node --check benchmark-geo-navigation.cjs)\"]}}",
+    "--setting-sources",
+    "",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\": {}}",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--session-id",
+    "da011910-02fe-42ae-b009-781c84d99ad9",
+    "--max-turns",
+    "70",
+    "--permission-mode",
+    "dontAsk",
+    "--tools",
+    "Read,Write,Edit,Bash"
+  ],
+  "cwd": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-navigation-r2-20261017/workspace",
+  "pid": 63702,
+  "pid_pending": false,
+  "started_epoch": 1792172325
+}

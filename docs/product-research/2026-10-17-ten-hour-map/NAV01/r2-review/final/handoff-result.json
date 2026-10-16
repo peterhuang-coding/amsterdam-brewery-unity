@@ -1,0 +1,43 @@
+{
+  "status": "completed",
+  "summary": "D26 NAV01 one-correction package. EARLY RED on the original implementation (reproduced inside the allowed test command; parent-radius-hole-repro.cjs itself is not an authorized command): the added regression tests failed exactly as the parent reported - (1) road square [-3,3]^2 with hole [0.6,0.7]^2, disk r=1 at (0,0) returned isWalkable=true although the whole hole lies inside the body; (2) a narrow road notch entering the disk between 0.5 m circumference samples returned true; (3) validateRing accepted [[0,0],[1,0],[0,0],[1,0],[0,0]] (2 distinct points). The old real-fixture radius0.4 search also took ~10.4 s. CORRECTION: whole-body coverage is now structural, not denser sampling. The closed disk must lie in the walkable set (union of mode-permitted roads and dek decks with building/water precedence): every circle/edge intersection point is classified, every open circumference arc between consecutive intersections is checked at its midpoint (polygon vertices on the circle are split points), and for every polygon edge portion strictly inside the disk both adjacent faces must classify walkable; the same construction covers the swept capsule (two rails + two semicircles, proper and collinear edge intersections, filtered cap hits, both-faces side offsets). A hole filled by another legal road passes; an uncovered hole/notch/water/building does not; shared touching edges and overlapping roads stay connected; tangency keeps the documented water-boundary-blocks semantics. Centerline checks retain the <=0.5 m samples plus exact edge-crossing splits for sub-0.5 m barriers. validateRing now counts unique finite vertices (Set), and immutable indexed geometry is validated once at build with polygon/per-ring bounds precomputed; hot-path queries use a validation-free containsFast with O(1) ring-bounds rejection and a reused candidate set instead of revalidating every polygon per point. Segment verdicts are memoized per undirected segment/mode/radius. All 30 original test intents preserved; added 4 exact geometry tests, 1 validation test, and 3 read-only real BGT sample tests; benchmark extended with a realFixture block reporting radius 0 and 0.4 endpoint safety, route safety/time/nodes, dense 0.25 m audits, determinism, and anchor preservation. MEASURED FINAL (this host, subset only, no city-wide claim): real sample 63 polygons/63 rings/10549 ring coordinates (2 water/23 buildings/36 roads/1 deck, source complete=false, snapshot 2026-10-16); radius0 route found 49.337338 m / 4 points / 70 visited in ~28 ms, matching the parent baseline 49.33733834/4/70, anchors exact, 202 dense samples clear; radius0.4 route honestly FOUND 49.348627 m / 4 points / 60 visited in ~81 ms with no snaps and 201 dense radius-0.4 samples all clear (the radius-0 polyline is itself audited NOT 0.4-clear, so the wider body takes a slightly different path). Synthetic benchmark invariants all true (walk 1598.963 m/15 pts/16712 visited/157 ms via deck300; bike 1702.853 m/14 pts/13570 visited/164 ms via deck700; pier500 blocked; limit/unreachable/snap invariants hold). Full test suite 39/39 passes (~202 ms). No game/source/fixture/spec changes; no network/deps/git.",
+  "changed_files": [
+    "geo-navigation.js",
+    "test-geo-navigation.cjs",
+    "benchmark-geo-navigation.cjs"
+  ],
+  "tests": [
+    {
+      "command": "node --check geo-navigation.js",
+      "exit_code": 0,
+      "summary": "Syntax OK for corrected module (final bytes)."
+    },
+    {
+      "command": "node --test test-geo-navigation.cjs",
+      "exit_code": 0,
+      "summary": "39/39 tests pass in ~202 ms: all 30 original intents plus new tests for unique-vertex validation, the parent radius-hole repro (disk and swept capsule), legal-road-filled hole allowed, narrow notch between circumference samples, touching/overlapping roads vs real uncovered gap, capsule hole offset from the centre line, small blocker polygon inside disk, and 3 read-only real BGT sample tests (documented counts/incompleteness; radius0 baseline 49.337338 m/4 points/70 visited with exact anchors and dense audit; honest deterministic radius0.4 result with safe geometry when found)."
+    },
+    {
+      "command": "node benchmark-geo-navigation.cjs",
+      "exit_code": 0,
+      "summary": "One JSON line, all assertions true. Synthetic: walk 1598.963 m/15 pts/16712 visited/157 ms crossing at deck300 (301.351), bike 1702.853 m/14 pts/13570 visited/163.7 ms via deck700 (698), pier500 not crossable, budget->limit, island unreachable (33661 visited), snap bounded. Real BGT subset (complete=false): build 0.76 ms, 63 polygons/63 rings/10549 coordinates; both anchors radius0 and radius0.4 walkable; radius0 route 49.337338 m/4 pts/70 visited/28.0 ms (202 dense points clear, anchors preserved); radius0.4 route found honestly 49.348627 m/4 pts/60 visited/80.9 ms with startSnap/endSnap null and 201 dense radius-0.4 samples all clear; radius-0 polyline audited at 0.4 m is not fully clear (documented distinction). Timings are measurements on this host for the packed subset only."
+    },
+    {
+      "command": "node --check benchmark-geo-navigation.cjs",
+      "exit_code": 0,
+      "summary": "Syntax OK for extended benchmark (final bytes)."
+    }
+  ],
+  "blockers": [],
+  "memory_delta": [
+    "Exact radius clearance requires structural coverage: circle/capsule boundary split at all polygon-edge intersections plus both-faces classification of edge portions strictly inside the body; circumference sampling alone provably misses interior holes and inter-sample notches.",
+    "Hot-path pointInPolygon revalidation dominated cost on dense BGT rings (10549 coordinates in the 63-polygon subset): validate immutable geometry once, precompute per-ring bounds, reuse the candidate set, and memoize segment verdicts - real radius0 route ~686-745 ms (parent/original local) down to ~28 ms, exact radius0.4 route ~81 ms vs ~10.4 s with the old sampled clearance.",
+    "On the real packed subset the documented 49.33733834 m/4-point/70-visited radius0 route reproduces bit-for-bit intent, and radius0.4 between the same anchors is actually reachable (49.348627 m, 60 visited) with exact whole-body checks; the radius0 polyline itself is not 0.4-clear.",
+    "The 237 KB real-pub-sample.json is a bounds-selected diagnostic subset (source.complete=false), never evidence of full-city coverage or performance."
+  ],
+  "next_steps": [
+    "Parent independently applies the three changed files and reruns the exact four commands plus parent-radius-hole-repro.cjs in its own verification context.",
+    "Parent re-runs the same measurements against the separately packed full 514 MB BGT source before any adoption; no city-wide 1:1 or performance claim is made by this package.",
+    "Game integration, ferry/IJ transit, UI/save migration, and any positive-radius gameplay policy remain later dependent packages and were not touched."
+  ]
+}

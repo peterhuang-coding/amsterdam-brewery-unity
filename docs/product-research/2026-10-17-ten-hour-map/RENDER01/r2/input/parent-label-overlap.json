@@ -1,0 +1,314 @@
+[
+  {
+    "width": 292,
+    "camera": "street",
+    "night": false,
+    "labelsOverlap": true,
+    "labels": [
+      {
+        "id": "lotte",
+        "text": "Lotte \u7684\u6865",
+        "x": 72.97671232876775,
+        "y": 194.57739726027256,
+        "width": 288.71232876712327,
+        "height": 86.1917808219178,
+        "fontCssPx": 12
+      },
+      {
+        "id": "pub",
+        "text": "\u9152\u9986 Tweede Kans",
+        "x": 348.7602739726027,
+        "y": 172.55479452054794,
+        "width": 402.4794520547946,
+        "height": 81.52054794520548,
+        "fontCssPx": 11
+      }
+    ]
+  },
+  {
+    "width": 292,
+    "camera": "street",
+    "night": true,
+    "labelsOverlap": true,
+    "labels": [
+      {
+        "id": "lotte",
+        "text": "Lotte \u7684\u6865",
+        "x": 72.97671232876775,
+        "y": 194.57739726027256,
+        "width": 288.71232876712327,
+        "height": 86.1917808219178,
+        "fontCssPx": 12
+      },
+      {
+        "id": "pub",
+        "text": "\u9152\u9986 Tweede Kans",
+        "x": 348.7602739726027,
+        "y": 172.55479452054794,
+        "width": 402.4794520547946,
+        "height": 81.52054794520548,
+        "fontCssPx": 11
+      }
+    ]
+  },
+  {
+    "width": 292,
+    "camera": "city",
+    "night": false,
+    "labelsOverlap": true,
+    "labels": [
+      {
+        "id": "lotte",
+        "text": "Lotte \u7684\u6865",
+        "x": 165.07391833142646,
+        "y": 161.28305512218728,
+        "width": 288.71232876712327,
+        "height": 86.1917808219178,
+        "fontCssPx": 12
+      },
+      {
+        "id": "pub",
+        "text": "\u9152\u9986 Tweede Kans",
+        "x": 112.4259396457702,
+        "y": 171.19315616093007,
+        "width": 402.4794520547946,
+        "height": 81.52054794520548,
+        "fontCssPx": 11
+      }
+    ]
+  },
+  {
+    "width": 292,
+    "camera": "city",
+    "night": true,
+    "labelsOverlap": true,
+    "labels": [
+      {
+        "id": "lotte",
+        "text": "Lotte \u7684\u6865",
+        "x": 165.07391833142646,
+        "y": 161.28305512218728,
+        "width": 288.71232876712327,
+        "height": 86.1917808219178,
+        "fontCssPx": 12
+      },
+      {
+        "id": "pub",
+        "text": "\u9152\u9986 Tweede Kans",
+        "x": 112.4259396457702,
+        "y": 171.19315616093007,
+        "width": 402.4794520547946,
+        "height": 81.52054794520548,
+        "fontCssPx": 11
+      }
+    ]
+  },
+  {
+    "width": 362,
+    "camera": "street",
+    "night": false,
+    "labelsOverlap": true,
+    "labels": [
+      {
+        "id": "lotte",
+        "text": "Lotte \u7684\u6865",
+        "x": 165.21878453038676,
+        "y": 218.8303867403291,
+        "width": 232.88397790055248,
+        "height": 69.52486187845304,
+        "fontCssPx": 12
+      },
+      {
+        "id": "pub",
+        "text": "\u9152\u9986 Tweede Kans",
+        "x": 387.67403314917124,
+        "y": 201.06629834254147,
+        "width": 324.6519337016575,
+        "height": 65.75690607734806,
+        "fontCssPx": 11
+      }
+    ]
+  },
+  {
+    "width": 362,
+    "camera": "street",
+    "night": true,
+    "labelsOverlap": true,
+    "labels": [
+      {
+        "id": "lotte",
+        "text": "Lotte \u7684\u6865",
+        "x": 165.21878453038676,
+        "y": 218.8303867403291,
+        "width": 232.88397790055248,
+        "height": 69.52486187845304,
+        "fontCssPx": 12
+      },
+      {
+        "id": "pub",
+        "text": "\u9152\u9986 Tweede Kans",
+        "x": 387.67403314917124,
+        "y": 201.06629834254147,
+        "width": 324.6519337016575,
+        "height": 65.75690607734806,
+        "fontCssPx": 11
+      }
+    ]
+  },
+  {
+    "width": 362,
+    "camera": "city",
+    "night": false,
+    "labelsOverlap": true,
+    "labels": [
+      {
+        "id": "lotte",
+        "text": "Lotte \u7684\u6865",
+        "x": 192.98809376471183,
+        "y": 190.3336113925271,
+        "width": 232.88397790055248,
+        "height": 69.52486187845304,
+        "fontCssPx": 12
+      },
+      {
+        "id": "pub",
+        "text": "\u9152\u9986 Tweede Kans",
+        "x": 151.33969882233873,
+        "y": 198.24776147387945,
+        "width": 324.6519337016575,
+        "height": 65.75690607734806,
+        "fontCssPx": 11
+      }
+    ]
+  },
+  {
+    "width": 362,
+    "camera": "city",
+    "night": true,
+    "labelsOverlap": true,
+    "labels": [
+      {
+        "id": "lotte",
+        "text": "Lotte \u7684\u6865",
+        "x": 192.98809376471183,
+        "y": 190.3336113925271,
+        "width": 232.88397790055248,
+        "height": 69.52486187845304,
+        "fontCssPx": 12
+      },
+      {
+        "id": "pub",
+        "text": "\u9152\u9986 Tweede Kans",
+        "x": 151.33969882233873,
+        "y": 198.24776147387945,
+        "width": 324.6519337016575,
+        "height": 65.75690607734806,
+        "fontCssPx": 11
+      }
+    ]
+  },
+  {
+    "width": 1100,
+    "camera": "street",
+    "night": false,
+    "labelsOverlap": true,
+    "labels": [
+      {
+        "id": "lotte",
+        "text": "Lotte \u7684\u6865",
+        "x": 423.372,
+        "y": 286.70599999999934,
+        "width": 76.64,
+        "height": 22.88,
+        "fontCssPx": 12
+      },
+      {
+        "id": "pub",
+        "text": "\u9152\u9986 Tweede Kans",
+        "x": 496.58,
+        "y": 280.86,
+        "width": 106.83999999999999,
+        "height": 21.64,
+        "fontCssPx": 11
+      }
+    ]
+  },
+  {
+    "width": 1100,
+    "camera": "street",
+    "night": true,
+    "labelsOverlap": true,
+    "labels": [
+      {
+        "id": "lotte",
+        "text": "Lotte \u7684\u6865",
+        "x": 423.372,
+        "y": 286.70599999999934,
+        "width": 76.64,
+        "height": 22.88,
+        "fontCssPx": 12
+      },
+      {
+        "id": "pub",
+        "text": "\u9152\u9986 Tweede Kans",
+        "x": 496.58,
+        "y": 280.86,
+        "width": 106.83999999999999,
+        "height": 21.64,
+        "fontCssPx": 11
+      }
+    ]
+  },
+  {
+    "width": 1100,
+    "camera": "city",
+    "night": false,
+    "labelsOverlap": true,
+    "labels": [
+      {
+        "id": "lotte",
+        "text": "Lotte \u7684\u6865",
+        "x": 271.1100827149881,
+        "y": 271.63593183451604,
+        "width": 76.64,
+        "height": 22.88,
+        "fontCssPx": 12
+      },
+      {
+        "id": "pub",
+        "text": "\u9152\u9986 Tweede Kans",
+        "x": 260.2456656731675,
+        "y": 273.96411506503966,
+        "width": 106.83999999999999,
+        "height": 21.64,
+        "fontCssPx": 11
+      }
+    ]
+  },
+  {
+    "width": 1100,
+    "camera": "city",
+    "night": true,
+    "labelsOverlap": true,
+    "labels": [
+      {
+        "id": "lotte",
+        "text": "Lotte \u7684\u6865",
+        "x": 271.1100827149881,
+        "y": 271.63593183451604,
+        "width": 76.64,
+        "height": 22.88,
+        "fontCssPx": 12
+      },
+      {
+        "id": "pub",
+        "text": "\u9152\u9986 Tweede Kans",
+        "x": 260.2456656731675,
+        "y": 273.96411506503966,
+        "width": 106.83999999999999,
+        "height": 21.64,
+        "fontCssPx": 11
+      }
+    ]
+  }
+]

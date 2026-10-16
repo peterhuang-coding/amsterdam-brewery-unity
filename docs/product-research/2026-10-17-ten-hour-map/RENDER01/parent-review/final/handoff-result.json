@@ -1,0 +1,46 @@
+{
+  "status": "completed",
+  "summary": "Implemented standalone UMD geo-map-renderer.js (globalThis.AmsterdamGeoRenderer / module.exports): frozen create/draw/stats/dispose API; one-time 220 m uniform-grid spatial index with bounds culling; bounded offscreen static caches (one full-world 2048-capped overview shared by city zoom1/zoom2, one padded street cache whose canvas element is reused across pans; day/night keys) with truthful direct-draw fallback when no offscreen surface exists; every polygon ring traced with even-odd fill so holes and multipolygon gaps stay empty, clipped to the bbox world extent; layers water/roads/dek-bridges/pier-parts/buildings drawn in the preserved palette with cosmetic-only shadows/roof tones that never move footprints; screen-space >=11 CSS px labels (selected wraps and always clears the avatar, nonselected skipped when they cannot fit), all destination markers retained, constant-CSS-width gold route with dark underlay and distinct cool dashed ferry segments, 14.4 CSS px avatar plus parked bike/cart at passed coordinates, exact credit string and round-metre scale bar. transform scale/tx/ty has exact inverse; street is 2 CSS px/m derived from cssWidth; city zoom1 fits/letterboxes, zoom2 and street follow with edge clamping. Early-run issues fixed before the final runs: syntax typo, instance stats field shadowing stats() (renamed to internal metrics), overview cache computing 2047 instead of 2048 by float floor (binding side now pinned to the cap), synthetic benchmark ring nesting, and pan step larger than the padded cache inset. No game code touched; no network/imports/dependencies. Parent still needs to verify real browser Canvas output, full packed 145703-feature performance and readability before adoption.",
+  "changed_files": [
+    "geo-map-renderer.js",
+    "test-geo-map-renderer.cjs",
+    "benchmark-geo-map-renderer.cjs",
+    "renderer-demo.html"
+  ],
+  "tests": [
+    {
+      "command": "node --check geo-map-renderer.js",
+      "exit_code": 0,
+      "summary": "Renderer module parses with no syntax errors."
+    },
+    {
+      "command": "node --test test-geo-map-renderer.cjs",
+      "exit_code": 0,
+      "summary": "31/31 subtests pass: API/UMD surface, validation errors cite feature ids, nonfinite player/place rejection, exact transform inverse at css widths 320/390/1100 across city zoom1/zoom2/street and world edges, fit/letterbox/clamp framing, synthetic even-odd hole and two-component multipolygon fills verified from recorded path state, grid culling with indexed/culled/drawn stats, cache build/reuse/night/area invalidation, <=4 live canvases all <=2048 px, dispose and direct fallback, input immutability and caller transform/style preservation, full-text label rectangles matching the estimator with no avatar overlap at 320/390/1100, 60 m and overview label limits, marker completeness, garden gating, reduced-motion frame determinism, ferry dash styling, actor/bike/cart placement, and the real supplied sample end to end."
+    },
+    {
+      "command": "node benchmark-geo-map-renderer.cjs",
+      "exit_code": 0,
+      "summary": "Bounded deterministic 20,000 synthetic features (300 water with some holes/multi-components, 18,000 buildings, 1,500 roads, 200 bridges) on the real 7127.775x6671.705 m world; null 2D context measures indexing/culling/path generation only (not rasterisation). Final local run: create+index 11.908 ms, city first build 14.450 ms, city reuse 0.069 ms, zoom2 reuse 0.055 ms, night rebuild 6.811 ms, 30 street frames 1.304 ms total with 11 builds/19 reuses, 3 direct fallback frames 14.605 ms, 4 canvases created max side 2048 px; all five printed invariants PASS. These are local measurements, not performance claims."
+    },
+    {
+      "command": "node --check benchmark-geo-map-renderer.cjs",
+      "exit_code": 0,
+      "summary": "Benchmark script parses with no syntax errors."
+    }
+  ],
+  "blockers": [],
+  "memory_delta": [
+    "RENDER01 renderer delivered as an independent package with frozen draw return shape {transform,markers,labels,visibleBounds}; no dependency on window.City/FlowerNetwork or any import.",
+    "Count discrepancy to flag upstream: brief says the supplied real-pub-sample.json is a 63-feature sample, but the file actually contains 62 features across the four layers (2 water, 23 buildings, 36 roads, 1 bridge); tests assert the actual file contents (62). No holes exist in this sample (one two-component multipolygon building pand:8bf7d713-... does); hole correctness is therefore proven by a synthetic donut fixture plus even-odd assertions on every static fill.",
+    "Even-odd plus one path per feature is the hole/gap mechanism; bridge parts are split visually into type_overbruggingsdeel==='dek' decks versus muted gray structural parts so piers can never read as usable decks.",
+    "Static offscreen policy that satisfied the bounds tests: full-world overview cache pinned to 2048 on the binding side (naive float floor yields 2047), shared across sizes and zoom1/zoom2; one street cache element reused on pan, replaced only for night/size/scale; <=4 live allocations across day+night city/street.",
+    "Caller must keep scaling its context for DPR and pass width/height in logical px and cssWidth separately; renderer never resets the caller transform (no setTransform on the caller context)."
+  ],
+  "next_steps": [
+    "Parent independently loads renderer-demo.html via a local HTTP server and verifies real Canvas visual readability at CSS widths 320/390/1100, day/night, city zoom1/zoom2 and street at the pub and Lotte bridge.",
+    "Parent runs the renderer against the full packed 145703-feature dataset in a real browser (and low-end mobile view) to measure actual rasterised frame/cache performance before any game adoption.",
+    "Reconcile the 62-vs-63 feature count in the supplied sample against the parent manifest; extend the sample with a real holed water/pand polygon if coverage of actual-source holes is desired.",
+    "Future integration remains parent-scoped: adopt module bytes, explicit ferry transit endpoints, save migration and the reopening keyboard/390 px flow; no facade 1:1 or game-adoption claim is made by this unit."
+  ]
+}

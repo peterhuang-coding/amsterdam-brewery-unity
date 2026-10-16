@@ -36,8 +36,8 @@
   },
   {
     "file": "correction.md",
-    "bytes": 3399,
-    "sha256": "fd55fdba30780e702738465208578e60212a1c5d9d022f4c1799a838649e47aa"
+    "bytes": 4967,
+    "sha256": "5f62b24f02f2f1d0f3a562e499a6f38db04ab1ad3f8ae4f2973acf5cbf843362"
   },
   {
     "file": "parent-http-loader-check.cjs",
@@ -53,5 +53,15 @@
     "file": "full-parent-metrics.json",
     "bytes": 914,
     "sha256": "7c01273711a253c8369e1ca8b1b4dd92d9a7999a7e9531422647a52c3997e103"
+  },
+  {
+    "file": "real-pub-source.json",
+    "bytes": 237043,
+    "sha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598"
+  },
+  {
+    "file": "parent-shared-edge-failure.json",
+    "bytes": 854,
+    "sha256": "e61e1aa443d5366fd8fe8f3457a14c951876142c67d8a7cfe00c6aedff31c3d3"
   }
 ]

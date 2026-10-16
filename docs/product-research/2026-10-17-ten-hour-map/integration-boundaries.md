@@ -1,6 +1,6 @@
 # D26 game integration boundaries — prepared, not dispatched
 
-Current accepted game branch is `codex/real-map-20261017` at `3c9bb0e`; this adds the accepted BGT converter only. NAV01-R2 and RENDER01 are still running. PACK01-R2 is prepared. No city/boot/UI implementation has been submitted or adopted. Freeze executable task packets only after their exact dependencies pass parent review; this document records the parent decisions needed to prepare those packets.
+Current accepted game branch is `codex/real-map-20261017` at `3c9bb0e`; this adds the accepted BGT converter only. NAV01-R2, PACK01-R2 and RENDER01-R2 have all completed and were rejected by parent review; each exhausted its original correction allowance. Additional scoped attempts have been proposed and asked once, awaiting actual human answers. No task is in flight. No city/boot/UI implementation has been submitted or adopted. Freeze executable task packets only after their exact dependencies pass parent review; this document records the parent decisions needed to prepare those packets.
 
 ## City adapter and shared world configuration
 
@@ -22,7 +22,7 @@ Old `ab_reopening_v1` game/economy data remains intact. Old City coordinates hav
 
 ## Browser integration and acceptance boundary
 
-Bootstrap loads the accepted runtime data with an explicit 192 MiB decoded limit (the loader default stays 128 MiB), then configures NAV/City and starts the existing UI exactly once. Visible loading/error/retry states must recover without duplicate handlers or lost saves. No fallback to a fictional map on failure. Parent must measure actual browser memory/load responsiveness; Node's 979 ms measurement is not browser evidence.
+The earlier explicit 192 MiB bootstrap assumption is superseded by full PACK01-R2 measurements: 397004443 decoded bytes exceed that limit. The loader default remains 128 MiB. An explicit 512 MiB limit was used only for technical browser measurement, not approved as the product configuration. Final loading limits and responsiveness must be resolved against the exact qualified data before dispatching BOOT; only then configure NAV/City and start the existing UI exactly once. Visible loading/error/retry states must recover without duplicate handlers or lost saves. No fallback to a fictional map on failure. Parent must measure actual browser memory/load responsiveness; Node's 979 ms measurement is not browser evidence.
 
 Scene delegates only city drawing to the accepted renderer, keeps pub/night scenes intact, preserves the renderer transform for inverse clicks and uses its marker bounds for selection. Existing DPR is already applied by PubScene. Forward day/night, routes, selected target, garden/cart, player/bicycle and flower state as supported; any missing compatibility is explicit work, not silently discarded. Preserve keyboard controls, focus, pause/refresh and 390-pixel layout. Browser UI must keep ticking an active ferry after route cancellation or refresh.
 
@@ -34,6 +34,10 @@ Parent acceptance uses the full dataset and independently checks anchor connecti
 
 Parent full-data classification found 138 road features with `functie=rijbaan autosnelweg` and 84 with `rijbaan autoweg`; the original navigation contract used the bare words `autosnelweg/autoweg`. Verify the finished NAV implementation against the actual spellings before assigning a routing acceptance result. This is a source-contract mismatch to resolve explicitly in the integration boundary, not authority to mutate an in-flight packet or silently call highway surfaces pedestrian-safe. Preserve all these source features for rendering regardless of routing eligibility. Evidence: `anchors/full-classification.json`.
 
-The shared local pub fixture has **62 features / 63 polygons** (one building is a multipolygon), not 63 features. Its bytes and SHA are unchanged; earlier prepared briefs used the wrong noun. Parent independent GEOS oracle covers 3,000 point/segment cases on this fixture, including full positive-radius clearance. The oracle has been prepared, not yet run against the in-flight NAV result.
+The shared local pub fixture has **62 features / 63 polygons** (one building is a multipolygon), not 63 features. Its bytes and SHA are unchanged; earlier prepared briefs used the wrong noun. Parent independent GEOS oracle covers 3,000 point/segment cases on this fixture, including full positive-radius clearance. The oracle was run against NAV01-R2: one of 3000 cases was false-safe; a separate translated-triangle case also failed. NAV remains unaccepted (3d106f6/NAV01/r2-review).
 
 Full packed data and the independent geometry checks are durably preserved at `/Volumes/SanDisk2TB/amsterdam-geodata/d26-bgt-20261017/runtime-candidate-pack01`; source and destination SHA agree. This preserves qualified data from a rejected package, not adoption of its loader or delivery of the new game. Manifest: `PACK01/runtime-candidate-preservation.json`.
+
+## Full PACK01-R2 acceptance update (2026-10-16T19:30Z)
+
+Evidence: 97a299f/PACK01/r2-review. All 284123 original shared lines were retained, but 11 previously area-disjoint pairs acquired small positive-area overlaps, so the package remains rejected. Its 397004443-byte JSON and 101347149-byte gzip are preserved at `/Volumes/SanDisk2TB/amsterdam-geodata/d26-bgt-20261017/runtime-candidate-pack01-r2` as a candidate only. Actual browser loading with the diagnostic 512 MiB cap took 7.427/8.273 seconds and blocked the event loop for 6.889/7.576 seconds. These observations supersede the old 192 MiB and Node-only preparation assumptions. No City/BOOT handoff has been created or dispatched.

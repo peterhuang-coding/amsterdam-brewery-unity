@@ -1,6 +1,6 @@
 {
   "decision": "D26",
-  "status": "renewed_map_implementation_running",
+  "status": "renewed_map_waiting_actual_extra_correction_answers",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-17T02:03:03Z",
   "next_direction_review_at": "2026-10-16T23:48:33Z",
@@ -14,7 +14,7 @@
   "schedule": "existing amsterdam heartbeat every15minutes",
   "current_task_terminal": true,
   "failure_reason": null,
-  "last_result_at": "2026-10-14T16:58:40.031524Z",
+  "last_result_at": "2026-10-16T19:04:01.253801Z",
   "in_flight": [],
   "candidate_path": null,
   "adopted_this_round": 0,
@@ -611,7 +611,7 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-16T19:28:36.547563+00:00",
+  "updated_at": "2026-10-16T19:30:50.362686+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
   "last_checked_at": "2026-10-16T19:28:36.547563+00:00",
@@ -672,10 +672,10 @@
       "answer": null
     },
     "render01_correction_review": "rejected/semantic: original label overlap fixed in 12 full browser cases; demo canvas height drifts 214.8125→274.484375 in100frames; 1/1 exhausted, adopted0",
-    "render01_next": "Shelved; no third request or new exception question. Original report/code preserved.",
+    "render01_next": "Shelved. One additional correction asked together with PACK once; pending actual human answer.",
     "fourth_wave_collected_at": "2026-10-16T19:28:36.547563+00:00",
     "pack01_correction_review": "rejected/semantic: full original seams retained but11 new overlaps; size397004443B/gzip101347149B; correction1/1 exhausted, adopted0",
-    "pack01_next": "Shelved. Additional one-shot correction proposal prepared, not yet asked/authorized/submitted.",
+    "pack01_next": "Shelved. One additional correction asked together with RENDER once; pending actual human answer.",
     "full_runtime_candidate_r2": {
       "json_bytes": 397004443,
       "gzip_bytes": 101347149,
@@ -683,7 +683,25 @@
       "path": "/Volumes/SanDisk2TB/amsterdam-geodata/d26-bgt-20261017/runtime-candidate-pack01-r2",
       "adopted": false
     },
-    "runtime_limit_observation": "128/192MiB reject; explicit512MiB browser loads7.427/8.273s, blocks6.889/7.576s; old192MiB boot assumption invalid"
+    "runtime_limit_observation": "128/192MiB reject; explicit512MiB browser loads7.427/8.273s, blocks6.889/7.576s; old192MiB boot assumption invalid",
+    "pack_render_extra_exception": {
+      "status": "pending_actual_human_answer",
+      "asked_at": "2026-10-16T19:30:50.362686+00:00",
+      "time_precision": "recorded after accepted async question; approximate minute",
+      "question_count": 1,
+      "question": "数据和渲染的原业务及一次修正均已验收失败。是否额外允许 Plan 各修一次：数据只修新增边界重叠，渲染只修画布高度自动增长？方案和证据已推送，失败历史保留，10 小时截止不变；之前的导航问题仍单独待答。",
+      "options": [
+        "允许两项各追加一次（推荐）",
+        "两项保持搁置"
+      ],
+      "proposal_commit": "97a299f086cea1c067f28e024853c1e8f68eb713",
+      "proposed_task_ids": [
+        "amsterdam-d26-runtime-pack-r3-20261017",
+        "amsterdam-d26-geo-map-renderer-r3-20261017"
+      ],
+      "submitted": false,
+      "answer": null
+    }
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",
@@ -695,6 +713,6 @@
   },
   "prepared_tasks": [],
   "awaiting_parent_review": [],
-  "current_stage": "wave4_collected_pack_and_render_shelved_nav_exception_pending",
+  "current_stage": "wave4_collected_waiting_actual_extra_correction_answers",
   "prepared": []
 }

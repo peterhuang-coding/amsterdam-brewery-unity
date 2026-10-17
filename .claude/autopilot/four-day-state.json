@@ -827,7 +827,13 @@
       "worker_exited": true,
       "launcher_exited": true,
       "session_drained": 7310,
-      "amsterdam_ledger_done": 58
+      "amsterdam_ledger_done": 58,
+      "document_commit": "c0fe01e8f4d1923861caf1bbcb6bfe26f7e804f3",
+      "document_push": "remote_verified",
+      "notion_sync": "RENDER completed01:51:24.718Z/home01:51:25.279Z acceptance links read back; body history clarified.",
+      "hub_sync": "source/latest/session20261017-095300-98072.md byte-exact7068B SHA703e6328d5069b95fd22e99f7e8de8fac25bfa3a1e88ed5416555f8f0fe8622a; existing continuous-frame method updated.",
+      "automation_sync": "Same amsterdam/id/kind/name/thread/created_at/ACTIVE/15min preserved; accepted-result prefix readback exact.",
+      "cleanup": "browser amsterdam-render-r3 closed; HTTP18864/PID95678 exact args verified thenSIGTERM; session56804returned143; old18860 untouched."
     }
   },
   "capacity_observation": {

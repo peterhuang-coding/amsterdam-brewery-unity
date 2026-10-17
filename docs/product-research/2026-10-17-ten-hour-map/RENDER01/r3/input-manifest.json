@@ -1,0 +1,52 @@
+[
+  {
+    "path": "brief.md",
+    "bytes": 6475,
+    "sha256": "dbcfe1e9244f043ca6ab87b2913824ab9a09ac45e2ef3858e5f315986df1bd43"
+  },
+  {
+    "path": "geo-interface.md",
+    "bytes": 6525,
+    "sha256": "35e5148f8f6ef04c3b379f268f7ca9faf806e7a0b17275d7717a15373fbed0af"
+  },
+  {
+    "path": "real-pub-sample.json",
+    "bytes": 237043,
+    "sha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598"
+  },
+  {
+    "path": "reopening-scene-reference.js",
+    "bytes": 45079,
+    "sha256": "d429ad5760dd8b2d23397a20070d4ebdbdf7704ee3b19ce4f349fec52582dda7"
+  },
+  {
+    "path": "geo-map-renderer.js",
+    "bytes": 55699,
+    "sha256": "7e60695d5e4307f819a3def38b1d67f4d904d2be2d583e11356926460056292c"
+  },
+  {
+    "path": "test-geo-map-renderer.cjs",
+    "bytes": 44946,
+    "sha256": "50c4629a32830a2470b8352c68582778d569b2a005fd4698fabdcd808c83c4af"
+  },
+  {
+    "path": "benchmark-geo-map-renderer.cjs",
+    "bytes": 8797,
+    "sha256": "202ab0677e09d7a4e4fcc934e31ae0b92f101b22fcff4be0bc3d30a58b8efc27"
+  },
+  {
+    "path": "renderer-demo.html",
+    "bytes": 8358,
+    "sha256": "e56b9ac796034709dcfc9f4f6f36bfccb55ce809b342e07292b5a72d36e01f48"
+  },
+  {
+    "path": "parent-demo-drift.json",
+    "bytes": 21308,
+    "sha256": "8179f789dc1793ef4055437a312e06e15aa5d0e3f1d89d489f4839422054afba"
+  },
+  {
+    "path": "correction.md",
+    "bytes": 2139,
+    "sha256": "44d316194f7dc8b78eb6d318d4bd9d03250300cb7a73db12d53e2b73eefe8bd2"
+  }
+]

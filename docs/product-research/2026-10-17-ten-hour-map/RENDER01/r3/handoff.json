@@ -1,0 +1,68 @@
+{
+  "acceptance": [
+    "All final commands exit0; source files unchanged; shared API and polygon holes correct.",
+    "Parent independently verifies full-source Canvas performance and visual readability before adoption.",
+    "Valid report without unsupported1:1, fun or performance claims."
+  ],
+  "commands": [
+    "node --check geo-map-renderer.js",
+    "node --test test-geo-map-renderer.cjs",
+    "node benchmark-geo-map-renderer.cjs",
+    "node --check benchmark-geo-map-renderer.cjs"
+  ],
+  "constraints": [
+    "Read only supplied public source and synthetic data. Edit only listed outputs and reserved handoff-result.json.",
+    "Run only exact allowed Bash commands. No extra queries, network access, dependencies, credentials, git or subagents.",
+    "Never list reserved handoff-result.json in changed_files. Test rows describe final runs."
+  ],
+  "data_sensitivity": "public",
+  "goal": "RENDER01 authorized additional correction: stable CSS content-box and backing dimensions",
+  "max_turns": 55,
+  "memory": {
+    "summary": "Public standalone map renderer component. Two previous attempts rejected; this is one explicitly approved additional targeted correction. Game integration is separate.",
+    "decisions": [
+      "Seed Evolving thinking enabled/high",
+      "Existing API/geometry/bounded cache/label fixes retained",
+      "Actual browser acceptance belongs to parent"
+    ],
+    "completed": [
+      "R2 fixed label occlusion in12full-sourceCanvascases"
+    ],
+    "known_issues": [
+      "Original demo height grows while static due border/backing feedback",
+      "rectHits test helper dimensions inconsistent"
+    ]
+  },
+  "read_files": [
+    "brief.md",
+    "geo-interface.md",
+    "real-pub-sample.json",
+    "reopening-scene-reference.js",
+    "geo-map-renderer.js",
+    "test-geo-map-renderer.cjs",
+    "benchmark-geo-map-renderer.cjs",
+    "renderer-demo.html",
+    "parent-demo-drift.json",
+    "correction.md"
+  ],
+  "task_id": "amsterdam-d26-geo-map-renderer-r3-20261017",
+  "tasks": [
+    "Read correction.md and supplied R2 original files/evidence.",
+    "Fix only stable content-box/backing synchronization and valid rectangle assertions; preserve existing geometry/API/labels/cache and37testintentions.",
+    "Run exact4finalcommands and return complete legal report."
+  ],
+  "telemetry": {
+    "attempt_kind": "correction",
+    "logical_task_id": "f02-real-geo-renderer-d26",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "timeout_seconds": 1800,
+  "version": 1,
+  "workspace": "/tmp/amsterdam-d26-geo-map-renderer-r3-20261017/input",
+  "write_files": [
+    "geo-map-renderer.js",
+    "renderer-demo.html",
+    "test-geo-map-renderer.cjs"
+  ]
+}

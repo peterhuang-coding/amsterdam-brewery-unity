@@ -1,6 +1,6 @@
 {
   "decision": "D26",
-  "status": "renewed_map_waiting_actual_extra_correction_answers",
+  "status": "renewed_map_render_extra_preparing",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-17T02:03:03Z",
   "next_direction_review_at": "2026-10-17T09:48:33Z",
@@ -312,7 +312,7 @@
   "worker_pid": null,
   "last_submitted_at": "2026-10-16T18:27:03+00:00",
   "direction_review_count": 10,
-  "next_independent_observation": "Read actual pending NAV and PACK/RENDER exception answers; no in-flight or approved prepared task. Fixed D26 deadline takes precedence over next review grid.",
+  "next_independent_observation": "Launch approved RENDER-R3 after contract push, live Notion, capacity and input hash checks; then independent actual GUI acceptance.",
   "weekly_goal": {
     "decision": "D25",
     "source": "用户2026-10-14本周敲定demo再走Steam发行",
@@ -702,10 +702,10 @@
       "answer": null
     },
     "render01_correction_review": "rejected/semantic: original label overlap fixed in 12 full browser cases; demo canvas height drifts 214.8125→274.484375 in100frames; 1/1 exhausted, adopted0",
-    "render01_next": "Shelved. One additional correction asked together with PACK once; pending actual human answer.",
+    "render01_next": "Approved extra correction R3 preparing; one additional attempt only.",
     "fourth_wave_collected_at": "2026-10-16T19:28:36.547563+00:00",
     "pack01_correction_review": "rejected/semantic: full original seams retained but11 new overlaps; size397004443B/gzip101347149B; correction1/1 exhausted, adopted0",
-    "pack01_next": "Shelved. One additional correction asked together with RENDER once; pending actual human answer.",
+    "pack01_next": "Extra correction approved but not submitted:2400s maximum+~15min full parent acceptance cannot fit fixed02:03:03Z deadline. Extra attempt unused.",
     "full_runtime_candidate_r2": {
       "json_bytes": 397004443,
       "gzip_bytes": 101347149,
@@ -715,7 +715,7 @@
     },
     "runtime_limit_observation": "128/192MiB reject; explicit512MiB browser loads7.427/8.273s, blocks6.889/7.576s; old192MiB boot assumption invalid",
     "pack_render_extra_exception": {
-      "status": "pending_actual_human_answer",
+      "status": "approved_actual_human_answer",
       "asked_at": "2026-10-16T19:30:50.362686+00:00",
       "time_precision": "recorded after accepted async question; approximate minute",
       "question_count": 1,
@@ -730,7 +730,11 @@
         "amsterdam-d26-geo-map-renderer-r3-20261017"
       ],
       "submitted": false,
-      "answer": null
+      "answer": "允许两项各追加一次（推荐）",
+      "answer_source": "send_user_message_question_reply call_32f0589a71f4441d8e370373f360e175 item0",
+      "answer_recorded_at": "2026-10-17T01:19:43.879799+00:00",
+      "render_submitted": false,
+      "pack_submitted": false
     },
     "last_direction_review": {
       "planned_at": "2026-10-16T23:48:33Z",
@@ -771,8 +775,10 @@
     "before_NAV01_bare_pids": [],
     "actual_process_overlap_not_claimed": true
   },
-  "prepared_tasks": [],
+  "prepared_tasks": [
+    "amsterdam-d26-geo-map-renderer-r3-20261017"
+  ],
   "awaiting_parent_review": [],
-  "current_stage": "wave4_collected_waiting_actual_extra_correction_answers",
+  "current_stage": "render_r3_preparing_pack_extra_approved_deadline_no_fit",
   "prepared": []
 }

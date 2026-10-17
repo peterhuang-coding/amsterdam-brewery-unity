@@ -592,8 +592,13 @@
       ],
       "goal_tool_observed_status": "blocked",
       "next_grid_after_deadline": true,
-      "push_status": "pending",
-      "review_notification_planned": true
+      "push_status": "pushed_remote_verified",
+      "review_notification_planned": true,
+      "local_review_commit": "26c9e13e38559c295d67af0b13c2f1b485f8e6af",
+      "review_url": "https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/26c9e13e38559c295d67af0b13c2f1b485f8e6af/docs/product-research/2026-10-17-ten-hour-map/direction-review-10.md",
+      "notion_sync": "Home exact review10 link inserted and read back at 2026-10-17T00:01:12.493Z; historical content preserved.",
+      "hub_sync": "source /tmp/amsterdam-review10-hub.md equals latest and sessions/20261017-080139-89857.md byte-for-byte,9871B,one next-step; no new method.",
+      "automation_sync": "Same amsterdam id/name/kind/thread/ACTIVE/15min/created_at preserved; review10 prefix plus prior prompt byte-exact readback verified."
     }
   },
   "current_task_worker_pid": null,
@@ -749,8 +754,13 @@
       ],
       "goal_tool_observed_status": "blocked",
       "next_grid_after_deadline": true,
-      "push_status": "pending",
-      "review_notification_planned": true
+      "push_status": "pushed_remote_verified",
+      "review_notification_planned": true,
+      "local_review_commit": "26c9e13e38559c295d67af0b13c2f1b485f8e6af",
+      "review_url": "https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/26c9e13e38559c295d67af0b13c2f1b485f8e6af/docs/product-research/2026-10-17-ten-hour-map/direction-review-10.md",
+      "notion_sync": "Home exact review10 link inserted and read back at 2026-10-17T00:01:12.493Z; historical content preserved.",
+      "hub_sync": "source /tmp/amsterdam-review10-hub.md equals latest and sessions/20261017-080139-89857.md byte-for-byte,9871B,one next-step; no new method.",
+      "automation_sync": "Same amsterdam id/name/kind/thread/ACTIVE/15min/created_at preserved; review10 prefix plus prior prompt byte-exact readback verified."
     }
   },
   "capacity_observation": {

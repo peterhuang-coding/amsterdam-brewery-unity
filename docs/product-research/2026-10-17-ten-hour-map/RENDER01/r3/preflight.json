@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-17T01:20:23.479474+00:00",
+  "head": "67ab28e01ab73705a961c7e76ecf63397ef7a62a",
+  "remote": "67ab28e01ab73705a961c7e76ecf63397ef7a62a",
+  "active_ledger": [],
+  "bare_processes": [],
+  "input_count": 10,
+  "sha_all_match": true,
+  "remaining_seconds": 2559.520526,
+  "parent_reserved_seconds": 600,
+  "first_ps_decode_error": "UTF8 error corrected using replace without logging unrelated process args; no dispatch occurred"
+}

@@ -1,0 +1,16 @@
+{
+  "task_id": "amsterdam-d26-geo-map-renderer-r3-20261017",
+  "started_at": "2026-10-17T01:20:26+00:00",
+  "worker_pid": 95485,
+  "launcher_pid": 95484,
+  "session_id": 7310,
+  "timeout_seconds": 1800,
+  "max_turns": 55,
+  "contract_commit": "67ab28e01ab73705a961c7e76ecf63397ef7a62a",
+  "inputs": 10,
+  "input_bytes": 436369,
+  "thinking_enabled": true,
+  "effort": "high",
+  "extra_attempt": 1,
+  "status": "running"
+}

@@ -1,21 +1,38 @@
 {
   "decision": "D26",
-  "status": "renewed_map_render_extra_preparing",
+  "status": "renewed_map_render_extra_running",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-17T02:03:03Z",
   "next_direction_review_at": "2026-10-17T09:48:33Z",
   "last_direction_review_at": "2026-10-17T00:00:06.789975+00:00",
-  "current_task_id": null,
+  "current_task_id": "amsterdam-d26-geo-map-renderer-r3-20261017",
   "logical_task": "d26-real-geography",
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
   "failure_policy_question_pending": true,
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
-  "current_task_terminal": true,
+  "current_task_terminal": false,
   "failure_reason": null,
   "last_result_at": "2026-10-16T19:04:01.253801Z",
-  "in_flight": [],
+  "in_flight": [
+    {
+      "task_id": "amsterdam-d26-geo-map-renderer-r3-20261017",
+      "started_at": "2026-10-17T01:20:26+00:00",
+      "worker_pid": 95485,
+      "launcher_pid": 95484,
+      "session_id": 7310,
+      "timeout_seconds": 1800,
+      "max_turns": 55,
+      "contract_commit": "67ab28e01ab73705a961c7e76ecf63397ef7a62a",
+      "inputs": 10,
+      "input_bytes": 436369,
+      "thinking_enabled": true,
+      "effort": "high",
+      "extra_attempt": 1,
+      "status": "running"
+    }
+  ],
   "candidate_path": null,
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -662,7 +679,7 @@
     "scope": "real geography and existing playable map integration",
     "previous_map_failure_history_preserved": true,
     "new_attempt_policy": "one business attempt plus at most one targeted correction per concrete implementation package",
-    "plan_dispatch_count": 8,
+    "plan_dispatch_count": 9,
     "game_adopted": 0,
     "source_download_complete": true,
     "source_download_finished_at": "2026-10-16T16:38:18.837886Z",
@@ -702,7 +719,7 @@
       "answer": null
     },
     "render01_correction_review": "rejected/semantic: original label overlap fixed in 12 full browser cases; demo canvas height drifts 214.8125→274.484375 in100frames; 1/1 exhausted, adopted0",
-    "render01_next": "Approved extra correction R3 preparing; one additional attempt only.",
+    "render01_next": "Collect original R3 status/events/PID then independent browser acceptance; no resubmit.",
     "fourth_wave_collected_at": "2026-10-16T19:28:36.547563+00:00",
     "pack01_correction_review": "rejected/semantic: full original seams retained but11 new overlaps; size397004443B/gzip101347149B; correction1/1 exhausted, adopted0",
     "pack01_next": "Extra correction approved but not submitted:2400s maximum+~15min full parent acceptance cannot fit fixed02:03:03Z deadline. Extra attempt unused.",
@@ -729,12 +746,13 @@
         "amsterdam-d26-runtime-pack-r3-20261017",
         "amsterdam-d26-geo-map-renderer-r3-20261017"
       ],
-      "submitted": false,
+      "submitted": true,
       "answer": "允许两项各追加一次（推荐）",
       "answer_source": "send_user_message_question_reply call_32f0589a71f4441d8e370373f360e175 item0",
       "answer_recorded_at": "2026-10-17T01:19:43.879799+00:00",
-      "render_submitted": false,
-      "pack_submitted": false
+      "render_submitted": true,
+      "pack_submitted": false,
+      "render_submitted_at": "2026-10-17T01:20:26+00:00"
     },
     "last_direction_review": {
       "planned_at": "2026-10-16T23:48:33Z",
@@ -765,7 +783,9 @@
       "notion_sync": "Home exact review10 link inserted and read back at 2026-10-17T00:01:12.493Z; historical content preserved.",
       "hub_sync": "source /tmp/amsterdam-review10-hub.md equals latest and sessions/20261017-080139-89857.md byte-for-byte,9871B,one next-step; no new method.",
       "automation_sync": "Same amsterdam id/name/kind/thread/ACTIVE/15min/created_at preserved; review10 prefix plus prior prompt byte-exact readback verified."
-    }
+    },
+    "render01_extra_corrections_submitted": 1,
+    "pack01_extra_corrections_submitted": 0
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",
@@ -775,10 +795,8 @@
     "before_NAV01_bare_pids": [],
     "actual_process_overlap_not_claimed": true
   },
-  "prepared_tasks": [
-    "amsterdam-d26-geo-map-renderer-r3-20261017"
-  ],
+  "prepared_tasks": [],
   "awaiting_parent_review": [],
-  "current_stage": "render_r3_preparing_pack_extra_approved_deadline_no_fit",
+  "current_stage": "render_r3_running_pack_approved_not_submitted_deadline",
   "prepared": []
 }

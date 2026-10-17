@@ -1,0 +1,50 @@
+{
+  "at": "2026-10-17T01:48:28.958365+00:00",
+  "commit": "7696e156531b1df4d7a3eed948d35567cf17003a",
+  "component": "standalone_renderer",
+  "game_map_adopted": false,
+  "files": [
+    {
+      "path": "tools/geo/renderer/geo-map-renderer.js",
+      "sha256": "80c8c0edbd40483f8bd3652aef35562a2b52d20ad951a5cb83581c8bee9ae32a"
+    },
+    {
+      "path": "tools/geo/renderer/renderer-demo.html",
+      "sha256": "3acd69c8939713a2fd2dd0aa7de36af255ca699c91277be6f7d7af2d93d59703"
+    },
+    {
+      "path": "tools/geo/renderer/test-geo-map-renderer.cjs",
+      "sha256": "0bcbedcba71299957c25b1ce44402968adfddab46522dcf9a9de27342bbf96e8"
+    },
+    {
+      "path": "tools/geo/renderer/benchmark-geo-map-renderer.cjs",
+      "sha256": "202ab0677e09d7a4e4fcc934e31ae0b92f101b22fcff4be0bc3d30a58b8efc27"
+    },
+    {
+      "path": "tools/geo/renderer/real-pub-sample.json",
+      "sha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598"
+    }
+  ],
+  "adopted_directory_checks": [
+    {
+      "command": "node --check geo-map-renderer.js",
+      "code": 0
+    },
+    {
+      "command": "node --test test-geo-map-renderer.cjs",
+      "code": 0
+    },
+    {
+      "command": "node benchmark-geo-map-renderer.cjs",
+      "code": 0
+    },
+    {
+      "command": "node --check benchmark-geo-map-renderer.cjs",
+      "code": 0
+    }
+  ],
+  "parent_added": [
+    "tools/geo/renderer/README.md"
+  ],
+  "remote_verified": "7696e156531b1df4d7a3eed948d35567cf17003a"
+}

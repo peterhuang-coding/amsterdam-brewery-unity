@@ -1,0 +1,45 @@
+{
+  "status": "completed",
+  "summary": "Applied the single authorized R3 correction: broke the CSS content-box/backing feedback loop and made rectangle test assertions valid, without changing geometry, the draw() API/return shape, label policy, spatial index, or bounded caches. Renderer: resolveFrameSize now returns the laid-out CONTENT box (getBoundingClientRect minus computed border and padding via ownerDocument.defaultView.getComputedStyle; raw rect/client fallback unchanged when no CSSOM exists, preserving prior behavior in Node fakes). Added exported helper AmsterdamGeoRenderer.synchronizeFrame(canvas, {requestedWidth, aspectWidth, aspectHeight, dpr}, state): reads only the laid-out content width, derives an explicit CSS height from the fixed 1100:640 aspect (so backing attributes can never feed height:auto layout), and resizes the backing store once per real content-size/DPR change keyed 'w x h @dpr'. Demo syncFrame() now uses that helper instead of feeding border-box rect.height into canvas.width/height; stable by construction at DPR1/2, on resize and on width-control changes; draw options remain content-box CSS pixels, so screen-space fonts and returned marker/click transforms are unchanged. Tests: fixed rectHits, which compared label records (width/height) against avatar/HUD boxes (w/h) via undefined dimensions and therefore returned false for every collision; it now normalizes both vocabularies, making the existing twelve full-map occlusion matrix assertions (and all 37 original intentions) real rather than vacuous. Added six focused regressions: rectHits validity with mixed records and padding; content-box border/padding exclusion; 100 repeated static frames at 390/DPR1 assigning the backing store exactly once at 362x211 with constant external border-box height (plus an in-test model of the removed R2 loop reproducing the parent-demo-drift.json accumulation class); DPR1->DPR2->DPR1 backing 362x211 / 724x421 / 362x211 with one assignment per switch; viewport 390->320 resize and 1100/390/320 control changes each resizing once then staying fixed; borders 0/1/2/3 px never entering backing dimensions. Early verification note preserved: the first final-suite run exposed two of MY hardcoded expectations (212/423) against the actual aspect rounding (362*640/1100=210.618 -> 211; DPR2 421); the test constants were corrected and the suite then passed 43/43. No source geometry, shared schema handling, polygon even-odd holes, multipolygon gaps, cache caps, or label artwork were altered. No browser, network, dependency, git or agent actions were performed; unit tests are evidence of logic only, not GUI correctness or full-source performance.",
+  "changed_files": [
+    "geo-map-renderer.js",
+    "renderer-demo.html",
+    "test-geo-map-renderer.cjs"
+  ],
+  "tests": [
+    {
+      "command": "node --check geo-map-renderer.js",
+      "exit_code": 0,
+      "summary": "Syntax check passed with no output."
+    },
+    {
+      "command": "node --test test-geo-map-renderer.cjs",
+      "exit_code": 0,
+      "summary": "Final run: 43/43 tests pass, 0 failures (37 original intentions retained, now with valid rectHits overlap assertions, plus 6 new content-box/backing synchronization regressions). An earlier run during development failed 2 of the new tests due to incorrect hardcoded expected heights (212/423) which were corrected to the actual rounded aspect values (211/421); that failed run is superseded by this green final run."
+    },
+    {
+      "command": "node benchmark-geo-map-renderer.cjs",
+      "exit_code": 0,
+      "summary": "20,000 synthetic features on the real 7127.775x6671.705 m world: all five printed invariants PASS (all features indexed, <=4 live cache allocations, max cache side 2048 px, street reuses 19 > builds 11 over 30 frames, direct fallback 3 frames). Raw local null-context timings printed for parent measurement only, not a performance claim."
+    },
+    {
+      "command": "node --check benchmark-geo-map-renderer.cjs",
+      "exit_code": 0,
+      "summary": "Syntax check passed with no output; benchmark file was not modified."
+    }
+  ],
+  "blockers": [],
+  "memory_delta": [
+    "R2 demo drift root cause confirmed against parent-demo-drift.json: getBoundingClientRect is the border box (364 = 362 content + two 1px borders); writing its dimensions into canvas backing attributes while CSS height:auto derives the element ratio from those attributes creates per-frame accumulation (external height 214.8125 -> 274.484375 over 100 static frames at viewport 390/DPR1).",
+    "Stable pattern now encoded in exported synchronizeFrame: measure content width only, set explicit CSS height from a fixed aspect, key backing size by rounded content px * DPR, and assign canvas.width/height exclusively on key change; backing attributes then never influence layout.",
+    "resolveFrameSize now subtracts computed border+padding (ownerDocument.defaultView.getComputedStyle) to report the content box; with no CSSOM it keeps the raw rect/clientWidth behavior, so Node fakes and the frozen API surface are unaffected.",
+    "Test-helper trap recorded: rectHits mixed label records (width/height) with avatar/HUD boxes (w/h), yielding undefined compares that made every collision assertion false; rectBox normalization fixed it and the 12-case occlusion matrix now checks real geometry.",
+    "At 390/DPR1 the pinned demo content box is 362 x 210.618 CSS px (backing 362x211; border-box 364x212.618), close to the recorded stable R1 external height 212.609375; DPR2 backing is 724x421."
+  ],
+  "next_steps": [
+    "Parent independently runs the actual renderer-demo.html at viewport 390 with DPR1 and DPR2: capture external getBoundingClientRect height and backing [width,height] across 100 static frames and confirm zero accumulation from the first frame, as the old evidence grew 214.8125 -> 274.484375.",
+    "Parent verifies stability during live viewport resize (390<->320 and wide desktop), width controls (CSS 1100/390/320), camera/zoom/night/reduced-motion toggles, and DPR emulation changes, checking the backing store resizes once per real change.",
+    "Parent runs the full 145,703-feature source through the Canvas path, including the twelve full-map Lotte/pub label cases, and reads rendered images for visual readability, canals, holes and bridge decks before any adoption decision.",
+    "Game integration remains a separate, later parent decision; no game code, 1:1 reconstruction, performance or human-approval claim is made by this handoff."
+  ]
+}

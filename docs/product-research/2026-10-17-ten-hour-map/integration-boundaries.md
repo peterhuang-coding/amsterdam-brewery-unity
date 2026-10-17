@@ -1,6 +1,6 @@
 # D26 game integration boundaries — prepared, not dispatched
 
-Current accepted game branch is `codex/real-map-20261017` at `3c9bb0e`; this adds the accepted BGT converter only. NAV01-R2, PACK01-R2 and RENDER01-R2 have all completed and were rejected by parent review; each exhausted its original correction allowance. Additional scoped attempts have been proposed and asked once, awaiting actual human answers. No task is in flight. No city/boot/UI implementation has been submitted or adopted. Freeze executable task packets only after their exact dependencies pass parent review; this document records the parent decisions needed to prepare those packets.
+Current accepted branch is `codex/real-map-20261017` at `7696e156531b1df4d7a3eed948d35567cf17003a`: BGT converter and standalone renderer components only. RENDER01 R3 passed independent unit/browser validation and was adopted byte-for-byte into tools/geo/renderer. Original business/R2 rejections remain historical. PACK R2 remains rejected; its additional correction is approved but unsubmitted because the original runtime plus parent acceptance cannot fit fixed02:03:03Z. NAV R2 remains rejected and its extra question still awaits a human reply. No task is in flight; no City/BOOT/UI integration submitted or adopted. Qualified PACK/NAV dependencies are still required. Technical renderer screenshots are not a new playable game. Freeze executable integration packets only after exact dependencies pass.
 
 ## City adapter and shared world configuration
 

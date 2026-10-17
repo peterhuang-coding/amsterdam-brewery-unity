@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-17T01:49:42.720203+00:00",
+  "service_exact_matched_and_stopped": [
+    {
+      "pid": 95678,
+      "command": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -m http.server 18864 --bind 127.0.0.1 --directory /tmp/amsterdam-d26-render-r3-parent-20261017"
+    }
+  ],
+  "amsterdam_ledger_state_counts": {
+    "done": 58
+  },
+  "active_amsterdam": [],
+  "worker_launcher_ps": "",
+  "old_18860_not_touched": true,
+  "initial_match_note": "Initial comm-column match found none because ps comm was truncated; no process stopped then. Explicit lsof PID and full args matched before SIGTERM.",
+  "browser_closed": "playwright-cli amsterdam-render-r3 close exited0"
+}

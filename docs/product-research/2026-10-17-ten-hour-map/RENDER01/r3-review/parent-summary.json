@@ -1,0 +1,83 @@
+{
+  "checked_at": "2026-10-17T01:47:56.506299+00:00",
+  "checks": {
+    "demo_stable": true,
+    "demo_backing": true,
+    "demo_no_errors": true,
+    "matrix_12": true,
+    "all_indexed": true,
+    "labels_visible": true,
+    "labels_no_overlap": true,
+    "actor_no_overlap": true,
+    "labels_inside": true,
+    "fonts_ge_11": true,
+    "matrix_no_errors": true,
+    "reuse30": true,
+    "no_rebuild": true,
+    "live_cache_bounded": true,
+    "max_cache_side": true
+  },
+  "demo_cases": 20,
+  "demo_static": [
+    {
+      "dpr": 1,
+      "first": 212.6171875,
+      "last": 212.6171875,
+      "backing": [
+        362,
+        211
+      ],
+      "footer_delta": 0.0
+    },
+    {
+      "dpr": 2,
+      "first": 212.6171875,
+      "last": 212.6171875,
+      "backing": [
+        724,
+        421
+      ],
+      "footer_delta": 0.0
+    }
+  ],
+  "load_ms": 479.2000000476837,
+  "index_ms": 48.700000047683716,
+  "city_cold_ms": [
+    524.2000000476837,
+    483.2000000476837,
+    482,
+    471.10000002384186,
+    466.60000002384186,
+    475.5
+  ],
+  "cache_frame_ms_range": [
+    0,
+    0.10000002384185791
+  ],
+  "http": [
+    {
+      "file": "geo-map-renderer.js",
+      "bytes": 59883,
+      "sha256": "80c8c0edbd40483f8bd3652aef35562a2b52d20ad951a5cb83581c8bee9ae32a",
+      "equal_local": true
+    },
+    {
+      "file": "renderer-demo.html",
+      "bytes": 9223,
+      "sha256": "3acd69c8939713a2fd2dd0aa7de36af255ca699c91277be6f7d7af2d93d59703",
+      "equal_local": true
+    },
+    {
+      "file": "real-pub-sample.json",
+      "bytes": 237043,
+      "sha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598",
+      "equal_local": true
+    },
+    {
+      "file": "runtime-full.json",
+      "bytes": 140520240,
+      "sha256": "601e6df96c5575ac9fa1243d47be263de6048319558f0998cff599956c371a46",
+      "equal_local": true
+    }
+  ]
+}

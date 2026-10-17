@@ -1,6 +1,6 @@
 {
   "decision": "D26",
-  "status": "renewed_map_render_extra_running",
+  "status": "renewed_map_renderer_accepted_dependencies_blocked",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-17T02:03:03Z",
   "next_direction_review_at": "2026-10-17T09:48:33Z",
@@ -12,29 +12,12 @@
   "failure_policy_question_pending": true,
   "final_report_sent": false,
   "schedule": "existing amsterdam heartbeat every15minutes",
-  "current_task_terminal": false,
-  "failure_reason": null,
-  "last_result_at": "2026-10-16T19:04:01.253801Z",
-  "in_flight": [
-    {
-      "task_id": "amsterdam-d26-geo-map-renderer-r3-20261017",
-      "started_at": "2026-10-17T01:20:26+00:00",
-      "worker_pid": 95485,
-      "launcher_pid": 95484,
-      "session_id": 7310,
-      "timeout_seconds": 1800,
-      "max_turns": 55,
-      "contract_commit": "67ab28e01ab73705a961c7e76ecf63397ef7a62a",
-      "inputs": 10,
-      "input_bytes": 436369,
-      "thinking_enabled": true,
-      "effort": "high",
-      "extra_attempt": 1,
-      "status": "running"
-    }
-  ],
-  "candidate_path": null,
-  "adopted_this_round": 0,
+  "current_task_terminal": true,
+  "failure_reason": "PACK unqualified and extra attempt cannot fit deadline; NAV extra approval pending; City/BOOT blocked",
+  "last_result_at": "2026-10-17T01:35:19.714421Z",
+  "in_flight": [],
+  "candidate_path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/RENDER01/r3-review",
+  "adopted_this_round": 1,
   "policy_decision": "D24",
   "correction_after_r2": {
     "allowed": 1,
@@ -690,8 +673,8 @@
     "nav01_corrections_submitted": 1,
     "nav01_next": "One additional targeted correction proposed and asked once; awaiting actual human answer. No third NAV request submitted.",
     "geo01_correction_review": "accepted_with_changes/other: source geometry unchanged, complete metadata corrected, denied extra report shell attempt recorded",
-    "accepted_component_count": 1,
-    "accepted_component_commit": "3c9bb0e15dc3d7ce3f33d96aaf2873cddf0d43d1",
+    "accepted_component_count": 2,
+    "accepted_component_commit": "7696e156531b1df4d7a3eed948d35567cf17003a",
     "pack01_business_review": "rejected/semantic: query-suffixed raw gzip and already-decoded HTTP fail; required schema holes",
     "pack01_corrections_submitted": 1,
     "second_wave_collected_at": "2026-10-16T17:38:02.983697+00:00",
@@ -719,7 +702,7 @@
       "answer": null
     },
     "render01_correction_review": "rejected/semantic: original label overlap fixed in 12 full browser cases; demo canvas height drifts 214.8125→274.484375 in100frames; 1/1 exhausted, adopted0",
-    "render01_next": "Collect original R3 status/events/PID then independent browser acceptance; no resubmit.",
+    "render01_next": "Complete; extra1/1 used. No more retry. City/BOOT waits on qualified PACK/NAV; game map0.",
     "fourth_wave_collected_at": "2026-10-16T19:28:36.547563+00:00",
     "pack01_correction_review": "rejected/semantic: full original seams retained but11 new overlaps; size397004443B/gzip101347149B; correction1/1 exhausted, adopted0",
     "pack01_next": "Extra correction approved but not submitted:2400s maximum+~15min full parent acceptance cannot fit fixed02:03:03Z deadline. Extra attempt unused.",
@@ -793,12 +776,58 @@
       "http_port": 18864,
       "http_exec_session": 56804,
       "baseline_calibrated": "DPR1/2 actual100frames height drifts50.71875/52.7109375CSSpx, expected failure",
-      "full_matrix": "parent full-matrix.js prepared, not run on in-flight code",
+      "full_matrix": "Completed12cases+30cacheframes; actual four final PNGs read; accepted standalone renderer only",
       "full_data": "runtime-candidate-pack01/runtime.json,145703features140520240B; rejected PACK candidate used for renderer-only test; no PACK adoption",
       "gui_scope": "R3 returned original demo DPR1/2 static+resize+controls; full-source12matrix+30cacheframes; PNG read; bytes verification",
       "hub_sync": "source/latest/sessions/20261017-092203-95638.md exact9775B",
       "notion_sync": "home01:21:10.153Z/render01:21:09.524Z readback",
       "automation_sync": "same id/thread/ACTIVE/15min; actual approval/running prefix exact readback"
+    },
+    "render01_extra_review": "accepted/none:43tests,actual390DPR1/2stable100frames,20demo cases,12fullCanvas cases;byte-exact standalone renderer adopted",
+    "last_wave_collected_at": "2026-10-17T01:50:22.588892+00:00",
+    "accepted_components": [
+      {
+        "name": "bgt_converter",
+        "commit": "3c9bb0e15dc3d7ce3f33d96aaf2873cddf0d43d1"
+      },
+      {
+        "name": "standalone_renderer",
+        "commit": "7696e156531b1df4d7a3eed948d35567cf17003a"
+      }
+    ],
+    "render_r3_review": {
+      "completed_at": "2026-10-17T01:50:22.588892+00:00",
+      "finished_at": "2026-10-17T01:35:19.714421Z",
+      "elapsed_seconds": 892.963,
+      "cli": 0,
+      "outcome": "accepted",
+      "failure_type": "none",
+      "evidence": "docs/product-research/2026-10-17-ten-hour-map/RENDER01/r3-review/parent-review.md",
+      "evidence_sha256": "a48a391c428309beb2106fe3bdc8c73b9e746456fb3707ed6b0660ff0f505831",
+      "adopted_commit": "7696e156531b1df4d7a3eed948d35567cf17003a",
+      "game_map_adopted": 0,
+      "source_sha_pass": 10,
+      "readonly_sha_pass": 7,
+      "tool_counts": {
+        "Read": 11,
+        "Edit": 13,
+        "Bash": 5
+      },
+      "parent_tests": 43,
+      "demo_cases": 20,
+      "full_matrix_cases": 12,
+      "source_features": 145703,
+      "static100_external_height": 212.6171875,
+      "footer_delta": 0,
+      "dpr": [
+        1,
+        2
+      ],
+      "full_candidate_only": true,
+      "worker_exited": true,
+      "launcher_exited": true,
+      "session_drained": 7310,
+      "amsterdam_ledger_done": 58
     }
   },
   "capacity_observation": {
@@ -811,6 +840,6 @@
   },
   "prepared_tasks": [],
   "awaiting_parent_review": [],
-  "current_stage": "render_r3_running_pack_approved_not_submitted_deadline",
+  "current_stage": "render_r3_accepted_pack_approved_unsubmitted_deadline_nav_pending",
   "prepared": []
 }

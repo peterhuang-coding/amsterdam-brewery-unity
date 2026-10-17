@@ -1,0 +1,190 @@
+{
+  "artifact_dir": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r3-20261017",
+  "blockers": [],
+  "changed_files": [
+    {
+      "path": "geo-map-renderer.js",
+      "sha256": "80c8c0edbd40483f8bd3652aef35562a2b52d20ad951a5cb83581c8bee9ae32a"
+    },
+    {
+      "path": "renderer-demo.html",
+      "sha256": "3acd69c8939713a2fd2dd0aa7de36af255ca699c91277be6f7d7af2d93d59703"
+    },
+    {
+      "path": "test-geo-map-renderer.cjs",
+      "sha256": "0bcbedcba71299957c25b1ce44402968adfddab46522dcf9a9de27342bbf96e8"
+    }
+  ],
+  "claude": {
+    "final_subtype": "success",
+    "is_error": false,
+    "outcome": "completed",
+    "pid": 95485,
+    "returncode": 0,
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 2135360,
+      "inference_geo": "",
+      "input_tokens": 132978,
+      "iterations": [],
+      "output_tokens": 42104,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_fetch_requests": 0,
+        "web_search_requests": 0
+      },
+      "service_tier": "standard",
+      "speed": "standard"
+    }
+  },
+  "cost_basis": "client estimate; not Coding Plan charge",
+  "cost_usd": 2.785169999999999,
+  "deleted_files": [],
+  "disallowed_changes": [],
+  "elapsed_seconds": 892.963,
+  "finished_at": "2026-10-17T01:35:19.714421+00:00",
+  "input_hashes": {
+    "benchmark-geo-map-renderer.cjs": "202ab0677e09d7a4e4fcc934e31ae0b92f101b22fcff4be0bc3d30a58b8efc27",
+    "brief.md": "dbcfe1e9244f043ca6ab87b2913824ab9a09ac45e2ef3858e5f315986df1bd43",
+    "correction.md": "44d316194f7dc8b78eb6d318d4bd9d03250300cb7a73db12d53e2b73eefe8bd2",
+    "geo-interface.md": "35e5148f8f6ef04c3b379f268f7ca9faf806e7a0b17275d7717a15373fbed0af",
+    "geo-map-renderer.js": "7e60695d5e4307f819a3def38b1d67f4d904d2be2d583e11356926460056292c",
+    "parent-demo-drift.json": "8179f789dc1793ef4055437a312e06e15aa5d0e3f1d89d489f4839422054afba",
+    "real-pub-sample.json": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598",
+    "renderer-demo.html": "e56b9ac796034709dcfc9f4f6f36bfccb55ce809b342e07292b5a72d36e01f48",
+    "reopening-scene-reference.js": "d429ad5760dd8b2d23397a20070d4ebdbdf7704ee3b19ce4f349fec52582dda7",
+    "test-geo-map-renderer.cjs": "50c4629a32830a2470b8352c68582778d569b2a005fd4698fabdcd808c83c4af"
+  },
+  "memory_delta": [
+    "R2 demo drift root cause confirmed against parent-demo-drift.json: getBoundingClientRect is the border box (364 = 362 content + two 1px borders); writing its dimensions into canvas backing attributes while CSS height:auto derives the element ratio from those attributes creates per-frame accumulation (external height 214.8125 -> 274.484375 over 100 static frames at viewport 390/DPR1).",
+    "Stable pattern now encoded in exported synchronizeFrame: measure content width only, set explicit CSS height from a fixed aspect, key backing size by rounded content px * DPR, and assign canvas.width/height exclusively on key change; backing attributes then never influence layout.",
+    "resolveFrameSize now subtracts computed border+padding (ownerDocument.defaultView.getComputedStyle) to report the content box; with no CSSOM it keeps the raw rect/clientWidth behavior, so Node fakes and the frozen API surface are unaffected.",
+    "Test-helper trap recorded: rectHits mixed label records (width/height) with avatar/HUD boxes (w/h), yielding undefined compares that made every collision assertion false; rectBox normalization fixed it and the 12-case occlusion matrix now checks real geometry.",
+    "At 390/DPR1 the pinned demo content box is 362 x 210.618 CSS px (backing 362x211; border-box 364x212.618), close to the recorded stable R1 external height 212.609375; DPR2 backing is 724x421."
+  ],
+  "next_steps": [
+    "Parent independently runs the actual renderer-demo.html at viewport 390 with DPR1 and DPR2: capture external getBoundingClientRect height and backing [width,height] across 100 static frames and confirm zero accumulation from the first frame, as the old evidence grew 214.8125 -> 274.484375.",
+    "Parent verifies stability during live viewport resize (390<->320 and wide desktop), width controls (CSS 1100/390/320), camera/zoom/night/reduced-motion toggles, and DPR emulation changes, checking the backing store resizes once per real change.",
+    "Parent runs the full 145,703-feature source through the Canvas path, including the twelve full-map Lotte/pub label cases, and reads rendered images for visual readability, canals, holes and bridge decks before any adoption decision.",
+    "Game integration remains a separate, later parent decision; no game code, 1:1 reconstruction, performance or human-approval claim is made by this handoff."
+  ],
+  "observed_models": [
+    "doubao-seed-evolving"
+  ],
+  "permission_denials": [],
+  "replayed": false,
+  "report": {
+    "blockers": [],
+    "changed_files": [
+      "geo-map-renderer.js",
+      "renderer-demo.html",
+      "test-geo-map-renderer.cjs"
+    ],
+    "memory_delta": [
+      "R2 demo drift root cause confirmed against parent-demo-drift.json: getBoundingClientRect is the border box (364 = 362 content + two 1px borders); writing its dimensions into canvas backing attributes while CSS height:auto derives the element ratio from those attributes creates per-frame accumulation (external height 214.8125 -> 274.484375 over 100 static frames at viewport 390/DPR1).",
+      "Stable pattern now encoded in exported synchronizeFrame: measure content width only, set explicit CSS height from a fixed aspect, key backing size by rounded content px * DPR, and assign canvas.width/height exclusively on key change; backing attributes then never influence layout.",
+      "resolveFrameSize now subtracts computed border+padding (ownerDocument.defaultView.getComputedStyle) to report the content box; with no CSSOM it keeps the raw rect/clientWidth behavior, so Node fakes and the frozen API surface are unaffected.",
+      "Test-helper trap recorded: rectHits mixed label records (width/height) with avatar/HUD boxes (w/h), yielding undefined compares that made every collision assertion false; rectBox normalization fixed it and the 12-case occlusion matrix now checks real geometry.",
+      "At 390/DPR1 the pinned demo content box is 362 x 210.618 CSS px (backing 362x211; border-box 364x212.618), close to the recorded stable R1 external height 212.609375; DPR2 backing is 724x421."
+    ],
+    "next_steps": [
+      "Parent independently runs the actual renderer-demo.html at viewport 390 with DPR1 and DPR2: capture external getBoundingClientRect height and backing [width,height] across 100 static frames and confirm zero accumulation from the first frame, as the old evidence grew 214.8125 -> 274.484375.",
+      "Parent verifies stability during live viewport resize (390<->320 and wide desktop), width controls (CSS 1100/390/320), camera/zoom/night/reduced-motion toggles, and DPR emulation changes, checking the backing store resizes once per real change.",
+      "Parent runs the full 145,703-feature source through the Canvas path, including the twelve full-map Lotte/pub label cases, and reads rendered images for visual readability, canals, holes and bridge decks before any adoption decision.",
+      "Game integration remains a separate, later parent decision; no game code, 1:1 reconstruction, performance or human-approval claim is made by this handoff."
+    ],
+    "status": "completed",
+    "summary": "Applied the single authorized R3 correction: broke the CSS content-box/backing feedback loop and made rectangle test assertions valid, without changing geometry, the draw() API/return shape, label policy, spatial index, or bounded caches. Renderer: resolveFrameSize now returns the laid-out CONTENT box (getBoundingClientRect minus computed border and padding via ownerDocument.defaultView.getComputedStyle; raw rect/client fallback unchanged when no CSSOM exists, preserving prior behavior in Node fakes). Added exported helper AmsterdamGeoRenderer.synchronizeFrame(canvas, {requestedWidth, aspectWidth, aspectHeight, dpr}, state): reads only the laid-out content width, derives an explicit CSS height from the fixed 1100:640 aspect (so backing attributes can never feed height:auto layout), and resizes the backing store once per real content-size/DPR change keyed 'w x h @dpr'. Demo syncFrame() now uses that helper instead of feeding border-box rect.height into canvas.width/height; stable by construction at DPR1/2, on resize and on width-control changes; draw options remain content-box CSS pixels, so screen-space fonts and returned marker/click transforms are unchanged. Tests: fixed rectHits, which compared label records (width/height) against avatar/HUD boxes (w/h) via undefined dimensions and therefore returned false for every collision; it now normalizes both vocabularies, making the existing twelve full-map occlusion matrix assertions (and all 37 original intentions) real rather than vacuous. Added six focused regressions: rectHits validity with mixed records and padding; content-box border/padding exclusion; 100 repeated static frames at 390/DPR1 assigning the backing store exactly once at 362x211 with constant external border-box height (plus an in-test model of the removed R2 loop reproducing the parent-demo-drift.json accumulation class); DPR1->DPR2->DPR1 backing 362x211 / 724x421 / 362x211 with one assignment per switch; viewport 390->320 resize and 1100/390/320 control changes each resizing once then staying fixed; borders 0/1/2/3 px never entering backing dimensions. Early verification note preserved: the first final-suite run exposed two of MY hardcoded expectations (212/423) against the actual aspect rounding (362*640/1100=210.618 -> 211; DPR2 421); the test constants were corrected and the suite then passed 43/43. No source geometry, shared schema handling, polygon even-odd holes, multipolygon gaps, cache caps, or label artwork were altered. No browser, network, dependency, git or agent actions were performed; unit tests are evidence of logic only, not GUI correctness or full-source performance.",
+    "tests": [
+      {
+        "command": "node --check geo-map-renderer.js",
+        "exit_code": 0,
+        "summary": "Syntax check passed with no output."
+      },
+      {
+        "command": "node --test test-geo-map-renderer.cjs",
+        "exit_code": 0,
+        "summary": "Final run: 43/43 tests pass, 0 failures (37 original intentions retained, now with valid rectHits overlap assertions, plus 6 new content-box/backing synchronization regressions). An earlier run during development failed 2 of the new tests due to incorrect hardcoded expected heights (212/423) which were corrected to the actual rounded aspect values (211/421); that failed run is superseded by this green final run."
+      },
+      {
+        "command": "node benchmark-geo-map-renderer.cjs",
+        "exit_code": 0,
+        "summary": "20,000 synthetic features on the real 7127.775x6671.705 m world: all five printed invariants PASS (all features indexed, <=4 live cache allocations, max cache side 2048 px, street reuses 19 > builds 11 over 30 frames, direct fallback 3 frames). Raw local null-context timings printed for parent measurement only, not a performance claim."
+      },
+      {
+        "command": "node --check benchmark-geo-map-renderer.cjs",
+        "exit_code": 0,
+        "summary": "Syntax check passed with no output; benchmark file was not modified."
+      }
+    ]
+  },
+  "request_sha256": "da025a71dcafd2584317db95791b9a6b7746cd6a21c84258b49fabf97bc13bb3",
+  "requested": {
+    "allowed_tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash"
+    ],
+    "basis": "launcher-pinned request; requested, not provider-confirmed; the pinned model is a fixed convention, not a ranking result",
+    "model": "doubao-seed-evolving",
+    "permission_allow": [
+      "Read(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r3-20261017/workspace/**)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r3-20261017/workspace/geo-map-renderer.js)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r3-20261017/workspace/geo-map-renderer.js)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r3-20261017/workspace/renderer-demo.html)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r3-20261017/workspace/renderer-demo.html)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r3-20261017/workspace/test-geo-map-renderer.cjs)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r3-20261017/workspace/test-geo-map-renderer.cjs)",
+      "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r3-20261017/workspace/handoff-result.json)",
+      "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d26-geo-map-renderer-r3-20261017/workspace/handoff-result.json)",
+      "Bash(node --check geo-map-renderer.js)",
+      "Bash(node --test test-geo-map-renderer.cjs)",
+      "Bash(node benchmark-geo-map-renderer.cjs)",
+      "Bash(node --check benchmark-geo-map-renderer.cjs)"
+    ],
+    "permission_mode": "dontAsk",
+    "provider_base_url": "https://ark.cn-beijing.volces.com/api/coding",
+    "reasoning_effort": "high",
+    "thinking_enabled": true
+  },
+  "session_id": "6cbf0f7c-2554-4d19-9080-671d9cb7491e",
+  "started_at": "2026-10-17T01:20:26.791082+00:00",
+  "status": "verifying",
+  "summary": "Applied the single authorized R3 correction: broke the CSS content-box/backing feedback loop and made rectangle test assertions valid, without changing geometry, the draw() API/return shape, label policy, spatial index, or bounded caches. Renderer: resolveFrameSize now returns the laid-out CONTENT box (getBoundingClientRect minus computed border and padding via ownerDocument.defaultView.getComputedStyle; raw rect/client fallback unchanged when no CSSOM exists, preserving prior behavior in Node fakes). Added exported helper AmsterdamGeoRenderer.synchronizeFrame(canvas, {requestedWidth, aspectWidth, aspectHeight, dpr}, state): reads only the laid-out content width, derives an explicit CSS height from the fixed 1100:640 aspect (so backing attributes can never feed height:auto layout), and resizes the backing store once per real content-size/DPR change keyed 'w x h @dpr'. Demo syncFrame() now uses that helper instead of feeding border-box rect.height into canvas.width/height; stable by construction at DPR1/2, on resize and on width-control changes; draw options remain content-box CSS pixels, so screen-space fonts and returned marker/click transforms are unchanged. Tests: fixed rectHits, which compared label records (width/height) against avatar/HUD boxes (w/h) via undefined dimensions and therefore returned false for every collision; it now normalizes both vocabularies, making the existing twelve full-map occlusion matrix assertions (and all 37 original intentions) real rather than vacuous. Added six focused regressions: rectHits validity with mixed records and padding; content-box border/padding exclusion; 100 repeated static frames at 390/DPR1 assigning the backing store exactly once at 362x211 with constant external border-box height (plus an in-test model of the removed R2 loop reproducing the parent-demo-drift.json accumulation class); DPR1->DPR2->DPR1 backing 362x211 / 724x421 / 362x211 with one assignment per switch; viewport 390->320 resize and 1100/390/320 control changes each resizing once then staying fixed; borders 0/1/2/3 px never entering backing dimensions. Early verification note preserved: the first final-suite run exposed two of MY hardcoded expectations (212/423) against the actual aspect rounding (362*640/1100=210.618 -> 211; DPR2 421); the test constants were corrected and the suite then passed 43/43. No source geometry, shared schema handling, polygon even-odd holes, multipolygon gaps, cache caps, or label artwork were altered. No browser, network, dependency, git or agent actions were performed; unit tests are evidence of logic only, not GUI correctness or full-source performance.",
+  "task_id": "amsterdam-d26-geo-map-renderer-r3-20261017",
+  "telemetry": {
+    "attempt_kind": "correction",
+    "logical_task_id": "f02-real-geo-renderer-d26",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "tests": [
+    {
+      "command": "node --check geo-map-renderer.js",
+      "exit_code": 0,
+      "summary": "Syntax check passed with no output."
+    },
+    {
+      "command": "node --test test-geo-map-renderer.cjs",
+      "exit_code": 0,
+      "summary": "Final run: 43/43 tests pass, 0 failures (37 original intentions retained, now with valid rectHits overlap assertions, plus 6 new content-box/backing synchronization regressions). An earlier run during development failed 2 of the new tests due to incorrect hardcoded expected heights (212/423) which were corrected to the actual rounded aspect values (211/421); that failed run is superseded by this green final run."
+    },
+    {
+      "command": "node benchmark-geo-map-renderer.cjs",
+      "exit_code": 0,
+      "summary": "20,000 synthetic features on the real 7127.775x6671.705 m world: all five printed invariants PASS (all features indexed, <=4 live cache allocations, max cache side 2048 px, street reuses 19 > builds 11 over 30 frames, direct fallback 3 frames). Raw local null-context timings printed for parent measurement only, not a performance claim."
+    },
+    {
+      "command": "node --check benchmark-geo-map-renderer.cjs",
+      "exit_code": 0,
+      "summary": "Syntax check passed with no output; benchmark file was not modified."
+    }
+  ]
+}

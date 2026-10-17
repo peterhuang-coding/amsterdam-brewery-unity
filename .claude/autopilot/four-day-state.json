@@ -785,7 +785,21 @@
       "automation_sync": "Same amsterdam id/name/kind/thread/ACTIVE/15min/created_at preserved; review10 prefix plus prior prompt byte-exact readback verified."
     },
     "render01_extra_corrections_submitted": 1,
-    "pack01_extra_corrections_submitted": 0
+    "pack01_extra_corrections_submitted": 0,
+    "render_r3_parent_prepared": {
+      "path": "/tmp/amsterdam-d26-render-r3-parent-20261017",
+      "browser_session": "amsterdam-render-r3",
+      "browser_pid": 95719,
+      "http_port": 18864,
+      "http_exec_session": 56804,
+      "baseline_calibrated": "DPR1/2 actual100frames height drifts50.71875/52.7109375CSSpx, expected failure",
+      "full_matrix": "parent full-matrix.js prepared, not run on in-flight code",
+      "full_data": "runtime-candidate-pack01/runtime.json,145703features140520240B; rejected PACK candidate used for renderer-only test; no PACK adoption",
+      "gui_scope": "R3 returned original demo DPR1/2 static+resize+controls; full-source12matrix+30cacheframes; PNG read; bytes verification",
+      "hub_sync": "source/latest/sessions/20261017-092203-95638.md exact9775B",
+      "notion_sync": "home01:21:10.153Z/render01:21:09.524Z readback",
+      "automation_sync": "same id/thread/ACTIVE/15min; actual approval/running prefix exact readback"
+    }
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",

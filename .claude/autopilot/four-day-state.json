@@ -10,7 +10,7 @@
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
   "failure_policy_question_pending": true,
-  "final_report_sent": false,
+  "final_report_sent": true,
   "schedule": "same amsterdam heartbeat daily Beijing22 new-approval checks",
   "current_task_terminal": true,
   "failure_reason": "PACK unqualified and extra attempt cannot fit deadline; NAV extra approval pending; City/BOOT blocked",
@@ -658,7 +658,7 @@
     "source": "真人明确：那你继续啊，我给你权限无限火力干 10 小时",
     "supersedes_prior_stop_for_current_map_work": true,
     "decision": "D26",
-    "final_report_sent": false,
+    "final_report_sent": true,
     "scope": "real geography and existing playable map integration",
     "previous_map_failure_history_preserved": true,
     "new_attempt_policy": "one business attempt plus at most one targeted correction per concrete implementation package",
@@ -848,6 +848,40 @@
       "timezone": "Asia/Shanghai",
       "status": "ACTIVE",
       "updated_at": 1792202698284
+    },
+    "final_report_sent_at": "2026-10-17T02:06:42.704053+00:00",
+    "final_report_commit": "b12fbec653e277573815098e0ce7a60bf6c9306d",
+    "final_report_notion_readback": [
+      {
+        "id": "3db3285284df81038056e2dfe875e700",
+        "edited": "2026-10-17T02:05:48.615Z",
+        "exact_report_link": true,
+        "has_final_state": true,
+        "truncated": null
+      },
+      {
+        "id": "3fb3285284df813ab400f01ffb4017b1",
+        "edited": "2026-10-17T02:05:49.788Z",
+        "exact_report_link": true,
+        "has_final_state": true,
+        "truncated": null
+      },
+      {
+        "id": "3fb3285284df813c90d5f14904c6ecc8",
+        "edited": "2026-10-17T02:05:50.327Z",
+        "exact_report_link": true,
+        "has_final_state": true,
+        "truncated": null
+      }
+    ],
+    "closeout_receipt": "docs/product-research/2026-10-17-ten-hour-map/final-closeout-receipt.json",
+    "final_hub": {
+      "source": "/tmp/amsterdam-d26-final-hub.md",
+      "latest": "/Volumes/SanDisk2TB/claude-pm-hub/projects/amsterdam-brewery-unity/latest.md",
+      "session": "/Volumes/SanDisk2TB/claude-pm-hub/projects/amsterdam-brewery-unity/sessions/20261017-100642-99105.md",
+      "bytes": 8083,
+      "sha256": "07bdebd6002962821c2435ccaa677343d490ad805b34e029e62e68fdeeadaa2f",
+      "all_byte_exact": true
     }
   },
   "capacity_observation": {

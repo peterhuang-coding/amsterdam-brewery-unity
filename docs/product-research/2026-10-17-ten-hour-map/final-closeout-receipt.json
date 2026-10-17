@@ -1,0 +1,49 @@
+{
+  "report_commit": "b12fbec653e277573815098e0ce7a60bf6c9306d",
+  "report_url": "https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/b12fbec653e277573815098e0ce7a60bf6c9306d/docs/product-research/2026-10-17-ten-hour-map/final-report.md",
+  "automation": {
+    "id": "amsterdam",
+    "kind": "heartbeat",
+    "name": "Amsterdam每日审批检查",
+    "status": "ACTIVE",
+    "rrule": "FREQ=DAILY;BYHOUR=22;BYMINUTE=0;BYSECOND=0",
+    "target_thread_id": "01a08c1c-290a-7882-8165-49ccdb348fe0",
+    "created_at": 1789402026384,
+    "updated_at": 1792202698284,
+    "prompt_exact": true
+  },
+  "notion_readback": [
+    {
+      "id": "3db3285284df81038056e2dfe875e700",
+      "edited": "2026-10-17T02:05:48.615Z",
+      "exact_report_link": true,
+      "has_final_state": true,
+      "truncated": null
+    },
+    {
+      "id": "3fb3285284df813ab400f01ffb4017b1",
+      "edited": "2026-10-17T02:05:49.788Z",
+      "exact_report_link": true,
+      "has_final_state": true,
+      "truncated": null
+    },
+    {
+      "id": "3fb3285284df813c90d5f14904c6ecc8",
+      "edited": "2026-10-17T02:05:50.327Z",
+      "exact_report_link": true,
+      "has_final_state": true,
+      "truncated": null
+    }
+  ],
+  "hub_source": "/tmp/amsterdam-d26-final-hub.md",
+  "new_method_added": false,
+  "recorded_at": "2026-10-17T02:06:42.704053+00:00",
+  "hub": {
+    "source": "/tmp/amsterdam-d26-final-hub.md",
+    "latest": "/Volumes/SanDisk2TB/claude-pm-hub/projects/amsterdam-brewery-unity/latest.md",
+    "session": "/Volumes/SanDisk2TB/claude-pm-hub/projects/amsterdam-brewery-unity/sessions/20261017-100642-99105.md",
+    "bytes": 8083,
+    "sha256": "07bdebd6002962821c2435ccaa677343d490ad805b34e029e62e68fdeeadaa2f",
+    "all_byte_exact": true
+  }
+}

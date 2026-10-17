@@ -1,0 +1,200 @@
+{
+  "observed_at": "2026-10-17T02:04:28.763808+00:00",
+  "deadline": "2026-10-17T02:03:03Z",
+  "states": {
+    "done": 58
+  },
+  "not_done": [],
+  "d26_statuses": [
+    {
+      "task_id": "amsterdam-d26-bgt-import-20261017",
+      "result_status": "verifying",
+      "state": "done"
+    },
+    {
+      "task_id": "amsterdam-d26-bgt-import-r2-20261017",
+      "result_status": "verifying",
+      "state": "done"
+    },
+    {
+      "task_id": "amsterdam-d26-geo-map-renderer-20261017",
+      "result_status": "verifying",
+      "state": "done"
+    },
+    {
+      "task_id": "amsterdam-d26-geo-map-renderer-r2-20261017",
+      "result_status": "verifying",
+      "state": "done"
+    },
+    {
+      "task_id": "amsterdam-d26-geo-map-renderer-r3-20261017",
+      "result_status": "verifying",
+      "state": "done"
+    },
+    {
+      "task_id": "amsterdam-d26-geo-navigation-20261017",
+      "result_status": "verifying",
+      "state": "done"
+    },
+    {
+      "task_id": "amsterdam-d26-geo-navigation-r2-20261017",
+      "result_status": "verifying",
+      "state": "done"
+    },
+    {
+      "task_id": "amsterdam-d26-runtime-pack-20261017",
+      "result_status": "verifying",
+      "state": "done"
+    },
+    {
+      "task_id": "amsterdam-d26-runtime-pack-r2-20261017",
+      "result_status": "verifying",
+      "state": "done"
+    }
+  ],
+  "adoption_reviews": {
+    "NAV01/parent-review/adoption-review.json": {
+      "schema_version": 1,
+      "task_id": "amsterdam-d26-geo-navigation-20261017",
+      "receipt_sha256": "d56efd85ae269d49d5ef27cc4573d558cab9ba29772f4cd720740bae054b5434",
+      "reviewed_at": "2026-10-16T17:04:17Z",
+      "outcome": "rejected",
+      "failure_type": "semantic",
+      "evidence": [
+        {
+          "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/NAV01/parent-review/parent-review.md",
+          "sha256": "72c13cab8c12367888b0f99159ea552a845019ae59ef44e544d2d73cd0de693b"
+        }
+      ]
+    },
+    "NAV01/r2-review/adoption-review.json": {
+      "schema_version": 1,
+      "task_id": "amsterdam-d26-geo-navigation-r2-20261017",
+      "receipt_sha256": "8e6c9c463ac0a4964de643cdc9af522d7bf4e1d1b93a397bfa9077db51558855",
+      "reviewed_at": "2026-10-16T18:19:21Z",
+      "outcome": "rejected",
+      "failure_type": "semantic",
+      "evidence": [
+        {
+          "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/NAV01/r2-review/parent-review.md",
+          "sha256": "2babeb9580a01ecd4006ad0261fd914862ba639a20e2c3a284f5676c12f5ba1e"
+        }
+      ]
+    },
+    "GEO01/parent-review/adoption-review.json": {
+      "schema_version": 1,
+      "task_id": "amsterdam-d26-bgt-import-20261017",
+      "receipt_sha256": "bb36ff2fa55cbf2aff83304e5bffb7b618c2d55d6c96afe34270ba2e69babc02",
+      "reviewed_at": "2026-10-16T16:45:13Z",
+      "outcome": "rejected",
+      "failure_type": "semantic",
+      "evidence": [
+        {
+          "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/GEO01/parent-review/parent-review.md",
+          "sha256": "e84d6ec756797217f010c4e7f8cab80ff33dacc8dd01d2027ac64871b2c86b03"
+        }
+      ]
+    },
+    "GEO01/r2-review/adoption-review.json": {
+      "schema_version": 1,
+      "task_id": "amsterdam-d26-bgt-import-r2-20261017",
+      "receipt_sha256": "5c827017570742a30c60fb1a057b12a7e83429d766472bfce714e1ebccbdebb3",
+      "reviewed_at": "2026-10-16T17:24:32Z",
+      "outcome": "accepted_with_changes",
+      "failure_type": "other",
+      "evidence": [
+        {
+          "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/GEO01/r2-review/parent-review.md",
+          "sha256": "f113c61fbd3600b59c367f14954875f80d9517120077a5fe54fb30205fa0fde0"
+        }
+      ]
+    },
+    "RENDER01/r3-review/adoption-review.json": {
+      "schema_version": 1,
+      "task_id": "amsterdam-d26-geo-map-renderer-r3-20261017",
+      "receipt_sha256": "b78e40ef1b275eabf43b31287b2dbdd972a6b79469697528b017d07b7da5797b",
+      "reviewed_at": "2026-10-17T01:49:25Z",
+      "outcome": "accepted",
+      "failure_type": "none",
+      "evidence": [
+        {
+          "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/RENDER01/r3-review/parent-review.md",
+          "sha256": "a48a391c428309beb2106fe3bdc8c73b9e746456fb3707ed6b0660ff0f505831"
+        }
+      ]
+    },
+    "RENDER01/parent-review/adoption-review.json": {
+      "schema_version": 1,
+      "task_id": "amsterdam-d26-geo-map-renderer-20261017",
+      "receipt_sha256": "19f112ef680351aac13887caa010abdbb4398ac63b3d0429b005b604576e2488",
+      "reviewed_at": "2026-10-16T18:24:00Z",
+      "outcome": "rejected",
+      "failure_type": "semantic",
+      "evidence": [
+        {
+          "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/RENDER01/parent-review/parent-review.md",
+          "sha256": "e1170a5ad073eeaf2f0f43ac0e678dc7cb6a659cb4a4397cc810d7eb87177113"
+        }
+      ]
+    },
+    "RENDER01/r2-review/adoption-review.json": {
+      "schema_version": 1,
+      "task_id": "amsterdam-d26-geo-map-renderer-r2-20261017",
+      "receipt_sha256": "fa36360e807e416e75335ca81857e1b1563fa6763d972c9483035867d461f0ff",
+      "reviewed_at": "2026-10-16T18:59:29Z",
+      "outcome": "rejected",
+      "failure_type": "semantic",
+      "evidence": [
+        {
+          "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/RENDER01/r2-review/parent-review.md",
+          "sha256": "29354659e8c1e5d79765bdf5e51c15ccd0b4a8bc938a5e1f46513b112baac405"
+        }
+      ]
+    },
+    "PACK01/parent-review/adoption-review.json": {
+      "schema_version": 1,
+      "task_id": "amsterdam-d26-runtime-pack-20261017",
+      "receipt_sha256": "95067a6321a1aa20267108881b25842dfab394bd93807c8009b371859b2224fb",
+      "reviewed_at": "2026-10-16T17:37:23Z",
+      "outcome": "rejected",
+      "failure_type": "semantic",
+      "evidence": [
+        {
+          "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/PACK01/parent-review/parent-review.md",
+          "sha256": "404f2270808e5d9b2db27e1b8122fe68712906b3c8426d0756bcdc7316bf83a2"
+        }
+      ]
+    },
+    "PACK01/r2-review/adoption-review.json": {
+      "schema_version": 1,
+      "task_id": "amsterdam-d26-runtime-pack-r2-20261017",
+      "receipt_sha256": "46dffe88ea6fb09cd41f5c21abfa9c68afab6028acf03e6e894ed1e7a72539c3",
+      "reviewed_at": "2026-10-16T19:27:20Z",
+      "outcome": "rejected",
+      "failure_type": "semantic",
+      "evidence": [
+        {
+          "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/PACK01/r2-review/parent-review.md",
+          "sha256": "9a6304e0a1c00a2ecb3d85a6e35567407b76756c3c029225445ff27b0029b984"
+        }
+      ]
+    }
+  },
+  "pre_closeout_docs_head_remote": "c301aa9e9a359ff77d82b4ef58d44d18d33a1408",
+  "game_head_remote": "7696e156531b1df4d7a3eed948d35567cf17003a",
+  "worktrees_clean_before_closeout": true,
+  "http_entry_observation": {
+    "at": "2026-10-17T01:59:29.667540+00:00",
+    "status": 200,
+    "bytes": 7136,
+    "sha256": "c70b027d392198e1cf733e2a4bdf88564a679b21f9bdc763b478a1ab0288f3fd",
+    "proves": "entry response only, no new GUI test"
+  },
+  "last_worker_launcher_review_server_pids_absent_at_020315": [
+    95485,
+    95484,
+    95678
+  ],
+  "new_plan_calls_this_closeout": 0,
+  "game_changes_this_closeout": 0
+}

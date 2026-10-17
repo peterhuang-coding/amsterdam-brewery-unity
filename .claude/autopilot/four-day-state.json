@@ -1,6 +1,6 @@
 {
   "decision": "D26",
-  "status": "renewed_map_renderer_accepted_dependencies_blocked",
+  "status": "d26_window_closed_goal_incomplete",
   "start_at": "2026-10-12T19:48:33Z",
   "deadline": "2026-10-17T02:03:03Z",
   "next_direction_review_at": "2026-10-17T09:48:33Z",
@@ -11,13 +11,13 @@
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
   "failure_policy_question_pending": true,
   "final_report_sent": false,
-  "schedule": "existing amsterdam heartbeat every15minutes",
+  "schedule": "same amsterdam heartbeat daily Beijing22 new-approval checks",
   "current_task_terminal": true,
   "failure_reason": "PACK unqualified and extra attempt cannot fit deadline; NAV extra approval pending; City/BOOT blocked",
   "last_result_at": "2026-10-17T01:35:19.714421Z",
   "in_flight": [],
   "candidate_path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/RENDER01/r3-review",
-  "adopted_this_round": 1,
+  "adopted_this_round": 0,
   "policy_decision": "D24",
   "correction_after_r2": {
     "allowed": 1,
@@ -312,21 +312,21 @@
   "worker_pid": null,
   "last_submitted_at": "2026-10-16T18:27:03+00:00",
   "direction_review_count": 10,
-  "next_independent_observation": "Launch approved RENDER-R3 after contract push, live Notion, capacity and input hash checks; then independent actual GUI acceptance.",
+  "next_independent_observation": "Daily Beijing22 live new-approval check only; no execution without a new explicit time window.",
   "weekly_goal": {
     "decision": "D25",
     "source": "用户2026-10-14本周敲定demo再走Steam发行",
     "week_end_beijing": "2026-10-18T23:59:59+08:00",
     "candidate_target_beijing": "2026-10-16",
     "execution_deadline_unchanged": true,
-    "status": "renewed_map_waiting_actual_extra_correction_answers",
+    "status": "d26_window_closed_demo_incomplete",
     "document": "docs/product-research/2026-10-13-four-day-demo/week-demo-freeze.md",
     "scope_priority": "parent_acceptance_then_whole_natural_loop_then_top3_freeze_blockers",
     "steam_next_phase": "preparation_after_demo_direction_confirmation",
     "human_play_feedback": "map_too_simple_lacks_neighbourhood_detail_and_amsterdam_fidelity",
     "current_candidate": "dad6b38c54fda94f541764242f61820d8177bd19",
     "natural_loop_evidence": "cargo-choice-final: real first cup Marta, night duplicate pickup/drop, safe return, day2 inventory and market price; pause used for tool inspection, no human fun validation",
-    "next_priority": "Await actual scoped exception answers; dispatch only within fixed deadline and sufficient execution/acceptance time. No in-flight work.",
+    "next_priority": "Await new explicit time window and outstanding NAV exception decision; preserve approved unused PACK extra.",
     "three_day_parent_evidence": "three-day-parent: seed42001 same natural save, day1 actual6services+night1salvage/extracted/day2consequence; day2/3earlyclose; ending107cash12satisfied/won; exactrefresh; replay exactnaturalending isolatedcontexts",
     "notion_sync": "MAP01 status shelved and home R3 failure content read back; page_last_edited_at 2026-10-14T19:37:45.141Z / 19:37:45.813Z; evidence 4e235fd.",
     "full_service_parent_evidence": "full-service-parent: exact prior natural day2 restore branch; day2 all10/day3 all12 served and natural automatic settlement; pending inspector pagehide restore exact, paid10/9patiences+12; won281cash28satisfied, endingrefresh exact,390/1440 nooverflow,17 browserbytes matched; pauses/DOM assistance,no humanfun.",
@@ -834,6 +834,20 @@
       "hub_sync": "source/latest/session20261017-095300-98072.md byte-exact7068B SHA703e6328d5069b95fd22e99f7e8de8fac25bfa3a1e88ed5416555f8f0fe8622a; existing continuous-frame method updated.",
       "automation_sync": "Same amsterdam/id/kind/name/thread/created_at/ACTIVE/15min preserved; accepted-result prefix readback exact.",
       "cleanup": "browser amsterdam-render-r3 closed; HTTP18864/PID95678 exact args verified thenSIGTERM; session56804returned143; old18860 untouched."
+    },
+    "window_status": "expired",
+    "closed_at": "2026-10-17T02:04:28.763808+00:00",
+    "final_report_path": "docs/product-research/2026-10-17-ten-hour-map/final-report.md",
+    "final_report_prepared_at": "2026-10-17T02:04:28.763808+00:00",
+    "closeout_new_plan_calls": 0,
+    "closeout_game_changes": 0,
+    "automation_restored": {
+      "id": "amsterdam",
+      "thread": "01a08c1c-290a-7882-8165-49ccdb348fe0",
+      "rrule": "FREQ=DAILY;BYHOUR=22;BYMINUTE=0;BYSECOND=0",
+      "timezone": "Asia/Shanghai",
+      "status": "ACTIVE",
+      "updated_at": 1792202698284
     }
   },
   "capacity_observation": {
@@ -847,5 +861,6 @@
   "prepared_tasks": [],
   "awaiting_parent_review": [],
   "current_stage": "render_r3_accepted_pack_approved_unsubmitted_deadline_nav_pending",
-  "prepared": []
+  "prepared": [],
+  "stage": "deadline_closed_no_inflight_await_new_window"
 }

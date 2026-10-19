@@ -1,0 +1,11 @@
+# BGT geometry packing and legacy JSON loader
+
+This standalone tool retains source vertices and every feature/property/ring while simplifying within0.05m. Unsafe neighbour changes fall back to complete original features. It does not change the active game map or implement compact browser loading.
+
+The12 implementation/test/fixture files were copied byte-for-byte from Coding Plan amsterdam-d26-runtime-pack-r3-20261017. Original CLI1/error_max_turns and permission/command deviations remain recorded. A complete on-disk report was independently recovered and validated; the parent passed61Python tests,23Node tests and full-map geometry/coverage verification. The standard execution review is partial because the original receipt is blocked, while these artifacts are independently qualified and adopted. It must not be described as a successful CLI run.
+
+Full source:145703features,22977546vertices. Candidate:18720785vertices,431675816JSON bytes,110683722gzip bytes. All843220original bbox-neighbour pairs passed independent coverage audit, including mixed point/line contacts. No newly added intersection area above1e-8m2; contact tolerance1e-7m.2693original invalid features remain whole; comparison-only GEOS make_valid does not modify source. Maximum independent Hausdorff distance0.049999999999272404m. Full artifacts stay in external geodata storage, not this small test fixture.
+
+From this directory, run Python with Shapely2 installed: `python -m unittest -v test_pack_geo.py`; generate the sample with `python pack_geo.py --input sample-input.json --json sample-runtime.json --gzip sample-runtime.json.gz --audit runtime-audit.json --tolerance 0.05`; then `node --check geo-loader.js` and `node --test test-geo-loader.cjs`. Node tests need loopback HTTP permission. Generated audit timestamps can change; source implementations and supplied fixtures are pinned in parent evidence.
+
+JSON/gzip packaging alone does not solve browser memory or responsiveness. The separately commissioned compact runtime uses the accepted complete unsimplified converter source. Existing old preview18860 is unchanged. Official source is Kadaster/PDOK BGT,CC0; coverage is only the declared bbox and four collections, not the whole city or building facades.

@@ -10,7 +10,7 @@
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
   "failure_policy_question_pending": true,
-  "final_report_sent": false,
+  "final_report_sent": true,
   "schedule": "same amsterdam heartbeat daily Beijing22 new-approval checks",
   "current_task_terminal": true,
   "failure_reason": "MEMORY attempts exhausted and extra answer absent; loading unqualified, City/BOOT integration incomplete; fixed D27 window expired",
@@ -681,10 +681,10 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-19T22:59:16.257214+00:00",
+  "updated_at": "2026-10-19T23:06:17.590004+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
-  "last_checked_at": "2026-10-19T22:59:16.257214+00:00",
+  "last_checked_at": "2026-10-19T23:06:17.590004+00:00",
   "prior_four_day_window": {
     "start_at": "2026-10-12T19:48:33Z",
     "deadline": "2026-10-16T19:48:33Z",
@@ -797,7 +797,7 @@
     ],
     "full_goal_complete": false,
     "window_status": "expired",
-    "final_report_sent": false,
+    "final_report_sent": true,
     "plan_dispatch_count": 6,
     "prior_plan_dispatch_count": 9,
     "accepted_component_count": 3,
@@ -988,13 +988,46 @@
     "closeout_new_plan_calls": 0,
     "closeout_game_changes": 0,
     "next_execution_requires": "new explicit human execution window/scope and MEMORY extra attempt approval; original attempt counts retained",
-    "automation_restore_pending": true,
+    "automation_restore_pending": false,
     "old_play_availability": {
       "status": "http404_index_missing",
       "server_pid": 91799,
       "server_untouched": true,
       "source_in_git": true,
       "cause": "unknown"
+    },
+    "final_report_sent_at": "2026-10-19T23:06:17.590004+00:00",
+    "final_report_commit": "4a30c98b78e55a8fb5d3648dc8ff10229c3e1099",
+    "final_report_notification_automation_id": "amsterdam",
+    "automation_restored": {
+      "id": "amsterdam",
+      "thread": "01a08c1c-290a-7882-8165-49ccdb348fe0",
+      "status": "ACTIVE",
+      "rrule": "FREQ=DAILY;BYHOUR=22;BYMINUTE=0;BYSECOND=0",
+      "timezone": "Asia/Shanghai",
+      "same_id_and_thread": true,
+      "config_readback_verified": true
+    },
+    "closeout_sync": "docs/product-research/2026-10-20-six-hour-map/final-sync.json",
+    "hub_wrapup_session": "/Volumes/SanDisk2TB/claude-pm-hub/projects/amsterdam-brewery-unity/sessions/20261020-070539-50150.md",
+    "notion_closeout_readbacks": {
+      "home": {
+        "id": "3db3285284df81038056e2dfe875e700",
+        "edited_at": "2026-10-19T23:04:05.758Z",
+        "final_link_and_preview404_verified": true
+      },
+      "memory": {
+        "id": "3fe3285284df81e5ac3ff4bdaaf46be4",
+        "edited_at": "2026-10-19T23:04:19.380Z",
+        "state": "暂缓",
+        "extra_approval_pending": true
+      },
+      "city": {
+        "id": "3fe3285284df817faf94c847e59bf7f9",
+        "edited_at": "2026-10-19T23:04:22.184Z",
+        "state": "待验收",
+        "qualified_candidate_not_adopted": true
+      }
     }
   },
   "capacity_observation": {

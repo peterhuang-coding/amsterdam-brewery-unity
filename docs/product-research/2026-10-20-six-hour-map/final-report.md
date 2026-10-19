@@ -36,3 +36,5 @@ BOOT未派。仍需合格加载后原子接入City及scene/UI/index，按[接口
 约19:15Z已只问一次[同一MEMORY逻辑额外1800秒/50轮恢复](MEMORY01/transport-recovery-proposal.md)，截至收口没有真人答复，未获批准、未创建handoff或输入、未派发。沉默不计批准，窗口到期不重置任何次数。此问题的后续答复也不会延长已结束窗口；恢复实际开发须新的明确执行窗口及具体范围，并明确解决MEMORY额外机会。
 
 同一amsterdam及原thread恢复每日北京时间22点新审批检查；无新审批、真实交付/失败或必要决定时静默，最终汇总只通知一次。完整目标保持未完成，未获demo认可不迁移正式引擎、Steam发布、收费或签约。本轮无新增方法，沿用已有入口/闭环与无损加载验收方法。
+
+收口同步已完成：最终报告提交4a30c98b78e55a8fb5d3648dc8ff10229c3e1099已push并核对；同一amsterdam/原thread已恢复ACTIVE每日北京22点，配置读回一致。Notion主页23:04:05.758Z、MEMORY暂缓23:04:19.380Z、CITY候选待整合23:04:22.184Z均读回。Hub latest/session20261020-070539-50150.md与9132B源摘要逐字节一致；本轮无新增方法。renewal.final_report_sent=true用于本心跳唯一最终通知，之后无变化静默。精确同步证据见docs/product-research/2026-10-20-six-hour-map/final-sync.json。原尝试次数保持，新增Plan0、游戏修改0。

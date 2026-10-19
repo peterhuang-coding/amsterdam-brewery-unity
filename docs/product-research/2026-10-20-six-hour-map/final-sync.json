@@ -1,0 +1,44 @@
+{
+  "verified_at": "2026-10-19T23:06:17.590004+00:00",
+  "report_commit_pushed_and_remote_verified": "4a30c98b78e55a8fb5d3648dc8ff10229c3e1099",
+  "automation": {
+    "id": "amsterdam",
+    "thread": "01a08c1c-290a-7882-8165-49ccdb348fe0",
+    "status": "ACTIVE",
+    "rrule": "FREQ=DAILY;BYHOUR=22;BYMINUTE=0;BYSECOND=0",
+    "timezone": "Asia/Shanghai",
+    "same_id_and_thread": true,
+    "config_readback_verified": true
+  },
+  "notion_readbacks": {
+    "home": {
+      "id": "3db3285284df81038056e2dfe875e700",
+      "edited_at": "2026-10-19T23:04:05.758Z",
+      "final_link_and_preview404_verified": true
+    },
+    "memory": {
+      "id": "3fe3285284df81e5ac3ff4bdaaf46be4",
+      "edited_at": "2026-10-19T23:04:19.380Z",
+      "state": "暂缓",
+      "extra_approval_pending": true
+    },
+    "city": {
+      "id": "3fe3285284df817faf94c847e59bf7f9",
+      "edited_at": "2026-10-19T23:04:22.184Z",
+      "state": "待验收",
+      "qualified_candidate_not_adopted": true
+    }
+  },
+  "hub": {
+    "latest": "/Volumes/SanDisk2TB/claude-pm-hub/projects/amsterdam-brewery-unity/latest.md",
+    "session": "/Volumes/SanDisk2TB/claude-pm-hub/projects/amsterdam-brewery-unity/sessions/20261020-070539-50150.md",
+    "bytes": 9132,
+    "sha256": "068244eec4c7f92c2e92a42f0dd24ba75dcf723423c936f1655d9a5c34ad70cf",
+    "byte_equality_verified": true
+  },
+  "new_methods": 0,
+  "new_plan_calls": 0,
+  "new_game_changes": 0,
+  "original_attempts_unchanged": true,
+  "final_notification": "one closeout notification in this heartbeat; suppress subsequent unchanged polls"
+}

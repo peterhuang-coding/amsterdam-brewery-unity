@@ -1,0 +1,91 @@
+{
+  "features": 145703,
+  "bbox_neighbor_pairs": 843220,
+  "shared_seam_pairs": 284123,
+  "layer_pairs": {
+    "bridges/roads": 3196,
+    "bridges/water": 1172,
+    "bridges/bridges": 185,
+    "bridges/buildings": 165,
+    "buildings/roads": 66165,
+    "buildings/buildings": 66747,
+    "buildings/water": 750,
+    "roads/roads": 139053,
+    "roads/water": 4930,
+    "water/water": 1760
+  },
+  "verification_buffer_metres": 1e-07,
+  "max_uncovered_seam_length_m": 0,
+  "lost_shared_seams": [],
+  "new_overlaps_on_shared_seams": [
+    {
+      "a": "overbruggingsdeel:01fb2f2a-93c1-537c-93e9-1932201c226b",
+      "b": "wegdeel:3e24167b-a6f2-5883-b05a-b5958285850a",
+      "old_area": 0.0,
+      "new_area": 0.00078901898066185
+    },
+    {
+      "a": "overbruggingsdeel:44911f0c-fd66-5a5a-8ae3-9208461a0e88",
+      "b": "wegdeel:8e13608e-eb7e-5707-b65f-a8d6cb2b68f3",
+      "old_area": 0.0,
+      "new_area": 0.0013479999987695557
+    },
+    {
+      "a": "overbruggingsdeel:453cbce5-a9d2-5d36-809a-b0e0a9e2814e",
+      "b": "wegdeel:bd2ceac9-9f18-51f4-8d4d-7041d2f95207",
+      "old_area": 0.0,
+      "new_area": 6.082335229157036e-05
+    },
+    {
+      "a": "overbruggingsdeel:4b8eafdb-72ed-52e4-930c-39503ec1218c",
+      "b": "wegdeel:96700a24-a7ae-54a6-9e24-139b50a01a34",
+      "old_area": 0.0,
+      "new_area": 0.00011519507199453383
+    },
+    {
+      "a": "overbruggingsdeel:717bc13b-3ff9-525f-8826-65a3bb207842",
+      "b": "wegdeel:ae4c32a3-fb55-5bc9-a119-248f2708a75e",
+      "old_area": 0.0,
+      "new_area": 9.64353292785033e-06
+    },
+    {
+      "a": "overbruggingsdeel:99ab94c7-b47d-574d-bc08-59df7a939575",
+      "b": "wegdeel:dcac47d8-817b-59e7-82c4-9e5a45a6c026",
+      "old_area": 0.0,
+      "new_area": 0.00011774244317712365
+    },
+    {
+      "a": "overbruggingsdeel:c21fb9a2-6a2f-58c8-a51b-397fb5be7ce4",
+      "b": "wegdeel:cca4d1ed-47f0-5a9f-9beb-8c978c716120",
+      "old_area": 0.0,
+      "new_area": 0.000205349320296061
+    },
+    {
+      "a": "overbruggingsdeel:c2f197e1-5596-5b12-b403-d0ba9c462952",
+      "b": "wegdeel:c0e8eb95-f81c-5a4a-9d05-b3833d684c4f",
+      "old_area": 0.0,
+      "new_area": 0.0008913975619090075
+    },
+    {
+      "a": "overbruggingsdeel:fe6d3861-e80f-5d49-a4cd-596af4ddbac2",
+      "b": "wegdeel:6fb69820-e961-5097-92f9-633e6a5abf4d",
+      "old_area": 0.0,
+      "new_area": 0.0005136569983848812
+    },
+    {
+      "a": "pand:f7c378af-c08e-5a46-8150-3b717af405d7",
+      "b": "wegdeel:fb6383a2-3bf1-57ac-b99c-b12735c281e9",
+      "old_area": 0.0,
+      "new_area": 0.00018675422111462438
+    },
+    {
+      "a": "wegdeel:29f38e0b-a07d-55a5-8795-da3e88905989",
+      "b": "wegdeel:d4ae019d-8211-50ac-bfc9-6dab17283f74",
+      "old_area": 0.0,
+      "new_area": 0.0008398721695581202
+    }
+  ],
+  "source_geos_exceptions": [],
+  "output_geos_exceptions": [],
+  "seconds": 187.64337370893918
+}

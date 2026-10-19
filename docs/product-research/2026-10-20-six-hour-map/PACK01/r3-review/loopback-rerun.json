@@ -1,0 +1,6 @@
+{
+  "command": "node --test test-geo-loader.cjs",
+  "exit_code": 0,
+  "elapsed_seconds": 0.282091292,
+  "reason": "sandbox EPERM loopback environment rerun"
+}

@@ -1,0 +1,70 @@
+{
+  "files": [
+    {
+      "path": "anchors.json",
+      "bytes": 2278,
+      "sha256": "9d44eb50693fb0684bca4383d2b29637765abdd1f44a9deb9d19451e2d80680d"
+    },
+    {
+      "path": "brief.md",
+      "bytes": 10261,
+      "sha256": "934a5da2edf80a703591195e3d1c19137b99de0bc209e3d19d468bfbcac74e09"
+    },
+    {
+      "path": "tools/geo/navigation/benchmark-geo-navigation.cjs",
+      "bytes": 22604,
+      "sha256": "87aec3ed8809d4680eb26a82059b78921d1846e05fc14019c31af37781a6220c"
+    },
+    {
+      "path": "tools/geo/navigation/geo-navigation.js",
+      "bytes": 53286,
+      "sha256": "6d073522e6f3135b72bebd14db1292dad87115369868b67618646518ffbf80d2"
+    },
+    {
+      "path": "tools/geo/navigation/parent-capsule-repro.json",
+      "bytes": 3580,
+      "sha256": "3fef09c729baacfe8c0401faa0d66d4ec1dc2e6390237d1c3c246ba01f251fa0"
+    },
+    {
+      "path": "tools/geo/navigation/parent-r2-witness.json",
+      "bytes": 408,
+      "sha256": "5b84f717e08bd34a825e8ed84129f6bde10058a0338b4c91799afe2cc3175d66"
+    },
+    {
+      "path": "tools/geo/navigation/real-pub-sample.json",
+      "bytes": 237043,
+      "sha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598"
+    },
+    {
+      "path": "tools/geo/navigation/test-geo-navigation.cjs",
+      "bytes": 47355,
+      "sha256": "10c7739a3f24c1b9a47739f4d0c5d722d3ececd02b5c10ab50e63f58470a245b"
+    },
+    {
+      "path": "tools/geo/renderer/benchmark-geo-map-renderer.cjs",
+      "bytes": 8797,
+      "sha256": "202ab0677e09d7a4e4fcc934e31ae0b92f101b22fcff4be0bc3d30a58b8efc27"
+    },
+    {
+      "path": "tools/geo/renderer/geo-map-renderer.js",
+      "bytes": 59883,
+      "sha256": "80c8c0edbd40483f8bd3652aef35562a2b52d20ad951a5cb83581c8bee9ae32a"
+    },
+    {
+      "path": "tools/geo/renderer/real-pub-sample.json",
+      "bytes": 237043,
+      "sha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598"
+    },
+    {
+      "path": "tools/geo/renderer/renderer-demo.html",
+      "bytes": 9223,
+      "sha256": "3acd69c8939713a2fd2dd0aa7de36af255ca699c91277be6f7d7af2d93d59703"
+    },
+    {
+      "path": "tools/geo/renderer/test-geo-map-renderer.cjs",
+      "bytes": 55341,
+      "sha256": "0bcbedcba71299957c25b1ce44402968adfddab46522dcf9a9de27342bbf96e8"
+    }
+  ],
+  "total_bytes": 747102
+}

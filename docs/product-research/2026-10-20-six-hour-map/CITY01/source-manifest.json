@@ -1,0 +1,80 @@
+{
+  "files": [
+    {
+      "path": "anchors.json",
+      "bytes": 2278,
+      "sha256": "9d44eb50693fb0684bca4383d2b29637765abdd1f44a9deb9d19451e2d80680d"
+    },
+    {
+      "path": "brief.md",
+      "bytes": 7243,
+      "sha256": "d63098cd01ce9e995d60f77443602c98bd6314e334a8c5c9b688b37dd32f43aa"
+    },
+    {
+      "path": "tools/geo/navigation/geo-navigation.js",
+      "bytes": 53286,
+      "sha256": "6d073522e6f3135b72bebd14db1292dad87115369868b67618646518ffbf80d2"
+    },
+    {
+      "path": "tools/geo/navigation/real-pub-sample.json",
+      "bytes": 237043,
+      "sha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598"
+    },
+    {
+      "path": "tools/prototype/backstage-auto.js",
+      "bytes": 27715,
+      "sha256": "569f7dab7e49afb0ec56870cef1d412fff3ef0f53399bbf2738d370fca919681"
+    },
+    {
+      "path": "tools/prototype/backstage-core.js",
+      "bytes": 40144,
+      "sha256": "335baa752efedabf5771436c23fb5370a40af5aef4b89cdd1793351906219d07"
+    },
+    {
+      "path": "tools/prototype/character-stories.js",
+      "bytes": 10704,
+      "sha256": "3db456b04852929656867925bd35bc73dbe0b6349159708922acab22db1a53bb"
+    },
+    {
+      "path": "tools/prototype/delivery-orders.js",
+      "bytes": 8657,
+      "sha256": "62e46bb83f5f8d97a2e7bc0d856484ef978efd2566236ee53304ea5167d3e496"
+    },
+    {
+      "path": "tools/prototype/flower-network.js",
+      "bytes": 2665,
+      "sha256": "e6febfd844da0107ca9079251ddbb4fd81e30cc5979f696bdba8f3b493027f80"
+    },
+    {
+      "path": "tools/prototype/journey-core.js",
+      "bytes": 28721,
+      "sha256": "1424adad30c587fda0aa49e101336061dd0e0a35587d0c0c998feb804948c963"
+    },
+    {
+      "path": "tools/prototype/reopening-city.js",
+      "bytes": 15809,
+      "sha256": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625"
+    },
+    {
+      "path": "tools/prototype/reopening-core.js",
+      "bytes": 70285,
+      "sha256": "4c31d8a72fe9fd9736e7db57999efd31efb29a2c3b1458e8f96bec5559633c3b"
+    },
+    {
+      "path": "tools/prototype/test-city-bike.js",
+      "bytes": 12575,
+      "sha256": "1987a2f2e47f1b2dff16b5f23a818af30bae6890a0ffae54ffbfc163b1a8176e"
+    },
+    {
+      "path": "tools/prototype/test-city.js",
+      "bytes": 12891,
+      "sha256": "fea0a17524f790b75206d4a51741113439bbea8216d16c04ed5164b5659c4b13"
+    },
+    {
+      "path": "tools/prototype/test-flower-network.js",
+      "bytes": 4595,
+      "sha256": "0677b479be857edd8fb636f2483efadb7ed36ec5c6f5d87c370d127ba4a9e118"
+    }
+  ],
+  "total_bytes": 534611
+}

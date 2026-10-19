@@ -156,3 +156,48 @@ are fast. Parent measures cached and uncached latency separately. City and BOOT
 must use this service through a frozen interface rather than call the long sync
 search directly. Freeze the precise package/file split only after the first wave
 has been collected; no new request has been submitted by this note.
+
+## Draft concrete async boundary (not yet dispatched)
+
+Use one shared compact geometry representation on the main thread. Cooperative
+factories and search avoid retaining a second whole map in a Worker. Refactor
+the existing route traversal only enough to expose resumable work; keep the
+existing synchronous API as a drain of the same logic and compare identical
+results in tests. Pure geometric predicates stay unchanged. NAV point/segment
+caches gain explicit bounded capacities and disposal; counters report evictions.
+Any node-budget or time-budget exhaustion stays distinguishable from unreachable.
+
+Runtime return value additionally exposes `navigator`, `renderer`, and
+`routes.route(from, to, {mode, radius, signal, onProgress}) -> Promise<RouteResult>`.
+RouteResult retains `{found, reason, points, length, visited, startSnap, endSnap}`.
+Returned endpoints are exact caller coordinates; no implicit snapping. The
+route service first uses exact verified common-route graph edges tied to the
+same geometry SHA, with bounded, individually safe endpoint connectors. It then
+falls back to cancellable cooperative navigation. Named-venue queries on the
+precomputed graph must be fast; uncached latency is measured separately.
+
+A deterministic offline CLI builds common routes from the accepted navigation
+module, current geometry and fixed named anchors. Include pub/lotte, southern
+venues/cart/garden, ferrySouth and lab. FerryNorth is not connected by invented
+walk edges: City composes the explicit F3 boat transition. Report every missing
+route and the actual source/hash, length, node budget and generation time.
+Parent must independently validate every stored walking segment against the
+full qualified geometry before publishing this asset. No precomputed route may
+be copied across geometry hashes without regeneration and checking.
+
+Compact chunks may use Int32 millimetres only when every decoded ordinate is
+exactly equal to its input JavaScript number; otherwise use lossless Float64.
+The loader must enforce offset/count/type/checksum bounds before exposing lazy
+array-compatible rings. No retained per-point object cache or full JSON copy.
+The full metadata and geometry remain available; format changes cannot erase
+features, IDs, properties, rings, holes, attribution, source or projection.
+
+City is configured with `City.configure(data, {navigator, routes})`. Movement and
+collision use the accepted synchronous predicates on short segments. New
+`City.routeAsync(from,to,options)` wraps the Promise route service and adds only
+explicit boat-leg metadata when needed. `City.route` must never synchronously
+run an unbounded city search; any retained compatibility surface must be explicit
+about readiness. BOOT awaits routeAsync, suppresses stale results when targets
+change, shows progress/cancel without freezing input, and cancels on restart or
+dispose. Real ferry state belongs to the saved city position, not an ephemeral
+Promise or a path line painted across water.

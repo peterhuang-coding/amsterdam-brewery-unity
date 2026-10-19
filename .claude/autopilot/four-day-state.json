@@ -1,6 +1,6 @@
 {
   "decision": "D27",
-  "status": "d27_pack_running_nav_adopted",
+  "status": "d27_wave1_collected_pack_artifact_review",
   "start_at": "2026-10-19T16:52:30Z",
   "deadline": "2026-10-19T22:52:30Z",
   "next_direction_review_at": "2026-10-17T09:48:33Z",
@@ -15,23 +15,7 @@
   "current_task_terminal": false,
   "failure_reason": null,
   "last_result_at": "2026-10-17T01:35:19.714421Z",
-  "in_flight": [
-    {
-      "task_id": "amsterdam-d26-runtime-pack-r3-20261017",
-      "kind": "PACK01",
-      "state": "running",
-      "worker_pid": 20932,
-      "launcher_pid": 20921,
-      "session_id": 72978,
-      "started_at": "2026-10-19T16:58:18+00:00",
-      "elapsed": "01:33",
-      "actual_pid_verified": true,
-      "model": "doubao-seed-evolving",
-      "thinking_enabled": true,
-      "effort": "high",
-      "contract_commit": "5ee85bfe544d9e90b2cc48e7a49ae5346027990e"
-    }
-  ],
+  "in_flight": [],
   "candidate_path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/RENDER01/r3-review",
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -657,7 +641,7 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-19T17:31:00Z",
+  "updated_at": "2026-10-19T17:43:29.989603+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
   "last_checked_at": "2026-10-17T00:00:06.789975+00:00",
@@ -689,7 +673,8 @@
       "PACK01": {
         "allowed": 1,
         "submitted": 1,
-        "task_id": "amsterdam-d26-runtime-pack-r3-20261017"
+        "task_id": "amsterdam-d26-runtime-pack-r3-20261017",
+        "remaining": 0
       },
       "RENDER01": {
         "allowed": 1,
@@ -702,7 +687,7 @@
       {
         "task_id": "amsterdam-d26-runtime-pack-r3-20261017",
         "kind": "PACK01",
-        "state": "running",
+        "state": "done",
         "worker_pid": 20932,
         "launcher_pid": 20921,
         "session_id": 72978,
@@ -712,7 +697,18 @@
         "model": "doubao-seed-evolving",
         "thinking_enabled": true,
         "effort": "high",
-        "contract_commit": "5ee85bfe544d9e90b2cc48e7a49ae5346027990e"
+        "contract_commit": "5ee85bfe544d9e90b2cc48e7a49ae5346027990e",
+        "finished_at": "2026-10-19T17:36:46.262920Z",
+        "cli_returncode": 1,
+        "elapsed_seconds": 2308.218,
+        "worker_exited": true,
+        "launcher_exited": true,
+        "session_drained": true,
+        "launcher_status": "blocked",
+        "final_subtype": "error_max_turns",
+        "recovered_report_valid": true,
+        "parent_outcome": "pending_full_review",
+        "adopted": false
       },
       {
         "task_id": "amsterdam-d26-geo-navigation-r3-20261017",
@@ -759,7 +755,9 @@
     "game_adopted": 0,
     "prepared_packets": {
       "amsterdam-d26-runtime-pack-r3-20261017": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/PACK01/handoff.json",
-      "amsterdam-d26-geo-navigation-r3-20261017": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/NAV01/handoff.json"
+      "amsterdam-d26-geo-navigation-r3-20261017": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/NAV01/handoff.json",
+      "amsterdam-d27-compact-runtime-20261020": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/MEMORY01/handoff.json",
+      "amsterdam-d27-real-city-20261020": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/CITY01/handoff.json"
     },
     "prior_final_report": "docs/product-research/2026-10-17-ten-hour-map/final-report.md"
   },
@@ -772,10 +770,12 @@
     "actual_process_overlap_not_claimed": true
   },
   "prepared_tasks": [],
-  "awaiting_parent_review": [],
+  "awaiting_parent_review": [
+    "amsterdam-d26-runtime-pack-r3-20261017"
+  ],
   "current_stage": "pack_r3_running_nav_r3_adopted",
   "prepared": [],
-  "stage": "first_wave_collecting",
+  "stage": "wave2_prepared",
   "renewal_history": [
     {
       "started_at": "2026-10-16T16:03:03Z",

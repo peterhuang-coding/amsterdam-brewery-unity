@@ -1,0 +1,99 @@
+{
+  "dataPath": "/Volumes/SanDisk2TB/amsterdam-geodata/d26-bgt-20261017/converted/geo-data.json",
+  "target": "lab",
+  "maxNodes": 250000,
+  "featureCount": 145703,
+  "readMs": 3332.018709,
+  "indexMs": 935.0100000000002,
+  "anchors": {
+    "pub": {
+      "walk": true,
+      "bike": true
+    },
+    "market": {
+      "walk": true,
+      "bike": true
+    },
+    "coffee": {
+      "walk": true,
+      "bike": false
+    },
+    "flowers": {
+      "walk": true,
+      "bike": true
+    },
+    "lab": {
+      "walk": true,
+      "bike": true
+    },
+    "lotte": {
+      "walk": true,
+      "bike": true
+    },
+    "ferrySouth": {
+      "walk": true,
+      "bike": false
+    },
+    "ferryNorth": {
+      "walk": true,
+      "bike": false
+    },
+    "flowerCart": {
+      "walk": true,
+      "bike": false
+    },
+    "garden": {
+      "walk": true,
+      "bike": true
+    }
+  },
+  "basis": "Full supplied data and unchanged reviewed anchor coordinates; source/packed provenance is explicit in dataPath. Not a game playthrough.",
+  "state": "complete",
+  "routeMs": 380802.229459,
+  "route": {
+    "found": false,
+    "reason": "limit",
+    "points": [],
+    "length": 0,
+    "visited": 250001,
+    "startSnap": null,
+    "endSnap": null
+  },
+  "stats": {
+    "options": {
+      "cellSize": 2,
+      "maxNodes": 250000,
+      "bucketSize": 64,
+      "radius": 0.4
+    },
+    "features": {
+      "water": 1805,
+      "buildings": 71463,
+      "roads": 70085,
+      "bridges": 2350,
+      "bridgeDeckFeatures": 697,
+      "ignoredNonDeckBridgeParts": 1653,
+      "polygonsIndexed": 147289
+    },
+    "buckets": 12017,
+    "globalPolygons": 46,
+    "passabilityCacheEntries": 381461,
+    "cacheHits": 3156015,
+    "cacheMisses": 381461,
+    "segmentChecks": 2916144,
+    "segmentCacheEntries": 771545,
+    "segmentCacheHits": 2144599,
+    "searches": 1,
+    "snaps": 0,
+    "lastVisited": 250001,
+    "totalExpanded": 250001,
+    "lastReason": "limit"
+  },
+  "memory": {
+    "rss": 896385024,
+    "heapTotal": 2718760960,
+    "heapUsed": 2648605560,
+    "external": 1482570,
+    "arrayBuffers": 10475
+  }
+}

@@ -1,3 +1,9 @@
+# D27 first wave collected; recovered PACK artifact under independent review
+
+NAV adopted in5f3d594; PACK originalCLI1/error_max_turns terminal, but complete on-disk report passes schema. Launcher status and failed history remain immutable; full parent packing/coverage review is ongoing, noPACK adoption. Initial missing-report announcement corrected in PACK01/r3-review/terminal-and-recovered-report.md. No CC is in flight at preparation time. D27 actualPlan2,newadoption1,cumulativecomponents3,game-map0.
+
+MEMORY01 andCITY01 contracts are prepared against accepted UNSIMPLIFIED GEO source plus accepted NAV/renderer, with disjoint writes and frozen async routes interface. No rejected or unreviewed simplified candidate is a prerequisite. MEMORY3000s90turns andCITY2400s70turns, business1+atmost1correction; source files747102B/534611B. Actual dispatch follows contractpush,Notion execution state and globalcapacity verification. Fixed cutoff22:52:30Z and old18860 remain unchanged.
+
 # D27导航额外修正已采用，数据仍在途
 
 固定截止UTC2026-10-19T22:52:30Z不变。NAV-R3正常CLI0/899.077秒/38轮；父级43测试/4命令、GEOS3000、60平移旋转、7分类通过。完整原始源145703地物酒馆→咖啡馆3118.969343米/72段独立GEOS通过，最小净空0.400835米；寻路124.6秒和无界缓存是后续加载/接入必须解决的性能限制，不称全路线已过或游戏可玩。

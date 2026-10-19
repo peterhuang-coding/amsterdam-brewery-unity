@@ -1,0 +1,9 @@
+{
+  "schema_error": null,
+  "status": "completed",
+  "report_sha256": "22e6bfc7ca24b2b175702e5454567a4027857de50d6dee246c1210074ba4c1fc",
+  "declared_commands": 4,
+  "all_reported_zero": true,
+  "launcher_status": "blocked/error_max_turns; preserved without mutation",
+  "adopted": false
+}

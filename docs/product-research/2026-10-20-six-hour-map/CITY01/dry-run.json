@@ -1,0 +1,75 @@
+{
+  "allowed_tools": [
+    "Read",
+    "Write",
+    "Edit",
+    "Bash"
+  ],
+  "commands": [
+    "node --check tools/prototype/geo-world.js",
+    "node --check tools/prototype/reopening-city.js",
+    "node --check tools/prototype/flower-network.js",
+    "node --test tools/prototype/test-geo-city.cjs",
+    "node --test tools/prototype/test-geo-flower-network.cjs"
+  ],
+  "max_turns": 70,
+  "model": "doubao-seed-evolving",
+  "permission_allow": [
+    "Read(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/**)",
+    "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/tools/prototype/geo-world.js)",
+    "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/tools/prototype/geo-world.js)",
+    "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/tools/prototype/reopening-city.js)",
+    "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/tools/prototype/reopening-city.js)",
+    "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/tools/prototype/flower-network.js)",
+    "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/tools/prototype/flower-network.js)",
+    "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/tools/prototype/test-geo-city.cjs)",
+    "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/tools/prototype/test-geo-city.cjs)",
+    "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/tools/prototype/test-geo-flower-network.cjs)",
+    "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/tools/prototype/test-geo-flower-network.cjs)",
+    "Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/handoff-result.json)",
+    "Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/handoff-result.json)",
+    "Bash(node --check tools/prototype/geo-world.js)",
+    "Bash(node --check tools/prototype/reopening-city.js)",
+    "Bash(node --check tools/prototype/flower-network.js)",
+    "Bash(node --test tools/prototype/test-geo-city.cjs)",
+    "Bash(node --test tools/prototype/test-geo-flower-network.cjs)"
+  ],
+  "permission_mode": "dontAsk",
+  "profile_basis": "launcher-pinned request; requested, not provider-confirmed; the pinned model is a fixed convention, not a ranking result",
+  "provider_base_url": "https://ark.cn-beijing.volces.com/api/coding",
+  "read_files": [
+    "anchors.json",
+    "brief.md",
+    "tools/geo/navigation/geo-navigation.js",
+    "tools/geo/navigation/real-pub-sample.json",
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/character-stories.js",
+    "tools/prototype/delivery-orders.js",
+    "tools/prototype/flower-network.js",
+    "tools/prototype/journey-core.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/reopening-core.js",
+    "tools/prototype/test-city-bike.js",
+    "tools/prototype/test-city.js",
+    "tools/prototype/test-flower-network.js"
+  ],
+  "reasoning_effort": "high",
+  "status": "dry_run",
+  "task_id": "amsterdam-d27-real-city-20261020",
+  "telemetry": {
+    "attempt_kind": "business",
+    "logical_task_id": "f02-real-city-d27",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "thinking_enabled": true,
+  "timeout_seconds": 2400,
+  "write_files": [
+    "tools/prototype/geo-world.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/flower-network.js",
+    "tools/prototype/test-geo-city.cjs",
+    "tools/prototype/test-geo-flower-network.cjs"
+  ]
+}

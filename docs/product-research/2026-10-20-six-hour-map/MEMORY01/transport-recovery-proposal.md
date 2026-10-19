@@ -1,0 +1,11 @@
+# MEMORY01 one bounded transport recovery — proposal, not dispatched
+
+Requires a new human exception to the D27 instruction “新任务沿用原限次，旧任务次数不清零”. Business1 and ordinarycorrection1 remain consumed. The correction ended at1043.485seconds/40turns due to actual “Request timed out”, before its3000second/90turn caps; its partial outputs currently fail actual HTTP loading and are not adopted. Full evidence: r2-review/parent-review.md and command logs.
+
+Proposed fixed attempt amsterdam-d27-compact-runtime-r3-20261020, same logical f02-compact-runtime-d27. Exactly one extra attempt, maximum1800seconds/50turns, Seed Evolving thinking enabled/high. The interrupted correction plus this recovery are bounded below its original3000seconds/90turns; this is nevertheless recorded as an additional attempt, never a reset or an invisible continuation. D27deadline2026-10-19T22:52:30Z remains fixed, maximumtwo actualCCs, currentwave must first be collected. No contract/handoff/input/ledger or new process has been created for this proposed ID.
+
+Reuse exact partialoutputs. Scope: finish per-chunk lossless format and async hash/assembly wiring; fix the three already-provided route-service regressions; complete the original missing runtimeNode tests/demo/README and legalreport. Preserve original geometry, metadata, anchors, accepted predicates and originalreadonlytest intentions. NAV/renderer extensions are supplied readonly; no game/City/UI writes, no new capability or full rewrite.
+
+Acceptance remains the original13exactcommands plus independent full145703feature IEEE754/property/ring identity, deterministic artifacts, actual raw-gzip and Content-Encoding HTTP, abort/retry/dispose, full-browser heap+backing<768MiB and load/indexgap<250ms, hash-bound safe common routes and cache latency. Parent does not repair failed production code. If this soleextra fails, preserve it and stop this logical task; no automatic fourth attempt or model/ID substitution.
+
+Only public necessary files, each≤256KiB,total≤2MiB; no chat, Hub or credentials. After actual human approval: prepare/freeze smallest original-scope contract, push, updateNotionexecuting/readback, verifycapacity and sourceSHA, then dispatch within remaining fixedwindow. Silence/preselection/heartbeat does not approve.

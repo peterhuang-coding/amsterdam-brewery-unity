@@ -1,0 +1,15 @@
+TypeError: computedSha.slice is not a function
+    at Object.load (/private/tmp/amsterdam-d27-memory-r2-parent-20261020/tools/geo/runtime/geo-runtime.js:1133:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async /private/tmp/amsterdam-d27-memory-r2-parent-20261020/parent-runtime-roundtrip.cjs:51:22
+/private/tmp/amsterdam-d27-memory-r2-parent-20261020/tools/geo/runtime/geo-runtime.js:518
+    for (var ci = 0; ci < chunkBuffers.length; ci++) {
+                                       ^
+
+TypeError: Cannot read properties of undefined (reading 'length')
+    at computeGeometrySha (/private/tmp/amsterdam-d27-memory-r2-parent-20261020/tools/geo/runtime/geo-runtime.js:518:40)
+    at Object.load (/private/tmp/amsterdam-d27-memory-r2-parent-20261020/tools/geo/runtime/geo-runtime.js:1130:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async /private/tmp/amsterdam-d27-memory-r2-parent-20261020/parent-runtime-roundtrip.cjs:51:22
+
+Node.js v22.22.1

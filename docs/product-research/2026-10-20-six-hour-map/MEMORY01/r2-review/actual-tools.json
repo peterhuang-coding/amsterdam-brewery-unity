@@ -1,0 +1,292 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/brief.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/original-brief.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/pack-runtime.py"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/test_runtime.py"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/geo-runtime.js"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/parent-runtime-roundtrip.cjs"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/parent-runtime-routes.cjs"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/navigation/geo-navigation.js"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/precompute-routes.cjs"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/renderer/geo-map-renderer.js"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "ls -la /Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/ /Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/sample-out/",
+      "description": "List runtime directory contents"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/anchors.json"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "/tmp/amsterdam-d26-geo-tools-venv/bin/python tools/geo/runtime/test_runtime.py",
+      "description": "Run runtime packer Python tests"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node parent-runtime-roundtrip.cjs .",
+      "description": "Run parent signed-zero roundtrip regression"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node parent-runtime-routes.cjs .",
+      "description": "Run parent cached-route service regression"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node parent-runtime-roundtrip.cjs . multichunk",
+      "description": "Run parent multichunk concurrency regression"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "cat > /tmp/d27-debug.cjs <<'EOF'\n'use strict';\nconst path=require('path');\nconst runtime=require(path.join(process.cwd(),'tools/geo/runtime/geo-runtime.js'));\nconst calls=[];\nconst nav={segmentWalkable:()=>true,routeAsync:async(a,b)=>{\n calls.push([a,b]);const length=Math.hypot(a.x-b.x,a.y-b.y);\n return length<=5?{found:true,reason:'ok',points:[{...a},{...b}],length,visited:1,startSnap:null,endSnap:null}:\n  {found:false,reason:'limit',points:[],length:0,visited:1,startSnap:null,endSnap:null};\n}};\nconst doc={format:'amsterdam-geo-routes/v1',geometrySha256:'a'.repeat(64),radius:.4,\n anchors:{a:{x:0,y:0},b:{x:100,y:0}},edges:[{from:'a',to:'b',\n  walk:{found:true,reason:'ok',points:[{x:0,y:0},{x:100,y:0}],length:100,visited:1,segmentsVerified:true},\n  bike:{found:false,reason:'unreachable',points:[],length:0,visited:0}}]};\nconst service=runtime._internals.makeRoutesService(doc,nav,{routeEdgesDropped:0});\nconsole.log('verification', service.verification);\n(async()=>{\n const r=await service.route({x:1,y:0},{x:99,y:0},{radius:.4});\n console.log(JSON.stringify(r));\n console.log('nav calls',JSON.stringify(calls));\n})();\nEOF\nnode /tmp/d27-debug.cjs",
+      "description": "Debug arbitrary-endpoint connector behavior"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/sample-out/manifest.json"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/navigation/parent-capsule-repro.json"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/navigation/parent-r2-witness.json"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/sample-routes.json",
+      "limit": 80
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "grep -n \"cacheStats\\|stats()\\|createNavigatorAsync\\|createAsync\\|segmentWalkable\\|routeAsync\" tools/geo/navigation/benchmark-geo-navigation.cjs tools/geo/renderer/benchmark-geo-map-renderer.cjs | head -40",
+      "description": "Check benchmark API usage"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/pack-runtime.py",
+      "old_string": "Coordinate encoding (global, recorded in the manifest):\n  * \"int32-millimetres\" little-endian signed Int32 per ordinate, used ONLY\n    when every ordinate v satisfies round(v*1000)/1000 == v and fits; decoded\n    metres are then bit-identical to the source number.\n  * otherwise \"float64-le\": the original IEEE-754 doubles, little-endian.\n\nCoordinates are stored interleaved (x0,y0,x1,y1,...), feature by feature, in",
+      "new_string": "Coordinate encoding (selected PER CHUNK, recorded both on every chunk and,\nwhen uniform, in the manifest):\n  * \"int32-millimetres\" little-endian signed Int32 per ordinate, used for a\n    chunk only when every ordinate v of every feature in it satisfies\n    round(v*1000)/1000 == v, fits in Int32 AND is not a negative zero; decoded\n    metres are then bit-identical to the source number. A signed -0.0 ordinate\n    can never survive the Int32 path (0 decodes as +0.0, flipping the IEEE-754\n    sign bit), so a chunk holding such an ordinate uses Float64.\n  * \"float64-le\": the original IEEE-754 doubles, little-endian.\n  * manifest.coordEncoding is the encoding name when every chunk agrees, and\n    the literal \"per-chunk\" otherwise; each chunk record then carries its own\n    \"coordEncoding\" and \"ordinateBytes\" (4 or 8). The full real source has\n    exactly two -0.0 ordinates, so at most one chunk needs Float64 and the\n    global coordinate footprint stays within ~1 MiB of the Int32 size instead\n    of growing by ~175 MiB for a global Float64 fallback.\n\nCoordinates are stored interleaved (x0,y0,x1,y1,...), feature by feature, in"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/pack-runtime.py",
+      "old_string": "  coordEncoding/endianness/interleaved/ordinateBytes\n  pairCount/featureCount/layerCounts\n  chunks[]                     index, file names, feature/pair offsets and\n                               counts, uncompressed/compressed byte lengths,\n                               sha256 of the uncompressed payloads",
+      "new_string": "  coordEncoding                uniform encoding name, or \"per-chunk\"\n  endianness/interleaved\n  ordinateBytes                4 or 8 when uniform, null for \"per-chunk\"\n  pairCount/featureCount/layerCounts\n  chunks[]                     index, file names, per-chunk coordEncoding and\n                               ordinateBytes, feature/pair offsets and\n                               counts, uncompressed/compressed byte lengths,\n                               sha256 of the uncompressed payloads"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/pack-runtime.py",
+      "old_string": "def _point(p, where):\n    if not isinstance(p, (list, tuple)) or len(p) < 2:\n        raise PackError(where + \": coordinate must be an [x, y] pair\")\n    x, y = p[0], p[1]\n    if not _is_finite_number(x) or not _is_finite_number(y):\n        raise PackError(where + \": coordinate must hold two finite numbers\")\n    return float(x), float(y)",
+      "new_string": "def _point(p, where):\n    if not isinstance(p, (list, tuple)) or len(p) < 2:\n        raise PackError(where + \": coordinate must be an [x, y] pair\")\n    x, y = p[0], p[1]\n    if not _is_finite_number(x) or not _is_finite_number(y):\n        raise PackError(where + \": coordinate must hold two finite numbers\")\n    return float(x), float(y)\n\n\ndef _is_negative_zero(v):\n    # IEEE-754 sign-bit test; True only for -0.0, never for +0.0.\n    return v == 0.0 and math.copysign(1.0, v) < 0.0"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/pack-runtime.py",
+      "old_string": "    group = []  # per polygon list of ring vertex counts\n    pair_count = 0\n    for pi, polygon in enumerate(polygons):\n        if not isinstance(polygon, list) or not polygon:\n            raise PackError(where + \" polygon[\" + str(pi) + \"]: empty/missing ring list\")\n        ring_counts = []\n        for ri, ring in enumerate(polygon):\n            rwhere = where + \" polygon[\" + str(pi) + \"] ring[\" + str(ri) + \"]\"\n            if not isinstance(ring, list) or len(ring) < 4:\n                raise PackError(rwhere + \": ring must be a closed list of at least 4 points\")\n            first = ring[0]\n            last = ring[-1]\n            if not isinstance(first, (list, tuple)) or not isinstance(last, (list, tuple)) or \\\n                    len(first) < 2 or len(last) < 2 or \\\n                    first[0] != last[0] or first[1] != last[1]:\n                raise PackError(rwhere + \": ring must close with the exact first point repeated\")\n            distinct = set()\n            for ci, coord in enumerate(ring):\n                x, y = _point(coord, rwhere + \" point[\" + str(ci) + \"]\")\n                distinct.add((x, y))",
+      "new_string": "    group = []  # per polygon list of ring vertex counts\n    pair_count = 0\n    mm_safe = True  # every ordinate survives the Int32 millimetre path\n    for pi, polygon in enumerate(polygons):\n        if not isinstance(polygon, list) or not polygon:\n            raise PackError(where + \" polygon[\" + str(pi) + \"]: empty/missing ring list\")\n        ring_counts = []\n        for ri, ring in enumerate(polygon):\n            rwhere = where + \" polygon[\" + str(pi) + \"] ring[\" + str(ri) + \"]\"\n            if not isinstance(ring, list) or len(ring) < 4:\n                raise PackError(rwhere + \": ring must be a closed list of at least 4 points\")\n            first = ring[0]\n            last = ring[-1]\n            if not isinstance(first, (list, tuple)) or not isinstance(last, (list, tuple)) or \\\n                    len(first) < 2 or len(last) < 2 or \\\n                    first[0] != last[0] or first[1] != last[1]:\n                raise PackError(rwhere + \": ring must close with the exact first point repeated\")\n            distinct = set()\n            for ci, coord in enumerate(ring):\n                x, y = _point(coord, rwhere + \" point[\" + str(ci) + \"]\")\n                # Computed in this existing per-coordinate pass; a negative\n                # zero forces the holding chunk onto Float64 so its sign bit\n                # can never be silently normalized to +0.0.\n                if mm_safe and (not _mm_exact(x, y) or\n                                _is_negative_zero(x) or _is_negative_zero(y)):\n                    mm_safe = False\n                distinct.add((x, y))"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/pack-runtime.py",
+      "old_string": "    return {\n        \"layer\": layer_name,\n        \"l\": LAYER_CODES[layer_name],\n        \"id\": fid,\n        \"s\": feature.get(\"sourceId\"),\n        \"u\": feature.get(\"localId\"),\n        \"p\": props,\n        \"g\": group,\n        \"b\": bounds,\n        \"polygons\": polygons,\n        \"pairCount\": pair_count,\n    }",
+      "new_string": "    return {\n        \"layer\": layer_name,\n        \"l\": LAYER_CODES[layer_name],\n        \"id\": fid,\n        \"s\": feature.get(\"sourceId\"),\n        \"u\": feature.get(\"localId\"),\n        \"p\": props,\n        \"g\": group,\n        \"b\": bounds,\n        \"polygons\": polygons,\n        \"pairCount\": pair_count,\n        \"mmSafe\": mm_safe,\n    }"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/pack-runtime.py",
+      "old_string": "    # Choose the global encoding and compute the encoding-independent\n    # geometry hash (canonical Float64-LE of every ordinate, flatten order).\n    all_mm = True\n    geom = hashlib.sha256()\n    pair_total = 0\n    doubles = array.array(\"d\")\n    for x, y in _iter_pairs(features):\n        if all_mm and not _mm_exact(x, y):\n            all_mm = False\n        doubles.append(x)\n        doubles.append(y)\n        pair_total += 1\n        if len(doubles) >= 65536:\n            if sys.byteorder != \"little\":\n                doubles.byteswap()\n            geom.update(doubles.tobytes())\n            del doubles[:]\n    if doubles:\n        if sys.byteorder != \"little\":\n            doubles.byteswap()\n        geom.update(doubles.tobytes())\n        del doubles[:]\n    encoding = \"int32-millimetres\" if all_mm else \"float64-le\"\n    ordinate_bytes = 4 if all_mm else 8",
+      "new_string": "    # Global millimetre eligibility (the chunk walk below makes the actual\n    # per-chunk decision) and the encoding-independent geometry hash:\n    # canonical Float64-LE of every ordinate, flatten order, preserving every\n    # IEEE-754 bit including signed zeros.\n    all_mm = all(f[\"mmSafe\"] for f in features)\n    geom = hashlib.sha256()\n    pair_total = 0\n    doubles = array.array(\"d\")\n    for x, y in _iter_pairs(features):\n        doubles.append(x)\n        doubles.append(y)\n        pair_total += 1\n        if len(doubles) >= 65536:\n            if sys.byteorder != \"little\":\n                doubles.byteswap()\n            geom.update(doubles.tobytes())\n            del doubles[:]\n    if doubles:\n        if sys.byteorder != \"little\":\n            doubles.byteswap()\n        geom.update(doubles.tobytes())\n        del doubles[:]"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/pack-runtime.py",
+      "old_string": "    while i < len(features):\n        members = []\n        coord = array.array(\"i\") if all_mm else array.array(\"d\")\n        bytes_used = 0\n        while i < len(features):\n            f = features[i]\n            add = f[\"pairCount\"] * 2 * ordinate_bytes\n            if members and bytes_used + add > chunk_bytes:\n                break\n            members.append(f)\n            bytes_used += add\n            for x, y in _iter_pairs([f]):\n                if all_mm:\n                    coord.append(int(round(x * 1000.0)))\n                    coord.append(int(round(y * 1000.0)))\n                else:\n                    coord.append(x)\n                    coord.append(y)\n        i += 1\n\n        if sys.byteorder != \"little\":\n            coord.byteswap()\n        coord_payload = coord.tobytes()\n        if len(coord_payload) != bytes_used:\n            raise PackError(\"internal: encoded coordinate byte length mismatch\")",
+      "new_string": "    while i < len(features):\n        members = []\n        # Greedy per-chunk encoding: the chunk stays Int32 only while every\n        # member feature is millimetre-safe; one non-safe feature switches\n        # this chunk to Float64. The byte projection below uses the encoding\n        # the chunk would have after admitting the candidate feature, so the\n        # target bound is respected under either width.\n        chunk_mm = True\n        chunk_pairs = 0\n\n        def projected_bytes(candidate_mm, extra_pairs):\n            ob = 4 if (chunk_mm and candidate_mm) else 8\n            return (chunk_pairs + extra_pairs) * 2 * ob\n\n        while i < len(features):\n            f = features[i]\n            if members and projected_bytes(f[\"mmSafe\"], f[\"pairCount\"]) > chunk_bytes:\n                break\n            members.append(f)\n            chunk_pairs += f[\"pairCount\"]\n            chunk_mm = chunk_mm and f[\"mmSafe\"]\n            i += 1\n\n        chunk_ordinate_bytes = 4 if chunk_mm else 8\n        chunk_encoding = \"int32-millimetres\" if chunk_mm else \"float64-le\"\n        coord = array.array(\"i\") if chunk_mm else array.array(\"d\")\n        for mf in members:\n            for x, y in _iter_pairs([mf]):\n                if chunk_mm:\n                    coord.append(int(round(x * 1000.0)))\n                    coord.append(int(round(y * 1000.0)))\n                else:\n                    coord.append(x)\n                    coord.append(y)\n\n        if sys.byteorder != \"little\":\n            coord.byteswap()\n        coord_payload = coord.tobytes()\n        bytes_used = chunk_pairs * 2 * chunk_ordinate_bytes\n        if len(coord_payload) != bytes_used:\n            raise PackError(\"internal: encoded coordinate byte length mismatch\")"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/pack-runtime.py",
+      "offset": 315,
+      "limit": 100
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/pack-runtime.py",
+      "old_string": "    while i < len(features):\n        members = []\n        coord = array.array(\"i\") if all_mm else array.array(\"d\")\n        bytes_used = 0\n        while i < len(features):\n            f = features[i]\n            add = f[\"pairCount\"] * 2 * ordinate_bytes\n            if members and bytes_used + add > chunk_bytes:\n                break\n            members.append(f)\n            bytes_used += add\n            for x, y in _iter_pairs([f]):\n                if all_mm:\n                    coord.append(int(round(x * 1000.0)))\n                    coord.append(int(round(y * 1000.0)))\n                else:\n                    coord.append(x)\n                    coord.append(y)\n            i += 1\n\n        if sys.byteorder != \"little\":\n            coord.byteswap()\n        coord_payload = coord.tobytes()\n        if len(coord_payload) != bytes_used:\n            raise PackError(\"internal: encoded coordinate byte length mismatch\")",
+      "new_string": "    while i < len(features):\n        members = []\n        # Greedy per-chunk encoding: the chunk stays Int32 only while every\n        # member feature is millimetre-safe; one non-safe feature switches\n        # this chunk to Float64. The byte projection uses the width the chunk\n        # would have after admitting the candidate, so the target bound is\n        # respected under either encoding.\n        chunk_mm = True\n        chunk_pairs = 0\n\n        while i < len(features):\n            f = features[i]\n            candidate_mm = chunk_mm and f[\"mmSafe\"]\n            candidate_ob = 4 if candidate_mm else 8\n            projected = (chunk_pairs + f[\"pairCount\"]) * 2 * candidate_ob\n            if members and projected > chunk_bytes:\n                break\n            members.append(f)\n            chunk_pairs += f[\"pairCount\"]\n            chunk_mm = candidate_mm\n            i += 1\n\n        chunk_ordinate_bytes = 4 if chunk_mm else 8\n        chunk_encoding = \"int32-millimetres\" if chunk_mm else \"float64-le\"\n        coord = array.array(\"i\") if chunk_mm else array.array(\"d\")\n        for mf in members:\n            for x, y in _iter_pairs([mf]):\n                if chunk_mm:\n                    coord.append(int(round(x * 1000.0)))\n                    coord.append(int(round(y * 1000.0)))\n                else:\n                    coord.append(x)\n                    coord.append(y)\n\n        if sys.byteorder != \"little\":\n            coord.byteswap()\n        coord_payload = coord.tobytes()\n        bytes_used = chunk_pairs * 2 * chunk_ordinate_bytes\n        if len(coord_payload) != bytes_used:\n            raise PackError(\"internal: encoded coordinate byte length mismatch\")"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/pack-runtime.py",
+      "old_string": "        rec = {\n            \"index\": chunk_index,\n            \"metadata\": meta_name,\n            \"coords\": coord_name,\n            \"features\": len(members),\n            \"firstFeatureLayer\": members[0][\"layer\"],\n            \"pairOffset\": pair_cursor,\n            \"pairCount\": sum(m[\"pairCount\"] for m in members),\n            \"coordBytes\": len(coord_payload),",
+      "new_string": "        rec = {\n            \"index\": chunk_index,\n            \"metadata\": meta_name,\n            \"coords\": coord_name,\n            \"features\": len(members),\n            \"firstFeatureLayer\": members[0][\"layer\"],\n            \"pairOffset\": pair_cursor,\n            \"pairCount\": sum(m[\"pairCount\"] for m in members),\n            \"coordEncoding\": chunk_encoding,\n            \"ordinateBytes\": chunk_ordinate_bytes,\n            \"coordBytes\": len(coord_payload),"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/pack-runtime.py",
+      "old_string": "    if pair_cursor != pair_total:\n        raise PackError(\"internal: chunked pair total mismatch\")\n\n    manifest = {\n        \"format\": MANIFEST_FORMAT,\n        \"data\": metadata,\n        \"schemaVersion\": 1,\n        \"geometrySha256\": geom.hexdigest(),\n        \"sourceSha256\": source_sha,\n        \"sourceBytes\": len(raw),\n        \"coordEncoding\": encoding,\n        \"endianness\": \"little\",\n        \"interleaved\": True,\n        \"ordinateBytes\": ordinate_bytes,",
+      "new_string": "    if pair_cursor != pair_total:\n        raise PackError(\"internal: chunked pair total mismatch\")\n\n    # Uniform encoding name when every chunk agrees, \"per-chunk\" otherwise;\n    # ordinateBytes is the shared width when uniform, null when per-chunk.\n    chunk_encodings = {c[\"coordEncoding\"] for c in chunks}\n    if len(chunk_encodings) == 1:\n        manifest_encoding = next(iter(chunk_encodings))\n        manifest_ordinate_bytes = 4 if manifest_encoding == \"int32-millimetres\" else 8\n    else:\n        manifest_encoding = \"per-chunk\"\n        manifest_ordinate_bytes = None\n\n    manifest = {\n        \"format\": MANIFEST_FORMAT,\n        \"data\": metadata,\n        \"schemaVersion\": 1,\n        \"geometrySha256\": geom.hexdigest(),\n        \"sourceSha256\": source_sha,\n        \"sourceBytes\": len(raw),\n        \"coordEncoding\": manifest_encoding,\n        \"endianness\": \"little\",\n        \"interleaved\": True,\n        \"ordinateBytes\": manifest_ordinate_bytes,"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/test_runtime.py",
+      "old_string": "    def test_main_returns_nonzero_on_bad_input(self):",
+      "new_string": "        # Chunk payload honours the target except for a single feature that\n        # alone exceeds it (features are never split across chunks).\n\n    def test_signed_zero_ordinates_force_per_chunk_float64(self):\n        # The full real source has exactly two -0.0 ordinates. Int32\n        # millimetres decode 0 as +0.0 and would flip the IEEE-754 sign bit,\n        # so a chunk carrying a negative zero must store raw Float64 bytes\n        # while unrelated chunks stay compact Int32.\n        ring0 = [[-0.0, 0.0], [10.0, 0.0], [10.0, 10.0], [0.0, 10.0], [-0.0, 0.0]]\n        signed = {\n            \"id\": \"wegdeel:signed-zero\", \"sourceId\": \"synthetic\", \"localId\": None,\n            \"properties\": {\"functie\": \"voetpad\"},\n            \"polygons\": [[ring0]], \"bounds\": [-0.0, 0.0, 10.0, 10.0],\n        }\n        other = rect_feature(\"wegdeel\", 1, 100.0, 0.0, 110.0, 10.0)\n        doc = make_doc({\"roads\": [signed, other]})\n        _, out, manifest = self._pack(doc, chunk_bytes=80)\n        self.assertEqual(manifest[\"coordEncoding\"], \"per-chunk\")\n        self.assertIsNone(manifest[\"ordinateBytes\"])\n        c0, c1 = manifest[\"chunks\"]\n        self.assertEqual(c0[\"coordEncoding\"], \"float64-le\")\n        self.assertEqual(c0[\"ordinateBytes\"], 8)\n        self.assertEqual(c1[\"coordEncoding\"], \"int32-millimetres\")\n        self.assertEqual(c1[\"ordinateBytes\"], 4)\n        # The canonical geometry hash is computed from the SOURCE Float64\n        # ordinates (sign bit included), not from decoded values.\n        self.assertEqual(manifest[\"geometrySha256\"], canonical_geometry_sha(doc))\n        # IEEE-754 byte identity of every ordinate in the Float64 chunk,\n        # including the two negative-zero x ordinates.\n        coord0 = read_gz(os.path.join(out, c0[\"coords\"]))\n        got = struct.unpack(\"<%dd\" % (len(coord0) // 8), coord0)\n        expected = list(iter_ordinates(doc))[:len(got)]\n        self.assertEqual(len(got), 10)\n        for gi, ev in zip(got, expected):\n            self.assertEqual(struct.pack(\"<d\", gi), struct.pack(\"<d\", ev))\n        neg_zero = 0x8000000000000000\n        self.assertEqual(struct.unpack(\"<Q\", struct.pack(\"<d\", got[0]))[0], neg_zero)\n        self.assertEqual(struct.unpack(\"<Q\", struct.pack(\"<d\", got[8]))[0], neg_zero)\n        # The interior x=0 ordinate stays a positive zero.\n        self.assertEqual(struct.unpack(\"<Q\", struct.pack(\"<d\", got[6]))[0], 0)\n        # The neighbouring millimetre-exact chunk is still compact Int32.\n        coord1 = read_gz(os.path.join(out, c1[\"coords\"]))\n        ints1 = struct.unpack(\"<%di\" % (len(coord1) // 4), coord1)\n        self.assertEqual(ints1[0] / 1000.0, 100.0)\n\n    def test_single_oversized_feature_is_never_split(self):\n        # A long thin road (402 vertices) cannot fit an 512-byte Int32 chunk;\n        # it occupies one larger chunk and round-trips without omission.\n        pts = [(float(i), 0.0) for i in range(200)]\n        pts += [(199.0, 1.0)] + [(float(i), 1.0) for i in range(198, -1, -1)]\n        ring1 = pts + [pts[0]]\n        big = {\n            \"id\": \"wegdeel:long\", \"sourceId\": \"synthetic\", \"localId\": None,\n            \"properties\": {}, \"polygons\": [[ring1]],\n            \"bounds\": [0.0, 0.0, 199.0, 1.0],\n        }\n        doc = make_doc({\"roads\": [big]})\n        _, out, manifest = self._pack(doc, chunk_bytes=512)\n        self.assertEqual(len(manifest[\"chunks\"]), 1)\n        chunk = manifest[\"chunks\"][0]\n        self.assertEqual(chunk[\"features\"], 1)\n        self.assertGreater(chunk[\"coordBytes\"], 512)\n        self.assertEqual(chunk[\"pairCount\"], len(ring1))\n        coord = read_gz(os.path.join(out, chunk[\"coords\"]))\n        ints = struct.unpack(\"<%di\" % (len(coord) // 4), coord)\n        self.assertEqual(ints[0] / 1000.0, 0.0)\n        self.assertEqual(ints[2 * 200] / 1000.0, 199.0)\n        self.assertEqual(ints[-2] / 1000.0, 0.0)\n        self.assertEqual(manifest[\"geometrySha256\"], canonical_geometry_sha(doc))\n\n    def test_main_returns_nonzero_on_bad_input(self):"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "/tmp/amsterdam-d26-geo-tools-venv/bin/python tools/geo/runtime/test_runtime.py",
+      "description": "Run runtime packer Python tests"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "old_string": "    if (m.coordEncoding !== 'int32-millimetres' && m.coordEncoding !== 'float64-le') {\n      throw FormatError('unsupported coordEncoding: ' + m.coordEncoding);\n    }\n    if (m.endianness !== 'little' || m.interleaved !== true) {\n      throw FormatError('runtime expects little-endian interleaved coordinates');\n    }\n    var ob = m.coordEncoding === 'int32-millimetres' ? 4 : 8;\n    if (m.ordinateBytes !== ob) throw FormatError('ordinateBytes/encoding mismatch');",
+      "new_string": "    if (m.coordEncoding !== 'int32-millimetres' && m.coordEncoding !== 'float64-le' &&\n        m.coordEncoding !== 'per-chunk') {\n      throw FormatError('unsupported coordEncoding: ' + m.coordEncoding);\n    }\n    if (m.endianness !== 'little' || m.interleaved !== true) {\n      throw FormatError('runtime expects little-endian interleaved coordinates');\n    }\n    var uniform = m.coordEncoding !== 'per-chunk';\n    var ob = uniform ? (m.coordEncoding === 'int32-millimetres' ? 4 : 8) : null;\n    if (uniform && m.ordinateBytes !== ob) {\n      throw FormatError('ordinateBytes/encoding mismatch');\n    }\n    if (!uniform && m.ordinateBytes != null) {\n      throw FormatError('ordinateBytes must be null when coordEncoding is per-chunk');\n    }"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "old_string": "      if (!isInt(ch.pairOffset) || ch.pairOffset !== pairs) {\n        throw FormatError('chunks[' + ci + '].pairOffset discontinuity');\n      }\n      if (!isInt(ch.coordBytes) || ch.coordBytes !== ch.pairCount * 2 * ob) {\n        throw FormatError('chunks[' + ci + '].coordBytes/count mismatch');\n      }",
+      "new_string": "      if (!isInt(ch.pairOffset) || ch.pairOffset !== pairs) {\n        throw FormatError('chunks[' + ci + '].pairOffset discontinuity');\n      }\n      // Per-chunk encoding: explicit on every chunk; must agree with the\n      // uniform manifest encoding when one is declared.\n      var chunkOb;\n      if (uniform) {\n        if (ch.coordEncoding != null && ch.coordEncoding !== m.coordEncoding) {\n          throw FormatError('chunks[' + ci + '].coordEncoding disagrees with manifest');\n        }\n        chunkOb = ob;\n      } else {\n        if (ch.coordEncoding !== 'int32-millimetres' && ch.coordEncoding !== 'float64-le') {\n          throw FormatError('chunks[' + ci + '].coordEncoding missing or unsupported');\n        }\n        chunkOb = ch.coordEncoding === 'int32-millimetres' ? 4 : 8;\n        if (!isInt(ch.ordinateBytes) || ch.ordinateBytes !== chunkOb) {\n          throw FormatError('chunks[' + ci + '].ordinateBytes/encoding mismatch');\n        }\n      }\n      ch._ordinateBytes = chunkOb;\n      if (!isInt(ch.coordBytes) || ch.coordBytes !== ch.pairCount * 2 * chunkOb) {\n        throw FormatError('chunks[' + ci + '].coordBytes/count mismatch');\n      }"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "old_string": "  function makeRingView(coordBuffer, encoding, basePair, vertexCount) {\n    var intView = encoding === 'int32-millimetres' ? coordBuffer.ints : null;\n    var dblView = encoding === 'float64-le' ? coordBuffer.doubles : null;\n    function pairAt(within, target) {\n      var j = (basePair + within) * 2;\n      var x, y;\n      if (intView) { x = intView[j] / 1000; y = intView[j + 1] / 1000; }\n      else { x = dblView[j]; y = dblView[j + 1]; }\n      target[0] = x; target[1] = y;\n      return target;\n    }\n    var target = new Array(vertexCount);\n    return new Proxy(target, {\n      get: function (t, prop, receiver) {\n        if (typeof prop === 'string') {\n          var idx = +prop;\n          if (Number.isInteger(idx) && idx >= 0 && idx < vertexCount) {\n            return pairAt(idx, [0, 0]);\n          }\n        }\n        return Reflect.get(t, prop, receiver);\n      }\n    });\n  }\n\n  function assembleData(manifest, chunkRecords) {\n    var encoding = manifest.coordEncoding;\n    var layers = { water: [], buildings: [], roads: [], bridges: [] };\n    var featureIndex = 0, cursor = 0;\n    for (var ci = 0; ci < chunkRecords.length; ci++) {\n      var doc = chunkRecords[ci];\n      if (doc.format !== METADATA_FORMAT) throw FormatError('bad metadata format in chunk ' + ci);\n      if (doc.chunk !== ci) throw FormatError('metadata chunk index mismatch ' + ci);\n      if (!isInt(doc.pairOffset) || doc.pairOffset !== manifest.chunks[ci].pairOffset) {\n        throw FormatError('metadata pairOffset disagrees with manifest for chunk ' + ci);\n      }\n      var recs = doc.features;\n      if (!Array.isArray(recs) || recs.length !== manifest.chunks[ci].features) {\n        throw FormatError('metadata feature count disagrees with manifest for chunk ' + ci);\n      }\n      for (var fi = 0; fi < recs.length; fi++) {\n        var rec = recs[fi];\n        var verts = validateFeatureRecord(rec, 'feature ' + (rec && rec.id || featureIndex), cursor, manifest.pairCount);\n        var ringCursor = 0;\n        var polygons = rec.g.map(function (ringCounts) {\n          return ringCounts.map(function (n) {\n            var base = rec.o + ringCursor;\n            ringCursor += n;\n            return makeRingView(manifest._coordBuffer, encoding, base, n);\n          });\n        });\n        if (ringCursor !== verts) throw FormatError('feature ' + rec.id + ': ring counts inconsistent');\n        var feature = {\n          id: rec.id,\n          sourceId: rec.s,\n          localId: rec.u,\n          properties: rec.p,\n          polygons: polygons,\n          bounds: rec.b\n        };\n        layers[LAYER_NAMES[rec.l]].push(feature);\n        cursor += verts;\n        featureIndex++;\n      }\n    }\n    if (featureIndex !== manifest.featureCount) throw FormatError('assembled feature count mismatch');\n    if (cursor !== manifest.pairCount) throw FormatError('assembled pair count mismatch');\n    for (var ln = 0; ln < LAYER_NAMES.length; ln++) {\n      if (layers[LAYER_NAMES[ln]].length !== manifest.layerCounts[LAYER_NAMES[ln]]) {\n        throw FormatError('assembled layer count mismatch for ' + LAYER_NAMES[ln]);\n      }\n    }\n    var data = Object.assign({}, manifest.data, { layers: layers });\n    return data;\n  }",
+      "new_string": "  // A view is bound to its OWN chunk buffer: features are never split across\n  // chunks, so every ring of a feature reads one contiguous typed array.\n  // Float64 chunks hand back the exact stored doubles (signed zeros included);\n  // Int32 chunks decode metres on access.\n  function makeRingView(chunkBuffer, basePair, vertexCount) {\n    function pairAt(within, target) {\n      var j = (basePair + within) * 2;\n      var x, y;\n      if (chunkBuffer.ints) { x = chunkBuffer.ints[j] / 1000; y = chunkBuffer.ints[j + 1] / 1000; }\n      else { x = chunkBuffer.doubles[j]; y = chunkBuffer.doubles[j + 1]; }\n      target[0] = x; target[1] = y;\n      return target;\n    }\n    var target = new Array(vertexCount);\n    return new Proxy(target, {\n      get: function (t, prop, receiver) {\n        if (typeof prop === 'string') {\n          var idx = +prop;\n          if (Number.isInteger(idx) && idx >= 0 && idx < vertexCount) {\n            return pairAt(idx, [0, 0]);\n          }\n        }\n        return Reflect.get(t, prop, receiver);\n      }\n    });\n  }\n\n  var ASSEMBLE_BATCH = 512;\n\n  // Cooperative assembly: metadata records become lazy ring views over the\n  // single set of per-chunk coordinate buffers. Bounded batches yield to the\n  // event loop and honour the abort signal, so the full-map assembly can never\n  // be an unbounded blocking gap and a cancelled load publishes nothing.\n  async function assembleData(manifest, chunkRecords, opts) {\n    opts = opts || {};\n    var signal = opts.signal || null;\n    var onProgress = opts.onProgress || null;\n    var layers = { water: [], buildings: [], roads: [], bridges: [] };\n    var featureIndex = 0, cursor = 0, sinceYield = 0;\n    var coordBuffers = manifest._coordBuffer.chunks;\n    for (var ci = 0; ci < chunkRecords.length; ci++) {\n      var doc = chunkRecords[ci];\n      if (doc.format !== METADATA_FORMAT) throw FormatError('bad metadata format in chunk ' + ci);\n      if (doc.chunk !== ci) throw FormatError('metadata chunk index mismatch ' + ci);\n      var chunkMeta = manifest.chunks[ci];\n      if (!isInt(doc.pairOffset) || doc.pairOffset !== chunkMeta.pairOffset) {\n        throw FormatError('metadata pairOffset disagrees with manifest for chunk ' + ci);\n      }\n      var chunkBuffer = coordBuffers[ci];\n      if (!chunkBuffer || chunkBuffer.ordinateBytes !== chunkMeta._ordinateBytes) {\n        throw FormatError('coordinate buffer missing for chunk ' + ci);\n      }\n      var recs = doc.features;\n      if (!Array.isArray(recs) || recs.length !== chunkMeta.features) {\n        throw FormatError('metadata feature count disagrees with manifest for chunk ' + ci);\n      }\n      for (var fi = 0; fi < recs.length; fi++) {\n        var rec = recs[fi];\n        var verts = validateFeatureRecord(rec, 'feature ' + (rec && rec.id || featureIndex), cursor, manifest.pairCount);\n        var chunkLocalOffset = rec.o - chunkMeta.pairOffset;\n        var ringCursor = 0;\n        var polygons = rec.g.map(function (ringCounts) {\n          return ringCounts.map(function (n) {\n            var base = chunkLocalOffset + ringCursor;\n            ringCursor += n;\n            return makeRingView(chunkBuffer, base, n);\n          });\n        });\n        if (ringCursor !== verts) throw FormatError('feature ' + rec.id + ': ring counts inconsistent');\n        var feature = {\n          id: rec.id,\n          sourceId: rec.s,\n          localId: rec.u,\n          properties: rec.p,\n          polygons: polygons,\n          bounds: rec.b\n        };\n        layers[LAYER_NAMES[rec.l]].push(feature);\n        cursor += verts;\n        featureIndex++;\n        sinceYield++;\n        if (sinceYield >= ASSEMBLE_BATCH) {\n          sinceYield = 0;\n          if (signal && signal.aborted) throw abortError();\n          if (onProgress) onProgress({ phase: 'assemble', loaded: featureIndex, total: manifest.featureCount });\n          await tick();\n          if (signal && signal.aborted) throw abortError();\n        }\n      }\n    }\n    if (featureIndex !== manifest.featureCount) throw FormatError('assembled feature count mismatch');\n    if (cursor !== manifest.pairCount) throw FormatError('assembled pair count mismatch');\n    for (var ln = 0; ln < LAYER_NAMES.length; ln++) {\n      if (layers[LAYER_NAMES[ln]].length !== manifest.layerCounts[LAYER_NAMES[ln]]) {\n        throw FormatError('assembled layer count mismatch for ' + LAYER_NAMES[ln]);\n      }\n    }\n    var data = Object.assign({}, manifest.data, { layers: layers });\n    return data;\n  }"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "old_string": "  // --------------------------------------------------------------------------\n  // Geometry hash: canonical little-endian Float64 of every ordinate in\n  // flatten order, independent of the storage encoding. The int32 path fills\n  // one reused scratch block (never a second coordinate copy).\n  // --------------------------------------------------------------------------\n\n  function hostIsLittleEndian() {\n    var b = new ArrayBuffer(8);\n    new Float64Array(b)[0] = 1;\n    return new Uint8Array(b)[0] === 0 && new Uint8Array(b)[7] === 0x3f;\n  }\n\n  var HASH_BLOCK_PAIRS = 8192;\n\n  function computeGeometrySha(manifest) {\n    if (!hostIsLittleEndian()) throw FormatError('big-endian hosts are not supported');\n    var pairCount = manifest.pairCount;\n    var hash = new Sha256();\n    var scratch = new Float64Array(HASH_BLOCK_PAIRS * 2);\n    var scratchBytes = new Uint8Array(scratch.buffer);\n    if (manifest.coordEncoding === 'int32-millimetres') {\n      var ints = manifest._coordBuffer.ints;\n      for (var p = 0; p < pairCount; p += HASH_BLOCK_PAIRS) {\n        var n = Math.min(HASH_BLOCK_PAIRS, pairCount - p);\n        for (var k = 0; k < n * 2; k++) {\n          var v = ints[(p * 2) + k] / 1000;\n          if (!isFinite(v)) throw FormatError('non-finite decoded ordinate');\n          scratch[k] = v;\n        }\n        hash.update(new Uint8Array(scratch.buffer, 0, n * 16));\n      }\n    } else {\n      var doubles = manifest._coordBuffer.doubles;\n      for (var d = 0; d < pairCount * 2; d++) {\n        if (!isFinite(doubles[d])) throw FormatError('non-finite decoded ordinate');\n      }\n      var allBytes = new Uint8Array(manifest._coordBuffer.buffer);\n      var pos = 0;\n      while (pos < allBytes.length) {\n        var take = Math.min(scratchBytes.length, allBytes.length - pos);\n        hash.update(new Uint8Array(allBytes.buffer, pos, take));\n        pos += take;\n      }\n    }\n    return hash.hex();\n  }",
+      "new_string": "  // --------------------------------------------------------------------------\n  // Geometry hash: canonical little-endian Float64 of every ordinate in\n  // flatten order, independent of the storage encoding. The work is\n  // incremental and cooperative (bounded blocks, event-loop yields, abort\n  // checks) so the full-map 184 MiB verification cannot be one long task.\n  // Float64 chunks hash their stored bytes directly -- the on-disk little\n  // endian doubles ARE the canonical bytes, so there is never a second full\n  // Float64 materialization. Int32 chunks decode into one reused 128 KiB\n  // scratch block. Per-chunk encodings are hashed in chunk/pair order, which\n  // is the same flatten order the packer hashed over.\n  // --------------------------------------------------------------------------\n\n  function hostIsLittleEndian() {\n    var b = new ArrayBuffer(8);\n    new Float64Array(b)[0] = 1;\n    return new Uint8Array(b)[0] === 0 && new Uint8Array(b)[7] === 0x3f;\n  }\n\n  var HASH_BLOCK_PAIRS = 8192;       // 128 KiB of decoded doubles per block\n  var HASH_BYTE_BLOCK = 65536;       // 64 KiB of stored f64 bytes per block\n  var HASH_YIELD_BLOCKS = 4;         // yield roughly every 256-512 KiB\n\n  async function computeGeometrySha(manifest, opts) {\n    opts = opts || {};\n    var signal = opts.signal || null;\n    var onProgress = opts.onProgress || null;\n    if (!hostIsLittleEndian()) throw FormatError('big-endian hosts are not supported');\n    var hash = new Sha256();\n    var scratch = new Float64Array(HASH_BLOCK_PAIRS * 2);\n    var chunkBuffers = manifest._coordBuffer.chunks;\n    var pairsHashed = 0;\n    var blocksSinceYield = 0;\n    for (var ci = 0; ci < chunkBuffers.length; ci++) {\n      if (signal && signal.aborted) throw abortError();\n      var cb = chunkBuffers[ci];\n      if (cb.ints) {\n        var ints = cb.ints;\n        for (var p = 0; p < ints.length; p += HASH_BLOCK_PAIRS * 2) {\n          var n = Math.min(HASH_BLOCK_PAIRS * 2, ints.length - p);\n          for (var k = 0; k < n; k++) {\n            var v = ints[p + k] / 1000;\n            if (!isFinite(v)) throw FormatError('non-finite decoded ordinate');\n            scratch[k] = v;\n          }\n          hash.update(new Uint8Array(scratch.buffer, 0, n * 8));\n          blocksSinceYield++;\n          if (blocksSinceYield >= HASH_YIELD_BLOCKS) {\n            blocksSinceYield = 0;\n            if (onProgress) {\n              onProgress({ phase: 'verify-geometry', loaded: pairsHashed, total: manifest.pairCount });\n            }\n            await tick();\n            if (signal && signal.aborted) throw abortError();\n          }\n        }\n      } else {\n        var doubles = cb.doubles;\n        for (var off = 0; off < doubles.length; off += HASH_BYTE_BLOCK / 8) {\n          var end = Math.min(doubles.length, off + HASH_BYTE_BLOCK / 8);\n          for (var d = off; d < end; d++) {\n            if (!isFinite(doubles[d])) throw FormatError('non-finite decoded ordinate');\n          }\n          hash.update(new Uint8Array(cb.buffer, off * 8, (end - off) * 8));\n          blocksSinceYield++;\n          if (blocksSinceYield >= HASH_YIELD_BLOCKS) {\n            blocksSinceYield = 0;\n            if (onProgress) {\n              onProgress({ phase: 'verify-geometry', loaded: pairsHashed, total: manifest.pairCount });\n            }\n            await tick();\n            if (signal && signal.aborted) throw abortError();\n          }\n        }\n      }\n      pairsHashed += manifest.chunks[ci].pairCount;\n      if (onProgress) {\n        onProgress({ phase: 'verify-geometry', loaded: pairsHashed, total: manifest.pairCount });\n      }\n      await tick();\n      if (signal && signal.aborted) throw abortError();\n    }\n    if (pairsHashed !== manifest.pairCount) {\n      throw FormatError('geometry hash covered ' + pairsHashed + ' of ' + manifest.pairCount + ' pairs');\n    }\n    return hash.hex();\n  }"
+    }
+  }
+]

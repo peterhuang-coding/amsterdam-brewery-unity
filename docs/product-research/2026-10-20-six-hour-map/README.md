@@ -1,3 +1,11 @@
+> UTC19:16Z更新：CITY01-R2正常CLI0交回并收齐本波，当前无实际CC在途；34City+7Flower+16父级反例及6命令通过，最终父验尚在进行、尚未采用。MEMORY01-R2接口中断后父验拒收；一次额外恢复仅为待真人决定提案，未派发。旧下方City在途为历史。D27实际Plan6、累计采用4、游戏地图0、截止22:52:30Z保持。
+
+# D27 MEMORY correction transport failure; City correction still running
+
+MEMORY01-R2 ended UTC19:05:33.884702Z after1043.485seconds/40turns, CLI1 with actual “Request timed out”; this was not its3000second deadline. Worker32689/launcher32688 exited,session54554drained. Receiptunknown/no report preserved. All24source/14readonlySHA unchanged,Read16/Edit15/Bash8 with3unlistedrequests/1denieddebugwrite andnooutscopechanges. Parent13exactcommands9pass4fail: Python10/NAV43/renderer43 green, but requiredruntimeNode test absent, actual signed-zero/multichunkHTTP both fail unfinished async-hash call, routes3/6 stillfail. NoMEMORYadoption. ImmutableparentSHA669edaa9af929c7cee1bc4d41613095ce8ecec281a6869bcbb8d94eb531382e0.
+
+Business1+correction1/1 consumed. A concrete one-extra1800second/50turn transport-recovery proposal is prepared for same logical task; it is not a contract, authorization or dispatch. No newID launched/no main-agent implementation repair. CITY01-R2 remains the sole CC worker32703/launcher32702/session62111, original2400s70turns andfrozeninputs. Collect this wholewave before anynextdispatch. D27actualPlan6,cumulativeadopted4/new2,game-map0;UTC22:52:30Z cutoff unchanged. BOOT dependencies are not yet qualified.
+
 # D27 third wave actually running: runtime and City single corrections
 
 MEMORY01-R2 started UTC18:48:10 worker32689/launcher32688/session54554 (3000s90turns,24publicfiles925832B). CITY01-R2 started18:48:24 worker32703/launcher32702/session62111 (2400s70turns,13files386308B). Contractf656dce908dc39022234b5bc5c53c6ad2bf4462f pushed/exactremoteverified; sourceSHA andNotionexecutingreadback beforelaunch, actualCCcapacity0→1→2. BothSeedEvolving thinkingenabled/high. FixedIDs/samelogicals, eachsinglecorrection1/1 used; originaltimeout/unknown/parentrejection preserved. Noinputchange/resubmit/thirdCC.

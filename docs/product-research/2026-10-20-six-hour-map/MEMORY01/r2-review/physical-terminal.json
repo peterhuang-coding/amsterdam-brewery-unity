@@ -1,0 +1,12 @@
+{
+  "checked_at": "2026-10-19T19:10:31.509962+00:00",
+  "worker_pid": 32689,
+  "launcher_pid": 32688,
+  "both_absent": true,
+  "exec_session": 54554,
+  "session_drained_exit": 2,
+  "provider_error": "Request timed out",
+  "receipt_status": "unknown",
+  "worker_deadline_hit": false,
+  "parent_review_sha256": "669edaa9af929c7cee1bc4d41613095ce8ecec281a6869bcbb8d94eb531382e0"
+}

@@ -1,3 +1,9 @@
+# D27 third wave actually running: runtime and City single corrections
+
+MEMORY01-R2 started UTC18:48:10 worker32689/launcher32688/session54554 (3000s90turns,24publicfiles925832B). CITY01-R2 started18:48:24 worker32703/launcher32702/session62111 (2400s70turns,13files386308B). Contractf656dce908dc39022234b5bc5c53c6ad2bf4462f pushed/exactremoteverified; sourceSHA andNotionexecutingreadback beforelaunch, actualCCcapacity0→1→2. BothSeedEvolving thinkingenabled/high. FixedIDs/samelogicals, eachsinglecorrection1/1 used; originaltimeout/unknown/parentrejection preserved. Noinputchange/resubmit/thirdCC.
+
+D27actualPlan6,cumulativeadopted4/newadopted2,game-map0. Fullgoal incomplete, fixeddeadlineUTC22:52:30Z. Runtime fixes actual signed-zero/multichunk/cooperativehash/cached-route failures and missingdeliverables. City fixes16parentcases3knownfails and missingtests/report. Independentfullparentacceptance afterreturn; onlybothqualifiedallowsBOOTgameentryintegration. Old18860/dad6b38unchanged.
+
 # D27 wave2 collected; two single corrections prepared
 
 MEMORY01 original3000.169s timeout at18:34:51.804830Z, CLI143/state done/receiptunknown preserved; worker26517/launcher26516 exited, session73851 drained. Parent8Python/43NAV/43renderer pass but required runtimeNode tests/demo/README/report missing. Full177chunks/96.98MB download fail: two signed-zero ordinates lost and canonicalSHA mismatch; independent8chunk test also reveals concurrentrecordcapture failure. Hash blocks page~1.26s. Sixroutecases3fail (reversecache, nearbygraphconnectors, pre-abort). Parentreview immutableSHA8d59b96215923ebddc6d023b2b129cb2fe6e3d4a75fbff8167957b6b429df3e1, noadoption.

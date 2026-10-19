@@ -1,0 +1,27 @@
+{
+  "kind": "MEMORY01",
+  "task_id": "amsterdam-d27-compact-runtime-r2-20261020",
+  "logical_task_id": "f02-compact-runtime-d27",
+  "state": "running",
+  "worker_pid": 32689,
+  "launcher_pid": 32688,
+  "exec_session_id": 54554,
+  "started_at": "2026-10-19T18:48:10+00:00",
+  "model": "doubao-seed-evolving",
+  "thinking_enabled": true,
+  "effort": "high",
+  "max_seconds": 3000,
+  "max_turns": 90,
+  "contract_commit": "f656dce908dc39022234b5bc5c53c6ad2bf4462f",
+  "notion_page": "3fe3285284df81e5ac3ff4bdaaf46be4",
+  "launch": {
+    "cwd": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r2-20261020/workspace",
+    "pid": 32689,
+    "pid_pending": false,
+    "started_epoch": 1792435690
+  },
+  "input_count": 24,
+  "input_bytes": 925832,
+  "correction_submitted": 1,
+  "correction_limit": 1
+}

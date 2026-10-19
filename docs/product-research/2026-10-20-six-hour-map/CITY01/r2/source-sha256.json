@@ -1,0 +1,67 @@
+[
+  {
+    "file": "brief.md",
+    "bytes": 3131,
+    "sha256": "1ef9814d84462d0df146bcc2c0375ca875d9780aac9cc806412d8009099a166f"
+  },
+  {
+    "file": "original-brief.md",
+    "bytes": 7243,
+    "sha256": "d63098cd01ce9e995d60f77443602c98bd6314e334a8c5c9b688b37dd32f43aa"
+  },
+  {
+    "file": "parent-regressions.cjs",
+    "bytes": 6490,
+    "sha256": "0bc687a54ea17840ce9fc2f1985ac9dbd476208749458e73924ff535057f4014"
+  },
+  {
+    "file": "fixture-shape.json",
+    "bytes": 2892,
+    "sha256": "6c0be5b3d8cdc54352748789bc1ca9f98d41146f91915800a72bb1962c5bc820"
+  },
+  {
+    "file": "anchors.json",
+    "bytes": 2278,
+    "sha256": "9d44eb50693fb0684bca4383d2b29637765abdd1f44a9deb9d19451e2d80680d"
+  },
+  {
+    "file": "tools/prototype/geo-world.js",
+    "bytes": 7569,
+    "sha256": "9f6961ec7b732e9e42a43a1c40f1a0ccee7201b01aa94dd301aa194cfa05bff8"
+  },
+  {
+    "file": "tools/prototype/reopening-city.js",
+    "bytes": 33396,
+    "sha256": "dd0beaeff0a7a5cc19d3a019cd8ecbed7f4fdb1bc492c32eb2030e3fba70c15b"
+  },
+  {
+    "file": "tools/prototype/flower-network.js",
+    "bytes": 2919,
+    "sha256": "28e2f1fbeacfd1b929d8218d4461e820ef9c4ec21f5394c25d45280abb30ac0d"
+  },
+  {
+    "file": "tools/geo/navigation/geo-navigation.js",
+    "bytes": 53286,
+    "sha256": "6d073522e6f3135b72bebd14db1292dad87115369868b67618646518ffbf80d2"
+  },
+  {
+    "file": "tools/geo/navigation/real-pub-sample.json",
+    "bytes": 237043,
+    "sha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598"
+  },
+  {
+    "file": "tools/prototype/test-city.js",
+    "bytes": 12891,
+    "sha256": "fea0a17524f790b75206d4a51741113439bbea8216d16c04ed5164b5659c4b13"
+  },
+  {
+    "file": "tools/prototype/test-city-bike.js",
+    "bytes": 12575,
+    "sha256": "1987a2f2e47f1b2dff16b5f23a818af30bae6890a0ffae54ffbfc163b1a8176e"
+  },
+  {
+    "file": "tools/prototype/test-flower-network.js",
+    "bytes": 4595,
+    "sha256": "0677b479be857edd8fb636f2483efadb7ed36ec5c6f5d87c370d127ba4a9e118"
+  }
+]

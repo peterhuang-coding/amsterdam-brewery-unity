@@ -5,7 +5,7 @@
   "deadline": "2026-10-19T22:52:30Z",
   "next_direction_review_at": "2026-10-17T09:48:33Z",
   "last_direction_review_at": "2026-10-17T00:00:06.789975+00:00",
-  "current_task_id": null,
+  "current_task_id": "amsterdam-d27-compact-runtime-20261020",
   "logical_task": "d27-real-geography-and-game-loop",
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
@@ -34,26 +34,6 @@
         "pid": 26517,
         "pid_pending": false,
         "started_epoch": 1792431891
-      }
-    },
-    {
-      "kind": "CITY01",
-      "task_id": "amsterdam-d27-real-city-20261020",
-      "state": "running",
-      "worker_pid": 26538,
-      "launcher_pid": 26537,
-      "exec_session_id": 78728,
-      "model": "doubao-seed-evolving",
-      "thinking_enabled": true,
-      "effort": "high",
-      "actual_process": "26538 26537 Tue Oct 20 01:45:05 2026     /opt/homebrew/bin/claude",
-      "contract_commit": "e997882e33457bf0961ef105b18638ee397e5bf7",
-      "notion_page": "3fe3285284df817faf94c847e59bf7f9",
-      "launch": {
-        "cwd": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace",
-        "pid": 26538,
-        "pid_pending": false,
-        "started_epoch": 1792431905
       }
     }
   ],
@@ -344,7 +324,7 @@
   "current_task_notion": null,
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
-  "current_task_stage": "wave2_collecting",
+  "current_task_stage": "wave2_memory_running_city_terminal",
   "prepared_task_id": null,
   "prepared_task_packet": null,
   "play_service_pid": 91799,
@@ -682,7 +662,7 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-19T18:22:42.907265+00:00",
+  "updated_at": "2026-10-19T18:29:09.136957+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
   "last_checked_at": "2026-10-19T18:22:42.907265+00:00",
@@ -835,7 +815,7 @@
       {
         "kind": "CITY01",
         "task_id": "amsterdam-d27-real-city-20261020",
-        "state": "running",
+        "state": "done",
         "worker_pid": 26538,
         "launcher_pid": 26537,
         "exec_session_id": 78728,
@@ -850,7 +830,21 @@
           "pid": 26538,
           "pid_pending": false,
           "started_epoch": 1792431905
-        }
+        },
+        "receipt_status": "unknown",
+        "physically_terminal": true,
+        "finished_at": "2026-10-19T18:25:05.876734+00:00",
+        "elapsed_seconds": 2400.152,
+        "worker_exited": true,
+        "launcher_exited": true,
+        "session_drained": true,
+        "parent_outcome": "rejected_incomplete_and_semantic",
+        "parent_review": "docs/product-research/2026-10-20-six-hour-map/CITY01/review/parent-review.md",
+        "parent_independent_pass": 13,
+        "parent_independent_total": 16,
+        "adopted": false,
+        "correction_prepared": "amsterdam-d27-real-city-r2-20261020",
+        "correction_submitted": false
       }
     ],
     "adopted_component_count": 4,
@@ -868,11 +862,18 @@
     "before_NAV01_bare_pids": [],
     "actual_process_overlap_not_claimed": true
   },
-  "prepared_tasks": [],
+  "prepared_tasks": [
+    {
+      "kind": "CITY01-R2",
+      "task_id": "amsterdam-d27-real-city-r2-20261020",
+      "submitted": false,
+      "reason": "Collect MEMORY original before next wave"
+    }
+  ],
   "awaiting_parent_review": [],
-  "current_stage": "wave2_collecting_pack_artifacts_adopted",
+  "current_stage": "wave2_memory_running_city_correction_prepared",
   "prepared": [],
-  "stage": "wave2_collecting",
+  "stage": "wave2_memory_running_city_terminal",
   "renewal_history": [
     {
       "started_at": "2026-10-16T16:03:03Z",

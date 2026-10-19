@@ -1,0 +1,27 @@
+[
+  {
+    "command": "node --check tools/prototype/geo-world.js",
+    "exit_code": 0,
+    "seconds": 0.047789708
+  },
+  {
+    "command": "node --check tools/prototype/reopening-city.js",
+    "exit_code": 0,
+    "seconds": 0.04761254200000001
+  },
+  {
+    "command": "node --check tools/prototype/flower-network.js",
+    "exit_code": 0,
+    "seconds": 0.04792304100000001
+  },
+  {
+    "command": "node --test tools/prototype/test-geo-city.cjs",
+    "exit_code": 1,
+    "seconds": 0.04811829200000001
+  },
+  {
+    "command": "node --test tools/prototype/test-geo-flower-network.cjs",
+    "exit_code": 1,
+    "seconds": 0.047874
+  }
+]

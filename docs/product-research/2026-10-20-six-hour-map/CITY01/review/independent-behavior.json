@@ -1,0 +1,74 @@
+{
+  "scope": "independent parent behavior checks, synthetic where named; real fixture last case",
+  "passed": 13,
+  "total": 16,
+  "rows": [
+    {
+      "name": "readiness fails before geometry use",
+      "pass": true
+    },
+    {
+      "name": "10 reviewed anchor coordinates unchanged",
+      "pass": true
+    },
+    {
+      "name": "legacy player and remote bicycle migrate independently",
+      "pass": true
+    },
+    {
+      "name": "new safe save clones and preserves values",
+      "pass": true
+    },
+    {
+      "name": "walking and bicycle named speed units",
+      "pass": true
+    },
+    {
+      "name": "moveAlong consumes reachable 3m waypoint within .1s",
+      "pass": false,
+      "error": "Expected values to be strictly equal:\n\nfalse !== true\n"
+    },
+    {
+      "name": "swept collision forbids crossing thin obstacle",
+      "pass": true
+    },
+    {
+      "name": "bicycle pushes on walk-only ground without losing ownership",
+      "pass": true
+    },
+    {
+      "name": "remote parked bicycle remains stationary during movement",
+      "pass": true
+    },
+    {
+      "name": "F3 cannot board through unwalkable 3m connector",
+      "pass": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ {\n+   from: 'ferrySouth',\n+   id: 'F3',\n+   progress: 0.010137010229164762,\n+   to: 'ferryNorth'\n+ }\n- undefined\n"
+    },
+    {
+      "name": "saved F3 crosses after refresh with no path and parked bike stays",
+      "pass": true
+    },
+    {
+      "name": "zero elapsed pauses transit exactly",
+      "pass": true
+    },
+    {
+      "name": "bike toggle during F3 does not abandon the carried bicycle in water",
+      "pass": false,
+      "error": "The expression evaluated to a falsy value:\n\n  assert.ok(Math.hypot(p.bike.x-b.x,p.bike.y-b.y)<1e-5)\n"
+    },
+    {
+      "name": "cached route remains input/output alias-free",
+      "pass": true
+    },
+    {
+      "name": "pre-aborted route rejects AbortError",
+      "pass": true
+    },
+    {
+      "name": "actual accepted NAV pub fixture integration",
+      "pass": true
+    }
+  ]
+}

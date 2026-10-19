@@ -1,0 +1,129 @@
+{
+  "task_id": "amsterdam-d27-real-city-20261020",
+  "receipt_status": "unknown",
+  "finished_at": "2026-10-19T18:25:05.876734+00:00",
+  "elapsed_seconds": 2400.152,
+  "cli": {
+    "final_subtype": null,
+    "is_error": null,
+    "outcome": "timeout",
+    "pid": 26538,
+    "returncode": 143,
+    "usage": null
+  },
+  "observed_models": [
+    "doubao-seed-evolving"
+  ],
+  "receipt_report_present": false,
+  "disk_report_present": false,
+  "disk_report_sha256": null,
+  "disk_report_validation_error": "missing on disk",
+  "disk_report_status": null,
+  "tool_counts": {
+    "Read": 23,
+    "Bash": 5,
+    "Edit": 18
+  },
+  "extra_bash_commands": [
+    "grep -n \"City\\|reopening-city\\|PLACES\\|WIDTH\\|HEIGHT\" /Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/tools/prototype/backstage-core.js /Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/tools/prototype/backstage-auto.js /Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/tools/prototype/character-stories.js /Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/tools/prototype/delivery-orders.js",
+    "grep -rn \"City\\.\\|root\\.City\\|window\\.City\\|globalThis\\.City\" /Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/tools/prototype/ --include=\"*.js\" -l",
+    "node --version",
+    "cat > /Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/tools/prototype/geo-world.js <<'EOF'\nplaceholder\nEOF\necho done",
+    "grep -n \"const WIDTH = 1800\\|return Object.freeze\\|^});\" /Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace/tools/prototype/reopening-city.js"
+  ],
+  "permission_denials": [],
+  "disallowed_changes": [],
+  "path_violations": [],
+  "input_sha": [
+    {
+      "file": "anchors.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "brief.md",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/navigation/geo-navigation.js",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/navigation/real-pub-sample.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/prototype/backstage-auto.js",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/prototype/backstage-core.js",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/prototype/character-stories.js",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/prototype/delivery-orders.js",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/prototype/flower-network.js",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": false
+    },
+    {
+      "file": "tools/prototype/journey-core.js",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/prototype/reopening-city.js",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": false
+    },
+    {
+      "file": "tools/prototype/reopening-core.js",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/prototype/test-city-bike.js",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/prototype/test-city.js",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/prototype/test-flower-network.js",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    }
+  ]
+}

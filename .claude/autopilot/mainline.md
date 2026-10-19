@@ -1,3 +1,9 @@
+# D27 CITY business terminal; targeted correction prepared, not dispatched
+
+CITY01 original2400.152s timeout at18:25:05.876734Z; worker26538/launcher26537 absent,execsession78728drained. statusstate done butreceiptunknown preserved; no report, only3implementationfiles. Parent3syntax0/two missingtestcommands1; independent16checks13pass3fail (3m waypoint budget, blockedconnector F3 boarding, bike toggle aboard).15source/13readonlySHA retained;5unlistedBashrequests/nooutscopewrites recorded. No City adoption. Separate immutable parent review; standard review gate cannot reclassify unknown receipt.
+
+Fixedsame-logical CITY01-R2 packet prepared with partialcode and16readonlyregressions,13publicfiles386308B,2400s70turns; correction0/1 until actualdispatch. No newCC started: original MEMORY01 worker26517/session73851 stillrunning, collectwholewavebefore next. Fullgoal/game-map0, D27Plan4 andcumulativeadopted4unchanged. Cutoff22:52:30Z unchanged; no renewedpermissionrequired.
+
 # D27 PACK recovered artifacts qualified and adopted; wave2 continues
 
 PACK-R3 original CLI1/error_max_turns and blocked receipt remain unchanged. Complete on-disk report passes schema; parent61Python+23Node and four commands pass. Independent full145703feature identity/property/ring/original-vertex/Hausdorff audit passed,2693 invalid source objects retained whole. All843220 neighbor candidates checked: zero new overlaps, zero added intersection area, zero lost contacts, zero GEOS errors. Parent buffered-checker optimization was separately calibrated against five positive/negative cases; original interrupted parent run preserved, not a Plan retry.

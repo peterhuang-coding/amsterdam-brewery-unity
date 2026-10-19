@@ -11,12 +11,12 @@
   "extra_attempts": {
     "NAV01": {
       "allowed": 1,
-      "submitted": 0,
+      "submitted": 1,
       "task_id": "amsterdam-d26-geo-navigation-r3-20261017"
     },
     "PACK01": {
       "allowed": 1,
-      "submitted": 0,
+      "submitted": 1,
       "task_id": "amsterdam-d26-runtime-pack-r3-20261017"
     },
     "RENDER01": {
@@ -27,11 +27,39 @@
     }
   },
   "first_wave": {
-    "prepared": [
-      "amsterdam-d26-runtime-pack-r3-20261017",
-      "amsterdam-d26-geo-navigation-r3-20261017"
+    "submitted": [
+      {
+        "task_id": "amsterdam-d26-runtime-pack-r3-20261017",
+        "kind": "PACK01",
+        "state": "running",
+        "worker_pid": 20932,
+        "launcher_pid": 20921,
+        "session_id": 72978,
+        "started_at": "2026-10-19T16:58:18+00:00",
+        "elapsed": "01:33",
+        "actual_pid_verified": true,
+        "model": "doubao-seed-evolving",
+        "thinking_enabled": true,
+        "effort": "high",
+        "contract_commit": "5ee85bfe544d9e90b2cc48e7a49ae5346027990e"
+      },
+      {
+        "task_id": "amsterdam-d26-geo-navigation-r3-20261017",
+        "kind": "NAV01",
+        "state": "running",
+        "worker_pid": 20974,
+        "launcher_pid": 20962,
+        "session_id": 25671,
+        "started_at": "2026-10-19T16:58:30+00:00",
+        "elapsed": "01:21",
+        "actual_pid_verified": true,
+        "model": "doubao-seed-evolving",
+        "thinking_enabled": true,
+        "effort": "high",
+        "contract_commit": "5ee85bfe544d9e90b2cc48e7a49ae5346027990e"
+      }
     ],
-    "submitted": []
+    "prepared": []
   },
   "full_goal_complete": false
 }

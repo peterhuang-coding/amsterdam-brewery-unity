@@ -1,0 +1,15 @@
+{
+  "task_id": "amsterdam-d26-runtime-pack-r3-20261017",
+  "kind": "PACK01",
+  "state": "running",
+  "worker_pid": 20932,
+  "launcher_pid": 20921,
+  "session_id": 72978,
+  "started_at": "2026-10-19T16:58:18+00:00",
+  "elapsed": "01:33",
+  "actual_pid_verified": true,
+  "model": "doubao-seed-evolving",
+  "thinking_enabled": true,
+  "effort": "high",
+  "contract_commit": "5ee85bfe544d9e90b2cc48e7a49ae5346027990e"
+}

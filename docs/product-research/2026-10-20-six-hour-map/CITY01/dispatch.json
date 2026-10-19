@@ -1,0 +1,20 @@
+{
+  "kind": "CITY01",
+  "task_id": "amsterdam-d27-real-city-20261020",
+  "state": "running",
+  "worker_pid": 26538,
+  "launcher_pid": 26537,
+  "exec_session_id": 78728,
+  "model": "doubao-seed-evolving",
+  "thinking_enabled": true,
+  "effort": "high",
+  "actual_process": "26538 26537 Tue Oct 20 01:45:05 2026     /opt/homebrew/bin/claude",
+  "contract_commit": "e997882e33457bf0961ef105b18638ee397e5bf7",
+  "notion_page": "3fe3285284df817faf94c847e59bf7f9",
+  "launch": {
+    "cwd": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-20261020/workspace",
+    "pid": 26538,
+    "pid_pending": false,
+    "started_epoch": 1792431905
+  }
+}

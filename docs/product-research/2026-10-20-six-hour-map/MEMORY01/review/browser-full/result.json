@@ -1,0 +1,4928 @@
+{
+  "baseline": {
+    "usedSize": 2479868,
+    "totalSize": 4014080,
+    "embedderHeapUsedSize": 1381912,
+    "backingStorageSize": 357158
+  },
+  "cycles": [
+    {
+      "cycle": 0,
+      "load": {
+        "loaded": false,
+        "error": "ChecksumMismatchError: geometrySha256 mismatch: manifest 7b6fa8e13f14 computed 4e8ee738dbdf",
+        "errorName": "ChecksumMismatchError",
+        "readyMs": 2839.899999976158,
+        "maxObservedHeartbeatGapMs": 1258.6000000238419,
+        "heartbeatSamples": 80,
+        "longTasksMs": [
+          1256
+        ],
+        "progress": [
+          {
+            "phase": "manifest",
+            "loaded": 0,
+            "total": 1,
+            "ms": 0.10000002384185791
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 1,
+            "total": 177,
+            "bytesLoaded": 541800,
+            "bytesTotal": 96976472,
+            "ms": 26.600000023841858
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 2,
+            "total": 177,
+            "bytesLoaded": 1075842,
+            "bytesTotal": 96976472,
+            "ms": 30.399999976158142
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 3,
+            "total": 177,
+            "bytesLoaded": 1608323,
+            "bytesTotal": 96976472,
+            "ms": 36.700000047683716
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 4,
+            "total": 177,
+            "bytesLoaded": 2139408,
+            "bytesTotal": 96976472,
+            "ms": 40.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 5,
+            "total": 177,
+            "bytesLoaded": 2691161,
+            "bytesTotal": 96976472,
+            "ms": 86.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 6,
+            "total": 177,
+            "bytesLoaded": 3229195,
+            "bytesTotal": 96976472,
+            "ms": 93.39999997615814
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 7,
+            "total": 177,
+            "bytesLoaded": 4367851,
+            "bytesTotal": 96976472,
+            "ms": 99.70000004768372
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 8,
+            "total": 177,
+            "bytesLoaded": 5589015,
+            "bytesTotal": 96976472,
+            "ms": 104.10000002384186
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 9,
+            "total": 177,
+            "bytesLoaded": 6856743,
+            "bytesTotal": 96976472,
+            "ms": 193
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 10,
+            "total": 177,
+            "bytesLoaded": 8156792,
+            "bytesTotal": 96976472,
+            "ms": 200.10000002384186
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 11,
+            "total": 177,
+            "bytesLoaded": 9553176,
+            "bytesTotal": 96976472,
+            "ms": 206.89999997615814
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 12,
+            "total": 177,
+            "bytesLoaded": 10861405,
+            "bytesTotal": 96976472,
+            "ms": 211.29999995231628
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 13,
+            "total": 177,
+            "bytesLoaded": 12189028,
+            "bytesTotal": 96976472,
+            "ms": 296.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 14,
+            "total": 177,
+            "bytesLoaded": 13428226,
+            "bytesTotal": 96976472,
+            "ms": 303.39999997615814
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 15,
+            "total": 177,
+            "bytesLoaded": 14567382,
+            "bytesTotal": 96976472,
+            "ms": 309.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 16,
+            "total": 177,
+            "bytesLoaded": 15810771,
+            "bytesTotal": 96976472,
+            "ms": 313.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 17,
+            "total": 177,
+            "bytesLoaded": 16359827,
+            "bytesTotal": 96976472,
+            "ms": 330.60000002384186
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 18,
+            "total": 177,
+            "bytesLoaded": 16878108,
+            "bytesTotal": 96976472,
+            "ms": 337
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 19,
+            "total": 177,
+            "bytesLoaded": 17383626,
+            "bytesTotal": 96976472,
+            "ms": 342.89999997615814
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 20,
+            "total": 177,
+            "bytesLoaded": 17889614,
+            "bytesTotal": 96976472,
+            "ms": 346.89999997615814
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 21,
+            "total": 177,
+            "bytesLoaded": 18386380,
+            "bytesTotal": 96976472,
+            "ms": 362.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 22,
+            "total": 177,
+            "bytesLoaded": 18882738,
+            "bytesTotal": 96976472,
+            "ms": 368.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 23,
+            "total": 177,
+            "bytesLoaded": 19400541,
+            "bytesTotal": 96976472,
+            "ms": 372.89999997615814
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 24,
+            "total": 177,
+            "bytesLoaded": 19912479,
+            "bytesTotal": 96976472,
+            "ms": 380.60000002384186
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 25,
+            "total": 177,
+            "bytesLoaded": 20416393,
+            "bytesTotal": 96976472,
+            "ms": 398.2999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 26,
+            "total": 177,
+            "bytesLoaded": 20925206,
+            "bytesTotal": 96976472,
+            "ms": 402.10000002384186
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 27,
+            "total": 177,
+            "bytesLoaded": 21426950,
+            "bytesTotal": 96976472,
+            "ms": 406
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 28,
+            "total": 177,
+            "bytesLoaded": 21928273,
+            "bytesTotal": 96976472,
+            "ms": 412.2999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 29,
+            "total": 177,
+            "bytesLoaded": 22435935,
+            "bytesTotal": 96976472,
+            "ms": 426.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 30,
+            "total": 177,
+            "bytesLoaded": 22934289,
+            "bytesTotal": 96976472,
+            "ms": 434.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 31,
+            "total": 177,
+            "bytesLoaded": 23439080,
+            "bytesTotal": 96976472,
+            "ms": 438.89999997615814
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 32,
+            "total": 177,
+            "bytesLoaded": 23936589,
+            "bytesTotal": 96976472,
+            "ms": 445.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 33,
+            "total": 177,
+            "bytesLoaded": 24447629,
+            "bytesTotal": 96976472,
+            "ms": 460.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 34,
+            "total": 177,
+            "bytesLoaded": 24957744,
+            "bytesTotal": 96976472,
+            "ms": 466.89999997615814
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 35,
+            "total": 177,
+            "bytesLoaded": 25463973,
+            "bytesTotal": 96976472,
+            "ms": 470.89999997615814
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 36,
+            "total": 177,
+            "bytesLoaded": 25971754,
+            "bytesTotal": 96976472,
+            "ms": 477.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 37,
+            "total": 177,
+            "bytesLoaded": 26482906,
+            "bytesTotal": 96976472,
+            "ms": 492.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 38,
+            "total": 177,
+            "bytesLoaded": 26993642,
+            "bytesTotal": 96976472,
+            "ms": 498.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 39,
+            "total": 177,
+            "bytesLoaded": 27490993,
+            "bytesTotal": 96976472,
+            "ms": 502.89999997615814
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 40,
+            "total": 177,
+            "bytesLoaded": 28001173,
+            "bytesTotal": 96976472,
+            "ms": 509.39999997615814
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 41,
+            "total": 177,
+            "bytesLoaded": 28506501,
+            "bytesTotal": 96976472,
+            "ms": 524.2999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 42,
+            "total": 177,
+            "bytesLoaded": 29013964,
+            "bytesTotal": 96976472,
+            "ms": 530.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 43,
+            "total": 177,
+            "bytesLoaded": 29523713,
+            "bytesTotal": 96976472,
+            "ms": 535
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 44,
+            "total": 177,
+            "bytesLoaded": 30029836,
+            "bytesTotal": 96976472,
+            "ms": 541.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 45,
+            "total": 177,
+            "bytesLoaded": 30535527,
+            "bytesTotal": 96976472,
+            "ms": 557.8999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 46,
+            "total": 177,
+            "bytesLoaded": 31044792,
+            "bytesTotal": 96976472,
+            "ms": 561.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 47,
+            "total": 177,
+            "bytesLoaded": 31559464,
+            "bytesTotal": 96976472,
+            "ms": 568.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 48,
+            "total": 177,
+            "bytesLoaded": 32072796,
+            "bytesTotal": 96976472,
+            "ms": 574.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 49,
+            "total": 177,
+            "bytesLoaded": 32585925,
+            "bytesTotal": 96976472,
+            "ms": 589.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 50,
+            "total": 177,
+            "bytesLoaded": 33085607,
+            "bytesTotal": 96976472,
+            "ms": 593.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 51,
+            "total": 177,
+            "bytesLoaded": 33589984,
+            "bytesTotal": 96976472,
+            "ms": 600
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 52,
+            "total": 177,
+            "bytesLoaded": 34100213,
+            "bytesTotal": 96976472,
+            "ms": 606.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 53,
+            "total": 177,
+            "bytesLoaded": 34604821,
+            "bytesTotal": 96976472,
+            "ms": 621
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 54,
+            "total": 177,
+            "bytesLoaded": 35094204,
+            "bytesTotal": 96976472,
+            "ms": 627.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 55,
+            "total": 177,
+            "bytesLoaded": 35607913,
+            "bytesTotal": 96976472,
+            "ms": 631
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 56,
+            "total": 177,
+            "bytesLoaded": 36113185,
+            "bytesTotal": 96976472,
+            "ms": 637.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 57,
+            "total": 177,
+            "bytesLoaded": 36618674,
+            "bytesTotal": 96976472,
+            "ms": 651.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 58,
+            "total": 177,
+            "bytesLoaded": 37116263,
+            "bytesTotal": 96976472,
+            "ms": 657.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 59,
+            "total": 177,
+            "bytesLoaded": 37622598,
+            "bytesTotal": 96976472,
+            "ms": 661.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 60,
+            "total": 177,
+            "bytesLoaded": 38117432,
+            "bytesTotal": 96976472,
+            "ms": 667.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 61,
+            "total": 177,
+            "bytesLoaded": 38627668,
+            "bytesTotal": 96976472,
+            "ms": 682.8999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 62,
+            "total": 177,
+            "bytesLoaded": 39138808,
+            "bytesTotal": 96976472,
+            "ms": 686.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 63,
+            "total": 177,
+            "bytesLoaded": 39650839,
+            "bytesTotal": 96976472,
+            "ms": 695.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 64,
+            "total": 177,
+            "bytesLoaded": 40163230,
+            "bytesTotal": 96976472,
+            "ms": 699.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 65,
+            "total": 177,
+            "bytesLoaded": 40679191,
+            "bytesTotal": 96976472,
+            "ms": 710.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 66,
+            "total": 177,
+            "bytesLoaded": 41166635,
+            "bytesTotal": 96976472,
+            "ms": 717
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 67,
+            "total": 177,
+            "bytesLoaded": 41666455,
+            "bytesTotal": 96976472,
+            "ms": 723.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 68,
+            "total": 177,
+            "bytesLoaded": 42167648,
+            "bytesTotal": 96976472,
+            "ms": 729.3999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 69,
+            "total": 177,
+            "bytesLoaded": 42666904,
+            "bytesTotal": 96976472,
+            "ms": 744.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 70,
+            "total": 177,
+            "bytesLoaded": 43173361,
+            "bytesTotal": 96976472,
+            "ms": 751.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 71,
+            "total": 177,
+            "bytesLoaded": 43678071,
+            "bytesTotal": 96976472,
+            "ms": 755
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 72,
+            "total": 177,
+            "bytesLoaded": 44193804,
+            "bytesTotal": 96976472,
+            "ms": 761.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 73,
+            "total": 177,
+            "bytesLoaded": 44712487,
+            "bytesTotal": 96976472,
+            "ms": 776
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 74,
+            "total": 177,
+            "bytesLoaded": 45221195,
+            "bytesTotal": 96976472,
+            "ms": 779.8999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 75,
+            "total": 177,
+            "bytesLoaded": 45724903,
+            "bytesTotal": 96976472,
+            "ms": 786
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 76,
+            "total": 177,
+            "bytesLoaded": 46239968,
+            "bytesTotal": 96976472,
+            "ms": 792.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 77,
+            "total": 177,
+            "bytesLoaded": 46742663,
+            "bytesTotal": 96976472,
+            "ms": 806.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 78,
+            "total": 177,
+            "bytesLoaded": 47243002,
+            "bytesTotal": 96976472,
+            "ms": 812.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 79,
+            "total": 177,
+            "bytesLoaded": 47732181,
+            "bytesTotal": 96976472,
+            "ms": 818.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 80,
+            "total": 177,
+            "bytesLoaded": 48242550,
+            "bytesTotal": 96976472,
+            "ms": 822.2999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 81,
+            "total": 177,
+            "bytesLoaded": 48739624,
+            "bytesTotal": 96976472,
+            "ms": 837.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 82,
+            "total": 177,
+            "bytesLoaded": 49249001,
+            "bytesTotal": 96976472,
+            "ms": 843.8999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 83,
+            "total": 177,
+            "bytesLoaded": 49756136,
+            "bytesTotal": 96976472,
+            "ms": 849.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 84,
+            "total": 177,
+            "bytesLoaded": 50256740,
+            "bytesTotal": 96976472,
+            "ms": 853.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 85,
+            "total": 177,
+            "bytesLoaded": 50762941,
+            "bytesTotal": 96976472,
+            "ms": 868.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 86,
+            "total": 177,
+            "bytesLoaded": 51280042,
+            "bytesTotal": 96976472,
+            "ms": 874.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 87,
+            "total": 177,
+            "bytesLoaded": 51774957,
+            "bytesTotal": 96976472,
+            "ms": 880.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 88,
+            "total": 177,
+            "bytesLoaded": 52286000,
+            "bytesTotal": 96976472,
+            "ms": 884.8999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 89,
+            "total": 177,
+            "bytesLoaded": 52796866,
+            "bytesTotal": 96976472,
+            "ms": 901.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 90,
+            "total": 177,
+            "bytesLoaded": 53311180,
+            "bytesTotal": 96976472,
+            "ms": 906.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 91,
+            "total": 177,
+            "bytesLoaded": 53821724,
+            "bytesTotal": 96976472,
+            "ms": 916.3999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 92,
+            "total": 177,
+            "bytesLoaded": 54331201,
+            "bytesTotal": 96976472,
+            "ms": 920.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 93,
+            "total": 177,
+            "bytesLoaded": 54837252,
+            "bytesTotal": 96976472,
+            "ms": 939.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 94,
+            "total": 177,
+            "bytesLoaded": 55341056,
+            "bytesTotal": 96976472,
+            "ms": 945.8999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 95,
+            "total": 177,
+            "bytesLoaded": 55855283,
+            "bytesTotal": 96976472,
+            "ms": 951.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 96,
+            "total": 177,
+            "bytesLoaded": 56351962,
+            "bytesTotal": 96976472,
+            "ms": 955.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 97,
+            "total": 177,
+            "bytesLoaded": 56861797,
+            "bytesTotal": 96976472,
+            "ms": 970.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 98,
+            "total": 177,
+            "bytesLoaded": 57369571,
+            "bytesTotal": 96976472,
+            "ms": 976.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 99,
+            "total": 177,
+            "bytesLoaded": 57870449,
+            "bytesTotal": 96976472,
+            "ms": 982.2999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 100,
+            "total": 177,
+            "bytesLoaded": 58367115,
+            "bytesTotal": 96976472,
+            "ms": 986.8999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 101,
+            "total": 177,
+            "bytesLoaded": 58872710,
+            "bytesTotal": 96976472,
+            "ms": 1005.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 102,
+            "total": 177,
+            "bytesLoaded": 59383503,
+            "bytesTotal": 96976472,
+            "ms": 1009.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 103,
+            "total": 177,
+            "bytesLoaded": 59894555,
+            "bytesTotal": 96976472,
+            "ms": 1013.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 104,
+            "total": 177,
+            "bytesLoaded": 60407437,
+            "bytesTotal": 96976472,
+            "ms": 1020
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 105,
+            "total": 177,
+            "bytesLoaded": 60910014,
+            "bytesTotal": 96976472,
+            "ms": 1037.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 106,
+            "total": 177,
+            "bytesLoaded": 61409775,
+            "bytesTotal": 96976472,
+            "ms": 1041.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 107,
+            "total": 177,
+            "bytesLoaded": 61921714,
+            "bytesTotal": 96976472,
+            "ms": 1047.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 108,
+            "total": 177,
+            "bytesLoaded": 62425028,
+            "bytesTotal": 96976472,
+            "ms": 1054
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 109,
+            "total": 177,
+            "bytesLoaded": 62939780,
+            "bytesTotal": 96976472,
+            "ms": 1065.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 110,
+            "total": 177,
+            "bytesLoaded": 63444998,
+            "bytesTotal": 96976472,
+            "ms": 1074.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 111,
+            "total": 177,
+            "bytesLoaded": 63944432,
+            "bytesTotal": 96976472,
+            "ms": 1078.3999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 112,
+            "total": 177,
+            "bytesLoaded": 64449129,
+            "bytesTotal": 96976472,
+            "ms": 1085.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 113,
+            "total": 177,
+            "bytesLoaded": 64946194,
+            "bytesTotal": 96976472,
+            "ms": 1100.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 114,
+            "total": 177,
+            "bytesLoaded": 65445917,
+            "bytesTotal": 96976472,
+            "ms": 1106.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 115,
+            "total": 177,
+            "bytesLoaded": 65950888,
+            "bytesTotal": 96976472,
+            "ms": 1109.8999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 116,
+            "total": 177,
+            "bytesLoaded": 66464253,
+            "bytesTotal": 96976472,
+            "ms": 1116
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 117,
+            "total": 177,
+            "bytesLoaded": 66980758,
+            "bytesTotal": 96976472,
+            "ms": 1130.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 118,
+            "total": 177,
+            "bytesLoaded": 67489682,
+            "bytesTotal": 96976472,
+            "ms": 1134.3999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 119,
+            "total": 177,
+            "bytesLoaded": 67999739,
+            "bytesTotal": 96976472,
+            "ms": 1143.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 120,
+            "total": 177,
+            "bytesLoaded": 68502678,
+            "bytesTotal": 96976472,
+            "ms": 1147
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 121,
+            "total": 177,
+            "bytesLoaded": 69004682,
+            "bytesTotal": 96976472,
+            "ms": 1161
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 122,
+            "total": 177,
+            "bytesLoaded": 69502125,
+            "bytesTotal": 96976472,
+            "ms": 1165.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 123,
+            "total": 177,
+            "bytesLoaded": 70012044,
+            "bytesTotal": 96976472,
+            "ms": 1173.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 124,
+            "total": 177,
+            "bytesLoaded": 70525872,
+            "bytesTotal": 96976472,
+            "ms": 1177.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 125,
+            "total": 177,
+            "bytesLoaded": 71030945,
+            "bytesTotal": 96976472,
+            "ms": 1192.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 126,
+            "total": 177,
+            "bytesLoaded": 71543309,
+            "bytesTotal": 96976472,
+            "ms": 1198.2999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 127,
+            "total": 177,
+            "bytesLoaded": 72049523,
+            "bytesTotal": 96976472,
+            "ms": 1204.2999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 128,
+            "total": 177,
+            "bytesLoaded": 72550165,
+            "bytesTotal": 96976472,
+            "ms": 1208.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 129,
+            "total": 177,
+            "bytesLoaded": 73050181,
+            "bytesTotal": 96976472,
+            "ms": 1222.2999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 130,
+            "total": 177,
+            "bytesLoaded": 73542411,
+            "bytesTotal": 96976472,
+            "ms": 1226.2999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 131,
+            "total": 177,
+            "bytesLoaded": 74048777,
+            "bytesTotal": 96976472,
+            "ms": 1235.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 132,
+            "total": 177,
+            "bytesLoaded": 74553189,
+            "bytesTotal": 96976472,
+            "ms": 1239.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 133,
+            "total": 177,
+            "bytesLoaded": 75053863,
+            "bytesTotal": 96976472,
+            "ms": 1253.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 134,
+            "total": 177,
+            "bytesLoaded": 75556621,
+            "bytesTotal": 96976472,
+            "ms": 1257.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 135,
+            "total": 177,
+            "bytesLoaded": 76053704,
+            "bytesTotal": 96976472,
+            "ms": 1265.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 136,
+            "total": 177,
+            "bytesLoaded": 76556845,
+            "bytesTotal": 96976472,
+            "ms": 1269.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 137,
+            "total": 177,
+            "bytesLoaded": 77067287,
+            "bytesTotal": 96976472,
+            "ms": 1284.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 138,
+            "total": 177,
+            "bytesLoaded": 77580126,
+            "bytesTotal": 96976472,
+            "ms": 1290.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 139,
+            "total": 177,
+            "bytesLoaded": 78079096,
+            "bytesTotal": 96976472,
+            "ms": 1296.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 140,
+            "total": 177,
+            "bytesLoaded": 78589978,
+            "bytesTotal": 96976472,
+            "ms": 1300.2999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 141,
+            "total": 177,
+            "bytesLoaded": 79096489,
+            "bytesTotal": 96976472,
+            "ms": 1315.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 142,
+            "total": 177,
+            "bytesLoaded": 79600666,
+            "bytesTotal": 96976472,
+            "ms": 1319
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 143,
+            "total": 177,
+            "bytesLoaded": 80106957,
+            "bytesTotal": 96976472,
+            "ms": 1327.3999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 144,
+            "total": 177,
+            "bytesLoaded": 80621098,
+            "bytesTotal": 96976472,
+            "ms": 1331.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 145,
+            "total": 177,
+            "bytesLoaded": 81127494,
+            "bytesTotal": 96976472,
+            "ms": 1345.2999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 146,
+            "total": 177,
+            "bytesLoaded": 81623217,
+            "bytesTotal": 96976472,
+            "ms": 1351.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 147,
+            "total": 177,
+            "bytesLoaded": 82124546,
+            "bytesTotal": 96976472,
+            "ms": 1357.3999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 148,
+            "total": 177,
+            "bytesLoaded": 82630255,
+            "bytesTotal": 96976472,
+            "ms": 1361.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 149,
+            "total": 177,
+            "bytesLoaded": 83133043,
+            "bytesTotal": 96976472,
+            "ms": 1375.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 150,
+            "total": 177,
+            "bytesLoaded": 83642329,
+            "bytesTotal": 96976472,
+            "ms": 1382.8999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 151,
+            "total": 177,
+            "bytesLoaded": 84144261,
+            "bytesTotal": 96976472,
+            "ms": 1388.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 152,
+            "total": 177,
+            "bytesLoaded": 84636530,
+            "bytesTotal": 96976472,
+            "ms": 1392.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 153,
+            "total": 177,
+            "bytesLoaded": 85146681,
+            "bytesTotal": 96976472,
+            "ms": 1407.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 154,
+            "total": 177,
+            "bytesLoaded": 85654834,
+            "bytesTotal": 96976472,
+            "ms": 1411.8999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 155,
+            "total": 177,
+            "bytesLoaded": 86160162,
+            "bytesTotal": 96976472,
+            "ms": 1420.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 156,
+            "total": 177,
+            "bytesLoaded": 86659633,
+            "bytesTotal": 96976472,
+            "ms": 1423.8999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 157,
+            "total": 177,
+            "bytesLoaded": 87163587,
+            "bytesTotal": 96976472,
+            "ms": 1436
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 158,
+            "total": 177,
+            "bytesLoaded": 87674909,
+            "bytesTotal": 96976472,
+            "ms": 1444.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 159,
+            "total": 177,
+            "bytesLoaded": 88176562,
+            "bytesTotal": 96976472,
+            "ms": 1450.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 160,
+            "total": 177,
+            "bytesLoaded": 88680217,
+            "bytesTotal": 96976472,
+            "ms": 1454.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 161,
+            "total": 177,
+            "bytesLoaded": 89187605,
+            "bytesTotal": 96976472,
+            "ms": 1468.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 162,
+            "total": 177,
+            "bytesLoaded": 89676238,
+            "bytesTotal": 96976472,
+            "ms": 1474.8999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 163,
+            "total": 177,
+            "bytesLoaded": 90180374,
+            "bytesTotal": 96976472,
+            "ms": 1480.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 164,
+            "total": 177,
+            "bytesLoaded": 90690447,
+            "bytesTotal": 96976472,
+            "ms": 1484.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 165,
+            "total": 177,
+            "bytesLoaded": 91198014,
+            "bytesTotal": 96976472,
+            "ms": 1499.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 166,
+            "total": 177,
+            "bytesLoaded": 91708098,
+            "bytesTotal": 96976472,
+            "ms": 1506.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 167,
+            "total": 177,
+            "bytesLoaded": 92220323,
+            "bytesTotal": 96976472,
+            "ms": 1509.7999999523163
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 168,
+            "total": 177,
+            "bytesLoaded": 92728735,
+            "bytesTotal": 96976472,
+            "ms": 1516
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 169,
+            "total": 177,
+            "bytesLoaded": 93224881,
+            "bytesTotal": 96976472,
+            "ms": 1530.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 170,
+            "total": 177,
+            "bytesLoaded": 93736180,
+            "bytesTotal": 96976472,
+            "ms": 1537.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 171,
+            "total": 177,
+            "bytesLoaded": 94235028,
+            "bytesTotal": 96976472,
+            "ms": 1541.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 172,
+            "total": 177,
+            "bytesLoaded": 94733517,
+            "bytesTotal": 96976472,
+            "ms": 1547.3999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 173,
+            "total": 177,
+            "bytesLoaded": 95242048,
+            "bytesTotal": 96976472,
+            "ms": 1566.3999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 174,
+            "total": 177,
+            "bytesLoaded": 95751013,
+            "bytesTotal": 96976472,
+            "ms": 1572.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 175,
+            "total": 177,
+            "bytesLoaded": 96298207,
+            "bytesTotal": 96976472,
+            "ms": 1576
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 176,
+            "total": 177,
+            "bytesLoaded": 96952323,
+            "bytesTotal": 96976472,
+            "ms": 1581.8999999761581
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 177,
+            "total": 177,
+            "bytesLoaded": 96976472,
+            "bytesTotal": 96976472,
+            "ms": 1583.5
+          },
+          {
+            "phase": "verify-geometry",
+            "loaded": 0,
+            "total": 1,
+            "ms": 1583.6000000238419
+          }
+        ]
+      },
+      "readyMemory": {
+        "usedSize": 71144120,
+        "totalSize": 84934656,
+        "embedderHeapUsedSize": 4274584,
+        "backingStorageSize": 507647161
+      },
+      "paint": null,
+      "afterDisposeGC": {
+        "usedSize": 1156624,
+        "totalSize": 2621440,
+        "embedderHeapUsedSize": 573896,
+        "backingStorageSize": 178706
+      },
+      "heapSamples": [
+        {
+          "at": 1792434979327,
+          "phase": "load",
+          "usedSize": 2479868,
+          "totalSize": 4014080,
+          "embedderHeapUsedSize": 1381912,
+          "backingStorageSize": 357158
+        },
+        {
+          "at": 1792434979378,
+          "phase": "load",
+          "usedSize": 6244092,
+          "totalSize": 11091968,
+          "embedderHeapUsedSize": 1123064,
+          "backingStorageSize": 212062905
+        },
+        {
+          "at": 1792434979443,
+          "phase": "load",
+          "usedSize": 12673148,
+          "totalSize": 19742720,
+          "embedderHeapUsedSize": 1340424,
+          "backingStorageSize": 250684008
+        },
+        {
+          "at": 1792434979512,
+          "phase": "load",
+          "usedSize": 23214100,
+          "totalSize": 37044224,
+          "embedderHeapUsedSize": 1368200,
+          "backingStorageSize": 277990544
+        },
+        {
+          "at": 1792434979566,
+          "phase": "load",
+          "usedSize": 29962196,
+          "totalSize": 41762816,
+          "embedderHeapUsedSize": 1663872,
+          "backingStorageSize": 314109664
+        },
+        {
+          "at": 1792434979632,
+          "phase": "load",
+          "usedSize": 33766256,
+          "totalSize": 41943040,
+          "embedderHeapUsedSize": 900200,
+          "backingStorageSize": 234188341
+        },
+        {
+          "at": 1792434979688,
+          "phase": "load",
+          "usedSize": 35935100,
+          "totalSize": 41943040,
+          "embedderHeapUsedSize": 1015584,
+          "backingStorageSize": 260644868
+        },
+        {
+          "at": 1792434979743,
+          "phase": "load",
+          "usedSize": 37519440,
+          "totalSize": 41943040,
+          "embedderHeapUsedSize": 1256968,
+          "backingStorageSize": 282366900
+        },
+        {
+          "at": 1792434979795,
+          "phase": "load",
+          "usedSize": 38495548,
+          "totalSize": 55050240,
+          "embedderHeapUsedSize": 1437704,
+          "backingStorageSize": 307554570
+        },
+        {
+          "at": 1792434979851,
+          "phase": "load",
+          "usedSize": 40448932,
+          "totalSize": 55050240,
+          "embedderHeapUsedSize": 1930360,
+          "backingStorageSize": 334782432
+        },
+        {
+          "at": 1792434979905,
+          "phase": "load",
+          "usedSize": 41924096,
+          "totalSize": 55050240,
+          "embedderHeapUsedSize": 2309712,
+          "backingStorageSize": 356467743
+        },
+        {
+          "at": 1792434979955,
+          "phase": "load",
+          "usedSize": 42955896,
+          "totalSize": 59506688,
+          "embedderHeapUsedSize": 2700608,
+          "backingStorageSize": 381881426
+        },
+        {
+          "at": 1792434980010,
+          "phase": "load",
+          "usedSize": 44925872,
+          "totalSize": 59506688,
+          "embedderHeapUsedSize": 2944232,
+          "backingStorageSize": 410169134
+        },
+        {
+          "at": 1792434980068,
+          "phase": "load",
+          "usedSize": 46383884,
+          "totalSize": 64225280,
+          "embedderHeapUsedSize": 3200368,
+          "backingStorageSize": 438570413
+        },
+        {
+          "at": 1792434980125,
+          "phase": "load",
+          "usedSize": 48315856,
+          "totalSize": 64225280,
+          "embedderHeapUsedSize": 3457200,
+          "backingStorageSize": 463820823
+        },
+        {
+          "at": 1792434980178,
+          "phase": "load",
+          "usedSize": 49287196,
+          "totalSize": 64225280,
+          "embedderHeapUsedSize": 3843656,
+          "backingStorageSize": 488313373
+        },
+        {
+          "at": 1792434980234,
+          "phase": "load",
+          "usedSize": 50827376,
+          "totalSize": 68943872,
+          "embedderHeapUsedSize": 4108256,
+          "backingStorageSize": 515838200
+        },
+        {
+          "at": 1792434980291,
+          "phase": "load",
+          "usedSize": 51377808,
+          "totalSize": 67371008,
+          "embedderHeapUsedSize": 1325688,
+          "backingStorageSize": 212644662
+        },
+        {
+          "at": 1792434980343,
+          "phase": "load",
+          "usedSize": 52461932,
+          "totalSize": 67371008,
+          "embedderHeapUsedSize": 1583472,
+          "backingStorageSize": 236553937
+        },
+        {
+          "at": 1792434980394,
+          "phase": "load",
+          "usedSize": 54407348,
+          "totalSize": 67371008,
+          "embedderHeapUsedSize": 1669120,
+          "backingStorageSize": 260483047
+        },
+        {
+          "at": 1792434980446,
+          "phase": "load",
+          "usedSize": 55484916,
+          "totalSize": 71565312,
+          "embedderHeapUsedSize": 1904656,
+          "backingStorageSize": 283564044
+        },
+        {
+          "at": 1792434980498,
+          "phase": "load",
+          "usedSize": 57013236,
+          "totalSize": 71565312,
+          "embedderHeapUsedSize": 2310080,
+          "backingStorageSize": 311707215
+        },
+        {
+          "at": 1792434980555,
+          "phase": "load",
+          "usedSize": 58899240,
+          "totalSize": 71565312,
+          "embedderHeapUsedSize": 2372240,
+          "backingStorageSize": 339111557
+        },
+        {
+          "at": 1792434980610,
+          "phase": "load",
+          "usedSize": 60386708,
+          "totalSize": 76021760,
+          "embedderHeapUsedSize": 2812152,
+          "backingStorageSize": 364193346
+        },
+        {
+          "at": 1792434980664,
+          "phase": "load",
+          "usedSize": 62303704,
+          "totalSize": 76021760,
+          "embedderHeapUsedSize": 3011488,
+          "backingStorageSize": 390424464
+        },
+        {
+          "at": 1792434980717,
+          "phase": "load",
+          "usedSize": 62936584,
+          "totalSize": 80478208,
+          "embedderHeapUsedSize": 3362408,
+          "backingStorageSize": 415351224
+        },
+        {
+          "at": 1792434980771,
+          "phase": "load",
+          "usedSize": 64858596,
+          "totalSize": 80478208,
+          "embedderHeapUsedSize": 3612792,
+          "backingStorageSize": 442886023
+        },
+        {
+          "at": 1792434980826,
+          "phase": "load",
+          "usedSize": 66827692,
+          "totalSize": 80478208,
+          "embedderHeapUsedSize": 4015992,
+          "backingStorageSize": 468172442
+        },
+        {
+          "at": 1792434980879,
+          "phase": "load",
+          "usedSize": 68248940,
+          "totalSize": 84934656,
+          "embedderHeapUsedSize": 4253736,
+          "backingStorageSize": 492473555
+        },
+        {
+          "at": 1792434980933,
+          "phase": "load",
+          "usedSize": 70355096,
+          "totalSize": 84934656,
+          "embedderHeapUsedSize": 4274584,
+          "backingStorageSize": 507647161
+        },
+        {
+          "at": 1792434982221,
+          "phase": "dispose",
+          "usedSize": 1156624,
+          "totalSize": 2621440,
+          "embedderHeapUsedSize": 573896,
+          "backingStorageSize": 178706
+        }
+      ]
+    },
+    {
+      "cycle": 1,
+      "load": {
+        "loaded": false,
+        "error": "ChecksumMismatchError: geometrySha256 mismatch: manifest 7b6fa8e13f14 computed 4e8ee738dbdf",
+        "errorName": "ChecksumMismatchError",
+        "readyMs": 2803,
+        "maxObservedHeartbeatGapMs": 1261.2999999523163,
+        "heartbeatSamples": 78,
+        "longTasksMs": [
+          1259
+        ],
+        "progress": [
+          {
+            "phase": "manifest",
+            "loaded": 0,
+            "total": 1,
+            "ms": 0
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 1,
+            "total": 177,
+            "bytesLoaded": 534042,
+            "bytesTotal": 96976472,
+            "ms": 22.40000009536743
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 2,
+            "total": 177,
+            "bytesLoaded": 1075842,
+            "bytesTotal": 96976472,
+            "ms": 26.300000071525574
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 3,
+            "total": 177,
+            "bytesLoaded": 1606927,
+            "bytesTotal": 96976472,
+            "ms": 29.90000009536743
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 4,
+            "total": 177,
+            "bytesLoaded": 2139408,
+            "bytesTotal": 96976472,
+            "ms": 36.300000071525574
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 5,
+            "total": 177,
+            "bytesLoaded": 2691161,
+            "bytesTotal": 96976472,
+            "ms": 83
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 6,
+            "total": 177,
+            "bytesLoaded": 3229195,
+            "bytesTotal": 96976472,
+            "ms": 86.90000009536743
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 7,
+            "total": 177,
+            "bytesLoaded": 4367851,
+            "bytesTotal": 96976472,
+            "ms": 90.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 8,
+            "total": 177,
+            "bytesLoaded": 5589015,
+            "bytesTotal": 96976472,
+            "ms": 97.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 9,
+            "total": 177,
+            "bytesLoaded": 6856743,
+            "bytesTotal": 96976472,
+            "ms": 178.70000004768372
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 10,
+            "total": 177,
+            "bytesLoaded": 8156792,
+            "bytesTotal": 96976472,
+            "ms": 187.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 11,
+            "total": 177,
+            "bytesLoaded": 9553176,
+            "bytesTotal": 96976472,
+            "ms": 191.70000004768372
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 12,
+            "total": 177,
+            "bytesLoaded": 10861405,
+            "bytesTotal": 96976472,
+            "ms": 202.70000004768372
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 13,
+            "total": 177,
+            "bytesLoaded": 12189028,
+            "bytesTotal": 96976472,
+            "ms": 276.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 14,
+            "total": 177,
+            "bytesLoaded": 13428226,
+            "bytesTotal": 96976472,
+            "ms": 282.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 15,
+            "total": 177,
+            "bytesLoaded": 14567382,
+            "bytesTotal": 96976472,
+            "ms": 286.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 16,
+            "total": 177,
+            "bytesLoaded": 15810771,
+            "bytesTotal": 96976472,
+            "ms": 294
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 17,
+            "total": 177,
+            "bytesLoaded": 16359827,
+            "bytesTotal": 96976472,
+            "ms": 309.40000009536743
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 18,
+            "total": 177,
+            "bytesLoaded": 16878108,
+            "bytesTotal": 96976472,
+            "ms": 315.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 19,
+            "total": 177,
+            "bytesLoaded": 17383626,
+            "bytesTotal": 96976472,
+            "ms": 319.40000009536743
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 20,
+            "total": 177,
+            "bytesLoaded": 17889614,
+            "bytesTotal": 96976472,
+            "ms": 326.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 21,
+            "total": 177,
+            "bytesLoaded": 18386380,
+            "bytesTotal": 96976472,
+            "ms": 341
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 22,
+            "total": 177,
+            "bytesLoaded": 18882738,
+            "bytesTotal": 96976472,
+            "ms": 346.90000009536743
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 23,
+            "total": 177,
+            "bytesLoaded": 19400541,
+            "bytesTotal": 96976472,
+            "ms": 351.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 24,
+            "total": 177,
+            "bytesLoaded": 19912479,
+            "bytesTotal": 96976472,
+            "ms": 358
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 25,
+            "total": 177,
+            "bytesLoaded": 20416393,
+            "bytesTotal": 96976472,
+            "ms": 372.10000002384186
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 26,
+            "total": 177,
+            "bytesLoaded": 20925206,
+            "bytesTotal": 96976472,
+            "ms": 380.40000009536743
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 27,
+            "total": 177,
+            "bytesLoaded": 21426950,
+            "bytesTotal": 96976472,
+            "ms": 384.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 28,
+            "total": 177,
+            "bytesLoaded": 21928273,
+            "bytesTotal": 96976472,
+            "ms": 390.90000009536743
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 29,
+            "total": 177,
+            "bytesLoaded": 22435935,
+            "bytesTotal": 96976472,
+            "ms": 404.90000009536743
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 30,
+            "total": 177,
+            "bytesLoaded": 22934289,
+            "bytesTotal": 96976472,
+            "ms": 410.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 31,
+            "total": 177,
+            "bytesLoaded": 23439080,
+            "bytesTotal": 96976472,
+            "ms": 414.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 32,
+            "total": 177,
+            "bytesLoaded": 23936589,
+            "bytesTotal": 96976472,
+            "ms": 421
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 33,
+            "total": 177,
+            "bytesLoaded": 24447629,
+            "bytesTotal": 96976472,
+            "ms": 435.90000009536743
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 34,
+            "total": 177,
+            "bytesLoaded": 24957744,
+            "bytesTotal": 96976472,
+            "ms": 442.3000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 35,
+            "total": 177,
+            "bytesLoaded": 25463973,
+            "bytesTotal": 96976472,
+            "ms": 448.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 36,
+            "total": 177,
+            "bytesLoaded": 25971754,
+            "bytesTotal": 96976472,
+            "ms": 452.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 37,
+            "total": 177,
+            "bytesLoaded": 26482906,
+            "bytesTotal": 96976472,
+            "ms": 467
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 38,
+            "total": 177,
+            "bytesLoaded": 26993642,
+            "bytesTotal": 96976472,
+            "ms": 473.3000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 39,
+            "total": 177,
+            "bytesLoaded": 27490993,
+            "bytesTotal": 96976472,
+            "ms": 479.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 40,
+            "total": 177,
+            "bytesLoaded": 28001173,
+            "bytesTotal": 96976472,
+            "ms": 483
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 41,
+            "total": 177,
+            "bytesLoaded": 28506501,
+            "bytesTotal": 96976472,
+            "ms": 497.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 42,
+            "total": 177,
+            "bytesLoaded": 29013964,
+            "bytesTotal": 96976472,
+            "ms": 503.60000002384186
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 43,
+            "total": 177,
+            "bytesLoaded": 29523713,
+            "bytesTotal": 96976472,
+            "ms": 507.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 44,
+            "total": 177,
+            "bytesLoaded": 30029836,
+            "bytesTotal": 96976472,
+            "ms": 513.3000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 45,
+            "total": 177,
+            "bytesLoaded": 30535527,
+            "bytesTotal": 96976472,
+            "ms": 528.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 46,
+            "total": 177,
+            "bytesLoaded": 31044792,
+            "bytesTotal": 96976472,
+            "ms": 534.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 47,
+            "total": 177,
+            "bytesLoaded": 31559464,
+            "bytesTotal": 96976472,
+            "ms": 538.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 48,
+            "total": 177,
+            "bytesLoaded": 32072796,
+            "bytesTotal": 96976472,
+            "ms": 545.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 49,
+            "total": 177,
+            "bytesLoaded": 32585925,
+            "bytesTotal": 96976472,
+            "ms": 558.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 50,
+            "total": 177,
+            "bytesLoaded": 33085607,
+            "bytesTotal": 96976472,
+            "ms": 564.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 51,
+            "total": 177,
+            "bytesLoaded": 33589984,
+            "bytesTotal": 96976472,
+            "ms": 568.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 52,
+            "total": 177,
+            "bytesLoaded": 34100213,
+            "bytesTotal": 96976472,
+            "ms": 575
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 53,
+            "total": 177,
+            "bytesLoaded": 34604821,
+            "bytesTotal": 96976472,
+            "ms": 589
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 54,
+            "total": 177,
+            "bytesLoaded": 35094204,
+            "bytesTotal": 96976472,
+            "ms": 594.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 55,
+            "total": 177,
+            "bytesLoaded": 35607913,
+            "bytesTotal": 96976472,
+            "ms": 598.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 56,
+            "total": 177,
+            "bytesLoaded": 36113185,
+            "bytesTotal": 96976472,
+            "ms": 605.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 57,
+            "total": 177,
+            "bytesLoaded": 36618674,
+            "bytesTotal": 96976472,
+            "ms": 619.4000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 58,
+            "total": 177,
+            "bytesLoaded": 37116263,
+            "bytesTotal": 96976472,
+            "ms": 625.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 59,
+            "total": 177,
+            "bytesLoaded": 37622598,
+            "bytesTotal": 96976472,
+            "ms": 629.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 60,
+            "total": 177,
+            "bytesLoaded": 38117432,
+            "bytesTotal": 96976472,
+            "ms": 636
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 61,
+            "total": 177,
+            "bytesLoaded": 38627668,
+            "bytesTotal": 96976472,
+            "ms": 650.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 62,
+            "total": 177,
+            "bytesLoaded": 39138808,
+            "bytesTotal": 96976472,
+            "ms": 656.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 63,
+            "total": 177,
+            "bytesLoaded": 39650839,
+            "bytesTotal": 96976472,
+            "ms": 660.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 64,
+            "total": 177,
+            "bytesLoaded": 40163230,
+            "bytesTotal": 96976472,
+            "ms": 666.4000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 65,
+            "total": 177,
+            "bytesLoaded": 40679191,
+            "bytesTotal": 96976472,
+            "ms": 681.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 66,
+            "total": 177,
+            "bytesLoaded": 41166635,
+            "bytesTotal": 96976472,
+            "ms": 686.9000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 67,
+            "total": 177,
+            "bytesLoaded": 41666455,
+            "bytesTotal": 96976472,
+            "ms": 691
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 68,
+            "total": 177,
+            "bytesLoaded": 42167648,
+            "bytesTotal": 96976472,
+            "ms": 697.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 69,
+            "total": 177,
+            "bytesLoaded": 42666904,
+            "bytesTotal": 96976472,
+            "ms": 711.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 70,
+            "total": 177,
+            "bytesLoaded": 43173361,
+            "bytesTotal": 96976472,
+            "ms": 717.4000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 71,
+            "total": 177,
+            "bytesLoaded": 43678071,
+            "bytesTotal": 96976472,
+            "ms": 721.4000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 72,
+            "total": 177,
+            "bytesLoaded": 44193804,
+            "bytesTotal": 96976472,
+            "ms": 727.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 73,
+            "total": 177,
+            "bytesLoaded": 44712487,
+            "bytesTotal": 96976472,
+            "ms": 742.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 74,
+            "total": 177,
+            "bytesLoaded": 45221195,
+            "bytesTotal": 96976472,
+            "ms": 748.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 75,
+            "total": 177,
+            "bytesLoaded": 45724903,
+            "bytesTotal": 96976472,
+            "ms": 752.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 76,
+            "total": 177,
+            "bytesLoaded": 46239968,
+            "bytesTotal": 96976472,
+            "ms": 759.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 77,
+            "total": 177,
+            "bytesLoaded": 46742663,
+            "bytesTotal": 96976472,
+            "ms": 775.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 78,
+            "total": 177,
+            "bytesLoaded": 47243002,
+            "bytesTotal": 96976472,
+            "ms": 781.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 79,
+            "total": 177,
+            "bytesLoaded": 47732181,
+            "bytesTotal": 96976472,
+            "ms": 785.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 80,
+            "total": 177,
+            "bytesLoaded": 48242550,
+            "bytesTotal": 96976472,
+            "ms": 791.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 81,
+            "total": 177,
+            "bytesLoaded": 48739624,
+            "bytesTotal": 96976472,
+            "ms": 805.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 82,
+            "total": 177,
+            "bytesLoaded": 49249001,
+            "bytesTotal": 96976472,
+            "ms": 811.4000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 83,
+            "total": 177,
+            "bytesLoaded": 49756136,
+            "bytesTotal": 96976472,
+            "ms": 815.4000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 84,
+            "total": 177,
+            "bytesLoaded": 50256740,
+            "bytesTotal": 96976472,
+            "ms": 821.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 85,
+            "total": 177,
+            "bytesLoaded": 50762941,
+            "bytesTotal": 96976472,
+            "ms": 836
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 86,
+            "total": 177,
+            "bytesLoaded": 51280042,
+            "bytesTotal": 96976472,
+            "ms": 842.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 87,
+            "total": 177,
+            "bytesLoaded": 51774957,
+            "bytesTotal": 96976472,
+            "ms": 846.4000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 88,
+            "total": 177,
+            "bytesLoaded": 52286000,
+            "bytesTotal": 96976472,
+            "ms": 852.3000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 89,
+            "total": 177,
+            "bytesLoaded": 52796866,
+            "bytesTotal": 96976472,
+            "ms": 873.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 90,
+            "total": 177,
+            "bytesLoaded": 53311180,
+            "bytesTotal": 96976472,
+            "ms": 877.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 91,
+            "total": 177,
+            "bytesLoaded": 53821724,
+            "bytesTotal": 96976472,
+            "ms": 881.4000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 92,
+            "total": 177,
+            "bytesLoaded": 54331201,
+            "bytesTotal": 96976472,
+            "ms": 887.9000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 93,
+            "total": 177,
+            "bytesLoaded": 54837252,
+            "bytesTotal": 96976472,
+            "ms": 901.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 94,
+            "total": 177,
+            "bytesLoaded": 55341056,
+            "bytesTotal": 96976472,
+            "ms": 907.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 95,
+            "total": 177,
+            "bytesLoaded": 55855283,
+            "bytesTotal": 96976472,
+            "ms": 911.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 96,
+            "total": 177,
+            "bytesLoaded": 56351962,
+            "bytesTotal": 96976472,
+            "ms": 919.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 97,
+            "total": 177,
+            "bytesLoaded": 56861797,
+            "bytesTotal": 96976472,
+            "ms": 933.9000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 98,
+            "total": 177,
+            "bytesLoaded": 57369571,
+            "bytesTotal": 96976472,
+            "ms": 939.9000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 99,
+            "total": 177,
+            "bytesLoaded": 57870449,
+            "bytesTotal": 96976472,
+            "ms": 943.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 100,
+            "total": 177,
+            "bytesLoaded": 58367115,
+            "bytesTotal": 96976472,
+            "ms": 950.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 101,
+            "total": 177,
+            "bytesLoaded": 58872710,
+            "bytesTotal": 96976472,
+            "ms": 964.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 102,
+            "total": 177,
+            "bytesLoaded": 59383503,
+            "bytesTotal": 96976472,
+            "ms": 970.4000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 103,
+            "total": 177,
+            "bytesLoaded": 59894555,
+            "bytesTotal": 96976472,
+            "ms": 974.4000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 104,
+            "total": 177,
+            "bytesLoaded": 60407437,
+            "bytesTotal": 96976472,
+            "ms": 980.9000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 105,
+            "total": 177,
+            "bytesLoaded": 60910014,
+            "bytesTotal": 96976472,
+            "ms": 994.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 106,
+            "total": 177,
+            "bytesLoaded": 61409775,
+            "bytesTotal": 96976472,
+            "ms": 1000.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 107,
+            "total": 177,
+            "bytesLoaded": 61921714,
+            "bytesTotal": 96976472,
+            "ms": 1005
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 108,
+            "total": 177,
+            "bytesLoaded": 62425028,
+            "bytesTotal": 96976472,
+            "ms": 1011.4000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 109,
+            "total": 177,
+            "bytesLoaded": 62939780,
+            "bytesTotal": 96976472,
+            "ms": 1025.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 110,
+            "total": 177,
+            "bytesLoaded": 63444998,
+            "bytesTotal": 96976472,
+            "ms": 1031.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 111,
+            "total": 177,
+            "bytesLoaded": 63944432,
+            "bytesTotal": 96976472,
+            "ms": 1035.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 112,
+            "total": 177,
+            "bytesLoaded": 64449129,
+            "bytesTotal": 96976472,
+            "ms": 1042
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 113,
+            "total": 177,
+            "bytesLoaded": 64946194,
+            "bytesTotal": 96976472,
+            "ms": 1055.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 114,
+            "total": 177,
+            "bytesLoaded": 65445917,
+            "bytesTotal": 96976472,
+            "ms": 1061.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 115,
+            "total": 177,
+            "bytesLoaded": 65950888,
+            "bytesTotal": 96976472,
+            "ms": 1066.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 116,
+            "total": 177,
+            "bytesLoaded": 66464253,
+            "bytesTotal": 96976472,
+            "ms": 1073.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 117,
+            "total": 177,
+            "bytesLoaded": 66980758,
+            "bytesTotal": 96976472,
+            "ms": 1088
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 118,
+            "total": 177,
+            "bytesLoaded": 67489682,
+            "bytesTotal": 96976472,
+            "ms": 1094.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 119,
+            "total": 177,
+            "bytesLoaded": 67999739,
+            "bytesTotal": 96976472,
+            "ms": 1097.9000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 120,
+            "total": 177,
+            "bytesLoaded": 68502678,
+            "bytesTotal": 96976472,
+            "ms": 1104.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 121,
+            "total": 177,
+            "bytesLoaded": 69004682,
+            "bytesTotal": 96976472,
+            "ms": 1118.4000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 122,
+            "total": 177,
+            "bytesLoaded": 69502125,
+            "bytesTotal": 96976472,
+            "ms": 1124.4000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 123,
+            "total": 177,
+            "bytesLoaded": 70012044,
+            "bytesTotal": 96976472,
+            "ms": 1130.3000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 124,
+            "total": 177,
+            "bytesLoaded": 70525872,
+            "bytesTotal": 96976472,
+            "ms": 1134.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 125,
+            "total": 177,
+            "bytesLoaded": 71030945,
+            "bytesTotal": 96976472,
+            "ms": 1148.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 126,
+            "total": 177,
+            "bytesLoaded": 71543309,
+            "bytesTotal": 96976472,
+            "ms": 1154.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 127,
+            "total": 177,
+            "bytesLoaded": 72049523,
+            "bytesTotal": 96976472,
+            "ms": 1160.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 128,
+            "total": 177,
+            "bytesLoaded": 72550165,
+            "bytesTotal": 96976472,
+            "ms": 1164.3000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 129,
+            "total": 177,
+            "bytesLoaded": 73050181,
+            "bytesTotal": 96976472,
+            "ms": 1180.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 130,
+            "total": 177,
+            "bytesLoaded": 73542411,
+            "bytesTotal": 96976472,
+            "ms": 1184.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 131,
+            "total": 177,
+            "bytesLoaded": 74048777,
+            "bytesTotal": 96976472,
+            "ms": 1188.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 132,
+            "total": 177,
+            "bytesLoaded": 74553189,
+            "bytesTotal": 96976472,
+            "ms": 1194.4000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 133,
+            "total": 177,
+            "bytesLoaded": 75053863,
+            "bytesTotal": 96976472,
+            "ms": 1209.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 134,
+            "total": 177,
+            "bytesLoaded": 75556621,
+            "bytesTotal": 96976472,
+            "ms": 1216.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 135,
+            "total": 177,
+            "bytesLoaded": 76053704,
+            "bytesTotal": 96976472,
+            "ms": 1222
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 136,
+            "total": 177,
+            "bytesLoaded": 76556845,
+            "bytesTotal": 96976472,
+            "ms": 1225.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 137,
+            "total": 177,
+            "bytesLoaded": 77067287,
+            "bytesTotal": 96976472,
+            "ms": 1240.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 138,
+            "total": 177,
+            "bytesLoaded": 77580126,
+            "bytesTotal": 96976472,
+            "ms": 1246.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 139,
+            "total": 177,
+            "bytesLoaded": 78079096,
+            "bytesTotal": 96976472,
+            "ms": 1252.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 140,
+            "total": 177,
+            "bytesLoaded": 78589978,
+            "bytesTotal": 96976472,
+            "ms": 1256.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 141,
+            "total": 177,
+            "bytesLoaded": 79096489,
+            "bytesTotal": 96976472,
+            "ms": 1271.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 142,
+            "total": 177,
+            "bytesLoaded": 79600666,
+            "bytesTotal": 96976472,
+            "ms": 1275.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 143,
+            "total": 177,
+            "bytesLoaded": 80106957,
+            "bytesTotal": 96976472,
+            "ms": 1283.4000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 144,
+            "total": 177,
+            "bytesLoaded": 80621098,
+            "bytesTotal": 96976472,
+            "ms": 1287.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 145,
+            "total": 177,
+            "bytesLoaded": 81127494,
+            "bytesTotal": 96976472,
+            "ms": 1301.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 146,
+            "total": 177,
+            "bytesLoaded": 81623217,
+            "bytesTotal": 96976472,
+            "ms": 1307.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 147,
+            "total": 177,
+            "bytesLoaded": 82124546,
+            "bytesTotal": 96976472,
+            "ms": 1313.3000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 148,
+            "total": 177,
+            "bytesLoaded": 82630255,
+            "bytesTotal": 96976472,
+            "ms": 1317.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 149,
+            "total": 177,
+            "bytesLoaded": 83133043,
+            "bytesTotal": 96976472,
+            "ms": 1331.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 150,
+            "total": 177,
+            "bytesLoaded": 83642329,
+            "bytesTotal": 96976472,
+            "ms": 1337.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 151,
+            "total": 177,
+            "bytesLoaded": 84144261,
+            "bytesTotal": 96976472,
+            "ms": 1343.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 152,
+            "total": 177,
+            "bytesLoaded": 84636530,
+            "bytesTotal": 96976472,
+            "ms": 1347.4000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 153,
+            "total": 177,
+            "bytesLoaded": 85146681,
+            "bytesTotal": 96976472,
+            "ms": 1359.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 154,
+            "total": 177,
+            "bytesLoaded": 85654834,
+            "bytesTotal": 96976472,
+            "ms": 1369.3000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 155,
+            "total": 177,
+            "bytesLoaded": 86160162,
+            "bytesTotal": 96976472,
+            "ms": 1375.4000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 156,
+            "total": 177,
+            "bytesLoaded": 86659633,
+            "bytesTotal": 96976472,
+            "ms": 1379.3000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 157,
+            "total": 177,
+            "bytesLoaded": 87163587,
+            "bytesTotal": 96976472,
+            "ms": 1393.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 158,
+            "total": 177,
+            "bytesLoaded": 87674909,
+            "bytesTotal": 96976472,
+            "ms": 1399.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 159,
+            "total": 177,
+            "bytesLoaded": 88176562,
+            "bytesTotal": 96976472,
+            "ms": 1405.7000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 160,
+            "total": 177,
+            "bytesLoaded": 88680217,
+            "bytesTotal": 96976472,
+            "ms": 1409.5
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 161,
+            "total": 177,
+            "bytesLoaded": 89187605,
+            "bytesTotal": 96976472,
+            "ms": 1424
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 162,
+            "total": 177,
+            "bytesLoaded": 89676238,
+            "bytesTotal": 96976472,
+            "ms": 1430.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 163,
+            "total": 177,
+            "bytesLoaded": 90180374,
+            "bytesTotal": 96976472,
+            "ms": 1433.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 164,
+            "total": 177,
+            "bytesLoaded": 90690447,
+            "bytesTotal": 96976472,
+            "ms": 1440
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 165,
+            "total": 177,
+            "bytesLoaded": 91198014,
+            "bytesTotal": 96976472,
+            "ms": 1458.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 166,
+            "total": 177,
+            "bytesLoaded": 91708098,
+            "bytesTotal": 96976472,
+            "ms": 1462.4000000953674
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 167,
+            "total": 177,
+            "bytesLoaded": 92220323,
+            "bytesTotal": 96976472,
+            "ms": 1466.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 168,
+            "total": 177,
+            "bytesLoaded": 92728735,
+            "bytesTotal": 96976472,
+            "ms": 1473.1000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 169,
+            "total": 177,
+            "bytesLoaded": 93224881,
+            "bytesTotal": 96976472,
+            "ms": 1487.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 170,
+            "total": 177,
+            "bytesLoaded": 93736180,
+            "bytesTotal": 96976472,
+            "ms": 1494.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 171,
+            "total": 177,
+            "bytesLoaded": 94235028,
+            "bytesTotal": 96976472,
+            "ms": 1498.2000000476837
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 172,
+            "total": 177,
+            "bytesLoaded": 94733517,
+            "bytesTotal": 96976472,
+            "ms": 1505.3000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 173,
+            "total": 177,
+            "bytesLoaded": 95242048,
+            "bytesTotal": 96976472,
+            "ms": 1525.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 174,
+            "total": 177,
+            "bytesLoaded": 95751013,
+            "bytesTotal": 96976472,
+            "ms": 1529.6000000238419
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 175,
+            "total": 177,
+            "bytesLoaded": 96298207,
+            "bytesTotal": 96976472,
+            "ms": 1535.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 176,
+            "total": 177,
+            "bytesLoaded": 96952323,
+            "bytesTotal": 96976472,
+            "ms": 1541.8000000715256
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 177,
+            "total": 177,
+            "bytesLoaded": 96976472,
+            "bytesTotal": 96976472,
+            "ms": 1543.7000000476837
+          },
+          {
+            "phase": "verify-geometry",
+            "loaded": 0,
+            "total": 1,
+            "ms": 1543.7000000476837
+          }
+        ]
+      },
+      "readyMemory": {
+        "usedSize": 71290816,
+        "totalSize": 93847552,
+        "embedderHeapUsedSize": 5134960,
+        "backingStorageSize": 570810469
+      },
+      "paint": null,
+      "afterDisposeGC": {
+        "usedSize": 1162932,
+        "totalSize": 2359296,
+        "embedderHeapUsedSize": 696624,
+        "backingStorageSize": 178706
+      },
+      "heapSamples": [
+        {
+          "at": 1792434982274,
+          "phase": "load",
+          "usedSize": 1156624,
+          "totalSize": 2621440,
+          "embedderHeapUsedSize": 573896,
+          "backingStorageSize": 178706
+        },
+        {
+          "at": 1792434982324,
+          "phase": "load",
+          "usedSize": 4904928,
+          "totalSize": 8650752,
+          "embedderHeapUsedSize": 1052672,
+          "backingStorageSize": 211884677
+        },
+        {
+          "at": 1792434982383,
+          "phase": "load",
+          "usedSize": 11467752,
+          "totalSize": 17563648,
+          "embedderHeapUsedSize": 1150456,
+          "backingStorageSize": 250507892
+        },
+        {
+          "at": 1792434982449,
+          "phase": "load",
+          "usedSize": 21935756,
+          "totalSize": 33816576,
+          "embedderHeapUsedSize": 1324128,
+          "backingStorageSize": 278475631
+        },
+        {
+          "at": 1792434982500,
+          "phase": "load",
+          "usedSize": 27832340,
+          "totalSize": 35651584,
+          "embedderHeapUsedSize": 957480,
+          "backingStorageSize": 200896721
+        },
+        {
+          "at": 1792434982564,
+          "phase": "load",
+          "usedSize": 33798036,
+          "totalSize": 36438016,
+          "embedderHeapUsedSize": 1009616,
+          "backingStorageSize": 230080427
+        },
+        {
+          "at": 1792434982620,
+          "phase": "load",
+          "usedSize": 35956076,
+          "totalSize": 38535168,
+          "embedderHeapUsedSize": 1173928,
+          "backingStorageSize": 255962198
+        },
+        {
+          "at": 1792434982673,
+          "phase": "load",
+          "usedSize": 37503208,
+          "totalSize": 62652416,
+          "embedderHeapUsedSize": 1507232,
+          "backingStorageSize": 282678745
+        },
+        {
+          "at": 1792434982729,
+          "phase": "load",
+          "usedSize": 39303504,
+          "totalSize": 62652416,
+          "embedderHeapUsedSize": 1796208,
+          "backingStorageSize": 306826499
+        },
+        {
+          "at": 1792434982782,
+          "phase": "load",
+          "usedSize": 40574948,
+          "totalSize": 62652416,
+          "embedderHeapUsedSize": 2025624,
+          "backingStorageSize": 333124416
+        },
+        {
+          "at": 1792434982835,
+          "phase": "load",
+          "usedSize": 42057088,
+          "totalSize": 67633152,
+          "embedderHeapUsedSize": 2298440,
+          "backingStorageSize": 359794756
+        },
+        {
+          "at": 1792434982889,
+          "phase": "load",
+          "usedSize": 43973336,
+          "totalSize": 67633152,
+          "embedderHeapUsedSize": 2847816,
+          "backingStorageSize": 386845880
+        },
+        {
+          "at": 1792434982944,
+          "phase": "load",
+          "usedSize": 45704472,
+          "totalSize": 67633152,
+          "embedderHeapUsedSize": 3071168,
+          "backingStorageSize": 411256063
+        },
+        {
+          "at": 1792434982996,
+          "phase": "load",
+          "usedSize": 46516156,
+          "totalSize": 71565312,
+          "embedderHeapUsedSize": 3326080,
+          "backingStorageSize": 436971533
+        },
+        {
+          "at": 1792434983049,
+          "phase": "load",
+          "usedSize": 47172156,
+          "totalSize": 71565312,
+          "embedderHeapUsedSize": 1353376,
+          "backingStorageSize": 206101614
+        },
+        {
+          "at": 1792434983102,
+          "phase": "load",
+          "usedSize": 49052784,
+          "totalSize": 71565312,
+          "embedderHeapUsedSize": 1397600,
+          "backingStorageSize": 232655346
+        },
+        {
+          "at": 1792434983156,
+          "phase": "load",
+          "usedSize": 50113824,
+          "totalSize": 71565312,
+          "embedderHeapUsedSize": 1669120,
+          "backingStorageSize": 254747333
+        },
+        {
+          "at": 1792434983208,
+          "phase": "load",
+          "usedSize": 51688524,
+          "totalSize": 74711040,
+          "embedderHeapUsedSize": 2032992,
+          "backingStorageSize": 281384360
+        },
+        {
+          "at": 1792434983265,
+          "phase": "load",
+          "usedSize": 53672120,
+          "totalSize": 74711040,
+          "embedderHeapUsedSize": 2336272,
+          "backingStorageSize": 308676237
+        },
+        {
+          "at": 1792434983319,
+          "phase": "load",
+          "usedSize": 55346940,
+          "totalSize": 74711040,
+          "embedderHeapUsedSize": 2438864,
+          "backingStorageSize": 332204187
+        },
+        {
+          "at": 1792434983370,
+          "phase": "load",
+          "usedSize": 56221424,
+          "totalSize": 79429632,
+          "embedderHeapUsedSize": 2809704,
+          "backingStorageSize": 358907788
+        },
+        {
+          "at": 1792434983425,
+          "phase": "load",
+          "usedSize": 58188308,
+          "totalSize": 79429632,
+          "embedderHeapUsedSize": 3062920,
+          "backingStorageSize": 387613149
+        },
+        {
+          "at": 1792434983483,
+          "phase": "load",
+          "usedSize": 60021008,
+          "totalSize": 79429632,
+          "embedderHeapUsedSize": 3476144,
+          "backingStorageSize": 413882093
+        },
+        {
+          "at": 1792434983536,
+          "phase": "load",
+          "usedSize": 61582932,
+          "totalSize": 83886080,
+          "embedderHeapUsedSize": 3697408,
+          "backingStorageSize": 439287164
+        },
+        {
+          "at": 1792434983589,
+          "phase": "load",
+          "usedSize": 62596540,
+          "totalSize": 83886080,
+          "embedderHeapUsedSize": 3981296,
+          "backingStorageSize": 463940196
+        },
+        {
+          "at": 1792434983643,
+          "phase": "load",
+          "usedSize": 64092080,
+          "totalSize": 88342528,
+          "embedderHeapUsedSize": 4303760,
+          "backingStorageSize": 491233862
+        },
+        {
+          "at": 1792434983697,
+          "phase": "load",
+          "usedSize": 65990052,
+          "totalSize": 88342528,
+          "embedderHeapUsedSize": 4859584,
+          "backingStorageSize": 517773383
+        },
+        {
+          "at": 1792434983751,
+          "phase": "load",
+          "usedSize": 67716520,
+          "totalSize": 88342528,
+          "embedderHeapUsedSize": 5006888,
+          "backingStorageSize": 540443403
+        },
+        {
+          "at": 1792434983801,
+          "phase": "load",
+          "usedSize": 69270592,
+          "totalSize": 93847552,
+          "embedderHeapUsedSize": 5134960,
+          "backingStorageSize": 566280443
+        },
+        {
+          "at": 1792434983859,
+          "phase": "load",
+          "usedSize": 70544532,
+          "totalSize": 93847552,
+          "embedderHeapUsedSize": 5134960,
+          "backingStorageSize": 570810469
+        },
+        {
+          "at": 1792434985130,
+          "phase": "dispose",
+          "usedSize": 1162932,
+          "totalSize": 2359296,
+          "embedderHeapUsedSize": 696624,
+          "backingStorageSize": 178706
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "metric": "sampled CDP usedSize + backingStorageSize; not RSS or guaranteed peak",
+  "resources": [
+    {
+      "name": "http://127.0.0.1:18865/code/tools/geo/navigation/geo-navigation.js",
+      "encodedBodySize": 62373,
+      "decodedBodySize": 62373,
+      "transferSize": 62673
+    },
+    {
+      "name": "http://127.0.0.1:18865/code/tools/geo/renderer/geo-map-renderer.js",
+      "encodedBodySize": 63721,
+      "decodedBodySize": 63721,
+      "transferSize": 64021
+    },
+    {
+      "name": "http://127.0.0.1:18865/code/tools/geo/runtime/geo-runtime.js",
+      "encodedBodySize": 51748,
+      "decodedBodySize": 51748,
+      "transferSize": 52048
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/manifest.json",
+      "encodedBodySize": 204051,
+      "decodedBodySize": 204051,
+      "transferSize": 204351
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00000.json.gz",
+      "encodedBodySize": 28399,
+      "decodedBodySize": 28399,
+      "transferSize": 28699
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00001.json.gz",
+      "encodedBodySize": 26825,
+      "decodedBodySize": 26825,
+      "transferSize": 27125
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00002.json.gz",
+      "encodedBodySize": 23025,
+      "decodedBodySize": 23025,
+      "transferSize": 23325
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00003.json.gz",
+      "encodedBodySize": 23029,
+      "decodedBodySize": 23029,
+      "transferSize": 23329
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00000.bin.gz",
+      "encodedBodySize": 513401,
+      "decodedBodySize": 513401,
+      "transferSize": 513701
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00001.bin.gz",
+      "encodedBodySize": 507217,
+      "decodedBodySize": 507217,
+      "transferSize": 507517
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00003.bin.gz",
+      "encodedBodySize": 509452,
+      "decodedBodySize": 509452,
+      "transferSize": 509752
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00002.bin.gz",
+      "encodedBodySize": 508060,
+      "decodedBodySize": 508060,
+      "transferSize": 508360
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00004.json.gz",
+      "encodedBodySize": 31825,
+      "decodedBodySize": 31825,
+      "transferSize": 32125
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00005.json.gz",
+      "encodedBodySize": 27049,
+      "decodedBodySize": 27049,
+      "transferSize": 27349
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00006.json.gz",
+      "encodedBodySize": 525098,
+      "decodedBodySize": 525098,
+      "transferSize": 525398
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00007.json.gz",
+      "encodedBodySize": 598463,
+      "decodedBodySize": 598463,
+      "transferSize": 598763
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00004.bin.gz",
+      "encodedBodySize": 519928,
+      "decodedBodySize": 519928,
+      "transferSize": 520228
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00005.bin.gz",
+      "encodedBodySize": 510985,
+      "decodedBodySize": 510985,
+      "transferSize": 511285
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00006.bin.gz",
+      "encodedBodySize": 613558,
+      "decodedBodySize": 613558,
+      "transferSize": 613858
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00007.bin.gz",
+      "encodedBodySize": 622701,
+      "decodedBodySize": 622701,
+      "transferSize": 623001
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00008.json.gz",
+      "encodedBodySize": 633638,
+      "decodedBodySize": 633638,
+      "transferSize": 633938
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00009.json.gz",
+      "encodedBodySize": 656682,
+      "decodedBodySize": 656682,
+      "transferSize": 656982
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00010.json.gz",
+      "encodedBodySize": 733069,
+      "decodedBodySize": 733069,
+      "transferSize": 733369
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00011.json.gz",
+      "encodedBodySize": 661991,
+      "decodedBodySize": 661991,
+      "transferSize": 662291
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00008.bin.gz",
+      "encodedBodySize": 634090,
+      "decodedBodySize": 634090,
+      "transferSize": 634390
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00009.bin.gz",
+      "encodedBodySize": 643367,
+      "decodedBodySize": 643367,
+      "transferSize": 643667
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00010.bin.gz",
+      "encodedBodySize": 663315,
+      "decodedBodySize": 663315,
+      "transferSize": 663615
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00011.bin.gz",
+      "encodedBodySize": 646238,
+      "decodedBodySize": 646238,
+      "transferSize": 646538
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00012.json.gz",
+      "encodedBodySize": 682626,
+      "decodedBodySize": 682626,
+      "transferSize": 682926
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00013.json.gz",
+      "encodedBodySize": 611030,
+      "decodedBodySize": 611030,
+      "transferSize": 611330
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00014.json.gz",
+      "encodedBodySize": 526262,
+      "decodedBodySize": 526262,
+      "transferSize": 526562
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00015.json.gz",
+      "encodedBodySize": 614946,
+      "decodedBodySize": 614946,
+      "transferSize": 615246
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00012.bin.gz",
+      "encodedBodySize": 644997,
+      "decodedBodySize": 644997,
+      "transferSize": 645297
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00013.bin.gz",
+      "encodedBodySize": 628168,
+      "decodedBodySize": 628168,
+      "transferSize": 628468
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00014.bin.gz",
+      "encodedBodySize": 612894,
+      "decodedBodySize": 612894,
+      "transferSize": 613194
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00015.bin.gz",
+      "encodedBodySize": 628443,
+      "decodedBodySize": 628443,
+      "transferSize": 628743
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00016.json.gz",
+      "encodedBodySize": 76651,
+      "decodedBodySize": 76651,
+      "transferSize": 76951
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00017.json.gz",
+      "encodedBodySize": 49215,
+      "decodedBodySize": 49215,
+      "transferSize": 49515
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00018.json.gz",
+      "encodedBodySize": 46086,
+      "decodedBodySize": 46086,
+      "transferSize": 46386
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00019.json.gz",
+      "encodedBodySize": 41100,
+      "decodedBodySize": 41100,
+      "transferSize": 41400
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00016.bin.gz",
+      "encodedBodySize": 472405,
+      "decodedBodySize": 472405,
+      "transferSize": 472705
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00017.bin.gz",
+      "encodedBodySize": 469066,
+      "decodedBodySize": 469066,
+      "transferSize": 469366
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00018.bin.gz",
+      "encodedBodySize": 459432,
+      "decodedBodySize": 459432,
+      "transferSize": 459732
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00019.bin.gz",
+      "encodedBodySize": 464888,
+      "decodedBodySize": 464888,
+      "transferSize": 465188
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00020.json.gz",
+      "encodedBodySize": 41800,
+      "decodedBodySize": 41800,
+      "transferSize": 42100
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00021.json.gz",
+      "encodedBodySize": 36497,
+      "decodedBodySize": 36497,
+      "transferSize": 36797
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00022.json.gz",
+      "encodedBodySize": 43629,
+      "decodedBodySize": 43629,
+      "transferSize": 43929
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00023.json.gz",
+      "encodedBodySize": 45496,
+      "decodedBodySize": 45496,
+      "transferSize": 45796
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00020.bin.gz",
+      "encodedBodySize": 454966,
+      "decodedBodySize": 454966,
+      "transferSize": 455266
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00021.bin.gz",
+      "encodedBodySize": 459861,
+      "decodedBodySize": 459861,
+      "transferSize": 460161
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00022.bin.gz",
+      "encodedBodySize": 474174,
+      "decodedBodySize": 474174,
+      "transferSize": 474474
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00023.bin.gz",
+      "encodedBodySize": 466442,
+      "decodedBodySize": 466442,
+      "transferSize": 466742
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00024.json.gz",
+      "encodedBodySize": 39693,
+      "decodedBodySize": 39693,
+      "transferSize": 39993
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00025.json.gz",
+      "encodedBodySize": 43881,
+      "decodedBodySize": 43881,
+      "transferSize": 44181
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00026.json.gz",
+      "encodedBodySize": 39908,
+      "decodedBodySize": 39908,
+      "transferSize": 40208
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00027.json.gz",
+      "encodedBodySize": 36103,
+      "decodedBodySize": 36103,
+      "transferSize": 36403
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00024.bin.gz",
+      "encodedBodySize": 464221,
+      "decodedBodySize": 464221,
+      "transferSize": 464521
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00025.bin.gz",
+      "encodedBodySize": 464932,
+      "decodedBodySize": 464932,
+      "transferSize": 465232
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00026.bin.gz",
+      "encodedBodySize": 461836,
+      "decodedBodySize": 461836,
+      "transferSize": 462136
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00027.bin.gz",
+      "encodedBodySize": 465220,
+      "decodedBodySize": 465220,
+      "transferSize": 465520
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00028.json.gz",
+      "encodedBodySize": 30785,
+      "decodedBodySize": 30785,
+      "transferSize": 31085
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00029.json.gz",
+      "encodedBodySize": 40659,
+      "decodedBodySize": 40659,
+      "transferSize": 40959
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00030.json.gz",
+      "encodedBodySize": 37961,
+      "decodedBodySize": 37961,
+      "transferSize": 38261
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00031.json.gz",
+      "encodedBodySize": 37441,
+      "decodedBodySize": 37441,
+      "transferSize": 37741
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00028.bin.gz",
+      "encodedBodySize": 476877,
+      "decodedBodySize": 476877,
+      "transferSize": 477177
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00029.bin.gz",
+      "encodedBodySize": 457695,
+      "decodedBodySize": 457695,
+      "transferSize": 457995
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00030.bin.gz",
+      "encodedBodySize": 466830,
+      "decodedBodySize": 466830,
+      "transferSize": 467130
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00031.bin.gz",
+      "encodedBodySize": 460068,
+      "decodedBodySize": 460068,
+      "transferSize": 460368
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00032.json.gz",
+      "encodedBodySize": 44828,
+      "decodedBodySize": 44828,
+      "transferSize": 45128
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00033.json.gz",
+      "encodedBodySize": 47570,
+      "decodedBodySize": 47570,
+      "transferSize": 47870
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00034.json.gz",
+      "encodedBodySize": 45277,
+      "decodedBodySize": 45277,
+      "transferSize": 45577
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00035.json.gz",
+      "encodedBodySize": 43029,
+      "decodedBodySize": 43029,
+      "transferSize": 43329
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00032.bin.gz",
+      "encodedBodySize": 466212,
+      "decodedBodySize": 466212,
+      "transferSize": 466512
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00033.bin.gz",
+      "encodedBodySize": 462545,
+      "decodedBodySize": 462545,
+      "transferSize": 462845
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00034.bin.gz",
+      "encodedBodySize": 460952,
+      "decodedBodySize": 460952,
+      "transferSize": 461252
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00035.bin.gz",
+      "encodedBodySize": 464752,
+      "decodedBodySize": 464752,
+      "transferSize": 465052
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00036.json.gz",
+      "encodedBodySize": 44836,
+      "decodedBodySize": 44836,
+      "transferSize": 45136
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00037.json.gz",
+      "encodedBodySize": 45599,
+      "decodedBodySize": 45599,
+      "transferSize": 45899
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00038.json.gz",
+      "encodedBodySize": 38256,
+      "decodedBodySize": 38256,
+      "transferSize": 38556
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00039.json.gz",
+      "encodedBodySize": 41791,
+      "decodedBodySize": 41791,
+      "transferSize": 42091
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00036.bin.gz",
+      "encodedBodySize": 466316,
+      "decodedBodySize": 466316,
+      "transferSize": 466616
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00037.bin.gz",
+      "encodedBodySize": 465137,
+      "decodedBodySize": 465137,
+      "transferSize": 465437
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00038.bin.gz",
+      "encodedBodySize": 459095,
+      "decodedBodySize": 459095,
+      "transferSize": 459395
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00039.bin.gz",
+      "encodedBodySize": 468389,
+      "decodedBodySize": 468389,
+      "transferSize": 468689
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00040.json.gz",
+      "encodedBodySize": 41988,
+      "decodedBodySize": 41988,
+      "transferSize": 42288
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00041.json.gz",
+      "encodedBodySize": 38144,
+      "decodedBodySize": 38144,
+      "transferSize": 38444
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00042.json.gz",
+      "encodedBodySize": 42650,
+      "decodedBodySize": 42650,
+      "transferSize": 42950
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00043.json.gz",
+      "encodedBodySize": 42220,
+      "decodedBodySize": 42220,
+      "transferSize": 42520
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00040.bin.gz",
+      "encodedBodySize": 463340,
+      "decodedBodySize": 463340,
+      "transferSize": 463640
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00041.bin.gz",
+      "encodedBodySize": 469319,
+      "decodedBodySize": 469319,
+      "transferSize": 469619
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00042.bin.gz",
+      "encodedBodySize": 467099,
+      "decodedBodySize": 467099,
+      "transferSize": 467399
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00043.bin.gz",
+      "encodedBodySize": 463903,
+      "decodedBodySize": 463903,
+      "transferSize": 464203
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00044.json.gz",
+      "encodedBodySize": 43027,
+      "decodedBodySize": 43027,
+      "transferSize": 43327
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00045.json.gz",
+      "encodedBodySize": 37158,
+      "decodedBodySize": 37158,
+      "transferSize": 37458
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00046.json.gz",
+      "encodedBodySize": 43168,
+      "decodedBodySize": 43168,
+      "transferSize": 43468
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00047.json.gz",
+      "encodedBodySize": 43918,
+      "decodedBodySize": 43918,
+      "transferSize": 44218
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00044.bin.gz",
+      "encodedBodySize": 462664,
+      "decodedBodySize": 462664,
+      "transferSize": 462964
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00045.bin.gz",
+      "encodedBodySize": 472107,
+      "decodedBodySize": 472107,
+      "transferSize": 472407
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00046.bin.gz",
+      "encodedBodySize": 471504,
+      "decodedBodySize": 471504,
+      "transferSize": 471804
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00047.bin.gz",
+      "encodedBodySize": 469414,
+      "decodedBodySize": 469414,
+      "transferSize": 469714
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00048.json.gz",
+      "encodedBodySize": 40114,
+      "decodedBodySize": 40114,
+      "transferSize": 40414
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00049.json.gz",
+      "encodedBodySize": 39733,
+      "decodedBodySize": 39733,
+      "transferSize": 40033
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00050.json.gz",
+      "encodedBodySize": 40082,
+      "decodedBodySize": 40082,
+      "transferSize": 40382
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00051.json.gz",
+      "encodedBodySize": 41243,
+      "decodedBodySize": 41243,
+      "transferSize": 41543
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00048.bin.gz",
+      "encodedBodySize": 473015,
+      "decodedBodySize": 473015,
+      "transferSize": 473315
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00049.bin.gz",
+      "encodedBodySize": 459949,
+      "decodedBodySize": 459949,
+      "transferSize": 460249
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00050.bin.gz",
+      "encodedBodySize": 464295,
+      "decodedBodySize": 464295,
+      "transferSize": 464595
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00051.bin.gz",
+      "encodedBodySize": 468986,
+      "decodedBodySize": 468986,
+      "transferSize": 469286
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00052.json.gz",
+      "encodedBodySize": 41924,
+      "decodedBodySize": 41924,
+      "transferSize": 42224
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00053.json.gz",
+      "encodedBodySize": 35551,
+      "decodedBodySize": 35551,
+      "transferSize": 35851
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00054.json.gz",
+      "encodedBodySize": 46927,
+      "decodedBodySize": 46927,
+      "transferSize": 47227
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00055.json.gz",
+      "encodedBodySize": 42336,
+      "decodedBodySize": 42336,
+      "transferSize": 42636
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00052.bin.gz",
+      "encodedBodySize": 462684,
+      "decodedBodySize": 462684,
+      "transferSize": 462984
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00053.bin.gz",
+      "encodedBodySize": 453832,
+      "decodedBodySize": 453832,
+      "transferSize": 454132
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00054.bin.gz",
+      "encodedBodySize": 466782,
+      "decodedBodySize": 466782,
+      "transferSize": 467082
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00055.bin.gz",
+      "encodedBodySize": 462936,
+      "decodedBodySize": 462936,
+      "transferSize": 463236
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00056.json.gz",
+      "encodedBodySize": 39660,
+      "decodedBodySize": 39660,
+      "transferSize": 39960
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00057.json.gz",
+      "encodedBodySize": 38843,
+      "decodedBodySize": 38843,
+      "transferSize": 39143
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00058.json.gz",
+      "encodedBodySize": 44869,
+      "decodedBodySize": 44869,
+      "transferSize": 45169
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00059.json.gz",
+      "encodedBodySize": 37402,
+      "decodedBodySize": 37402,
+      "transferSize": 37702
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00056.bin.gz",
+      "encodedBodySize": 465829,
+      "decodedBodySize": 465829,
+      "transferSize": 466129
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00057.bin.gz",
+      "encodedBodySize": 458746,
+      "decodedBodySize": 458746,
+      "transferSize": 459046
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00058.bin.gz",
+      "encodedBodySize": 461466,
+      "decodedBodySize": 461466,
+      "transferSize": 461766
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00059.bin.gz",
+      "encodedBodySize": 457432,
+      "decodedBodySize": 457432,
+      "transferSize": 457732
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00060.json.gz",
+      "encodedBodySize": 44172,
+      "decodedBodySize": 44172,
+      "transferSize": 44472
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00061.json.gz",
+      "encodedBodySize": 46920,
+      "decodedBodySize": 46920,
+      "transferSize": 47220
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00062.json.gz",
+      "encodedBodySize": 40507,
+      "decodedBodySize": 40507,
+      "transferSize": 40807
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00063.json.gz",
+      "encodedBodySize": 45419,
+      "decodedBodySize": 45419,
+      "transferSize": 45719
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00060.bin.gz",
+      "encodedBodySize": 466064,
+      "decodedBodySize": 466064,
+      "transferSize": 466364
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00061.bin.gz",
+      "encodedBodySize": 464220,
+      "decodedBodySize": 464220,
+      "transferSize": 464520
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00062.bin.gz",
+      "encodedBodySize": 471524,
+      "decodedBodySize": 471524,
+      "transferSize": 471824
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00063.bin.gz",
+      "encodedBodySize": 466972,
+      "decodedBodySize": 466972,
+      "transferSize": 467272
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00064.json.gz",
+      "encodedBodySize": 44283,
+      "decodedBodySize": 44283,
+      "transferSize": 44583
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00065.json.gz",
+      "encodedBodySize": 39136,
+      "decodedBodySize": 39136,
+      "transferSize": 39436
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00066.json.gz",
+      "encodedBodySize": 35168,
+      "decodedBodySize": 35168,
+      "transferSize": 35468
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00067.json.gz",
+      "encodedBodySize": 40745,
+      "decodedBodySize": 40745,
+      "transferSize": 41045
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00064.bin.gz",
+      "encodedBodySize": 471678,
+      "decodedBodySize": 471678,
+      "transferSize": 471978
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00065.bin.gz",
+      "encodedBodySize": 448308,
+      "decodedBodySize": 448308,
+      "transferSize": 448608
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00066.bin.gz",
+      "encodedBodySize": 464652,
+      "decodedBodySize": 464652,
+      "transferSize": 464952
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00067.bin.gz",
+      "encodedBodySize": 460448,
+      "decodedBodySize": 460448,
+      "transferSize": 460748
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00068.json.gz",
+      "encodedBodySize": 38513,
+      "decodedBodySize": 38513,
+      "transferSize": 38813
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00069.json.gz",
+      "encodedBodySize": 41727,
+      "decodedBodySize": 41727,
+      "transferSize": 42027
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00070.json.gz",
+      "encodedBodySize": 42346,
+      "decodedBodySize": 42346,
+      "transferSize": 42646
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00071.json.gz",
+      "encodedBodySize": 40561,
+      "decodedBodySize": 40561,
+      "transferSize": 40861
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00068.bin.gz",
+      "encodedBodySize": 460743,
+      "decodedBodySize": 460743,
+      "transferSize": 461043
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00069.bin.gz",
+      "encodedBodySize": 464730,
+      "decodedBodySize": 464730,
+      "transferSize": 465030
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00070.bin.gz",
+      "encodedBodySize": 462364,
+      "decodedBodySize": 462364,
+      "transferSize": 462664
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00071.bin.gz",
+      "encodedBodySize": 475172,
+      "decodedBodySize": 475172,
+      "transferSize": 475472
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00072.json.gz",
+      "encodedBodySize": 37166,
+      "decodedBodySize": 37166,
+      "transferSize": 37466
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00073.json.gz",
+      "encodedBodySize": 44830,
+      "decodedBodySize": 44830,
+      "transferSize": 45130
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00074.json.gz",
+      "encodedBodySize": 40360,
+      "decodedBodySize": 40360,
+      "transferSize": 40660
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00075.json.gz",
+      "encodedBodySize": 46559,
+      "decodedBodySize": 46559,
+      "transferSize": 46859
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00072.bin.gz",
+      "encodedBodySize": 481517,
+      "decodedBodySize": 481517,
+      "transferSize": 481817
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00073.bin.gz",
+      "encodedBodySize": 463878,
+      "decodedBodySize": 463878,
+      "transferSize": 464178
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00074.bin.gz",
+      "encodedBodySize": 463348,
+      "decodedBodySize": 463348,
+      "transferSize": 463648
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00075.bin.gz",
+      "encodedBodySize": 468506,
+      "decodedBodySize": 468506,
+      "transferSize": 468806
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00076.json.gz",
+      "encodedBodySize": 42666,
+      "decodedBodySize": 42666,
+      "transferSize": 42966
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00077.json.gz",
+      "encodedBodySize": 41133,
+      "decodedBodySize": 41133,
+      "transferSize": 41433
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00078.json.gz",
+      "encodedBodySize": 40711,
+      "decodedBodySize": 40711,
+      "transferSize": 41011
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00079.json.gz",
+      "encodedBodySize": 40165,
+      "decodedBodySize": 40165,
+      "transferSize": 40465
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00076.bin.gz",
+      "encodedBodySize": 460029,
+      "decodedBodySize": 460029,
+      "transferSize": 460329
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00077.bin.gz",
+      "encodedBodySize": 459206,
+      "decodedBodySize": 459206,
+      "transferSize": 459506
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00078.bin.gz",
+      "encodedBodySize": 448468,
+      "decodedBodySize": 448468,
+      "transferSize": 448768
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00079.bin.gz",
+      "encodedBodySize": 470204,
+      "decodedBodySize": 470204,
+      "transferSize": 470504
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00080.json.gz",
+      "encodedBodySize": 39322,
+      "decodedBodySize": 39322,
+      "transferSize": 39622
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00081.json.gz",
+      "encodedBodySize": 40758,
+      "decodedBodySize": 40758,
+      "transferSize": 41058
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00082.json.gz",
+      "encodedBodySize": 38147,
+      "decodedBodySize": 38147,
+      "transferSize": 38447
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00083.json.gz",
+      "encodedBodySize": 31963,
+      "decodedBodySize": 31963,
+      "transferSize": 32263
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00080.bin.gz",
+      "encodedBodySize": 457752,
+      "decodedBodySize": 457752,
+      "transferSize": 458052
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00081.bin.gz",
+      "encodedBodySize": 468619,
+      "decodedBodySize": 468619,
+      "transferSize": 468919
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00082.bin.gz",
+      "encodedBodySize": 468988,
+      "decodedBodySize": 468988,
+      "transferSize": 469288
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00083.bin.gz",
+      "encodedBodySize": 468641,
+      "decodedBodySize": 468641,
+      "transferSize": 468941
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00084.json.gz",
+      "encodedBodySize": 42105,
+      "decodedBodySize": 42105,
+      "transferSize": 42405
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00085.json.gz",
+      "encodedBodySize": 46380,
+      "decodedBodySize": 46380,
+      "transferSize": 46680
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00086.json.gz",
+      "encodedBodySize": 38378,
+      "decodedBodySize": 38378,
+      "transferSize": 38678
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00087.json.gz",
+      "encodedBodySize": 44348,
+      "decodedBodySize": 44348,
+      "transferSize": 44648
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00084.bin.gz",
+      "encodedBodySize": 464096,
+      "decodedBodySize": 464096,
+      "transferSize": 464396
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00085.bin.gz",
+      "encodedBodySize": 470721,
+      "decodedBodySize": 470721,
+      "transferSize": 471021
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00086.bin.gz",
+      "encodedBodySize": 456537,
+      "decodedBodySize": 456537,
+      "transferSize": 456837
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00087.bin.gz",
+      "encodedBodySize": 466695,
+      "decodedBodySize": 466695,
+      "transferSize": 466995
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00088.json.gz",
+      "encodedBodySize": 46777,
+      "decodedBodySize": 46777,
+      "transferSize": 47077
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00089.json.gz",
+      "encodedBodySize": 44495,
+      "decodedBodySize": 44495,
+      "transferSize": 44795
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00090.json.gz",
+      "encodedBodySize": 35776,
+      "decodedBodySize": 35776,
+      "transferSize": 36076
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00091.json.gz",
+      "encodedBodySize": 44178,
+      "decodedBodySize": 44178,
+      "transferSize": 44478
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00088.bin.gz",
+      "encodedBodySize": 464089,
+      "decodedBodySize": 464089,
+      "transferSize": 464389
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00089.bin.gz",
+      "encodedBodySize": 469819,
+      "decodedBodySize": 469819,
+      "transferSize": 470119
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00090.bin.gz",
+      "encodedBodySize": 474768,
+      "decodedBodySize": 474768,
+      "transferSize": 475068
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00091.bin.gz",
+      "encodedBodySize": 465299,
+      "decodedBodySize": 465299,
+      "transferSize": 465599
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00092.json.gz",
+      "encodedBodySize": 44452,
+      "decodedBodySize": 44452,
+      "transferSize": 44752
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00093.json.gz",
+      "encodedBodySize": 41405,
+      "decodedBodySize": 41405,
+      "transferSize": 41705
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00094.json.gz",
+      "encodedBodySize": 43326,
+      "decodedBodySize": 43326,
+      "transferSize": 43626
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00095.json.gz",
+      "encodedBodySize": 37542,
+      "decodedBodySize": 37542,
+      "transferSize": 37842
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00092.bin.gz",
+      "encodedBodySize": 461599,
+      "decodedBodySize": 461599,
+      "transferSize": 461899
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00093.bin.gz",
+      "encodedBodySize": 462399,
+      "decodedBodySize": 462399,
+      "transferSize": 462699
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00094.bin.gz",
+      "encodedBodySize": 470901,
+      "decodedBodySize": 470901,
+      "transferSize": 471201
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00095.bin.gz",
+      "encodedBodySize": 459137,
+      "decodedBodySize": 459137,
+      "transferSize": 459437
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00096.json.gz",
+      "encodedBodySize": 42631,
+      "decodedBodySize": 42631,
+      "transferSize": 42931
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00097.json.gz",
+      "encodedBodySize": 43970,
+      "decodedBodySize": 43970,
+      "transferSize": 44270
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00098.json.gz",
+      "encodedBodySize": 38797,
+      "decodedBodySize": 38797,
+      "transferSize": 39097
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00099.json.gz",
+      "encodedBodySize": 41893,
+      "decodedBodySize": 41893,
+      "transferSize": 42193
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00096.bin.gz",
+      "encodedBodySize": 467204,
+      "decodedBodySize": 467204,
+      "transferSize": 467504
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00097.bin.gz",
+      "encodedBodySize": 463804,
+      "decodedBodySize": 463804,
+      "transferSize": 464104
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00098.bin.gz",
+      "encodedBodySize": 462081,
+      "decodedBodySize": 462081,
+      "transferSize": 462381
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00099.bin.gz",
+      "encodedBodySize": 454773,
+      "decodedBodySize": 454773,
+      "transferSize": 455073
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00100.json.gz",
+      "encodedBodySize": 46309,
+      "decodedBodySize": 46309,
+      "transferSize": 46609
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00101.json.gz",
+      "encodedBodySize": 44989,
+      "decodedBodySize": 44989,
+      "transferSize": 45289
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00102.json.gz",
+      "encodedBodySize": 39335,
+      "decodedBodySize": 39335,
+      "transferSize": 39635
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00103.json.gz",
+      "encodedBodySize": 43479,
+      "decodedBodySize": 43479,
+      "transferSize": 43779
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00100.bin.gz",
+      "encodedBodySize": 459286,
+      "decodedBodySize": 459286,
+      "transferSize": 459586
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00101.bin.gz",
+      "encodedBodySize": 465804,
+      "decodedBodySize": 465804,
+      "transferSize": 466104
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00102.bin.gz",
+      "encodedBodySize": 471717,
+      "decodedBodySize": 471717,
+      "transferSize": 472017
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00103.bin.gz",
+      "encodedBodySize": 469403,
+      "decodedBodySize": 469403,
+      "transferSize": 469703
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00104.json.gz",
+      "encodedBodySize": 43513,
+      "decodedBodySize": 43513,
+      "transferSize": 43813
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00105.json.gz",
+      "encodedBodySize": 36972,
+      "decodedBodySize": 36972,
+      "transferSize": 37272
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00106.json.gz",
+      "encodedBodySize": 44088,
+      "decodedBodySize": 44088,
+      "transferSize": 44388
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00107.json.gz",
+      "encodedBodySize": 42345,
+      "decodedBodySize": 42345,
+      "transferSize": 42645
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00104.bin.gz",
+      "encodedBodySize": 459064,
+      "decodedBodySize": 459064,
+      "transferSize": 459364
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00105.bin.gz",
+      "encodedBodySize": 462789,
+      "decodedBodySize": 462789,
+      "transferSize": 463089
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00106.bin.gz",
+      "encodedBodySize": 467851,
+      "decodedBodySize": 467851,
+      "transferSize": 468151
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00107.bin.gz",
+      "encodedBodySize": 460969,
+      "decodedBodySize": 460969,
+      "transferSize": 461269
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00108.json.gz",
+      "encodedBodySize": 45007,
+      "decodedBodySize": 45007,
+      "transferSize": 45307
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00109.json.gz",
+      "encodedBodySize": 44851,
+      "decodedBodySize": 44851,
+      "transferSize": 45151
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00110.json.gz",
+      "encodedBodySize": 41827,
+      "decodedBodySize": 41827,
+      "transferSize": 42127
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00111.json.gz",
+      "encodedBodySize": 41025,
+      "decodedBodySize": 41025,
+      "transferSize": 41325
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00108.bin.gz",
+      "encodedBodySize": 469745,
+      "decodedBodySize": 469745,
+      "transferSize": 470045
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00109.bin.gz",
+      "encodedBodySize": 460367,
+      "decodedBodySize": 460367,
+      "transferSize": 460667
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00110.bin.gz",
+      "encodedBodySize": 457607,
+      "decodedBodySize": 457607,
+      "transferSize": 457907
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00111.bin.gz",
+      "encodedBodySize": 463672,
+      "decodedBodySize": 463672,
+      "transferSize": 463972
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00112.json.gz",
+      "encodedBodySize": 38079,
+      "decodedBodySize": 38079,
+      "transferSize": 38379
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00113.json.gz",
+      "encodedBodySize": 36046,
+      "decodedBodySize": 36046,
+      "transferSize": 36346
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00114.json.gz",
+      "encodedBodySize": 39595,
+      "decodedBodySize": 39595,
+      "transferSize": 39895
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00115.json.gz",
+      "encodedBodySize": 38961,
+      "decodedBodySize": 38961,
+      "transferSize": 39261
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00112.bin.gz",
+      "encodedBodySize": 458986,
+      "decodedBodySize": 458986,
+      "transferSize": 459286
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00113.bin.gz",
+      "encodedBodySize": 463677,
+      "decodedBodySize": 463677,
+      "transferSize": 463977
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00114.bin.gz",
+      "encodedBodySize": 465376,
+      "decodedBodySize": 465376,
+      "transferSize": 465676
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00115.bin.gz",
+      "encodedBodySize": 474404,
+      "decodedBodySize": 474404,
+      "transferSize": 474704
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00116.json.gz",
+      "encodedBodySize": 47370,
+      "decodedBodySize": 47370,
+      "transferSize": 47670
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00117.json.gz",
+      "encodedBodySize": 43307,
+      "decodedBodySize": 43307,
+      "transferSize": 43607
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00118.json.gz",
+      "encodedBodySize": 44144,
+      "decodedBodySize": 44144,
+      "transferSize": 44444
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00119.json.gz",
+      "encodedBodySize": 41904,
+      "decodedBodySize": 41904,
+      "transferSize": 42204
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00116.bin.gz",
+      "encodedBodySize": 469135,
+      "decodedBodySize": 469135,
+      "transferSize": 469435
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00117.bin.gz",
+      "encodedBodySize": 465617,
+      "decodedBodySize": 465617,
+      "transferSize": 465917
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00118.bin.gz",
+      "encodedBodySize": 465913,
+      "decodedBodySize": 465913,
+      "transferSize": 466213
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00119.bin.gz",
+      "encodedBodySize": 461035,
+      "decodedBodySize": 461035,
+      "transferSize": 461335
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00120.json.gz",
+      "encodedBodySize": 40155,
+      "decodedBodySize": 40155,
+      "transferSize": 40455
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00121.json.gz",
+      "encodedBodySize": 36380,
+      "decodedBodySize": 36380,
+      "transferSize": 36680
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00122.json.gz",
+      "encodedBodySize": 47514,
+      "decodedBodySize": 47514,
+      "transferSize": 47814
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/metadata-00123.json.gz",
+      "encodedBodySize": 44944,
+      "decodedBodySize": 44944,
+      "transferSize": 45244
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00120.bin.gz",
+      "encodedBodySize": 461849,
+      "decodedBodySize": 461849,
+      "transferSize": 462149
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/coords-00121.bin.gz",
+      "encodedBodySize": 461063,
+      "decodedBodySize": 461063,
+      "transferSize": 461363
+    }
+  ]
+}

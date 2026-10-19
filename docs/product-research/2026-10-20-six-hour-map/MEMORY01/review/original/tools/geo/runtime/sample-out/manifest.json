@@ -1,0 +1,78 @@
+{
+  "chunkBytesTarget": 1048576,
+  "chunks": [
+    {
+      "coordBytes": 84392,
+      "coordCompressedBytes": 37881,
+      "coordSha256": "5072b107d74b91da2812d1454dd20309c2c5c9ed76fb1161eb84f1abdbdf3d8c",
+      "coords": "coords-00000.bin.gz",
+      "features": 62,
+      "firstFeatureLayer": "water",
+      "index": 0,
+      "metadata": "metadata-00000.json.gz",
+      "metadataBytes": 27545,
+      "metadataCompressedBytes": 5639,
+      "metadataSha256": "b11653c4ae9d0bf41ea4fcd0bc3b614bcc4b99552e1faa7d39005d3c615d25cc",
+      "pairCount": 10549,
+      "pairOffset": 0
+    }
+  ],
+  "coordEncoding": "int32-millimetres",
+  "data": {
+    "bbox": [
+      4.865,
+      52.345,
+      4.97,
+      52.405
+    ],
+    "height": 6671.705,
+    "projection": {
+      "originLat": 52.405,
+      "originLon": 4.865,
+      "radiusMeters": 6371008.8,
+      "referenceLat": 52.375,
+      "type": "local-equirectangular",
+      "units": "metres"
+    },
+    "schemaVersion": 1,
+    "source": {
+      "complete": false,
+      "inputs": [],
+      "license": "CC0-1.0",
+      "limitations": [
+        "Parent diagnostic feature subset by bounds for one near-pub route. Original complete source manifest SHA stored in parent evidence, not complete city coverage."
+      ],
+      "provider": "Kadaster / PDOK BGT",
+      "snapshot": "2026-10-16T00:00:00Z",
+      "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/"
+    },
+    "width": 7127.775
+  },
+  "endianness": "little",
+  "featureCount": 62,
+  "format": "amsterdam-geo-runtime-manifest/v1",
+  "geometrySha256": "534718e298a027dab112f581b2e2080c6212fb99266c6039a038d35077f1c931",
+  "interleaved": true,
+  "layerCounts": {
+    "bridges": 1,
+    "buildings": 23,
+    "roads": 36,
+    "water": 2
+  },
+  "layerOrder": [
+    "water",
+    "buildings",
+    "roads",
+    "bridges"
+  ],
+  "ordinateBytes": 4,
+  "ordinateCount": 21098,
+  "pairCount": 10549,
+  "schemaVersion": 1,
+  "sourceBytes": 237043,
+  "sourceSha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598",
+  "totalCoordBytes": 84392,
+  "totalCoordCompressedBytes": 37881,
+  "totalDownloadBytes": 43520,
+  "totalMetadataCompressedBytes": 5639
+}

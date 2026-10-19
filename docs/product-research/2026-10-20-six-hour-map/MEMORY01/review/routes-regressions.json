@@ -1,0 +1,33 @@
+{
+  "outcomes": [
+    {
+      "name": "forward cached exact endpoints",
+      "pass": true
+    },
+    {
+      "name": "reverse cached exact endpoints",
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n+   x: 0,\n-   x: 100,\n    y: 0\n  }\n"
+    },
+    {
+      "name": "arbitrary endpoints join nearby cached graph",
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert.ok(r.found)\n"
+    },
+    {
+      "name": "walk-only cache cannot serve bike",
+      "pass": true
+    },
+    {
+      "name": "already aborted cached request rejects",
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: Missing expected rejection (AbortError)."
+    },
+    {
+      "name": "dispose rejects requests",
+      "pass": true
+    }
+  ],
+  "passed": 3,
+  "total": 6
+}

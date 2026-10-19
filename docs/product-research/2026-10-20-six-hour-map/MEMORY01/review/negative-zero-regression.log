@@ -1,0 +1,6 @@
+Error [ChecksumMismatchError]: geometrySha256 mismatch: manifest c8c49f17684e computed 8830fec2e8c0
+    at makeError (/private/tmp/amsterdam-d27-memory-parent-20261020/tools/geo/runtime/geo-runtime.js:49:15)
+    at ChecksumMismatchError (/private/tmp/amsterdam-d27-memory-parent-20261020/tools/geo/runtime/geo-runtime.js:54:52)
+    at Object.load (/private/tmp/amsterdam-d27-memory-parent-20261020/tools/geo/runtime/geo-runtime.js:1042:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async /Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/parent-validation/runtime-signed-zero.cjs:45:22

@@ -1,0 +1,25 @@
+{
+  "negative_zero_ordinates": 2,
+  "examples": [
+    {
+      "layer": "roads",
+      "id": "wegdeel:057a343d-bcfd-5920-b8ea-ea44abc38ab7",
+      "polygon": 0,
+      "ring": 0,
+      "vertex": 1395,
+      "axis": 0,
+      "value": -0.0
+    },
+    {
+      "layer": "roads",
+      "id": "wegdeel:9339d9fa-0a86-5458-b0da-b7ff026b4e51",
+      "polygon": 0,
+      "ring": 0,
+      "vertex": 463,
+      "axis": 0,
+      "value": -0.0
+    }
+  ],
+  "original_float64_hash": "7b6fa8e13f148e4403cea37066463cd811d578f4752f46dec8cb1b4dd9a55dff",
+  "int32_decoded_float64_hash": "4e8ee738dbdf6b2a61a3047ec150d26fb3258ad4f12e14c323767d1236bcbd85"
+}

@@ -1,0 +1,7 @@
+# D27 wave2 collected; two single corrections prepared
+
+MEMORY01 original3000.169s timeout at18:34:51.804830Z, CLI143/state done/receiptunknown preserved; worker26517/launcher26516 exited, session73851 drained. Parent8Python/43NAV/43renderer pass but required runtimeNode tests/demo/README/report missing. Full177chunks/96.98MB download fail: two signed-zero ordinates lost and canonicalSHA mismatch; independent8chunk test also reveals concurrentrecordcapture failure. Hash blocks page~1.26s. Sixroutecases3fail (reversecache, nearbygraphconnectors, pre-abort). Parentreview immutableSHA8d59b96215923ebddc6d023b2b129cb2fe6e3d4a75fbff8167957b6b429df3e1, noadoption.
+
+Separately labeled wronghash+serial diagnostic reaches bothindexes20.525s, sampledheap+backing609931661B, coldpaint81.7ms/cache0–0.2ms and fullCanvasPNG read. This is diagnostic ONLY, not lossless candidate acceptance. Originalcandidate remains untouched. MEMORY fixedsame-logical R2 prepared24publicfiles925832B/3000s90turns with readonlycounterexamples; CITY R2 alreadyprepared13files386308B/2400s70turns. Both original processes ended; wholewavecollected. No correction dispatched yet. Each correction0/1 until launch; D27Plan4/adopted4/game0 unchanged, fixedcutoff22:52:30Z. Notion/contractpush/capacitypreflight then two disjoint corrections samewave.
+
+Evidence: docs/product-research/2026-10-20-six-hour-map/MEMORY01/review/parent-review.md

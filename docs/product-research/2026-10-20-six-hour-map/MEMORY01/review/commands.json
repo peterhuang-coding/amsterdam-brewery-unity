@@ -1,0 +1,52 @@
+[
+  {
+    "command": "/tmp/amsterdam-d26-geo-tools-venv/bin/python tools/geo/runtime/test_runtime.py",
+    "exit_code": 0,
+    "seconds": 0.09000283299999999
+  },
+  {
+    "command": "/tmp/amsterdam-d26-geo-tools-venv/bin/python tools/geo/runtime/pack-runtime.py --input tools/geo/navigation/real-pub-sample.json --outdir tools/geo/runtime/sample-out --chunk-bytes 1048576",
+    "exit_code": 0,
+    "seconds": 0.04740545800000001
+  },
+  {
+    "command": "node --check tools/geo/runtime/geo-runtime.js",
+    "exit_code": 0,
+    "seconds": 0.047792792
+  },
+  {
+    "command": "node --check tools/geo/runtime/precompute-routes.cjs",
+    "exit_code": 0,
+    "seconds": 0.04789233300000001
+  },
+  {
+    "command": "node --test tools/geo/runtime/test-runtime.cjs",
+    "exit_code": 1,
+    "seconds": 0.046338833000000024
+  },
+  {
+    "command": "node --test tools/geo/navigation/test-geo-navigation.cjs",
+    "exit_code": 0,
+    "seconds": 7.399561542000001
+  },
+  {
+    "command": "node --test tools/geo/renderer/test-geo-map-renderer.cjs",
+    "exit_code": 0,
+    "seconds": 0.36502666600000033
+  },
+  {
+    "command": "node tools/geo/navigation/benchmark-geo-navigation.cjs",
+    "exit_code": 0,
+    "seconds": 7.409566
+  },
+  {
+    "command": "node tools/geo/renderer/benchmark-geo-map-renderer.cjs",
+    "exit_code": 0,
+    "seconds": 0.15026824999999988
+  },
+  {
+    "command": "node tools/geo/runtime/precompute-routes.cjs --data tools/geo/navigation/real-pub-sample.json --anchors anchors.json --out tools/geo/runtime/sample-routes.json",
+    "exit_code": 0,
+    "seconds": 0.19680887499999855
+  }
+]

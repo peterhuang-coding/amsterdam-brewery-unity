@@ -23,7 +23,7 @@ code=r'''async (page) => {
     let observer;try{observer=new PerformanceObserver(l=>{for(const x of l.getEntries())longTasks.push(x.duration);});observer.observe({entryTypes:['longtask']});}catch(e){}
     const start=performance.now();let result;
     try{
-     window.runtimeUnderTest=await AmsterdamGeoRuntime.load(cfg.manifest,{onProgress:p=>{if(phases.length<2000)phases.push({...p,ms:performance.now()-start});}});
+     window.runtimeUnderTest=await AmsterdamGeoRuntime.load(cfg.manifest,{navigation:true,rendering:true,onProgress:p=>{if(phases.length<2000)phases.push({...p,ms:performance.now()-start});}});
      const readyMs=performance.now()-start;
      const counts=Object.fromEntries(Object.entries(window.runtimeUnderTest.data.layers).map(([k,v])=>[k,v.length]));
      const r=window.runtimeUnderTest;result={loaded:true,readyMs,counts,stats:typeof r.stats==='function'?r.stats():r.stats,source:r.data.source};
@@ -33,7 +33,7 @@ code=r'''async (page) => {
    },{manifest:cfg.manifest});
    phase='ready';const readyMemory=await cdp.send('Runtime.getHeapUsage');let paint=null;
    if(load.loaded){
-    phase='cold-paint';paint=await page.evaluate(()=>{
+    phase='cold-paint';try {paint=await page.evaluate(()=>{
      const cv=document.querySelector('canvas');cv.width=1100;cv.height=640;cv.style.width='1100px';cv.style.height='640px';
      const ctx=cv.getContext('2d');ctx.setTransform(1,0,0,1,0,0);const rt=window.runtimeUnderTest;
      const view={position:{x:1100.211,y:3243.117,visited:['pub'],bike:{x:1100.211,y:3243.117,mounted:false}},path:[],target:'pub',camera:'street',zoom:1,mode:'map',afterHours:false,reducedMotion:true,time:0};
@@ -43,6 +43,7 @@ code=r'''async (page) => {
      return {coldPaintMs,cachedPaintMs:cached,frame:first,stats:rt.renderer.stats()};
     });
     await page.screenshot({path:cfg.out+'/cycle-'+cycle+'.png',fullPage:true});
+    }catch(e){paint={error:String(e)};}
    }
    phase='dispose';await page.evaluate(()=>{if(window.runtimeUnderTest)window.runtimeUnderTest.dispose();window.runtimeUnderTest=null;});
    await cdp.send('HeapProfiler.collectGarbage');const afterDisposeGC=await cdp.send('Runtime.getHeapUsage');

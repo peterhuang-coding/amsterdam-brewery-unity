@@ -1,0 +1,37 @@
+{
+  "positive": {
+    "all_exact": true,
+    "source_sha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598",
+    "geometry_sha256": "534718e298a027dab112f581b2e2080c6212fb99266c6039a038d35077f1c931",
+    "features": 62,
+    "polygons": 63,
+    "rings": 63,
+    "pairs": 10549,
+    "layer_counts": {
+      "water": 2,
+      "buildings": 23,
+      "roads": 36,
+      "bridges": 1
+    },
+    "encoding": "int32-millimetres",
+    "chunks": 1,
+    "total_download_bytes": 43520,
+    "largest_coord_bytes": 84392,
+    "largest_metadata_bytes": 27545,
+    "target_chunk_bytes": 1048576,
+    "seconds": 0.006741334
+  },
+  "negatives": [
+    {
+      "mutation": "coordinate",
+      "exit_code": 1,
+      "error": "AssertionError: ('waterdeel:e28aa425-e08d-50d5-b9a9-c77f99ba0836', 0, [1053.118, 3255.744], [1053.119, 3255.744])"
+    },
+    {
+      "mutation": "property",
+      "exit_code": 1,
+      "error": "AssertionError"
+    }
+  ],
+  "scope": "Parent verifier calibration against currently available sample only; original worker remains running and untouched."
+}

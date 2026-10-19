@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/tmp/amsterdam-d26-geo-tools-venv/bin/python",
+    "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/MEMORY01/review/original/tools/geo/runtime/pack-runtime.py",
+    "--input",
+    "/Volumes/SanDisk2TB/amsterdam-geodata/d26-bgt-20261017/converted/geo-data.json",
+    "--outdir",
+    "/tmp/amsterdam-d27-memory-full-20261020",
+    "--chunk-bytes",
+    "1048576"
+  ],
+  "exit_code": 0,
+  "seconds": 31.248295917059295,
+  "outdir": "/tmp/amsterdam-d27-memory-full-20261020"
+}

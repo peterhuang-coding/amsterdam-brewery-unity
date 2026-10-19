@@ -1,0 +1,14 @@
+test_float64_when_millimetres_lossy_and_exact_numbers (__main__.PackerTests.test_float64_when_millimetres_lossy_and_exact_numbers) ... ok
+test_holes_and_multipolygon_cardinality_preserved (__main__.PackerTests.test_holes_and_multipolygon_cardinality_preserved) ... ok
+test_lossless_roundtrip_millimetres (__main__.PackerTests.test_lossless_roundtrip_millimetres) ... ok
+test_main_returns_nonzero_on_bad_input (__main__.PackerTests.test_main_returns_nonzero_on_bad_input) ... pack-runtime: input is not valid UTF-8 JSON: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+ok
+test_multiple_chunks_offsets_and_hashes (__main__.PackerTests.test_multiple_chunks_offsets_and_hashes) ... ok
+test_real_public_sample (__main__.PackerTests.test_real_public_sample) ... ok
+test_repeated_pack_is_byte_identical (__main__.PackerTests.test_repeated_pack_is_byte_identical) ... ok
+test_structural_rejections (__main__.PackerTests.test_structural_rejections) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.026s
+
+OK

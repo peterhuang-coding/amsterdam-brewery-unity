@@ -1,0 +1,124 @@
+{
+  "task_id": "amsterdam-d27-compact-runtime-20261020",
+  "receipt_status": "unknown",
+  "finished_at": "2026-10-19T18:34:51.804830+00:00",
+  "elapsed_seconds": 3000.169,
+  "cli": {
+    "final_subtype": null,
+    "is_error": null,
+    "outcome": "timeout",
+    "pid": 26517,
+    "returncode": 143,
+    "usage": null
+  },
+  "observed_models": [
+    "doubao-seed-evolving"
+  ],
+  "receipt_report_present": false,
+  "disk_report_present": false,
+  "disk_report_sha256": null,
+  "disk_report_validation_error": "missing on disk",
+  "disk_report_status": null,
+  "tool_counts": {
+    "Read": 21,
+    "Bash": 20,
+    "Edit": 43
+  },
+  "extra_bash_commands": [
+    "wc -c tools/geo/navigation/real-pub-sample.json tools/geo/renderer/real-pub-sample.json tools/geo/navigation/test-geo-navigation.cjs tools/geo/renderer/test-geo-map-renderer.cjs tools/geo/navigation/benchmark-geo-navigation.cjs tools/geo/renderer/benchmark-geo-map-renderer.cjs tools/geo/navigation/parent-capsule-repro.json tools/geo/navigation/parent-r2-witness.json",
+    "mkdir -p tools/geo/runtime/sample-out",
+    "grep -n \"open(os.path\" tools/geo/runtime/test_runtime.py",
+    "node --test tools/geo/navigation/test-geo-navigation.cjs 2>&1 | tail -30",
+    "node --test tools/geo/navigation/test-geo-navigation.cjs 2>&1 | grep -E \"^(not ok|# Subtest)\" | head -60",
+    "node --test tools/geo/navigation/test-geo-navigation.cjs 2>&1 | grep -A 20 \"not ok 23\" | head -40",
+    "node -e \"\nconst nav = require('./tools/geo/navigation/geo-navigation.js');\nconst data = { layers: { water: [], buildings: [], roads: [{id:'r1', properties:{}, polygons:[[[[0,0],[100,0],[100,100],[0,100],[0,0]]]] }], bridges: [] } };\nconst n = nav.createNavigator(data);\nconst g = n._routeGenerator({x:10,y:10},{x:20,y:20},{});\nlet s = g.next();\nconsole.log('first', s.done, s.value);\nwhile(!s.done) s = g.next();\nconsole.log('final', JSON.stringify(s.value));\nconsole.log('route', JSON.stringify(n.route({x:10,y:10},{x:20,y:20},{})));\n\"",
+    "node --test tools/geo/navigation/test-geo-navigation.cjs 2>&1 | tail -8",
+    "node tools/geo/navigation/benchmark-geo-navigation.cjs 2>&1 | tail -25",
+    "node --test tools/geo/renderer/test-geo-map-renderer.cjs 2>&1 | tail -8",
+    "node tools/geo/renderer/benchmark-geo-map-renderer.cjs 2>&1 | tail -5",
+    "ls tools/geo/runtime/"
+  ],
+  "permission_denials": [],
+  "disallowed_changes": [],
+  "path_violations": [],
+  "input_sha": [
+    {
+      "file": "anchors.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "brief.md",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/navigation/benchmark-geo-navigation.cjs",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/navigation/geo-navigation.js",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": false
+    },
+    {
+      "file": "tools/geo/navigation/parent-capsule-repro.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/navigation/parent-r2-witness.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/navigation/real-pub-sample.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/navigation/test-geo-navigation.cjs",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/renderer/benchmark-geo-map-renderer.cjs",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/renderer/geo-map-renderer.js",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": false
+    },
+    {
+      "file": "tools/geo/renderer/real-pub-sample.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/renderer/renderer-demo.html",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/renderer/test-geo-map-renderer.cjs",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    }
+  ]
+}

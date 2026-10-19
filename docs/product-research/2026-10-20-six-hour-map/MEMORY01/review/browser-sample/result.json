@@ -1,0 +1,386 @@
+{
+  "baseline": {
+    "usedSize": 1280356,
+    "totalSize": 2621440,
+    "embedderHeapUsedSize": 1292464,
+    "backingStorageSize": 178309
+  },
+  "cycles": [
+    {
+      "cycle": 0,
+      "load": {
+        "loaded": true,
+        "readyMs": 57.10000002384186,
+        "counts": {
+          "water": 2,
+          "buildings": 23,
+          "roads": 36,
+          "bridges": 1
+        },
+        "stats": {
+          "maxAttempts": 3,
+          "chunks": 1,
+          "fetchAttempts": 3,
+          "retries": 0,
+          "filesFetched": 2,
+          "compressedBytes": 43520,
+          "uncompressedBytes": 111937,
+          "decompressedByRuntime": 2,
+          "decompressedByTransport": 0,
+          "inflightPeakBytes": 43520,
+          "coordEncoding": "int32-millimetres",
+          "pairCount": 10549,
+          "featureCount": 62,
+          "geometrySha256": "534718e298a027dab112f581b2e2080c6212fb99266c6039a038d35077f1c931",
+          "retainedCoordinateCopies": 1,
+          "retainedCoordinatePairArrays": 0,
+          "routeEdgesTotal": 0,
+          "routeEdgesVerified": 0,
+          "routeEdgesDropped": 0
+        },
+        "source": {
+          "complete": false,
+          "inputs": [],
+          "license": "CC0-1.0",
+          "limitations": [
+            "Parent diagnostic feature subset by bounds for one near-pub route. Original complete source manifest SHA stored in parent evidence, not complete city coverage."
+          ],
+          "provider": "Kadaster / PDOK BGT",
+          "snapshot": "2026-10-16T00:00:00Z",
+          "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/"
+        },
+        "maxObservedHeartbeatGapMs": 23.899999976158142,
+        "heartbeatSamples": 4,
+        "longTasksMs": [],
+        "progress": [
+          {
+            "phase": "manifest",
+            "loaded": 0,
+            "total": 1,
+            "ms": 0.2999999523162842
+          },
+          {
+            "phase": "fetch-chunks",
+            "loaded": 1,
+            "total": 1,
+            "bytesLoaded": 43520,
+            "bytesTotal": 43520,
+            "ms": 20.899999976158142
+          },
+          {
+            "phase": "verify-geometry",
+            "loaded": 0,
+            "total": 1,
+            "ms": 20.899999976158142
+          },
+          {
+            "phase": "verify-geometry",
+            "loaded": 1,
+            "total": 1,
+            "ms": 21.899999976158142
+          },
+          {
+            "phase": "assemble",
+            "loaded": 0,
+            "total": 62,
+            "ms": 21.899999976158142
+          },
+          {
+            "phase": "assemble",
+            "loaded": 62,
+            "total": 62,
+            "ms": 22.100000023841858
+          },
+          {
+            "phase": "index-navigation",
+            "loaded": 0,
+            "total": 1,
+            "ms": 22.100000023841858
+          },
+          {
+            "runtimePhase": "index-navigation",
+            "phase": "index-water",
+            "loaded": 2,
+            "total": 2,
+            "ms": 22.799999952316284
+          },
+          {
+            "runtimePhase": "index-navigation",
+            "phase": "index-buildings",
+            "loaded": 23,
+            "total": 23,
+            "ms": 23.200000047683716
+          },
+          {
+            "runtimePhase": "index-navigation",
+            "phase": "index-roads",
+            "loaded": 36,
+            "total": 36,
+            "ms": 25.200000047683716
+          },
+          {
+            "runtimePhase": "index-navigation",
+            "phase": "index-bridges",
+            "loaded": 1,
+            "total": 1,
+            "ms": 25.200000047683716
+          },
+          {
+            "phase": "index-navigation",
+            "loaded": 1,
+            "total": 1,
+            "ms": 25.200000047683716
+          },
+          {
+            "phase": "index-rendering",
+            "loaded": 0,
+            "total": 1,
+            "ms": 25.200000047683716
+          },
+          {
+            "runtimePhase": "index-rendering",
+            "phase": "validate-water",
+            "loaded": 2,
+            "total": 2,
+            "ms": 25.600000023841858
+          },
+          {
+            "runtimePhase": "index-rendering",
+            "phase": "validate-roads",
+            "loaded": 36,
+            "total": 36,
+            "ms": 26.899999976158142
+          },
+          {
+            "runtimePhase": "index-rendering",
+            "phase": "validate-bridges",
+            "loaded": 1,
+            "total": 1,
+            "ms": 26.899999976158142
+          },
+          {
+            "runtimePhase": "index-rendering",
+            "phase": "validate-buildings",
+            "loaded": 23,
+            "total": 23,
+            "ms": 32
+          },
+          {
+            "runtimePhase": "index-rendering",
+            "phase": "index-water",
+            "loaded": 2,
+            "total": 2,
+            "ms": 37
+          },
+          {
+            "runtimePhase": "index-rendering",
+            "phase": "index-roads",
+            "loaded": 36,
+            "total": 36,
+            "ms": 42
+          },
+          {
+            "runtimePhase": "index-rendering",
+            "phase": "index-bridges",
+            "loaded": 1,
+            "total": 1,
+            "ms": 47.200000047683716
+          },
+          {
+            "runtimePhase": "index-rendering",
+            "phase": "index-buildings",
+            "loaded": 23,
+            "total": 23,
+            "ms": 52
+          },
+          {
+            "phase": "index-rendering",
+            "loaded": 1,
+            "total": 1,
+            "ms": 57
+          }
+        ]
+      },
+      "readyMemory": {
+        "usedSize": 2412888,
+        "totalSize": 5505024,
+        "embedderHeapUsedSize": 1306616,
+        "backingStorageSize": 605755
+      },
+      "paint": {
+        "coldPaintMs": 28.5,
+        "cachedPaintMs": [
+          0.10000002384185791,
+          0.10000002384185791,
+          0,
+          0.10000002384185791,
+          0,
+          0.10000002384185791,
+          0,
+          0.09999990463256836,
+          0.10000002384185791,
+          0,
+          0,
+          0,
+          0.20000004768371582,
+          0,
+          0,
+          0,
+          0,
+          0.10000002384185791,
+          0,
+          0,
+          0.09999990463256836,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "frame": {
+          "transform": {
+            "scale": 2,
+            "tx": -1650.422,
+            "ty": -6166.234
+          },
+          "markers": [
+            {
+              "id": "pub",
+              "x": 550,
+              "y": 320,
+              "radius": 12
+            }
+          ],
+          "labels": [
+            {
+              "id": "pub",
+              "text": "Brouwerij",
+              "x": 511.68,
+              "y": 278.12,
+              "width": 76.64,
+              "height": 22.88,
+              "fontCssPx": 12
+            }
+          ],
+          "visibleBounds": [
+            825.211,
+            3083.117,
+            1375.211,
+            3403.117
+          ]
+        },
+        "stats": {
+          "frames": 31,
+          "cacheBuilds": 1,
+          "cacheReuses": 30,
+          "directFrames": 0,
+          "indexedFeatures": 62,
+          "indexBuckets": 1023,
+          "canvasesCreated": 1,
+          "activeCanvases": 1,
+          "maxCanvasSide": 1540,
+          "lastFrame": {
+            "indexed": 62,
+            "culled": 0,
+            "drawn": 62,
+            "reused": true,
+            "kind": "street",
+            "night": false
+          }
+        }
+      },
+      "afterDisposeGC": {
+        "usedSize": 1973568,
+        "totalSize": 2703360,
+        "embedderHeapUsedSize": 475912,
+        "backingStorageSize": 178911
+      },
+      "heapSamples": [
+        {
+          "at": 1792434952141,
+          "phase": "load",
+          "usedSize": 1280356,
+          "totalSize": 2621440,
+          "embedderHeapUsedSize": 1292464,
+          "backingStorageSize": 178309
+        },
+        {
+          "at": 1792434952194,
+          "phase": "load",
+          "usedSize": 2268500,
+          "totalSize": 5505024,
+          "embedderHeapUsedSize": 1306616,
+          "backingStorageSize": 605739
+        },
+        {
+          "at": 1792434952247,
+          "phase": "cold-paint",
+          "usedSize": 4010588,
+          "totalSize": 6553600,
+          "embedderHeapUsedSize": 1636336,
+          "backingStorageSize": 606210
+        },
+        {
+          "at": 1792434952321,
+          "phase": "cold-paint",
+          "usedSize": 3049164,
+          "totalSize": 6897664,
+          "embedderHeapUsedSize": 1636336,
+          "backingStorageSize": 606401
+        }
+      ]
+    }
+  ],
+  "errors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "metric": "sampled CDP usedSize + backingStorageSize; not RSS or guaranteed peak",
+  "resources": [
+    {
+      "name": "http://127.0.0.1:18865/code/tools/geo/navigation/geo-navigation.js",
+      "encodedBodySize": 62373,
+      "decodedBodySize": 62373,
+      "transferSize": 62673
+    },
+    {
+      "name": "http://127.0.0.1:18865/code/tools/geo/runtime/geo-runtime.js",
+      "encodedBodySize": 51748,
+      "decodedBodySize": 51748,
+      "transferSize": 52048
+    },
+    {
+      "name": "http://127.0.0.1:18865/code/tools/geo/renderer/geo-map-renderer.js",
+      "encodedBodySize": 63721,
+      "decodedBodySize": 63721,
+      "transferSize": 64021
+    },
+    {
+      "name": "http://127.0.0.1:18865/favicon.ico",
+      "encodedBodySize": 330,
+      "decodedBodySize": 330,
+      "transferSize": 630
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/sample/manifest.json",
+      "encodedBodySize": 2152,
+      "decodedBodySize": 2152,
+      "transferSize": 2452
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/sample/metadata-00000.json.gz",
+      "encodedBodySize": 5639,
+      "decodedBodySize": 5639,
+      "transferSize": 5939
+    },
+    {
+      "name": "http://127.0.0.1:18865/raw/sample/coords-00000.bin.gz",
+      "encodedBodySize": 37881,
+      "decodedBodySize": 37881,
+      "transferSize": 38181
+    }
+  ]
+}

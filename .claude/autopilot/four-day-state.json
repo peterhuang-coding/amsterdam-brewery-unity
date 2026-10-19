@@ -15,28 +15,7 @@
   "current_task_terminal": false,
   "failure_reason": null,
   "last_result_at": "2026-10-19T17:36:46.262920Z",
-  "in_flight": [
-    {
-      "kind": "MEMORY01",
-      "task_id": "amsterdam-d27-compact-runtime-20261020",
-      "state": "running",
-      "worker_pid": 26517,
-      "launcher_pid": 26516,
-      "exec_session_id": 73851,
-      "model": "doubao-seed-evolving",
-      "thinking_enabled": true,
-      "effort": "high",
-      "actual_process": "26517 26516 Tue Oct 20 01:44:51 2026     /opt/homebrew/bin/claude",
-      "contract_commit": "e997882e33457bf0961ef105b18638ee397e5bf7",
-      "notion_page": "3fe3285284df81e5ac3ff4bdaaf46be4",
-      "launch": {
-        "cwd": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-20261020/workspace",
-        "pid": 26517,
-        "pid_pending": false,
-        "started_epoch": 1792431891
-      }
-    }
-  ],
+  "in_flight": [],
   "candidate_path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/RENDER01/r3-review",
   "adopted_this_round": 0,
   "policy_decision": "D24",
@@ -662,10 +641,10 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-19T18:29:09.136957+00:00",
+  "updated_at": "2026-10-19T18:46:59.538487+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
-  "last_checked_at": "2026-10-19T18:22:42.907265+00:00",
+  "last_checked_at": "2026-10-19T18:46:59.538487+00:00",
   "prior_four_day_window": {
     "start_at": "2026-10-12T19:48:33Z",
     "deadline": "2026-10-16T19:48:33Z",
@@ -795,7 +774,7 @@
       {
         "kind": "MEMORY01",
         "task_id": "amsterdam-d27-compact-runtime-20261020",
-        "state": "running",
+        "state": "done",
         "worker_pid": 26517,
         "launcher_pid": 26516,
         "exec_session_id": 73851,
@@ -810,7 +789,19 @@
           "pid": 26517,
           "pid_pending": false,
           "started_epoch": 1792431891
-        }
+        },
+        "receipt_status": "unknown",
+        "physically_terminal": true,
+        "finished_at": "2026-10-19T18:34:51.804830+00:00",
+        "elapsed_seconds": 3000.169,
+        "worker_exited": true,
+        "launcher_exited": true,
+        "session_drained": true,
+        "parent_outcome": "rejected_incomplete_and_semantic",
+        "parent_review": "docs/product-research/2026-10-20-six-hour-map/MEMORY01/review/parent-review.md",
+        "adopted": false,
+        "correction_prepared": "amsterdam-d27-compact-runtime-r2-20261020",
+        "correction_submitted": false
       },
       {
         "kind": "CITY01",
@@ -864,14 +855,20 @@
   },
   "prepared_tasks": [
     {
-      "kind": "CITY01-R2",
+      "kind": "MEMORY01",
+      "task_id": "amsterdam-d27-compact-runtime-r2-20261020",
+      "packet": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/MEMORY01/r2/handoff.json",
+      "submitted": false
+    },
+    {
+      "kind": "CITY01",
       "task_id": "amsterdam-d27-real-city-r2-20261020",
-      "submitted": false,
-      "reason": "Collect MEMORY original before next wave"
+      "packet": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/CITY01/r2/handoff.json",
+      "submitted": false
     }
   ],
   "awaiting_parent_review": [],
-  "current_stage": "wave2_memory_running_city_correction_prepared",
+  "current_stage": "wave2_collected_two_corrections_prepared",
   "prepared": [],
   "stage": "wave2_memory_running_city_terminal",
   "renewal_history": [

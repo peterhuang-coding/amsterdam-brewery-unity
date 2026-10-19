@@ -1,0 +1,170 @@
+{
+  "basis": "Independent GEOS union of allowed road/deck surfaces minus buildings and water outside decks; line coverage and exact distance to boundary. make_valid only for oracle comparison, source untouched.",
+  "source_sha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598",
+  "routes_sha256": "b66304e2a9c03639035640a80406407f0ff61d8dc8c82791bee81bb81350902c",
+  "geometry_sha256": "534718e298a027dab112f581b2e2080c6212fb99266c6039a038d35077f1c931",
+  "segments": 6,
+  "failed": 1,
+  "minimum_clearance_m": 0.0,
+  "missing": [
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "bike",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "pub",
+      "to": "ferrySouth",
+      "mode": "walk",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "pub",
+      "to": "ferrySouth",
+      "mode": "bike",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "coffee",
+      "to": "lab",
+      "mode": "walk",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "coffee",
+      "to": "lab",
+      "mode": "bike",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "coffee",
+      "to": "market",
+      "mode": "walk",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "coffee",
+      "to": "market",
+      "mode": "bike",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "walk",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "flowers",
+      "to": "flowerCart",
+      "mode": "walk",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "flowers",
+      "to": "flowerCart",
+      "mode": "bike",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "mode": "walk",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "mode": "bike",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "flowerCart",
+      "to": "garden",
+      "mode": "walk",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "flowerCart",
+      "to": "garden",
+      "mode": "bike",
+      "reason": "unwalkable"
+    }
+  ],
+  "rows": [
+    {
+      "from": "pub",
+      "to": "lotte",
+      "mode": "walk",
+      "segment": 0,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.7364962783982035,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "lotte",
+      "mode": "walk",
+      "segment": 1,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5859660700878762,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "lotte",
+      "mode": "walk",
+      "segment": 2,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.9118702543696935,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "lotte",
+      "mode": "bike",
+      "segment": 0,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.7364962783982035,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "lotte",
+      "mode": "bike",
+      "segment": 1,
+      "pass": false,
+      "line_covered": false,
+      "clearance_m": 0.0,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "lotte",
+      "mode": "bike",
+      "segment": 2,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.7302186479828876,
+      "comparison_only_make_valid_features": []
+    }
+  ],
+  "seconds": 0.010612583020702004
+}

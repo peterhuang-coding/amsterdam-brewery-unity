@@ -4,8 +4,8 @@ Sampling is the observed isolate JS heap plus ArrayBuffer/external-string backin
 storage, not RSS or a guaranteed peak. Cold Canvas paint is timed separately.
 """
 import argparse,json,pathlib,subprocess
-p=argparse.ArgumentParser();p.add_argument('--page',required=True);p.add_argument('--manifest',required=True);p.add_argument('--out',type=pathlib.Path,required=True);p.add_argument('--cycles',type=int,default=2);a=p.parse_args();a.out.mkdir(parents=True,exist_ok=True)
-cfg={'page':a.page,'manifest':a.manifest,'cycles':a.cycles,'out':str(a.out.resolve())}
+p=argparse.ArgumentParser();p.add_argument('--page',required=True);p.add_argument('--manifest',required=True);p.add_argument('--routes');p.add_argument('--out',type=pathlib.Path,required=True);p.add_argument('--cycles',type=int,default=2);a=p.parse_args();a.out.mkdir(parents=True,exist_ok=True)
+cfg={'page':a.page,'manifest':a.manifest,'routes':a.routes,'cycles':a.cycles,'out':str(a.out.resolve())}
 code=r'''async (page) => {
  const cfg=CONFIG;
  await page.goto(cfg.page); await page.setViewportSize({width:1280,height:900});
@@ -23,14 +23,14 @@ code=r'''async (page) => {
     let observer;try{observer=new PerformanceObserver(l=>{for(const x of l.getEntries())longTasks.push(x.duration);});observer.observe({entryTypes:['longtask']});}catch(e){}
     const start=performance.now();let result;
     try{
-     window.runtimeUnderTest=await AmsterdamGeoRuntime.load(cfg.manifest,{navigation:true,rendering:true,onProgress:p=>{if(phases.length<2000)phases.push({...p,ms:performance.now()-start});}});
+     window.runtimeUnderTest=await AmsterdamGeoRuntime.load(cfg.manifest,{navigation:true,rendering:true,routesUrl:cfg.routes,onProgress:p=>{if(phases.length<2000)phases.push({...p,ms:performance.now()-start});}});
      const readyMs=performance.now()-start;
      const counts=Object.fromEntries(Object.entries(window.runtimeUnderTest.data.layers).map(([k,v])=>[k,v.length]));
      const r=window.runtimeUnderTest;result={loaded:true,readyMs,counts,stats:typeof r.stats==='function'?r.stats():r.stats,source:r.data.source};
     }catch(e){result={loaded:false,error:String(e),errorName:e.name,readyMs:performance.now()-start};}
     await new Promise(r=>setTimeout(r,30));clearInterval(heartbeat);if(observer)observer.disconnect();
     return {...result,maxObservedHeartbeatGapMs:maxGap,heartbeatSamples:gaps,longTasksMs:longTasks,progress:phases};
-   },{manifest:cfg.manifest});
+   },{manifest:cfg.manifest,routes:cfg.routes});
    phase='ready';const readyMemory=await cdp.send('Runtime.getHeapUsage');let paint=null;
    if(load.loaded){
     phase='cold-paint';try {paint=await page.evaluate(()=>{
@@ -60,6 +60,6 @@ if '### Result\n' not in r.stdout:print(r.stdout);raise SystemExit(r.returncode 
 result=json.loads(r.stdout.split('### Result\n',1)[1].split('\n###',1)[0]);(a.out/'result.json').write_text(json.dumps(result,indent=2)+'\n')
 for c in result['cycles']:
  values=[s['usedSize']+s['backingStorageSize'] for s in c['heapSamples'] if 'usedSize' in s]
- print(json.dumps({'cycle':c['cycle'],'loaded':c['load']['loaded'],'readyMs':c['load']['readyMs'],'maxObservedHeartbeatGapMs':c['load']['maxObservedHeartbeatGapMs'],'maxSampledHeapPlusBacking':max(values,default=None),'afterDisposeGC':c['afterDisposeGC'],'coldPaintMs':c['paint']['coldPaintMs'] if c['paint'] else None}))
+ print(json.dumps({'cycle':c['cycle'],'loaded':c['load']['loaded'],'readyMs':c['load']['readyMs'],'maxObservedHeartbeatGapMs':c['load']['maxObservedHeartbeatGapMs'],'maxSampledHeapPlusBacking':max(values,default=None),'afterDisposeGC':c['afterDisposeGC'],'coldPaintMs':c['paint'].get('coldPaintMs') if c['paint'] else None}))
 print('cli_exit',r.returncode)
 raise SystemExit(r.returncode)

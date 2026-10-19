@@ -1,6 +1,6 @@
 {
   "decision": "D27",
-  "status": "d27_memory_transport_failure_city_parent_review",
+  "status": "d27_city_qualified_memory_extra_decision_pending",
   "start_at": "2026-10-19T16:52:30Z",
   "deadline": "2026-10-19T22:52:30Z",
   "next_direction_review_at": "2026-10-17T09:48:33Z",
@@ -310,7 +310,10 @@
       "extra_attempts_allowed": 0,
       "extra_attempts_submitted": 0,
       "extra_attempt_proposal": "docs/product-research/2026-10-20-six-hour-map/MEMORY01/transport-recovery-proposal.md",
-      "extra_attempt_question_asked": false
+      "extra_attempt_question_asked": true,
+      "extra_attempt_question_asked_at": "2026-10-19T19:15:40Z",
+      "extra_attempt_question": "允许一次1800秒/50轮有界恢复，或保持原限次；用户实际答复待到达",
+      "extra_attempt_answer": null
     },
     "D27-CITY01": {
       "logical_task_id": "f02-real-city-d27",
@@ -322,8 +325,10 @@
       "correction_worker_pid": 32703,
       "correction_started_at": "2026-10-19T18:48:24+00:00",
       "correction_contract_commit": "f656dce908dc39022234b5bc5c53c6ad2bf4462f",
-      "outcome": "correction_running",
-      "adopted": false
+      "outcome": "qualified_candidate_pending_atomic_adoption",
+      "adopted": false,
+      "parent_review": "docs/product-research/2026-10-20-six-hour-map/CITY01/r2-review/parent-review.md",
+      "finished_at": "2026-10-19T19:11:59.498002+00:00"
     }
   },
   "provider_cooldown_until": "2026-10-13T19:31:58Z",
@@ -674,7 +679,7 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-19T19:15:02.636261+00:00",
+  "updated_at": "2026-10-19T19:20:27.735947+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
   "last_checked_at": "2026-10-19T18:49:33.544246+00:00",
@@ -955,8 +960,18 @@
         "session_drained": true,
         "legal_report_present": true,
         "parent_six_commands_passed": true,
-        "parent_review_pending": true
+        "parent_review_pending": false,
+        "parent_outcome": "qualified_candidate_pending_atomic_adoption",
+        "adopted": false,
+        "parent_review_sha256": "c7b1104433e3c0f482fc13e0202d3eb70ac47f1610c8e4ee57821744a3688fc0",
+        "parent_review": "docs/product-research/2026-10-20-six-hour-map/CITY01/r2-review/parent-review.md",
+        "parent_full_source_cases": 24,
+        "parent_full_source_passed": 24,
+        "parent_movement_frames": 2088
       }
+    ],
+    "qualified_pending_adoption": [
+      "CITY01-R2"
     ]
   },
   "capacity_observation": {
@@ -969,7 +984,7 @@
   },
   "prepared_tasks": [],
   "awaiting_parent_review": [],
-  "current_stage": "wave3_collected_city_parent_review",
+  "current_stage": "wave3_parent_review_complete_memory_exception_pending",
   "prepared": [],
   "stage": "wave3_runtime_city_corrections_running",
   "renewal_history": [

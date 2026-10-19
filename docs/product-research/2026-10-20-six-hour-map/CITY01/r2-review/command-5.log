@@ -1,0 +1,71 @@
+{
+  "scope": "independent parent behavior checks, synthetic where named; real fixture last case",
+  "passed": 16,
+  "total": 16,
+  "rows": [
+    {
+      "name": "readiness fails before geometry use",
+      "pass": true
+    },
+    {
+      "name": "10 reviewed anchor coordinates unchanged",
+      "pass": true
+    },
+    {
+      "name": "legacy player and remote bicycle migrate independently",
+      "pass": true
+    },
+    {
+      "name": "new safe save clones and preserves values",
+      "pass": true
+    },
+    {
+      "name": "walking and bicycle named speed units",
+      "pass": true
+    },
+    {
+      "name": "moveAlong consumes reachable 3m waypoint within .1s",
+      "pass": true
+    },
+    {
+      "name": "swept collision forbids crossing thin obstacle",
+      "pass": true
+    },
+    {
+      "name": "bicycle pushes on walk-only ground without losing ownership",
+      "pass": true
+    },
+    {
+      "name": "remote parked bicycle remains stationary during movement",
+      "pass": true
+    },
+    {
+      "name": "F3 cannot board through unwalkable 3m connector",
+      "pass": true
+    },
+    {
+      "name": "saved F3 crosses after refresh with no path and parked bike stays",
+      "pass": true
+    },
+    {
+      "name": "zero elapsed pauses transit exactly",
+      "pass": true
+    },
+    {
+      "name": "bike toggle during F3 does not abandon the carried bicycle in water",
+      "pass": true
+    },
+    {
+      "name": "cached route remains input/output alias-free",
+      "pass": true
+    },
+    {
+      "name": "pre-aborted route rejects AbortError",
+      "pass": true
+    },
+    {
+      "name": "actual accepted NAV pub fixture integration",
+      "pass": true
+    }
+  ]
+}

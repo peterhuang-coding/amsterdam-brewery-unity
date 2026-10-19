@@ -1,0 +1,32 @@
+[
+  {
+    "command": "node --check tools/prototype/geo-world.js",
+    "exit_code": 0,
+    "seconds": 0.04776670900173485
+  },
+  {
+    "command": "node --check tools/prototype/reopening-city.js",
+    "exit_code": 0,
+    "seconds": 0.047547792084515095
+  },
+  {
+    "command": "node --check tools/prototype/flower-network.js",
+    "exit_code": 0,
+    "seconds": 0.04798495792783797
+  },
+  {
+    "command": "node --test tools/prototype/test-geo-city.cjs",
+    "exit_code": 0,
+    "seconds": 0.15013120789080858
+  },
+  {
+    "command": "node --test tools/prototype/test-geo-flower-network.cjs",
+    "exit_code": 0,
+    "seconds": 0.14067100000102073
+  },
+  {
+    "command": "node parent-regressions.cjs .",
+    "exit_code": 0,
+    "seconds": 0.08211299998220056
+  }
+]

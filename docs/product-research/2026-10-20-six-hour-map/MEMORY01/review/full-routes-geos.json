@@ -1,0 +1,1485 @@
+{
+  "basis": "Independent GEOS union of allowed road/deck surfaces minus buildings and water outside decks; line coverage and exact distance to boundary. make_valid only for oracle comparison, source untouched.",
+  "source_sha256": "3a18d70c3dd6e77e10af71b71ab54ca0fb59b74e8287d2c358933475dcf199f5",
+  "routes_sha256": "756060bbc666b2997865f1c25755345d770007d44313c90a2da7780048465ba6",
+  "geometry_sha256": "7b6fa8e13f148e4403cea37066463cd811d578f4752f46dec8cb1b4dd9a55dff",
+  "segments": 132,
+  "failed": 0,
+  "minimum_clearance_m": 0.4008350089248191,
+  "missing": [
+    {
+      "from": "pub",
+      "to": "lotte",
+      "mode": "bike",
+      "reason": "unreachable"
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "bike",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "pub",
+      "to": "ferrySouth",
+      "mode": "walk",
+      "reason": "limit"
+    },
+    {
+      "from": "pub",
+      "to": "ferrySouth",
+      "mode": "bike",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "coffee",
+      "to": "lab",
+      "mode": "walk",
+      "reason": "limit"
+    },
+    {
+      "from": "coffee",
+      "to": "lab",
+      "mode": "bike",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "coffee",
+      "to": "market",
+      "mode": "bike",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "flowers",
+      "to": "flowerCart",
+      "mode": "bike",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "flowerCart",
+      "to": "garden",
+      "mode": "bike",
+      "reason": "unwalkable"
+    }
+  ],
+  "rows": [
+    {
+      "from": "pub",
+      "to": "lotte",
+      "mode": "walk",
+      "segment": 0,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.7364962783982035,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "lotte",
+      "mode": "walk",
+      "segment": 1,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5859660700878762,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "lotte",
+      "mode": "walk",
+      "segment": 2,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.9118702543696935,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 0,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.8828410666938693,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 1,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.731751050562844,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 2,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.2721587880056755,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 3,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.1680708528087627,
+      "comparison_only_make_valid_features": [
+        "wegdeel:15f0a33e-ef9c-5d30-aaf9-cfdbadebb8d2"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 4,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.0592578487059523,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 5,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6625590539716425,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 6,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.4998976328498766,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 7,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5092063466299052,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 8,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.1203949749976228,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 9,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.9690635229815674,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 10,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.0390823266956701,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 11,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6919232800704209,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 12,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.22400183823391,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 13,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.4387013458391402,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 14,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.4484215266177637,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 15,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5448463728235856,
+      "comparison_only_make_valid_features": [
+        "wegdeel:28c9b780-f377-5178-9daf-5f01212a9d08"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 16,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.9303798243982001,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 17,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5847223809414138,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 18,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.9281810295030685,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 19,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.089131911549105,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 20,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.446278988345926,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 21,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.3907451460354467,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 22,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.4185700546677387,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 23,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.7942127662237505,
+      "comparison_only_make_valid_features": [
+        "wegdeel:ae83c625-e382-5177-86d8-a390e9cb3cac"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 24,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.16467712093221,
+      "comparison_only_make_valid_features": [
+        "wegdeel:ae83c625-e382-5177-86d8-a390e9cb3cac"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 25,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.2582274344978144,
+      "comparison_only_make_valid_features": [
+        "wegdeel:ae83c625-e382-5177-86d8-a390e9cb3cac"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 26,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.1227852497166435,
+      "comparison_only_make_valid_features": [
+        "wegdeel:ae83c625-e382-5177-86d8-a390e9cb3cac"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 27,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.7483995845430715,
+      "comparison_only_make_valid_features": [
+        "wegdeel:ae83c625-e382-5177-86d8-a390e9cb3cac"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 28,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.8604389577419094,
+      "comparison_only_make_valid_features": [
+        "wegdeel:ae83c625-e382-5177-86d8-a390e9cb3cac"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 29,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.7650551883206952,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 30,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5926338468823352,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 31,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5516757474053551,
+      "comparison_only_make_valid_features": [
+        "wegdeel:272a001f-1f27-552b-aca3-45d6e138f81f"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 32,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6227902947376952,
+      "comparison_only_make_valid_features": [
+        "wegdeel:1942e7f1-e2b2-5148-8a90-fcaee05d2dfb"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 33,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6079999999999472,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 34,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.8147270438931064,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 35,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6811318232292212,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 36,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6811318232292212,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 37,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.4373172789166573,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 38,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.0155986757412343,
+      "comparison_only_make_valid_features": [
+        "wegdeel:1a832849-01a7-59b3-83ef-108b357a9315",
+        "wegdeel:470a6a88-4108-51e0-8f61-739847632f68"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 39,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.2789999999999964,
+      "comparison_only_make_valid_features": [
+        "wegdeel:470a6a88-4108-51e0-8f61-739847632f68"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 40,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.42618927077124547,
+      "comparison_only_make_valid_features": [
+        "wegdeel:470a6a88-4108-51e0-8f61-739847632f68"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 41,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5763748915401232,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 42,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.40907544073971214,
+      "comparison_only_make_valid_features": [
+        "wegdeel:9ec03080-111d-5af6-9a27-df74728be542"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 43,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.9278324202139326,
+      "comparison_only_make_valid_features": [
+        "wegdeel:9ec03080-111d-5af6-9a27-df74728be542"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 44,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.45063119131743873,
+      "comparison_only_make_valid_features": [
+        "wegdeel:9ec03080-111d-5af6-9a27-df74728be542"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 45,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.074676180015014,
+      "comparison_only_make_valid_features": [
+        "wegdeel:9ec03080-111d-5af6-9a27-df74728be542"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 46,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.40365517241402105,
+      "comparison_only_make_valid_features": [
+        "wegdeel:9ec03080-111d-5af6-9a27-df74728be542"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 47,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.2878189638141189,
+      "comparison_only_make_valid_features": [
+        "wegdeel:09a9630c-fc9d-5351-aec0-8076a59ff376",
+        "wegdeel:8c36c652-27e1-538e-93ef-64eda8e5410e"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 48,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5383838458921129,
+      "comparison_only_make_valid_features": [
+        "wegdeel:8c36c652-27e1-538e-93ef-64eda8e5410e",
+        "wegdeel:6b5800de-2e6b-5a7c-b72a-22a52a2d2360"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 49,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5628937445107189,
+      "comparison_only_make_valid_features": [
+        "wegdeel:d2fd0a03-9cdd-5be5-9f2b-6260fc39c6b4",
+        "wegdeel:4210025d-b82b-58c0-b856-46b04f7981e4",
+        "wegdeel:2e2167f7-edc2-5934-a188-93dc351261fa"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 50,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.72394836992745,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 51,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.0085218433955356,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 52,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.8649313887640526,
+      "comparison_only_make_valid_features": [
+        "wegdeel:719b739f-fa48-545c-a038-29feeb8d9e64"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 53,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 2.351934097716438,
+      "comparison_only_make_valid_features": [
+        "wegdeel:719b739f-fa48-545c-a038-29feeb8d9e64"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 54,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.4587279798926776,
+      "comparison_only_make_valid_features": [
+        "wegdeel:719b739f-fa48-545c-a038-29feeb8d9e64"
+      ]
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 55,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.49744242432358216,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 56,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.41317241379300834,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 57,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.4884606969441798,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 58,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.43808128795241125,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 59,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.4129089107125531,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 60,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.4318683960138097,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 61,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.8461237471584883,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 62,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6259999999999764,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 63,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.7564374296038826,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 64,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.40353617084010057,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 65,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.9878971759190661,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 66,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.4008350089248191,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 67,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.983099306354396,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 68,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.8840000000000146,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 69,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.327239428287277,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 70,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5389422870439331,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "walk",
+      "segment": 71,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 2.331021132134607,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "coffee",
+      "to": "market",
+      "mode": "walk",
+      "segment": 0,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.4784197131517838,
+      "comparison_only_make_valid_features": [
+        "wegdeel:50f91dba-8fc4-5381-8c47-e24e802b0627"
+      ]
+    },
+    {
+      "from": "coffee",
+      "to": "market",
+      "mode": "walk",
+      "segment": 1,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.0995157899556907,
+      "comparison_only_make_valid_features": [
+        "wegdeel:50f91dba-8fc4-5381-8c47-e24e802b0627"
+      ]
+    },
+    {
+      "from": "coffee",
+      "to": "market",
+      "mode": "walk",
+      "segment": 2,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.1163172079648407,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "walk",
+      "segment": 0,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.7844054511786935,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "walk",
+      "segment": 1,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6758474875406822,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "walk",
+      "segment": 2,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.485818889964219,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "walk",
+      "segment": 3,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.8526489424014262,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "walk",
+      "segment": 4,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.9324377593690463,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "walk",
+      "segment": 5,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.556181532321524,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "walk",
+      "segment": 6,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5308887613010264,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "walk",
+      "segment": 7,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.884012739799422,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "walk",
+      "segment": 8,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6580134348209691,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 0,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.8669582888824369,
+      "comparison_only_make_valid_features": [
+        "wegdeel:8ba6b133-2195-5c3e-a2ef-2c9a978584f3",
+        "wegdeel:a242f3b3-7289-5393-b324-4d31c2a08c3a",
+        "wegdeel:9a69d52b-2063-5115-bb7e-06af14a30333"
+      ]
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 1,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6345410538775936,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 2,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5852889937061894,
+      "comparison_only_make_valid_features": [
+        "wegdeel:1702ff86-c77c-5653-91f6-127484aa6f2f",
+        "wegdeel:11d9bca6-99ea-5fff-846c-dac401d90d09"
+      ]
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 3,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6963335407688609,
+      "comparison_only_make_valid_features": [
+        "wegdeel:20c39a9d-c367-5670-ae88-d3302646b3c5"
+      ]
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 4,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.8787641042081223,
+      "comparison_only_make_valid_features": [
+        "wegdeel:20c39a9d-c367-5670-ae88-d3302646b3c5"
+      ]
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 5,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.7894000000000233,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 6,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5579777608815991,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 7,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6491291892831311,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 8,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5347085421320379,
+      "comparison_only_make_valid_features": [
+        "wegdeel:568cfad8-970d-53f6-867e-b5e7ecf1928b"
+      ]
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 9,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5347085421320379,
+      "comparison_only_make_valid_features": [
+        "wegdeel:568cfad8-970d-53f6-867e-b5e7ecf1928b"
+      ]
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 10,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.2536373858391405,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 11,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.3217812731124714,
+      "comparison_only_make_valid_features": [
+        "wegdeel:696c508a-dbdd-52ce-8b89-180103638e6b"
+      ]
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 12,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.3479999999999563,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 13,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.4212647741561979,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 14,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.8765386471799339,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 15,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5015291684930117,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 16,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.482807879260149,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 17,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.8798176837801773,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 18,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.7142749325331579,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 19,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6031620843521713,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 20,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6030463497937988,
+      "comparison_only_make_valid_features": [
+        "wegdeel:5f77445d-8d79-513c-b03f-40f018d5413f"
+      ]
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 21,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.4112407154590692,
+      "comparison_only_make_valid_features": [
+        "wegdeel:5f77445d-8d79-513c-b03f-40f018d5413f",
+        "wegdeel:31a2758d-98e6-50f7-b670-d85a5e9d9b1d"
+      ]
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 22,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6786669372852779,
+      "comparison_only_make_valid_features": [
+        "wegdeel:a3e5f64d-18ae-532e-b1f3-fdb19a7b87d0"
+      ]
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "mode": "bike",
+      "segment": 23,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.4473985125664928,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "flowers",
+      "to": "flowerCart",
+      "mode": "walk",
+      "segment": 0,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.8003840551887217,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "mode": "walk",
+      "segment": 0,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6580134348209692,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "mode": "walk",
+      "segment": 1,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6129037968194712,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "mode": "bike",
+      "segment": 0,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.4473985125664934,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "mode": "bike",
+      "segment": 1,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.9431569901704366,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "mode": "bike",
+      "segment": 2,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5522898172811842,
+      "comparison_only_make_valid_features": [
+        "wegdeel:a3e5f64d-18ae-532e-b1f3-fdb19a7b87d0",
+        "wegdeel:5f77445d-8d79-513c-b03f-40f018d5413f"
+      ]
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "mode": "bike",
+      "segment": 3,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6371956306165443,
+      "comparison_only_make_valid_features": [
+        "wegdeel:5f77445d-8d79-513c-b03f-40f018d5413f",
+        "wegdeel:31a2758d-98e6-50f7-b670-d85a5e9d9b1d"
+      ]
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "mode": "bike",
+      "segment": 4,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.683368202362621,
+      "comparison_only_make_valid_features": [
+        "wegdeel:5f77445d-8d79-513c-b03f-40f018d5413f"
+      ]
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "mode": "bike",
+      "segment": 5,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.701573232100197,
+      "comparison_only_make_valid_features": [
+        "wegdeel:5f77445d-8d79-513c-b03f-40f018d5413f"
+      ]
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "mode": "bike",
+      "segment": 6,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5362670148539697,
+      "comparison_only_make_valid_features": [
+        "wegdeel:5f77445d-8d79-513c-b03f-40f018d5413f"
+      ]
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "mode": "bike",
+      "segment": 7,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5362670148539697,
+      "comparison_only_make_valid_features": [
+        "wegdeel:5f77445d-8d79-513c-b03f-40f018d5413f"
+      ]
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "mode": "bike",
+      "segment": 8,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.6030463497937988,
+      "comparison_only_make_valid_features": [
+        "wegdeel:5f77445d-8d79-513c-b03f-40f018d5413f"
+      ]
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "mode": "bike",
+      "segment": 9,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.947374908798949,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "mode": "bike",
+      "segment": 10,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 1.0273809076538765,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "mode": "bike",
+      "segment": 11,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.56438355752082,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "mode": "bike",
+      "segment": 12,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.49379023718872217,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "mode": "bike",
+      "segment": 13,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.8000852770663034,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "flowerCart",
+      "to": "garden",
+      "mode": "walk",
+      "segment": 0,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.7350113150229459,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "flowerCart",
+      "to": "garden",
+      "mode": "walk",
+      "segment": 1,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.5272648290942861,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "flowerCart",
+      "to": "garden",
+      "mode": "walk",
+      "segment": 2,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.9185767251567493,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "from": "flowerCart",
+      "to": "garden",
+      "mode": "walk",
+      "segment": 3,
+      "pass": true,
+      "line_covered": true,
+      "clearance_m": 0.8000852770663034,
+      "comparison_only_make_valid_features": []
+    }
+  ],
+  "seconds": 16.612352209049277
+}

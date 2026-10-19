@@ -1,0 +1,10 @@
+{
+  "worker_pid": 32703,
+  "launcher_pid": 32702,
+  "ps_both_absent": true,
+  "exec_session": 62111,
+  "session_drained": true,
+  "receipt_state": "done",
+  "receipt_status": "verifying",
+  "cli_exit": 0
+}

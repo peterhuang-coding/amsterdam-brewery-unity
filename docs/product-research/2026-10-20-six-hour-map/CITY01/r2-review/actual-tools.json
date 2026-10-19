@@ -1,0 +1,397 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/brief.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/original-brief.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/parent-regressions.cjs"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/geo-world.js"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/reopening-city.js"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/flower-network.js"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/anchors.json"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/fixture-shape.json"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/geo/navigation/geo-navigation.js"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-city.js"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-city-bike.js"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-flower-network.js"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node parent-regressions.cjs .",
+      "description": "Run parent regression suite baseline"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/reopening-city.js",
+      "old_string": "    while (remaining > 1e-10 && covered < budget - 1e-10) {\n      const carrying = isCarrying(current.bike);\n      const chunk = Math.min(SUBSTEP, WALK_SPEED * remaining, budget - covered);\n      let speed = WALK_SPEED;\n      // A carried bicycle rides only when the COMPLETE chunk capsule is\n      // bike-safe; otherwise this chunk is pushed at walking speed.\n      let bikeCapsuleBlocked = false;\n      if (carrying && current.bike.mounted) {\n        const probe = { x: current.x + ux * chunk, y: current.y + uy * chunk };\n        if (segmentWalkable(current, probe, 'bike')) speed = BIKE_SPEED;\n        else bikeCapsuleBlocked = true;\n      }\n      if (chunk <= 1e-10) break;",
+      "new_string": "    while (remaining > 1e-10 && covered < budget - 1e-10) {\n      const carrying = isCarrying(current.bike);\n      const reach = budget - covered;\n      let speed = WALK_SPEED;\n      // A carried bicycle rides only when the COMPLETE chunk capsule is\n      // bike-safe; otherwise this chunk is pushed at walking speed.\n      let bikeCapsuleBlocked = false;\n      let chunk = Math.min(SUBSTEP, WALK_SPEED * remaining, reach);\n      if (carrying && current.bike.mounted) {\n        let probe = { x: current.x + ux * chunk, y: current.y + uy * chunk };\n        if (segmentWalkable(current, probe, 'bike')) {\n          speed = BIKE_SPEED;\n          // The bike capsule is clear for the walking-time chunk; riding may\n          // cover more of the SAME substep budget in the remaining time, but\n          // only after the longer complete capsule is also verified.\n          const longer = Math.min(SUBSTEP, BIKE_SPEED * remaining, reach);\n          if (longer > chunk) {\n            probe = { x: current.x + ux * longer, y: current.y + uy * longer };\n            if (segmentWalkable(current, probe, 'bike')) chunk = longer;\n          }\n        } else {\n          bikeCapsuleBlocked = true;\n        }\n      }\n      if (chunk <= 1e-10) break;"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/reopening-city.js",
+      "old_string": "      remaining = Math.max(0, remaining - chunk / speed);\n      covered += chunk;\n      if (chunk >= budget - covered - 1e-10) break;\n    }\n    return { position: current, used: elapsed - remaining };",
+      "new_string": "      remaining = Math.max(0, remaining - chunk / speed);\n      covered += chunk;\n      // Loop exit is owned solely by the while condition: every finite path\n      // must consume the full available distance/time (an earlier\n      // `chunk >= remaining-after-move` test quit one substep too soon).\n    }\n    return { position: current, used: elapsed - remaining };"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/reopening-city.js",
+      "old_string": "      if (isFerryPoint(next)) {\n        const anchor = ANCHORS[next.from];\n        // Board only from the actual reviewed boarding anchor.\n        if (dist(current.x, current.y, anchor.x, anchor.y) > ARRIVAL_RADIUS) break;\n        current = boardFerry(current, next);\n        continue;\n      }",
+      "new_string": "      if (isFerryPoint(next)) {\n        const anchor = ANCHORS[next.from];\n        // Board only from the actual reviewed boarding anchor, reached through\n        // the accepted full-radius ground capsule. Mere 4 m proximity is not\n        // proof: a blocked connector must leave the player on the bank.\n        const gap = dist(current.x, current.y, anchor.x, anchor.y);\n        if (gap > ARRIVAL_RADIUS) break;\n        if (gap > EPS) {\n          const approach = travel(current, anchor.x - current.x, anchor.y - current.y,\n            remaining, gap);\n          current = approach.position;\n          remaining -= approach.used;\n          if (dist(current.x, current.y, anchor.x, anchor.y) > EPS) break;\n        }\n        current = boardFerry(current, next);\n        continue;\n      }"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/reopening-city.js",
+      "old_string": "  function toggleBike(position) {\n    const current = movementState(position);\n    if (isCarrying(current.bike)) return parkBike(current);\n    const bike = current.bike;\n    if (dist(current.x, current.y, bike.x, bike.y) > BIKE_RETRIEVAL ||\n        !segmentWalkable(current, bike, 'walk')) return current;\n    return Object.assign({}, current, { bike: carriedBikeAt(current.x, current.y) });\n  }\n\n  function parkBike(position) {\n    const current = movementState(position);\n    if (isCarrying(current.bike)) {\n      return Object.assign({}, current, { bike: { x: current.x, y: current.y, mounted: false } });\n    }\n    return current;\n  }",
+      "new_string": "  function toggleBike(position) {\n    const current = movementState(position);\n    // Aboard F3 the player is over water: neither parking nor retrieval can\n    // happen mid-crossing. The carried bicycle stays carried to the safe bank,\n    // where ride/push state is recomputed from the actual surface.\n    if (current.transit) return current;\n    if (isCarrying(current.bike)) return parkBike(current);\n    const bike = current.bike;\n    if (dist(current.x, current.y, bike.x, bike.y) > BIKE_RETRIEVAL ||\n        !segmentWalkable(current, bike, 'walk')) return current;\n    return Object.assign({}, current, { bike: carriedBikeAt(current.x, current.y) });\n  }\n\n  function parkBike(position) {\n    const current = movementState(position);\n    // Never drop a bicycle into the canal: parking is refused aboard F3 and\n    // the bike remains carried until landing.\n    if (current.transit) return current;\n    if (isCarrying(current.bike)) {\n      return Object.assign({}, current, { bike: { x: current.x, y: current.y, mounted: false } });\n    }\n    return current;\n  }"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node --check tools/prototype/reopening-city.js",
+      "description": "Syntax check reopening-city.js"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node parent-regressions.cjs .",
+      "description": "Re-run parent regression suite after fixes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node --check tools/prototype/geo-world.js",
+      "description": "Syntax check geo-world.js"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node --check tools/prototype/flower-network.js",
+      "description": "Syntax check flower-network.js"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "true",
+      "description": "No-op placeholder before writing test files"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-city.cjs"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-city.cjs",
+      "old_string": "",
+      "new_string": "'use strict';\n\n// CITY01 / f02-real-city-d27 focused acceptance for the real-geometry city.\n//\n// Explicitly configured fixtures only:\n//  - the accepted NAV navigator runs over small, clearly named synthetic GEO\n//    polygon layers for radius/capsule/classification predicates;\n//  - named synthetic transit fixtures drive the F3 state machine (they make\n//    no claim of full-map route coverage);\n//  - the supplied real accepted pub subset drives the integration case.\nconst { test } = require('node:test');\nconst assert = require('node:assert/strict');\nconst fs = require('node:fs');\nconst path = require('node:path');\nconst vm = require('node:vm');\n\nconst City = require('./reopening-city.js');\nconst GeoWorld = require('./geo-world.js');\nconst Nav = require('../geo/navigation/geo-navigation.js');\n\nconst A = GeoWorld.ANCHORS;\nconst SOUTH = A.ferrySouth;\nconst NORTH = A.ferryNorth;\n\n// ---------------------------------------------------------------------------\n// Fixtures\n// ---------------------------------------------------------------------------\n\nconst OPEN_DATA = { width: 8000, height: 7000, layers: { roads: [], bridges: [], water: [], buildings: [] } };\nconst openNav = { isWalkable: () => true, segmentWalkable: () => true };\nfunction straightRoutes() {\n  return {\n    async route(from, to) {\n      return {\n        found: true, reason: 'ok', points: [{ x: from.x, y: from.y }, { x: to.x, y: to.y }],\n        length: Math.hypot(to.x - from.x, to.y - from.y), visited: 0,\n        startSnap: null, endSnap: null\n      };\n    }\n  };\n}\nfunction configureOpen(routes) {\n  City.dispose();\n  City.configure(OPEN_DATA, { navigator: openNav, routes: routes || straightRoutes() });\n}\nfunction saved(x, y, bike) {\n  const p = finite(x, y) ? { x, y } : { x: x.x, y: x.y };\n  return {\n    map: City.MAP_VERSION, x: p.x, y: p.y, visited: ['pub', 'coffee'],\n    bike: bike || { x: A.pub.x, y: A.pub.y, mounted: false }\n  };\n}\nfunction finite(x, y) { return typeof x === 'number'; }\n\n// Small polygon GEO layers for the accepted navigator. Coordinates are local\n// metres; the \"main-road\" slab intentionally covers the pub/lotte anchors.\nfunction ring(x0, y0, x1, y1) {\n  return [[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]];\n}\nfunction feature(id, polygons, properties) {\n  return { id, polygons, properties: properties || {} };\n}\nconst TOWN = {\n  width: 8000, height: 7000,\n  layers: {\n    roads: [\n      feature('main-road', [ring(900, 3100, 1300, 3400)], { functie: 'woonstraat' }),\n      feature('test-road', [ring(0, 0, 100, 100)]),\n      feature('footpath', [ring(0, 200, 100, 300)], { functie: 'voetpad' }),\n      feature('motorway', [ring(0, 400, 100, 500)], { functie: 'autosnelweg' }),\n      feature('carriageway-motorway', [ring(0, 600, 100, 700)], { functie: 'rijbaan autosnelweg' })\n    ],\n    bridges: [],\n    water: [feature('canal', [ring(120, 0, 124, 100)], { type: 'waterloop' })],\n    buildings: [feature('house', [ring(200, 0, 240, 100)])]\n  }\n};\nfunction configureTown(routes) {\n  City.dispose();\n  City.configure(TOWN, { navigator: Nav.createNavigator(TOWN), routes: routes || straightRoutes() });\n}\n\n// Deferred routes service for abort/race control.\nfunction deferredRoutes() {\n  const pending = [];\n  const calls = [];\n  return {\n    calls,\n    route(from, to, options) {\n      calls.push({ from: { x: from.x, y: from.y }, to: { x: to.x, y: to.y }, options });\n      return new Promise(resolve => pending.push(resolve));\n    },\n    resolve(i, value) { pending[i](value); }\n  };\n}\nconst okRoute = (from, to) => ({\n  found: true, reason: 'ok', points: [{ x: from.x, y: from.y }, { x: to.x, y: to.y }],\n  length: Math.hypot(to.x - from.x, to.y - from.y), visited: 0,\n  startSnap: null, endSnap: null\n});\nconst failRoute = reason => ({\n  found: false, reason: reason || 'unreachable', points: [], length: 0,\n  visited: 0, startSnap: null, endSnap: null\n});\n\n// ---------------------------------------------------------------------------\n// Configuration / readiness / shared world\n// ---------------------------------------------------------------------------\n\ntest('geometry is required before use and configure validates its inputs', () => {\n  City.dispose();\n  assert.equal(City.isReady(), false);\n  assert.throws(() => City.walkable(1, 1), /not configured/);\n  assert.throws(() => City.getData(), /not configured/);\n  assert.throws(() => City.configure(OPEN_DATA, {}), /navigator/);\n  assert.throws(() => City.configure(OPEN_DATA, { navigator: openNav }), /routes/);\n  assert.throws(() => City.configure({ layers: {} }, { navigator: openNav, routes: straightRoutes() }), /width/);\n  configureOpen();\n  assert.equal(City.isReady(), true);\n  assert.equal(City.getData(), OPEN_DATA);\n  assert.throws(() => configureOpen(), /already configured/);\n  assert.equal(City.WIDTH, 8000);\n  assert.equal(City.HEIGHT, 7000);\n  assert.deepEqual(City.BOUNDS, { x: 0, y: 0, width: 8000, height: 7000 });\n  City.dispose();\n  assert.equal(City.isReady(), false);\n});\n\ntest('shared GeoWorld exposes the ten reviewed anchors and seven places', () => {\n  const rows = JSON.parse(fs.readFileSync(path.join(__dirname, '../../anchors.json'), 'utf8'));\n  assert.equal(Object.keys(GeoWorld.ANCHORS).length, 10);\n  for (const [id, p] of Object.entries(rows)) {\n    assert.equal(GeoWorld.ANCHORS[id].x, p.x, id + ' x');\n    assert.equal(GeoWorld.ANCHORS[id].y, p.y, id + ' y');\n  }\n  assert.deepEqual(Object.keys(City.PLACES), ['pub', 'lotte', 'coffee', 'noord', 'market', 'flowers', 'lab']);\n  assert.equal(City.PLACES.noord.x, A.ferryNorth.x);\n  assert.equal(City.PLACES.noord.y, A.ferryNorth.y);\n  assert.equal(City.PLACES.pub.x, A.pub.x);\n  assert.equal(City.ANCHORS, GeoWorld.ANCHORS);\n  assert.equal(City.MAP_VERSION, GeoWorld.MAP_VERSION);\n  assert.equal(City.F3.id, 'F3');\n  assert.throws(() => { GeoWorld.ANCHORS.pub.x = 0; });\n});\n\ntest('tuning constants are exported with the frozen metres/seconds values', () => {\n  assert.equal(City.ACTOR_RADIUS, 0.4);\n  assert.equal(City.WALK_SPEED, 48);\n  assert.equal(City.BIKE_SPEED, 96);\n  assert.equal(City.FERRY_SPEED, 32);\n  assert.equal(City.ARRIVAL_RADIUS, 4);\n  assert.equal(City.BIKE_RETRIEVAL, 2);\n});\n\n// ---------------------------------------------------------------------------\n// Accepted NAV predicates over explicit synthetic polygon fixtures\n// ---------------------------------------------------------------------------\n\ntest('points classify road, footpath, motorway, water and building at radius 0.4', () => {\n  configureTown();\n  assert.equal(City.walkable(50, 50), true);\n  // Whole-body radius 0.4: a centre 0.35 m inside the edge is not clear.\n  assert.equal(City.walkable(0.35, 50), false);\n  assert.equal(City.walkable(0.5, 50), true);\n  assert.equal(City.rideable(50, 50), true);\n  // voetpad is walkable ground but never bike-safe.\n  assert.equal(City.walkable(50, 250), true);\n  assert.equal(City.rideable(50, 250), false);\n  // Highways reject both modes, including the \"rijbaan autosnelweg\" spelling.\n  assert.equal(City.walkable(50, 450), false);\n  assert.equal(City.walkable(50, 650), false);\n  // Water and buildings are forbidden ground.\n  assert.equal(City.walkable(122, 50), false);\n  assert.equal(City.walkable(220, 50), false);\n  assert.equal(City.walkable(NaN, 50), false);\n  assert.equal(City.walkable(50, Infinity), false);\n  // The reviewed anchors actually sit on indexed road ground.\n  assert.equal(City.walkable(A.pub.x, A.pub.y), true);\n  assert.equal(City.walkable(A.lotte.x, A.lotte.y), true);\n});\n\ntest('segments use the complete swept capsule: canal and house block crossing', () => {\n  configureTown();\n  assert.equal(City.segmentWalkable({ x: 10, y: 50 }, { x: 90, y: 50 }), true);\n  assert.equal(City.segmentWalkable({ x: 50, y: 50 }, { x: 110, y: 50 }), false);\n  assert.equal(City.segmentWalkable({ x: 50, y: 50 }, { x: 220, y: 50 }), false);\n  assert.equal(City.segmentWalkable({ x: 50, y: 50 }, { x: 50, y: 250 }), false);\n});\n\ntest('diagonal movement slides and never tunnels through a mocked thin barrier', () => {\n  const x0 = A.pub.x + 1;\n  City.dispose();\n  City.configure(OPEN_DATA, {\n    navigator: {\n      isWalkable: () => true,\n      segmentWalkable: (a, b) =>\n        !((a.x < x0 && b.x >= x0) || (b.x < x0 && a.x >= x0))\n    },\n    routes: straightRoutes()\n  });\n  const q = City.move(saved(A.pub), 1, 0, 0.1);\n  assert.ok(q.x < x0);\n  assert.equal(City.walkable(q.x, q.y), true);\n  const diag = City.move(saved(A.pub.x, A.pub.y + 1), 1, 1, 0.1);\n  assert.ok(diag.x < x0);\n});\n\n// ---------------------------------------------------------------------------\n// Movement: speeds, swept capsules, waypoint exhaustion, near()\n// ---------------------------------------------------------------------------\n\ntest('manual movement uses 48 walk / 96 bike metres per second and clamps dt', () => {\n  configureOpen();\n  let p = saved(A.pub);\n  let q = City.move(p, 1, 0, 0.1);\n  assert.ok(Math.abs(q.x - p.x - 4.8) < 1e-9);\n  assert.ok(Math.abs(q.y - p.y) < 1e-9);\n  p = saved(A.pub, { x: A.pub.x, y: A.pub.y, mounted: true });\n  q = City.move(p, 1, 0, 0.1);\n  assert.ok(Math.abs(q.x - p.x - 9.6) < 1e-9);\n  assert.equal(q.bike.x, q.x);\n  // Elapsed is clamped to [0, 0.1].\n  q = City.move(saved(A.pub), 1, 0, 5);\n  assert.ok(Math.abs(q.x - A.pub.x - 4.8) < 1e-9);\n  q = City.move(saved(A.pub), 1, 0, -1);\n  assert.equal(q.x, A.pub.x);\n  // Non-finite direction input is a no-op.\n  q = City.move(saved(A.pub), NaN, 0, 0.1);\n  assert.equal(q.x, A.pub.x);\n});\n\ntest('moveAlong consumes a reachable 3 m waypoint within 0.1 s exactly (regression 1)', () => {\n  configureOpen();\n  const p = saved(A.pub);\n  const path = [{ x: p.x + 3, y: p.y }];\n  const before = JSON.stringify({ p, path });\n  const r = City.moveAlong(p, path, 0.1);\n  assert.equal(r.arrived, true);\n  assert.deepEqual(r.path, []);\n  assert.ok(Math.abs(r.position.x - p.x - 3) < 1e-6);\n  assert.equal(JSON.stringify({ p, path }), before);\n});\n\ntest('finite path travel consumes the whole available distance over repeated ticks', () => {\n  configureOpen();\n  let p = saved(A.pub);\n  const target = { x: A.pub.x + 10, y: A.pub.y };\n  // One tick covers exactly the 4.8 m time budget, not a 2 m substep.\n  let r = City.moveAlong(p, [target], 0.1);\n  assert.equal(r.arrived, false);\n  assert.ok(Math.abs(r.position.x - A.pub.x - 4.8) < 1e-9);\n  p = r.position;\n  r = City.moveAlong(p, r.path, 0.1);\n  assert.ok(Math.abs(r.position.x - A.pub.x - 9.6) < 1e-9);\n  r = City.moveAlong(r.position, r.path, 0.1);\n  assert.equal(r.arrived, true);\n  assert.equal(r.position.x, target.x);\n});\n\ntest('bicycle rides on bike-safe ground and pushes at walk speed where bikes are barred', () => {\n  configureOpen();\n  let p = saved(A.pub, { x: A.pub.x, y: A.pub.y, mounted: true });\n  let q = City.move(p, 1, 0, 0.1);\n  assert.ok(Math.abs(q.x - p.x - 9.6) < 1e-9);\n  assert.equal(q.bike.mounted, true);\n\n  City.dispose();\n  City.configure(OPEN_DATA, {\n    navigator: {\n      isWalkable: (pt, o) => o.mode === 'walk',\n      segmentWalkable: (a, b, o) => o.mode === 'walk'\n    },\n    routes: straightRoutes()\n  });\n  p = saved(A.pub, { x: A.pub.x, y: A.pub.y, mounted: false, pushing: true });\n  q = City.move(p, 1, 0, 0.1);\n  assert.ok(Math.abs(q.x - p.x - 4.8) < 1e-9);\n  assert.equal(q.bike.pushing, true);\n  assert.equal(q.bike.mounted, false);\n  assert.equal(q.bike.x, q.x);\n});\n\ntest('independently parked bicycles never move with the player or teleport back', () => {\n  configureOpen();\n  const p = saved(A.pub, { x: A.coffee.x, y: A.coffee.y, mounted: false });\n  const q = City.move(p, 1, 0, 0.1);\n  assert.equal(q.bike.x, A.coffee.x);\n  assert.equal(q.bike.y, A.coffee.y);\n  const r = City.moveAlong(p, [{ x: p.x + 3, y: p.y }], 0.1);\n  assert.equal(r.position.bike.x, A.coffee.x);\n});\n\ntest('near selects the closest place within radius only', () => {\n  configureOpen();\n  assert.equal(City.near({ x: A.pub.x, y: A.pub.y }).id, 'pub');\n  assert.equal(City.near({ x: A.pub.x + 500, y: A.pub.y }, 4), null);\n  assert.equal(City.near({ x: NaN, y: 1 }), null);\n  assert.equal(City.near({ x: 0, y: 0 }, -1), null);\n});\n\ntest('onFerry marks only the interior of the canonical F3 lane, never the banks', () => {\n  configureOpen();\n  const mid = { x: (SOUTH.x + NORTH.x) / 2, y: (SOUTH.y + NORTH.y) / 2 };\n  assert.equal(City.onFerry(mid.x, mid.y), true);\n  assert.equal(City.onFerry(SOUTH.x, SOUTH.y), false);\n  assert.equal(City.onFerry(NORTH.x, NORTH.y), false);\n  assert.equal(City.onFerry(A.pub.x, A.pub.y), false);\n});\n\n// ---------------------------------------------------------------------------\n// Bicycle toggle / park\n// ---------------------------------------------------------------------------\n\ntest('toggle mounts, parks, refuses distant bikes, and never mutates input', () => {\n  configureOpen();\n  const fresh = City.create();\n  const before = JSON.stringify(fresh);\n  const mounted = City.toggleBike(fresh);\n  assert.equal(mounted.bike.mounted, true);\n  assert.deepEqual(mounted.bike.x, fresh.x);\n  assert.equal(JSON.stringify(fresh), before);\n  const parked = City.toggleBike(mounted);\n  assert.equal(parked.bike.mounted, false);\n  assert.equal(parked.bike.pushing, undefined);\n  assert.deepEqual(City.parkBike(fresh), fresh);\n  const distant = Object.assign(saved(A.pub, { x: A.lab.x, y: A.lab.y, mounted: false }));\n  assert.deepEqual(City.toggleBike(distant), distant);\n  // Retrieval radius is 2 m.\n  const close = saved(A.pub, { x: A.pub.x + 1.9, y: A.pub.y, mounted: false });\n  assert.equal(City.toggleBike(close).bike.mounted, true);\n  const tooFar = saved(A.pub, { x: A.pub.x + 2.1, y: A.pub.y, mounted: false });\n  assert.equal(tooFar.bike.mounted, false);\n  assert.deepEqual(City.toggleBike(tooFar), tooFar);\n});\n\n// ---------------------------------------------------------------------------\n// Saves: legacy migration, new validation, clones\n// ---------------------------------------------------------------------------\n\ntest('legacy 1800x1120 saves migrate player and bicycle independently', () => {\n  configureOpen();\n  const old = { x: 730, y: 930, visited: ['pub', 'coffee'], bike: { x: 1490, y: 910, mounted: false } };\n  const before = JSON.stringify(old);\n  const info = City.restoreInfo(old);\n  assert.equal(info.migrated, true);\n  assert.ok(info.notes.includes('migrated'));\n  assert.equal(info.state.x, City.PLACES.coffee.x);\n  assert.equal(info.state.bike.x, City.PLACES.lab.x);\n  assert.deepEqual(info.state.visited, old.visited);\n  assert.notEqual(info.state.visited, old.visited);\n  assert.equal(JSON.stringify(old), before);\n  // Unrecognized old coordinates fall back to the pub; a missing bike defaults there.\n  const lost = City.restoreInfo({ x: 5, y: 5, visited: ['pub'] });\n  assert.equal(lost.state.x, City.PLACES.pub.x);\n  assert.equal(lost.state.bike.x, City.PLACES.pub.x);\n  assert.equal(lost.migrated, true);\n});\n\ntest('new valid saves preserve values exactly through strict clones', () => {\n  configureOpen();\n  const s = saved(A.lotte, { x: A.coffee.x, y: A.coffee.y, mounted: false });\n  const out = City.restore(s);\n  assert.equal(out.map, City.MAP_VERSION);\n  assert.equal(out.x, s.x);\n  assert.equal(out.bike.x, A.coffee.x);\n  assert.deepEqual(out.visited, s.visited);\n  assert.notEqual(out.visited, s.visited);\n  assert.notEqual(out.bike, s.bike);\n  out.visited.push('lab');\n  assert.deepEqual(s.visited, ['pub', 'coffee']);\n});\n\ntest('invalid visits and nonfinite saves reset to a fresh city', () => {\n  configureOpen();\n  const fresh = City.create();\n  for (const bad of [null, {}, { x: NaN, y: 1, visited: ['pub'] },\n    { x: 1, y: 1, visited: 'pub' }, { x: 1, y: 1, visited: ['ghost'] },\n    { x: 1, y: 1, visited: ['pub', 'pub'] }]) {\n    assert.deepEqual(City.restore(bad), fresh);\n    assert.equal(City.restoreInfo(bad).migrated, false);\n  }\n});\n\ntest('new saves in water or buildings reset position while retaining valid visits', () => {\n  configureTown();\n  const wet = { map: City.MAP_VERSION, x: 122, y: 50, visited: ['pub', 'coffee'],\n    bike: { x: A.pub.x, y: A.pub.y, mounted: false } };\n  const info = City.restoreInfo(wet);\n  assert.equal(info.state.x, City.PLACES.pub.x);\n  assert.deepEqual(info.state.visited, ['pub', 'coffee']);\n  assert.ok(info.notes.includes('reset-position'));\n  // A malformed bicycle resets only the bicycle; valid player progress survives.\n  const badBike = { map: City.MAP_VERSION, x: A.pub.x, y: A.pub.y, visited: ['pub', 'flowers'],\n    bike: { x: NaN, y: 1, mounted: false } };\n  const r2 = City.restoreInfo(badBike);\n  assert.equal(r2.state.x, A.pub.x);\n  assert.deepEqual(r2.state.visited, ['pub', 'flowers']);\n  assert.equal(r2.state.bike.x, City.PLACES.pub.x);\n  assert.ok(r2.notes.includes('reset-bike'));\n});\n\n// ---------------------------------------------------------------------------\n// F3 transit leg\n// ---------------------------------------------------------------------------\n\nfunction ferryPoint(from, to) {\n  return { x: A[to].x, y: A[to].y, transport: 'ferry', id: 'F3', from, to };\n}\nfunction crossUntilBank(start, path, limit) {\n  let p = start;\n  let input = path;\n  for (let i = 0; i < (limit || 200) && (p.transit || input.length); i++) {\n    const r = City.moveAlong(p, input, 0.1);\n    p = r.position;\n    input = r.path;\n  }\n  return { p, input };\n}\n\ntest('F3 cannot board through an unwalkable connector or from beyond arrival radius', () => {\n  City.dispose();\n  City.configure(OPEN_DATA, {\n    navigator: { isWalkable: () => true, segmentWalkable: () => false },\n    routes: straightRoutes()\n  });\n  const p = saved({ x: SOUTH.x - 3, y: SOUTH.y });\n  const r = City.moveAlong(p, [ferryPoint('ferrySouth', 'ferryNorth')], 0.1);\n  assert.equal(r.position.transit, undefined);\n  assert.equal(r.position.x, p.x);\n\n  // Clear connector but still farther than 4 m: no teleport boarding.\n  City.dispose();\n  City.configure(OPEN_DATA, { navigator: openNav, routes: straightRoutes() });\n  const far = saved({ x: SOUTH.x - 5, y: SOUTH.y });\n  const r2 = City.moveAlong(far, [ferryPoint('ferrySouth', 'ferryNorth')], 0.1);\n  assert.equal(r2.position.transit, undefined);\n  assert.equal(r2.position.x, far.x);\n});\n\ntest('F3 boards only at the exact anchor via the full-radius ground capsule', () => {\n  configureOpen();\n  const p = saved({ x: SOUTH.x - 3, y: SOUTH.y });\n  const r = City.moveAlong(p, [ferryPoint('ferrySouth', 'ferryNorth')], 0.1);\n  assert.ok(r.position.transit);\n  assert.equal(r.position.transit.id, 'F3');\n  assert.equal(r.position.transit.from, 'ferrySouth');\n  assert.equal(r.position.transit.to, 'ferryNorth');\n  assert.ok(r.position.transit.progress > 0);\n  assert.ok(r.position.transit.progress < 1);\n  // The 3 m connector was walked this tick.\n  assert.ok(Math.hypot(r.position.x - SOUTH.x, r.position.y - SOUTH.y) > 0);\n});\n\ntest('F3 runs in both canonical directions and lands exactly on the safe bank', () => {\n  configureOpen();\n  for (const [fromId, toId, start] of [\n    ['ferrySouth', 'ferryNorth', { x: SOUTH.x - 3, y: SOUTH.y }],\n    ['ferryNorth', 'ferrySouth', { x: NORTH.x + 3, y: NORTH.y }]\n  ]) {\n    const out = crossUntilBank(saved(start), [ferryPoint(fromId, toId)]);\n    assert.equal(out.p.transit, undefined, fromId + ' crossing completes');\n    assert.equal(out.p.x, A[toId].x, fromId + ' lands exactly');\n    assert.equal(out.p.y, A[toId].y);\n    assert.equal(out.input.length, 0);\n    assert.equal(City.walkable(out.p.x, out.p.y), true);\n  }\n});\n\ntest('saved F3 refreshes with an empty path and keeps a remotely parked bike', () => {\n  configureOpen();\n  let p = saved({ x: (SOUTH.x + NORTH.x) / 2, y: (SOUTH.y + NORTH.y) / 2 });\n  p.transit = { id: 'F3', from: 'ferrySouth', to: 'ferryNorth', progress: 0.5 };\n  p = City.restore(p);\n  const parkedX = p.bike.x;\n  const out = crossUntilBank(p, []);\n  assert.equal(out.p.transit, undefined);\n  assert.equal(out.p.x, NORTH.x);\n  assert.equal(out.p.bike.x, parkedX);\n  assert.equal(out.p.bike.y, A.pub.y);\n});\n\ntest('movement keys and cancellation finish the crossing; zero elapsed pauses it', () => {\n  configureOpen();\n  let p = saved({ x: (SOUTH.x + NORTH.x) / 2, y: (SOUTH.y + NORTH.y) / 2 });\n  p.transit = { id: 'F3', from: 'ferrySouth', to: 'ferryNorth', progress: 0.5 };\n  const paused = City.moveAlong(p, [], 0);\n  assert.deepEqual(paused.position.transit, p.transit);\n  const neg = City.moveAlong(p, [], -1);\n  assert.deepEqual(neg.position.transit, p.transit);\n  // Direction keys clear onward intent but never abort the crossing.\n  for (let i = 0; i < 200 && p.transit; i++) p = City.move(p, 1, 0, 0.1);\n  assert.equal(p.transit, undefined);\n  assert.equal(p.x, NORTH.x);\n});\n\ntest('forged, nonfinite and unknown transit metadata is rejected on restore', () => {\n  configureTown();\n  const mid = { x: (SOUTH.x + NORTH.x) / 2, y: (SOUTH.y + NORTH.y) / 2 };\n  const base = { map: City.MAP_VERSION, x: mid.x, y: mid.y, visited: ['pub'],\n    bike: { x: A.pub.x, y: A.pub.y, mounted: false } };\n  for (const bad of [\n    { id: 'F4', from: 'ferrySouth', to: 'ferryNorth', progress: 0.5 },\n    { id: 'F3', from: 'pub', to: 'ferryNorth', progress: 0.5 },\n    { id: 'F3', from: 'ferrySouth', to: 'ferrySouth', progress: 0.5 },\n    { id: 'F3', from: 'ferrySouth', to: 'ferryNorth', progress: 1 },\n    { id: 'F3', from: 'ferrySouth', to: 'ferryNorth', progress: -0.1 },\n    { id: 'F3', from: 'ferrySouth', to: 'ferryNorth', progress: NaN },\n    { id: 'F3', from: 'ferrySouth', to: 'ferryNorth', progress: 0.5, extra: true }\n  ]) {\n    const info = City.restoreInfo(Object.assign({}, base, { transit: bad }));\n    assert.equal(info.state.transit, undefined, JSON.stringify(bad));\n  }\n  // Coordinates that do not lie on the canonical leg are forged.\n  const offLeg = Object.assign({}, base, {\n    transit: { id: 'F3', from: 'ferrySouth', to: 'ferryNorth', progress: 0.5 }, x: mid.x + 1, y: mid.y });\n  assert.equal(City.restoreInfo(offLeg).state.transit, undefined);\n  // A well-formed leg restores with a cloned record.\n  const good = Object.assign({}, base, {\n    transit: { id: 'F3', from: 'ferrySouth', to: 'ferryNorth', progress: 0.5 } });\n  const r = City.restore(good);\n  assert.deepEqual(r.transit, good.transit);\n  assert.notEqual(r.transit, good.transit);\n});\n\ntest('malformed boat waypoints are never treated as a boarding event', () => {\n  configureOpen();\n  const p = saved({ x: SOUTH.x - 3, y: SOUTH.y });\n  for (const bad of [\n    { x: NORTH.x, y: NORTH.y, transport: 'ferry', id: 'F4', from: 'ferrySouth', to: 'ferryNorth' },\n    { x: NORTH.x, y: NORTH.y, transport: 'boat', id: 'F3', from: 'ferrySouth', to: 'ferryNorth' },\n    { x: NORTH.x, y: NORTH.y, transport: 'ferry', id: 'F3', from: 'pub', to: 'ferryNorth' }\n  ]) {\n    const r = City.moveAlong(p, [bad], 0.1);\n    assert.equal(r.position.transit, undefined, JSON.stringify(bad));\n  }\n});\n\ntest('bike toggle/park aboard F3 keeps the carried bike to the safe bank (regression 3)', () => {\n  configureOpen();\n  const mid = { x: (SOUTH.x + NORTH.x) / 2, y: (SOUTH.y + NORTH.y) / 2 };\n  for (const carried of [\n    { x: mid.x, y: mid.y, mounted: false, pushing: true },\n    { x: mid.x, y: mid.y, mounted: true }\n  ]) {\n    let p = saved(mid, carried);\n    p.transit = { id: 'F3', from: 'ferrySouth', to: 'ferryNorth', progress: 0.5 };\n    p = City.restore(p);\n    // Neither toggle nor park may drop the bicycle over water.\n    assert.deepEqual(City.toggleBike(p).bike, p.bike);\n    assert.deepEqual(City.parkBike(p).bike, p.bike);\n    const out = crossUntilBank(p, []);\n    assert.equal(out.p.transit, undefined);\n    assert.ok(Math.hypot(out.p.bike.x - NORTH.x, out.p.bike.y - NORTH.y) < 1e-6);\n    assert.equal(City.walkable(out.p.bike.x, out.p.bike.y), true);\n  }\n  // A bicycle parked remotely before boarding stays remote for the whole trip.\n  let p2 = saved(mid, { x: A.coffee.x, y: A.coffee.y, mounted: false });\n  p2.transit = { id: 'F3', from: 'ferrySouth', to: 'ferryNorth', progress: 0.5 };\n  p2 = City.restore(p2);\n  const out2 = crossUntilBank(p2, []);\n  assert.equal(out2.bike && out2.p.bike.x, A.coffee.x);\n  assert.equal(out2.p.bike.y, A.coffee.y);\n});\n\n// ---------------------------------------------------------------------------\n// Async routing: frozen routes surface, progress, abort, stale races, cache\n// ---------------------------------------------------------------------------\n\ntest('routeAsync resolves ground routes with metadata and observable progress', async () => {\n  const events = [];\n  configureOpen();\n  const from = { ...A.pub };\n  const to = { ...A.lotte };\n  const r = await City.routeAsync(from, to, { onProgress: e => events.push(e) });\n  assert.equal(r.found, true);\n  assert.equal(r.reason, 'ok');\n  assert.ok(r.length > 0);\n  assert.deepEqual(r.path.at(-1), { x: to.x, y: to.y });\n  assert.deepEqual(r.path[0], { x: to.x, y: to.y }); // start point excluded\n  assert.ok(events.some(e => e.phase === 'ground' && e.progress === 0));\n  assert.ok(events.some(e => e.phase === 'ground' && e.progress === 1));\n});\n\ntest('routeAsync passes mode and radius 0.4 and never mutates caller points', async () => {\n  const svc = deferredRoutes();\n  configureOpen(svc);\n  const from = { ...A.pub };\n  const before = JSON.stringify(from);\n  const p = City.routeAsync(from, { ...A.lotte }, { mode: 'bike' });\n  assert.equal(svc.calls[0].options.mode, 'bike');\n  assert.equal(svc.calls[0].options.radius, 0.4);\n  svc.resolve(0, okRoute(from, A.lotte));\n  const r = await p;\n  assert.equal(r.found, true);\n  assert.equal(JSON.stringify(from), before);\n});\n\ntest('pre-aborted and in-flight abort reject with AbortError and publish nothing', async () => {\n  configureOpen();\n  const pre = new AbortController();\n  pre.abort();\n  await assert.rejects(City.routeAsync(A.pub, A.lotte, { signal: pre.signal }), e => e.name === 'AbortError');\n\n  const svc = deferredRoutes();\n  City.dispose();\n  City.configure(OPEN_DATA, { navigator: openNav, routes: svc });\n  const ac = new AbortController();\n  const work = City.routeAsync(A.pub, A.lotte, { signal: ac.signal });\n  ac.abort();\n  svc.resolve(0, okRoute(A.pub, A.lotte));\n  await assert.rejects(work, e => e.name === 'AbortError');\n  assert.deepEqual(City.route(A.pub, A.lotte), []);\n});\n\ntest('a newer target cancels stale in-flight work; dispose aborts too', async () => {\n  const svc = deferredRoutes();\n  configureOpen(svc);\n  const stale = City.routeAsync({ ...A.pub }, { ...A.lotte });\n  const staleObserved = stale.then(() => 'resolved', e => e.name);\n  const fresh = City.routeAsync({ ...A.lotte }, { ...A.coffee });\n  assert.equal(await staleObserved, 'AbortError');\n  svc.resolve(1, okRoute(A.lotte, A.coffee));\n  const r = await fresh;\n  assert.equal(r.found, true);\n  assert.deepEqual(r.path.at(-1), { x: A.coffee.x, y: A.coffee.y });\n\n  const svc2 = deferredRoutes();\n  City.dispose();\n  City.configure(OPEN_DATA, { navigator: openNav, routes: svc2 });\n  const inflight = City.routeAsync({ ...A.pub }, { ...A.lotte });\n  const observed = inflight.then(() => 'resolved', e => e.name);\n  City.dispose();\n  assert.equal(await observed, 'AbortError');\n});\n\ntest('compatibility route is cache-only and stays alias-free', async () => {\n  configureOpen();\n  assert.deepEqual(City.route(A.pub, A.lotte), []);\n  const r = await City.routeAsync({ ...A.pub }, { ...A.lotte });\n  const cached = City.route(A.pub, A.lotte);\n  assert.deepEqual(cached, r.path);\n  assert.notEqual(cached, r.path);\n  cached[0].x = 0;\n  assert.equal(City.route(A.pub, A.lotte)[0].x, A.lotte.x);\n  r.path[0].x = 0;\n  assert.equal(City.route(A.pub, A.lotte)[0].x, A.lotte.x);\n});\n\ntest('F3 composition requires exact anchor legs and carries canonical metadata', async () => {\n  const start = { x: SOUTH.x - 5, y: SOUTH.y };\n  const goal = { x: NORTH.x + 5, y: NORTH.y };\n  const same = (p, q) => Math.abs(p.x - q.x) < 1e-9 && Math.abs(p.y - q.y) < 1e-9;\n  const svc = {\n    async route(from, to) {\n      if (same(from, start) && same(to, SOUTH)) {\n        return { found: true, reason: 'ok', points: [{ ...from }, { ...SOUTH }],\n          length: 5, visited: 1, startSnap: null, endSnap: null };\n      }\n      if (same(from, NORTH) && same(to, goal)) {\n        return { found: true, reason: 'ok', points: [{ ...NORTH }, { ...goal }],\n          length: 5, visited: 1, startSnap: null, endSnap: null };\n      }\n      return failRoute();\n    }\n  };\n  configureOpen(svc);\n  const events = [];\n  const r = await City.routeAsync(start, goal, { onProgress: e => events.push(e) });\n  assert.equal(r.found, true);\n  assert.equal(r.reason, 'ferry');\n  assert.deepEqual(r.path[0], { x: SOUTH.x, y: SOUTH.y });\n  assert.deepEqual(r.path[1], {\n    x: NORTH.x, y: NORTH.y, transport: 'ferry', id: 'F3',\n    from: 'ferrySouth', to: 'ferryNorth'\n  });\n  assert.deepEqual(r.path.at(-1), { x: goal.x, y: goal.y });\n  assert.ok(Math.abs(r.length - 10 - Math.hypot(NORTH.x - SOUTH.x, NORTH.y - SOUTH.y)) < 1e-9);\n  assert.ok(events.some(e => e.phase === 'ground-to-board'));\n  assert.ok(events.some(e => e.phase === 'ground-from-bank'));\n\n  // A snapped boarding leg is not an exact-anchor reach: composition fails.\n  const snapped = {\n    async route(from, to) {\n      if (same(from, start) && same(to, SOUTH)) {\n        return { found: true, reason: 'ok', points: [{ ...from }, { ...SOUTH }],\n          length: 5, visited: 1, startSnap: null, endSnap: { x: SOUTH.x, y: SOUTH.y, distance: 0.1 } };\n      }\n      return failRoute();\n    }\n  };\n  City.dispose();\n  City.configure(OPEN_DATA, { navigator: openNav, routes: snapped });\n  const blocked = await City.routeAsync(start, goal);\n  assert.equal(blocked.found, false);\n\n  // And the composed route is playable end to end through the state machine.\n  City.dispose();\n  City.configure(OPEN_DATA, { navigator: openNav, routes: svc });\n  const planned = await City.routeAsync(start, goal);\n  const out = crossUntilBank(saved(start), planned.path, 240);\n  assert.equal(out.p.x, goal.x);\n  assert.equal(out.p.y, goal.y);\n  assert.equal(out.input.length, 0);\n});\n\n// ---------------------------------------------------------------------------\n// UMD parity and the accepted real pub subset\n// ---------------------------------------------------------------------------\n\ntest('UMD browser bundle exposes the same frozen public surface', () => {\n  const context = { GeoWorld };\n  vm.runInNewContext(fs.readFileSync(path.join(__dirname, 'reopening-city.js'), 'utf8'), context);\n  assert.ok(context.City);\n  assert.deepEqual(Object.keys(context.City).sort(), Object.keys(City).sort());\n  for (const key of ['configure', 'walkable', 'rideable', 'segmentWalkable', 'onFerry',\n    'route', 'routeAsync', 'move', 'moveAlong', 'near', 'create', 'restore',\n    'restoreInfo', 'toggleBike', 'parkBike']) {\n    assert.equal(typeof context.City[key], 'function');\n  }\n});\n\ntest('accepted NAV pub subset: reviewed pub anchor is walkable real ground', () => {\n  const data = JSON.parse(fs.readFileSync(\n    path.join(__dirname, '../geo/navigation/real-pub-sample.json'), 'utf8'));\n  const navigator = Nav.createNavigator(data);\n  City.dispose();\n  City.configure(data, { navigator, routes: straightRoutes() });\n  assert.equal(City.walkable(A.pub.x, A.pub.y), true);\n  assert.equal(City.walkable(-1, -1), false);\n  assert.equal(City.getData(), data);\n  City.dispose();\n});\n"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/reopening-city.js",
+      "old_string": "  function validTransit(t, x, y) {\n    if (!t || typeof t !== 'object' || t.id !== FERRY_ID) return null;\n    if (!canonicalFerry(t.from, t.to)) return null;",
+      "new_string": "  function validTransit(t, x, y) {\n    if (!t || typeof t !== 'object' || Array.isArray(t) || t.id !== FERRY_ID) return null;\n    // Strict shape: forged metadata with extra keys is rejected, not cloned.\n    const keys = Object.keys(t).sort();\n    if (keys.length !== 4 || keys[0] !== 'from' || keys[1] !== 'id' ||\n        keys[2] !== 'progress' || keys[3] !== 'to') return null;\n    if (!canonicalFerry(t.from, t.to)) return null;"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-city.cjs",
+      "old_string": "  const stale = City.routeAsync({ ...A.pub }, { ...A.lotte });\n  const staleObserved = stale.then(() => 'resolved', e => e.name);\n  const fresh = City.routeAsync({ ...A.lotte }, { ...A.coffee });\n  assert.equal(await staleObserved, 'AbortError');\n  svc.resolve(1, okRoute(A.lotte, A.coffee));\n  const r = await fresh;",
+      "new_string": "  const stale = City.routeAsync({ ...A.pub }, { ...A.lotte });\n  const staleObserved = stale.then(() => 'resolved', e => e.name);\n  const fresh = City.routeAsync({ ...A.lotte }, { ...A.coffee });\n  // The stale request only settles once its frozen-service call resolves;\n  // the abort decided before that resolution must win.\n  svc.resolve(0, okRoute(A.pub, A.lotte));\n  assert.equal(await staleObserved, 'AbortError');\n  svc.resolve(1, okRoute(A.lotte, A.coffee));\n  const r = await fresh;"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-city.cjs",
+      "old_string": "  const out2 = crossUntilBank(p2, []);\n  assert.equal(out2.bike && out2.p.bike.x, A.coffee.x);\n  assert.equal(out2.p.bike.y, A.coffee.y);",
+      "new_string": "  const out2 = crossUntilBank(p2, []);\n  assert.equal(out2.p.bike.x, A.coffee.x);\n  assert.equal(out2.p.bike.y, A.coffee.y);"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node --test tools/prototype/test-geo-city.cjs",
+      "description": "Run new real-geometry city test file"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-city.cjs",
+      "offset": 62,
+      "limit": 60
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-city.cjs",
+      "offset": 538,
+      "limit": 35
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-city.cjs",
+      "old_string": "function saved(x, y, bike) {\n  const p = finite(x, y) ? { x, y } : { x: x.x, y: x.y };\n  return {\n    map: City.MAP_VERSION, x: p.x, y: p.y, visited: ['pub', 'coffee'],\n    bike: bike || { x: A.pub.x, y: A.pub.y, mounted: false }\n  };\n}\nfunction finite(x, y) { return typeof x === 'number'; }",
+      "new_string": "function saved(x, y, bike) {\n  const p = typeof x === 'number' ? { x, y } : { x: x.x, y: x.y };\n  let b = bike;\n  if (!b && typeof y === 'object' && y) b = y;\n  if (!b) b = { x: A.pub.x, y: A.pub.y, mounted: false };\n  return { map: City.MAP_VERSION, x: p.x, y: p.y, visited: ['pub', 'coffee'], bike: b };\n}"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-city.cjs",
+      "old_string": "function feature(id, polygons, properties) {\n  return { id, polygons, properties: properties || {} };\n}",
+      "new_string": "function feature(id, rings, properties) {\n  // GEO schema: polygons is an array of polygons; a polygon is an array of\n  // closed rings. These simple fixtures use one outer ring per polygon.\n  return { id, polygons: [rings], properties: properties || {} };\n}"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-city.cjs",
+      "old_string": "  assert.equal(City.getData(), OPEN_DATA);\n  assert.throws(() => configureOpen(), /already configured/);",
+      "new_string": "  assert.equal(City.getData(), OPEN_DATA);\n  assert.throws(\n    () => City.configure(OPEN_DATA, { navigator: openNav, routes: straightRoutes() }),\n    /already configured/\n  );"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-city.cjs",
+      "old_string": "  const svc2 = deferredRoutes();\n  City.dispose();\n  City.configure(OPEN_DATA, { navigator: openNav, routes: svc2 });\n  const inflight = City.routeAsync({ ...A.pub }, { ...A.lotte });\n  const observed = inflight.then(() => 'resolved', e => e.name);\n  City.dispose();\n  assert.equal(await observed, 'AbortError');",
+      "new_string": "  const svc2 = deferredRoutes();\n  City.dispose();\n  City.configure(OPEN_DATA, { navigator: openNav, routes: svc2 });\n  const inflight = City.routeAsync({ ...A.pub }, { ...A.lotte });\n  const observed = inflight.then(() => 'resolved', e => e.name);\n  City.dispose();\n  // The frozen service observes the linked abort signal; its deferred call\n  // settles, and City converts the result into an AbortError.\n  svc2.resolve(0, okRoute(A.pub, A.lotte));\n  assert.equal(await observed, 'AbortError');"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node --test tools/prototype/test-geo-city.cjs",
+      "description": "Re-run real-geometry city tests"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/reopening-city.js",
+      "old_string": "      } else {\n        bike = { x: PLACES.pub.x, y: PLACES.pub.y, mounted: false };\n      }\n    }",
+      "new_string": "      } else {\n        bike = { x: PLACES.pub.x, y: PLACES.pub.y, mounted: false };\n        notes.push('reset-bike');\n      }\n    }"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-flower-network.cjs",
+      "old_string": "",
+      "new_string": "'use strict';\n\n// CITY01 / f02-real-city-d27 FlowerNetwork acceptance.\n//\n// Only the ENTRY/CART coordinates moved to shared reviewed GeoWorld anchors;\n// every economic/story rule (Ada introduction, visits, provenance, validity)\n// is unchanged and is tested directly here without depending on sibling game\n// modules owned by other packages.\nconst { test } = require('node:test');\nconst assert = require('node:assert/strict');\n\nconst Flower = require('./flower-network.js');\nconst GeoWorld = require('./geo-world.js');\nconst City = require('./reopening-city.js');\n\nfunction state(day, garden, discovered) {\n  return {\n    phase: 'prep',\n    day,\n    garden: garden || Flower.fresh(),\n    backstage: { discovered: discovered || [] }\n  };\n}\n\ntest('ENTRY and CART are the reviewed shared anchors and frozen', () => {\n  assert.equal(Flower.ENTRY.id, 'garden');\n  assert.equal(Flower.ENTRY.x, GeoWorld.ENTRY.x);\n  assert.equal(Flower.ENTRY.y, GeoWorld.ENTRY.y);\n  assert.equal(Flower.ENTRY.x, GeoWorld.ANCHORS.garden.x);\n  assert.equal(Flower.CART.x, GeoWorld.CART.x);\n  assert.equal(Flower.CART.y, GeoWorld.CART.y);\n  assert.equal(Flower.CART.x, GeoWorld.ANCHORS.flowerCart.x);\n  // Coordinate import is the only difference from the legacy module.\n  assert.equal(City.ANCHORS.garden.x, Flower.ENTRY.x);\n  assert.ok(Math.hypot(Flower.CART.x - Flower.ENTRY.x, Flower.CART.y - Flower.ENTRY.y) > 1);\n  assert.throws(() => { Flower.ENTRY.x = 0; });\n  assert.throws(() => { Flower.CART.x = 0; });\n  assert.throws(() => { Flower.fresh = null; });\n});\n\ntest('fresh network starts unknown; night discovery seeds provenance', () => {\n  assert.deepEqual(Flower.fresh(), { known: false, source: null, introduced: false, visits: [] });\n  const seeded = Flower.fresh(['greenhouse']);\n  assert.deepEqual(seeded, { known: true, source: 'night', introduced: false, visits: [] });\n  // Every fresh state owns its own arrays.\n  const a = Flower.fresh();\n  const b = Flower.fresh();\n  assert.notEqual(a.visits, b.visits);\n});\n\ntest('Ada route is free: introduction is granted but never counts as a visit', () => {\n  const s = state(1);\n  const r1 = Flower.ask(s);\n  assert.equal(r1.ok, true);\n  assert.equal(s.garden.known, true);\n  assert.equal(s.garden.source, 'ada');\n  assert.equal(s.garden.introduced, true);\n  assert.deepEqual(s.garden.visits, []);\n  // The unchanged offer wording: €2 material fee waived, still 8 seconds.\n  assert.match(r1.message, /€2/);\n  assert.match(r1.message, /8 秒/);\n  // Asking again remains free and never records a visit.\n  const r2 = Flower.ask(s);\n  assert.equal(r2.ok, true);\n  assert.deepEqual(s.garden.visits, []);\n  assert.equal(s.backstage.discovered.includes('greenhouse'), false);\n  assert.match(Flower.notes(s)[0], /Ada/);\n  // Ada only leaves the introduction during prep.\n  const evening = state(1);\n  evening.phase = 'open';\n  const denied = Flower.ask(evening);\n  assert.equal(denied.ok, false);\n  assert.equal(evening.garden.known, false);\n  // First provenance wins: an Ada introduction is never overwritten.\n  Flower.visit(s, 'cart');\n  assert.equal(s.garden.source, 'ada');\n});\n\ntest('visits record each day at most once and physical discovery accrues', () => {\n  const s = state(1);\n  Flower.visit(s);\n  assert.equal(s.garden.known, true);\n  assert.equal(s.garden.source, 'self');\n  assert.deepEqual(s.garden.visits, [1]);\n  assert.deepEqual(s.backstage.discovered, ['greenhouse']);\n  Flower.visit(s);\n  assert.deepEqual(s.garden.visits, [1]);\n  s.day = 2;\n  Flower.visit(s, 'cart');\n  assert.deepEqual(s.garden.visits, [1, 2]);\n  assert.equal(s.garden.source, 'self'); // first physical provenance is retained\n  assert.deepEqual(Flower.context(s), { known: true, introduced: false, pump: false });\n});\n\ntest('notes explain provenance, actual visits, and the repaired pump', () => {\n  const unknown = state(1);\n  assert.deepEqual(Flower.notes(unknown), []);\n  const s = state(3);\n  Flower.visit(s);\n  s.day = 2;\n  Flower.visit(s);\n  s.day = 3;\n  const lines = Flower.notes(s);\n  assert.match(lines[0], /侧门/);\n  assert.ok(lines.some(l => /第 1、2 天/.test(l)));\n  // Pump discovery surfaces the unchanged no-slowdown note.\n  const pumped = state(3, s.garden, ['greenhouse', 'greenhouse-pump']);\n  assert.deepEqual(Flower.context(pumped).pump, true);\n  assert.ok(Flower.notes(pumped).some(l => /不再减速/.test(l)));\n});\n\ntest('valid accepts canonical states and rejects every invented/contradictory one', () => {\n  const good = state(1);\n  Flower.ask(good);\n  assert.equal(Flower.valid(good), true);\n  const visited = state(2);\n  Flower.visit(visited);\n  visited.day = 2;\n  assert.equal(Flower.valid(visited), true);\n\n  // Exactly the contradictions guarded by the unchanged validator.\n  const patches = [\n    { known: true },                                   // known without a source\n    { introduced: true },                             // introduction without knowledge\n    { visits: [1] },                                  // visit without discovery/knowledge\n    { source: 'unknown' },                            // invented provenance\n    { visits: [2] },                                  // visit in the future (day = 1)\n    { extra: true },                                  // invented field\n    { source: null },                                 // known forces non-null source\n    { visits: [1, 1] }                                // visits must strictly ascend\n  ];\n  for (const patch of patches) {\n    const s = state(1);\n    Object.assign(s.garden, patch);\n    assert.equal(Flower.valid(s), false, JSON.stringify(patch));\n  }\n  // Visit without the night/physical backstage discovery is inconsistent.\n  const noDiscovery = state(1, {\n    known: true, source: 'self', introduced: false, visits: [1]\n  }, []);\n  assert.equal(Flower.valid(noDiscovery), false);\n});\n\ntest('night-seeded networks validate and remain economic no-ops until visited', () => {\n  const seeded = state(1, Flower.fresh(['greenhouse']), ['greenhouse']);\n  assert.equal(Flower.valid(seeded), true);\n  assert.deepEqual(seeded.garden.visits, []);\n  assert.match(Flower.notes(seeded)[0], /夜探/);\n});\n"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-flower-network.cjs",
+      "old_string": "    { visits: [2] },                                  // visit in the future (day = 1)\n    { extra: true },                                  // invented field\n    { source: null },                                 // known forces non-null source\n    { visits: [1, 1] }                                // visits must strictly ascend",
+      "new_string": "    { visits: [2] },                                  // visit in the future (day = 1)\n    { extra: true },                                  // invented field\n    { known: false, source: 'ada' },                  // source without knowledge\n    { visits: [1, 1] }                                // visits must strictly ascend"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-flower-network.cjs",
+      "old_string": "  const unknown = state(1);\n  assert.deepEqual(Flower.notes(unknown), []);\n  const s = state(3);\n  Flower.visit(s);\n  s.day = 2;\n  Flower.visit(s, 'cart');\n  s.day = 3;",
+      "new_string": "  const unknown = state(1);\n  assert.deepEqual(Flower.notes(unknown), []);\n  const s = state(1);\n  Flower.visit(s);\n  s.day = 2;\n  Flower.visit(s, 'cart');\n  s.day = 3;"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-flower-network.cjs",
+      "old_string": "  const s = state(3);\n  Flower.visit(s);\n  s.day = 2;\n  Flower.visit(s);\n  s.day = 3;",
+      "new_string": "  const s = state(1);\n  Flower.visit(s);\n  s.day = 2;\n  Flower.visit(s);\n  s.day = 3;"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-flower-network.cjs",
+      "old_string": "  const s = state(1);\n  Flower.visit(s);\n  s.day = 2;\n  Flower.visit(s);\n  s.day = 3;",
+      "new_string": "  const s = state(1);\n  Flower.visit(s, 'self');\n  s.day = 2;\n  Flower.visit(s, 'cart');\n  s.day = 3;"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-flower-network.cjs",
+      "old_string": "  const s = state(1);\n  Flower.visit(s);\n  assert.equal(s.garden.known, true);\n  assert.equal(s.garden.source, 'self');\n  assert.deepEqual(s.garden.visits, [1]);\n  assert.deepEqual(s.backstage.discovered, ['greenhouse']);\n  Flower.visit(s);\n  assert.deepEqual(s.garden.visits, [1]);\n  s.day = 2;\n  Flower.visit(s, 'cart');",
+      "new_string": "  const s = state(1);\n  Flower.visit(s, 'self');\n  assert.equal(s.garden.known, true);\n  assert.equal(s.garden.source, 'self');\n  assert.deepEqual(s.garden.visits, [1]);\n  assert.deepEqual(s.backstage.discovered, ['greenhouse']);\n  Flower.visit(s, 'self');\n  assert.deepEqual(s.garden.visits, [1]);\n  s.day = 2;\n  Flower.visit(s, 'cart');"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-flower-network.cjs",
+      "old_string": "  const visited = state(2);\n  Flower.visit(visited);\n  visited.day = 2;\n  assert.equal(Flower.valid(visited), true);",
+      "new_string": "  const visited = state(2);\n  Flower.visit(visited, 'self');\n  visited.day = 2;\n  assert.equal(Flower.valid(visited), true);"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node --test tools/prototype/test-geo-flower-network.cjs",
+      "description": "Run new FlowerNetwork test file"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node --test tools/prototype/test-geo-city.cjs",
+      "description": "Re-run city tests after final code edits"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node --check tools/prototype/geo-world.js",
+      "description": "Final syntax check geo-world.js"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node --check tools/prototype/reopening-city.js",
+      "description": "Final syntax check reopening-city.js"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node --check tools/prototype/flower-network.js",
+      "description": "Final syntax check flower-network.js"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node --test tools/prototype/test-geo-city.cjs",
+      "description": "Final run city test suite"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node --test tools/prototype/test-geo-flower-network.cjs",
+      "description": "Final run flower network test suite"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node parent-regressions.cjs .",
+      "description": "Final run parent regression suite"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/handoff-result.json",
+      "old_string": "",
+      "new_string": "{\n  \"status\": \"completed\",\n  \"summary\": \"One permitted correction for f02-real-city-d27. Fixed the three independently reproduced regressions in tools/prototype/reopening-city.js without touching anchors, NAV, geometry constants, speeds, arrival/retrieval radii or economy: (1) travel() no longer exits one SUBSTEP early; the loop condition alone terminates it, substep sizing is speed-aware, so a clear 3 m waypoint is fully consumed within 0.1 s at 48 m/s and 9.6 m at 96 m/s; (2) F3 boarding now walks the accepted full-radius ground capsule to the EXACT canonical boarding anchor (still gated by the 4 m arrival band); proximity through a blocked connector leaves the player on the bank with no transit, and malformed boat waypoints are treated as plain ground points; (3) toggleBike/parkBike aboard F3 are no-ops that keep the carried bicycle until the safe bank, where ride/push is recomputed, so bicycles are never parked in water, never reset to pub by restore, and remotely parked bikes stay remote. Also tightened restore validation to reject forged transit records with extra keys and made the nonfinite/missing-bike reset emit the same reset-bike diagnostic note as finite invalid bikes. Added the two missing original-test deliverables: test-geo-city.cjs (34 behavior tests: configure/readiness/lifecycle, all 10 anchors, accepted NAV classification and swept-capsule tests over explicit small polygon fixtures including water/building/autosnelweg/rijbaan/voetpad and the 0.4 m body radius, speeds/sliding/waypoint exhaustion, bike ride/push/park/retrieval/remote-park, legacy and new saves with alias-free clones, F3 boarding in both directions/refresh/cancel/pause/forged metadata/with and without bicycle, frozen routes surface with progress/AbortError/stale-target cancellation/dispose abort/cache-only compatibility route, exact-anchor F3 composition playable end to end, UMD parity, and the real accepted pub subset) and test-geo-flower-network.cjs (7 tests: shared ENTRY/CART anchor imports/freeze, fresh/night seeding, free Ada introduction that never visits, per-day visits and provenance, notes and repaired-pump text, strict validity for invented/contradictory states). No full-map or full-game claim is made; synthetic transit fixtures exercise state machines only and the parent owns complete 145703-feature validation. geo-world.js and flower-network.js were not modified (coordinate imports already pointed at GeoWorld.ENTRY/CART).\",\n  \"changed_files\": [\n    \"tools/prototype/reopening-city.js\",\n    \"tools/prototype/test-geo-city.cjs\",\n    \"tools/prototype/test-geo-flower-network.cjs\"\n  ],\n  \"tests\": [\n    {\n      \"command\": \"node --check tools/prototype/geo-world.js\",\n      \"exit_code\": 0,\n      \"summary\": \"Syntax OK, no output (file unchanged by this correction).\"\n    },\n    {\n      \"command\": \"node --check tools/prototype/reopening-city.js\",\n      \"exit_code\": 0,\n      \"summary\": \"Syntax OK after the three regression fixes plus strict transit-key and reset-bike-note tightening.\"\n    },\n    {\n      \"command\": \"node --check tools/prototype/flower-network.js\",\n      \"exit_code\": 0,\n      \"summary\": \"Syntax OK, no output (economic rules and coordinate imports unchanged).\"\n    },\n    {\n      \"command\": \"node --test tools/prototype/test-geo-city.cjs\",\n      \"exit_code\": 0,\n      \"summary\": \"34 tests pass, 0 fail: readiness/lifecycle, 10 anchors, accepted NAV radius/capsule/classification on explicit polygon fixtures plus real pub subset, speeds, swept sliding, waypoint exhaustion, bike ride/push/park/retrieval/remote parking, legacy/new save validation and clones, F3 boarding/direction/refresh/cancel/pause/forged metadata/bicycles, async progress/abort/stale races/dispose/cache-only route, F3 exact-anchor composition and UMD parity.\"\n    },\n    {\n      \"command\": \"node --test tools/prototype/test-geo-flower-network.cjs\",\n      \"exit_code\": 0,\n      \"summary\": \"7 tests pass, 0 fail: shared GeoWorld ENTRY/CART coordinates and freeze, fresh/night seeding, Ada free introduction with no visit, per-day visits and first-provenance retention, notes and pump text, strict valid() acceptance and rejection, night-seeded consistency.\"\n    },\n    {\n      \"command\": \"node parent-regressions.cjs .\",\n      \"exit_code\": 0,\n      \"summary\": \"16 of 16 independent parent cases pass (was 13/16): the 3 m waypoint-in-0.1 s case, blocked-connector F3 non-boarding, and aboard-F3 bicycle preservation now pass alongside all previously passing cases and the real NAV pub fixture.\"\n    }\n  ],\n  \"blockers\": [],\n  \"memory_delta\": [\n    \"The original three implementation files parsed and 13/16 parent cases already passed; only travel() substep exit, F3 proximity boarding, and aboard-F3 bike parking were defective, now fixed.\",\n    \"NAV GEO schema detail used by tests: feature.polygons is an array of polygons, each polygon is an array of closed rings; the accepted navigator adds water first and only bridge parts with type_overbruggingsdeel 'dek' override water.\",\n    \"The frozen routes service observes abort via the linked AbortSignal; City converts a settled call after abort into AbortError, so callers/runtime must still resolve or reject the deferred routes promise on abort.\"\n  ],\n  \"next_steps\": [\n    \"Parent applies the changes and runs the complete 145703-feature map, full geometry/routes and natural game-flow integration; no synthetic result here claims full-map coverage.\",\n    \"BOOT/browser adapter consumes the unchanged frozen City public API; note City.route is deliberately cache-only (returns [] before a routeAsync resolve) and must never be used to trigger planning.\",\n    \"BOOT may surface restoreInfo() notes ('migrated', 'migrated-legacy-coordinates', 'reset-position', 'reset-bike', 'reset-transit', 'reset-create') for the short player-facing migration/reset notice.\",\n    \"Later BOOT package owns updating legacy geometry-specific UI tests and any scene/index/runtime consumers; those modules were intentionally not modified.\"\n  ]\n}\n"
+    }
+  }
+]

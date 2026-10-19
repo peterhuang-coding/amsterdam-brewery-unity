@@ -1,0 +1,27 @@
+{
+  "status": "qualified_candidate_pending_atomic_runtime_and_BOOT_integration",
+  "game_adopted": false,
+  "files": {
+    "geo-world.js": {
+      "bytes": 7569,
+      "sha256": "9f6961ec7b732e9e42a43a1c40f1a0ccee7201b01aa94dd301aa194cfa05bff8"
+    },
+    "reopening-city.js": {
+      "bytes": 35353,
+      "sha256": "2fa906655d6f22b0da971439b7460bba2fbd630e6032d2e0b19b5e9124e54199"
+    },
+    "flower-network.js": {
+      "bytes": 2919,
+      "sha256": "28e2f1fbeacfd1b929d8218d4461e820ef9c4ec21f5394c25d45280abb30ac0d"
+    },
+    "test-geo-city.cjs": {
+      "bytes": 31782,
+      "sha256": "bfe66641c55e230d9dc2adaff3303d9cfad3b17dd47420e5b7010f5bc72c1c94"
+    },
+    "test-geo-flower-network.cjs": {
+      "bytes": 6166,
+      "sha256": "b9cc96b9ba025ce482158b88e0733142359312003aaba8a07b3d0f6a4ee21e4f"
+    }
+  },
+  "flower_economic_tail_byte_identical_to_game": true
+}

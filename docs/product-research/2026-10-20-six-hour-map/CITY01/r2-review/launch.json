@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "/opt/homebrew/bin/claude",
+    "--bare",
+    "-p",
+    "--model",
+    "doubao-seed-evolving",
+    "--effort",
+    "high",
+    "--settings",
+    "{\"apiKeyHelper\": \"/usr/bin/security find-generic-password -s llm-hub -a volcengine-plan -w\", \"alwaysThinkingEnabled\": true, \"permissions\": {\"allow\": [\"Read(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/**)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/geo-world.js)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/geo-world.js)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/reopening-city.js)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/reopening-city.js)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/flower-network.js)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/flower-network.js)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-city.cjs)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-city.cjs)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-flower-network.cjs)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/tools/prototype/test-geo-flower-network.cjs)\", \"Write(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/handoff-result.json)\", \"Edit(//Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace/handoff-result.json)\", \"Bash(node --check tools/prototype/geo-world.js)\", \"Bash(node --check tools/prototype/reopening-city.js)\", \"Bash(node --check tools/prototype/flower-network.js)\", \"Bash(node --test tools/prototype/test-geo-city.cjs)\", \"Bash(node --test tools/prototype/test-geo-flower-network.cjs)\", \"Bash(node parent-regressions.cjs .)\"]}}",
+    "--setting-sources",
+    "",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\": {}}",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--session-id",
+    "4f5fc288-a59b-4ada-8144-4ddda27cc1f8",
+    "--max-turns",
+    "70",
+    "--permission-mode",
+    "dontAsk",
+    "--tools",
+    "Read,Write,Edit,Bash"
+  ],
+  "cwd": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-real-city-r2-20261020/workspace",
+  "pid": 32703,
+  "pid_pending": false,
+  "started_epoch": 1792435704
+}

@@ -1,3 +1,5 @@
+> D27 UTC19:22Z主线：City唯一修正独立验收合格（34+7+16测试、全145703源24检查/2088移动帧、实际两岸F3及7旧坐标迁移），保留5文件候选等待与runtime/BOOT原子接入，尚未覆盖现有游戏。MEMORY唯一修正接口中断且HTTP仍失败，业务+修正已用尽；4a5816a的一次1800秒50轮额外恢复问题已实际问一次，待真人答复，不重复问或自动派发。当前无CC在途，Plan6、已采用4组件/本轮2、另City候选1、新游戏地图0。截止22:52:30Z不变。详细见最新city-r2-review与memory-r2-review两轮。
+
 > UTC19:16Z更新：CITY01-R2正常CLI0交回并收齐本波，当前无实际CC在途；34City+7Flower+16父级反例及6命令通过，最终父验尚在进行、尚未采用。MEMORY01-R2接口中断后父验拒收；一次额外恢复仅为待真人决定提案，未派发。旧下方City在途为历史。D27实际Plan6、累计采用4、游戏地图0、截止22:52:30Z保持。
 
 # D27 MEMORY correction transport failure; City correction still running

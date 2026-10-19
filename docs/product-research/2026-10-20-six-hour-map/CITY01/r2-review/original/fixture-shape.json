@@ -1,0 +1,114 @@
+{
+  "bbox": [
+    4.865,
+    52.345,
+    4.97,
+    52.405
+  ],
+  "height": 6671.705,
+  "projection": {
+    "originLat": 52.405,
+    "originLon": 4.865,
+    "radiusMeters": 6371008.8,
+    "referenceLat": 52.375,
+    "type": "local-equirectangular",
+    "units": "metres"
+  },
+  "schemaVersion": 1,
+  "width": 7127.775,
+  "source": {
+    "complete": false,
+    "inputs": [],
+    "license": "CC0-1.0",
+    "limitations": [
+      "Parent diagnostic feature subset by bounds for one near-pub route. Original complete source manifest SHA stored in parent evidence, not complete city coverage."
+    ],
+    "provider": "Kadaster / PDOK BGT",
+    "snapshot": "2026-10-16T00:00:00Z",
+    "url": "https://api.pdok.nl/kadaster/bgt/ogc/v1/"
+  },
+  "layers": {
+    "bridges": {
+      "count": 1,
+      "first_feature_keys": [
+        "bounds",
+        "id",
+        "localId",
+        "polygons",
+        "properties",
+        "sourceId"
+      ],
+      "first_feature_properties": {
+        "creation_date": "2021-03-08T23:00:00Z",
+        "eind_registratie": null,
+        "hoort_bij_typeoverbrugging": "brug",
+        "relatieve_hoogteligging": 1,
+        "status": "bestaand",
+        "termination_date": null,
+        "tijdstip_registratie": "2021-03-23T04:06:52Z",
+        "type_overbruggingsdeel": "dek"
+      }
+    },
+    "buildings": {
+      "count": 23,
+      "first_feature_keys": [
+        "bounds",
+        "id",
+        "localId",
+        "polygons",
+        "properties",
+        "sourceId"
+      ],
+      "first_feature_properties": {
+        "bag_pnd": "0363100012169969",
+        "creation_date": "2005-12-22T23:00:00Z",
+        "eind_registratie": null,
+        "relatieve_hoogteligging": 0,
+        "status": "bestaand",
+        "termination_date": null,
+        "tijdstip_registratie": "2005-12-23T15:05:50Z"
+      }
+    },
+    "roads": {
+      "count": 36,
+      "first_feature_keys": [
+        "bounds",
+        "id",
+        "localId",
+        "polygons",
+        "properties",
+        "sourceId"
+      ],
+      "first_feature_properties": {
+        "creation_date": "2005-12-22T23:00:00Z",
+        "eind_registratie": null,
+        "functie": "voetpad",
+        "fysiek_voorkomen": "open verharding",
+        "relatieve_hoogteligging": 1,
+        "status": "bestaand",
+        "termination_date": null,
+        "tijdstip_registratie": "2017-12-22T17:43:55Z"
+      }
+    },
+    "water": {
+      "count": 2,
+      "first_feature_keys": [
+        "bounds",
+        "id",
+        "localId",
+        "polygons",
+        "properties",
+        "sourceId"
+      ],
+      "first_feature_properties": {
+        "creation_date": "2005-12-22T23:00:00Z",
+        "eind_registratie": null,
+        "relatieve_hoogteligging": 0,
+        "status": "bestaand",
+        "termination_date": null,
+        "tijdstip_registratie": "2017-05-04T08:54:18Z",
+        "type": "waterloop"
+      }
+    }
+  }
+}

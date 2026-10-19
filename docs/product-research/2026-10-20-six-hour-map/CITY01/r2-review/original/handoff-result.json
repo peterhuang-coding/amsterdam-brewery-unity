@@ -1,0 +1,53 @@
+{
+  "status": "completed",
+  "summary": "One permitted correction for f02-real-city-d27. Fixed the three independently reproduced regressions in tools/prototype/reopening-city.js without touching anchors, NAV, geometry constants, speeds, arrival/retrieval radii or economy: (1) travel() no longer exits one SUBSTEP early; the loop condition alone terminates it, substep sizing is speed-aware, so a clear 3 m waypoint is fully consumed within 0.1 s at 48 m/s and 9.6 m at 96 m/s; (2) F3 boarding now walks the accepted full-radius ground capsule to the EXACT canonical boarding anchor (still gated by the 4 m arrival band); proximity through a blocked connector leaves the player on the bank with no transit, and malformed boat waypoints are treated as plain ground points; (3) toggleBike/parkBike aboard F3 are no-ops that keep the carried bicycle until the safe bank, where ride/push is recomputed, so bicycles are never parked in water, never reset to pub by restore, and remotely parked bikes stay remote. Also tightened restore validation to reject forged transit records with extra keys and made the nonfinite/missing-bike reset emit the same reset-bike diagnostic note as finite invalid bikes. Added the two missing original-test deliverables: test-geo-city.cjs (34 behavior tests: configure/readiness/lifecycle, all 10 anchors, accepted NAV classification and swept-capsule tests over explicit small polygon fixtures including water/building/autosnelweg/rijbaan/voetpad and the 0.4 m body radius, speeds/sliding/waypoint exhaustion, bike ride/push/park/retrieval/remote-park, legacy and new saves with alias-free clones, F3 boarding in both directions/refresh/cancel/pause/forged metadata/with and without bicycle, frozen routes surface with progress/AbortError/stale-target cancellation/dispose abort/cache-only compatibility route, exact-anchor F3 composition playable end to end, UMD parity, and the real accepted pub subset) and test-geo-flower-network.cjs (7 tests: shared ENTRY/CART anchor imports/freeze, fresh/night seeding, free Ada introduction that never visits, per-day visits and provenance, notes and repaired-pump text, strict validity for invented/contradictory states). No full-map or full-game claim is made; synthetic transit fixtures exercise state machines only and the parent owns complete 145703-feature validation. geo-world.js and flower-network.js were not modified (coordinate imports already pointed at GeoWorld.ENTRY/CART).",
+  "changed_files": [
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/test-geo-city.cjs",
+    "tools/prototype/test-geo-flower-network.cjs"
+  ],
+  "tests": [
+    {
+      "command": "node --check tools/prototype/geo-world.js",
+      "exit_code": 0,
+      "summary": "Syntax OK, no output (file unchanged by this correction)."
+    },
+    {
+      "command": "node --check tools/prototype/reopening-city.js",
+      "exit_code": 0,
+      "summary": "Syntax OK after the three regression fixes plus strict transit-key and reset-bike-note tightening."
+    },
+    {
+      "command": "node --check tools/prototype/flower-network.js",
+      "exit_code": 0,
+      "summary": "Syntax OK, no output (economic rules and coordinate imports unchanged)."
+    },
+    {
+      "command": "node --test tools/prototype/test-geo-city.cjs",
+      "exit_code": 0,
+      "summary": "34 tests pass, 0 fail: readiness/lifecycle, 10 anchors, accepted NAV radius/capsule/classification on explicit polygon fixtures plus real pub subset, speeds, swept sliding, waypoint exhaustion, bike ride/push/park/retrieval/remote parking, legacy/new save validation and clones, F3 boarding/direction/refresh/cancel/pause/forged metadata/bicycles, async progress/abort/stale races/dispose/cache-only route, F3 exact-anchor composition and UMD parity."
+    },
+    {
+      "command": "node --test tools/prototype/test-geo-flower-network.cjs",
+      "exit_code": 0,
+      "summary": "7 tests pass, 0 fail: shared GeoWorld ENTRY/CART coordinates and freeze, fresh/night seeding, Ada free introduction with no visit, per-day visits and first-provenance retention, notes and pump text, strict valid() acceptance and rejection, night-seeded consistency."
+    },
+    {
+      "command": "node parent-regressions.cjs .",
+      "exit_code": 0,
+      "summary": "16 of 16 independent parent cases pass (was 13/16): the 3 m waypoint-in-0.1 s case, blocked-connector F3 non-boarding, and aboard-F3 bicycle preservation now pass alongside all previously passing cases and the real NAV pub fixture."
+    }
+  ],
+  "blockers": [],
+  "memory_delta": [
+    "The original three implementation files parsed and 13/16 parent cases already passed; only travel() substep exit, F3 proximity boarding, and aboard-F3 bike parking were defective, now fixed.",
+    "NAV GEO schema detail used by tests: feature.polygons is an array of polygons, each polygon is an array of closed rings; the accepted navigator adds water first and only bridge parts with type_overbruggingsdeel 'dek' override water.",
+    "The frozen routes service observes abort via the linked AbortSignal; City converts a settled call after abort into AbortError, so callers/runtime must still resolve or reject the deferred routes promise on abort."
+  ],
+  "next_steps": [
+    "Parent applies the changes and runs the complete 145703-feature map, full geometry/routes and natural game-flow integration; no synthetic result here claims full-map coverage.",
+    "BOOT/browser adapter consumes the unchanged frozen City public API; note City.route is deliberately cache-only (returns [] before a routeAsync resolve) and must never be used to trigger planning.",
+    "BOOT may surface restoreInfo() notes ('migrated', 'migrated-legacy-coordinates', 'reset-position', 'reset-bike', 'reset-transit', 'reset-create') for the short player-facing migration/reset notice.",
+    "Later BOOT package owns updating legacy geometry-specific UI tests and any scene/index/runtime consumers; those modules were intentionally not modified."
+  ]
+}

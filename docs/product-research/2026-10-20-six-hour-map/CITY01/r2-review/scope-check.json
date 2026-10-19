@@ -1,0 +1,133 @@
+{
+  "task_id": "amsterdam-d27-real-city-r2-20261020",
+  "receipt_status": "verifying",
+  "finished_at": "2026-10-19T19:11:59.498002+00:00",
+  "elapsed_seconds": 1414.922,
+  "cli": {
+    "final_subtype": "success",
+    "is_error": false,
+    "outcome": "completed",
+    "pid": 32703,
+    "returncode": 0,
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 3696032,
+      "inference_geo": "",
+      "input_tokens": 152731,
+      "iterations": [],
+      "output_tokens": 55182,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_fetch_requests": 0,
+        "web_search_requests": 0
+      },
+      "service_tier": "standard",
+      "speed": "standard"
+    }
+  },
+  "observed_models": [
+    "doubao-seed-evolving"
+  ],
+  "receipt_report_present": true,
+  "disk_report_present": true,
+  "disk_report_sha256": "8636d0460438f670cb5b66059b99815eb38766c08ef842f7c5165e6e53c81b7d",
+  "disk_report_validation_error": null,
+  "disk_report_status": "completed",
+  "tool_counts": {
+    "Read": 15,
+    "Bash": 16,
+    "Edit": 21
+  },
+  "extra_bash_commands": [
+    "true"
+  ],
+  "permission_denials": [],
+  "disallowed_changes": [],
+  "path_violations": [],
+  "input_sha": [
+    {
+      "file": "anchors.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "brief.md",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "fixture-shape.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "original-brief.md",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "parent-regressions.cjs",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/navigation/geo-navigation.js",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/navigation/real-pub-sample.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/prototype/flower-network.js",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": true
+    },
+    {
+      "file": "tools/prototype/geo-world.js",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": true
+    },
+    {
+      "file": "tools/prototype/reopening-city.js",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": false
+    },
+    {
+      "file": "tools/prototype/test-city-bike.js",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/prototype/test-city.js",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/prototype/test-flower-network.js",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "scope": "full original source + accepted NAV + exact stored-route adapter; no runtime/browser/game integration claim",
+  "passed": 24,
+  "total": 24,
+  "rows": [
+    {
+      "name": "ten actual-source anchors and shared Flower coordinates",
+      "pass": true,
+      "anchors": 10,
+      "features": 145703
+    },
+    {
+      "name": "pub-lotte walk forward full geometry movement",
+      "pass": true,
+      "frames": 11,
+      "length": 49.3486268404053
+    },
+    {
+      "name": "pub-lotte walk reverse full geometry movement",
+      "pass": true,
+      "frames": 11,
+      "length": 49.3486268404053
+    },
+    {
+      "name": "pub-coffee walk forward full geometry movement",
+      "pass": true,
+      "frames": 650,
+      "length": 3118.9693431007295
+    },
+    {
+      "name": "pub-coffee walk reverse full geometry movement",
+      "pass": true,
+      "frames": 650,
+      "length": 3118.9693431007295
+    },
+    {
+      "name": "coffee-market walk forward full geometry movement",
+      "pass": true,
+      "frames": 15,
+      "length": 68.19900768344782
+    },
+    {
+      "name": "coffee-market walk reverse full geometry movement",
+      "pass": true,
+      "frames": 15,
+      "length": 68.19900768344782
+    },
+    {
+      "name": "market-flowers walk forward full geometry movement",
+      "pass": true,
+      "frames": 116,
+      "length": 556.4465836912879
+    },
+    {
+      "name": "market-flowers walk reverse full geometry movement",
+      "pass": true,
+      "frames": 116,
+      "length": 556.4465836912879
+    },
+    {
+      "name": "market-flowers bike forward full geometry movement",
+      "pass": true,
+      "frames": 159,
+      "length": 1517.754923646653
+    },
+    {
+      "name": "market-flowers bike reverse full geometry movement",
+      "pass": true,
+      "frames": 159,
+      "length": 1517.754923646653
+    },
+    {
+      "name": "flowers-flowerCart walk forward full geometry movement",
+      "pass": true,
+      "frames": 3,
+      "length": 10.895660833561202
+    },
+    {
+      "name": "flowers-flowerCart walk reverse full geometry movement",
+      "pass": true,
+      "frames": 3,
+      "length": 10.895660833561202
+    },
+    {
+      "name": "flowers-garden walk forward full geometry movement",
+      "pass": true,
+      "frames": 18,
+      "length": 82.60258986447019
+    },
+    {
+      "name": "flowers-garden walk reverse full geometry movement",
+      "pass": true,
+      "frames": 18,
+      "length": 82.60258986447019
+    },
+    {
+      "name": "flowers-garden bike forward full geometry movement",
+      "pass": true,
+      "frames": 54,
+      "length": 514.4372082912157
+    },
+    {
+      "name": "flowers-garden bike reverse full geometry movement",
+      "pass": true,
+      "frames": 54,
+      "length": 514.4372082912157
+    },
+    {
+      "name": "flowerCart-garden walk forward full geometry movement",
+      "pass": true,
+      "frames": 18,
+      "length": 83.91417426427888
+    },
+    {
+      "name": "flowerCart-garden walk reverse full geometry movement",
+      "pass": true,
+      "frames": 18,
+      "length": 83.91417426427888
+    },
+    {
+      "name": "actual F3 banks ferrySouth carried=false, cancel refresh pause landing",
+      "pass": true,
+      "frames": 98
+    },
+    {
+      "name": "actual F3 banks ferrySouth carried=true, cancel refresh pause landing",
+      "pass": true,
+      "frames": 98
+    },
+    {
+      "name": "actual F3 banks ferryNorth carried=false, cancel refresh pause landing",
+      "pass": true,
+      "frames": 98
+    },
+    {
+      "name": "actual F3 banks ferryNorth carried=true, cancel refresh pause landing",
+      "pass": true,
+      "frames": 98
+    },
+    {
+      "name": "all seven legacy positions and independent parked bikes on actual source",
+      "pass": true,
+      "legacyPlaces": 7
+    }
+  ],
+  "frames": 2088,
+  "stepMs": {
+    "max": 17.13404200000059,
+    "p99": 12.429541999999856
+  },
+  "seconds": 3.6298797500000006
+}

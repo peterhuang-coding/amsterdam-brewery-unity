@@ -1,0 +1,214 @@
+TAP version 13
+# Subtest: geometry is required before use and configure validates its inputs
+ok 1 - geometry is required before use and configure validates its inputs
+  ---
+  duration_ms: 1.259584
+  type: 'test'
+  ...
+# Subtest: shared GeoWorld exposes the ten reviewed anchors and seven places
+ok 2 - shared GeoWorld exposes the ten reviewed anchors and seven places
+  ---
+  duration_ms: 0.180125
+  type: 'test'
+  ...
+# Subtest: tuning constants are exported with the frozen metres/seconds values
+ok 3 - tuning constants are exported with the frozen metres/seconds values
+  ---
+  duration_ms: 0.042042
+  type: 'test'
+  ...
+# Subtest: points classify road, footpath, motorway, water and building at radius 0.4
+ok 4 - points classify road, footpath, motorway, water and building at radius 0.4
+  ---
+  duration_ms: 0.804208
+  type: 'test'
+  ...
+# Subtest: segments use the complete swept capsule: canal and house block crossing
+ok 5 - segments use the complete swept capsule: canal and house block crossing
+  ---
+  duration_ms: 1.765333
+  type: 'test'
+  ...
+# Subtest: diagonal movement slides and never tunnels through a mocked thin barrier
+ok 6 - diagonal movement slides and never tunnels through a mocked thin barrier
+  ---
+  duration_ms: 0.393958
+  type: 'test'
+  ...
+# Subtest: manual movement uses 48 walk / 96 bike metres per second and clamps dt
+ok 7 - manual movement uses 48 walk / 96 bike metres per second and clamps dt
+  ---
+  duration_ms: 0.270958
+  type: 'test'
+  ...
+# Subtest: moveAlong consumes a reachable 3 m waypoint within 0.1 s exactly (regression 1)
+ok 8 - moveAlong consumes a reachable 3 m waypoint within 0.1 s exactly (regression 1)
+  ---
+  duration_ms: 0.136541
+  type: 'test'
+  ...
+# Subtest: finite path travel consumes the whole available distance over repeated ticks
+ok 9 - finite path travel consumes the whole available distance over repeated ticks
+  ---
+  duration_ms: 0.326708
+  type: 'test'
+  ...
+# Subtest: bicycle rides on bike-safe ground and pushes at walk speed where bikes are barred
+ok 10 - bicycle rides on bike-safe ground and pushes at walk speed where bikes are barred
+  ---
+  duration_ms: 0.307958
+  type: 'test'
+  ...
+# Subtest: independently parked bicycles never move with the player or teleport back
+ok 11 - independently parked bicycles never move with the player or teleport back
+  ---
+  duration_ms: 0.093833
+  type: 'test'
+  ...
+# Subtest: near selects the closest place within radius only
+ok 12 - near selects the closest place within radius only
+  ---
+  duration_ms: 0.056166
+  type: 'test'
+  ...
+# Subtest: onFerry marks only the interior of the canonical F3 lane, never the banks
+ok 13 - onFerry marks only the interior of the canonical F3 lane, never the banks
+  ---
+  duration_ms: 0.048
+  type: 'test'
+  ...
+# Subtest: toggle mounts, parks, refuses distant bikes, and never mutates input
+ok 14 - toggle mounts, parks, refuses distant bikes, and never mutates input
+  ---
+  duration_ms: 0.120792
+  type: 'test'
+  ...
+# Subtest: legacy 1800x1120 saves migrate player and bicycle independently
+ok 15 - legacy 1800x1120 saves migrate player and bicycle independently
+  ---
+  duration_ms: 0.116833
+  type: 'test'
+  ...
+# Subtest: new valid saves preserve values exactly through strict clones
+ok 16 - new valid saves preserve values exactly through strict clones
+  ---
+  duration_ms: 0.03575
+  type: 'test'
+  ...
+# Subtest: invalid visits and nonfinite saves reset to a fresh city
+ok 17 - invalid visits and nonfinite saves reset to a fresh city
+  ---
+  duration_ms: 0.045042
+  type: 'test'
+  ...
+# Subtest: new saves in water or buildings reset position while retaining valid visits
+ok 18 - new saves in water or buildings reset position while retaining valid visits
+  ---
+  duration_ms: 0.087542
+  type: 'test'
+  ...
+# Subtest: F3 cannot board through an unwalkable connector or from beyond arrival radius
+ok 19 - F3 cannot board through an unwalkable connector or from beyond arrival radius
+  ---
+  duration_ms: 0.112541
+  type: 'test'
+  ...
+# Subtest: F3 boards only at the exact anchor via the full-radius ground capsule
+ok 20 - F3 boards only at the exact anchor via the full-radius ground capsule
+  ---
+  duration_ms: 0.0895
+  type: 'test'
+  ...
+# Subtest: F3 runs in both canonical directions and lands exactly on the safe bank
+ok 21 - F3 runs in both canonical directions and lands exactly on the safe bank
+  ---
+  duration_ms: 0.710458
+  type: 'test'
+  ...
+# Subtest: saved F3 refreshes with an empty path and keeps a remotely parked bike
+ok 22 - saved F3 refreshes with an empty path and keeps a remotely parked bike
+  ---
+  duration_ms: 0.137625
+  type: 'test'
+  ...
+# Subtest: movement keys and cancellation finish the crossing; zero elapsed pauses it
+ok 23 - movement keys and cancellation finish the crossing; zero elapsed pauses it
+  ---
+  duration_ms: 0.159666
+  type: 'test'
+  ...
+# Subtest: forged, nonfinite and unknown transit metadata is rejected on restore
+ok 24 - forged, nonfinite and unknown transit metadata is rejected on restore
+  ---
+  duration_ms: 0.121584
+  type: 'test'
+  ...
+# Subtest: malformed boat waypoints are never treated as a boarding event
+ok 25 - malformed boat waypoints are never treated as a boarding event
+  ---
+  duration_ms: 0.05125
+  type: 'test'
+  ...
+# Subtest: bike toggle/park aboard F3 keeps the carried bike to the safe bank (regression 3)
+ok 26 - bike toggle/park aboard F3 keeps the carried bike to the safe bank (regression 3)
+  ---
+  duration_ms: 0.537125
+  type: 'test'
+  ...
+# Subtest: routeAsync resolves ground routes with metadata and observable progress
+ok 27 - routeAsync resolves ground routes with metadata and observable progress
+  ---
+  duration_ms: 0.259042
+  type: 'test'
+  ...
+# Subtest: routeAsync passes mode and radius 0.4 and never mutates caller points
+ok 28 - routeAsync passes mode and radius 0.4 and never mutates caller points
+  ---
+  duration_ms: 0.094167
+  type: 'test'
+  ...
+# Subtest: pre-aborted and in-flight abort reject with AbortError and publish nothing
+ok 29 - pre-aborted and in-flight abort reject with AbortError and publish nothing
+  ---
+  duration_ms: 0.400416
+  type: 'test'
+  ...
+# Subtest: a newer target cancels stale in-flight work; dispose aborts too
+ok 30 - a newer target cancels stale in-flight work; dispose aborts too
+  ---
+  duration_ms: 0.113333
+  type: 'test'
+  ...
+# Subtest: compatibility route is cache-only and stays alias-free
+ok 31 - compatibility route is cache-only and stays alias-free
+  ---
+  duration_ms: 0.053709
+  type: 'test'
+  ...
+# Subtest: F3 composition requires exact anchor legs and carries canonical metadata
+ok 32 - F3 composition requires exact anchor legs and carries canonical metadata
+  ---
+  duration_ms: 0.47175
+  type: 'test'
+  ...
+# Subtest: UMD browser bundle exposes the same frozen public surface
+ok 33 - UMD browser bundle exposes the same frozen public surface
+  ---
+  duration_ms: 0.771583
+  type: 'test'
+  ...
+# Subtest: accepted NAV pub subset: reviewed pub anchor is walkable real ground
+ok 34 - accepted NAV pub subset: reviewed pub anchor is walkable real ground
+  ---
+  duration_ms: 2.827584
+  type: 'test'
+  ...
+1..34
+# tests 34
+# suites 0
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 72.599875

@@ -1,0 +1,67 @@
+{
+  "acceptance": [
+    "All detailed requirements in brief.md hold; full geometry and original accepted predicates unchanged.",
+    "All exact commands exit zero; tests verify actual behavior, not implementation mirrors.",
+    "No unauthorized file changes; provide complete handoff with actual results and no unsupported full-map claims."
+  ],
+  "commands": [
+    "node --check tools/prototype/geo-world.js",
+    "node --check tools/prototype/reopening-city.js",
+    "node --check tools/prototype/flower-network.js",
+    "node --test tools/prototype/test-geo-city.cjs",
+    "node --test tools/prototype/test-geo-flower-network.cjs",
+    "node parent-regressions.cjs ."
+  ],
+  "constraints": [
+    "Only listed public/synthetic files and own outputs; no whole project or outside paths.",
+    "Bash only the exact listed commands; no command variants, suffixes, discovery, installs, network fetches or child agents.",
+    "This is a new loading/game-adaptation capability, not an extra retry of exhausted geometry corrections.",
+    "Never list handoff-result.json among changed_files. Keep report legal and leave five turns for final verification/report."
+  ],
+  "data_sensitivity": "public",
+  "goal": "Finish original City delivery and fix the three parent-reproduced waypoint/F3/bicycle regressions without changing accepted geometry or game economics",
+  "max_turns": 70,
+  "memory": {
+    "completed": [],
+    "decisions": [],
+    "known_issues": [],
+    "summary": "Original business timed out2400.152s; threeimplementationfilesparse, two requiredtestfiles/reportabsent. Parent16cases13pass3reproduciblefail. Originalreceiptunknown preserved, worker+launcherverifiedexited. This is the single allowed correction, nevernewbusiness. Completeexistingartifact; frozeninterfaces inoriginalbrief."
+  },
+  "read_files": [
+    "brief.md",
+    "original-brief.md",
+    "parent-regressions.cjs",
+    "fixture-shape.json",
+    "anchors.json",
+    "tools/prototype/geo-world.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/flower-network.js",
+    "tools/geo/navigation/geo-navigation.js",
+    "tools/geo/navigation/real-pub-sample.json",
+    "tools/prototype/test-city.js",
+    "tools/prototype/test-city-bike.js",
+    "tools/prototype/test-flower-network.js"
+  ],
+  "task_id": "amsterdam-d27-real-city-r2-20261020",
+  "tasks": [
+    "Read brief.md and exact public interfaces before changing files.",
+    "Implement only the owned scope and meaningful regression tests; preserve all readonly inputs.",
+    "Run every exact command, report complete outputs, limitations and a legal handoff before exhausting turns."
+  ],
+  "telemetry": {
+    "attempt_kind": "correction",
+    "logical_task_id": "f02-real-city-d27",
+    "project_id": "amsterdam-brewery-unity",
+    "task_type": "code"
+  },
+  "timeout_seconds": 2400,
+  "version": 1,
+  "workspace": "/tmp/amsterdam-d27-real-city-r2-20261020/input",
+  "write_files": [
+    "tools/prototype/geo-world.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/flower-network.js",
+    "tools/prototype/test-geo-city.cjs",
+    "tools/prototype/test-geo-flower-network.cjs"
+  ]
+}

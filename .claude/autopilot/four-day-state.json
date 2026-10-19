@@ -1,19 +1,19 @@
 {
   "decision": "D27",
-  "status": "d27_city_qualified_memory_extra_decision_pending",
+  "status": "d27_window_expired_demo_incomplete",
   "start_at": "2026-10-19T16:52:30Z",
   "deadline": "2026-10-19T22:52:30Z",
   "next_direction_review_at": "2026-10-17T09:48:33Z",
   "last_direction_review_at": "2026-10-17T00:00:06.789975+00:00",
-  "current_task_id": "amsterdam-d27-compact-runtime-r2-20261020",
+  "current_task_id": null,
   "logical_task": "d27-real-geography-and-game-loop",
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
-  "failure_policy_question_pending": false,
+  "failure_policy_question_pending": true,
   "final_report_sent": false,
-  "schedule": "same amsterdam heartbeat every15min during fixed D27 window, then daily Beijing22",
-  "current_task_terminal": false,
-  "failure_reason": null,
+  "schedule": "same amsterdam heartbeat daily Beijing22 new-approval checks",
+  "current_task_terminal": true,
+  "failure_reason": "MEMORY attempts exhausted and extra answer absent; loading unqualified, City/BOOT integration incomplete; fixed D27 window expired",
   "last_result_at": "2026-10-19T17:36:46.262920Z",
   "in_flight": [],
   "candidate_path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/RENDER01/r3-review",
@@ -314,7 +314,8 @@
       "extra_attempt_question": "允许一次1800秒/50轮有界恢复，或保持原限次；用户实际答复待到达",
       "extra_attempt_answer": null,
       "extra_attempt_question_asked_utc_minute": "2026-10-19T19:15Z",
-      "question_time_precision": "approximately one minute; exact native tool event retained in conversation"
+      "question_time_precision": "approximately one minute; exact native tool event retained in conversation",
+      "window_expired_without_extra_answer": true
     },
     "D27-CITY01": {
       "logical_task_id": "f02-real-city-d27",
@@ -342,7 +343,7 @@
   "current_task_notion": null,
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
-  "current_task_stage": "wave3_runtime_city_corrections_running",
+  "current_task_stage": "closed_waiting_new_human_window",
   "prepared_task_id": null,
   "prepared_task_packet": null,
   "play_service_pid": 91799,
@@ -351,21 +352,21 @@
   "worker_pid": null,
   "last_submitted_at": "2026-10-16T18:27:03+00:00",
   "direction_review_count": 10,
-  "next_independent_observation": "Collect existing MEMORY01 and CITY01, independently verify before integration; fixed22:52:30Z cutoff.",
+  "next_independent_observation": "Read only for new explicit human execution window/scope and MEMORY extra decision; do not revive expired work.",
   "weekly_goal": {
     "decision": "D25",
     "source": "用户2026-10-14本周敲定demo再走Steam发行",
     "week_end_beijing": "2026-10-18T23:59:59+08:00",
     "candidate_target_beijing": "2026-10-16",
     "execution_deadline_unchanged": true,
-    "status": "d27_authorized_execution_demo_incomplete",
+    "status": "d27_window_expired_demo_incomplete",
     "document": "docs/product-research/2026-10-13-four-day-demo/week-demo-freeze.md",
     "scope_priority": "parent_acceptance_then_whole_natural_loop_then_top3_freeze_blockers",
     "steam_next_phase": "preparation_after_demo_direction_confirmation",
     "human_play_feedback": "map_too_simple_lacks_neighbourhood_detail_and_amsterdam_fidelity",
     "current_candidate": "dad6b38c54fda94f541764242f61820d8177bd19",
     "natural_loop_evidence": "cargo-choice-final: real first cup Marta, night duplicate pickup/drop, safe return, day2 inventory and market price; pause used for tool inspection, no human fun validation",
-    "next_priority": "Collect PACK R3, independently qualify geometry/navigation, then compact runtime and game loop under D27 fixed deadline.",
+    "next_priority": "Await new human execution window and explicit MEMORY recovery decision, then independently qualify runtime before City/BOOT integration.",
     "three_day_parent_evidence": "three-day-parent: seed42001 same natural save, day1 actual6services+night1salvage/extracted/day2consequence; day2/3earlyclose; ending107cash12satisfied/won; exactrefresh; replay exactnaturalending isolatedcontexts",
     "notion_sync": "MAP01 status shelved and home R3 failure content read back; page_last_edited_at 2026-10-14T19:37:45.141Z / 19:37:45.813Z; evidence 4e235fd.",
     "full_service_parent_evidence": "full-service-parent: exact prior natural day2 restore branch; day2 all10/day3 all12 served and natural automatic settlement; pending inspector pagehide restore exact, paid10/9patiences+12; won281cash28satisfied, endingrefresh exact,390/1440 nooverflow,17 browserbytes matched; pauses/DOM assistance,no humanfun.",
@@ -680,10 +681,10 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-19T19:22:16.939343+00:00",
+  "updated_at": "2026-10-19T22:59:16.257214+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
-  "last_checked_at": "2026-10-19T18:49:33.544246+00:00",
+  "last_checked_at": "2026-10-19T22:59:16.257214+00:00",
   "prior_four_day_window": {
     "start_at": "2026-10-12T19:48:33Z",
     "deadline": "2026-10-16T19:48:33Z",
@@ -795,7 +796,7 @@
       }
     ],
     "full_goal_complete": false,
-    "window_status": "active",
+    "window_status": "expired",
     "final_report_sent": false,
     "plan_dispatch_count": 6,
     "prior_plan_dispatch_count": 9,
@@ -980,6 +981,20 @@
       "server_pid": 31540,
       "closed": true,
       "old_18860_untouched": true
+    },
+    "closed_at": "2026-10-19T22:59:16.257214+00:00",
+    "final_report": "docs/product-research/2026-10-20-six-hour-map/final-report.md",
+    "final_evidence": "docs/product-research/2026-10-20-six-hour-map/final-evidence.json",
+    "closeout_new_plan_calls": 0,
+    "closeout_game_changes": 0,
+    "next_execution_requires": "new explicit human execution window/scope and MEMORY extra attempt approval; original attempt counts retained",
+    "automation_restore_pending": true,
+    "old_play_availability": {
+      "status": "http404_index_missing",
+      "server_pid": 91799,
+      "server_untouched": true,
+      "source_in_git": true,
+      "cause": "unknown"
     }
   },
   "capacity_observation": {
@@ -992,9 +1007,9 @@
   },
   "prepared_tasks": [],
   "awaiting_parent_review": [],
-  "current_stage": "wave3_parent_review_complete_memory_exception_pending",
+  "current_stage": "d27_closed_loading_exception_and_new_window_required",
   "prepared": [],
-  "stage": "wave3_runtime_city_corrections_running",
+  "stage": "closed_waiting_new_human_window",
   "renewal_history": [
     {
       "started_at": "2026-10-16T16:03:03Z",
@@ -1238,6 +1253,17 @@
       "schedule": "same amsterdam heartbeat daily Beijing22 new-approval checks",
       "current_stage": "render_r3_accepted_pack_approved_unsubmitted_deadline_nav_pending",
       "current_task_id": null
+    },
+    "D27_before_closeout": {
+      "status": "d27_city_qualified_memory_extra_decision_pending",
+      "current_task_id": "amsterdam-d27-compact-runtime-r2-20261020",
+      "current_task_terminal": false,
+      "failure_policy_question_pending": false,
+      "current_task_stage": "wave3_runtime_city_corrections_running",
+      "stage": "wave3_runtime_city_corrections_running",
+      "current_stage": "wave3_parent_review_complete_memory_exception_pending",
+      "schedule": "same amsterdam heartbeat every15min during fixed D27 window, then daily Beijing22",
+      "next_independent_observation": "Collect existing MEMORY01 and CITY01, independently verify before integration; fixed22:52:30Z cutoff."
     }
   }
 }

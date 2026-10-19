@@ -1,0 +1,7 @@
+# D27 fixed six-hour window expired; complete demo remains unfinished
+
+Deadline2026-10-19T22:52:30Z was not extended. Closeout adds zero Plan calls and zero game changes. All64Amsterdam statuses are terminal; known six-call worker/launcher PIDs absent. No MEMORY-R3 input/handoff/ledger was created, and the previously asked extra recovery question has no human answer.
+
+Actual D27Plan6, new adopted2 NAV/PACK, cumulativeadopted4. CITY-R2 independently qualified candidate retained for atomic runtime/BOOT adoption, not game-adopted. MEMORY original business and sole correction remain rejected; attempts and original unknown/blocked histories unchanged. Game local/remote1e0ede0, tools/prototype unchanged fromdad6b38, old18860 server untouched. Closeout HTTP returned404: PID91799 still serves the original temporary root, but tools/prototype/index.html is missing; cause unknown. Old source remains in Git. Do not claim this URL is currently playable; no GUI/test rerun/new-map claim.
+
+Final report and exact closeout evidence: docs/product-research/2026-10-20-six-hour-map/final-report.md and final-evidence.json. Required future work remains loading/memory/routes then atomic City/BOOT and natural firstcup→nightcargo→return→day2 verification. Actual execution requires a new human window/scope and explicit MEMORY extra decision. Sameamsterdam/originalthread returns to dailyBeijing22 new-approval checks; one final notification, otherwise silence. No new method.

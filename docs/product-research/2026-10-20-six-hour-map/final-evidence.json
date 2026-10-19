@@ -1,0 +1,87 @@
+{
+  "checked_at": "2026-10-19T22:59:16.257214+00:00",
+  "window_start": "2026-10-19T16:52:30Z",
+  "deadline": "2026-10-19T22:52:30Z",
+  "docs_head_before_closeout": "ad819aaa31c967f4a520111040f48e40582be494",
+  "game_head": "1e0ede0f528b764e5c679101889392e92d2d55b9",
+  "remote": {
+    "exit": 0,
+    "stdout": "ad819aaa31c967f4a520111040f48e40582be494\trefs/heads/codex/product-research-nightshift\n1e0ede0f528b764e5c679101889392e92d2d55b9\trefs/heads/codex/real-map-20261017\n",
+    "stderr": ""
+  },
+  "worktrees_clean_before_closeout": true,
+  "prototype_diff_from_old_play": {
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "amsterdam_status_count": 64,
+  "nonterminal_statuses": [],
+  "known_window_pids": [
+    20921,
+    20932,
+    20962,
+    20974,
+    26516,
+    26517,
+    26537,
+    26538,
+    32688,
+    32689,
+    32702,
+    32703
+  ],
+  "known_window_pid_check": {
+    "exit": 1,
+    "stdout": "",
+    "stderr": ""
+  },
+  "plan_calls_this_window": 6,
+  "new_adopted_components": 2,
+  "cumulative_adopted_components": 4,
+  "qualified_pending_atomic_adoption": [
+    "CITY01-R2"
+  ],
+  "game_map_adoption": 0,
+  "new_calls_during_closeout": 0,
+  "memory_extra_answer": null,
+  "memory_extra_attempts_allowed": 0,
+  "memory_extra_attempts_submitted": 0,
+  "proposed_r3_directory_exists": false,
+  "parent_reviews": {
+    "NAV": {
+      "path": "NAV01/r3-review/parent-review.md",
+      "sha256": "c9bc5559a0a0108e96a15522bbc68a1a334c5b5afb56ea9c7f711c15e01078ac"
+    },
+    "PACK": {
+      "path": "PACK01/r3-review/parent-review.md",
+      "sha256": "14bfed0522e95d6bba943aee82e837ebcdee6c27a2992c1efe3b21b758fe6227"
+    },
+    "MEMORY": {
+      "path": "MEMORY01/r2-review/parent-review.md",
+      "sha256": "669edaa9af929c7cee1bc4d41613095ce8ecec281a6869bcbb8d94eb531382e0"
+    },
+    "CITY": {
+      "path": "CITY01/r2-review/parent-review.md",
+      "sha256": "c7b1104433e3c0f482fc13e0202d3eb70ac47f1610c8e4ee57821744a3688fc0"
+    }
+  },
+  "old_play_url": "http://127.0.0.1:18860/tools/prototype/index.html?seed=42001&commit=dad6b38",
+  "old_play_http": {
+    "error": "HTTP Error 404: File not found",
+    "scope": "old entry only; no GUI or gameplay rerun"
+  },
+  "runtime_tests_rerun_at_closeout": false,
+  "gui_rerun_at_closeout": false,
+  "old_play_diagnosis": {
+    "http_status": 404,
+    "server_pid": 91799,
+    "server_command": "Python -m http.server 18860 --bind 127.0.0.1 --directory /tmp/amsterdam-play-dad6b38",
+    "server_root_exists": true,
+    "served_index_exists": false,
+    "index_path": "/tmp/amsterdam-play-dad6b38/tools/prototype/index.html",
+    "cause_of_missing_file": "unknown",
+    "server_or_files_modified_at_closeout": false,
+    "old_source_preserved_in_git": true
+  }
+}

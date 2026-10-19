@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-d26-geo-navigation-r3-20261017",
+  "workspace": "/tmp/amsterdam-d26-geo-navigation-r3-20261017/input",
+  "goal": "NAV01 approved single extra correction: translation-invariant local geometry tolerances, real0.4m capsule safety, actual prefixed highway exclusions",
+  "read_files": [
+    "geo-interface.md",
+    "source-classification.md",
+    "geo-navigation.js",
+    "test-geo-navigation.cjs",
+    "benchmark-geo-navigation.cjs",
+    "real-pub-sample.json",
+    "parent-radius-hole-repro.cjs",
+    "parent-capsule-repro.json",
+    "parent-r2-witness.json",
+    "correction.md"
+  ],
+  "write_files": [
+    "geo-navigation.js",
+    "test-geo-navigation.cjs",
+    "benchmark-geo-navigation.cjs"
+  ],
+  "tasks": [
+    "Read correction and supplied real witness, retain previous implementation and39 test intentions.",
+    "Correct numerical containment/clearance and real highway classification within listed files; add meaningful regressions.",
+    "Run exact4commands, report sample benchmark and final legal handoff."
+  ],
+  "acceptance": [
+    "Exact translated triangle is outside at every tested offset; actual capsule and first unsafe center rejected at0.4m.",
+    "Bare and prefixed highway types excluded; agreed road/bridge/water classes and public interfaces retained.",
+    "Four commands pass with original39test intents preserved; independent parent GEOS/full-source validation remains mandatory."
+  ],
+  "constraints": [
+    "Read only listed public/synthetic inputs and own outputs; only listed writes plus reserved handoff-result.json.",
+    "Bash only exact four commands; no external network, installs, credentials, git, discovery, agents or unrelated writes.",
+    "One explicit extra correction only; old attempts retained. Never list handoff-result.json in changed_files."
+  ],
+  "commands": [
+    "node --check geo-navigation.js",
+    "node --test test-geo-navigation.cjs",
+    "node benchmark-geo-navigation.cjs",
+    "node --check benchmark-geo-navigation.cjs"
+  ],
+  "data_sensitivity": "public",
+  "max_turns": 55,
+  "timeout_seconds": 1800,
+  "memory": {
+    "summary": "Existing R2 implementation with independently confirmed targeted failures; this one extra correction explicitly approved in new fixed6h window.",
+    "decisions": [
+      "Seed Evolving thinking enabled/high",
+      "Keep existing logical task ID and failure history",
+      "Parent independently validates before adopting"
+    ],
+    "known_issues": [
+      "See correction.md and public counterexamples; do not rely on stale size/deadline claims in historical copied files."
+    ]
+  },
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "f02-polygon-navigation-d26",
+    "task_type": "code",
+    "attempt_kind": "correction"
+  }
+}

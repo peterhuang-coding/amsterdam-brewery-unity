@@ -1,0 +1,103 @@
+{
+  "task_id": "amsterdam-d26-geo-navigation-r3-20261017",
+  "total_bytes": 359479,
+  "files": [
+    {
+      "path": "geo-interface.md",
+      "bytes": 6525,
+      "sha256": "35e5148f8f6ef04c3b379f268f7ca9faf806e7a0b17275d7717a15373fbed0af"
+    },
+    {
+      "path": "source-classification.md",
+      "bytes": 1277,
+      "sha256": "c39582ff3e62c869a1d7dab351e028890c04df08f6efe310dc6cfaddeef3a617"
+    },
+    {
+      "path": "geo-navigation.js",
+      "bytes": 51549,
+      "sha256": "8fe96f555f1c274dc3e6e0a518d20135c5bd8a3a18c66c9ba30403f446ac4bb8"
+    },
+    {
+      "path": "test-geo-navigation.cjs",
+      "bytes": 38203,
+      "sha256": "c746ac57d82e0e47ad08beccf7c4e25069a19d55a76f647b5d3d41529f0f72cc"
+    },
+    {
+      "path": "benchmark-geo-navigation.cjs",
+      "bytes": 17495,
+      "sha256": "a1c9e7f482cd752f11767124150e3019b5521f1c90ae43496371c040b94410f2"
+    },
+    {
+      "path": "real-pub-sample.json",
+      "bytes": 237043,
+      "sha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598"
+    },
+    {
+      "path": "parent-radius-hole-repro.cjs",
+      "bytes": 519,
+      "sha256": "35d76e01ea715fca82604f0f2c2cff5059976d300bd67c78d63250741770c2fc"
+    },
+    {
+      "path": "parent-capsule-repro.json",
+      "bytes": 3580,
+      "sha256": "3fef09c729baacfe8c0401faa0d66d4ec1dc2e6390237d1c3c246ba01f251fa0"
+    },
+    {
+      "path": "parent-r2-witness.json",
+      "bytes": 408,
+      "sha256": "5b84f717e08bd34a825e8ed84129f6bde10058a0338b4c91799afe2cc3175d66"
+    },
+    {
+      "path": "correction.md",
+      "bytes": 2880,
+      "sha256": "758623747efe89a754f4569c884b26cc3415d79e0dfd0eb53d40774661fefd46"
+    }
+  ],
+  "provenance": [
+    {
+      "name": "geo-interface.md",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/NAV01/r2-review/final/geo-interface.md",
+      "source_sha256": "35e5148f8f6ef04c3b379f268f7ca9faf806e7a0b17275d7717a15373fbed0af"
+    },
+    {
+      "name": "source-classification.md",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/NAV01/r2-review/final/source-classification.md",
+      "source_sha256": "c39582ff3e62c869a1d7dab351e028890c04df08f6efe310dc6cfaddeef3a617"
+    },
+    {
+      "name": "geo-navigation.js",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/NAV01/r2-review/final/geo-navigation.js",
+      "source_sha256": "8fe96f555f1c274dc3e6e0a518d20135c5bd8a3a18c66c9ba30403f446ac4bb8"
+    },
+    {
+      "name": "test-geo-navigation.cjs",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/NAV01/r2-review/final/test-geo-navigation.cjs",
+      "source_sha256": "c746ac57d82e0e47ad08beccf7c4e25069a19d55a76f647b5d3d41529f0f72cc"
+    },
+    {
+      "name": "benchmark-geo-navigation.cjs",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/NAV01/r2-review/final/benchmark-geo-navigation.cjs",
+      "source_sha256": "a1c9e7f482cd752f11767124150e3019b5521f1c90ae43496371c040b94410f2"
+    },
+    {
+      "name": "real-pub-sample.json",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/NAV01/r2-review/final/real-pub-sample.json",
+      "source_sha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598"
+    },
+    {
+      "name": "parent-radius-hole-repro.cjs",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/NAV01/r2-review/final/parent-radius-hole-repro.cjs",
+      "source_sha256": "35d76e01ea715fca82604f0f2c2cff5059976d300bd67c78d63250741770c2fc"
+    },
+    {
+      "name": "parent-capsule-repro.json",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/NAV01/r2-review/recheck-failure.json",
+      "source_sha256": "3fef09c729baacfe8c0401faa0d66d4ec1dc2e6390237d1c3c246ba01f251fa0"
+    },
+    {
+      "name": "parent-r2-witness.json",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/NAV01/r2-review/recheck-witness.json",
+      "source_sha256": "5b84f717e08bd34a825e8ed84129f6bde10058a0338b4c91799afe2cc3175d66"
+    }
+  ]
+}

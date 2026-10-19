@@ -1,0 +1,173 @@
+{
+  "task_id": "amsterdam-d26-runtime-pack-r3-20261017",
+  "total_bytes": 789764,
+  "files": [
+    {
+      "path": "brief.md",
+      "bytes": 4788,
+      "sha256": "794e5466e368070900224b2ba16f96e77983e43c0b1d9d1968f39d926e6cb82e"
+    },
+    {
+      "path": "geo-interface.md",
+      "bytes": 6525,
+      "sha256": "35e5148f8f6ef04c3b379f268f7ca9faf806e7a0b17275d7717a15373fbed0af"
+    },
+    {
+      "path": "sample-input.json",
+      "bytes": 229408,
+      "sha256": "82d99e326853a1db63670179b0cb5c34f410347c6b7704d63b28fa525167397a"
+    },
+    {
+      "path": "pack_geo.py",
+      "bytes": 46183,
+      "sha256": "b47702cb0dc08378224aa230aa3a4725e1f804cc4e0909e304a922e127b92958"
+    },
+    {
+      "path": "test_pack_geo.py",
+      "bytes": 42287,
+      "sha256": "867f542ca7bb329b2d99a87abc9c948d7372926d3e50974e4572880f9ab5a7e0"
+    },
+    {
+      "path": "geo-loader.js",
+      "bytes": 23865,
+      "sha256": "b4e9cfb8e8b0dfc505364609d8c8a825f403ccbe990d2bed1c33181f351792ca"
+    },
+    {
+      "path": "test-geo-loader.cjs",
+      "bytes": 16801,
+      "sha256": "469734d8aedcb48a2a3c026e0bf3751425b1c6b7ce01072422eb44c6cd49d1d4"
+    },
+    {
+      "path": "parent-http-loader-check.cjs",
+      "bytes": 1894,
+      "sha256": "8e4b317272effbbca96f7a851c17d2aaf19b33775c8b8f36307586c72680616f"
+    },
+    {
+      "path": "parent-packer-schema-check.py",
+      "bytes": 833,
+      "sha256": "17c735f2a73d7868ca0bc210759fc5b7c51d52ce085b7aa78d10ebf44e0c58ac"
+    },
+    {
+      "path": "full-parent-metrics.json",
+      "bytes": 914,
+      "sha256": "7c01273711a253c8369e1ca8b1b4dd92d9a7999a7e9531422647a52c3997e103"
+    },
+    {
+      "path": "real-pub-source.json",
+      "bytes": 237043,
+      "sha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598"
+    },
+    {
+      "path": "parent-shared-edge-failure.json",
+      "bytes": 854,
+      "sha256": "e61e1aa443d5366fd8fe8f3457a14c951876142c67d8a7cfe00c6aedff31c3d3"
+    },
+    {
+      "path": "overlap-source.json",
+      "bytes": 88011,
+      "sha256": "da57266c404d11f24002c9bd7cbbac7b1c9aa3ed8431816a1dee47e8b869d2af"
+    },
+    {
+      "path": "overlap-packed-r2.json",
+      "bytes": 78539,
+      "sha256": "19126037edd5d1d4252e6f2d8d2c75f58640f6a2c3fdd947991f2be20b8876a9"
+    },
+    {
+      "path": "overlap-witness.json",
+      "bytes": 5788,
+      "sha256": "936d29f6ddf1d6f467450cf313532d867fc9bb7f7b3c50411acfb5093bf5f770"
+    },
+    {
+      "path": "full-coverage-r2.json",
+      "bytes": 2851,
+      "sha256": "d9940e34e57d202856670ffef410a67449d451a64007cf382cad5bdb8b811074"
+    },
+    {
+      "path": "correction.md",
+      "bytes": 3180,
+      "sha256": "86311b25d72a66d6af2d07922fc968a6037c3b62a4d3c6bf8aebb784affff6c8"
+    }
+  ],
+  "provenance": [
+    {
+      "name": "brief.md",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/PACK01/r2-review/brief.md",
+      "source_sha256": "794e5466e368070900224b2ba16f96e77983e43c0b1d9d1968f39d926e6cb82e"
+    },
+    {
+      "name": "geo-interface.md",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/PACK01/r2-review/geo-interface.md",
+      "source_sha256": "35e5148f8f6ef04c3b379f268f7ca9faf806e7a0b17275d7717a15373fbed0af"
+    },
+    {
+      "name": "sample-input.json",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/PACK01/r2-review/sample-input.json",
+      "source_sha256": "82d99e326853a1db63670179b0cb5c34f410347c6b7704d63b28fa525167397a"
+    },
+    {
+      "name": "pack_geo.py",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/PACK01/r2-review/pack_geo.py",
+      "source_sha256": "b47702cb0dc08378224aa230aa3a4725e1f804cc4e0909e304a922e127b92958"
+    },
+    {
+      "name": "test_pack_geo.py",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/PACK01/r2-review/test_pack_geo.py",
+      "source_sha256": "867f542ca7bb329b2d99a87abc9c948d7372926d3e50974e4572880f9ab5a7e0"
+    },
+    {
+      "name": "geo-loader.js",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/PACK01/r2-review/geo-loader.js",
+      "source_sha256": "b4e9cfb8e8b0dfc505364609d8c8a825f403ccbe990d2bed1c33181f351792ca"
+    },
+    {
+      "name": "test-geo-loader.cjs",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/PACK01/r2-review/test-geo-loader.cjs",
+      "source_sha256": "469734d8aedcb48a2a3c026e0bf3751425b1c6b7ce01072422eb44c6cd49d1d4"
+    },
+    {
+      "name": "parent-http-loader-check.cjs",
+      "source": "/tmp/amsterdam-d26-runtime-pack-r2-20261017/input/parent-http-loader-check.cjs",
+      "source_sha256": "8e4b317272effbbca96f7a851c17d2aaf19b33775c8b8f36307586c72680616f"
+    },
+    {
+      "name": "parent-packer-schema-check.py",
+      "source": "/tmp/amsterdam-d26-runtime-pack-r2-20261017/input/parent-packer-schema-check.py",
+      "source_sha256": "17c735f2a73d7868ca0bc210759fc5b7c51d52ce085b7aa78d10ebf44e0c58ac"
+    },
+    {
+      "name": "full-parent-metrics.json",
+      "source": "/tmp/amsterdam-d26-runtime-pack-r2-20261017/input/full-parent-metrics.json",
+      "source_sha256": "7c01273711a253c8369e1ca8b1b4dd92d9a7999a7e9531422647a52c3997e103"
+    },
+    {
+      "name": "real-pub-source.json",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/PACK01/r2-review/real-pub-source.json",
+      "source_sha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598"
+    },
+    {
+      "name": "parent-shared-edge-failure.json",
+      "source": "/tmp/amsterdam-d26-runtime-pack-r2-20261017/input/parent-shared-edge-failure.json",
+      "source_sha256": "e61e1aa443d5366fd8fe8f3457a14c951876142c67d8a7cfe00c6aedff31c3d3"
+    },
+    {
+      "name": "overlap-source.json",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/PACK01/r2-review/overlap-source.json",
+      "source_sha256": "da57266c404d11f24002c9bd7cbbac7b1c9aa3ed8431816a1dee47e8b869d2af"
+    },
+    {
+      "name": "overlap-packed-r2.json",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/PACK01/r2-review/overlap-packed.json",
+      "source_sha256": "19126037edd5d1d4252e6f2d8d2c75f58640f6a2c3fdd947991f2be20b8876a9"
+    },
+    {
+      "name": "overlap-witness.json",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/PACK01/r2-review/overlap-witness.json",
+      "source_sha256": "936d29f6ddf1d6f467450cf313532d867fc9bb7f7b3c50411acfb5093bf5f770"
+    },
+    {
+      "name": "full-coverage-r2.json",
+      "source": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/PACK01/r2-review/full/independent-seams.json",
+      "source_sha256": "d9940e34e57d202856670ffef410a67449d451a64007cf382cad5bdb8b811074"
+    }
+  ]
+}

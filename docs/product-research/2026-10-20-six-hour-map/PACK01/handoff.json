@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-d26-runtime-pack-r3-20261017",
+  "goal": "PACK01 approved single extra correction: preserve mixed contacts and neighbour coverage with conservative unchanged-feature fallback",
+  "workspace": "/tmp/amsterdam-d26-runtime-pack-r3-20261017/input",
+  "read_files": [
+    "brief.md",
+    "geo-interface.md",
+    "sample-input.json",
+    "pack_geo.py",
+    "test_pack_geo.py",
+    "geo-loader.js",
+    "test-geo-loader.cjs",
+    "parent-http-loader-check.cjs",
+    "parent-packer-schema-check.py",
+    "full-parent-metrics.json",
+    "real-pub-source.json",
+    "parent-shared-edge-failure.json",
+    "overlap-source.json",
+    "overlap-packed-r2.json",
+    "overlap-witness.json",
+    "full-coverage-r2.json",
+    "correction.md"
+  ],
+  "write_files": [
+    "pack_geo.py",
+    "test_pack_geo.py",
+    "sample-runtime.json",
+    "sample-runtime.json.gz",
+    "runtime-audit.json"
+  ],
+  "commands": [
+    "/tmp/amsterdam-d26-geo-tools-venv/bin/python -m unittest -v test_pack_geo.py",
+    "/tmp/amsterdam-d26-geo-tools-venv/bin/python pack_geo.py --input sample-input.json --json sample-runtime.json --gzip sample-runtime.json.gz --audit runtime-audit.json --tolerance 0.05",
+    "node --check geo-loader.js",
+    "node --test test-geo-loader.cjs"
+  ],
+  "tasks": [
+    "Read correction.md and the prior implementation; reproduce real coverage defect inside the allowed tests.",
+    "Make the targeted correction, retaining original48/23 test intents and read-only loader.",
+    "Run four exact final commands and return a complete legal report with measured sample results."
+  ],
+  "acceptance": [
+    "No newly introduced overlap or lost original adjacency in supplied witnesses and general regressions.",
+    "Original IDs/properties/rings/holes/units/invalid fallback, source vertices and <=0.05m bound preserved.",
+    "Four exact commands pass; original loader and all read-only inputs unchanged; independent full-source parent review required."
+  ],
+  "constraints": [
+    "Read only listed public/synthetic inputs and own outputs; only listed writes plus reserved handoff-result.json.",
+    "Bash only exact four commands; no external network, installs, credentials, git, discovery, agents or unrelated writes.",
+    "One explicit extra correction only; old attempts retained. Never list handoff-result.json in changed_files."
+  ],
+  "memory": {
+    "summary": "Existing R2 implementation with independently confirmed targeted failures; this one extra correction explicitly approved in new fixed6h window.",
+    "decisions": [
+      "Seed Evolving thinking enabled/high",
+      "Keep existing logical task ID and failure history",
+      "Parent independently validates before adopting"
+    ],
+    "known_issues": [
+      "See correction.md and public counterexamples; do not rely on stale size/deadline claims in historical copied files."
+    ]
+  },
+  "data_sensitivity": "public",
+  "timeout_seconds": 2400,
+  "max_turns": 70,
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "f02-geo-runtime-pack-d26",
+    "task_type": "code",
+    "attempt_kind": "correction"
+  }
+}

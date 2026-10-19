@@ -1,3 +1,5 @@
+> D27最新：本次真人已明确批准六小时新窗口（UTC2026-10-19T16:52:30Z—22:52:30Z），本项额外一次已获授权，原拟定R3 ID沿用；合同位于../../2026-10-20-six-hour-map/NAV01/handoff.json。此刻仅准备、尚未提交，原失败与次数不清零。以下旧待答/到期文字保留为历史。
+
 # NAV01 extra correction proposal — NOT authorized / NOT submitted
 
 The first business and one correction are both rejected; preserve original IDs, code, reports and independent reviews. D26 new-package policy permits at most one correction. This proposal seeks one explicit exception for the SAME logical f02-polygon-navigation-d26, not a new task or automatic reset.

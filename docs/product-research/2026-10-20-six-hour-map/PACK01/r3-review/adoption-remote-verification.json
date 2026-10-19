@@ -1,0 +1,11 @@
+{
+  "checked_at": "2026-10-19T18:22:42.907265+00:00",
+  "branch": "codex/real-map-20261017",
+  "local_and_remote_sha": "1e0ede0f528b764e5c679101889392e92d2d55b9",
+  "origin": "https://github.com/peterhuang-coding/amsterdam-brewery-unity.git",
+  "authenticated_login": "peterhuang-coding",
+  "repository_owner": "peterhuang-coding",
+  "viewer_permission": "ADMIN",
+  "push_exit_code": 0,
+  "initial_auto_review_rejection": "Remote ownership not yet verified; resolved by readonly identity/owner/ADMIN checks before same push was allowed."
+}

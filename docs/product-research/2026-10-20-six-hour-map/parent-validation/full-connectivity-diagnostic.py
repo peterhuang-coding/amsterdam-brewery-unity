@@ -42,7 +42,9 @@ for k in groups:
 ground = merged['roads'].union(merged['bridges'])
 blocked = merged['buildings'].union(merged['water'].difference(merged['bridges']))
 domain = ground.difference(blocked).intersection(extent)
+print('domain', domain.geom_type, time.monotonic()-t, flush=True)
 safe = domain.buffer(-.4, quad_segs=16)
+print('safe', safe.geom_type, time.monotonic()-t, flush=True)
 parts = list(safe.geoms) if hasattr(safe, 'geoms') else [safe]
 rows = []
 items = anchors.get('anchors', anchors) if isinstance(anchors, dict) else anchors
@@ -53,7 +55,7 @@ for anchor in items:
     matches = [i for i, part in enumerate(parts) if part.covers(point)]
     rows.append({'id': anchor['id'], 'safe_components': matches,
                  'domain_covers_center': domain.covers(point),
-                 'center_clearance_m': domain.boundary.distance(point)})
+                 'clearance_note': 'Exact distance not measured; mixed GeometryCollection has no single boundary. Safe membership uses the disclosed negative buffer.'})
 result = {'basis': 'Read-only GEOS union-minus-obstacles, negative0.4m buffer with16 quadrant segments. Diagnostic component IDs are not route existence proof; comparison-only make_valid is disclosed and does not edit source.',
           'source': str(a.source), 'component_count': len(parts),
           'comparison_normalized_features': normalized, 'anchors': rows,

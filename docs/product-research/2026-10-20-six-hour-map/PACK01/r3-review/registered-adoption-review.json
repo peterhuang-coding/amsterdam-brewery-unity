@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-d26-runtime-pack-r3-20261017",
+  "receipt_sha256": "dc8183153c01c50c4b5c50423691e7c5fdbe4c0db36207ba711ed0f240872d27",
+  "reviewed_at": "2026-10-19T18:18:41Z",
+  "outcome": "partial",
+  "failure_type": "call_exception",
+  "evidence": [
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/PACK01/r3-review/parent-review.md",
+      "sha256": "14bfed0522e95d6bba943aee82e837ebcdee6c27a2992c1efe3b21b758fe6227"
+    }
+  ]
+}

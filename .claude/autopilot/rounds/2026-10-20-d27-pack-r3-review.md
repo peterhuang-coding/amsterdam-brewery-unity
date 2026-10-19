@@ -1,0 +1,11 @@
+# D27 PACK recovered artifacts qualified and adopted; wave2 continues
+
+PACK-R3 original CLI1/error_max_turns and blocked receipt remain unchanged. Complete on-disk report passes schema; parent61Python+23Node and four commands pass. Independent full145703feature identity/property/ring/original-vertex/Hausdorff audit passed,2693 invalid source objects retained whole. All843220 neighbor candidates checked: zero new overlaps, zero added intersection area, zero lost contacts, zero GEOS errors. Parent buffered-checker optimization was separately calibrated against five positive/negative cases; original interrupted parent run preserved, not a Plan retry.
+
+Twelve returned files adopted byte-for-byte under tools/geo/packing plus parent provenance README. Game commit1e0ede0f528b764e5c679101889392e92d2d55b9 pushed and exact remote verified. Standard execution review remains partial/call_exception; qualified artifact adoption is separately recorded. Immutable parent-review SHA14bfed0522e95d6bba943aee82e837ebcdee6c27a2992c1efe3b21b758fe6227. Candidate431675816B JSON/110683722B gzip retained at runtime-candidate-pack01-r3; browser cost is not solved by this geometry pass.
+
+D27 actualPlan4, new adopted components2, cumulative adopted4; standard accepted executions3 plus one partial-but-qualified PACK artifact. Game map0. MEMORY01/CITY01 original IDs remain the only two running CCs, input immutable, whole wave collected before next. Fixed cutoff2026-10-19T22:52:30Z; onlySeedEvolving enabled/high, max2, oldcounts unchanged. Old18860/dad6b38 remains.
+
+Read-only full-source GEOS component diagnostic places pub/market/coffee/flowers/lab/Lotte/cart/garden in the same approximate .4m ground component; ferrySouth and ferryNorth separate. This is diagnostic, not route proof or permission to move anchors. Parent browser heap/backing and heartbeat harness is calibrated; actual MEMORY full loading/route/browser checks await returned artifacts. Full game loop remains unverified.
+
+Evidence: PACK01/r3-review/parent-review.md, full-identity-geometry.json, full-coverage.json, registered-adoption-review.json and adoption-remote-verification.json. The initial push auto-review rejection was resolved by verifying matching GitHub account/repository owner and ADMIN access, then the same authorized push succeeded.

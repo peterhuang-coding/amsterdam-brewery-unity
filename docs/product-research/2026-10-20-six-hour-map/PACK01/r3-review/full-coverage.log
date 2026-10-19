@@ -1,0 +1,33 @@
+{"features_done": 25000, "pairs": 184049, "new_overlaps": 0, "lost_contacts": 0, "errors": 0}
+{"features_done": 50000, "pairs": 337148, "new_overlaps": 0, "lost_contacts": 0, "errors": 0}
+{"features_done": 75000, "pairs": 471376, "new_overlaps": 0, "lost_contacts": 0, "errors": 0}
+{"features_done": 100000, "pairs": 678258, "new_overlaps": 0, "lost_contacts": 0, "errors": 0}
+{"features_done": 125000, "pairs": 803505, "new_overlaps": 0, "lost_contacts": 0, "errors": 0}
+{
+  "source_sha256": "3a18d70c3dd6e77e10af71b71ab54ca0fb59b74e8287d2c358933475dcf199f5",
+  "candidate_sha256": "56d2c2e9a806881be0384cf7ef603e6d4ab54bbd31194d63970e7c0f9977b5ef",
+  "feature_count": 145703,
+  "counts": {
+    "bbox_pairs": 843220,
+    "valid_original_pair": 812835,
+    "no_original_boundary_contact": 520114,
+    "original_boundary_contacts": 323106,
+    "contact_type:Point": 38980,
+    "contact_type:LineString": 278637,
+    "exact_line_checks": 15045600,
+    "contact_type:LineString+Point": 5489,
+    "invalid_original_comparison_pair": 30385,
+    "line_tolerance_refinements": 13077
+  },
+  "area_reporting_threshold_m2": 1e-08,
+  "contact_tolerance_m": 1e-07,
+  "max_new_area_m2": 0.0,
+  "max_lost_line_m": 2.96781095768007e-10,
+  "max_contact_point_distance_m": 9.754659812566619e-13,
+  "new_overlaps": 0,
+  "added_intersections": 0,
+  "lost_contacts": 0,
+  "errors": 0,
+  "passed": true,
+  "seconds": 403.98756170796696
+}

@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/tmp/amsterdam-d26-geo-tools-venv/bin/python",
+    "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/parent-validation/pack-identity-geometry.py",
+    "--candidate",
+    "/tmp/amsterdam-d27-pack-r3-parent-20261020/full/geo-data.json",
+    "--gzip",
+    "/tmp/amsterdam-d27-pack-r3-parent-20261020/full/geo-data.json.gz",
+    "--report",
+    "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/PACK01/r3-review/full-identity-geometry.json"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 175.55621795903426
+}

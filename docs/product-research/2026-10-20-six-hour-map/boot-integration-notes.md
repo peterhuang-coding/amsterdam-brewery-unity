@@ -62,3 +62,9 @@ first cup to night exploration with actual cargo, actual return to the pub, day2
 inventory/economic consequences, refresh persistence. Read every claimed PNG.
 The legacy418tests/17assets and old18860 HTTP response prove none of this new work.
 Do not stop the old18860/dad6b38 archive.
+
+## Parent acceptance timing and actual bytes
+
+Current fixed end remains2026-10-19T22:52:30Z. Leave time for a full natural first-cup/night-cargo/return/day2 run,390px keyboard, paused state, refresh including activeF3, retry/cancel and exact served script/asset hash checks. UI night1 duration is165seconds; use real interaction/time rather than editing economy saves to skip the loop. Preserve old18860; a new preview needs a separate port and exact commit/manifest mapping.
+
+A separate parent runtime HTTP fixture and calibrated CDP sampler now distinguish load/index heartbeat gaps, heap+backing samples, coldCanvas paint and cached frames. Coldpaint must be reviewed as an actual user-visible delay even though it is reported separately from the explicit load/index250ms target. Data/code output and original artifact report must be inspected even if a launcher ends nonzero; preserve that receipt and do not call it CLI success.

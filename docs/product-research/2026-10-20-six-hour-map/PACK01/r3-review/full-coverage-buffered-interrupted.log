@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/parent-validation/coverage-oracle.py", line 135, in <module>
+    result = {**hashes, **audit(source, candidate), 'seconds': time.monotonic() - start}
+                          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/parent-validation/coverage-oracle.py", line 96, in audit
+    lost = max(atom.difference(candidate[i].boundary.buffer(1e-7)).length,
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/amsterdam-d26-geo-tools-venv/lib/python3.12/site-packages/shapely/decorators.py", line 173, in wrapper
+    result = func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/amsterdam-d26-geo-tools-venv/lib/python3.12/site-packages/shapely/geometry/base.py", line 595, in buffer
+    return shapely.buffer(
+           ^^^^^^^^^^^^^^^
+  File "/tmp/amsterdam-d26-geo-tools-venv/lib/python3.12/site-packages/shapely/decorators.py", line 173, in wrapper
+    result = func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/amsterdam-d26-geo-tools-venv/lib/python3.12/site-packages/shapely/decorators.py", line 88, in wrapped
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/amsterdam-d26-geo-tools-venv/lib/python3.12/site-packages/shapely/constructive.py", line 246, in buffer
+    return lib.buffer(
+           ^^^^^^^^^^^
+KeyboardInterrupt

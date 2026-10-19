@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/tmp/amsterdam-d26-geo-tools-venv/bin/python",
+    "/tmp/amsterdam-d27-pack-r3-parent-20261020/sample/pack_geo.py",
+    "--input",
+    "/Volumes/SanDisk2TB/amsterdam-geodata/d26-bgt-20261017/converted/geo-data.json",
+    "--json",
+    "/tmp/amsterdam-d27-pack-r3-parent-20261020/full/geo-data.json",
+    "--gzip",
+    "/tmp/amsterdam-d27-pack-r3-parent-20261020/full/geo-data.json.gz",
+    "--audit",
+    "/tmp/amsterdam-d27-pack-r3-parent-20261020/full/audit.json",
+    "--tolerance",
+    "0.05"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 723.4675966249999
+}

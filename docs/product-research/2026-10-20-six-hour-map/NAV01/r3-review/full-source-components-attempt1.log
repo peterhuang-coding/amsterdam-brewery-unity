@@ -1,0 +1,10 @@
+anchors shape dict
+union bridges 18.049239249899983
+union buildings 23.315171040943824
+union roads 75.49589774990454
+union water 76.26317533291876
+Traceback (most recent call last):
+  File "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/parent-validation/full-connectivity-diagnostic.py", line 56, in <module>
+    'center_clearance_m': domain.boundary.distance(point)})
+                          ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'distance'

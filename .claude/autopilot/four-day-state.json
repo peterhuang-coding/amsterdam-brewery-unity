@@ -5,7 +5,7 @@
   "deadline": "2026-10-19T22:52:30Z",
   "next_direction_review_at": "2026-10-17T09:48:33Z",
   "last_direction_review_at": "2026-10-17T00:00:06.789975+00:00",
-  "current_task_id": "amsterdam-d26-runtime-pack-r3-20261017",
+  "current_task_id": null,
   "logical_task": "d27-real-geography-and-game-loop",
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
@@ -14,7 +14,7 @@
   "schedule": "same amsterdam heartbeat every15min during fixed D27 window, then daily Beijing22",
   "current_task_terminal": false,
   "failure_reason": null,
-  "last_result_at": "2026-10-17T01:35:19.714421Z",
+  "last_result_at": "2026-10-19T17:36:46.262920Z",
   "in_flight": [
     {
       "kind": "MEMORY01",
@@ -344,7 +344,7 @@
   "current_task_notion": null,
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
-  "current_task_stage": "no_inflight",
+  "current_task_stage": "wave2_collecting",
   "prepared_task_id": null,
   "prepared_task_packet": null,
   "play_service_pid": 91799,
@@ -353,7 +353,7 @@
   "worker_pid": null,
   "last_submitted_at": "2026-10-16T18:27:03+00:00",
   "direction_review_count": 10,
-  "next_independent_observation": "Daily Beijing22 live new-approval check only; no execution without a new explicit time window.",
+  "next_independent_observation": "Collect existing MEMORY01 and CITY01, independently verify before integration; fixed22:52:30Z cutoff.",
   "weekly_goal": {
     "decision": "D25",
     "source": "用户2026-10-14本周敲定demo再走Steam发行",
@@ -682,10 +682,10 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-19T17:45:35.507624+00:00",
+  "updated_at": "2026-10-19T18:22:42.907265+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
-  "last_checked_at": "2026-10-17T00:00:06.789975+00:00",
+  "last_checked_at": "2026-10-19T18:22:42.907265+00:00",
   "prior_four_day_window": {
     "start_at": "2026-10-12T19:48:33Z",
     "deadline": "2026-10-16T19:48:33Z",
@@ -715,7 +715,10 @@
         "allowed": 1,
         "submitted": 1,
         "task_id": "amsterdam-d26-runtime-pack-r3-20261017",
-        "remaining": 0
+        "remaining": 0,
+        "artifacts_qualified": true,
+        "adopted": true,
+        "standard_outcome": "partial/call_exception"
       },
       "RENDER01": {
         "allowed": 1,
@@ -748,8 +751,15 @@
         "launcher_status": "blocked",
         "final_subtype": "error_max_turns",
         "recovered_report_valid": true,
-        "parent_outcome": "pending_full_review",
-        "adopted": false
+        "parent_outcome": "partial",
+        "adopted": true,
+        "failure_type": "call_exception",
+        "artifacts_qualified": true,
+        "adoption_commit": "1e0ede0f528b764e5c679101889392e92d2d55b9",
+        "parent_review_sha256": "14bfed0522e95d6bba943aee82e837ebcdee6c27a2992c1efe3b21b758fe6227",
+        "full_neighbor_pairs": 843220,
+        "new_overlap_pairs": 0,
+        "lost_contacts": 0
       },
       {
         "task_id": "amsterdam-d26-geo-navigation-r3-20261017",
@@ -842,7 +852,13 @@
           "started_epoch": 1792431905
         }
       }
-    ]
+    ],
+    "adopted_component_count": 4,
+    "new_adopted_component_count": 2,
+    "partial_qualified_components": [
+      "PACK01-R3"
+    ],
+    "latest_component_commit": "1e0ede0f528b764e5c679101889392e92d2d55b9"
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",
@@ -853,10 +869,8 @@
     "actual_process_overlap_not_claimed": true
   },
   "prepared_tasks": [],
-  "awaiting_parent_review": [
-    "amsterdam-d26-runtime-pack-r3-20261017"
-  ],
-  "current_stage": "pack_r3_running_nav_r3_adopted",
+  "awaiting_parent_review": [],
+  "current_stage": "wave2_collecting_pack_artifacts_adopted",
   "prepared": [],
   "stage": "wave2_collecting",
   "renewal_history": [

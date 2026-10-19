@@ -25,3 +25,9 @@ failure and does not consume an implementation attempt.
 Full geometry/cardinality/SHA checks, full routes, and game browser validation
 remain separate gates. Preparing or calibrating these tools is not a Plan call,
 component adoption, or new playable-game delivery.
+
+## Browser measurement calibration and runtime harness
+
+`runtime-http.py` serves only explicit copied code/assets on loopback, with raw and actual HTTP Content-Encoding paths. `runtime-browser.py` samples CDP Runtime.getHeapUsage usedSize plus backingStorageSize, records event-loop gaps and separates index readiness from cold Canvas paint. It does not claim RSS or an absolute peak. Each runtime is disposed and garbage-collected before the next cycle. Browser screenshots must be independently read. The32MiB allocation/release and120ms blocking calibration passed on Chrome155; see browser-metrics-calibration.json. Protocol field definitions: https://chromium.googlesource.com/external/github.com/chromedp/cdproto/+/0b155246ad02274a002f36492efab17acb5bf57e/runtime/runtime.go .
+
+`collect-cc.py` snapshots only a terminal original task and independently validates the on-disk handoff even when a nonzero CLI receipt omitted it. It does not modify the original receipt or change the standard adoption gate.

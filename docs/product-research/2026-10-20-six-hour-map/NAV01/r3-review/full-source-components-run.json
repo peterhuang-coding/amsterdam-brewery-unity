@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/tmp/amsterdam-d26-geo-tools-venv/bin/python",
+    "docs/product-research/2026-10-20-six-hour-map/parent-validation/full-connectivity-diagnostic.py",
+    "--source",
+    "/Volumes/SanDisk2TB/amsterdam-geodata/d26-bgt-20261017/converted/geo-data.json",
+    "--anchors",
+    "/tmp/amsterdam-d27-real-city-20261020/input/anchors.json",
+    "--report",
+    "docs/product-research/2026-10-20-six-hour-map/NAV01/r3-review/full-source-components.json"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 834.7362389590126,
+  "note": "Parent diagnostic rerun after GeometryCollection.boundary=None; original attempt preserved. No production NAV changes or new Plan call."
+}

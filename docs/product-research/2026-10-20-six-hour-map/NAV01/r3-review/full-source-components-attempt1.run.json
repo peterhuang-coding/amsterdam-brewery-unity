@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/tmp/amsterdam-d26-geo-tools-venv/bin/python",
+    "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/parent-validation/full-connectivity-diagnostic.py",
+    "--source",
+    "/Volumes/SanDisk2TB/amsterdam-geodata/d26-bgt-20261017/converted/geo-data.json",
+    "--anchors",
+    "/tmp/amsterdam-d27-real-city-20261020/input/anchors.json",
+    "--report",
+    "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/NAV01/r3-review/full-source-components.json"
+  ],
+  "exit_code": 1,
+  "elapsed_seconds": 855.743539625
+}

@@ -49,7 +49,7 @@ def audit(source, output):
             assert src[i]['polygons'] == dst[i]['polygons'], src[i]['id']
     tree = STRtree(original)
     counts = Counter()
-    overlaps, contacts_lost, errors = [], [], []
+    overlaps, added_intersections, contacts_lost, errors = [], [], [], []
     max_new_area = 0.0
     max_lost_line = 0.0
     max_point_distance = 0.0
@@ -62,8 +62,17 @@ def audit(source, output):
             category = 'valid_original_pair' if source_valid[i] and source_valid[j] else 'invalid_original_comparison_pair'
             counts[category] += 1
             try:
-                old_area = old_sets[i].intersection(old_sets[j]).area
-                new_area = new_sets[i].intersection(new_sets[j]).area
+                old_intersection = old_sets[i].intersection(old_sets[j])
+                new_intersection = new_sets[i].intersection(new_sets[j])
+                old_area = old_intersection.area
+                new_area = new_intersection.area
+                added_area = new_intersection.difference(old_intersection).area
+                if added_area > 1e-8:
+                    added_intersections.append({'a': src[i]['id'], 'b': src[j]['id'],
+                                                'category': category,
+                                                'added_area_m2': added_area,
+                                                'old_area_m2': old_area,
+                                                'new_area_m2': new_area})
                 if old_area <= 1e-8 and new_area > 1e-8:
                     max_new_area = max(max_new_area, new_area)
                     overlaps.append({'a': src[i]['id'], 'b': src[j]['id'],
@@ -84,8 +93,21 @@ def audit(source, output):
                         if distance > 1e-7:
                             losses.append({'point_distance_m': distance, 'xy': [atom.x, atom.y]})
                     elif atom.geom_type in ('LineString', 'LinearRing'):
-                        lost = max(atom.difference(candidate[i].boundary.buffer(1e-7)).length,
-                                   atom.difference(candidate[j].boundary.buffer(1e-7)).length)
+                        # Exact coverage implies coverage within the declared tolerance.
+                        # Avoid buffering an entire large boundary for an already-covered
+                        # seam; the original tolerance computation is only needed on a
+                        # nonzero remainder. This changes cost, not the pass criterion.
+                        remaining = []
+                        for index in (i, j):
+                            boundary = candidate[index].boundary
+                            exact = atom.difference(boundary)
+                            counts['exact_line_checks'] += 1
+                            if exact.length > 1e-7:
+                                counts['line_tolerance_refinements'] += 1
+                                remaining.append(atom.difference(boundary.buffer(1e-7)).length)
+                            else:
+                                remaining.append(exact.length)
+                        lost = max(remaining)
                         max_lost_line = max(max_lost_line, lost)
                         if lost > 1e-7:
                             losses.append({'lost_line_m': lost, 'original_line_m': atom.length})
@@ -103,8 +125,9 @@ def audit(source, output):
             'area_reporting_threshold_m2': 1e-8, 'contact_tolerance_m': 1e-7,
             'max_new_area_m2': max_new_area, 'max_lost_line_m': max_lost_line,
             'max_contact_point_distance_m': max_point_distance,
-            'new_overlaps': overlaps, 'lost_contacts': contacts_lost, 'errors': errors,
-            'passed': not (overlaps or contacts_lost or errors)}
+            'new_overlaps': overlaps, 'added_intersections': added_intersections,
+            'lost_contacts': contacts_lost, 'errors': errors,
+            'passed': not (overlaps or added_intersections or contacts_lost or errors)}
 
 
 if __name__ == '__main__':

@@ -1,0 +1,101 @@
+anchors shape dict
+union bridges 15.354447875055484
+union buildings 20.51176416699309
+union roads 71.17191074998118
+union water 71.91863966698293
+domain GeometryCollection 295.5874596670037
+safe MultiPolygon 834.2100197089603
+{
+  "basis": "Read-only GEOS union-minus-obstacles, negative0.4m buffer with16 quadrant segments. Diagnostic component IDs are not route existence proof; comparison-only make_valid is disclosed and does not edit source.",
+  "source": "/Volumes/SanDisk2TB/amsterdam-geodata/d26-bgt-20261017/converted/geo-data.json",
+  "component_count": 1511,
+  "comparison_normalized_features": {
+    "bridges": 1,
+    "buildings": 0,
+    "roads": 2666,
+    "water": 9
+  },
+  "anchors": [
+    {
+      "id": "pub",
+      "safe_components": [
+        25
+      ],
+      "domain_covers_center": true,
+      "clearance_note": "Exact distance not measured; mixed GeometryCollection has no single boundary. Safe membership uses the disclosed negative buffer."
+    },
+    {
+      "id": "market",
+      "safe_components": [
+        25
+      ],
+      "domain_covers_center": true,
+      "clearance_note": "Exact distance not measured; mixed GeometryCollection has no single boundary. Safe membership uses the disclosed negative buffer."
+    },
+    {
+      "id": "coffee",
+      "safe_components": [
+        25
+      ],
+      "domain_covers_center": true,
+      "clearance_note": "Exact distance not measured; mixed GeometryCollection has no single boundary. Safe membership uses the disclosed negative buffer."
+    },
+    {
+      "id": "flowers",
+      "safe_components": [
+        25
+      ],
+      "domain_covers_center": true,
+      "clearance_note": "Exact distance not measured; mixed GeometryCollection has no single boundary. Safe membership uses the disclosed negative buffer."
+    },
+    {
+      "id": "lab",
+      "safe_components": [
+        25
+      ],
+      "domain_covers_center": true,
+      "clearance_note": "Exact distance not measured; mixed GeometryCollection has no single boundary. Safe membership uses the disclosed negative buffer."
+    },
+    {
+      "id": "lotte",
+      "safe_components": [
+        25
+      ],
+      "domain_covers_center": true,
+      "clearance_note": "Exact distance not measured; mixed GeometryCollection has no single boundary. Safe membership uses the disclosed negative buffer."
+    },
+    {
+      "id": "ferrySouth",
+      "safe_components": [
+        29
+      ],
+      "domain_covers_center": true,
+      "clearance_note": "Exact distance not measured; mixed GeometryCollection has no single boundary. Safe membership uses the disclosed negative buffer."
+    },
+    {
+      "id": "ferryNorth",
+      "safe_components": [
+        0
+      ],
+      "domain_covers_center": true,
+      "clearance_note": "Exact distance not measured; mixed GeometryCollection has no single boundary. Safe membership uses the disclosed negative buffer."
+    },
+    {
+      "id": "flowerCart",
+      "safe_components": [
+        25
+      ],
+      "domain_covers_center": true,
+      "clearance_note": "Exact distance not measured; mixed GeometryCollection has no single boundary. Safe membership uses the disclosed negative buffer."
+    },
+    {
+      "id": "garden",
+      "safe_components": [
+        25
+      ],
+      "domain_covers_center": true,
+      "clearance_note": "Exact distance not measured; mixed GeometryCollection has no single boundary. Safe membership uses the disclosed negative buffer."
+    }
+  ],
+  "seconds": 834.2811877919594
+}

@@ -1,0 +1,65 @@
+{
+  "generated_at_utc": "2026-10-19T17:53:49.908165Z",
+  "input": {
+    "bytes": 514313066,
+    "path": "/Volumes/SanDisk2TB/amsterdam-geodata/d26-bgt-20261017/converted/geo-data.json",
+    "sha256": "3a18d70c3dd6e77e10af71b71ab54ca0fb59b74e8287d2c358933475dcf199f5"
+  },
+  "output": {
+    "gunzip_bytes": 431675816,
+    "gunzip_matches_json": true,
+    "gunzip_sha256": "56d2c2e9a806881be0384cf7ef603e6d4ab54bbd31194d63970e7c0f9977b5ef",
+    "gzip": {
+      "bytes": 110683722,
+      "path": "/tmp/amsterdam-d27-pack-r3-parent-20261020/full/geo-data.json.gz",
+      "sha256": "7af4963d2b46214c3f106ea219f07724823dd49e27f4963f08702848aecc38f2"
+    },
+    "json": {
+      "bytes": 431675816,
+      "path": "/tmp/amsterdam-d27-pack-r3-parent-20261020/full/geo-data.json",
+      "sha256": "56d2c2e9a806881be0384cf7ef603e6d4ab54bbd31194d63970e7c0f9977b5ef"
+    }
+  },
+  "totals": {
+    "fallback_reasons": {
+      "hausdorff_exceeded": 1095,
+      "invalid_original": 2693,
+      "neighbour_check_error": 3688,
+      "neighbour_contact_point_lost": 2689,
+      "neighbour_overlap_new_area": 837,
+      "neighbour_seam_uncovered": 98
+    },
+    "features_fallback": 11100,
+    "features_invalid_original": 2693,
+    "features_simplified": 38314,
+    "features_unchanged": 96289,
+    "features_valid_original": 143010,
+    "input": {
+      "features": 145703,
+      "polygons": 148942,
+      "rings": 163268,
+      "vertices": 22977546
+    },
+    "max_hausdorff_m": 0.049999999999272404,
+    "output": {
+      "features": 145703,
+      "polygons": 148942,
+      "rings": 163268,
+      "vertices": 18720785
+    },
+    "removed_vertices": 4256761
+  },
+  "shared_boundaries": {
+    "force_safe_features": 0,
+    "locked_vertices": 15472376,
+    "min_seam_length_m": 1e-06,
+    "pairs": 284123,
+    "point_contact_pairs": 44471,
+    "point_contacts_locked": 88498
+  },
+  "performance": {
+    "elapsed_seconds": 719.3750859589782,
+    "peak_rss_bytes": 6405881856,
+    "peak_rss_note": "ru_maxrss reported in bytes on macOS"
+  }
+}

@@ -24,6 +24,11 @@ nearby = module.audit(document(old_a, b), document(new_a, b))
 assert not nearby['passed'] and len(nearby['new_overlaps']) == 1
 assert nearby['counts']['no_original_boundary_contact'] == 1
 
+overlapping = feature('existing-overlap', [[1, 0], [3, 0], [3, 3], [1, 3], [1, 0]])
+increased = module.audit(document(old_a, overlapping), document(new_a, overlapping))
+assert not increased['passed'] and not increased['new_overlaps']
+assert len(increased['added_intersections']) == 1
+
 square = feature('square', [[0, 0], [2, 0], [2, 2], [0, 2], [0, 0]])
 triangle = feature('square', [[0, 0], [2, 0], [0, 2], [0, 0]])
 touch = feature('touch', [[2, 1], [3, 0], [3, 2], [2, 1]])
@@ -41,6 +46,7 @@ assert not mixed['passed'] and len(mixed['new_overlaps']) == 1 and len(mixed['lo
 assert unchanged['passed']
 result = {'passed': True, 'unchanged_real_source': unchanged,
           'old_real_mixed_contact_failure_detected': mixed,
-          'point_only_loss_detected': point, 'nearby_without_contact_overlap_detected': nearby}
+          'point_only_loss_detected': point, 'nearby_without_contact_overlap_detected': nearby,
+          'existing_overlap_new_area_detected': increased}
 (root / 'coverage-calibration.json').write_text(json.dumps(result, indent=2) + '\n')
 print('PASS: unchanged real geometry; reject old mixed contact, pure point loss, and new overlap without original contact')

@@ -1,19 +1,19 @@
 {
   "decision": "D27",
-  "status": "d27_pack_nav_extra_running",
+  "status": "d27_pack_running_nav_adopted",
   "start_at": "2026-10-19T16:52:30Z",
   "deadline": "2026-10-19T22:52:30Z",
   "next_direction_review_at": "2026-10-17T09:48:33Z",
   "last_direction_review_at": "2026-10-17T00:00:06.789975+00:00",
-  "current_task_id": null,
-  "logical_task": "d26-real-geography",
+  "current_task_id": "amsterdam-d26-runtime-pack-r3-20261017",
+  "logical_task": "d27-real-geography-and-game-loop",
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
-  "failure_policy_question_pending": true,
+  "failure_policy_question_pending": false,
   "final_report_sent": false,
-  "schedule": "same amsterdam heartbeat daily Beijing22 new-approval checks",
-  "current_task_terminal": true,
-  "failure_reason": "PACK unqualified and extra attempt cannot fit deadline; NAV extra approval pending; City/BOOT blocked",
+  "schedule": "same amsterdam heartbeat every15min during fixed D27 window, then daily Beijing22",
+  "current_task_terminal": false,
+  "failure_reason": null,
   "last_result_at": "2026-10-17T01:35:19.714421Z",
   "in_flight": [
     {
@@ -25,21 +25,6 @@
       "session_id": 72978,
       "started_at": "2026-10-19T16:58:18+00:00",
       "elapsed": "01:33",
-      "actual_pid_verified": true,
-      "model": "doubao-seed-evolving",
-      "thinking_enabled": true,
-      "effort": "high",
-      "contract_commit": "5ee85bfe544d9e90b2cc48e7a49ae5346027990e"
-    },
-    {
-      "task_id": "amsterdam-d26-geo-navigation-r3-20261017",
-      "kind": "NAV01",
-      "state": "running",
-      "worker_pid": 20974,
-      "launcher_pid": 20962,
-      "session_id": 25671,
-      "started_at": "2026-10-19T16:58:30+00:00",
-      "elapsed": "01:21",
       "actual_pid_verified": true,
       "model": "doubao-seed-evolving",
       "thinking_enabled": true,
@@ -350,14 +335,14 @@
     "week_end_beijing": "2026-10-18T23:59:59+08:00",
     "candidate_target_beijing": "2026-10-16",
     "execution_deadline_unchanged": true,
-    "status": "d26_window_closed_demo_incomplete",
+    "status": "d27_authorized_execution_demo_incomplete",
     "document": "docs/product-research/2026-10-13-four-day-demo/week-demo-freeze.md",
     "scope_priority": "parent_acceptance_then_whole_natural_loop_then_top3_freeze_blockers",
     "steam_next_phase": "preparation_after_demo_direction_confirmation",
     "human_play_feedback": "map_too_simple_lacks_neighbourhood_detail_and_amsterdam_fidelity",
     "current_candidate": "dad6b38c54fda94f541764242f61820d8177bd19",
     "natural_loop_evidence": "cargo-choice-final: real first cup Marta, night duplicate pickup/drop, safe return, day2 inventory and market price; pause used for tool inspection, no human fun validation",
-    "next_priority": "Await new explicit time window and outstanding NAV exception decision; preserve approved unused PACK extra.",
+    "next_priority": "Collect PACK R3, independently qualify geometry/navigation, then compact runtime and game loop under D27 fixed deadline.",
     "three_day_parent_evidence": "three-day-parent: seed42001 same natural save, day1 actual6services+night1salvage/extracted/day2consequence; day2/3earlyclose; ending107cash12satisfied/won; exactrefresh; replay exactnaturalending isolatedcontexts",
     "notion_sync": "MAP01 status shelved and home R3 failure content read back; page_last_edited_at 2026-10-14T19:37:45.141Z / 19:37:45.813Z; evidence 4e235fd.",
     "full_service_parent_evidence": "full-service-parent: exact prior natural day2 restore branch; day2 all10/day3 all12 served and natural automatic settlement; pending inspector pagehide restore exact, paid10/9patiences+12; won281cash28satisfied, endingrefresh exact,390/1440 nooverflow,17 browserbytes matched; pauses/DOM assistance,no humanfun.",
@@ -672,7 +657,7 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-19T16:59:51.406758+00:00",
+  "updated_at": "2026-10-19T17:31:00Z",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
   "last_checked_at": "2026-10-17T00:00:06.789975+00:00",
@@ -697,7 +682,9 @@
       "NAV01": {
         "allowed": 1,
         "submitted": 1,
-        "task_id": "amsterdam-d26-geo-navigation-r3-20261017"
+        "task_id": "amsterdam-d26-geo-navigation-r3-20261017",
+        "accepted": true,
+        "remaining": 0
       },
       "PACK01": {
         "allowed": 1,
@@ -711,48 +698,64 @@
         "remaining": 0
       }
     },
-    "first_wave": {
-      "submitted": [
-        {
-          "task_id": "amsterdam-d26-runtime-pack-r3-20261017",
-          "kind": "PACK01",
-          "state": "running",
-          "worker_pid": 20932,
-          "launcher_pid": 20921,
-          "session_id": 72978,
-          "started_at": "2026-10-19T16:58:18+00:00",
-          "elapsed": "01:33",
-          "actual_pid_verified": true,
-          "model": "doubao-seed-evolving",
-          "thinking_enabled": true,
-          "effort": "high",
-          "contract_commit": "5ee85bfe544d9e90b2cc48e7a49ae5346027990e"
-        },
-        {
-          "task_id": "amsterdam-d26-geo-navigation-r3-20261017",
-          "kind": "NAV01",
-          "state": "running",
-          "worker_pid": 20974,
-          "launcher_pid": 20962,
-          "session_id": 25671,
-          "started_at": "2026-10-19T16:58:30+00:00",
-          "elapsed": "01:21",
-          "actual_pid_verified": true,
-          "model": "doubao-seed-evolving",
-          "thinking_enabled": true,
-          "effort": "high",
-          "contract_commit": "5ee85bfe544d9e90b2cc48e7a49ae5346027990e"
-        }
-      ],
-      "prepared": []
-    },
+    "first_wave": [
+      {
+        "task_id": "amsterdam-d26-runtime-pack-r3-20261017",
+        "kind": "PACK01",
+        "state": "running",
+        "worker_pid": 20932,
+        "launcher_pid": 20921,
+        "session_id": 72978,
+        "started_at": "2026-10-19T16:58:18+00:00",
+        "elapsed": "01:33",
+        "actual_pid_verified": true,
+        "model": "doubao-seed-evolving",
+        "thinking_enabled": true,
+        "effort": "high",
+        "contract_commit": "5ee85bfe544d9e90b2cc48e7a49ae5346027990e"
+      },
+      {
+        "task_id": "amsterdam-d26-geo-navigation-r3-20261017",
+        "kind": "NAV01",
+        "state": "done",
+        "worker_pid": 20974,
+        "launcher_pid": 20962,
+        "session_id": 25671,
+        "started_at": "2026-10-19T16:58:30+00:00",
+        "elapsed": "01:21",
+        "actual_pid_verified": true,
+        "model": "doubao-seed-evolving",
+        "thinking_enabled": true,
+        "effort": "high",
+        "contract_commit": "5ee85bfe544d9e90b2cc48e7a49ae5346027990e",
+        "finished_at": "2026-10-19T17:13:29.667573+00:00",
+        "cli_returncode": 0,
+        "elapsed_seconds": 899.077,
+        "worker_exited": true,
+        "launcher_exited": true,
+        "session_drained": true,
+        "parent_unit_tests": 43,
+        "parent_four_commands_passed": true,
+        "parent_independent_geos_cases": 3000,
+        "parent_independent_geos_failures": 0,
+        "parent_affine_checks": 60,
+        "parent_classification_checks": 7,
+        "full_source_routes": "pub-to-coffee72segments GEOS passed; all-venue validation still required",
+        "evidence": "docs/product-research/2026-10-20-six-hour-map/NAV01/r3-review",
+        "parent_outcome": "accepted_with_changes",
+        "failure_type": "other",
+        "adoption_commit": "5f3d594da8cce678041041e9ea4f8dd85b764090",
+        "route_ms": 124577.378916,
+        "geometry_minimum_clearance_m": 0.4008350089248191
+      }
+    ],
     "full_goal_complete": false,
     "window_status": "active",
     "final_report_sent": false,
     "plan_dispatch_count": 2,
     "prior_plan_dispatch_count": 9,
-    "accepted_component_count": 2,
-    "new_accepted_component_count": 0,
+    "accepted_component_count": 3,
+    "new_accepted_component_count": 1,
     "game_adopted": 0,
     "prepared_packets": {
       "amsterdam-d26-runtime-pack-r3-20261017": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/PACK01/handoff.json",
@@ -770,9 +773,9 @@
   },
   "prepared_tasks": [],
   "awaiting_parent_review": [],
-  "current_stage": "render_r3_accepted_pack_approved_unsubmitted_deadline_nav_pending",
+  "current_stage": "pack_r3_running_nav_r3_adopted",
   "prepared": [],
-  "stage": "first_wave_running",
+  "stage": "first_wave_collecting",
   "renewal_history": [
     {
       "started_at": "2026-10-16T16:03:03Z",
@@ -1006,5 +1009,16 @@
         "all_byte_exact": true
       }
     }
-  ]
+  ],
+  "prior_window_control_state": {
+    "D26": {
+      "logical_task": "d26-real-geography",
+      "failure_policy_question_pending": true,
+      "current_task_terminal": true,
+      "failure_reason": "PACK unqualified and extra attempt cannot fit deadline; NAV extra approval pending; City/BOOT blocked",
+      "schedule": "same amsterdam heartbeat daily Beijing22 new-approval checks",
+      "current_stage": "render_r3_accepted_pack_approved_unsubmitted_deadline_nav_pending",
+      "current_task_id": null
+    }
+  }
 }

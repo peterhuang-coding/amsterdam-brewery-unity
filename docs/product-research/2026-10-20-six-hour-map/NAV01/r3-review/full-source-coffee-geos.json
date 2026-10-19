@@ -1,0 +1,570 @@
+{
+  "basis": "Independent GEOS local union-minus-obstacles domain and exact minimum line-to-boundary distance; make_valid is comparison-only and disclosed per segment, never source mutation",
+  "source_path": "/Volumes/SanDisk2TB/amsterdam-geodata/d26-bgt-20261017/converted/geo-data.json",
+  "route_path": "docs/product-research/2026-10-20-six-hour-map/NAV01/r3-review/full-source-coffee.json",
+  "segments": 72,
+  "radius_m": 0.4,
+  "tolerance_m": 1e-07,
+  "failed": 0,
+  "minimum_clearance_m": 0.4008350089248191,
+  "rows": [
+    {
+      "segment": 0,
+      "line_covered": true,
+      "clearance_m": 0.8828410666938693,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 1,
+      "line_covered": true,
+      "clearance_m": 0.731751050562844,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 2,
+      "line_covered": true,
+      "clearance_m": 1.2721587880056755,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 3,
+      "line_covered": true,
+      "clearance_m": 1.1680708528087627,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:15f0a33e-ef9c-5d30-aaf9-cfdbadebb8d2"
+      ]
+    },
+    {
+      "segment": 4,
+      "line_covered": true,
+      "clearance_m": 1.0592578487059523,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 5,
+      "line_covered": true,
+      "clearance_m": 0.6625590539716425,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 6,
+      "line_covered": true,
+      "clearance_m": 0.4998976328498766,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 7,
+      "line_covered": true,
+      "clearance_m": 0.5092063466299052,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 8,
+      "line_covered": true,
+      "clearance_m": 1.1203949749976228,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 9,
+      "line_covered": true,
+      "clearance_m": 0.9690635229815674,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 10,
+      "line_covered": true,
+      "clearance_m": 1.0390823266956701,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 11,
+      "line_covered": true,
+      "clearance_m": 0.6919232800704209,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 12,
+      "line_covered": true,
+      "clearance_m": 1.22400183823391,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 13,
+      "line_covered": true,
+      "clearance_m": 0.4387013458391402,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 14,
+      "line_covered": true,
+      "clearance_m": 0.4484215266177637,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 15,
+      "line_covered": true,
+      "clearance_m": 0.5448463728235856,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:28c9b780-f377-5178-9daf-5f01212a9d08"
+      ]
+    },
+    {
+      "segment": 16,
+      "line_covered": true,
+      "clearance_m": 0.9303798243982001,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 17,
+      "line_covered": true,
+      "clearance_m": 0.5847223809414138,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 18,
+      "line_covered": true,
+      "clearance_m": 0.9281810295030685,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 19,
+      "line_covered": true,
+      "clearance_m": 1.089131911549105,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 20,
+      "line_covered": true,
+      "clearance_m": 1.446278988345926,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 21,
+      "line_covered": true,
+      "clearance_m": 1.3907451460354467,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 22,
+      "line_covered": true,
+      "clearance_m": 1.4185700546677387,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 23,
+      "line_covered": true,
+      "clearance_m": 0.7942127662237505,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:ae83c625-e382-5177-86d8-a390e9cb3cac"
+      ]
+    },
+    {
+      "segment": 24,
+      "line_covered": true,
+      "clearance_m": 1.16467712093221,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:ae83c625-e382-5177-86d8-a390e9cb3cac"
+      ]
+    },
+    {
+      "segment": 25,
+      "line_covered": true,
+      "clearance_m": 1.2582274344978144,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:ae83c625-e382-5177-86d8-a390e9cb3cac"
+      ]
+    },
+    {
+      "segment": 26,
+      "line_covered": true,
+      "clearance_m": 1.1227852497166435,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:ae83c625-e382-5177-86d8-a390e9cb3cac"
+      ]
+    },
+    {
+      "segment": 27,
+      "line_covered": true,
+      "clearance_m": 0.7483995845430715,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:ae83c625-e382-5177-86d8-a390e9cb3cac"
+      ]
+    },
+    {
+      "segment": 28,
+      "line_covered": true,
+      "clearance_m": 0.8604389577419094,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:ae83c625-e382-5177-86d8-a390e9cb3cac"
+      ]
+    },
+    {
+      "segment": 29,
+      "line_covered": true,
+      "clearance_m": 0.7650551883206952,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 30,
+      "line_covered": true,
+      "clearance_m": 0.5926338468823352,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 31,
+      "line_covered": true,
+      "clearance_m": 0.5516757474053551,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:272a001f-1f27-552b-aca3-45d6e138f81f"
+      ]
+    },
+    {
+      "segment": 32,
+      "line_covered": true,
+      "clearance_m": 0.6227902947376952,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:1942e7f1-e2b2-5148-8a90-fcaee05d2dfb"
+      ]
+    },
+    {
+      "segment": 33,
+      "line_covered": true,
+      "clearance_m": 0.6079999999999472,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 34,
+      "line_covered": true,
+      "clearance_m": 0.8147270438931064,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 35,
+      "line_covered": true,
+      "clearance_m": 0.6811318232292212,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 36,
+      "line_covered": true,
+      "clearance_m": 0.6811318232292212,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 37,
+      "line_covered": true,
+      "clearance_m": 0.4373172789166573,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 38,
+      "line_covered": true,
+      "clearance_m": 1.0155986757412343,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:1a832849-01a7-59b3-83ef-108b357a9315",
+        "wegdeel:470a6a88-4108-51e0-8f61-739847632f68"
+      ]
+    },
+    {
+      "segment": 39,
+      "line_covered": true,
+      "clearance_m": 1.2789999999999964,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:470a6a88-4108-51e0-8f61-739847632f68"
+      ]
+    },
+    {
+      "segment": 40,
+      "line_covered": true,
+      "clearance_m": 0.42618927077124547,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:470a6a88-4108-51e0-8f61-739847632f68"
+      ]
+    },
+    {
+      "segment": 41,
+      "line_covered": true,
+      "clearance_m": 0.5763748915401232,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 42,
+      "line_covered": true,
+      "clearance_m": 0.40907544073971214,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:9ec03080-111d-5af6-9a27-df74728be542"
+      ]
+    },
+    {
+      "segment": 43,
+      "line_covered": true,
+      "clearance_m": 0.9278324202139326,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:9ec03080-111d-5af6-9a27-df74728be542"
+      ]
+    },
+    {
+      "segment": 44,
+      "line_covered": true,
+      "clearance_m": 0.45063119131743873,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:9ec03080-111d-5af6-9a27-df74728be542"
+      ]
+    },
+    {
+      "segment": 45,
+      "line_covered": true,
+      "clearance_m": 1.074676180015014,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:9ec03080-111d-5af6-9a27-df74728be542"
+      ]
+    },
+    {
+      "segment": 46,
+      "line_covered": true,
+      "clearance_m": 0.40365517241402105,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:9ec03080-111d-5af6-9a27-df74728be542"
+      ]
+    },
+    {
+      "segment": 47,
+      "line_covered": true,
+      "clearance_m": 1.2878189638141189,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:09a9630c-fc9d-5351-aec0-8076a59ff376",
+        "wegdeel:8c36c652-27e1-538e-93ef-64eda8e5410e"
+      ]
+    },
+    {
+      "segment": 48,
+      "line_covered": true,
+      "clearance_m": 0.5383838458921129,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:8c36c652-27e1-538e-93ef-64eda8e5410e",
+        "wegdeel:6b5800de-2e6b-5a7c-b72a-22a52a2d2360"
+      ]
+    },
+    {
+      "segment": 49,
+      "line_covered": true,
+      "clearance_m": 0.5628937445107189,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:d2fd0a03-9cdd-5be5-9f2b-6260fc39c6b4",
+        "wegdeel:4210025d-b82b-58c0-b856-46b04f7981e4",
+        "wegdeel:2e2167f7-edc2-5934-a188-93dc351261fa"
+      ]
+    },
+    {
+      "segment": 50,
+      "line_covered": true,
+      "clearance_m": 0.72394836992745,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 51,
+      "line_covered": true,
+      "clearance_m": 1.0085218433955356,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 52,
+      "line_covered": true,
+      "clearance_m": 0.8649313887640526,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:719b739f-fa48-545c-a038-29feeb8d9e64"
+      ]
+    },
+    {
+      "segment": 53,
+      "line_covered": true,
+      "clearance_m": 2.351934097716438,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:719b739f-fa48-545c-a038-29feeb8d9e64"
+      ]
+    },
+    {
+      "segment": 54,
+      "line_covered": true,
+      "clearance_m": 0.4587279798926776,
+      "pass": true,
+      "comparison_only_make_valid_features": [
+        "wegdeel:719b739f-fa48-545c-a038-29feeb8d9e64"
+      ]
+    },
+    {
+      "segment": 55,
+      "line_covered": true,
+      "clearance_m": 0.49744242432358216,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 56,
+      "line_covered": true,
+      "clearance_m": 0.41317241379300834,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 57,
+      "line_covered": true,
+      "clearance_m": 0.4884606969441798,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 58,
+      "line_covered": true,
+      "clearance_m": 0.43808128795241125,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 59,
+      "line_covered": true,
+      "clearance_m": 0.4129089107125531,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 60,
+      "line_covered": true,
+      "clearance_m": 0.4318683960138097,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 61,
+      "line_covered": true,
+      "clearance_m": 0.8461237471584883,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 62,
+      "line_covered": true,
+      "clearance_m": 0.6259999999999764,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 63,
+      "line_covered": true,
+      "clearance_m": 0.7564374296038826,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 64,
+      "line_covered": true,
+      "clearance_m": 0.40353617084010057,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 65,
+      "line_covered": true,
+      "clearance_m": 0.9878971759190661,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 66,
+      "line_covered": true,
+      "clearance_m": 0.4008350089248191,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 67,
+      "line_covered": true,
+      "clearance_m": 0.983099306354396,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 68,
+      "line_covered": true,
+      "clearance_m": 0.8840000000000146,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 69,
+      "line_covered": true,
+      "clearance_m": 1.327239428287277,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 70,
+      "line_covered": true,
+      "clearance_m": 0.5389422870439331,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    },
+    {
+      "segment": 71,
+      "line_covered": true,
+      "clearance_m": 2.331021132134607,
+      "pass": true,
+      "comparison_only_make_valid_features": []
+    }
+  ],
+  "seconds": 18.242642791941762
+}

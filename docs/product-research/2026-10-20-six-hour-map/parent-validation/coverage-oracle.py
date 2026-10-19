@@ -33,8 +33,9 @@ def components(value):
 
 
 def audit(source, output):
-    src = [f for fs in source['layers'].values() for f in fs]
-    dst = [f for fs in output['layers'].values() for f in fs]
+    assert set(source['layers']) == set(output['layers'])
+    src = [f for key in sorted(source['layers']) for f in source['layers'][key]]
+    dst = [f for key in sorted(output['layers']) for f in output['layers'][key]]
     assert [f['id'] for f in src] == [f['id'] for f in dst]
     original = [geometry(f) for f in src]
     candidate = [geometry(f) for f in dst]

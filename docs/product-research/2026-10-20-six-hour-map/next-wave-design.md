@@ -135,3 +135,24 @@ may use the same two-slot wave; dependent or overlapping work is serial. No task
 is submitted by this design, no third live CC, no extra old attempt, and no
 completion guarantee. Record meaningful deliveries/failures and keep routine
 unchanged heartbeat checks quiet.
+
+## New measured full-route constraint (D27 parent, 17:17Z)
+
+On the complete original converted source (not an approved PACK candidate), NAV
+R3 finds pub→coffee at radius0.4: 3118.969343 m,73points,71574 expanded nodes,
+124577.379ms. Full source indexing825.506ms; every reviewed anchor is walkable.
+After this one query, caches hold110066 point entries and220844 segment entries;
+these Maps currently have no eviction bound. This is a correct bounded search
+result independently confirmed by GEOS on all72segments (minimum clearance0.400835m), but is unsuitable as a
+synchronous browser click handler. It does not revoke the original bounded-search
+contract or authorize another correction of its already fixed geometry kernels.
+
+The integration design therefore also needs bounded navigation caches and a
+non-blocking route service. Prefer exact precomputed common venue routes tied to
+geometry hashes, checked against the qualified map, with explicit asynchronous
+and cancellable fallback for uncached endpoints. Precomputation does not authorize
+invented connectors, silently snapped anchors, or claiming all arbitrary routes
+are fast. Parent measures cached and uncached latency separately. City and BOOT
+must use this service through a frozen interface rather than call the long sync
+search directly. Freeze the precise package/file split only after the first wave
+has been collected; no new request has been submitted by this note.

@@ -1,0 +1,610 @@
+{
+  "basis": "Independent GEOS domain oracle plus exact affine triangle and actual source classification regressions; not full-map routes or gameplay",
+  "sample_sha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598",
+  "cases": 3000,
+  "failures": [],
+  "falseSafe": 0,
+  "falseBlocked": 0,
+  "transformed": [
+    {
+      "offset": 0,
+      "angle": 0,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": 0,
+      "angle": 0,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 0,
+      "angle": 0,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 0,
+      "angle": 0.5235987755982988,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": 0,
+      "angle": 0.5235987755982988,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 0,
+      "angle": 0.5235987755982988,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 0,
+      "angle": 1.5707963267948966,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": 0,
+      "angle": 1.5707963267948966,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 0,
+      "angle": 1.5707963267948966,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 0,
+      "angle": 3.141592653589793,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": 0,
+      "angle": 3.141592653589793,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 0,
+      "angle": 3.141592653589793,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": -6000,
+      "angle": 0,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": -6000,
+      "angle": 0,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": -6000,
+      "angle": 0,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": -6000,
+      "angle": 0.5235987755982988,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": -6000,
+      "angle": 0.5235987755982988,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": -6000,
+      "angle": 0.5235987755982988,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": -6000,
+      "angle": 1.5707963267948966,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": -6000,
+      "angle": 1.5707963267948966,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": -6000,
+      "angle": 1.5707963267948966,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": -6000,
+      "angle": 3.141592653589793,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": -6000,
+      "angle": 3.141592653589793,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": -6000,
+      "angle": 3.141592653589793,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 3000,
+      "angle": 0,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": 3000,
+      "angle": 0,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 3000,
+      "angle": 0,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 3000,
+      "angle": 0.5235987755982988,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": 3000,
+      "angle": 0.5235987755982988,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 3000,
+      "angle": 0.5235987755982988,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 3000,
+      "angle": 1.5707963267948966,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": 3000,
+      "angle": 1.5707963267948966,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 3000,
+      "angle": 1.5707963267948966,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 3000,
+      "angle": 3.141592653589793,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": 3000,
+      "angle": 3.141592653589793,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 3000,
+      "angle": 3.141592653589793,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 6000,
+      "angle": 0,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": 6000,
+      "angle": 0,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 6000,
+      "angle": 0,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 6000,
+      "angle": 0.5235987755982988,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": 6000,
+      "angle": 0.5235987755982988,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 6000,
+      "angle": 0.5235987755982988,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 6000,
+      "angle": 1.5707963267948966,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": 6000,
+      "angle": 1.5707963267948966,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 6000,
+      "angle": 1.5707963267948966,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 6000,
+      "angle": 3.141592653589793,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": 6000,
+      "angle": 3.141592653589793,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 6000,
+      "angle": 3.141592653589793,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 10000,
+      "angle": 0,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": 10000,
+      "angle": 0,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 10000,
+      "angle": 0,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 10000,
+      "angle": 0.5235987755982988,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": 10000,
+      "angle": 0.5235987755982988,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 10000,
+      "angle": 0.5235987755982988,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 10000,
+      "angle": 1.5707963267948966,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": 10000,
+      "angle": 1.5707963267948966,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 10000,
+      "angle": 1.5707963267948966,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 10000,
+      "angle": 3.141592653589793,
+      "label": "outside",
+      "expected": false,
+      "inPolygon": false,
+      "walkable": false,
+      "pass": true
+    },
+    {
+      "offset": 10000,
+      "angle": 3.141592653589793,
+      "label": "inside",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    },
+    {
+      "offset": 10000,
+      "angle": 3.141592653589793,
+      "label": "outer-boundary",
+      "expected": true,
+      "inPolygon": true,
+      "walkable": true,
+      "pass": true
+    }
+  ],
+  "classifications": [
+    {
+      "functie": "autosnelweg",
+      "walk": false,
+      "bike": false,
+      "expectedWalk": false,
+      "expectedBike": false,
+      "pass": true
+    },
+    {
+      "functie": "autoweg",
+      "walk": false,
+      "bike": false,
+      "expectedWalk": false,
+      "expectedBike": false,
+      "pass": true
+    },
+    {
+      "functie": "rijbaan autosnelweg",
+      "walk": false,
+      "bike": false,
+      "expectedWalk": false,
+      "expectedBike": false,
+      "pass": true
+    },
+    {
+      "functie": "rijbaan autoweg",
+      "walk": false,
+      "bike": false,
+      "expectedWalk": false,
+      "expectedBike": false,
+      "pass": true
+    },
+    {
+      "functie": "voetpad",
+      "walk": true,
+      "bike": false,
+      "expectedWalk": true,
+      "expectedBike": false,
+      "pass": true
+    },
+    {
+      "functie": "fietspad",
+      "walk": true,
+      "bike": true,
+      "expectedWalk": true,
+      "expectedBike": true,
+      "pass": true
+    },
+    {
+      "functie": "rijbaan lokale weg",
+      "walk": true,
+      "bike": true,
+      "expectedWalk": true,
+      "expectedBike": true,
+      "pass": true
+    }
+  ],
+  "milliseconds": 203.906583,
+  "passed": true
+}

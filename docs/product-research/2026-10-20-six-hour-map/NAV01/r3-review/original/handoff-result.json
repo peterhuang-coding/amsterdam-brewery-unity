@@ -1,0 +1,44 @@
+{
+  "status": "completed",
+  "summary": "NAV01 single approved extra correction applied to geo-navigation.js, preserving all 39 original test intents, prior hole/capsule fixes, deterministic A* and the frozen public API (project/unproject/pointInPolygon/createNavigator). (1) pointOnRing no longer builds its boundary tolerance from absolute query/vertex magnitudes (the R2 RED: exact triangle [(0,0),(.2,0),(0,.2)] point (.15,.15), 0.070710678 m outside, was falsely on-edge at offset 6000 in pointInPolygon and isWalkable(radius 0)); it now uses edge-relative metric distance via cross^2 <= (1e-7 m)^2 * edgeLen^2, dimensionally consistent and translation/rotation invariant. The same absolute-scale fuzz (multi-millimetre band at map coords ~1000-3300) was the actual numerical cause of the capsule RED: supplied 62-feature case segment radius 0.4 returned true despite GEOS clearance 0.39969294375176584 m; it now returns false, the centre line stays covered at radius 0, the first dense witness (1056.947506279177,3242.3567329974026) is radius-0 walkable but rejected at 0.4, and a 10001-centre census reproduces the parent GEOS count of exactly 35 unsafe centres with first fraction 0.0368. (2) Road classification closes the disclosed contract gap: bare autosnelweg/autoweg and actual prefixed 'rijbaan autosnelweg'/'rijbaan autoweg' are excluded for both walk and bike, while 'rijbaan lokale weg', 'rijbaan regionale weg', fietspad, woonerf, voetpad spellings, dek-only bridge decks and water/building precedence are retained; no water-to-road or height-crossing inference added. Regressions added: translation (offsets 0, +/-3000, +/-6000 and real-map asymmetric shifts), rotation, translated disk/capsule tangency, real capsule+dense census, highway forms driven by parent-r2-witness.json; policy table gained prefixed/local/regional rows. Intermediate RED during authoring (a self-inflicted test fixture segment crossed its own corridor) was corrected in the test, not in production code. Sample benchmark (subset only, no city-wide claim): real radius-0 route baseline unchanged 49.337338 m / 4 points / visited 70, anchors preserved; radius-0.4 route found 49.348627 m with dense-audited safety; synthetic city walk 1598.963 m via deck300, bike 1702.853 m via deck700, pier not crossable, island unreachable.",
+  "changed_files": [
+    "geo-navigation.js",
+    "test-geo-navigation.cjs",
+    "benchmark-geo-navigation.cjs"
+  ],
+  "tests": [
+    {
+      "command": "node --check geo-navigation.js",
+      "exit_code": 0,
+      "summary": "Syntax check passes; no output, exit 0."
+    },
+    {
+      "command": "node --test test-geo-navigation.cjs",
+      "exit_code": 0,
+      "summary": "43/43 tests pass, 0 fail (39 original intents preserved verbatim plus 4 new R3 regressions: translation invariance at positive/negative offsets, rotation plus translated disk/capsule tangency, real 0.4 m capsule with 35/10001 dense unsafe centres first at fraction 0.0368, bare/prefixed highway exclusion); ~7.6 s total dominated by the 20002-point witness census."
+    },
+    {
+      "command": "node benchmark-geo-navigation.cjs",
+      "exit_code": 0,
+      "summary": "One JSON line, all asserts pass: synthetic walk 1598.963 m/16712 nodes via deck300, bike 1702.853 m/13570 via deck700, pier blocked, island unreachable (33661 nodes); real subset r0 49.337338 m/4 pts/70 and r0.4 49.348627 m dense-audited safe; parentWitness: capsule rejected (GEOS 0.39969294375176584 m), first centre r0 true/r0.4 false, census 35/10001 first fraction 0.0368, all four highway labels blocked in walk and bike; deterministic across repeated runs."
+    },
+    {
+      "command": "node --check benchmark-geo-navigation.cjs",
+      "exit_code": 0,
+      "summary": "Syntax check passes; no output, exit 0."
+    }
+  ],
+  "blockers": [],
+  "memory_delta": [
+    "R2 pointOnRing tolerance bug root cause: 1e-9*(1+max(abs(query coords)))^2 made the boundary band coordinate-magnitude dependent (~2-10 mm at map coords 3000-6000); fix is the local metric distance test cross^2 <= (1e-7 m)^2 * edgeLen^2, translation/rotation invariant; the same fuzz caused the 0.4 m capsule false-accept (deficit only 0.000307 m).",
+    "On the real 62-feature subset, corrected implementation exactly matches the independent GEOS dense sweep: 35/10001 unsafe radius-0.4 centres, first fraction 0.0368, centre line fully covered at radius 0.",
+    "Actual BGT source labels are prefixed 'rijbaan autosnelweg' (138) and 'rijbaan autoweg' (84); classification now strips only the 'rijbaan ' prefix when matching the frozen blocked-class set, leaving lokale/regionale carriageway roads open.",
+    "Real metrics remain sample-only: real r0 baseline unchanged (49.337338 m, 4 points, visited 70); r0.4 route exists on the subset (49.348627 m) even though the separate witness capsule near the bridge is unsafe.",
+    "Process disclosure: one early read-only 'wc -c' byte-size check on the two supplied fixture JSON files was run outside the four authorized commands; it created/changed nothing, touched no inputs, and all validation was subsequently performed exclusively via the four exact authorized commands."
+  ],
+  "next_steps": [
+    "Parent must independently repeat its 3000 disk/capsule GEOS oracle cases and full-source validation before adoption; executor evidence is not approval.",
+    "Full-source route checks remain gated on the separate PACK correction; no full-city performance or coverage claim is made from the 62-feature sample.",
+    "Consider applying the same local-metric tolerance review pattern to any sibling geometry packages that copied the absolute-scale pointOnRing formula."
+  ]
+}

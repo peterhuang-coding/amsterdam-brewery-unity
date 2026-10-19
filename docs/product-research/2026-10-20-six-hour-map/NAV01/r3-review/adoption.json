@@ -1,0 +1,56 @@
+{
+  "files": [
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/art-pass-20261013/tools/geo/navigation/geo-navigation.js",
+      "sha256": "6d073522e6f3135b72bebd14db1292dad87115369868b67618646518ffbf80d2",
+      "matches_worker": true
+    },
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/art-pass-20261013/tools/geo/navigation/test-geo-navigation.cjs",
+      "sha256": "10c7739a3f24c1b9a47739f4d0c5d722d3ececd02b5c10ab50e63f58470a245b",
+      "matches_worker": true
+    },
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/art-pass-20261013/tools/geo/navigation/benchmark-geo-navigation.cjs",
+      "sha256": "87aec3ed8809d4680eb26a82059b78921d1846e05fc14019c31af37781a6220c",
+      "matches_worker": true
+    },
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/art-pass-20261013/tools/geo/navigation/real-pub-sample.json",
+      "sha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598",
+      "matches_worker": true
+    },
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/art-pass-20261013/tools/geo/navigation/parent-capsule-repro.json",
+      "sha256": "3fef09c729baacfe8c0401faa0d66d4ec1dc2e6390237d1c3c246ba01f251fa0",
+      "matches_worker": true
+    },
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/art-pass-20261013/tools/geo/navigation/parent-r2-witness.json",
+      "sha256": "5b84f717e08bd34a825e8ed84129f6bde10058a0338b4c91799afe2cc3175d66",
+      "matches_worker": true
+    }
+  ],
+  "commands": [
+    {
+      "command": "node --check geo-navigation.js",
+      "exit_code": 0,
+      "seconds": 0.04226437499999999
+    },
+    {
+      "command": "node --test test-geo-navigation.cjs",
+      "exit_code": 0,
+      "seconds": 7.386386833
+    },
+    {
+      "command": "node benchmark-geo-navigation.cjs",
+      "exit_code": 0,
+      "seconds": 7.262966791
+    },
+    {
+      "command": "node --check benchmark-geo-navigation.cjs",
+      "exit_code": 0,
+      "seconds": 0.03826025000000044
+    }
+  ]
+}

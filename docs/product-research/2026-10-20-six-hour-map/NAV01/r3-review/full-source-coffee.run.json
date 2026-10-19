@@ -1,0 +1,16 @@
+{
+  "command": [
+    "node",
+    "--max-old-space-size=8192",
+    "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/parent-validation/full-nav-check.cjs",
+    "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/NAV01/r3-review/original/geo-navigation.js",
+    "/Volumes/SanDisk2TB/amsterdam-geodata/d26-bgt-20261017/converted/geo-data.json",
+    "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/anchors/integration-anchor-candidates.json",
+    "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/NAV01/r3-review/full-source-coffee.json",
+    "coffee",
+    "250000"
+  ],
+  "exit_code": 0,
+  "timed_out": false,
+  "seconds": 129.16501745800002
+}

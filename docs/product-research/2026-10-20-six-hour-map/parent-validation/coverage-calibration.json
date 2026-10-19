@@ -1,0 +1,181 @@
+{
+  "passed": true,
+  "unchanged_real_source": {
+    "feature_count": 2,
+    "counts": {
+      "bbox_pairs": 1,
+      "valid_original_pair": 1,
+      "original_boundary_contacts": 1,
+      "contact_type:LineString+Point": 1
+    },
+    "area_reporting_threshold_m2": 1e-08,
+    "contact_tolerance_m": 1e-07,
+    "max_new_area_m2": 0.0,
+    "max_lost_line_m": 0.0,
+    "max_contact_point_distance_m": 0.0,
+    "new_overlaps": [],
+    "lost_contacts": [],
+    "errors": [],
+    "passed": true
+  },
+  "old_real_mixed_contact_failure_detected": {
+    "feature_count": 2,
+    "counts": {
+      "bbox_pairs": 1,
+      "valid_original_pair": 1,
+      "original_boundary_contacts": 1,
+      "contact_type:LineString+Point": 1
+    },
+    "area_reporting_threshold_m2": 1e-08,
+    "contact_tolerance_m": 1e-07,
+    "max_new_area_m2": 0.0008398721695581202,
+    "max_lost_line_m": 0.0,
+    "max_contact_point_distance_m": 0.01400790560020356,
+    "new_overlaps": [
+      {
+        "a": "wegdeel:29f38e0b-a07d-55a5-8795-da3e88905989",
+        "b": "wegdeel:d4ae019d-8211-50ac-bfc9-6dab17283f74",
+        "category": "valid_original_pair",
+        "old_area_m2": 0.0,
+        "new_area_m2": 0.0008398721695581202
+      }
+    ],
+    "lost_contacts": [
+      {
+        "a": "wegdeel:29f38e0b-a07d-55a5-8795-da3e88905989",
+        "b": "wegdeel:d4ae019d-8211-50ac-bfc9-6dab17283f74",
+        "losses": [
+          {
+            "point_distance_m": 0.007355381061896384,
+            "xy": [
+              2552.27,
+              2893.718
+            ]
+          },
+          {
+            "point_distance_m": 0.0021229990955590077,
+            "xy": [
+              2552.267,
+              2894.001
+            ]
+          },
+          {
+            "point_distance_m": 0.005346899660966375,
+            "xy": [
+              2552.268,
+              2894.19
+            ]
+          },
+          {
+            "point_distance_m": 0.000995936514315769,
+            "xy": [
+              2552.326,
+              2895.321
+            ]
+          },
+          {
+            "point_distance_m": 0.009427013082952582,
+            "xy": [
+              2553.079,
+              2898.819
+            ]
+          },
+          {
+            "point_distance_m": 0.01400790560020356,
+            "xy": [
+              2552.595,
+              2897.093
+            ]
+          },
+          {
+            "point_distance_m": 0.009534638556989425,
+            "xy": [
+              2553.31,
+              2899.438
+            ]
+          },
+          {
+            "point_distance_m": 0.012748726566941426,
+            "xy": [
+              2553.208,
+              2899.174
+            ]
+          },
+          {
+            "point_distance_m": 0.009273171516702278,
+            "xy": [
+              2552.275,
+              2893.529
+            ]
+          },
+          {
+            "point_distance_m": 0.007634577463636082,
+            "xy": [
+              2552.287,
+              2893.246
+            ]
+          }
+        ]
+      }
+    ],
+    "errors": [],
+    "passed": false
+  },
+  "point_only_loss_detected": {
+    "feature_count": 2,
+    "counts": {
+      "bbox_pairs": 1,
+      "valid_original_pair": 1,
+      "original_boundary_contacts": 1,
+      "contact_type:Point": 1
+    },
+    "area_reporting_threshold_m2": 1e-08,
+    "contact_tolerance_m": 1e-07,
+    "max_new_area_m2": 0.0,
+    "max_lost_line_m": 0.0,
+    "max_contact_point_distance_m": 0.7071067811865476,
+    "new_overlaps": [],
+    "lost_contacts": [
+      {
+        "a": "square",
+        "b": "touch",
+        "losses": [
+          {
+            "point_distance_m": 0.7071067811865476,
+            "xy": [
+              2.0,
+              1.0
+            ]
+          }
+        ]
+      }
+    ],
+    "errors": [],
+    "passed": false
+  },
+  "nearby_without_contact_overlap_detected": {
+    "feature_count": 2,
+    "counts": {
+      "bbox_pairs": 1,
+      "valid_original_pair": 1,
+      "no_original_boundary_contact": 1
+    },
+    "area_reporting_threshold_m2": 1e-08,
+    "contact_tolerance_m": 1e-07,
+    "max_new_area_m2": 0.09999999999999987,
+    "max_lost_line_m": 0.0,
+    "max_contact_point_distance_m": 0.0,
+    "new_overlaps": [
+      {
+        "a": "a",
+        "b": "b",
+        "category": "valid_original_pair",
+        "old_area_m2": 0.0,
+        "new_area_m2": 0.09999999999999987
+      }
+    ],
+    "lost_contacts": [],
+    "errors": [],
+    "passed": false
+  }
+}

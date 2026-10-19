@@ -311,9 +311,10 @@
       "extra_attempts_submitted": 0,
       "extra_attempt_proposal": "docs/product-research/2026-10-20-six-hour-map/MEMORY01/transport-recovery-proposal.md",
       "extra_attempt_question_asked": true,
-      "extra_attempt_question_asked_at": "2026-10-19T19:15:40Z",
       "extra_attempt_question": "允许一次1800秒/50轮有界恢复，或保持原限次；用户实际答复待到达",
-      "extra_attempt_answer": null
+      "extra_attempt_answer": null,
+      "extra_attempt_question_asked_utc_minute": "2026-10-19T19:15Z",
+      "question_time_precision": "approximately one minute; exact native tool event retained in conversation"
     },
     "D27-CITY01": {
       "logical_task_id": "f02-real-city-d27",
@@ -679,7 +680,7 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-19T19:20:27.735947+00:00",
+  "updated_at": "2026-10-19T19:22:16.939343+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
   "last_checked_at": "2026-10-19T18:49:33.544246+00:00",
@@ -972,7 +973,14 @@
     ],
     "qualified_pending_adoption": [
       "CITY01-R2"
-    ]
+    ],
+    "parent_browser_cleanup": {
+      "name": "amsterdam-d27-runtime",
+      "server_port": 18865,
+      "server_pid": 31540,
+      "closed": true,
+      "old_18860_untouched": true
+    }
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",

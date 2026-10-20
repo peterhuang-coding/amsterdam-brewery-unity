@@ -7,3 +7,5 @@
 真实改进及反例见 docs/product-research/2026-10-20-six-hour-map/MEMORY01/r3-review/。候选全量357文件逐SHA耐久保存 compact-runtime-candidate-memory01-r3，仅候选非采用。父级浏览器与18866/PID63240已关闭，原18860未动；65份status均done仅说明终态。
 
 后续：没有剩余已批准MEMORY尝试，也没有依赖合格的BOOT包；不重复询问已批准的额外一次和三小时窗口。新明确指示到达前保持当前结果，到固定截止执行一次窗口收口。
+
+同步：父验d538571449af4d0d648839919cd1466ceccbe853已push/远端一致；NotionMEMORY02:53:50.547Z、主页02:53:54.100Z精确链接读回。Hub session20261020-105549-66233.md、latest与source逐字节一致8486B；既有方法/index已补缓存加载响应与轮次预留失效。amsterdam同ID/thread/ACTIVE15min已回填终态并读回一致，final_report_sent=false，截止05:08:39Z不变。

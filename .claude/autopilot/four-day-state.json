@@ -348,7 +348,7 @@
   },
   "provider_cooldown_until": "2026-10-13T19:31:58Z",
   "provider_cooldown_basis": "parent60minutes_after_transport_failure_not_server_RetryAfter",
-  "failure_notification_recorded_at": "2026-10-13T20:00:54.807686+00:00",
+  "failure_notification_recorded_at": "2026-10-20T02:58:03.521558+00:00",
   "provider_cooldown_completed_at": "2026-10-13T10:11:45.254565+00:00",
   "current_submitted_at": "2026-10-16T18:27:03+00:00",
   "current_worker_pid": null,
@@ -694,10 +694,10 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-20T02:50:26.603673+00:00",
-  "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
+  "updated_at": "2026-10-20T02:58:03.521558+00:00",
+  "parent_validation_notified_at": "2026-10-20T02:58:03.521558+00:00",
   "current_task_prepared": false,
-  "last_checked_at": "2026-10-20T02:50:26.603673+00:00",
+  "last_checked_at": "2026-10-20T02:58:03.521558+00:00",
   "prior_four_day_window": {
     "start_at": "2026-10-12T19:48:33Z",
     "deadline": "2026-10-16T19:48:33Z",
@@ -778,7 +778,19 @@
     "in_flight": [],
     "blocked_dependency": "MEMORY01-R3 rejected; no remaining attempt; City/BOOT not integrated",
     "parent_review_sha256": "de0b4c1dd1f4543f3414481ef8a4fe3331e164cd0b147bfebb1187a53a175935",
-    "parent_review_path": "docs/product-research/2026-10-20-six-hour-map/MEMORY01/r3-review/parent-review.md"
+    "parent_review_path": "docs/product-research/2026-10-20-six-hour-map/MEMORY01/r3-review/parent-review.md",
+    "parent_review_commit": "d538571449af4d0d648839919cd1466ceccbe853",
+    "failure_notified_at": "2026-10-20T02:58:03.521558+00:00",
+    "sync": {
+      "notion_memory_readback": "2026-10-20T02:53:50.547Z",
+      "notion_home_readback": "2026-10-20T02:53:54.100Z",
+      "hub_session": "20261020-105549-66233.md",
+      "hub_bytes": 8486,
+      "hub_source_latest_session_equal": true,
+      "automation_id": "amsterdam",
+      "automation_updated_at": 1792465028870,
+      "automation_prompt_readback_equal": true
+    }
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",

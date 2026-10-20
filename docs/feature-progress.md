@@ -11,3 +11,9 @@
 | 新地图整合 | 等地图产物验收后接入，并重新验证主线与小游戏 |
 
 现有规则回归为 418 项通过。上述试玩结果属于现有地图，不代表新地图已完成或已发布。
+
+## Main loop and minigame regression coverage
+
+Added 10 combined scenarios using real public game actions: brewing and first service; after-hours pickup and single reward settlement; salvage success, junk and natural finish; flower cancel/store/retrieve/use; delivery and parcel handoff; supply order fulfilment and cancellation; rail fares and return; saved-game restoration; and a winning three-day ending without mandatory optional activities.
+
+The complete existing suite plus these scenarios passes **428 tests, zero failures or skips**. No production core changes were needed for these cases. This verifies game rules; the simplified map integration and its browser acceptance remain in progress.

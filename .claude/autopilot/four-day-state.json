@@ -1485,11 +1485,16 @@
     "max_concurrency": 2,
     "model": "doubao-seed-evolving",
     "thinking": "enabled/high",
-    "plan_dispatch_count": 0,
+    "plan_dispatch_count": 1,
     "new_adoptions": 0,
-    "status": "contracts_prepared",
+    "status": "loop01_running_map01_preparing",
     "feature_record": "docs/product-research/2026-10-20-feature-map-loop/README.md",
     "old_attempts_preserved": true,
-    "old_memory_not_retried": true
+    "old_memory_not_retried": true,
+    "active_task_id": "amsterdam-d29-main-minigames-20261020",
+    "session_id": 10344,
+    "worker_pid": 13911,
+    "started_at": "2026-10-20T15:59:22Z",
+    "contract_commit": "e5035cb93c3dc3f8a8c110796d2672ef08701265"
   }
 }

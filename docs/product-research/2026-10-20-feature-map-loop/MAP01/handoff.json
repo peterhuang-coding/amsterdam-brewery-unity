@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-d29-district-compiler-20261021",
+  "workspace": "/tmp/amsterdam-d29-district-compiler-20261021/input",
+  "data_sensitivity": "public",
+  "goal": "Implement offline shape-first overview/local-district compiler with compact conservative navigation masks; exact contract inbrief.md.",
+  "memory": {
+    "summary": "User approved city overview/local maps and shape-first reduction of browser map complexity. Existing lossless runtime stays rejected; no retry ofthat task.",
+    "decisions": [
+      "OnlyCodingPlan enabled/high globalmax2; offline source only, no fullbrowserdataset.",
+      "Compiler independent of running game core task; no UI/core writes."
+    ],
+    "completed": [
+      "Accepted public BGT geometry and source schema available."
+    ],
+    "known_issues": [
+      "Parent fullsource/run needed; sample incomplete.",
+      "Conservative grid may uncover disconnected entrances; report, never fabricate crossing."
+    ]
+  },
+  "tasks": [
+    "Implement fixed output contract with robust offline geometry and bounded grid generation.",
+    "Add synthetic safety tests and run exact sample CLI.",
+    "Deliver3files and legal handoff with actual test evidence."
+  ],
+  "acceptance": [
+    "All declared output schemas deterministic and conservative cell safety independently checkable.",
+    "No fullruntime route-cache work or direct game integration.",
+    "Sample pub/Lotte connected; negative cases fail explicitly."
+  ],
+  "constraints": [
+    "Read only listedpublicinputs; write only ownedfiles/generatedsample outputs.",
+    "No network/install/spawnedagents; exactBashcommands only.",
+    "Preserve raw source; do not list generatedoutputs or handoff-result.json in changed_files."
+  ],
+  "read_files": [
+    "brief.md",
+    "tools/geo/districts/districts.json",
+    "tools/geo/districts/sample-config.json",
+    "tools/geo/districts/real-pub-sample.json"
+  ],
+  "write_files": [
+    "tools/geo/districts/build_districts.py",
+    "tools/geo/districts/test_districts.py",
+    "tools/geo/districts/README.md"
+  ],
+  "commands": [
+    "/tmp/amsterdam-d26-geo-tools-venv/bin/python -m unittest discover -s tools/geo/districts -p test_districts.py -v",
+    "/tmp/amsterdam-d26-geo-tools-venv/bin/python tools/geo/districts/build_districts.py --source tools/geo/districts/real-pub-sample.json --config tools/geo/districts/sample-config.json --out tools/geo/districts/sample-out",
+    "/tmp/amsterdam-d26-geo-tools-venv/bin/python -m py_compile tools/geo/districts/build_districts.py"
+  ],
+  "timeout_seconds": 2400,
+  "max_turns": 70,
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "f29-district-compiler",
+    "task_type": "code",
+    "attempt_kind": "business"
+  }
+}

@@ -11,7 +11,7 @@
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
   "failure_policy_question_pending": false,
   "final_report_sent": true,
-  "schedule": "same amsterdam ACTIVE daily22:00 Asia/Shanghai; only new explicit human approval checks",
+  "schedule": "none; amsterdam deleted by explicit human request on 2026-10-20; do not recreate automatically",
   "current_task_terminal": true,
   "failure_reason": "MEMORY-R3 maxturn partial; full cached-route loading blocks heartbeat32.598s; missing4deliverables; extra1/1 exhausted; no automaticR4",
   "last_result_at": "2026-10-20T02:24:33.323947Z",
@@ -694,7 +694,7 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-20T05:20:20.986173+00:00",
+  "updated_at": "2026-10-20T15:55:21.613495+00:00",
   "parent_validation_notified_at": "2026-10-20T02:58:03.521558+00:00",
   "current_task_prepared": false,
   "last_checked_at": "2026-10-20T05:20:20.986173+00:00",
@@ -1455,5 +1455,41 @@
     "stage": "blocked_dependency",
     "current_stage": "blocked_dependency",
     "schedule": "same amsterdam ACTIVE every15minutes within fixed D28 window"
+  },
+  "automation_cancellation": {
+    "automation_id": "amsterdam",
+    "requested_by": "human",
+    "request": "取消定时任务，你先跟我讲讲现在这个游戏都还有哪些卡点",
+    "deleted_at": "2026-10-20T15:43:34.333751+00:00",
+    "tool_delete_status": "deleted",
+    "local_configuration_absent": true,
+    "previous_schedule": "same amsterdam ACTIVE daily22:00 Asia/Shanghai; only new explicit human approval checks",
+    "record": ".claude/autopilot/rounds/2026-10-20-schedule-cancelled.md",
+    "new_execution_authorization": false
+  },
+  "map_direction_discussion": {
+    "recorded_at": "2026-10-20T15:48:34.430002+00:00",
+    "user_preference": "大小地图；形态优先，细节后加，地图复杂度不必过高",
+    "proposed_architecture": "轻量城市总览+按需局部街区；视觉/导航/碰撞分别简化",
+    "proposal_status": "approved_for_feature_execution",
+    "record": ".claude/autopilot/rounds/2026-10-20-map-shape-first-direction.md",
+    "automation_remains_deleted": true,
+    "attempt_history_preserved": true
+  },
+  "interactive_feature_execution": {
+    "decision": "D29",
+    "approved_at": "2026-10-20T15:55:21.613495+00:00",
+    "source": "user approved overview/local-map design; requested GitHub update and feature-by-feature mainline/minigame fixes",
+    "mode": "current_interactive_task_no_recurring_automation",
+    "total_window": "not_specified_by_user",
+    "max_concurrency": 2,
+    "model": "doubao-seed-evolving",
+    "thinking": "enabled/high",
+    "plan_dispatch_count": 0,
+    "new_adoptions": 0,
+    "status": "contracts_prepared",
+    "feature_record": "docs/product-research/2026-10-20-feature-map-loop/README.md",
+    "old_attempts_preserved": true,
+    "old_memory_not_retried": true
   }
 }

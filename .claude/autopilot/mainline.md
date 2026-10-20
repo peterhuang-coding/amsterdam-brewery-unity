@@ -1,3 +1,9 @@
+> D29最新真人批准：城市总览＋局部街区、形态优先；更新GitHub并按feature打通主线和小游戏。当前交互式执行，无新总时限声明，不恢复定时任务。旧MEMORY/旧次数保留；新的简化地图合同独立说明。旧prototype418/418本轮重跑通过；新图/GUI尚未验。计划见docs/product-research/2026-10-20-feature-map-loop/README.md。
+
+> 最新地图方向：用户提出大小地图、形态优先、细节后加；不再默认把全部测绘细节搬进游戏运行时。城市总览＋局部街区与独立简化寻路为本轮建议，尚未实现或验收。amsterdam仍已删除，无新派发。见 .claude/autopilot/rounds/2026-10-20-map-shape-first-direction.md。
+
+> 最新真人指示：2026-10-20取消定时任务，先说明游戏卡点。amsterdam已由应用删除，原配置不存在；不再每日检查，不自动重建或恢复开发。完整目标仍未完成，旧限次和失败历史保留。记录见 .claude/autopilot/rounds/2026-10-20-schedule-cancelled.md。以下每日调度内容均为历史。
+
 > D28最终同步已完成：固定05:08:39Z窗口已到期，最终报告3f0454b已push并核对远端；Notion与Hub已读回，同一amsterdam/原thread已恢复每日北京时间22点。renewal.final_report_sent=true，完整demo未完成。无新明确真人处置不开发，旧批准和限次不重置；最终通知仅一次。以下为历史。
 
 > D28最终收口：固定UTC2026-10-20T05:08:39Z（北京13:08:39）已到期，未延长。窗口Plan1/新采用0，累计组件4、City合格候选1未接入、游戏地图0，完整demo未完成；无在途。MEMORY业务+修正+额外1/1全部用尽，原blocked及父验拒收保留，无自动R4。旧18860此前404，本轮未动，不称可玩。最终报告见 docs/product-research/2026-10-20-three-hour-map/final-report.md；同一amsterdam恢复每日北京22点新审批检查，最终只通知一次。以下为历史。

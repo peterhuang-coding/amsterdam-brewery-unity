@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-d29-main-minigames-20261020",
+  "workspace": "/tmp/amsterdam-d29-main-minigames-20261020/input",
+  "data_sensitivity": "public",
+  "goal": "Verify and repair current mainline/minigame continuity with real public actions, independent of new map/UI. See brief.md.",
+  "memory": {
+    "summary": "Public prototype418tests currently pass. Need actual combined mainline/minigame rules before lightweight map integration; no claim of new map or GUI readiness.",
+    "decisions": [
+      "Only Seed Evolving enabled/high; shared max2 actualCC.",
+      "No old failed task retry; no map/UI redesign.",
+      "Do not invent production edits when tests pass."
+    ],
+    "completed": [
+      "Current parent418/418 rule baseline passed."
+    ],
+    "known_issues": [
+      "No combined new-map gameplay acceptance yet.",
+      "Independent minigame success does not prove reward return/next-day continuity."
+    ]
+  },
+  "tasks": [
+    "Read brief and public APIs needed for each scenario.",
+    "Add bounded meaningful real-action integration tests; reproduce before any owned-core fix.",
+    "Run exact commands and write evidence report and legal handoff."
+  ],
+  "acceptance": [
+    "All required scenario outcomes genuinely exercised or specifically reported blocked.",
+    "No direct assignment to phase/cash/position to fake natural action progress.",
+    "Preserve original regression intent, gameplay balance and all readonly files."
+  ],
+  "constraints": [
+    "Only declared public input and output files. No external data, network, installations or spawned agents.",
+    "Only exact listed Bash commands, no suffixes or helpers. Use Read/Write/Edit for files.",
+    "Do not list handoff-result.json in changed_files; provide arrays for blockers/memory_delta/next_steps."
+  ],
+  "read_files": [
+    "brief.md",
+    "tools/prototype/reopening-core.js",
+    "tools/prototype/journey-core.js",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/backstage-auto.js",
+    "tools/prototype/delivery-orders.js",
+    "tools/prototype/character-stories.js",
+    "tools/prototype/flower-network.js",
+    "tools/prototype/reopening-city.js",
+    "tools/prototype/reopening-ui.js",
+    "tools/prototype/journey-ui.js",
+    "tools/prototype/backstage-ui.js",
+    "tools/prototype/index.html",
+    "tools/prototype/README.md",
+    "tools/prototype/test-reopening.js",
+    "tools/prototype/test-daynight.js",
+    "tools/prototype/test-journey.js",
+    "tools/prototype/test-journey-integration.js",
+    "tools/prototype/test-backstage.js",
+    "tools/prototype/test-backstage-auto.js",
+    "tools/prototype/test-flower-network.js",
+    "tools/prototype/test-delivery-orders.js",
+    "tools/prototype/test-character-stories.js",
+    "tools/prototype/test-location-daynight.js",
+    "tools/prototype/test-location-depth.js",
+    "tools/prototype/test-cargo-choice-ui.js"
+  ],
+  "write_files": [
+    "tools/prototype/reopening-core.js",
+    "tools/prototype/journey-core.js",
+    "tools/prototype/backstage-core.js",
+    "tools/prototype/test-feature-main-minigames.cjs",
+    "tools/prototype/FEATURE_LOOP_REVIEW.md"
+  ],
+  "commands": [
+    "node --test tools/prototype/test-feature-main-minigames.cjs",
+    "node --test tools/prototype/test-reopening.js tools/prototype/test-daynight.js tools/prototype/test-journey.js tools/prototype/test-journey-integration.js tools/prototype/test-backstage.js tools/prototype/test-backstage-auto.js tools/prototype/test-flower-network.js tools/prototype/test-delivery-orders.js tools/prototype/test-character-stories.js tools/prototype/test-location-daynight.js tools/prototype/test-location-depth.js tools/prototype/test-cargo-choice-ui.js",
+    "node --check tools/prototype/reopening-core.js",
+    "node --check tools/prototype/journey-core.js",
+    "node --check tools/prototype/backstage-core.js"
+  ],
+  "timeout_seconds": 1200,
+  "max_turns": 45,
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "f29-main-minigames",
+    "task_type": "code",
+    "attempt_kind": "business"
+  }
+}

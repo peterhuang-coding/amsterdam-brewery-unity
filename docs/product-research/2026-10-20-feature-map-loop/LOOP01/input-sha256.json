@@ -1,0 +1,106 @@
+{
+  "brief.md": {
+    "bytes": 2762,
+    "sha256": "08dda4eb3d1b744b845d9170175b9d3a589d77eb8765a2346650951842bcef70"
+  },
+  "tools/prototype/reopening-core.js": {
+    "bytes": 70285,
+    "sha256": "4c31d8a72fe9fd9736e7db57999efd31efb29a2c3b1458e8f96bec5559633c3b"
+  },
+  "tools/prototype/journey-core.js": {
+    "bytes": 28721,
+    "sha256": "1424adad30c587fda0aa49e101336061dd0e0a35587d0c0c998feb804948c963"
+  },
+  "tools/prototype/backstage-core.js": {
+    "bytes": 40144,
+    "sha256": "335baa752efedabf5771436c23fb5370a40af5aef4b89cdd1793351906219d07"
+  },
+  "tools/prototype/backstage-auto.js": {
+    "bytes": 27715,
+    "sha256": "569f7dab7e49afb0ec56870cef1d412fff3ef0f53399bbf2738d370fca919681"
+  },
+  "tools/prototype/delivery-orders.js": {
+    "bytes": 8657,
+    "sha256": "62e46bb83f5f8d97a2e7bc0d856484ef978efd2566236ee53304ea5167d3e496"
+  },
+  "tools/prototype/character-stories.js": {
+    "bytes": 10704,
+    "sha256": "3db456b04852929656867925bd35bc73dbe0b6349159708922acab22db1a53bb"
+  },
+  "tools/prototype/flower-network.js": {
+    "bytes": 2665,
+    "sha256": "e6febfd844da0107ca9079251ddbb4fd81e30cc5979f696bdba8f3b493027f80"
+  },
+  "tools/prototype/reopening-city.js": {
+    "bytes": 15809,
+    "sha256": "c8a2adeca66cf9ddfbebf0236602bb305cd749595ac3b3aca8b9b87a4eb9e625"
+  },
+  "tools/prototype/reopening-ui.js": {
+    "bytes": 94363,
+    "sha256": "b884234f2bda638ccf6de62e8036eb4b3cdbc73e95325785588c761d38c14985"
+  },
+  "tools/prototype/journey-ui.js": {
+    "bytes": 19269,
+    "sha256": "23fe4245f342aebfa868f7ff6fb4dc395d4e1dee94440b72df0eb86f1e124c43"
+  },
+  "tools/prototype/backstage-ui.js": {
+    "bytes": 35181,
+    "sha256": "e3860052e53dd579ee5868b457da8595417e79807bfc227da38bf8c7f2650269"
+  },
+  "tools/prototype/index.html": {
+    "bytes": 7136,
+    "sha256": "c70b027d392198e1cf733e2a4bdf88564a679b21f9bdc763b478a1ab0288f3fd"
+  },
+  "tools/prototype/README.md": {
+    "bytes": 33094,
+    "sha256": "aadafb803fa335a764cec130dd9fd1b1593be48893a3dbaee9873c50294fdd36"
+  },
+  "tools/prototype/test-reopening.js": {
+    "bytes": 36910,
+    "sha256": "b235c28acc03e83a6a28f7e3382f855f552e55ce7eb33d95ce8dde2512ef7f61"
+  },
+  "tools/prototype/test-daynight.js": {
+    "bytes": 4824,
+    "sha256": "86d5f2a21e99841573c76a33060abfa39e536cb83af4954df6c3053eda5a61f9"
+  },
+  "tools/prototype/test-journey.js": {
+    "bytes": 13973,
+    "sha256": "cd0ef435f9402ac0083fa181520387dc890221308a28a2f0fde6a5e350047c4f"
+  },
+  "tools/prototype/test-journey-integration.js": {
+    "bytes": 7660,
+    "sha256": "d327f6f3a3a5f48d1f28f52bda6a698d0eae0ab03f3e5c562667d16c23ab71b4"
+  },
+  "tools/prototype/test-backstage.js": {
+    "bytes": 8438,
+    "sha256": "d76e837eb53cd6c09421061011bb4ba993d008e63f1106dd277eae7e331d743c"
+  },
+  "tools/prototype/test-backstage-auto.js": {
+    "bytes": 6379,
+    "sha256": "04087344a2abf20b761e3c34ff2fff1dfd67efad20e3e1822234b0ece219232f"
+  },
+  "tools/prototype/test-flower-network.js": {
+    "bytes": 4595,
+    "sha256": "0677b479be857edd8fb636f2483efadb7ed36ec5c6f5d87c370d127ba4a9e118"
+  },
+  "tools/prototype/test-delivery-orders.js": {
+    "bytes": 8791,
+    "sha256": "75026aa3625faac6be8f96514311b1a44bbdf5c79472dee35b1ed5fd266df964"
+  },
+  "tools/prototype/test-character-stories.js": {
+    "bytes": 10971,
+    "sha256": "9897e6a2db612d4d27e519ad6a54535bb2ada4459834c5fcd5581c18f707a13d"
+  },
+  "tools/prototype/test-location-daynight.js": {
+    "bytes": 2851,
+    "sha256": "c45513f6347e61229d23800f7f3dbc9b228790311181b3e116215c0724524843"
+  },
+  "tools/prototype/test-location-depth.js": {
+    "bytes": 9535,
+    "sha256": "3c3a0993336d0cf6a7f6339f27c62cd286c639b9664db7acce35405d8de6ffc7"
+  },
+  "tools/prototype/test-cargo-choice-ui.js": {
+    "bytes": 10219,
+    "sha256": "ae111ca69abfa61b52be07ee21eb1c3067fcca728bc368c47f59d3551bba0614"
+  }
+}

@@ -1,8 +1,8 @@
 {
-  "decision": "D27",
-  "status": "d28_memory_r3_rejected_limit_exhausted",
-  "start_at": "2026-10-19T16:52:30Z",
-  "deadline": "2026-10-19T22:52:30Z",
+  "decision": "D28",
+  "status": "d28_window_expired_incomplete",
+  "start_at": "2026-10-20T02:08:39Z",
+  "deadline": "2026-10-20T05:08:39Z",
   "next_direction_review_at": "2026-10-17T09:48:33Z",
   "last_direction_review_at": "2026-10-17T00:00:06.789975+00:00",
   "current_task_id": "amsterdam-d27-compact-runtime-r3-20261020",
@@ -11,7 +11,7 @@
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
   "failure_policy_question_pending": false,
   "final_report_sent": false,
-  "schedule": "same amsterdam ACTIVE every15minutes within fixed D28 window",
+  "schedule": "same amsterdam daily22:00 Asia/Shanghai new explicit human approval check; update pending",
   "current_task_terminal": true,
   "failure_reason": "MEMORY-R3 maxturn partial; full cached-route loading blocks heartbeat32.598s; missing4deliverables; extra1/1 exhausted; no automaticR4",
   "last_result_at": "2026-10-20T02:24:33.323947Z",
@@ -365,7 +365,7 @@
   "worker_pid": null,
   "last_submitted_at": "2026-10-16T18:27:03+00:00",
   "direction_review_count": 10,
-  "next_independent_observation": "Read only for new explicit human execution window/scope and MEMORY extra decision; do not revive expired work.",
+  "next_independent_observation": "Only check new explicit human instructions; exhausted MEMORY needs new scope/attempt permission and execution window. No automatic retry.",
   "weekly_goal": {
     "decision": "D25",
     "source": "用户2026-10-14本周敲定demo再走Steam发行",
@@ -694,10 +694,10 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-20T02:58:03.521558+00:00",
+  "updated_at": "2026-10-20T05:16:44.065082+00:00",
   "parent_validation_notified_at": "2026-10-20T02:58:03.521558+00:00",
   "current_task_prepared": false,
-  "last_checked_at": "2026-10-20T02:58:03.521558+00:00",
+  "last_checked_at": "2026-10-20T05:16:44.065082+00:00",
   "prior_four_day_window": {
     "start_at": "2026-10-12T19:48:33Z",
     "deadline": "2026-10-16T19:48:33Z",
@@ -714,7 +714,7 @@
     "thinking": "enabled/high",
     "max_concurrency": 2,
     "prior_failures_preserved": true,
-    "window_status": "active",
+    "window_status": "expired",
     "final_report_sent": false,
     "full_goal_complete": false,
     "plan_dispatch_count": 1,
@@ -790,7 +790,12 @@
       "automation_id": "amsterdam",
       "automation_updated_at": 1792465028870,
       "automation_prompt_readback_equal": true
-    }
+    },
+    "closed_at": "2026-10-20T05:08:39Z",
+    "finalized_at": "2026-10-20T05:16:44.065082+00:00",
+    "final_report_path": "docs/product-research/2026-10-20-three-hour-map/final-report.md",
+    "final_report_pending": true,
+    "final_observation_at": "2026-10-20T05:15:31.100488+00:00"
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",
@@ -802,9 +807,9 @@
   },
   "prepared_tasks": [],
   "awaiting_parent_review": [],
-  "current_stage": "blocked_dependency",
+  "current_stage": "window_closed_goal_incomplete",
   "prepared": [],
-  "stage": "blocked_dependency",
+  "stage": "window_closed_goal_incomplete",
   "renewal_history": [
     {
       "started_at": "2026-10-16T16:03:03Z",
@@ -1418,5 +1423,14 @@
         "old_attempts_preserved": true
       }
     }
+  },
+  "prior_d28_final_top_level_control": {
+    "decision": "D27",
+    "start_at": "2026-10-19T16:52:30Z",
+    "deadline": "2026-10-19T22:52:30Z",
+    "status": "d28_memory_r3_rejected_limit_exhausted",
+    "stage": "blocked_dependency",
+    "current_stage": "blocked_dependency",
+    "schedule": "same amsterdam ACTIVE every15minutes within fixed D28 window"
   }
 }

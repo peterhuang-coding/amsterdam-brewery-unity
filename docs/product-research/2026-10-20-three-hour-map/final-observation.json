@@ -1,0 +1,39 @@
+{
+  "observed_at": "2026-10-20T05:15:31.100488+00:00",
+  "repositories": {
+    "docs": {
+      "head": "8a741b4e645cee78ed4a88814f26573e85282c92",
+      "branch": "codex/product-research-nightshift",
+      "status": "",
+      "remote_exit": 0,
+      "remote": "8a741b4e645cee78ed4a88814f26573e85282c92\trefs/heads/codex/product-research-nightshift",
+      "remote_error": ""
+    },
+    "game": {
+      "head": "1e0ede0f528b764e5c679101889392e92d2d55b9",
+      "branch": "codex/real-map-20261017",
+      "status": "",
+      "remote_exit": 0,
+      "remote": "1e0ede0f528b764e5c679101889392e92d2d55b9\trefs/heads/codex/real-map-20261017",
+      "remote_error": ""
+    }
+  },
+  "ledger": {
+    "count": 65,
+    "states": {
+      "done": 65
+    },
+    "non_done": []
+  },
+  "memory_status": {
+    "result_status": "blocked",
+    "state": "done"
+  },
+  "parent_review_sha256": "de0b4c1dd1f4543f3414481ef8a4fe3331e164cd0b147bfebb1187a53a175935",
+  "known_processes": {
+    "exit": 1,
+    "output": ""
+  },
+  "game_prototype_delta_from_old": "",
+  "preliminary_ps_limitation": "Initial sandbox ps EPERM; repeated read-only ps under approved escalation."
+}

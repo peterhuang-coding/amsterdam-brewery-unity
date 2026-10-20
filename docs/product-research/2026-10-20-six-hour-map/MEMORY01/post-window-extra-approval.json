@@ -1,0 +1,17 @@
+{
+  "recorded_at": "2026-10-20T02:07:11.512868+00:00",
+  "source": "actual human structured reply to request_user_input_async call_b75a47eb30834de4a41bfc8e6459a49d item0",
+  "answer": "允许这一次有界恢复（推荐）",
+  "logical_task_id": "f02-compact-runtime-d27",
+  "task_id": "amsterdam-d27-compact-runtime-r3-20261020",
+  "extra_attempts_allowed": 1,
+  "extra_attempts_submitted": 0,
+  "max_seconds": 1800,
+  "max_turns": 50,
+  "original_deadline": "2026-10-19T22:52:30Z",
+  "original_deadline_changed": false,
+  "new_execution_window": null,
+  "scope": "Reuse partial outputs; finish lossless chunks and async hash/assembly, three existing route regressions, original missing tests/demo/README/legal report. NAV and renderer readonly; original acceptance gates unchanged.",
+  "parent_action": "Record permission only; no Plan dispatch or R3 handoff/input/ledger created; await explicit new window.",
+  "old_attempts_preserved": true
+}

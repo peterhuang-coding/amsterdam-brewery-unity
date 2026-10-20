@@ -4,11 +4,12 @@
 
 | Feature | 当前状态 |
 | --- | --- |
-| 城市总览与局部地图 | 离线制作、五街区数据和按需加载已验收；绘制模块开发中 |
+| 城市总览与局部地图 | 离线制作、五街区数据和按需加载已验收；绘制模块待修正 |
 | 经营主线 | 现有版本已实测酿酒、第一杯、夜探实际取货、返店与第二天 |
 | 花店小游戏 | 现有版本已实测取消、完成、前篮存取与布置窗台 |
 | 送货、列车与打捞 | 现有地图已实测送花与急件交付、列车往返结算、30 秒打捞及奖励入库 |
-| 新地图整合 | 等地图产物验收后接入，并重新验证主线与小游戏 |
+| 街区移动与存档 | 真实街区移动、渡轮、停车及花园入口已部分验证；迁移和初始化接口仍待修正 |
+| 新地图整合 | 等绘制和移动模块验收后接入，并重新验证主线与小游戏 |
 
 现有规则回归为 472 项通过，无失败或跳过。上述试玩结果属于现有地图，不代表新地图已完成或已发布。
 
@@ -33,3 +34,11 @@ Independent checks passed 184 route cases against the actual five district grids
 A source-only encoding normalization replaced three literal control characters in one regular expression with equivalent hexadecimal escapes. All 65,536 UTF-16 code units were checked for identical matching, including DEL; runtime tests were rerun on these final bytes. No navigation or loading logic was rewritten during adoption.
 
 The running game still uses its previous map. Entry, district movement, canvas sharing and full gameplay acceptance remain pending.
+
+## Remaining integration blockers
+
+The first district movement adapter is not merged. Independent checks using the actual district resources confirmed destination commits after loading, walking/cycling transitions, ferry cancellation and remote bicycle preservation. The broader check stopped at legacy-save migration; it is not a complete acceptance pass.
+
+The remaining adapter fixes are a mismatched migration return shape, rejecting invalid travel departures before save-repair normalization, and supporting initialization before the first local district loads. The scoped correction was interrupted by a provider overload before any files changed; the existing verified game remains intact.
+
+The map scene also needs its actual district-to-district links, idle-frame validation cost and narrow-screen label overlap corrected. These findings are separate from test-fixture mistakes. Entry switching and a complete playthrough on the new map remain pending; current mainline/minigame playthrough evidence still belongs to the existing map.

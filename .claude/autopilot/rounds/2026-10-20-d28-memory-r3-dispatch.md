@@ -1,0 +1,3 @@
+> D28 MEMORY唯一额外恢复已实际启动：2026-10-20T02:12:28+00:00，worker61627/launcher61616/session93110，1800秒50轮，Seed Evolving enabled/high，实际仅此1路。额外1/1已用，新窗口Plan1/采用0，截止05:08:39Z不变；原ID在途不重发、不改输入。合同eebd280已push、24源SHA保持、Notion执行态已读回。
+
+本轮仅派发MEMORY恢复，City已合格候选/BOOT依赖未满足，不造第二项。初次父级ps UTF8解码失败及macOS comm截断误计已保留在dispatch.json，后续按原始args和已知PID核实仅一路；不计Plan错误，不取消重发。返回后独立13命令/源只读SHA/全量IEEE754/实际HTTP/浏览器768MiB与250ms/安全路线父验，未经通过不采用。

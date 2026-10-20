@@ -1,6 +1,6 @@
 {
   "decision": "D27",
-  "status": "d28_active_memory_recovery_prepared",
+  "status": "d28_runtime_recovery_running",
   "start_at": "2026-10-19T16:52:30Z",
   "deadline": "2026-10-19T22:52:30Z",
   "next_direction_review_at": "2026-10-17T09:48:33Z",
@@ -308,7 +308,7 @@
       "correction_elapsed_seconds": 1043.485,
       "correction_reported_turns": 40,
       "extra_attempts_allowed": 1,
-      "extra_attempts_submitted": 0,
+      "extra_attempts_submitted": 1,
       "extra_attempt_proposal": "docs/product-research/2026-10-20-six-hour-map/MEMORY01/transport-recovery-proposal.md",
       "extra_attempt_question_asked": true,
       "extra_attempt_question": "允许一次1800秒/50轮有界恢复，或保持原限次；用户实际答复待到达",
@@ -316,11 +316,13 @@
       "extra_attempt_question_asked_utc_minute": "2026-10-19T19:15Z",
       "question_time_precision": "approximately one minute; exact native tool event retained in conversation",
       "window_expired_without_extra_answer": true,
-      "extra_attempts_remaining": 1,
+      "extra_attempts_remaining": 0,
       "extra_attempt_answer_recorded_at": "2026-10-20T02:07:11.512868+00:00",
       "extra_attempt_answer_source": "actual human structured reply to request_user_input_async call_b75a47eb30834de4a41bfc8e6459a49d item0",
       "extra_attempt_approval_record": "docs/product-research/2026-10-20-six-hour-map/MEMORY01/post-window-extra-approval.json",
-      "extra_attempt_execution_status": "approved_unused_waiting_new_window"
+      "extra_attempt_execution_status": "running",
+      "extra_attempt_task_id": "amsterdam-d27-compact-runtime-r3-20261020",
+      "extra_attempt_started_at": "2026-10-20T02:12:28+00:00"
     },
     "D27-CITY01": {
       "logical_task_id": "f02-real-city-d27",
@@ -348,7 +350,7 @@
   "current_task_notion": null,
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
-  "current_task_stage": "closed_waiting_new_human_window",
+  "current_task_stage": "running",
   "prepared_task_id": null,
   "prepared_task_packet": null,
   "play_service_pid": 91799,
@@ -686,9 +688,9 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-20T02:10:37.526185+00:00",
+  "updated_at": "2026-10-20T02:13:45.495455+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
-  "current_task_prepared": true,
+  "current_task_prepared": false,
   "last_checked_at": "2026-10-20T02:07:11.512868+00:00",
   "prior_four_day_window": {
     "start_at": "2026-10-12T19:48:33Z",
@@ -709,7 +711,7 @@
     "window_status": "active",
     "final_report_sent": false,
     "full_goal_complete": false,
-    "plan_dispatch_count": 0,
+    "plan_dispatch_count": 1,
     "prior_plan_dispatch_count": 15,
     "adopted_component_count": 4,
     "new_adopted_component_count": 0,
@@ -720,8 +722,8 @@
     "extra_attempts": {
       "MEMORY01": {
         "allowed": 1,
-        "submitted": 0,
-        "remaining": 1,
+        "submitted": 1,
+        "remaining": 0,
         "task_id": "amsterdam-d27-compact-runtime-r3-20261020",
         "max_seconds": 1800,
         "max_turns": 50
@@ -729,7 +731,32 @@
     },
     "prepared_packets": {
       "amsterdam-d27-compact-runtime-r3-20261020": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/MEMORY01/r3/handoff.json"
-    }
+    },
+    "first_wave": [
+      {
+        "task_id": "amsterdam-d27-compact-runtime-r3-20261020",
+        "logical_task_id": "f02-compact-runtime-d27",
+        "state": "running",
+        "started_at": "2026-10-20T02:12:28+00:00",
+        "worker_pid": 61627,
+        "launcher_pid": 61616,
+        "exec_session_id": 93110,
+        "max_seconds": 1800,
+        "max_turns": 50,
+        "model": "doubao-seed-evolving",
+        "thinking_enabled": true,
+        "effort": "high",
+        "observed_model": "doubao-seed-evolving",
+        "contract_commit": "eebd280ec47e50e3008ce98d965f54d033b41dae",
+        "input_count": 24,
+        "input_bytes": 935386,
+        "source_sha_unchanged": true,
+        "actual_cc_count_after_launch": 1,
+        "notion_memory_readback": "2026-10-20T02:11:56.967Z",
+        "notion_home_readback": "2026-10-20T02:11:59.583Z",
+        "preflight_limitation": "Initial readonly process list at02:10 showed no CC; immediate prelaunch Python ps strict UTF8 decoding failed, but parent still launched. Postlaunch first comm-based parser also undercounted due to macOS comm truncation. Raw args prefix parsing with replacement decoding confirmed exactly worker61627 and launcher61616. No cancellation or resubmission."
+      }
+    ]
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",
@@ -743,7 +770,7 @@
   "awaiting_parent_review": [],
   "current_stage": "memory_extra_recovery",
   "prepared": [],
-  "stage": "approved_preparing_dispatch",
+  "stage": "running",
   "renewal_history": [
     {
       "started_at": "2026-10-16T16:03:03Z",

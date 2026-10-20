@@ -1,0 +1,23 @@
+{
+  "task_id": "amsterdam-d27-compact-runtime-r3-20261020",
+  "logical_task_id": "f02-compact-runtime-d27",
+  "state": "running",
+  "started_at": "2026-10-20T02:12:28+00:00",
+  "worker_pid": 61627,
+  "launcher_pid": 61616,
+  "exec_session_id": 93110,
+  "max_seconds": 1800,
+  "max_turns": 50,
+  "model": "doubao-seed-evolving",
+  "thinking_enabled": true,
+  "effort": "high",
+  "observed_model": "doubao-seed-evolving",
+  "contract_commit": "eebd280ec47e50e3008ce98d965f54d033b41dae",
+  "input_count": 24,
+  "input_bytes": 935386,
+  "source_sha_unchanged": true,
+  "actual_cc_count_after_launch": 1,
+  "notion_memory_readback": "2026-10-20T02:11:56.967Z",
+  "notion_home_readback": "2026-10-20T02:11:59.583Z",
+  "preflight_limitation": "Initial readonly process list at02:10 showed no CC; immediate prelaunch Python ps strict UTF8 decoding failed, but parent still launched. Postlaunch first comm-based parser also undercounted due to macOS comm truncation. Raw args prefix parsing with replacement decoding confirmed exactly worker61627 and launcher61616. No cancellation or resubmission."
+}

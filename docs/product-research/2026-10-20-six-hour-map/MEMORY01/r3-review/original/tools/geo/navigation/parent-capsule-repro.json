@@ -1,0 +1,132 @@
+{
+  "case": {
+    "i": 1475,
+    "kind": "segment",
+    "mode": "walk",
+    "radius": 0.4,
+    "start": {
+      "x": 1057.2199094918608,
+      "y": 3242.5560772147514
+    },
+    "end": {
+      "x": 1049.8176482776287,
+      "y": 3237.1391147867976
+    },
+    "expected": false,
+    "actual": true
+  },
+  "lineCovered": true,
+  "minimumClearance": 0.39969294375176584,
+  "closestLinePoint": [
+    1056.934958201838,
+    3242.347550335305
+  ],
+  "closestBoundary": [
+    1057.171,
+    3242.025
+  ],
+  "denseCount": 10001,
+  "unsafeCenters": 35,
+  "firstWitness": [
+    {
+      "fraction": 0.0368,
+      "center": [
+        1056.947506279177,
+        3242.3567329974026
+      ],
+      "centerCovered": true,
+      "clearance": 0.3999952809883016
+    }
+  ],
+  "nearbyFeatures": [
+    {
+      "layer": "bridges",
+      "id": "overbruggingsdeel:8b1d9302-4306-51af-ae31-9b60532e81c5",
+      "distance": 0.0,
+      "properties": {
+        "creation_date": "2021-03-08T23:00:00Z",
+        "eind_registratie": null,
+        "hoort_bij_typeoverbrugging": "brug",
+        "relatieve_hoogteligging": 1,
+        "status": "bestaand",
+        "termination_date": null,
+        "tijdstip_registratie": "2021-03-23T04:06:52Z",
+        "type_overbruggingsdeel": "dek"
+      }
+    },
+    {
+      "layer": "roads",
+      "id": "wegdeel:1d73d4df-6376-5cfc-b771-bffbe1f11014",
+      "distance": 0.0,
+      "properties": {
+        "creation_date": "2017-12-19T23:00:00Z",
+        "eind_registratie": null,
+        "functie": "voetpad",
+        "fysiek_voorkomen": "open verharding",
+        "relatieve_hoogteligging": 1,
+        "status": "bestaand",
+        "termination_date": null,
+        "tijdstip_registratie": "2021-03-23T04:06:52Z"
+      }
+    },
+    {
+      "layer": "roads",
+      "id": "wegdeel:473b770c-8e92-5cb5-b38a-271b1d3db1c4",
+      "distance": 0.0,
+      "properties": {
+        "creation_date": "2014-04-02T22:00:00Z",
+        "eind_registratie": null,
+        "functie": "rijbaan lokale weg",
+        "fysiek_voorkomen": "open verharding",
+        "relatieve_hoogteligging": 0,
+        "status": "bestaand",
+        "termination_date": null,
+        "tijdstip_registratie": "2020-11-05T08:28:31Z"
+      }
+    },
+    {
+      "layer": "roads",
+      "id": "wegdeel:ae8d639d-acf9-5ffa-8469-5df44622d7c9",
+      "distance": 0.0,
+      "properties": {
+        "creation_date": "2014-04-02T22:00:00Z",
+        "eind_registratie": null,
+        "functie": "rijbaan lokale weg",
+        "fysiek_voorkomen": "open verharding",
+        "relatieve_hoogteligging": 0,
+        "status": "bestaand",
+        "termination_date": null,
+        "tijdstip_registratie": "2026-05-28T05:12:08Z"
+      }
+    },
+    {
+      "layer": "roads",
+      "id": "wegdeel:eea5d251-c465-5486-b514-dc1e3c660d41",
+      "distance": 0.0,
+      "properties": {
+        "creation_date": "2014-04-02T22:00:00Z",
+        "eind_registratie": null,
+        "functie": "voetpad",
+        "fysiek_voorkomen": "open verharding",
+        "relatieve_hoogteligging": 0,
+        "status": "bestaand",
+        "termination_date": null,
+        "tijdstip_registratie": "2017-05-04T08:54:18Z"
+      }
+    },
+    {
+      "layer": "water",
+      "id": "waterdeel:eb3309e3-b813-543f-81f3-02dea7532267",
+      "distance": 0.0,
+      "properties": {
+        "creation_date": "2015-03-17T23:00:00Z",
+        "eind_registratie": null,
+        "relatieve_hoogteligging": 0,
+        "status": "bestaand",
+        "termination_date": null,
+        "tijdstip_registratie": "2017-12-22T17:43:55Z",
+        "type": "waterloop"
+      }
+    }
+  ]
+}

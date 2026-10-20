@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "task_id": "amsterdam-d27-compact-runtime-r3-20261020",
+  "receipt_sha256": "90188a30fe478797ef499c029f4e90f10ed959c9086df8d181c628f9fef36793",
+  "reviewed_at": "2026-10-20T02:50:26Z",
+  "outcome": "partial",
+  "failure_type": "call_exception",
+  "evidence": [
+    {
+      "path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-20-six-hour-map/MEMORY01/r3-review/parent-review.md",
+      "sha256": "de0b4c1dd1f4543f3414481ef8a4fe3331e164cd0b147bfebb1187a53a175935"
+    }
+  ]
+}

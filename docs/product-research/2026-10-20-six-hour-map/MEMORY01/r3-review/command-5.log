@@ -1,0 +1,268 @@
+TAP version 13
+# Subtest: project/unproject round-trips within 1e-7 degrees and uses metre axes
+ok 1 - project/unproject round-trips within 1e-7 degrees and uses metre axes
+  ---
+  duration_ms: 1.178708
+  type: 'test'
+  ...
+# Subtest: pointInPolygon honours outer boundary, hole interior, hole boundary exclusion
+ok 2 - pointInPolygon honours outer boundary, hole interior, hole boundary exclusion
+  ---
+  duration_ms: 0.376542
+  type: 'test'
+  ...
+# Subtest: pointInPolygon supports concave rings and multiple holes
+ok 3 - pointInPolygon supports concave rings and multiple holes
+  ---
+  duration_ms: 0.099917
+  type: 'test'
+  ...
+# Subtest: pointInPolygon rejects invalid coordinates and malformed rings
+ok 4 - pointInPolygon rejects invalid coordinates and malformed rings
+  ---
+  duration_ms: 0.108208
+  type: 'test'
+  ...
+# Subtest: validateRing counts unique vertices, not consecutive changes or closure
+ok 5 - validateRing counts unique vertices, not consecutive changes or closure
+  ---
+  duration_ms: 0.242083
+  type: 'test'
+  ...
+# Subtest: createNavigator rejects invalid feature geometry with the feature id
+ok 6 - createNavigator rejects invalid feature geometry with the feature id
+  ---
+  duration_ms: 0.155416
+  type: 'test'
+  ...
+# Subtest: road functie walk/bike policy table, including both voetgangersgebied spellings
+ok 7 - road functie walk/bike policy table, including both voetgangersgebied spellings
+  ---
+  duration_ms: 0.449375
+  type: 'test'
+  ...
+# Subtest: water blocks, bridge deck overrides water, piers and unknown parts never do
+ok 8 - water blocks, bridge deck overrides water, piers and unknown parts never do
+  ---
+  duration_ms: 0.104416
+  type: 'test'
+  ...
+# Subtest: deck is walkable on its own, but buildings always win over road and deck
+ok 9 - deck is walkable on its own, but buildings always win over road and deck
+  ---
+  duration_ms: 0.267917
+  type: 'test'
+  ...
+# Subtest: multipolygon features apply to every disjoint part
+ok 10 - multipolygon features apply to every disjoint part
+  ---
+  duration_ms: 0.741667
+  type: 'test'
+  ...
+# Subtest: water polygon with a road through its hole: hole interior and hole edge walkable
+ok 11 - water polygon with a road through its hole: hole interior and hole edge walkable
+  ---
+  duration_ms: 0.13375
+  type: 'test'
+  ...
+# Subtest: segmentWalkable catches thin barriers narrower than the 0.5 m sample spacing
+ok 12 - segmentWalkable catches thin barriers narrower than the 0.5 m sample spacing
+  ---
+  duration_ms: 0.660917
+  type: 'test'
+  ...
+# Subtest: diagonal corner cutting between diagonal obstacles is rejected
+ok 13 - diagonal corner cutting between diagonal obstacles is rejected
+  ---
+  duration_ms: 0.17375
+  type: 'test'
+  ...
+# Subtest: pier never permits a water crossing while deck does
+ok 14 - pier never permits a water crossing while deck does
+  ---
+  duration_ms: 0.410375
+  type: 'test'
+  ...
+# Subtest: segment walkability distinguishes walk and bike modes
+ok 15 - segment walkability distinguishes walk and bike modes
+  ---
+  duration_ms: 0.163166
+  type: 'test'
+  ...
+# Subtest: positive radius enforces circle clearance against water and buildings
+ok 16 - positive radius enforces circle clearance against water and buildings
+  ---
+  duration_ms: 1.118
+  type: 'test'
+  ...
+# Subtest: radius: small road hole wholly inside the disk blocks (parent repro), even filled by another legal road is allowed
+ok 17 - radius: small road hole wholly inside the disk blocks (parent repro), even filled by another legal road is allowed
+  ---
+  duration_ms: 0.178083
+  type: 'test'
+  ...
+# Subtest: radius: narrow notch between circumference samples blocks the whole body
+ok 18 - radius: narrow notch between circumference samples blocks the whole body
+  ---
+  duration_ms: 0.052083
+  type: 'test'
+  ...
+# Subtest: radius: touching shared edges and overlapping roads keep neighbouring surfaces connected
+ok 19 - radius: touching shared edges and overlapping roads keep neighbouring surfaces connected
+  ---
+  duration_ms: 0.169583
+  type: 'test'
+  ...
+# Subtest: radius: swept capsule covers a hole offset from the centre line, not just blocker edges
+ok 20 - radius: swept capsule covers a hole offset from the centre line, not just blocker edges
+  ---
+  duration_ms: 0.093125
+  type: 'test'
+  ...
+# Subtest: radius: small blocker polygon wholly inside the disk blocks in both modes
+ok 21 - radius: small blocker polygon wholly inside the disk blocks in both modes
+  ---
+  duration_ms: 0.049791
+  type: 'test'
+  ...
+# Subtest: snap performs a bounded deterministic nearest-surface search
+ok 22 - snap performs a bounded deterministic nearest-surface search
+  ---
+  duration_ms: 8.97425
+  type: 'test'
+  ...
+# Subtest: route: invalid coordinates give reason invalid
+ok 23 - route: invalid coordinates give reason invalid
+  ---
+  duration_ms: 0.326584
+  type: 'test'
+  ...
+# Subtest: route: same valid point is a zero-length ok route
+ok 24 - route: same valid point is a zero-length ok route
+  ---
+  duration_ms: 0.069708
+  type: 'test'
+  ...
+# Subtest: route: blocked endpoints are unwalkable; snapDistance 0 never moves the caller
+ok 25 - route: blocked endpoints are unwalkable; snapDistance 0 never moves the caller
+  ---
+  duration_ms: 0.104667
+  type: 'test'
+  ...
+# Subtest: route: explicit snapDistance snaps endpoints and reports the snaps
+ok 26 - route: explicit snapDistance snaps endpoints and reports the snaps
+  ---
+  duration_ms: 0.399583
+  type: 'test'
+  ...
+# Subtest: route: road junction connects arms; found route is safe and length-bounded
+ok 27 - route: road junction connects arms; found route is safe and length-bounded
+  ---
+  duration_ms: 1.741125
+  type: 'test'
+  ...
+# Subtest: route: disconnected road component is unreachable, search stays bounded
+ok 28 - route: disconnected road component is unreachable, search stays bounded
+  ---
+  duration_ms: 5.073792
+  type: 'test'
+  ...
+# Subtest: route: no straight shortcut across water; explicit deck reconnects
+ok 29 - route: no straight shortcut across water; explicit deck reconnects
+  ---
+  duration_ms: 0.586875
+  type: 'test'
+  ...
+# Subtest: route: explicit search budget terminates with reason limit
+ok 30 - route: explicit search budget terminates with reason limit
+  ---
+  duration_ms: 0.098125
+  type: 'test'
+  ...
+# Subtest: route: chooses the shorter of two alternative corridors
+ok 31 - route: chooses the shorter of two alternative corridors
+  ---
+  duration_ms: 4.011042
+  type: 'test'
+  ...
+# Subtest: route: walk takes voetpad corridor, bike is forced to the fietspad corridor
+ok 32 - route: walk takes voetpad corridor, bike is forced to the fietspad corridor
+  ---
+  duration_ms: 1.290541
+  type: 'test'
+  ...
+# Subtest: route: endpoint in voetgangersgebied is walk-ok but bike-unwalkable (both spellings)
+ok 33 - route: endpoint in voetgangersgebied is walk-ok but bike-unwalkable (both spellings)
+  ---
+  duration_ms: 0.068708
+  type: 'test'
+  ...
+# Subtest: route: radius is respected by the lattice and returned segments
+ok 34 - route: radius is respected by the lattice and returned segments
+  ---
+  duration_ms: 0.1225
+  type: 'test'
+  ...
+# Subtest: stats reports real observation counts without performance claims
+ok 35 - stats reports real observation counts without performance claims
+  ---
+  duration_ms: 0.590125
+  type: 'test'
+  ...
+# Subtest: default navigator options match the frozen interface
+ok 36 - default navigator options match the frozen interface
+  ---
+  duration_ms: 0.03875
+  type: 'test'
+  ...
+# Subtest: real BGT sample: loads with documented counts and explicit incompleteness
+ok 37 - real BGT sample: loads with documented counts and explicit incompleteness
+  ---
+  duration_ms: 1.048375
+  type: 'test'
+  ...
+# Subtest: real BGT sample: radius-0 route matches the measured parent baseline
+ok 38 - real BGT sample: radius-0 route matches the measured parent baseline
+  ---
+  duration_ms: 26.013917
+  type: 'test'
+  ...
+# Subtest: real BGT sample: radius 0.4 clearance is reported honestly with safe geometry
+ok 39 - real BGT sample: radius 0.4 clearance is reported honestly with safe geometry
+  ---
+  duration_ms: 97.303083
+  type: 'test'
+  ...
+# Subtest: containment tolerances are invariant under translation (exact R2 triangle at positive and negative offsets)
+ok 40 - containment tolerances are invariant under translation (exact R2 triangle at positive and negative offsets)
+  ---
+  duration_ms: 0.340583
+  type: 'test'
+  ...
+# Subtest: containment tolerances are invariant under rotation, and radius tangency is translation invariant
+ok 41 - containment tolerances are invariant under rotation, and radius tangency is translation invariant
+  ---
+  duration_ms: 0.261084
+  type: 'test'
+  ...
+# Subtest: real witness: r=0.4 capsule and first dense unsafe centre are rejected on the actual sample
+ok 42 - real witness: r=0.4 capsule and first dense unsafe centre are rejected on the actual sample
+  ---
+  duration_ms: 7094.513125
+  type: 'test'
+  ...
+# Subtest: highway exclusion covers bare and rijbaan-prefixed autosnelweg/autoweg, retaining agreed roads
+ok 43 - highway exclusion covers bare and rijbaan-prefixed autosnelweg/autoweg, retaining agreed roads
+  ---
+  duration_ms: 0.244208
+  type: 'test'
+  ...
+1..43
+# tests 43
+# suites 0
+# pass 43
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7319.713667

@@ -1,0 +1,16 @@
+[
+  {
+    "index": 10,
+    "command": "node parent-runtime-roundtrip.cjs .",
+    "exit_code": 0,
+    "seconds": 0.135161792,
+    "prior_default_sandbox_result": "listen EPERM; not application result"
+  },
+  {
+    "index": 11,
+    "command": "node parent-runtime-roundtrip.cjs . multichunk",
+    "exit_code": 0,
+    "seconds": 0.155158125,
+    "prior_default_sandbox_result": "listen EPERM; not application result"
+  }
+]

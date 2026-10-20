@@ -1,3 +1,5 @@
+> D28最新父验：MEMORY唯一额外R3已终态，724.792秒/reported51轮/CLI1 error_max_turns，原blocked保留。13命令有效12绿1缺文件；全量145703地物/22977546点/两个负零及357文件确定性通过，不带路线缓存的三次Chrome加载约25秒、最大心跳47.2ms、采样内存最高501161370B，生命周期7/7通过。但带真实路线缓存时独立60秒复现停在routes阶段，32598ms无回传心跳，未到查询；原整体验收240秒无结果。仍缺test-runtime/demo/README/report，父验拒收、采用0。业务+修正+额外1/1全部用尽，停止此logical，不自动R4或主代理重写。当前无在途；D28Plan1/新采用0、累计组件4、City合格候选1、游戏地图0。截止05:08:39Z不变，final_report_sent=false，本轮不是窗口最终汇总。证据MEMORY01/r3-review/parent-review.md。下方在途内容为历史。
+
 > D28 MEMORY唯一额外恢复已实际启动：2026-10-20T02:12:28+00:00，worker61627/launcher61616/session93110，1800秒50轮，Seed Evolving enabled/high，实际仅此1路。额外1/1已用，新窗口Plan1/采用0，截止05:08:39Z不变；原ID在途不重发、不改输入。合同eebd280已push、24源SHA保持、Notion执行态已读回。
 
 > D28真人三小时续作已确认：UTC2026-10-20T02:08:39Z—05:08:39Z（北京10:08:39—13:08:39），先MEMORY唯一额外1800秒50轮，依赖合格后BOOT接入与完整主循环。旧次数保留，仅Coding Plan enabled/high最多两路。R3合同已准备未派发；新窗口Plan0/新采用0，累计组件4、City候选1、游戏地图0。历史D27已到期并已最终汇总，本次新许可优先。

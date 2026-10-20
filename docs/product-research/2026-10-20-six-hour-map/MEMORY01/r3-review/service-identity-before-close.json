@@ -1,0 +1,6 @@
+{
+  "observed_at": "2026-10-20T02:47:40.735082+00:00",
+  "pid": 63240,
+  "ppid": 16339,
+  "args": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python docs/product-research/2026-10-20-six-hour-map/parent-validation/runtime-http.py --code /tmp/amsterdam-d28-memory-r3-parent-20261020 --assets /tmp/amsterdam-d28-memory-r3-full-20261020 --port 18866"
+}

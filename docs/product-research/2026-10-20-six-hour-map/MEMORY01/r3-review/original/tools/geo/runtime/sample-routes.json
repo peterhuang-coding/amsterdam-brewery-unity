@@ -1,0 +1,483 @@
+{
+  "format": "amsterdam-geo-routes/v1",
+  "schemaVersion": 1,
+  "geometrySha256": "534718e298a027dab112f581b2e2080c6212fb99266c6039a038d35077f1c931",
+  "sourceSha256": "9c7174607fdee7e76fdda59f6128634db5d5a11d48c44157554771d6389d5598",
+  "radius": 0.4,
+  "snapDistance": 0,
+  "cellSize": 2,
+  "maxNodes": 250000,
+  "anchors": {
+    "pub": {
+      "x": 1100.211,
+      "y": 3243.117,
+      "featureId": "wegdeel:b5910e46-8d27-5ba7-982d-41b311e24e21",
+      "basis": "Egelantiersgracht, Amsterdam",
+      "fictionalVenue": true,
+      "presentInSource": true
+    },
+    "market": {
+      "x": 1930.884,
+      "y": 5497.996,
+      "featureId": "wegdeel:10c3b1e8-8cab-5e25-aced-07c5e975d08b",
+      "basis": "Albert Cuypstraat, Amsterdam",
+      "fictionalVenue": true,
+      "presentInSource": false
+    },
+    "coffee": {
+      "x": 1890.585,
+      "y": 5451.035,
+      "featureId": "wegdeel:523cd265-0270-5555-a739-b8e1cc451754",
+      "basis": "Gerard Douplein, Amsterdam",
+      "fictionalVenue": true,
+      "presentInSource": false
+    },
+    "flowers": {
+      "x": 1787.339,
+      "y": 5870.28,
+      "featureId": "wegdeel:f643a552-96d1-5d10-8fca-ef33e6298948",
+      "basis": "Ferdinand Bolstraat, Amsterdam",
+      "fictionalVenue": true,
+      "presentInSource": false
+    },
+    "lab": {
+      "x": 6158.236,
+      "y": 5450.173,
+      "featureId": "wegdeel:035ca0a8-9093-53f7-9be3-2c9adb5942fb",
+      "basis": "Science Park, Amsterdam",
+      "fictionalVenue": true,
+      "presentInSource": false
+    },
+    "lotte": {
+      "x": 1056.057,
+      "y": 3247.41,
+      "featureId": "overbruggingsdeel:8b1d9302-4306-51af-ae31-9b60532e81c5",
+      "basis": "Actual BGT bridge deck near fictional pub; not a real named business",
+      "fictionalVenue": true,
+      "presentInSource": true
+    },
+    "ferrySouth": {
+      "x": 2336.407,
+      "y": 2714.803,
+      "featureId": "wegdeel:c163c06b-1650-5bb9-979c-321aabee488e",
+      "basis": "Game boarding anchor near official street end; not surveyed GVB platform coordinates",
+      "fictionalVenue": false,
+      "presentInSource": false
+    },
+    "ferryNorth": {
+      "x": 2590.929,
+      "y": 2528.07,
+      "featureId": "wegdeel:62cc967a-355f-5d50-ae7e-1bacb568682b",
+      "basis": "Game boarding anchor near official street end; not surveyed GVB platform coordinates",
+      "fictionalVenue": false,
+      "presentInSource": false
+    },
+    "flowerCart": {
+      "x": 1798.234,
+      "y": 5870.4,
+      "featureId": "wegdeel:1bb60ca7-c898-5d95-b717-2cbeb8b099d8",
+      "basis": "Fictional game interaction near flower venue on actual ground-road surface; no claim of real greenhouse/cart address",
+      "fictionalVenue": true,
+      "presentInSource": false
+    },
+    "garden": {
+      "x": 1810.35,
+      "y": 5801.567,
+      "featureId": "wegdeel:e507c0ca-c183-5739-98f3-be834a5b3e67",
+      "basis": "Fictional game interaction near flower venue on actual ground-road surface; no claim of real greenhouse/cart address",
+      "fictionalVenue": true,
+      "presentInSource": false
+    }
+  },
+  "edges": [
+    {
+      "from": "pub",
+      "to": "lotte",
+      "walk": {
+        "attempted": true,
+        "mode": "walk",
+        "cellSize": 2,
+        "maxNodes": 250000,
+        "found": true,
+        "reason": "ok",
+        "length": 49.3486268404053,
+        "points": [
+          {
+            "x": 1100.211,
+            "y": 3243.117
+          },
+          {
+            "x": 1084,
+            "y": 3248
+          },
+          {
+            "x": 1060,
+            "y": 3254
+          },
+          {
+            "x": 1056.057,
+            "y": 3247.41
+          }
+        ],
+        "visited": 60,
+        "elapsedMs": 97.306083,
+        "endpointExact": true,
+        "segmentsVerified": true,
+        "segmentsChecked": 3,
+        "startSnap": null,
+        "endSnap": null
+      },
+      "bike": {
+        "attempted": true,
+        "mode": "bike",
+        "cellSize": 2,
+        "maxNodes": 250000,
+        "found": false,
+        "reason": "unreachable",
+        "length": 0,
+        "points": [],
+        "visited": 25,
+        "elapsedMs": 8.920875,
+        "endpointExact": false,
+        "segmentsVerified": false,
+        "segmentsChecked": 0,
+        "startSnap": null,
+        "endSnap": null
+      }
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "walk": {
+        "attempted": true,
+        "mode": "walk",
+        "cellSize": 2,
+        "maxNodes": 250000,
+        "found": false,
+        "reason": "unwalkable",
+        "length": 0,
+        "points": [],
+        "visited": 0,
+        "elapsedMs": 0.048542,
+        "endpointExact": false,
+        "segmentsVerified": false,
+        "segmentsChecked": 0,
+        "startSnap": null,
+        "endSnap": null
+      },
+      "bike": {
+        "attempted": true,
+        "mode": "bike",
+        "cellSize": 2,
+        "maxNodes": 250000,
+        "found": false,
+        "reason": "unwalkable",
+        "length": 0,
+        "points": [],
+        "visited": 0,
+        "elapsedMs": 0.040333,
+        "endpointExact": false,
+        "segmentsVerified": false,
+        "segmentsChecked": 0,
+        "startSnap": null,
+        "endSnap": null
+      }
+    },
+    {
+      "from": "pub",
+      "to": "ferrySouth",
+      "walk": {
+        "attempted": true,
+        "mode": "walk",
+        "cellSize": 2,
+        "maxNodes": 250000,
+        "found": false,
+        "reason": "unwalkable",
+        "length": 0,
+        "points": [],
+        "visited": 0,
+        "elapsedMs": 0.040834,
+        "endpointExact": false,
+        "segmentsVerified": false,
+        "segmentsChecked": 0,
+        "startSnap": null,
+        "endSnap": null
+      },
+      "bike": {
+        "attempted": true,
+        "mode": "bike",
+        "cellSize": 2,
+        "maxNodes": 250000,
+        "found": false,
+        "reason": "unwalkable",
+        "length": 0,
+        "points": [],
+        "visited": 0,
+        "elapsedMs": 0.038125,
+        "endpointExact": false,
+        "segmentsVerified": false,
+        "segmentsChecked": 0,
+        "startSnap": null,
+        "endSnap": null
+      }
+    },
+    {
+      "from": "coffee",
+      "to": "lab",
+      "walk": {
+        "attempted": true,
+        "mode": "walk",
+        "cellSize": 2,
+        "maxNodes": 250000,
+        "found": false,
+        "reason": "unwalkable",
+        "length": 0,
+        "points": [],
+        "visited": 0,
+        "elapsedMs": 0.004375,
+        "endpointExact": false,
+        "segmentsVerified": false,
+        "segmentsChecked": 0,
+        "startSnap": null,
+        "endSnap": null
+      },
+      "bike": {
+        "attempted": true,
+        "mode": "bike",
+        "cellSize": 2,
+        "maxNodes": 250000,
+        "found": false,
+        "reason": "unwalkable",
+        "length": 0,
+        "points": [],
+        "visited": 0,
+        "elapsedMs": 0.003375,
+        "endpointExact": false,
+        "segmentsVerified": false,
+        "segmentsChecked": 0,
+        "startSnap": null,
+        "endSnap": null
+      }
+    },
+    {
+      "from": "coffee",
+      "to": "market",
+      "walk": {
+        "attempted": true,
+        "mode": "walk",
+        "cellSize": 2,
+        "maxNodes": 250000,
+        "found": false,
+        "reason": "unwalkable",
+        "length": 0,
+        "points": [],
+        "visited": 0,
+        "elapsedMs": 0.013167,
+        "endpointExact": false,
+        "segmentsVerified": false,
+        "segmentsChecked": 0,
+        "startSnap": null,
+        "endSnap": null
+      },
+      "bike": {
+        "attempted": true,
+        "mode": "bike",
+        "cellSize": 2,
+        "maxNodes": 250000,
+        "found": false,
+        "reason": "unwalkable",
+        "length": 0,
+        "points": [],
+        "visited": 0,
+        "elapsedMs": 0.003458,
+        "endpointExact": false,
+        "segmentsVerified": false,
+        "segmentsChecked": 0,
+        "startSnap": null,
+        "endSnap": null
+      }
+    },
+    {
+      "from": "market",
+      "to": "flowers",
+      "walk": {
+        "attempted": true,
+        "mode": "walk",
+        "cellSize": 2,
+        "maxNodes": 250000,
+        "found": false,
+        "reason": "unwalkable",
+        "length": 0,
+        "points": [],
+        "visited": 0,
+        "elapsedMs": 0.005791,
+        "endpointExact": false,
+        "segmentsVerified": false,
+        "segmentsChecked": 0,
+        "startSnap": null,
+        "endSnap": null
+      },
+      "bike": {
+        "attempted": true,
+        "mode": "bike",
+        "cellSize": 2,
+        "maxNodes": 250000,
+        "found": false,
+        "reason": "unwalkable",
+        "length": 0,
+        "points": [],
+        "visited": 0,
+        "elapsedMs": 0.001166,
+        "endpointExact": false,
+        "segmentsVerified": false,
+        "segmentsChecked": 0,
+        "startSnap": null,
+        "endSnap": null
+      }
+    },
+    {
+      "from": "flowers",
+      "to": "flowerCart",
+      "walk": {
+        "attempted": true,
+        "mode": "walk",
+        "cellSize": 2,
+        "maxNodes": 250000,
+        "found": false,
+        "reason": "unwalkable",
+        "length": 0,
+        "points": [],
+        "visited": 0,
+        "elapsedMs": 0.001125,
+        "endpointExact": false,
+        "segmentsVerified": false,
+        "segmentsChecked": 0,
+        "startSnap": null,
+        "endSnap": null
+      },
+      "bike": {
+        "attempted": true,
+        "mode": "bike",
+        "cellSize": 2,
+        "maxNodes": 250000,
+        "found": false,
+        "reason": "unwalkable",
+        "length": 0,
+        "points": [],
+        "visited": 0,
+        "elapsedMs": 0.00075,
+        "endpointExact": false,
+        "segmentsVerified": false,
+        "segmentsChecked": 0,
+        "startSnap": null,
+        "endSnap": null
+      }
+    },
+    {
+      "from": "flowers",
+      "to": "garden",
+      "walk": {
+        "attempted": true,
+        "mode": "walk",
+        "cellSize": 2,
+        "maxNodes": 250000,
+        "found": false,
+        "reason": "unwalkable",
+        "length": 0,
+        "points": [],
+        "visited": 0,
+        "elapsedMs": 0.000708,
+        "endpointExact": false,
+        "segmentsVerified": false,
+        "segmentsChecked": 0,
+        "startSnap": null,
+        "endSnap": null
+      },
+      "bike": {
+        "attempted": true,
+        "mode": "bike",
+        "cellSize": 2,
+        "maxNodes": 250000,
+        "found": false,
+        "reason": "unwalkable",
+        "length": 0,
+        "points": [],
+        "visited": 0,
+        "elapsedMs": 0.000708,
+        "endpointExact": false,
+        "segmentsVerified": false,
+        "segmentsChecked": 0,
+        "startSnap": null,
+        "endSnap": null
+      }
+    },
+    {
+      "from": "flowerCart",
+      "to": "garden",
+      "walk": {
+        "attempted": true,
+        "mode": "walk",
+        "cellSize": 2,
+        "maxNodes": 250000,
+        "found": false,
+        "reason": "unwalkable",
+        "length": 0,
+        "points": [],
+        "visited": 0,
+        "elapsedMs": 0.000709,
+        "endpointExact": false,
+        "segmentsVerified": false,
+        "segmentsChecked": 0,
+        "startSnap": null,
+        "endSnap": null
+      },
+      "bike": {
+        "attempted": true,
+        "mode": "bike",
+        "cellSize": 2,
+        "maxNodes": 250000,
+        "found": false,
+        "reason": "unwalkable",
+        "length": 0,
+        "points": [],
+        "visited": 0,
+        "elapsedMs": 0.000708,
+        "endpointExact": false,
+        "segmentsVerified": false,
+        "segmentsChecked": 0,
+        "startSnap": null,
+        "endSnap": null
+      }
+    }
+  ],
+  "forbiddenPairs": [
+    {
+      "from": "ferrySouth",
+      "to": "ferryNorth",
+      "reason": "ferry crossing is a transport link, never a generated walking/biking edge"
+    }
+  ],
+  "summary": {
+    "walk": {
+      "found": 1,
+      "failed": 8,
+      "limits": 0
+    },
+    "bike": {
+      "found": 0,
+      "failed": 9,
+      "limits": 0
+    }
+  },
+  "generated": {
+    "node": "v22.22.1",
+    "totalElapsedMs": 108.979208
+  },
+  "sourceComplete": false,
+  "notes": [
+    "Generated from the accepted GEO v1 navigator at radius 0.4 m with no endpoint snapping.",
+    "A failed edge (unwalkable/unreachable/limit) is a truthful observation on this input, not proof of city-wide disconnection and never a license to invent geometry.",
+    "reason=limit means the node budget was exhausted; it never proves unreachability.",
+    "This bounded diagnostic subset is not complete city coverage. The parent runs the full map."
+  ]
+}

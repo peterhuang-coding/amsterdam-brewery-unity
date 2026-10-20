@@ -1,0 +1,1 @@
+{"ok":true,"out":"/private/tmp/amsterdam-d28-memory-r3-parent-20261020/tools/geo/runtime/sample-routes.json","edges":9,"walkFound":1,"bikeFound":0,"walkFailed":8,"bikeFailed":9,"limits":{"walk":0,"bike":0},"geometrySha256":"534718e298a027dab112f581b2e2080c6212fb99266c6039a038d35077f1c931","elapsedMs":109.269042}

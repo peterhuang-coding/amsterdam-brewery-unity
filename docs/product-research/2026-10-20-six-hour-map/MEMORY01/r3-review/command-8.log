@@ -1,0 +1,48 @@
+D26 RENDER01 synthetic benchmark (measured on this machine, not a performance claim)
+{
+  "synthetic_features": 20000,
+  "layer_counts": {
+    "water": 300,
+    "buildings": 18000,
+    "roads": 1500,
+    "bridges": 200
+  },
+  "world_metres": [
+    7127.775,
+    6671.705
+  ],
+  "index_buckets": 1023,
+  "timings_ms": {
+    "create_index": 12.407,
+    "city_first_build": 15.267,
+    "city_reuse_frame": 0.076,
+    "city_zoom2_frame": 0.067,
+    "city_night_rebuild": 8.61,
+    "street_30_frames_total": 1.929,
+    "street_frames_avg": 0.064,
+    "dispose": 0.017,
+    "direct_city_3_frames_total": 13.904
+  },
+  "street_frames": {
+    "builds": 11,
+    "reuses": 19
+  },
+  "canvases": {
+    "created": 4,
+    "max_side_px": 2048
+  },
+  "direct_fallback_frames": 3,
+  "last_city_frame": {
+    "indexed": 198,
+    "culled": 7,
+    "drawn": 191,
+    "reused": true,
+    "kind": "street",
+    "night": true
+  }
+}
+PASS all features indexed
+PASS at most 4 live cache allocations across day/night city+street
+PASS no cache side exceeds 2048 px
+PASS padded street cache is reused more often than rebuilt
+PASS direct fallback path exercised

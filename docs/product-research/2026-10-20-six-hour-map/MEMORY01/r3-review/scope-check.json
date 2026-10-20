@@ -1,0 +1,200 @@
+{
+  "task_id": "amsterdam-d27-compact-runtime-r3-20261020",
+  "receipt_status": "blocked",
+  "finished_at": "2026-10-20T02:24:33.323947+00:00",
+  "elapsed_seconds": 724.792,
+  "cli": {
+    "final_subtype": "error_max_turns",
+    "is_error": true,
+    "outcome": "completed",
+    "pid": 61627,
+    "returncode": 1,
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 4288952,
+      "inference_geo": "",
+      "input_tokens": 150099,
+      "iterations": [],
+      "output_tokens": 22182,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_fetch_requests": 0,
+        "web_search_requests": 0
+      },
+      "service_tier": "standard",
+      "speed": "standard"
+    }
+  },
+  "observed_models": [
+    "doubao-seed-evolving"
+  ],
+  "receipt_report_present": false,
+  "disk_report_present": false,
+  "disk_report_sha256": null,
+  "disk_report_validation_error": "missing on disk",
+  "disk_report_status": null,
+  "tool_counts": {
+    "Read": 25,
+    "Bash": 14,
+    "Edit": 13
+  },
+  "extra_bash_commands": [
+    "wc -l tools/geo/navigation/geo-navigation.js tools/geo/renderer/geo-map-renderer.js tools/geo/runtime/sample-out/manifest.json anchors.json tools/geo/runtime/sample-routes.json 2>/dev/null; ls -la tools/geo/runtime tools/geo/runtime/sample-out",
+    "node --check tools/geo/runtime/geo-runtime.js && node parent-runtime-roundtrip.cjs . multichunk"
+  ],
+  "permission_denials": [],
+  "disallowed_changes": [],
+  "path_violations": [],
+  "input_sha": [
+    {
+      "file": "anchors.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "brief.md",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "original-brief.md",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "parent-runtime-roundtrip.cjs",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "parent-runtime-routes.cjs",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/navigation/benchmark-geo-navigation.cjs",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/navigation/geo-navigation.js",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/navigation/parent-capsule-repro.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/navigation/parent-r2-witness.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/navigation/real-pub-sample.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/navigation/test-geo-navigation.cjs",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/renderer/benchmark-geo-map-renderer.cjs",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/renderer/geo-map-renderer.js",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/renderer/real-pub-sample.json",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/renderer/renderer-demo.html",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/renderer/test-geo-map-renderer.cjs",
+      "source_match": true,
+      "readonly": true,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/runtime/geo-runtime.js",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": false
+    },
+    {
+      "file": "tools/geo/runtime/pack-runtime.py",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/runtime/precompute-routes.cjs",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/runtime/sample-out/coords-00000.bin.gz",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/runtime/sample-out/manifest.json",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": false
+    },
+    {
+      "file": "tools/geo/runtime/sample-out/metadata-00000.json.gz",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": true
+    },
+    {
+      "file": "tools/geo/runtime/sample-routes.json",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": false
+    },
+    {
+      "file": "tools/geo/runtime/test_runtime.py",
+      "source_match": true,
+      "readonly": false,
+      "staged_match": true
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "exit_code": 0,
+  "seconds": 39.245220541,
+  "packer_output": {
+    "chunks": 178,
+    "downloadBytes": 97357158,
+    "encoding": "per-chunk",
+    "features": 145703,
+    "geometrySha256": "7b6fa8e13f148e4403cea37066463cd811d578f4752f46dec8cb1b4dd9a55dff",
+    "ok": true,
+    "pairs": 22977546
+  },
+  "files": 357,
+  "byte_identical": true,
+  "manifest_sha256": "1211a1b5bcb765bec82e4677d4794a369236ee712e76c2412e685c652c32f14d"
+}

@@ -1,0 +1,49 @@
+{
+  "parentTimedOut": true,
+  "parentLimitMs": 60000,
+  "progress": [
+    {
+      "receivedAt": 1792464332376,
+      "stage": "manifest",
+      "loaded": 0,
+      "ms": 0.09999990463256836
+    },
+    {
+      "receivedAt": 1792464332401,
+      "stage": "fetch-chunks",
+      "loaded": 1,
+      "ms": 25.5
+    },
+    {
+      "receivedAt": 1792464333995,
+      "stage": "verify-geometry",
+      "loaded": 0,
+      "ms": 1619.1999999284744
+    },
+    {
+      "receivedAt": 1792464340913,
+      "stage": "assemble",
+      "loaded": 0,
+      "ms": 8537.899999976158
+    },
+    {
+      "receivedAt": 1792464342455,
+      "stage": "index-navigation",
+      "loaded": 0,
+      "ms": 10077.599999904633
+    },
+    {
+      "receivedAt": 1792464350006,
+      "stage": "index-rendering",
+      "loaded": 0,
+      "ms": 17631
+    },
+    {
+      "receivedAt": 1792464359789,
+      "stage": "routes",
+      "loaded": 0,
+      "ms": 27412.199999928474
+    }
+  ],
+  "lastBeatAgeMs": 32598
+}

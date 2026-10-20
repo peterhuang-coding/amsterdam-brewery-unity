@@ -1,0 +1,40 @@
+{
+  "mixed_signed_zero_positive": {
+    "exit_code": 0,
+    "result": {
+      "all_exact": true,
+      "source_sha256": "93a01097b31dbdc8c192a269544b0d4d0d8c3967a020bf54bef318a959d76e2d",
+      "geometry_sha256": "d585ebdb240f1891fd0f2a4c7b1bf0943f17fec1dae98723f809daaccec7756d",
+      "features": 2,
+      "polygons": 2,
+      "rings": 2,
+      "pairs": 10,
+      "layer_counts": {
+        "water": 0,
+        "buildings": 0,
+        "roads": 2,
+        "bridges": 0
+      },
+      "encoding": "per-chunk",
+      "chunk_encodings": {
+        "float64-le": 1,
+        "int32-millimetres": 1
+      },
+      "negative_zero_ordinates": 2,
+      "chunks": 2,
+      "total_download_bytes": 402,
+      "largest_coord_bytes": 80,
+      "largest_metadata_bytes": 204,
+      "target_chunk_bytes": 80,
+      "seconds": 0.000295624999999999
+    }
+  },
+  "zero-sign": {
+    "exit_code": 1,
+    "result": "AssertionError: ('negative-zero', 0, [-0.0, 0], [0.0, 0.0], 'IEEE-754 mismatch')"
+  },
+  "property": {
+    "exit_code": 1,
+    "result": "AssertionError"
+  }
+}

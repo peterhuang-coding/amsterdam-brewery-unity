@@ -1,6 +1,6 @@
 {
   "decision": "D27",
-  "status": "d28_runtime_recovery_running",
+  "status": "d28_memory_r3_rejected_limit_exhausted",
   "start_at": "2026-10-19T16:52:30Z",
   "deadline": "2026-10-19T22:52:30Z",
   "next_direction_review_at": "2026-10-17T09:48:33Z",
@@ -12,12 +12,12 @@
   "failure_policy_question_pending": false,
   "final_report_sent": false,
   "schedule": "same amsterdam ACTIVE every15minutes within fixed D28 window",
-  "current_task_terminal": false,
-  "failure_reason": null,
-  "last_result_at": "2026-10-19T17:36:46.262920Z",
+  "current_task_terminal": true,
+  "failure_reason": "MEMORY-R3 maxturn partial; full cached-route loading blocks heartbeat32.598s; missing4deliverables; extra1/1 exhausted; no automaticR4",
+  "last_result_at": "2026-10-20T02:24:33.323947Z",
   "in_flight": [],
   "candidate_path": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914/docs/product-research/2026-10-17-ten-hour-map/RENDER01/r3-review",
-  "adopted_this_round": 0,
+  "adopted_this_round": false,
   "policy_decision": "D24",
   "correction_after_r2": {
     "allowed": 1,
@@ -302,7 +302,7 @@
       "correction_worker_pid": 32689,
       "correction_started_at": "2026-10-19T18:48:10+00:00",
       "correction_contract_commit": "f656dce908dc39022234b5bc5c53c6ad2bf4462f",
-      "outcome": "correction_transport_failure_parent_rejected",
+      "outcome": "extra_partial_parent_full_runtime_rejected",
       "adopted": false,
       "correction_finished_at": "2026-10-19T19:05:33.884702+00:00",
       "correction_elapsed_seconds": 1043.485,
@@ -320,9 +320,15 @@
       "extra_attempt_answer_recorded_at": "2026-10-20T02:07:11.512868+00:00",
       "extra_attempt_answer_source": "actual human structured reply to request_user_input_async call_b75a47eb30834de4a41bfc8e6459a49d item0",
       "extra_attempt_approval_record": "docs/product-research/2026-10-20-six-hour-map/MEMORY01/post-window-extra-approval.json",
-      "extra_attempt_execution_status": "running",
+      "extra_attempt_execution_status": "done_max_turns",
       "extra_attempt_task_id": "amsterdam-d27-compact-runtime-r3-20261020",
-      "extra_attempt_started_at": "2026-10-20T02:12:28+00:00"
+      "extra_attempt_started_at": "2026-10-20T02:12:28+00:00",
+      "extra_attempt_finished_at": "2026-10-20T02:24:33.323947Z",
+      "extra_attempt_reported_turns": 51,
+      "extra_attempt_elapsed_seconds": 724.792,
+      "extra_parent_review": "docs/product-research/2026-10-20-six-hour-map/MEMORY01/r3-review/parent-review.md",
+      "extra_parent_review_sha256": "de0b4c1dd1f4543f3414481ef8a4fe3331e164cd0b147bfebb1187a53a175935",
+      "extra_attempt_question_pending": false
     },
     "D27-CITY01": {
       "logical_task_id": "f02-real-city-d27",
@@ -350,7 +356,7 @@
   "current_task_notion": null,
   "prepared_correction_task_id": null,
   "prepared_correction_packet": null,
-  "current_task_stage": "running",
+  "current_task_stage": "parent_rejected",
   "prepared_task_id": null,
   "prepared_task_packet": null,
   "play_service_pid": 91799,
@@ -688,10 +694,10 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-20T02:13:45.495455+00:00",
+  "updated_at": "2026-10-20T02:50:26.603673+00:00",
   "parent_validation_notified_at": "2026-10-13T20:46:56.821862+00:00",
   "current_task_prepared": false,
-  "last_checked_at": "2026-10-20T02:07:11.512868+00:00",
+  "last_checked_at": "2026-10-20T02:50:26.603673+00:00",
   "prior_four_day_window": {
     "start_at": "2026-10-12T19:48:33Z",
     "deadline": "2026-10-16T19:48:33Z",
@@ -736,7 +742,7 @@
       {
         "task_id": "amsterdam-d27-compact-runtime-r3-20261020",
         "logical_task_id": "f02-compact-runtime-d27",
-        "state": "running",
+        "state": "done",
         "started_at": "2026-10-20T02:12:28+00:00",
         "worker_pid": 61627,
         "launcher_pid": 61616,
@@ -754,9 +760,25 @@
         "actual_cc_count_after_launch": 1,
         "notion_memory_readback": "2026-10-20T02:11:56.967Z",
         "notion_home_readback": "2026-10-20T02:11:59.583Z",
-        "preflight_limitation": "Initial readonly process list at02:10 showed no CC; immediate prelaunch Python ps strict UTF8 decoding failed, but parent still launched. Postlaunch first comm-based parser also undercounted due to macOS comm truncation. Raw args prefix parsing with replacement decoding confirmed exactly worker61627 and launcher61616. No cancellation or resubmission."
+        "preflight_limitation": "Initial readonly process list at02:10 showed no CC; immediate prelaunch Python ps strict UTF8 decoding failed, but parent still launched. Postlaunch first comm-based parser also undercounted due to macOS comm truncation. Raw args prefix parsing with replacement decoding confirmed exactly worker61627 and launcher61616. No cancellation or resubmission.",
+        "receipt_status": "blocked",
+        "finished_at": "2026-10-20T02:24:33.323947Z",
+        "cli_returncode": 1,
+        "final_subtype": "error_max_turns",
+        "reported_turns": 51,
+        "elapsed_seconds": 724.792,
+        "worker_and_launcher_exited": true,
+        "session_drained": true,
+        "parent_result": "rejected_semantic_and_missing_deliverables",
+        "standard_review": "partial/call_exception",
+        "adopted": false,
+        "parent_review_sha256": "de0b4c1dd1f4543f3414481ef8a4fe3331e164cd0b147bfebb1187a53a175935"
       }
-    ]
+    ],
+    "in_flight": [],
+    "blocked_dependency": "MEMORY01-R3 rejected; no remaining attempt; City/BOOT not integrated",
+    "parent_review_sha256": "de0b4c1dd1f4543f3414481ef8a4fe3331e164cd0b147bfebb1187a53a175935",
+    "parent_review_path": "docs/product-research/2026-10-20-six-hour-map/MEMORY01/r3-review/parent-review.md"
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",
@@ -768,9 +790,9 @@
   },
   "prepared_tasks": [],
   "awaiting_parent_review": [],
-  "current_stage": "memory_extra_recovery",
+  "current_stage": "blocked_dependency",
   "prepared": [],
-  "stage": "running",
+  "stage": "blocked_dependency",
   "renewal_history": [
     {
       "started_at": "2026-10-16T16:03:03Z",

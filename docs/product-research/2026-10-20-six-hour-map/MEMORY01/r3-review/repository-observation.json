@@ -1,0 +1,19 @@
+{
+  "observed_at": "2026-10-20T02:46:21.677518+00:00",
+  "repositories": [
+    {
+      "root": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/push-review-20260914",
+      "branch": "codex/product-research-nightshift",
+      "head": "41118a34fe363c3349e55fbb0937ec39335e4fdb",
+      "status": "M .claude/autopilot/four-day-state.json\n?? .playwright-cli/\n?? docs/product-research/2026-10-20-six-hour-map/MEMORY01/r3-review/\n?? docs/product-research/2026-10-20-three-hour-map/parent-validation/",
+      "remote_head": "41118a34fe363c3349e55fbb0937ec39335e4fdb"
+    },
+    {
+      "root": "/Volumes/SanDisk2TB/amsterdam-brewery-unity/.claude/worktrees/art-pass-20261013",
+      "branch": "codex/real-map-20261017",
+      "head": "1e0ede0f528b764e5c679101889392e92d2d55b9",
+      "status": "",
+      "remote_head": "1e0ede0f528b764e5c679101889392e92d2d55b9"
+    }
+  ]
+}

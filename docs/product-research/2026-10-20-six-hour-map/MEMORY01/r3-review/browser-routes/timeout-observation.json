@@ -1,0 +1,10 @@
+{
+  "observed_at": "2026-10-20T02:41:48.613476+00:00",
+  "parent_exec_session": 37872,
+  "parent_exit_code": 1,
+  "exception": "subprocess.TimeoutExpired",
+  "parent_timeout_seconds": 240,
+  "result_produced": false,
+  "code_sha256": "e24d7100872141ccbca875f7eda5676dc0f2f7c3d199bd722b91e4b15e7ca4c7",
+  "scope": "parent browser test timeout, not CC worker timeout; no conclusion that all routes fail"
+}

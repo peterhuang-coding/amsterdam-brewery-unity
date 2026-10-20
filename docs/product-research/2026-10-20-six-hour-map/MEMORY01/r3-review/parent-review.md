@@ -1,0 +1,39 @@
+# MEMORY01-R3 parent review — partial recovery, full runtime rejected
+
+Fixed task `amsterdam-d27-compact-runtime-r3-20261020`, logical `f02-compact-runtime-d27`. The actual human authorized one extra1800second/50turn recovery and subsequently a fixed D28 window UTC2026-10-20T02:08:39Z–05:08:39Z. Both approvals are fulfilled as permissions; neither is pending. This immutable review covers the returned candidate, not completion of the three-hour window or the game goal.
+
+## Execution and scope
+
+Started02:12:28.549504Z; terminal02:24:33.323947Z after724.792seconds. CLI1, `error_max_turns`, is_error=true, provider reported51turns against the50turn contract. This is the turn limit, not the1800second worker deadline or a transport timeout. Original state done/receipt blocked remains unchanged. Worker61627/launcher61616 exited; session93110 was drained with exit2. No disk or receipt handoff-result.json exists.
+
+Read25/Edit13/Bash14; two unlisted Bash calls (readonly wc/ls and a combined syntax/roundtrip command), no permission denial or out-of-scope changed file/path. All24 original source and16 readonly staged SHA values remain intact. Three files changed: geo-runtime.js, sample manifest and sample routes. Returned runtime SHA c4b53041fba8f73fe8e69847f3e477cb0abb192ed57f30ac78e79001afd5e4f6. Original workspace, receipt, compressed events and scope audit are retained beside this review. The parent did not repair production implementation.
+
+## Verified improvement
+
+Fresh parent copy `/tmp/amsterdam-d28-memory-r3-parent-20261020` ran all13 exact commands. Effective12pass/1fail: Python10, NAV43, renderer43, both benchmarks, syntax/samplepack/precompute, actual HTTP signed-zero and8chunk roundtrips, and all6 parent route regressions pass. Required `test-runtime.cjs` is absent and its command fails. The original reverse-cache, nearby-connector and pre-aborted-cache small-fixture counterexamples now pass.
+
+The first HTTP parent runs hit sandbox `listen EPERM127.0.0.1`; these were environmental failures. Only those two identical commands were rerun with authorized loopback access and passed rawgzip plus HTTP Content-Encoding. Original failures and effective results are both retained; EPERM is not a candidate bug.
+
+Full independent identity verifies145703features/148942polygons/163268rings/22977546coordinate pairs, every original IEEE754 value including2negative zeros, properties/order/metadata and hashes. There are178chunks:176Int32millimetre and2Float64. The old assumption of at most one Float64 chunk was incorrect; no source was altered to fit it. Source SHA3a18d70c3dd6e77e10af71b71ab54ca0fb59b74e8287d2c358933475dcf199f5, geometry SHA7b6fa8e13f148e4403cea37066463cd811d578f4752f46dec8cb1b4dd9a55dff. Downloaded chunk bytes97357158;357files including manifest total97574197B. Largest coordinate payload1048568B and metadata3540955B: the1MiB target applies to coordinate chunks, not all metadata files. Repeat pack39.245seconds and all357files byte-identical; manifest SHA1211a1b5bcb765bec82e4677d4794a369236ee712e76c2412e685c652c32f14d. The independent verifier was calibrated against signed-zero and property mutations.
+
+Three valid Chrome155 full load/dispose cycles **without a routes artifact** succeed. Ready times25.089/25.104/25.190seconds; maximum observed heartbeat gaps44.1/47.2/37.7ms. Maximum sampled CDP usedHeap+backing501161370/498362660/492665880B, below768MiB. After dispose+GC the two repeat cycles return to usedHeap2092140/2123460B and backing185221B. These are sampled isolate values, not peak RSS or mobile measurements. All145703features reach the renderer; cold paint77.3–89.5ms,30cached paints0–0.2ms. Three PNGs were actually read; repeat PNGs are byte-identical. Rawgzip runtime decode and browser Content-Encoding decode both work with original negative-zero witnesses. Seven lifecycle checks pass: pre-abort, cap rejection,404, fetch/navigation-index/render-index abort, encoded retry and idempotent dispose; maximum measured abort settlement5.8ms. This is real progress, not complete runtime acceptance.
+
+## Blocking full-route result
+
+The real full cached-route acceptance does **not** pass. It uses the unchanged hash-bound prior graph (`756060bbc666b2997865f1c25755345d770007d44313c90a2da7780048465ba6`), containing7walk+2bike successful routes over the same complete source. Prior GEOS verification covered132segments with zero failures and minimum clearance0.400835m; this prior geometry check is not a new runtime pass.
+
+The original full browser route test produced no result within its240second parent limit. A clean-browser independent60second phase-bounded reproduction reached `routes` at27412.2ms, then returned a parent timeout with **32598ms since the last exposed browser heartbeat**. No `named-query` stage was reached. This isolates the observed stall to route-artifact loading/verification, before route queries. The unchanged implementation calls synchronous `makeRoutesService`, which loops over stored segments using accepted navigation predicates. The exact expensive predicate/root cause is not claimed proven. In particular, this evidence does not show that all routes are geometrically unsafe, nor that numeric endpoints specifically caused this stall.
+
+The original brief requires cooperative loading/indexing with maximum250ms heartbeat gap and cached common queries below100ms. Full loading with the routes artifact fails the response requirement; common query latency and full cached direction results were not reached. The City candidate actually consumes `routes.route` with coordinate objects; its previous parent adapter acceptance does not validate this runtime service. BOOT cannot be dispatched on these results.
+
+Required runtime test-runtime.cjs, runtime-demo.html, README.md and legal handoff report remain missing. Thus the rejection is both an actual full-data response failure and incomplete delivery, not merely missing paperwork.
+
+## Parent limitations and disposition
+
+One earlier browser-full attempt ended with a closed-target/detach error and no valid metrics; its cause is unknown, not labelled OOM. Its log remains. The two-cycle repeat and single diagnostic above are separate valid observations. After the240second route timeout, a first bounded follow-up was interrupted by closing the still-busy original browser; it is not counted as a second product failure. A30second debugger diagnostic produced no stack. The clean-browser phase reproduction is the independent second observation. The attempted emergency SIGTERM check found the old browser already absent after successful CLI close and sent no signal.
+
+Both named parent browser instances are closed. Parent18866/PID63240 was stopped only after its full command was checked; execsession10891 drained143. Old18860 was not changed.65Amsterdam status files are done, which means terminal, not65accepted tasks. Worker/launcher exit and cleanup observations are saved.
+
+Decision: **execution partial/call_exception; parent full-runtime rejected; adoption0**. Standard execution review does not turn the blocked receipt into success. The full pack is preserved byte-for-byte at `/Volumes/SanDisk2TB/amsterdam-geodata/d26-bgt-20261017/compact-runtime-candidate-memory01-r3`, candidate only. The game branch remains clean at1e0ede0f528b764e5c679101889392e92d2d55b9, remote equal; no City/BOOT/game map adoption occurred.
+
+Business1, ordinary correction1/1 and human-approved extra1/1 are consumed. Stop this logical task; no automatic R4, renamed task, fallback platform or main-agent rewrite. D28actualPlan1/newadopted0, cumulative adopted components4, City qualified pending candidate1, game-map0. Fixed05:08:39Z deadline and final_report_sent=false remain; this review is not an early final-window report. Continue only actions independently authorized by new human direction or the fixed-deadline collection procedure.

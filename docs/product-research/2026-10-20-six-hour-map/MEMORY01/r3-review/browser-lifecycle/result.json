@@ -1,0 +1,186 @@
+{
+  "baseline": {
+    "usedSize": 984140,
+    "totalSize": 1572864,
+    "embedderHeapUsedSize": 582632,
+    "backingStorageSize": 184945
+  },
+  "cases": [
+    {
+      "name": "pre-aborted",
+      "pass": true,
+      "resolved": false,
+      "error": "AbortError: operation aborted",
+      "errorName": "AbortError",
+      "elapsedMs": 0.30000007152557373,
+      "abortTriggered": true,
+      "abortToRejectionMs": 0.40000009536743164,
+      "phases": [],
+      "afterGC": {
+        "usedSize": 1095860,
+        "totalSize": 1835008,
+        "embedderHeapUsedSize": 410528,
+        "backingStorageSize": 184981
+      }
+    },
+    {
+      "name": "download-cap",
+      "pass": true,
+      "resolved": false,
+      "error": "CapExceededError: encoded payload 97357158 bytes exceeds maxDownloadBytes 1",
+      "errorName": "CapExceededError",
+      "elapsedMs": 2.5,
+      "abortTriggered": false,
+      "abortToRejectionMs": null,
+      "phases": [
+        "manifest"
+      ],
+      "afterGC": {
+        "usedSize": 1127544,
+        "totalSize": 1835008,
+        "embedderHeapUsedSize": 337160,
+        "backingStorageSize": 185007
+      }
+    },
+    {
+      "name": "missing-manifest",
+      "pass": true,
+      "resolved": false,
+      "error": "HttpError: HTTP 404 for http://127.0.0.1:18866/raw/does-not-exist.json",
+      "errorName": "HttpError",
+      "elapsedMs": 1.2000000476837158,
+      "abortTriggered": false,
+      "abortToRejectionMs": null,
+      "phases": [
+        "manifest"
+      ],
+      "afterGC": {
+        "usedSize": 1128352,
+        "totalSize": 1835008,
+        "embedderHeapUsedSize": 814896,
+        "backingStorageSize": 185007
+      }
+    },
+    {
+      "name": "fetch-abort",
+      "pass": true,
+      "resolved": false,
+      "error": "AbortError: operation aborted",
+      "errorName": "AbortError",
+      "elapsedMs": 24.100000023841858,
+      "abortTriggered": true,
+      "abortToRejectionMs": 0.20000004768371582,
+      "phases": [
+        "manifest",
+        "fetch-chunks"
+      ],
+      "afterGC": {
+        "usedSize": 1168832,
+        "totalSize": 1835008,
+        "embedderHeapUsedSize": 346976,
+        "backingStorageSize": 185011
+      }
+    },
+    {
+      "name": "navigation-index-abort",
+      "pass": true,
+      "resolved": false,
+      "error": "AbortError: operation aborted",
+      "errorName": "AbortError",
+      "elapsedMs": 9754.800000071526,
+      "abortTriggered": true,
+      "abortToRejectionMs": 5.300000071525574,
+      "phases": [
+        "manifest",
+        "fetch-chunks",
+        "verify-geometry",
+        "assemble",
+        "index-navigation"
+      ],
+      "afterGC": {
+        "usedSize": 1274916,
+        "totalSize": 3670016,
+        "embedderHeapUsedSize": 502736,
+        "backingStorageSize": 185011
+      }
+    },
+    {
+      "name": "render-index-abort",
+      "pass": true,
+      "resolved": false,
+      "error": "AbortError: operation aborted",
+      "errorName": "AbortError",
+      "elapsedMs": 17430.299999952316,
+      "abortTriggered": true,
+      "abortToRejectionMs": 5.799999952316284,
+      "phases": [
+        "manifest",
+        "fetch-chunks",
+        "verify-geometry",
+        "assemble",
+        "index-navigation",
+        "index-rendering"
+      ],
+      "afterGC": {
+        "usedSize": 1334536,
+        "totalSize": 3932160,
+        "embedderHeapUsedSize": 620472,
+        "backingStorageSize": 185011
+      }
+    },
+    {
+      "name": "encoded-retry-and-idempotent-dispose",
+      "pass": true,
+      "loaded": true,
+      "elapsedMs": 26355.5,
+      "counts": {
+        "water": 1805,
+        "buildings": 71463,
+        "roads": 70085,
+        "bridges": 2350
+      },
+      "witnesses": [
+        {
+          "id": "wegdeel:057a343d-bcfd-5920-b8ea-ea44abc38ab7",
+          "found": true,
+          "negativeZero": true
+        },
+        {
+          "id": "wegdeel:9339d9fa-0a86-5458-b0da-b7ff026b4e51",
+          "found": true,
+          "negativeZero": true
+        }
+      ],
+      "stats": {
+        "maxAttempts": 3,
+        "chunks": 178,
+        "fetchAttempts": 357,
+        "retries": 0,
+        "filesFetched": 356,
+        "compressedBytes": 97357158,
+        "uncompressedBytes": 249438513,
+        "decompressedByRuntime": 0,
+        "decompressedByTransport": 356,
+        "inflightPeakBytes": 5332285,
+        "coordEncoding": "per-chunk",
+        "pairCount": 22977546,
+        "featureCount": 145703,
+        "geometrySha256": "7b6fa8e13f148e4403cea37066463cd811d578f4752f46dec8cb1b4dd9a55dff",
+        "retainedCoordinateCopies": 1,
+        "retainedCoordinatePairArrays": 0,
+        "routeEdgesTotal": 0,
+        "routeEdgesVerified": 0,
+        "routeEdgesDropped": 0
+      },
+      "afterGC": {
+        "usedSize": 1369096,
+        "totalSize": 3407872,
+        "embedderHeapUsedSize": 760464,
+        "backingStorageSize": 185015
+      }
+    }
+  ],
+  "errors": [],
+  "allPassed": true,
+  "metric": "sampled isolate heap/backing after GC; not peak RSS"
+}

@@ -1,0 +1,27 @@
+{
+  "all_exact": true,
+  "source_sha256": "3a18d70c3dd6e77e10af71b71ab54ca0fb59b74e8287d2c358933475dcf199f5",
+  "geometry_sha256": "7b6fa8e13f148e4403cea37066463cd811d578f4752f46dec8cb1b4dd9a55dff",
+  "features": 145703,
+  "polygons": 148942,
+  "rings": 163268,
+  "pairs": 22977546,
+  "layer_counts": {
+    "water": 1805,
+    "buildings": 71463,
+    "roads": 70085,
+    "bridges": 2350
+  },
+  "encoding": "per-chunk",
+  "chunk_encodings": {
+    "int32-millimetres": 176,
+    "float64-le": 2
+  },
+  "negative_zero_ordinates": 2,
+  "chunks": 178,
+  "total_download_bytes": 97357158,
+  "largest_coord_bytes": 1048568,
+  "largest_metadata_bytes": 3540955,
+  "target_chunk_bytes": 1048576,
+  "seconds": 24.770300542004406
+}

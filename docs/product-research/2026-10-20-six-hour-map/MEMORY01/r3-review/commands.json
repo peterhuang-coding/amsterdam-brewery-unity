@@ -1,0 +1,67 @@
+[
+  {
+    "command": "/tmp/amsterdam-d26-geo-tools-venv/bin/python tools/geo/runtime/test_runtime.py",
+    "exit_code": 0,
+    "seconds": 0.071746125
+  },
+  {
+    "command": "/tmp/amsterdam-d26-geo-tools-venv/bin/python tools/geo/runtime/pack-runtime.py --input tools/geo/navigation/real-pub-sample.json --outdir tools/geo/runtime/sample-out --chunk-bytes 1048576",
+    "exit_code": 0,
+    "seconds": 0.04007554099999999
+  },
+  {
+    "command": "node --check tools/geo/runtime/geo-runtime.js",
+    "exit_code": 0,
+    "seconds": 0.07603354200000001
+  },
+  {
+    "command": "node --check tools/geo/runtime/precompute-routes.cjs",
+    "exit_code": 0,
+    "seconds": 0.07330679099999998
+  },
+  {
+    "command": "node --test tools/geo/runtime/test-runtime.cjs",
+    "exit_code": 1,
+    "seconds": 0.07347825000000002
+  },
+  {
+    "command": "node --test tools/geo/navigation/test-geo-navigation.cjs",
+    "exit_code": 0,
+    "seconds": 7.376191959000001
+  },
+  {
+    "command": "node --test tools/geo/renderer/test-geo-map-renderer.cjs",
+    "exit_code": 0,
+    "seconds": 0.3945672500000006
+  },
+  {
+    "command": "node tools/geo/navigation/benchmark-geo-navigation.cjs",
+    "exit_code": 0,
+    "seconds": 7.367750417000002
+  },
+  {
+    "command": "node tools/geo/renderer/benchmark-geo-map-renderer.cjs",
+    "exit_code": 0,
+    "seconds": 0.12725520800000112
+  },
+  {
+    "command": "node tools/geo/runtime/precompute-routes.cjs --data tools/geo/navigation/real-pub-sample.json --anchors anchors.json --out tools/geo/runtime/sample-routes.json",
+    "exit_code": 0,
+    "seconds": 0.18208545799999953
+  },
+  {
+    "command": "node parent-runtime-roundtrip.cjs .",
+    "exit_code": 1,
+    "seconds": 0.07735404199999962
+  },
+  {
+    "command": "node parent-runtime-roundtrip.cjs . multichunk",
+    "exit_code": 1,
+    "seconds": 0.1278704580000003
+  },
+  {
+    "command": "node parent-runtime-routes.cjs .",
+    "exit_code": 0,
+    "seconds": 0.07690666600000284
+  }
+]

@@ -1,0 +1,397 @@
+[
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/brief.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/original-brief.md"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/geo-runtime.js"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/pack-runtime.py"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/parent-runtime-routes.cjs"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/parent-runtime-roundtrip.cjs"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/precompute-routes.cjs"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/test_runtime.py"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "wc -l tools/geo/navigation/geo-navigation.js tools/geo/renderer/geo-map-renderer.js tools/geo/runtime/sample-out/manifest.json anchors.json tools/geo/runtime/sample-routes.json 2>/dev/null; ls -la tools/geo/runtime tools/geo/runtime/sample-out",
+      "description": "Count lines and list runtime directory"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/sample-out/manifest.json"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/anchors.json"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/navigation/geo-navigation.js",
+      "offset": 1450,
+      "limit": 220
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/navigation/geo-navigation.js",
+      "offset": 1180,
+      "limit": 270
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/navigation/geo-navigation.js",
+      "offset": 700,
+      "limit": 300
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/navigation/geo-navigation.js",
+      "offset": 400,
+      "limit": 300
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/navigation/geo-navigation.js",
+      "offset": 1,
+      "limit": 400
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/renderer/geo-map-renderer.js",
+      "offset": 1380,
+      "limit": 213
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/sample-routes.json",
+      "offset": 1,
+      "limit": 80
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/renderer/geo-map-renderer.js",
+      "offset": 1,
+      "limit": 120
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/renderer/geo-map-renderer.js",
+      "offset": 300,
+      "limit": 330
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/renderer/geo-map-renderer.js",
+      "offset": 150,
+      "limit": 150
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/sample-routes.json",
+      "offset": 86,
+      "limit": 120
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/sample-routes.json",
+      "offset": 420,
+      "limit": 64
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "old_string": "    // Copy into the single global typed buffer (aligned typed-array set).\n    var ordinateBytes = manifest.ordinateBytes;\n    var pairs = ch.pairCount * 2;\n    var byteOffset = ch.pairOffset * 2 * ordinateBytes;\n    var src;\n    var aligned = (coordBytes.byteOffset % ordinateBytes) === 0 &&\n      coordBytes.byteLength + coordBytes.byteOffset === coordBytes.buffer.byteLength;\n    if (!aligned) {\n      var copy = new Uint8Array(ch.coordBytes);\n      copy.set(coordBytes);\n      coordBytes = copy;\n    }\n    if (ordinateBytes === 4) {\n      src = new Int32Array(coordBytes.buffer, coordBytes.byteOffset, pairs);\n      manifest._coordBuffer.ints.set(src, ch.pairOffset * 2);\n    } else {\n      src = new Float64Array(coordBytes.buffer, coordBytes.byteOffset, pairs);\n      manifest._coordBuffer.doubles.set(src, ch.pairOffset * 2);\n    }\n\n    stats.compressedBytes += ch.coordCompressedBytes + ch.metadataCompressedBytes;",
+      "new_string": "    // The chunk's own decoded typed buffer, in the chunk's declared width\n    // (Int32 millimetres or Float64). Features are never split across chunks,\n    // so every ring view binds to exactly one of these buffers; the whole\n    // set of them IS the single decoded coordinate copy. Float64 chunks keep\n    // their stored bytes (little-endian doubles are the canonical geometry\n    // hash bytes), so verification never makes a second full Float64 copy.\n    var ordinateBytes = ch._ordinateBytes;\n    var chunkBytes = new ArrayBuffer(ch.coordBytes);\n    new Uint8Array(chunkBytes).set(coordBytes);\n    var chunkBuffer;\n    if (ordinateBytes === 4) {\n      chunkBuffer = {\n        buffer: chunkBytes, ordinateBytes: 4,\n        ints: new Int32Array(chunkBytes), doubles: null\n      };\n    } else {\n      chunkBuffer = {\n        buffer: chunkBytes, ordinateBytes: 8,\n        ints: null, doubles: new Float64Array(chunkBytes)\n      };\n    }\n    manifest._coordBuffer.chunks[index] = chunkBuffer;\n\n    stats.compressedBytes += ch.coordCompressedBytes + ch.metadataCompressedBytes;"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "old_string": "      if (signal && signal.aborted) throw abortError();\n      var cb = chunkBuffers[ci];\n      if (cb.ints) {",
+      "new_string": "      if (signal && signal.aborted) throw abortError();\n      var cb = chunkBuffers[ci];\n      if (!cb || cb.ordinateBytes !== manifest.chunks[ci]._ordinateBytes) {\n        throw FormatError('coordinate buffer missing for chunk ' + ci);\n      }\n      if (cb.ints) {"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "old_string": "      // The single decoded coordinate copy.\n      var totalOrdinates = manifest.pairCount * 2;\n      var buffer = new ArrayBuffer(totalOrdinates * manifest.ordinateBytes);\n      coordBuffer = {\n        buffer: buffer,\n        ints: manifest.ordinateBytes === 4 ? new Int32Array(buffer) : null,\n        doubles: manifest.ordinateBytes === 8 ? new Float64Array(buffer) : null\n      };\n      manifest._coordBuffer = coordBuffer;",
+      "new_string": "      // The single decoded coordinate copy: one typed buffer per chunk, each\n      // in the chunk's own Int32/Float64 width, allocated only when the chunk\n      // actually arrives and after every declared byte cap has been checked.\n      manifest._coordBuffer = { chunks: new Array(manifest.chunks.length) };"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "old_string": "      progress({ phase: 'verify-geometry', loaded: 0, total: 1 });\n      var computedSha = computeGeometrySha(manifest);\n      if (computedSha !== manifest.geometrySha256) {",
+      "new_string": "      progress({ phase: 'verify-geometry', loaded: 0, total: 1 });\n      var computedSha = await computeGeometrySha(manifest, {\n        signal: externalSignal,\n        onProgress: options.onProgress\n      });\n      if (computedSha !== manifest.geometrySha256) {"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "old_string": "      progress({ phase: 'assemble', loaded: 0, total: manifest.featureCount });\n      var data = assembleData(manifest, records);\n      // Records retain no decoded geometry; only structural metadata.\n      progress({ phase: 'assemble', loaded: manifest.featureCount, total: manifest.featureCount });",
+      "new_string": "      progress({ phase: 'assemble', loaded: 0, total: manifest.featureCount });\n      var data = await assembleData(manifest, records, {\n        signal: externalSignal,\n        onProgress: options.onProgress\n      });\n      // Records retain no decoded geometry; only structural metadata.\n      progress({ phase: 'assemble', loaded: manifest.featureCount, total: manifest.featureCount });"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "old_string": "    var manifest, navigatorInst = null, rendererInst = null, routesService = null, coordBuffer = null;",
+      "new_string": "    var manifest, navigatorInst = null, rendererInst = null, routesService = null;"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "old_string": "          if (routesService) routesService.dispose();\n          // Drop the only decoded coordinate copy and every view over it.\n          manifest._coordBuffer = null;\n          coordBuffer = null;\n          this.data = null;",
+      "new_string": "          if (routesService) routesService.dispose();\n          // Drop the only decoded coordinate copy (every per-chunk buffer) and\n          // every lazy view over it.\n          manifest._coordBuffer = null;\n          this.data = null;"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "old_string": "    } catch (err) {\n      try { controller.abort(); } catch (e) { /* noop */ }\n      if (externalSignal) externalSignal.removeEventListener('abort', onExternalAbort);",
+      "new_string": "    } catch (err) {\n      try { controller.abort(); } catch (e) { /* noop */ }\n      // A failed or aborted load publishes nothing and releases every chunk\n      // buffer it had assembled so far.\n      if (manifest) manifest._coordBuffer = null;\n      if (externalSignal) externalSignal.removeEventListener('abort', onExternalAbort);"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "old_string": "    function cloneResult(rec, mode) {\n      return {\n        found: true, reason: 'ok', mode: mode,\n        points: rec.points.map(function (p) { return { x: p.x, y: p.y }; }),\n        length: rec.length, visited: rec.visited,\n        startSnap: null, endSnap: null, precomputed: true\n      };\n    }",
+      "new_string": "    // Every call returns fresh, independent point objects, in the exact\n    // query direction: a stored A->B edge served as B->A is reversed.\n    function cloneResult(rec, mode, reversed) {\n      var out = [];\n      if (reversed) {\n        for (var i = rec.points.length - 1; i >= 0; i--) {\n          out.push({ x: rec.points[i].x, y: rec.points[i].y });\n        }\n      } else {\n        for (var j = 0; j < rec.points.length; j++) {\n          out.push({ x: rec.points[j].x, y: rec.points[j].y });\n        }\n      }\n      return {\n        found: true, reason: 'ok', mode: mode,\n        points: out,\n        length: rec.length, visited: rec.visited,\n        startSnap: null, endSnap: null, precomputed: true\n      };\n    }"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "offset": 948,
+      "limit": 90
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "old_string": "      async route(from, to, options) {\n        options = options || {};\n        if (this.disposed) throw disposedError();\n        var mode = options.mode === 'bike' ? 'bike' : 'walk';\n        // Precomputed edges are valid only at their stored radius.\n        var useGraph = !isNum(options.radius) || options.radius === radius;\n\n        var a = pointOf(from), b = pointOf(to);\n        if (!a || !b) throw makeError('ValidationError', 'route endpoints must be anchor names or finite points');\n\n        if (a.name && b.name) {\n          if (useGraph) {\n            var exact = direct[mode].get(edgeKey(a.name, b.name));\n            if (exact) return cloneResult(exact, mode);",
+      "new_string": "      async route(from, to, options) {\n        options = options || {};\n        // An already-cancelled request must reject, including when the answer\n        // is a fully cached/precomputed edge.\n        if (options.signal && options.signal.aborted) throw abortError();\n        if (this.disposed) throw disposedError();\n        function checkLive() {\n          if (options.signal && options.signal.aborted) throw abortError();\n        }\n        var mode = options.mode === 'bike' ? 'bike' : 'walk';\n        // Precomputed edges are valid only at their stored radius.\n        var useGraph = !isNum(options.radius) || options.radius === radius;\n\n        var a = pointOf(from), b = pointOf(to);\n        if (!a || !b) throw makeError('ValidationError', 'route endpoints must be anchor names or finite points');\n\n        if (a.name && b.name) {\n          if (useGraph) {\n            var exact = direct[mode].get(edgeKey(a.name, b.name));\n            if (exact) {\n              checkLive();\n              return cloneResult(exact, mode, exact.from !== a.name);\n            }\n            var chain = graphPath(a.name, b.name, mode);\n            if (chain && chain.links.length) {\n              checkLive();\n              var mid = stitch(chain.links);\n              return {\n                found: true, reason: 'ok', mode: mode,\n                points: mid.points, length: mid.length, visited: mid.visited,\n                startSnap: null, endSnap: null, precomputed: true\n              };\n            }\n          }\n          return liveRoute(a, b, options, mode);\n        }\n\n        if (!useGraph || !navigator) {\n          // Live fallback keeps the exact endpoints; with no navigator we\n          // cannot connect arbitrary points to the graph.\n          return liveRoute(a, b, options, mode);\n        }\n\n        // Bounded safe endpoint connectors: nearest anchors first, exact end\n        // coordinates preserved by the accepted navigator (no snapping).\n        // graphs[mode] is a Map: enumerate its keys, never Object.keys().\n        var named = Array.from(graphs[mode].keys());\n        function nearest(point) {\n          return named.map(function (n) {\n            var p = anchors[n];\n            return { name: n, d: Math.hypot(p.x - point.x, p.y - point.y) };\n          }).sort(function (x, y) { return x.d - y.d; }).slice(0, 4);\n        }\n        var rankedStart = nearest(a);\n        var rankedGoal = nearest(b);\n\n        var best = null;\n        for (var si = 0; si < rankedStart.length; si++) {\n          checkLive();\n          var sa = anchors[rankedStart[si].name];\n          var prefixRes = await liveRoute(a, { x: sa.x, y: sa.y }, options, mode);\n          checkLive();\n          if (!prefixRes.found) continue;\n          for (var gi = 0; gi < rankedGoal.length; gi++) {\n            var ga = anchors[rankedGoal[gi].name];\n            var path2 = graphPath(rankedStart[si].name, rankedGoal[gi].name, mode);\n            if (!path2 || !path2.links.length) continue;\n            checkLive();\n            var suffixRes = await liveRoute({ x: ga.x, y: ga.y }, b, options, mode);\n            checkLive();\n            if (!suffixRes.found) continue;\n            var candidate = joinRoute(prefixRes, stitch(path2.links), suffixRes, mode);\n            if (!best || candidate.length < best.length) best = candidate;\n          }\n        }"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "offset": 1050,
+      "limit": 80
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "old_string": "            if (!best || candidate.length < best.length) best = candidate;\n          }\n        }\n            var chain = graphPath(a.name, b.name, mode);\n            if (chain && chain.links.length) {\n              var mid = stitch(chain.links);\n              return {\n                found: true, reason: 'ok', mode: mode,\n                points: mid.points, length: mid.length, visited: mid.visited,\n                startSnap: null, endSnap: null, precomputed: true\n              };\n            }\n          }\n          return liveRoute(a, b, options, mode);\n        }\n\n        if (!useGraph || !navigator) {\n          // Live fallback keeps the exact endpoints; with no navigator we\n          // cannot connect arbitrary points to the graph.\n          return liveRoute(a, b, options, mode);\n        }\n\n        // Bounded safe endpoint connectors: nearest anchors first, exact end\n        // coordinates preserved by the accepted navigator (no snapping).\n        var named = Object.keys(graphs[mode]);\n        function nearest(point) {\n          return named.map(function (n) {\n            var p = anchors[n];\n            return { name: n, d: Math.hypot(p.x - point.x, p.y - point.y) };\n          }).sort(function (x, y) { return x.d - y.d; }).slice(0, 4);\n        }\n        var rankedStart = nearest(a);\n        var rankedGoal = nearest(b);\n\n        var best = null;\n        for (var si = 0; si < rankedStart.length; si++) {\n          var sa = anchors[rankedStart[si].name];\n          var prefixRes = await liveRoute(a, { x: sa.x, y: sa.y }, options, mode);\n          if (!prefixRes.found) continue;\n          for (var gi = 0; gi < rankedGoal.length; gi++) {\n            var ga = anchors[rankedGoal[gi].name];\n            var path2 = graphPath(rankedStart[si].name, rankedGoal[gi].name, mode);\n            if (!path2 || !path2.links.length) continue;\n            var suffixRes = await liveRoute({ x: ga.x, y: ga.y }, b, options, mode);\n            if (!suffixRes.found) continue;\n            var candidate = joinRoute(prefixRes, stitch(path2.links), suffixRes, mode);\n            if (!best || candidate.length < best.length) best = candidate;\n          }\n        }\n        if (best) return best;\n        return liveRoute(a, b, options, mode);\n      },",
+      "new_string": "            if (!best || candidate.length < best.length) best = candidate;\n          }\n        }\n        if (best) return best;\n        return liveRoute(a, b, options, mode);\n      },"
+    }
+  },
+  {
+    "tool": "Read",
+    "input": {
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "offset": 969,
+      "limit": 90
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "old_string": "  // Manifest without internal buffer references.\n  function publicManifest(m) {\n    var copy = Object.assign({}, m);\n    delete copy._coordBuffer;\n    delete copy._baseHref;\n    return copy;\n  }",
+      "new_string": "  // Manifest without internal buffer references or validation scratch.\n  function publicManifest(m) {\n    var copy = Object.assign({}, m);\n    delete copy._coordBuffer;\n    delete copy._baseHref;\n    copy.chunks = m.chunks.map(function (ch) {\n      var out = Object.assign({}, ch);\n      delete out._ordinateBytes;\n      return out;\n    });\n    return copy;\n  }"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node --check tools/geo/runtime/geo-runtime.js",
+      "description": "Syntax check geo-runtime.js"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node parent-runtime-routes.cjs .",
+      "description": "Run parent routes regression harness"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node parent-runtime-roundtrip.cjs .",
+      "description": "Run parent signed-zero roundtrip (raw+encoded)"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node parent-runtime-roundtrip.cjs . multichunk",
+      "description": "Run parent multichunk roundtrip"
+    }
+  },
+  {
+    "tool": "Edit",
+    "input": {
+      "replace_all": false,
+      "file_path": "/Users/peter_mini/.local/state/taskrouter/claude-plan/amsterdam-d27-compact-runtime-r3-20261020/workspace/tools/geo/runtime/geo-runtime.js",
+      "old_string": "      function pump() {\n        if (settled) return;\n        while (active < concurrency && next < manifest.chunks.length) {\n          var idx = next;\n          var w = weight(idx);\n          // Respect the in-flight byte budget, but never stall forever on a\n          // single chunk larger than the budget (run it alone).\n          if (inflight > 0 && inflight + w > ctx.maxInflightBytes) break;\n          next++;\n          active++;\n          inflight += w;\n          if (inflight > ctx.stats.inflightPeakBytes) ctx.stats.inflightPeakBytes = inflight;\n          loadChunk(idx, manifest, ctx).then(function (doc) {\n            if (settled) return;\n            records[idx] = doc;\n            active--;\n            inflight -= w;\n            completed++;",
+      "new_string": "      function pump() {\n        if (settled) return;\n        while (active < concurrency && next < manifest.chunks.length) {\n          // Fresh per-launch bindings: every completion must write ITS slot\n          // and release ITS weight (a shared hoisted var corrupted both).\n          let idx = next;\n          let w = weight(idx);\n          // Respect the in-flight byte budget, but never stall forever on a\n          // single chunk larger than the budget (run it alone).\n          if (inflight > 0 && inflight + w > ctx.maxInflightBytes) break;\n          next++;\n          active++;\n          inflight += w;\n          if (inflight > ctx.stats.inflightPeakBytes) ctx.stats.inflightPeakBytes = inflight;\n          loadChunk(idx, manifest, ctx).then(function (doc) {\n            if (settled) return;\n            records[idx] = doc;\n            active--;\n            inflight -= w;\n            completed++;"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node --check tools/geo/runtime/geo-runtime.js && node parent-runtime-roundtrip.cjs . multichunk",
+      "description": "Syntax check and rerun multichunk roundtrip"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "/tmp/amsterdam-d26-geo-tools-venv/bin/python tools/geo/runtime/test_runtime.py",
+      "description": "Run Python packer test suite"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "/tmp/amsterdam-d26-geo-tools-venv/bin/python tools/geo/runtime/pack-runtime.py --input tools/geo/navigation/real-pub-sample.json --outdir tools/geo/runtime/sample-out --chunk-bytes 1048576",
+      "description": "Regenerate deterministic sample packed artifacts"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node --check tools/geo/runtime/precompute-routes.cjs",
+      "description": "Syntax check precompute-routes.cjs"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node tools/geo/runtime/precompute-routes.cjs --data tools/geo/navigation/real-pub-sample.json --anchors anchors.json --out tools/geo/runtime/sample-routes.json",
+      "description": "Regenerate sample precomputed routes"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node --test tools/geo/navigation/test-geo-navigation.cjs",
+      "description": "Run navigation test suite (readonly, must stay green)"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node --test tools/geo/renderer/test-geo-map-renderer.cjs",
+      "description": "Run renderer test suite (readonly, must stay green)"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node tools/geo/navigation/benchmark-geo-navigation.cjs",
+      "description": "Run navigation benchmark"
+    }
+  },
+  {
+    "tool": "Bash",
+    "input": {
+      "command": "node tools/geo/renderer/benchmark-geo-map-renderer.cjs",
+      "description": "Run renderer benchmark"
+    }
+  }
+]

@@ -1,0 +1,6 @@
+{
+  "page": "http://127.0.0.1:18866/parent.html",
+  "raw": "http://127.0.0.1:18866/raw/manifest.json?test=1#fragment",
+  "encoded": "http://127.0.0.1:18866/encoded/manifest.json?test=2#fragment",
+  "missing": "http://127.0.0.1:18866/raw/does-not-exist.json"
+}

@@ -1,0 +1,30 @@
+{
+  "outcomes": [
+    {
+      "name": "forward cached exact endpoints",
+      "pass": true
+    },
+    {
+      "name": "reverse cached exact endpoints",
+      "pass": true
+    },
+    {
+      "name": "arbitrary endpoints join nearby cached graph",
+      "pass": true
+    },
+    {
+      "name": "walk-only cache cannot serve bike",
+      "pass": true
+    },
+    {
+      "name": "already aborted cached request rejects",
+      "pass": true
+    },
+    {
+      "name": "dispose rejects requests",
+      "pass": true
+    }
+  ],
+  "passed": 6,
+  "total": 6
+}

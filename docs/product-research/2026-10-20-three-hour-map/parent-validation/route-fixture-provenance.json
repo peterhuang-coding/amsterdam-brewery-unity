@@ -1,0 +1,111 @@
+{
+  "path": "/tmp/amsterdam-d27-original-full-routes-20261020.json",
+  "sha256": "756060bbc666b2997865f1c25755345d770007d44313c90a2da7780048465ba6",
+  "geometry_sha256": "7b6fa8e13f148e4403cea37066463cd811d578f4752f46dec8cb1b4dd9a55dff",
+  "source_sha256": "3a18d70c3dd6e77e10af71b71ab54ca0fb59b74e8287d2c358933475dcf199f5",
+  "accepted_segments": 132,
+  "missing": [
+    {
+      "from": "pub",
+      "to": "lotte",
+      "mode": "bike",
+      "reason": "unreachable"
+    },
+    {
+      "from": "pub",
+      "to": "coffee",
+      "mode": "bike",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "pub",
+      "to": "ferrySouth",
+      "mode": "walk",
+      "reason": "limit"
+    },
+    {
+      "from": "pub",
+      "to": "ferrySouth",
+      "mode": "bike",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "coffee",
+      "to": "lab",
+      "mode": "walk",
+      "reason": "limit"
+    },
+    {
+      "from": "coffee",
+      "to": "lab",
+      "mode": "bike",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "coffee",
+      "to": "market",
+      "mode": "bike",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "flowers",
+      "to": "flowerCart",
+      "mode": "bike",
+      "reason": "unwalkable"
+    },
+    {
+      "from": "flowerCart",
+      "to": "garden",
+      "mode": "bike",
+      "reason": "unwalkable"
+    }
+  ],
+  "pairs": [
+    [
+      "pub",
+      "lotte",
+      "walk"
+    ],
+    [
+      "pub",
+      "coffee",
+      "walk"
+    ],
+    [
+      "coffee",
+      "market",
+      "walk"
+    ],
+    [
+      "market",
+      "flowers",
+      "walk"
+    ],
+    [
+      "market",
+      "flowers",
+      "bike"
+    ],
+    [
+      "flowers",
+      "flowerCart",
+      "walk"
+    ],
+    [
+      "flowers",
+      "garden",
+      "walk"
+    ],
+    [
+      "flowers",
+      "garden",
+      "bike"
+    ],
+    [
+      "flowerCart",
+      "garden",
+      "walk"
+    ]
+  ],
+  "reuse_scope": "Unchanged hash-bound prior 132-segment GEOS evidence; not new all-city connectivity or a newly completed precompute run."
+}

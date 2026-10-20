@@ -1,0 +1,13 @@
+{
+  "observed_at": "2026-10-20T02:48:07.318541+00:00",
+  "worker61627_absent": true,
+  "launcher61616_absent": true,
+  "browser_close_cli_success": true,
+  "first_browser_sigterm_attempt": "identity assertion found process absent after successful CLI close; no signal sent",
+  "server63240_sigterm_after_exact_command_check": true,
+  "old18860_untouched": true,
+  "amsterdam_status_count": 65,
+  "state_counts": {
+    "done": 65
+  }
+}

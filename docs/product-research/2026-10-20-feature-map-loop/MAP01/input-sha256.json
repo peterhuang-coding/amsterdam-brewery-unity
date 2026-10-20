@@ -1,15 +1,15 @@
 {
   "brief.md": {
-    "bytes": 5691,
-    "sha256": "933bbd344a41b035cefe2f85a2749929f4b8a2208b1486b7c009530f9af0d1f4"
+    "bytes": 5913,
+    "sha256": "c65741094e6b5304034776000bec17e92b0e314715a5ed9454326b5394451bce"
   },
   "tools/geo/districts/districts.json": {
     "bytes": 4126,
-    "sha256": "43f5ab642a44cfc71a17e2bcec15e74641d1dbed6e485a139533b12028e91936"
+    "sha256": "49da1795257bf9bb50cae69ada4f4e27af1823aa345650b544758702a36ed262"
   },
   "tools/geo/districts/sample-config.json": {
     "bytes": 894,
-    "sha256": "851629ea591ef88e781b1fa9b6f2d136389113326f59bbe82539923f3c99a744"
+    "sha256": "a53c4fba5713347fc0d051c8b4756833bbfab2fb488e924fb9fe194e22652cd4"
   },
   "tools/geo/districts/real-pub-sample.json": {
     "bytes": 237043,

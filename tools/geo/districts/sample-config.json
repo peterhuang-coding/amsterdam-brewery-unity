@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "mapVersion": "amsterdam-shape-d29-v1",
+  "cellSize": 1,
+  "bodyRadius": 0.4,
+  "overviewTolerance": 4,
+  "localTolerance": 0.5,
+  "districts": [
+    {
+      "id": "pub-sample",
+      "name": "Pub public subset",
+      "bounds": [
+        1030,
+        3220,
+        1140,
+        3290
+      ],
+      "anchorIds": [
+        "pub",
+        "lotte"
+      ]
+    }
+  ],
+  "anchors": {
+    "pub": {
+      "x": 1100.211,
+      "y": 3243.117,
+      "featureId": "wegdeel:b5910e46-8d27-5ba7-982d-41b311e24e21",
+      "basis": "Egelantiersgracht, Amsterdam",
+      "fictionalVenue": true
+    },
+    "lotte": {
+      "x": 1056.057,
+      "y": 3247.41,
+      "featureId": "overbruggingsdeel:8b1d9302-4306-51af-ae31-9b60532e81c5",
+      "basis": "Actual BGT bridge deck near fictional pub; not a real named business",
+      "fictionalVenue": true
+    }
+  },
+  "travelLinks": []
+}

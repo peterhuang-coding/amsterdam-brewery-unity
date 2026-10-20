@@ -1,0 +1,88 @@
+{
+  "version": 1,
+  "task_id": "amsterdam-d27-compact-runtime-r3-20261020",
+  "workspace": "/tmp/amsterdam-d27-compact-runtime-r3-20261020/input",
+  "goal": "One expressly approved bounded recovery of the existing compact-runtime partial implementation; finish original lossless loading and route regressions",
+  "read_files": [
+    "anchors.json",
+    "brief.md",
+    "original-brief.md",
+    "parent-runtime-roundtrip.cjs",
+    "parent-runtime-routes.cjs",
+    "tools/geo/navigation/benchmark-geo-navigation.cjs",
+    "tools/geo/navigation/geo-navigation.js",
+    "tools/geo/navigation/parent-capsule-repro.json",
+    "tools/geo/navigation/parent-r2-witness.json",
+    "tools/geo/navigation/real-pub-sample.json",
+    "tools/geo/navigation/test-geo-navigation.cjs",
+    "tools/geo/renderer/benchmark-geo-map-renderer.cjs",
+    "tools/geo/renderer/geo-map-renderer.js",
+    "tools/geo/renderer/real-pub-sample.json",
+    "tools/geo/renderer/renderer-demo.html",
+    "tools/geo/renderer/test-geo-map-renderer.cjs",
+    "tools/geo/runtime/geo-runtime.js",
+    "tools/geo/runtime/pack-runtime.py",
+    "tools/geo/runtime/precompute-routes.cjs",
+    "tools/geo/runtime/sample-out/coords-00000.bin.gz",
+    "tools/geo/runtime/sample-out/manifest.json",
+    "tools/geo/runtime/sample-out/metadata-00000.json.gz",
+    "tools/geo/runtime/sample-routes.json",
+    "tools/geo/runtime/test_runtime.py"
+  ],
+  "write_files": [
+    "tools/geo/runtime/pack-runtime.py",
+    "tools/geo/runtime/geo-runtime.js",
+    "tools/geo/runtime/precompute-routes.cjs",
+    "tools/geo/runtime/runtime-demo.html",
+    "tools/geo/runtime/test-runtime.cjs",
+    "tools/geo/runtime/test_runtime.py",
+    "tools/geo/runtime/README.md",
+    "tools/geo/runtime/sample-out/manifest.json",
+    "tools/geo/runtime/sample-out/metadata-00000.json.gz",
+    "tools/geo/runtime/sample-out/coords-00000.bin.gz",
+    "tools/geo/runtime/sample-routes.json"
+  ],
+  "tasks": [
+    "Read brief.md and exact public interfaces before changing files.",
+    "Implement only the owned scope and meaningful regression tests; preserve all readonly inputs.",
+    "Run every exact command, report complete outputs, limitations and a legal handoff before exhausting turns."
+  ],
+  "acceptance": [
+    "All detailed requirements in brief.md hold; full geometry and original accepted predicates unchanged.",
+    "All exact commands exit zero; tests verify actual behavior, not implementation mirrors.",
+    "No unauthorized file changes; provide complete handoff with actual results and no unsupported full-map claims."
+  ],
+  "constraints": [
+    "Only listed public/synthetic files and own outputs; no whole project or outside paths.",
+    "Bash only the exact listed commands; no command variants, suffixes, discovery, installs, network fetches or child agents.",
+    "Never list handoff-result.json among changed_files. Keep report legal and leave five turns for final verification/report.",
+    "Exactly one explicitly approved EXTRA correction under the same logical task; NAV/renderer modules readonly. No game integration in this package."
+  ],
+  "commands": [
+    "/tmp/amsterdam-d26-geo-tools-venv/bin/python tools/geo/runtime/test_runtime.py",
+    "/tmp/amsterdam-d26-geo-tools-venv/bin/python tools/geo/runtime/pack-runtime.py --input tools/geo/navigation/real-pub-sample.json --outdir tools/geo/runtime/sample-out --chunk-bytes 1048576",
+    "node --check tools/geo/runtime/geo-runtime.js",
+    "node --check tools/geo/runtime/precompute-routes.cjs",
+    "node --test tools/geo/runtime/test-runtime.cjs",
+    "node --test tools/geo/navigation/test-geo-navigation.cjs",
+    "node --test tools/geo/renderer/test-geo-map-renderer.cjs",
+    "node tools/geo/navigation/benchmark-geo-navigation.cjs",
+    "node tools/geo/renderer/benchmark-geo-map-renderer.cjs",
+    "node tools/geo/runtime/precompute-routes.cjs --data tools/geo/navigation/real-pub-sample.json --anchors anchors.json --out tools/geo/runtime/sample-routes.json",
+    "node parent-runtime-roundtrip.cjs .",
+    "node parent-runtime-roundtrip.cjs . multichunk",
+    "node parent-runtime-routes.cjs ."
+  ],
+  "data_sensitivity": "public",
+  "max_turns": 50,
+  "timeout_seconds": 1800,
+  "memory": {
+    "summary": "Sole explicit extra correction, original business+ordinary correction preserved. R2 transport-interrupted; no legal report; 13commands9pass4fail. Reuse partialoutputs, NAV/renderer readonly; complete only original lossless loading/hashassembly/three route regressions/missingdeliverables. Current three-hour fixed outer window ends05:08:39Z; this package is1800s50turns."
+  },
+  "telemetry": {
+    "project_id": "amsterdam-brewery-unity",
+    "logical_task_id": "f02-compact-runtime-d27",
+    "task_type": "code",
+    "attempt_kind": "correction"
+  }
+}

@@ -1,3 +1,5 @@
+> D28最终同步已完成：固定05:08:39Z窗口已到期，最终报告3f0454b已push并核对远端；Notion与Hub已读回，同一amsterdam/原thread已恢复每日北京时间22点。renewal.final_report_sent=true，完整demo未完成。无新明确真人处置不开发，旧批准和限次不重置；最终通知仅一次。以下为历史。
+
 > D28最终收口：固定UTC2026-10-20T05:08:39Z（北京13:08:39）已到期，未延长。窗口Plan1/新采用0，累计组件4、City合格候选1未接入、游戏地图0，完整demo未完成；无在途。MEMORY业务+修正+额外1/1全部用尽，原blocked及父验拒收保留，无自动R4。旧18860此前404，本轮未动，不称可玩。最终报告见 docs/product-research/2026-10-20-three-hour-map/final-report.md；同一amsterdam恢复每日北京22点新审批检查，最终只通知一次。以下为历史。
 
 > D28最新父验：MEMORY唯一额外R3已终态，724.792秒/reported51轮/CLI1 error_max_turns，原blocked保留。13命令有效12绿1缺文件；全量145703地物/22977546点/两个负零及357文件确定性通过，不带路线缓存的三次Chrome加载约25秒、最大心跳47.2ms、采样内存最高501161370B，生命周期7/7通过。但带真实路线缓存时独立60秒复现停在routes阶段，32598ms无回传心跳，未到查询；原整体验收240秒无结果。仍缺test-runtime/demo/README/report，父验拒收、采用0。业务+修正+额外1/1全部用尽，停止此logical，不自动R4或主代理重写。当前无在途；D28Plan1/新采用0、累计组件4、City合格候选1、游戏地图0。截止05:08:39Z不变，final_report_sent=false，本轮不是窗口最终汇总。证据MEMORY01/r3-review/parent-review.md。下方在途内容为历史。

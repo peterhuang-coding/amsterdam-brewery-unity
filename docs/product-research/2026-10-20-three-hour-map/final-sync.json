@@ -1,0 +1,24 @@
+{
+  "at": "2026-10-20T05:20:20.986173+00:00",
+  "report_commit": "3f0454b5d3028bcf142e846bb07199ed554a7832",
+  "notion": {
+    "home_readback": "2026-10-20T05:18:25.019Z",
+    "memory_readback": "2026-10-20T05:18:21.958Z",
+    "final_report_link": "https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/3f0454b5d3028bcf142e846bb07199ed554a7832/docs/product-research/2026-10-20-three-hour-map/final-report.md"
+  },
+  "hub": {
+    "session": "20261020-131943-74849.md",
+    "bytes": 9239,
+    "sha256": "d58bacfb6ce462ea0031ccae0e9b72c9a0d4956368194f861e7d9b1da8100133",
+    "source_latest_session_equal": true
+  },
+  "automation": {
+    "id": "amsterdam",
+    "thread": "01a08c1c-290a-7882-8165-49ccdb348fe0",
+    "rrule": "FREQ=DAILY;BYHOUR=22;BYMINUTE=0;BYSECOND=0",
+    "status": "ACTIVE",
+    "updated_at": 1792473475813,
+    "prompt_readback_equal": true
+  },
+  "final_report_sent": true
+}

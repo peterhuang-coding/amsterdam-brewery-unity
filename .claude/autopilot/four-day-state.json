@@ -10,8 +10,8 @@
   "last_adopted_commit": "dad6b38c54fda94f541764242f61820d8177bd19",
   "failure_policy": "one_targeted_correction_then_shelve_and_continue_independent",
   "failure_policy_question_pending": false,
-  "final_report_sent": false,
-  "schedule": "same amsterdam daily22:00 Asia/Shanghai new explicit human approval check; update pending",
+  "final_report_sent": true,
+  "schedule": "same amsterdam ACTIVE daily22:00 Asia/Shanghai; only new explicit human approval checks",
   "current_task_terminal": true,
   "failure_reason": "MEMORY-R3 maxturn partial; full cached-route loading blocks heartbeat32.598s; missing4deliverables; extra1/1 exhausted; no automaticR4",
   "last_result_at": "2026-10-20T02:24:33.323947Z",
@@ -694,10 +694,10 @@
     "correction_outcome": "request_timed_out_cli1_done_unknown_no_edit_test_report",
     "structured_review": "review_requires_finished_not_recorded_parent_terminal_review_saved"
   },
-  "updated_at": "2026-10-20T05:16:44.065082+00:00",
+  "updated_at": "2026-10-20T05:20:20.986173+00:00",
   "parent_validation_notified_at": "2026-10-20T02:58:03.521558+00:00",
   "current_task_prepared": false,
-  "last_checked_at": "2026-10-20T05:16:44.065082+00:00",
+  "last_checked_at": "2026-10-20T05:20:20.986173+00:00",
   "prior_four_day_window": {
     "start_at": "2026-10-12T19:48:33Z",
     "deadline": "2026-10-16T19:48:33Z",
@@ -715,7 +715,7 @@
     "max_concurrency": 2,
     "prior_failures_preserved": true,
     "window_status": "expired",
-    "final_report_sent": false,
+    "final_report_sent": true,
     "full_goal_complete": false,
     "plan_dispatch_count": 1,
     "prior_plan_dispatch_count": 15,
@@ -794,8 +794,31 @@
     "closed_at": "2026-10-20T05:08:39Z",
     "finalized_at": "2026-10-20T05:16:44.065082+00:00",
     "final_report_path": "docs/product-research/2026-10-20-three-hour-map/final-report.md",
-    "final_report_pending": true,
-    "final_observation_at": "2026-10-20T05:15:31.100488+00:00"
+    "final_report_pending": false,
+    "final_observation_at": "2026-10-20T05:15:31.100488+00:00",
+    "final_report_notified_at": "2026-10-20T05:20:20.986173+00:00",
+    "final_report_commit": "3f0454b5d3028bcf142e846bb07199ed554a7832",
+    "final_sync": {
+      "notion": {
+        "home_readback": "2026-10-20T05:18:25.019Z",
+        "memory_readback": "2026-10-20T05:18:21.958Z",
+        "final_report_link": "https://github.com/peterhuang-coding/amsterdam-brewery-unity/blob/3f0454b5d3028bcf142e846bb07199ed554a7832/docs/product-research/2026-10-20-three-hour-map/final-report.md"
+      },
+      "hub": {
+        "session": "20261020-131943-74849.md",
+        "bytes": 9239,
+        "sha256": "d58bacfb6ce462ea0031ccae0e9b72c9a0d4956368194f861e7d9b1da8100133",
+        "source_latest_session_equal": true
+      },
+      "automation": {
+        "id": "amsterdam",
+        "thread": "01a08c1c-290a-7882-8165-49ccdb348fe0",
+        "rrule": "FREQ=DAILY;BYHOUR=22;BYMINUTE=0;BYSECOND=0",
+        "status": "ACTIVE",
+        "updated_at": 1792473475813,
+        "prompt_readback_equal": true
+      }
+    }
   },
   "capacity_observation": {
     "at": "2026-10-16T16:34:46.097447+00:00",

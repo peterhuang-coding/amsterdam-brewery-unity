@@ -407,8 +407,7 @@ test('automatic market choices show readable copy with no internal labels',()=>{
   assert.equal(trade.label,'帮忙搬货');
 });
 
-test('real UI renders the market panel and a claim click produces resources via R.act',()=>{
-  const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
+test('real UI renders the market panel and a claim click produces resources via R.act',async()=>{
   const City=require('./reopening-city.js');
   // Build an actual day-2 prep game carrying a safe night-1 delivery.
   let g=closeNight(start());
@@ -418,75 +417,26 @@ test('real UI renders the market panel and a claim click produces resources via 
   g=act(g,{type:'next'});
   assert.equal(R.marketInfo(g).receipt,'available');
 
-  const noop=()=>{};
-  const gradient={addColorStop:noop};
-  const ctx=new Proxy({},{get:(o,k)=>k==='createLinearGradient'||k==='createRadialGradient'?()=>gradient:noop,set:()=>true});
-  const mkEl=()=>({textContent:'',hidden:false,disabled:false,innerHTML:'',setAttribute:noop,removeAttribute:noop,addEventListener:noop,removeEventListener:noop,
-    classList:{toggle:noop,add:noop,remove:noop},style:{},title:'',focus:noop,scrollIntoView:noop,
-    querySelector:()=>null,querySelectorAll:()=>[],dataset:{}});
-  const els=new Map();
-  const canvasEl=()=>({...mkEl(),addEventListener:noop,getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:1100,height:640})});
-  const listeners={};
-  const document={
-    addEventListener:(type,cb)=>{(listeners[type]=listeners[type]||[]).push(cb);},
-    hidden:false,activeElement:{isConnected:false},body:{classList:{toggle:noop}},
-    getElementById:id=>{
-      if(id==='pub-canvas'){if(!els.has(id))els.set(id,canvasEl());return els.get(id);}
-      if(!els.has(id))els.set(id,mkEl());return els.get(id);
-    },
-    querySelector:()=>null,querySelectorAll:()=>[]
-  };
-  let capturedSave=null;
-  const localStorage={
-    getItem:()=>JSON.stringify({version:1,game:g,city:City.create(),sound:true}),
-    setItem:(k,v)=>{capturedSave=JSON.parse(v);}
-  };
-  const rafs=[];let nowValue=1000;
-  const sandbox={
-    document,matchMedia:()=>({matches:false}),localStorage,
-    performance:{now:()=>nowValue},setTimeout:()=>0,clearTimeout:noop,
-    setInterval:()=>0,requestAnimationFrame:cb=>rafs.push(cb),
-    devicePixelRatio:1,location:{search:''},scrollTo:noop,addEventListener:noop,
-    URLSearchParams:class{get(){return null;}},navigator:{},AudioContext:undefined
-  };
-  sandbox.window=sandbox;
-  vm.createContext(sandbox);
-  const load=file=>vm.runInContext(fs.readFileSync(path.join(__dirname,file),'utf8'),sandbox);
-  for(const file of ['journey-core.js','backstage-core.js','backstage-auto.js','delivery-orders.js',
-    'character-stories.js','flower-network.js','reopening-core.js','reopening-city.js','reopening-scene.js',
-    'backstage-scene.js','backstage-ui.js','journey-ui.js','reopening-ui.js'])load(file);
-
-  const board=()=>els.get('action-content').innerHTML;
-  const click=dataset=>{
-    const button={dataset,disabled:false};
-    const event={target:{closest:sel=>sel==='button[data-action]'?button:null}};
-    for(const cb of listeners.click)cb(event);
-  };
-  // Travel from the pub to the market using the real city navigation UI.
-  click({action:'city-travel',place:'market'});
-  for(let i=0;i<600;i++){
-    nowValue+=100;
-    const cb=rafs.shift();
-    assert.ok(cb,'frame scheduled');
-    cb(nowValue);
-    if(/market-errand|market-crate-card/.test(board()))break;
-  }
+  const {harness}=require('./district-ui-test-fixture.cjs');
+  const h=await harness({version:1,game:g,city:City.create(),sound:true});
+  const {board,click,els}=h;
+  await h.travel('market');
   const html=board();
   assert.match(html,/今晚的超市|免费情报/);
   assert.match(html,/€8/);
   assert.match(html,/兑现/);
   assert.doesNotMatch(html,/item\d|stage\d|schema/);
   // Real claim click goes through dispatch -> R.act -> save.
-  click({action:'market-errand'});
-  assert.ok(capturedSave,'claim produced a durable save');
-  assert.equal(capturedSave.game.market.history[0].claimed,true);
-  assert.ok(capturedSave.game.batches.some(b=>b.id==='d2-market-errand'&&b.cups===3));
-  assert.equal(capturedSave.game.hops,g.hops+1);
-  assert.equal(capturedSave.game.actions,1);
+  await click({action:'market-errand'});
+  assert.ok(h.save(),'claim produced a durable save');
+  assert.equal(h.save().game.market.history[0].claimed,true);
+  assert.ok(h.save().game.batches.some(b=>b.id==='d2-market-errand'&&b.cups===3));
+  assert.equal(h.save().game.hops,g.hops+1);
+  assert.equal(h.save().game.actions,1);
   // Second click cannot duplicate.
-  const savedBefore=JSON.stringify(capturedSave.game);
-  click({action:'market-errand'});
-  assert.equal(JSON.stringify(capturedSave.game),savedBefore);
+  const savedBefore=JSON.stringify(h.save().game);
+  await click({action:'market-errand'});
+  assert.equal(JSON.stringify(h.save().game),savedBefore);
   assert.match(els.get('notice').textContent,/已经|重复|已兑现/);
 });
 

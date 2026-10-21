@@ -10,9 +10,6 @@
 // keyboard branch, not the browser's native <details> behaviour.
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const vm = require('node:vm');
-const path = require('node:path');
 const R = require('./reopening-core.js');
 const City = require('./reopening-city.js');
 const Backstage = require('./backstage-core.js');
@@ -30,159 +27,22 @@ function act(s, a) {
 // extended with a real focus model for the overlay dialog: the summary element
 // and parsed modal buttons participate in the document keydown focus trap.
 // ---------------------------------------------------------------------------
-function harness(saved) {
-  const gradient = { addColorStop: noop };
-  const ctx = new Proxy({}, { get: (o, k) => (k === 'createLinearGradient' || k === 'createRadialGradient' ? () => gradient : noop), set: () => true });
-  const mkEl = () => ({
-    textContent: '', hidden: false, disabled: false, innerHTML: '', value: undefined,
-    setAttribute: noop, removeAttribute: noop, addEventListener: noop, removeEventListener: noop,
-    classList: { toggle: noop, add: noop, remove: noop }, style: {}, title: '', focus: noop,
-    scrollIntoView: noop, querySelector: () => null, querySelectorAll: () => [], dataset: {}, remove: noop
-  });
-  const els = new Map();
-  const listeners = {};
-  const canvasListeners = {};
-  const bodyFocus = { tag: 'body', isConnected: false, matches: () => false, focus: noop };
-
-  // dialog-actions: parses the real buttons modal() renders; identities are
-  // cached per render so focus comparisons across events stay stable.
-  function actionsEl() {
-    let html = '', cache = null;
-    const buttons = () => {
-      if (cache) return cache;
-      cache = [...html.matchAll(/<button\b([^>]*)>([\s\S]*?)<\/button>/g)].map((m, i) => {
-        const ctrl = {
-          tag: 'button', index: i,
-          secondary: /class="secondary"/.test(m[1]),
-          disabled: /\bdisabled\b/.test(m[1]),
-          label: (m[2].match(/^([^<]*)/) || ['', ''])[1],
-          matches: () => false, isConnected: true,
-          focus() { document.activeElement = ctrl; }
-        };
-        return ctrl;
-      });
-      return cache;
-    };
-    return {
-      textContent: '', hidden: false,
-      get innerHTML() { return html; }, set innerHTML(v) { html = String(v); cache = null; },
-      setAttribute: noop, classList: { toggle: noop }, style: {},
-      buttons,
-      querySelector: sel => (/button/.test(sel) ? buttons().find(b => !b.disabled) ?? null : null),
-      querySelectorAll: sel => (/button/.test(sel) ? buttons().filter(b => !b.disabled) : [])
-    };
-  }
-  function bodyEl() {
-    let html = '';
-    return {
-      textContent: '',
-      get innerHTML() { return html; }, set innerHTML(v) { html = String(v); }
-    };
-  }
-  const actions = actionsEl();
-  const dialogBody = bodyEl();
-  const summaryControl = {
-    tag: 'summary', label: 'route-place-detail', matches: () => false, isConnected: true,
-    focus() { document.activeElement = summaryControl; }
-  };
-  const overlay = {
-    hidden: true, style: {}, classList: { toggle: noop },
-    querySelectorAll(sel) {
-      const list = [];
-      if (sel.includes('summary') && /<summary\b/.test(dialogBody.innerHTML)) list.push(summaryControl);
-      if (sel.includes('button')) list.push(...actions.buttons().filter(b => !b.disabled));
-      return list;
-    },
-    querySelector: () => null
-  };
-  const canvasEl = () => ({ ...mkEl(), tabIndex: 0, getContext: () => ctx, getBoundingClientRect: () => ({ left: 0, top: 0, width: 1100, height: 640 }),
-    addEventListener: (type, cb) => { (canvasListeners[type] = canvasListeners[type] || []).push(cb); } });
-  const document = {
-    addEventListener: (type, cb) => { (listeners[type] = listeners[type] || []).push(cb); },
-    hidden: false, activeElement: bodyFocus, body: { classList: { toggle: noop } },
-    getElementById(id) {
-      if (id === 'pub-canvas') { if (!els.has(id)) els.set(id, canvasEl()); return els.get(id); }
-      if (id === 'overlay') return overlay;
-      if (id === 'dialog-actions') return actions;
-      if (id === 'dialog-body') return dialogBody;
-      if (id === 'seed-input') { if (!els.has(id)) els.set(id, { ...mkEl(), value: 42 }); return els.get(id); }
-      if (!els.has(id)) els.set(id, mkEl());
-      return els.get(id);
-    },
-    querySelector: () => null, querySelectorAll: () => []
-  };
-  let capturedSave = null;
-  const localStorage = {
-    getItem: () => (saved ? JSON.stringify(saved) : null),
-    setItem: (k, v) => { capturedSave = JSON.parse(v); }
-  };
-  const rafs = [];
-  let nowValue = 1000;
-  const sandbox = {
-    document, matchMedia: () => ({ matches: false }), localStorage,
-    performance: { now: () => nowValue }, setTimeout: () => 0, clearTimeout: noop,
-    setInterval: () => 0, requestAnimationFrame: cb => rafs.push(cb),
-    devicePixelRatio: 1, location: { search: '' }, scrollTo: noop, addEventListener: noop,
-    URLSearchParams: class { get() { return null; } }, navigator: {}, AudioContext: undefined, CSS: { escape: String }
-  };
-  sandbox.window = sandbox;
-  vm.createContext(sandbox);
-  const load = file => vm.runInContext(fs.readFileSync(path.join(__dirname, file), 'utf8'), sandbox);
-  for (const file of ['journey-core.js', 'backstage-core.js', 'backstage-auto.js', 'delivery-orders.js',
-    'character-stories.js', 'flower-network.js', 'reopening-core.js', 'reopening-city.js', 'reopening-scene.js',
-    'backstage-scene.js', 'backstage-ui.js', 'journey-ui.js', 'reopening-ui.js']) load(file);
-  const launcher = { tag: 'launcher', isConnected: true, matches: () => false, focus() { document.activeElement = launcher; } };
-  const click = (dataset, disabled = false) => {
-    const button = { dataset, disabled };
-    const event = { target: { closest: sel => (sel === 'button[data-action]' ? button : null) } };
-    for (const cb of listeners.click) cb(event);
-  };
-  const clickModal = index => {
-    const button = { dataset: { modalAction: String(index) }, disabled: false };
-    const event = { target: { closest: sel => (sel === '[data-modal-action]' ? button : null) } };
-    for (const cb of listeners.click) cb(event);
-  };
-  const key = (keyName, shiftKey = false) => {
-    const ev = { key: keyName, shiftKey, repeat: false, target: document.activeElement, preventDefault() { ev.defaultPrevented = true; } };
-    for (const cb of listeners.keydown || []) cb(ev);
-    return ev;
-  };
-  // What the browser would do natively when the JS trap does not wrap.
-  const nativeMove = shiftKey => {
-    const ctrls = overlay.querySelectorAll('button:not(:disabled),a,input,summary');
-    const i = ctrls.indexOf(document.activeElement);
-    if (i < 0) return;
-    document.activeElement = ctrls[(i + (shiftKey ? -1 : 1) + ctrls.length) % ctrls.length];
-  };
-  return {
-    click, clickModal, key, nativeMove, launcher,
-    save: () => capturedSave,
-    board: () => els.get('action-content').innerHTML,
-    overlay: () => overlay,
-    kicker: () => els.get('dialog-kicker').textContent,
-    dialogTitle: () => els.get('dialog-title').textContent,
-    dialogBody: () => dialogBody.innerHTML,
-    dialogActions: () => actions.innerHTML,
-    controls: () => overlay.querySelectorAll('button:not(:disabled),a,input,summary'),
-    active: () => document.activeElement,
-    setActive: el => { document.activeElement = el; }
-  };
-}
+const { harness } = require('./district-ui-test-fixture.cjs');
 
 // Drives the real UI to after-hours on night 1 with genuine clicks only:
 // start -> enter pub -> open (real confirm) -> early close (real confirm).
-function nightLoadout() {
-  const h = harness(null);
-  h.click({ action: 'start' });
-  h.click({ action: 'city-enter' });
-  h.click({ action: 'open' });
-  h.clickModal(1); // confirm opening despite remaining preparations
+async function nightLoadout() {
+  const h = await harness(null);
+  await h.click({ action: 'start' });
+  await h.click({ action: 'city-enter' });
+  await h.click({ action: 'open' });
+  await h.clickModal(1); // confirm opening despite remaining preparations
   assert.equal(h.save().game.phase, 'night');
-  h.click({ action: 'close-night' });
-  h.clickModal(1); // confirm early close via the real 'close' action
+  await h.click({ action: 'close-night' });
+  await h.clickModal(1); // confirm early close via the real 'close' action
   assert.equal(h.save().game.phase, 'summary', 'real night settles into after-hours');
   h.setActive(h.launcher);
-  h.click({ action: 'expedition-launch' });
+  await h.click({ action: 'expedition-launch' });
   assert.equal(h.overlay().hidden, false, 'launcher opens the loadout choice');
   return h;
 }
@@ -205,8 +65,8 @@ function summaryAt(day, seed = 42) {
 // 1. Concise visible essentials, tonight title, closed native disclosure with
 //    every old road/place fact, and verbatim KITS cards.
 // ===========================================================================
-test('loadout dialog shows short essentials, tonight title, closed details with full facts and verbatim kit cards', () => {
-  const h = nightLoadout();
+test('loadout dialog shows short essentials, tonight title, closed details with full facts and verbatim kit cards', async () => {
+  const h = await nightLoadout();
   assert.equal(h.kicker(), '出门前 · 工具免费借用');
   assert.equal(h.dialogTitle(), '今晚带哪一套？');
   const body = h.dialogBody();
@@ -269,12 +129,12 @@ test('loadout dialog shows short essentials, tonight title, closed details with 
 // 2. Each of the three real buttons launches the actual explore action with
 //    the real kit/capacity, auto mode and timing — no tool fact changes.
 // ===========================================================================
-test('each kit button starts a real explore run with its actual kit, capacity, auto mode and 180s', () => {
+test('each kit button starts a real explore run with its actual kit, capacity, auto mode and 180s', async () => {
   const expected = { hook: 8, cart: 12, foam: 7 };
-  Object.entries(Backstage.KITS).forEach(([id, kit], i) => {
-    const h = nightLoadout();
+  for (const [i, [id, kit]] of Object.entries(Backstage.KITS).entries()) {
+    const h = await nightLoadout();
     const before = h.save().game;
-    h.clickModal(i);
+    await h.clickModal(i);
     const g = h.save().game;
     assert.equal(g.phase, 'explore', id + ' really leaves after-hours');
     assert.deepEqual(g.prepared, ['explore']);
@@ -287,23 +147,23 @@ test('each kit button starts a real explore run with its actual kit, capacity, a
     assert.equal(g.backstage.run.auto.enabled, true, 'default launch is the real auto mode');
     assert.equal(g.cash, before.cash, 'tools remain free');
     assert.ok(R.restore(g), 'launched run is a valid save');
-  });
+  }
 });
 
 // ===========================================================================
 // 3. Stay and Escape cancel without launching or touching resources, restore
 //    launcher focus, and the dialog can reopen and then really launch.
 // ===========================================================================
-test('stay and Escape cancel the loadout with no trip/resource change, restore focus, and reopen still launches', () => {
-  let h = nightLoadout();
+test('stay and Escape cancel the loadout with no trip/resource change, restore focus, and reopen still launches', async () => {
+  let h = await nightLoadout();
   const snapshot = JSON.stringify(h.save().game);
 
-  h.clickModal(3); // 先留在酒馆
+  await h.clickModal(3); // 先留在酒馆
   assert.equal(h.overlay().hidden, true);
   assert.equal(JSON.stringify(h.save().game), snapshot, 'stay changes no game state');
   assert.equal(h.active(), h.launcher, 'stay restores launcher focus');
 
-  h.click({ action: 'expedition-launch' });
+  await h.click({ action: 'expedition-launch' });
   assert.equal(h.overlay().hidden, false);
   h.key('Escape');
   assert.equal(h.overlay().hidden, true, 'Escape closes the loadout');
@@ -314,8 +174,8 @@ test('stay and Escape cancel the loadout with no trip/resource change, restore f
   assert.equal(h.active(), h.launcher, 'Escape restores launcher focus');
 
   // Reopen after cancelling: the real kit still launches with real capacity.
-  h.click({ action: 'expedition-launch' });
-  h.clickModal(1); // cart
+  await h.click({ action: 'expedition-launch' });
+  await h.clickModal(1); // cart
   const g = h.save().game;
   assert.equal(g.phase, 'explore');
   assert.equal(g.backstage.run.kit, 'cart');
@@ -327,8 +187,8 @@ test('stay and Escape cancel the loadout with no trip/resource change, restore f
 // 4. Keyboard: native summary joins the trap; Tab/ShiftTab never leave the
 //    dialog; Enter/Space on the summary are not intercepted or rebuilt on.
 // ===========================================================================
-test('loadout focus trap cycles summary, three tools and stay; Enter/Space on summary stay native', () => {
-  const h = nightLoadout();
+test('loadout focus trap cycles summary, three tools and stay; Enter/Space on summary stay native', async () => {
+  const h = await nightLoadout();
   const ctrls = h.controls();
   assert.deepEqual(ctrls.map(c => c.tag === 'summary' ? 'summary' : c.label),
     ['summary', Backstage.KITS.hook.name, Backstage.KITS.cart.name, Backstage.KITS.foam.name, '先留在酒馆']);
@@ -379,12 +239,12 @@ test('loadout focus trap cycles summary, three tools and stay; Enter/Space on su
 // 5. Nights 2 and 3 render that night's real street title/description/hint.
 //    (Real R.act lifecycle fixture, explicitly not a natural playthrough.)
 // ===========================================================================
-test('day 2 and day 3 loadouts show the real current-night street title, description and hint', () => {
+test('day 2 and day 3 loadouts show the real current-night street title, description and hint', async () => {
   for (const day of [1, 2, 3]) {
     const game = summaryAt(day);
-    const h = harness({ version: 1, game, city: City.create(), sound: true });
+    const h = await harness({ version: 1, game, city: City.create(), sound: true });
     h.setActive(h.launcher);
-    h.click({ action: 'expedition-launch' });
+    await h.click({ action: 'expedition-launch' });
     assert.equal(h.overlay().hidden, false, 'day ' + day + ' choice opens');
     const body = h.dialogBody();
     const street = Backstage.streetInfo(Backstage.create(game.seed, day));
@@ -399,7 +259,7 @@ test('day 2 and day 3 loadouts show the real current-night street title, descrip
 // 6. Guards: no modal when already out tonight, and no modal outside summary.
 //    (Used-run state is reached with real explore/bail/returnExplore actions.)
 // ===========================================================================
-test('used-run and non-summary guards never open the choice', () => {
+test('used-run and non-summary guards never open the choice', async () => {
   // Technical fixture: real launch, real bail command, real return.
   let s = summaryAt(1);
   s = act(s, { type: 'explore', kit: 'hook' });
@@ -407,16 +267,16 @@ test('used-run and non-summary guards never open the choice', () => {
   s = act(s, { type: 'returnExplore' });
   assert.equal(s.phase, 'summary');
   assert.deepEqual(s.prepared, ['explore']);
-  const h = harness({ version: 1, game: s, city: City.create(), sound: true });
+  const h = await harness({ version: 1, game: s, city: City.create(), sound: true });
   assert.match(h.board(), /data-action="expedition-launch"[^>]*\bdisabled\b/, 'launcher is disabled after a trip');
   // Even a synthetic non-dispatched click is stopped by the chooseExpedition guard.
-  h.click({ action: 'expedition-launch' }, false);
+  await h.click({ action: 'expedition-launch' }, false);
   assert.equal(h.overlay().hidden, true, 'no second trip modal tonight');
 
   // Not in after-hours: guard returns before building any dialog.
-  const h2 = harness(null);
-  h2.click({ action: 'start' });
-  h2.click({ action: 'expedition-launch' });
+  const h2 = await harness(null);
+  await h2.click({ action: 'start' });
+  await h2.click({ action: 'expedition-launch' });
   assert.equal(h2.overlay().hidden, true, 'no loadout during daytime prep');
 });
 
@@ -424,13 +284,13 @@ test('used-run and non-summary guards never open the choice', () => {
 // 7. Other dialog kinds keep their existing Escape semantics: pause resumes,
 //    a normal confirm Escape only cancels, and event Escape stays open.
 // ===========================================================================
-test('pause and normal-confirm Escape keep old behaviour; event Escape still does not close', () => {
+test('pause and normal-confirm Escape keep old behaviour; event Escape still does not close', async () => {
   // Real natural night 1 through the real open confirm.
-  const h = harness(null);
-  h.click({ action: 'start' });
-  h.click({ action: 'city-enter' });
-  h.click({ action: 'open' });
-  h.clickModal(1);
+  const h = await harness(null);
+  await h.click({ action: 'start' });
+  await h.click({ action: 'city-enter' });
+  await h.click({ action: 'open' });
+  await h.clickModal(1);
   assert.equal(h.save().game.phase, 'night');
 
   // Pause (kind normal): Escape resumes play.
@@ -442,7 +302,7 @@ test('pause and normal-confirm Escape keep old behaviour; event Escape still doe
   assert.equal(h.save().game.phase, 'night');
 
   // Early-close confirm: Escape dismisses the question, never closes the pub.
-  h.click({ action: 'close-night' });
+  await h.click({ action: 'close-night' });
   assert.equal(h.overlay().hidden, false);
   h.key('Escape');
   assert.equal(h.overlay().hidden, true);
@@ -452,9 +312,9 @@ test('pause and normal-confirm Escape keep old behaviour; event Escape still doe
   let s = act(act(R.createGame(42), { type: 'start' }), { type: 'open' });
   for (let t = 0; t < 35; t++) s = act(s, { type: 'tick', seconds: 1 }); // real 1s ticks; the UNINVITED event pauses at 35s
   assert.equal(s.night.event.status, 'pending');
-  const h2 = harness({ version: 1, game: s, city: City.create(), tutorialSeen: true, sound: true });
+  const h2 = await harness({ version: 1, game: s, city: City.create(), tutorialSeen: true, sound: true });
   assert.match(h2.kicker(), /PAUSED/, 'restored night opens paused');
-  h2.clickModal(0); // resume; syncEvent opens the real event dialog
+  await h2.clickModal(0); // resume; syncEvent opens the real event dialog
   assert.match(h2.kicker(), /UNINVITED/);
   h2.key('Escape');
   assert.equal(h2.overlay().hidden, false, 'event Escape keeps the story modal open');

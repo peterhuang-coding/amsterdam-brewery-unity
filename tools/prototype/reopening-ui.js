@@ -1,19 +1,25 @@
 (function () {
   'use strict';
-  const R=window.Reopening, C=window.City;
+  const R=window.Reopening, C=window.DistrictCity;
   const $=id=>document.getElementById(id);
   const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const SAVE_KEY='ab_reopening_v1';
-  const ui={selected:null,beer:'blond',premium:false,modal:null,returnFocus:null,brewElapsed:0,sound:true,tutorialSeen:false,signature:'',lastFrame:performance.now(),lastSave:0,noticeTimer:null,audio:null,city:C.create(),cityPath:[],cityTarget:null,cityMode:'map',cityPlace:'pub',cityNear:'pub',cityFerry:false,cityZoom:1,cityCamera:'street',hintDismissed:false,cityKeys:new Set(),cityFrame:performance.now(),notebook:false};
+  const ui={selected:null,beer:'blond',premium:false,modal:null,returnFocus:null,brewElapsed:0,sound:true,tutorialSeen:false,signature:'',lastFrame:performance.now(),lastSave:0,noticeTimer:null,audio:null,city:null,cityPath:[],cityTarget:null,cityMode:'map',cityPlace:'pub',cityNear:'pub',cityFerry:false,cityZoom:1,cityCamera:'street',hintDismissed:false,cityKeys:new Set(),cityFrame:performance.now(),notebook:false};
   let state=R.createGame(seedFromUrl());
-  let restored=false,saveError=false;
+  let restored=false,saveError=false,savedCity=null;
+  const map={session:null,loading:true,error:null,controller:null,sequence:0,promise:Promise.resolve(),retry:null,pendingReturn:null,travelDeparture:null,progress:null};
+  Object.assign(ui,{routeController:null,routeSequence:0,routePending:false,cartController:null,cartSequence:0,cartRoutePending:false,cartPath:[],travel:null,routeArrival:null});
   try {
     const saved=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');
-    if(saved){const valid=R.restore(saved.game||saved);if(valid){state=valid;ui.city=C.restore(saved.city);restored=state.phase!=='welcome';ui.tutorialSeen=Boolean(saved.tutorialSeen);ui.sound=saved.sound!==false;ui.brewElapsed=state.phase==='brew'&&Number.isFinite(saved.brewElapsed)?Math.max(0,Math.min(6,saved.brewElapsed)):0;}else saveError=true;}
+    if(saved){const valid=R.restore(saved.game||saved);if(valid){state=valid;savedCity=saved.city;map.pendingReturn=saved.mapTransition?.pendingReturn||null;map.travelDeparture=saved.mapTransition?.travelDeparture||null;restored=state.phase!=='welcome';ui.tutorialSeen=Boolean(saved.tutorialSeen);ui.sound=saved.sound!==false;ui.brewElapsed=state.phase==='brew'&&Number.isFinite(saved.brewElapsed)?Math.max(0,Math.min(6,saved.brewElapsed)):0;}else saveError=true;}
   } catch {saveError=true;}
   const scene=new PubScene($('pub-canvas'));
-  const backstage=new BackstageUI({canvas:$('pub-canvas'),getState:()=>state,dispatch,save,isPaused:()=>Boolean(ui.modal),showModal:modal,playBeat:()=>sound('beat')});
-  const journey=new JourneyUI({canvas:$('pub-canvas'),getState:()=>state,dispatch,isPaused:()=>Boolean(ui.modal),playFeedback:()=>sound('bad'),tick:(seconds,input)=>{
+  const districtScene=new DistrictScene($('pub-canvas'));
+  const available=()=>Boolean(ui.city&&map.session?.active&&!map.loading&&!map.error&&!map.pendingReturn);
+  const clocksPaused=()=>!available()||Boolean(ui.modal)||document.hidden;
+  const backstage=new BackstageUI({canvas:$('pub-canvas'),getState:()=>state,dispatch,save,isPaused:clocksPaused,showModal:modal,playBeat:()=>sound('beat')});
+  const journey=new JourneyUI({canvas:$('pub-canvas'),getState:()=>state,dispatch,isPaused:clocksPaused,playFeedback:()=>sound('bad'),tick:(seconds,input)=>{
+    if(clocksPaused())return;
     const result=R.act(state,{type:'journeyAction',verb:'tick',value:{seconds,...input}});
     if(result.ok)state=result.state;
   }});
@@ -35,7 +41,7 @@
   function seedFromUrl(){const n=Number(new URLSearchParams(location.search).get('seed'));return Number.isSafeInteger(n)&&n>0?n:42;}
   function money(n){return '€'+Math.round(Number(n)||0);}
   function save(){
-    try{localStorage.setItem(SAVE_KEY,JSON.stringify({version:1,game:state,city:ui.city,brewElapsed:ui.brewElapsed,tutorialSeen:ui.tutorialSeen,sound:ui.sound}));$('save-status').textContent='进度已保存在这台设备';}
+    try{localStorage.setItem(SAVE_KEY,JSON.stringify({version:1,game:state,city:ui.city||savedCity,mapTransition:{pendingReturn:map.pendingReturn,travelDeparture:map.travelDeparture},brewElapsed:ui.brewElapsed,tutorialSeen:ui.tutorialSeen,sound:ui.sound}));$('save-status').textContent='进度已保存在这台设备';}
     catch{$('save-status').textContent='当前浏览器无法保存 · 请保持页面打开';}
   }
   function sound(kind='tap'){
@@ -56,17 +62,17 @@
     ui.noticeTimer=setTimeout(()=>$('notice').classList.remove('visible'),4300);
   }
   function dispatch(action){
-    if(ui.modal)return;
+    if(ui.modal||!available()||ui.travel)return;
     const previous=state.phase,previousDay=state.day;
     const result=R.act(state,action);
     if(!result.ok){notify(result.message||'现在无法这样操作。',true);return;}
     state=result.state;
     if(action.type==='journeyStart'){ui.city=C.parkBike(ui.city);ui.cityKeys.clear();ui.cityPath=[];ui.cityTarget=null;journey.clear();}
-    if(action.type==='journeyReturn'){ui.cityMode='place';ui.cityPlace='flowers';journey.clear();}
+    if(action.type==='journeyReturn'){journey.clear();queueReturn('flowers','place');}
     if(action.type==='explore'){ui.city=C.parkBike(ui.city);ui.cityKeys.clear();ui.cityPath=[];backstage.clear();backstage.signature='';backstage.overview=false;}
-    if(action.type==='returnExplore'){homeOnFoot();ui.cityMode='place';}
-    if(action.type==='start'||state.day!==previousDay){homeOnFoot();ui.cityMode='map';ui.cityCamera='street';}
-    if(previous==='night'&&state.phase==='summary'){homeOnFoot();ui.cityMode='map';ui.cityCamera='street';}
+    if(action.type==='returnExplore')queueReturn('pub','place');
+    if(action.type==='start'||state.day!==previousDay)queueReturn('pub','map');
+    if(previous==='night'&&state.phase==='summary')queueReturn('pub','map');
     if(action.type==='prepare'&&action.kind==='brew')ui.brewElapsed=0;
     if(action.type==='brewHit')ui.brewElapsed=0;
     if(action.type==='serve'||action.type==='water')ui.selected=null;
@@ -99,7 +105,7 @@
     return '<div class="first-guest-cue"><span class="board-eyebrow">第一杯 · 三步</span><ol><li><em>1</em><b>选中客人</b>（第一位 Marta 已为你选好）</li><li><em>2</em> 核对她想喝的酒，点「<b>开始倒酒 · E</b>」</li><li><em>3</em> 指针进浅绿区，点「<b>收杯 · Space</b>」</li></ol><button class="text-button" data-action="tutorial-dismiss">知道了，开始营业</button></div>';
   }
   function syncEvent(){
-    if(ui.modal||state.phase!=='night')return;
+    if(ui.modal||!available()||state.phase!=='night')return;
     if(state.night.event?.status!=='pending'){
       const story=R.stories.nightView(state,R.trade.available);if(!story)return;
       modal('白天的约定 · 阅读与选择时暂停',story.title,`<p class="event-quote">“${esc(story.quote)}”</p><p>现金 ${money(state.cash)}。回应与实际供酒分别记录，不自动增加好感或音乐收益。</p>`,story.choices.map(c=>({label:c.label,description:c.detail,disabled:c.disabled,secondary:['talk','regular','water'].includes(c.id),run:()=>dispatch({type:'storyNight',choice:c.id})})),'event');
@@ -121,7 +127,7 @@
       modal('CITY BACKSTAGE · 阅读时暂停','自动探索，重要的事你来选。',streetHelp+'<p><b>自动模式：</b>点选项或按对应数字键，角色会走到目的地、拾取和使用工具。拿箱子、交还人物、进入温室前会停下来；阅读时整条街和倒计时暂停。地图下方可切换 1× / 2× 播放或手动操作，途中可点“停下来，重新选路”。</p><p><b>手动模式：</b><kbd>WASD</kbd> / 方向键移动；鼠标瞄准，左键或 <kbd>J</kbd> 下钩，右键或 <kbd>F</kbd> 喷泡沫，<kbd>Space</kbd> 朝当前方向闪避。纯键盘和触屏操作会朝行走方向使用工具；方向按钮按住移动。</p>'+((street&&street.id!=="legacy")?'<p><b>空瓶引声：</b><kbd>N</kbd> 或空瓶按钮投向瞄准方向，每趟 3 瓶、间隔 2 秒。琥珀色声纹持续 5 秒，巡查和机器会循声过去；贴得太近仍会被追。<b>拖动空桶：</b>靠近青色圆环的空桶，按 <kbd>R</kbd> 抓住，再移动拖行；再按一次放下。拖桶会降速，先放下才可闪避。空桶挡路但不装进背包。木质酒桶仍是普通货物。</p>':'')+'<p>普通货物靠近自动装包，冷藏箱要靠近按 <kbd>E</kbd>。<kbd>Q</kbd> 扔下最后一件物品，腾出空间。也可以点「整理背包」，自己选放下哪一种。红灯街的 Noor 在西北，夜店在东侧，温室在东北。</p><p>机器头上的惊叹号预告冲撞，可以闪避、钩住或用泡沫打断。墙体会挡住工具；泡沫也会让你的脚步打滑。</p><p><kbd>M</kbd> 看全图。西南的回店口按 <kbd>E</kbd> 安全撤回，带走全包。收班或受伤过多只保住半包；轻装撤回放弃背包。已交付的箱子和发现的地方会保留。月雾不会成为酒或原料。</p>',[{label:'回到街区'}]);return;
     }
     modal('HOW TO PLAY · 阅读时暂停','照顾好今天，也准备好明天。',
-      '<p><b>先逛城市。</b>WASD / 方向键移动，点击地点自动绕过运河和建筑，E 进入附近地点。B 在车旁骑车；宽桥直接骑，窄桥和渡轮推车过去，上岸后继续骑。花店可花 €4 和一次准备包三枝花，礼物和窗台都有用。去北岸走渡轮。逛地图免费，市场、咖啡馆和实验室可免费踩点，记下当晚路线、节拍与灌溉规律。办事才花行动。市场 €8 买 3 杯现货，实验室 €6 买 2 份酒花。</p><p><b>白天两次行动。</b>酿酒花 €12，得到 6 杯；帮咖啡店赚 €18；去北岸运河打捞酒花和押金瓶，躲开需要清运费的单车残骸；拜访 Lotte，答应今晚留给她一杯黑啤。</p>'+
+      '<p class="map-attribution">Map data: Kadaster / PDOK BGT · CC0-1.0。地图轮廓经过简化；店铺是虚构游戏地点。M 或全城地图按钮切换总览与本地街区，跨街区按已声明的连接短途旅行；F3 必须到岸边确认登船。</p><p><b>先逛城市。</b>WASD / 方向键移动，点击地点自动绕过运河和建筑，E 进入附近地点。B 在车旁骑车；宽桥直接骑，窄桥和渡轮推车过去，上岸后继续骑。花店可花 €4 和一次准备包三枝花，礼物和窗台都有用。去北岸走渡轮。逛地图免费，市场、咖啡馆和实验室可免费踩点，记下当晚路线、节拍与灌溉规律。办事才花行动。市场 €8 买 3 杯现货，实验室 €6 买 2 份酒花。</p><p><b>白天两次行动。</b>酿酒花 €12，得到 6 杯；帮咖啡店赚 €18；去北岸运河打捞酒花和押金瓶，躲开需要清运费的单车残骸；拜访 Lotte，答应今晚留给她一杯黑啤。</p>'+
       '<p><b>夜晚接待客人。</b>点击想先服务的人，核对口味和预算。每次开始倒酒消耗一杯库存；指针进入绿色区域再收杯。价格超过预算、口味不对或倒得太差，客人不会满意。</p>'+
       '<p><b>打烊后可以探险。每夜一趟，夜里的货留给下次营业；早上看景点手册背面的笔记。每晚都有麻烦。</b>房东、网红、检查员会提出要求。先看成本，再选应对方式；这时游戏暂停。基础租金 €18，事件会影响实际账单。</p><p><b>第三晚重开。</b>前两晚可选一件设备。最后留下至少 €100，并累计让 12 位客人满意。</p>'+
       '<p><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> 选客人 · <kbd>E</kbd> 开始倒酒 · <kbd>Space</kbd> 收杯 / 酿造确认 / 打捞 · <kbd>A</kbd><kbd>D</kbd> 移动小船 · <kbd>P</kbd> 暂停 · <kbd>H</kbd> 帮助。所有操作也有可点击按钮。</p>'+
@@ -134,12 +140,92 @@
   function confirmRestart(){
     modal('NEW BEGINNING','重新开始这三天？','<p>当前三天的进度会被新一局替换。你可以继续使用这张相同的顾客安排。</p>',[{label:'保留进度，继续玩'},{label:'重新开始',secondary:true,run:()=>restart(state.seed)}]);
   }
-  function restart(seed){state=R.createGame(seed);ui.selected=null;ui.beer='blond';ui.premium=false;ui.brewElapsed=0;ui.tutorialSeen=false;ui.city=C.create();ui.cityMode='map';ui.cityCamera='street';ui.hintDismissed=false;ui.cityPlace='pub';ui.cityPath=[];ui.cityTarget=null;save();render();window.scrollTo({top:0,behavior:'auto'});}
+  function restart(seed){
+    cancelRoutes();map.controller?.abort();map.sequence++;map.pendingReturn=null;map.travelDeparture=null;ui.travel=null;
+    state=R.createGame(seed);ui.selected=null;ui.beer='blond';ui.premium=false;ui.brewElapsed=0;ui.tutorialSeen=false;
+    ui.city=null;savedCity=null;ui.cityMode='map';ui.cityCamera='street';ui.hintDismissed=false;ui.cityPlace='pub';
+    save();startMap();window.scrollTo({top:0,behavior:'auto'});
+  }
   const inCity=()=>['prep','summary'].includes(state.phase);
-  const nearBike=()=>Math.hypot(ui.city.x-ui.city.bike.x,ui.city.y-ui.city.bike.y)<=42;
-  const cityPlace=id=>id==='garden'?R.garden.ENTRY:C.PLACES[id];
-  function cityView(){return {position:ui.city,path:ui.cityPath,target:ui.cityTarget,zoom:ui.cityZoom,camera:ui.cityCamera,mode:ui.cityMode,place:ui.cityPlace,afterHours:state.phase==='summary',notes:mapNotes(),bouquet:state.life.bouquet,display:state.life.display,garden:R.garden.context(state),flowerCart:ui.flowerCart||R.garden.CART};}
-  function homeOnFoot(){const fresh=C.create();ui.city={...fresh,visited:ui.city.visited,bike:C.parkBike(ui.city).bike};ui.cityKeys.clear();ui.cityPath=[];ui.cityTarget=null;ui.cityPlace='pub';ui.cartFollowing=false;ui.flowerCart=null;ui.cartPath=[];}
+  const nearBike=()=>Boolean(ui.city&&(ui.city.bike.mounted||ui.city.bike.pushing||C.nearBike(ui.city)));
+  const gardenActive=()=>available()&&ui.city.districtId==='depijp'&&R.garden.isMapConfigured();
+  const cityPlace=id=>id==='garden'?{...C.GARDEN,name:'温室日间侧门',district:'De Pijp'}:C.PLACES[id];
+  const nearVenue=()=>{const p=C.near(ui.city);return p?.id==='flowerCart'?null:p?.id==='garden'?cityPlace('garden'):p;};
+  function cityView(){return {position:ui.city,path:ui.cityPath,target:ui.cityTarget,zoom:ui.cityZoom,camera:ui.cityCamera,mode:ui.cityMode,place:ui.cityPlace,afterHours:state.phase==='summary',notes:mapNotes(),bouquet:state.life.bouquet,display:state.life.display};}
+  function cancelRoutes(){
+    ui.routeController?.abort();ui.routeSequence++;ui.routePending=false;ui.routeArrival=null;
+    ui.cartController?.abort();ui.cartSequence++;ui.cartRoutePending=false;ui.cartFollowing=false;
+    ui.cityKeys.clear();ui.cityPath=[];ui.cityTarget=null;ui.cartPath=[];
+  }
+  function configureGarden(){
+    ui.flowerCart=null;
+    if(map.session.active.data.id==='depijp')R.garden.configureMap({mapVersion:map.session.manifest.mapVersion,districtId:'depijp',entry:C.GARDEN,cart:C.FLOWER_CART});
+  }
+  function progress(event){map.progress=event;const el=$('map-progress');if(el)el.textContent=event.received?'已读取 '+Math.ceil(event.received/1024)+' KB':'正在核验街区…';}
+  function mapOperation(work){
+    map.controller?.abort();const controller=new AbortController(),token=++map.sequence;
+    map.controller=controller;map.loading=true;map.error=null;map.progress=null;map.retry=()=>mapOperation(work);cancelRoutes();render();
+    map.promise=(async()=>{
+      try{await work(controller.signal,()=>token===map.sequence&&!controller.signal.aborted);if(token!==map.sequence||controller.signal.aborted)return;
+        map.loading=false;map.error=null;ui.lastFrame=ui.cityFrame=performance.now();save();render();
+        if(ui.travel?.stage==='arrived')nextLeg();
+      }catch(error){if(token!==map.sequence)return;map.loading=false;map.error=error.name==='AbortError'?'地图加载已暂停。':error.message;render();}
+    })();
+    return map.promise;
+  }
+  async function loadDistrict(id,signal){
+    if(map.session.active?.data.id!==id)await map.session.loadDistrict(id,{signal,onProgress:progress});
+    configureGarden();
+  }
+  function startMap(){
+    return mapOperation(async(signal,current)=>{
+      if(!map.session){map.session=await DistrictRuntime.open('map-data/amsterdam-shape-d29-v1/manifest.json',{signal,onProgress:progress});if(!current()){map.session.dispose();map.session=null;return;}C.configure(map.session);}
+      const raw=map.travelDeparture||savedCity;
+      await loadDistrict(C.requiredDistrict(raw),signal);if(!current())return;
+      ui.city=raw?C.restore(raw):C.create('pub');map.travelDeparture=null;
+      if(map.pendingReturn)await finishReturn(signal,current);
+      if(!current())return;
+      if(restored&&['night','brew','forage','explore','journey'].includes(state.phase))pause('上次的进度已恢复。准备好后，从上次停下的地方继续。');
+      else if(restored)notify('进度已恢复。打烊后就能进入夜间探险。');
+      else if(saveError)notify('上次存档无法读取，已准备好一局新的开始。',true);
+      restored=false;
+    });
+  }
+  function queueReturn(place,mode){
+    cancelRoutes();ui.city=C.parkBike(ui.city);ui.travel=null;map.travelDeparture=null;
+    map.pendingReturn={place,mode};save();
+    mapOperation(finishReturn);
+  }
+  async function finishReturn(signal,current){
+    const intent=map.pendingReturn;if(!intent)return;
+    const place=C.PLACES[intent.place];if(!place)throw new Error('返回地点无法读取，请重新开始或重试。');
+    await loadDistrict(place.districtId,signal);if(!current())return;
+    ui.city=C.relocateToPlace(ui.city,intent.place);ui.cityPlace=intent.place;ui.cityMode=intent.mode==='place'?'place':'map';ui.cityCamera='street';
+    map.pendingReturn=null;save();
+  }
+  function mapPanel(){
+    $('city-toolbar').hidden=true;$('backstage-controls').hidden=true;$('queue').innerHTML='';$('pour-stations').innerHTML='';
+    $('cash').textContent=money(state.cash);$('chapter-title').textContent=map.pendingReturn?'正在返回'+(map.pendingReturn.place==='flowers'?'花店':'酒馆'):'正在打开阿姆斯特丹';
+    $board.innerHTML='<p class="board-eyebrow">AMSTERDAM / MAP</p><h2>'+(map.loading?'正在准备街区…':'街区暂时不可用')+'</h2><p role="status" id="map-progress">'+esc(map.error||'正在读取本地地图，游戏时间已暂停。')+'</p><p class="small-note">经济进度已经保留。地图就绪后才能继续行动。</p>'+(map.loading?'<button class="secondary" data-action="map-cancel">暂停加载</button>':'<button class="primary" data-action="map-retry">重试地图加载</button>')+(ui.travel?'<button class="secondary" data-action="travel-cancel">取消旅程，返回出发处</button>':'');
+  }
+  function drawScene(now,seconds=0){
+    if(!available())return;
+    if(inCity()&&(ui.cityMode==='map'||ui.cityPlace!=='pub')){
+      const overview=ui.cityCamera==='city'&&ui.cityMode==='map',places=C.PLACES;
+      // Scene markers use actual anchor identities; economy and UI keep venue IDs.
+      const markerId=id=>places[id]?.anchorId||id;
+      const scenePlaces=Object.values(places).map(p=>({...p,id:p.anchorId}));
+      scenePlaces.push({id:'ferrySouth',name:'F3 南岸码头',districtId:'station'},{id:'garden',name:'温室日间侧门',districtId:'depijp'},{id:'flowerCart',name:'搬花车',districtId:'depijp'});
+      districtScene.draw({mode:overview?'overview':'district',camera:overview?'fit':ui.cityZoom===2?'street':'fit',data:overview?map.session.overview:map.session.active.data,
+        districts:map.session.manifest.districts,activeDistrictId:ui.city.districtId,places:scenePlaces,position:{...ui.city,visited:ui.city.visited.map(markerId)},path:ui.cityPath,target:markerId(ui.cityTarget),
+        afterHours:state.phase==='summary',garden:gardenActive()?{...C.GARDEN,...R.garden.context(state)}:null,flowerCart:gardenActive()?ui.flowerCart||C.FLOWER_CART:null},now/1000);
+    }else{
+      scene.prepareCanvas();
+      if(state.phase==='explore')backstage.step(seconds);else if(state.phase==='journey')journey.step(seconds);else scene.draw(state,now,ui.selected,cityView());
+    }
+  }
+  // Mini scenes use a fixed 1100 x 640 logical space, regardless of backing DPR.
+  backstage.trackPointer=function(e){const p=scene.logicalPoint(e.clientX,e.clientY);this.pointer=p;this.updateAim();};
 
   function expeditionInvitation(){
     const used=state.prepared.includes('explore');
@@ -156,15 +242,15 @@
   }
   function renderCityToolbar(){
     const toolbar=$('city-toolbar');toolbar.hidden=!inCity();if(!inCity())return;
-    const near=C.near(ui.city),busy=Boolean(state.life.arrangement),bike=ui.city.bike;
+    const near=nearVenue(),busy=Boolean(state.life.arrangement),bike=ui.city.bike;
     toolbar.innerHTML=`<span>${state.phase==='summary'?'深夜':'白天'} · ${bike.pushing?'推车过桥':bike.mounted?'骑行中':'步行'} · 已发现 ${ui.city.visited.length}/${Object.keys(C.PLACES).length}</span>`+
       `<button data-action="city-bike" ${busy||!nearBike()?'disabled':''}>${bike.mounted||bike.pushing?'停好自行车':C.rideable(ui.city.x,ui.city.y)?'骑上自行车':'推着自行车走'} · B</button>`+
       (!nearBike()?'<button data-action="city-bike-find" '+(busy?'disabled':'')+'>去取停好的车</button>':'')+
       `<button data-action="city-notebook" ${busy?'disabled':''}>${ui.notebook?'收起':'打开'}景点手册</button>`+
       (ui.cityMode==='place'?`<button data-action="city-map" ${busy?'disabled':''}>← 出去逛逛 · M</button>`:
       ui.cityCamera==='street'
-        ?`<button data-action="city-overview" ${busy?'disabled':''}>全城地图 · M</button><button data-action="city-enter" ${near?'':'disabled'}>${near?'进入 '+esc(near.name)+' · E':'靠近地点后按 E'}</button>`
-        :`<button data-action="city-street">回到街头</button><button data-action="city-zoom">${ui.cityZoom===1?'放大跟随 ×2':'回到 1× 全景'}</button><button data-action="city-enter" ${near?'':'disabled'}>${near?'进入 '+esc(near.name)+' · E':'靠近地点后按 E'}</button>`);
+        ?`<button data-action="city-overview" ${busy?'disabled':''}>全城地图 · M</button><button data-action="city-zoom">${ui.cityZoom===1?'放大本地街区':'街区全景'}</button><button data-action="city-enter" ${near?'':'disabled'}>${near?'进入 '+esc(near.name)+' · E':'靠近地点后按 E'}</button>`
+        :`<button data-action="city-street">回到街头 · M</button><button data-action="city-enter" ${near?'':'disabled'}>${near?'进入 '+esc(near.name)+' · E':'靠近地点后按 E'}</button>`);
   }
   function flowerPanel(){
     const a=state.life.arrangement;
@@ -337,15 +423,17 @@
   }
   function renderStreetBoard(headings){
     const late=state.phase==='summary';
-    const near=C.near(ui.city);
+    const near=nearVenue();
     let html=headings;
     if(!late&&state.day===1&&ui.city.visited.length===1&&!ui.hintDismissed){
       html+='<div class="street-hint"><strong>两分钟学会这条街</strong><p>WASD / 方向键移动，点击地名自动走，到门口按 <kbd>E</kbd> 进入。</p><button class="text-button" data-action="street-hint-close">知道了</button></div>';
     }
+    if(ui.cityPath.length)html+=`<div class="city-route"><strong>沿街前往 ${esc(ui.cityTarget?cityPlace(ui.cityTarget)?.name:'所选落脚点')}</strong><button class="text-button" data-action="city-stop">停下来看看</button></div>`;
+    if(!late&&gardenActive()&&!ui.cartFollowing&&Math.hypot(ui.city.x-(ui.flowerCart||C.FLOWER_CART).x,ui.city.y-(ui.flowerCart||C.FLOWER_CART).y)<20)html+='<p>搬花车准备回温室。</p><button class="secondary" data-action="garden-follow">跟上搬花车 · 可中途离开</button>';
     if(!late&&state.day===1)html+=firstWalkCard();
     // The walk card owns the single primary CTA on the day-1 street board; the
     // generic nearest-place E action stays, styled as a secondary choice.
-    html+=`<div class="city-nearby"><h3>${near?esc(near.name):'运河街道'}</h3><p>${near?esc(PLACE_COPY[near.id].quote):'河边有路，过河找桥。'}</p>${near?`<button class="${!late&&state.day===1?'secondary':'primary'}" data-action="city-enter">进去看看 · E</button>`:''}</div>`;
+    html+=`<div class="city-nearby"><h3>${near?esc(near.name):'运河街道'}</h3><p>${near?esc((PLACE_COPY[near.id]?.quote||'花车沿街回温室。')):'河边有路，过河找桥。'}</p>${near?`<button class="${!late&&state.day===1?'secondary':'primary'}" data-action="city-enter">进去看看 · E</button>`:''}</div>`;
     html+=bouquetPanel(null);
     if(late){
       html+=expeditionInvitation()+sleepPanel();
@@ -356,11 +444,24 @@
     }
     $board.innerHTML=html;
   }
+  function renderTravelBoard(headings){
+    const trip=ui.travel,leg=trip.legs[trip.index];
+    $board.innerHTML=headings+'<h2>'+esc(leg?districtName(leg.from)+' → '+districtName(leg.to):'即将抵达')+'</h2><p>'+(trip.stage==='bank'?'沿本地道路走到 F3 岸边。':leg?.mode==='ferry'?'F3 正在渡河；读说明、暂停或离开页面时停止。':'沿已开放的街区连接完成一段虚构短途。')+'</p><p id="travel-progress" role="status">'+(ui.city.transit?Math.ceil(ui.city.transit.duration-ui.city.transit.elapsed)+' 秒':'准备出发')+'</p><button class="secondary" data-action="travel-cancel">取消旅程，返回出发处</button>';
+  }
+  function travelToDistrict(id){
+    if(id===ui.city.districtId){ui.cityCamera='street';ui.cityMode='map';render();return;}
+    const place=Object.values(C.PLACES).find(p=>p.districtId===id);
+    if(place)travelTo(place.id);else{
+      const marker=map.session.overview.markers.find(p=>p.districtId===id);if(marker)travelTo(null,marker);
+    }
+  }
   function renderCityBoard(headings){
     if(state.life.arrangement){$board.innerHTML=flowerPanel();return;}
     if(state.phase==='prep'&&ui.cityMode==='place'&&ui.cityPlace==='garden'){$board.innerHTML=headings+gardenPanel();return;}
+    if(ui.travel){renderTravelBoard(headings);return;}
+    if(ui.routePending){$board.innerHTML=headings+'<h2>正在寻找沿街路线…</h2><button class="secondary" data-action="city-stop">取消寻路</button>';return;}
     if(ui.cityMode==='map'&&ui.cityCamera==='street'){renderStreetBoard(headings);return;}
-    const near=C.near(ui.city),used=state.prepared,blocked=state.actions<=0,late=state.phase==='summary';
+    const near=nearVenue(),used=state.prepared,blocked=state.actions<=0,late=state.phase==='summary';
     const budget=late?'':`<div class="action-budget"><span>白天还可以做 <b>${state.actions}</b> 件事 · 漫游免费</span></div>`;
     $board.innerHTML=headings+cityNotebook()+characterNotes()+(!late?contractPanel():'');
     if(!late&&state.day>1&&R.stories.morning(state).length)$board.innerHTML+='<div class="morning-post"><strong>门缝里的回话</strong><p>'+R.stories.morning(state).map(esc).join('</p><p>')+'</p></div>';
@@ -370,10 +471,10 @@
       $board.innerHTML+=`<h2>${late?'明信片拍不到的时间。':'骑慢点。<br>这座城值得拐个弯。'}</h2>`+budget+
         `<p class="board-copy">${late?'白天的商店拉下卷帘，后门的故事刚开始。你可以继续逛，也可以带工具出门。':'逛街、骑车、进店。'+(ui.city.bike.pushing?'正推着车过桥，上岸后继续骑。':ui.city.bike.mounted?'骑着车，看到感兴趣的地方就停下来。':nearBike()?'自行车就在身边，按 B 带上它。':'自行车停在地图上，点「去取停好的车」就能找到。')}</p>`+
         (ui.cityPath.length?`<div class="city-route"><strong>↝ ${destination?esc(destination.name):'沿街走走'}</strong><p id="city-route-note">沿虚线前往</p><button class="text-button" data-action="city-stop">停下来看看</button></div>`:
-        `<div class="city-nearby"><h3>${near?esc(near.name):'运河街道'}</h3><p>${near?esc(PLACE_COPY[near.id].quote):'河边有路，过河找桥。'}</p>${near?'<button class="primary" data-action="city-enter">进去看看 · E</button>':''}</div>`)+bouquetPanel(null)+expeditionInvitation();
+        `<div class="city-nearby"><h3>${near?esc(near.name):'运河街道'}</h3><p>${near?esc((PLACE_COPY[near.id]?.quote||'花车沿街回温室。')):'河边有路，过河找桥。'}</p>${near?'<button class="primary" data-action="city-enter">进去看看 · E</button>':''}</div>`)+bouquetPanel(null)+expeditionInvitation();
       if(!late){const story=R.stories.current(state);$board.innerHTML+='<p class="small-note">'+(story?'今晚与 '+esc(R.stories.CAST[story.id].name)+' 有约。':'想聊聊：酒馆找 Marta，咖啡馆找 Bram，花店找 Ada；可完全跳过，不影响开门。')+'</p>';
         if(R.garden.context(state).known)$board.innerHTML+='<button class="secondary" data-action="city-travel" data-place="garden">沿记下的路线去温室侧门</button>';
-        if(Math.hypot(ui.city.x-(ui.flowerCart||R.garden.CART).x,ui.city.y-(ui.flowerCart||R.garden.CART).y)<150&&!ui.cartFollowing)$board.innerHTML+='<p>一辆载着花架的小车正准备回温室。跟过去看看，也可以继续原来的事。</p><button class="secondary" data-action="garden-follow">跟上搬花车 · 可中途离开</button>';
+        if(gardenActive()&&Math.hypot(ui.city.x-(ui.flowerCart||C.FLOWER_CART).x,ui.city.y-(ui.flowerCart||C.FLOWER_CART).y)<20&&!ui.cartFollowing)$board.innerHTML+='<p>一辆载着花架的小车正准备回温室。跟过去看看，也可以继续原来的事。</p><button class="secondary" data-action="garden-follow">跟上搬花车 · 可中途离开</button>';
       }
       if(late)$board.innerHTML+=sleepPanel();return;
     }
@@ -404,40 +505,119 @@
     if(p.id==='market'&&state.backstage.discovered.includes('market-shortcut'))$board.innerHTML+='<p class="promise-note">卸货门上的告示改成了：请最后离开的非员工关灯。你开的捷径还在。</p>';
     $board.innerHTML+=bouquetPanel(p.id)+'<div class="board-bottom"><button class="text-button" data-action="city-map">← 出去逛逛 · M</button></div>';
   }
+  async function localRoute(point,id,onArrival,radius=C.ARRIVAL_RADIUS){
+    ui.routeController?.abort();const controller=new AbortController(),token=++ui.routeSequence,district=ui.city.districtId;
+    ui.routeController=controller;ui.routePending=true;ui.cityPath=[];ui.cityTarget=id;ui.routeArrival=onArrival||null;ui.cityKeys.clear();ui.cityMode='map';ui.cityCamera='street';render();
+    try{
+      const path=await C.routeAsync(ui.city,point,{mode:ui.city.bike.mounted?'bike':'walk',signal:controller.signal});
+      if(token!==ui.routeSequence||controller.signal.aborted||ui.city.districtId!==district||!available())return;
+      ui.routePending=false;ui.cityPath=path;
+      if(!path.length){
+        if(Math.hypot(ui.city.x-point.x,ui.city.y-point.y)<=radius&&C.segmentWalkable(ui.city,point,'walk')){const done=ui.routeArrival;ui.routeArrival=null;if(done)done();else if(id)enterCityPlace(id);}
+        else{ui.cityTarget=null;ui.routeArrival=null;notify('这边暂时走不到，换个落脚点。',true);if(ui.travel)cancelTravel();}
+      }
+      render();
+    }catch(error){if(token!==ui.routeSequence||controller.signal.aborted)return;ui.routePending=false;ui.cityTarget=null;ui.routeArrival=null;notify('路线暂时不可用，请重新选择目的地。',true);if(ui.travel)cancelTravel();else render();}
+  }
   function travelTo(id,point){
-    if(!inCity()||ui.modal||state.life.arrangement)return;
+    if(!inCity()||!available()||ui.modal||state.life.arrangement||ui.travel)return;
     const place=id&&cityPlace(id);if(id&&!place||id==='garden'&&state.phase!=='prep')return;
-    ui.cartFollowing=false;
-    ui.cityMode='map';ui.cityKeys.clear();ui.cityTarget=id;
-    ui.cityPath=C.route(ui.city,place||point);
-    if(!ui.cityPath.length){if(place&&Math.hypot(ui.city.x-place.x,ui.city.y-place.y)<60)enterCityPlace(place.id);else{ui.cityTarget=null;notify('这边暂时走不到，换个落脚点。',true);render();}return;}
-    render();
+    const snapped=point?.id&&point.districtId===ui.city.districtId?C.data.anchors[point.id]:null;
+    const target=place||(snapped?{...point,...snapped}:point);if(!target)return;cancelRoutes();
+    const district=target.districtId||ui.city.districtId;
+    if(district!==ui.city.districtId){
+      const legs=C.planTravel(ui.city.districtId,district);if(!legs.length){notify('这些街区之间没有已开放的路线。',true);return;}
+      ui.travel={legs,index:0,target:id,point:place?null:{...target},stage:'confirm'};ui.cityMode='map';ui.cityCamera='city';
+      const names=legs.map(l=>districtName(l.from)+' → '+districtName(l.to)+(l.mode==='ferry'?' · F3 渡轮':' · 街区短途')).join('</li><li>');
+      modal('跨街区出行','沿已开放的路线出发',`<ol><li>${names}</li></ol><p>街区之间是短暂的虚构旅程。渡轮需要先走到岸边，确认登船。途中可取消并回到出发处。</p>`,[{label:'确认出发',run:confirmTravel},{label:'先留在这里',secondary:true,run:cancelTravel}],'travel');render();return;
+    }
+    localRoute(target,id);
     if(matchMedia('(max-width: 800px)').matches)$('pub-canvas').scrollIntoView({block:'start',behavior:'auto'});
   }
+  function districtName(id){return map.session.manifest.districts.find(d=>d.id===id)?.name||id;}
+  function confirmTravel(){
+    if(!ui.travel||ui.travel.stage!=='confirm'||!available())return;
+    map.travelDeparture=JSON.parse(JSON.stringify(ui.city));save();nextLeg();
+  }
+  function nextLeg(){
+    const trip=ui.travel;if(!trip)return;cancelRoutes();
+    const leg=trip.legs[trip.index];
+    if(!leg){
+      const target=trip.target,point=trip.point;ui.travel=null;map.travelDeparture=null;save();
+      ui.cityCamera='street';travelTo(target,point);return;
+    }
+    ui.cityCamera='street';ui.cityMode='map';
+    if(leg.mode==='ferry'){
+      trip.stage='bank';const bank=C.data.anchors[leg.from==='station'?'ferrySouth':'ferryNorth'];
+      localRoute(bank,null,()=>{
+        if(ui.travel!==trip)return;trip.stage='boarding';save();
+        modal('F3 / 已到岸边','现在推车登船？','<p>渡轮会把你送到对岸。读说明、暂停或离开页面时，船都会停下。</p>',[{label:'确认登船',run:boardTravel},{label:'取消旅程',secondary:true,run:cancelTravel}],'boarding');
+      },.05);
+    }else{trip.stage='moving';ui.city=C.beginTransfer(ui.city,leg.to);save();render();}
+  }
+  function boardTravel(){
+    const trip=ui.travel;if(!trip||trip.stage!=='boarding'||!available())return;
+    try{ui.city=C.beginTransfer(ui.city,trip.legs[trip.index].to);trip.stage='moving';save();render();}
+    catch(error){notify('请先沿路线走到渡轮岸边。',true);cancelTravel();}
+  }
+  function finishLeg(){
+    const trip=ui.travel;if(!trip||trip.stage!=='moving')return;trip.stage='loading';
+    mapOperation(async(signal,current)=>{
+      await loadDistrict(ui.city.transit.to,signal);if(!current()||ui.travel!==trip)return;
+      ui.city=C.completeTransfer(ui.city);trip.index++;trip.stage='arrived';save();
+    });
+  }
+  function cancelTravel(){
+    if(ui.modal&&['travel','boarding'].includes(ui.modal.kind))closeModal();
+    const departure=map.travelDeparture;ui.travel=null;cancelRoutes();
+    map.controller?.abort();map.sequence++;
+    if(!departure){map.loading=false;map.error=null;render();return;}
+    mapOperation(async(signal,current)=>{
+      await loadDistrict(C.requiredDistrict(departure),signal);if(!current())return;
+      ui.city=C.restore(departure);ui.cityMode='map';ui.cityCamera='street';map.travelDeparture=null;save();
+    });
+  }
+  async function followCart(){
+    if(state.phase!=='prep'||!gardenActive()||ui.modal||ui.travel)return;
+    cancelRoutes();const cart=C.FLOWER_CART;
+    ui.flowerCart={map:ui.city.map,districtId:'depijp',x:cart.x,y:cart.y,visited:[],bike:{districtId:'depijp',x:cart.x,y:cart.y,mounted:false}};
+    const controller=new AbortController(),token=++ui.cartSequence;ui.cartController=controller;ui.cartRoutePending=true;ui.cartFollowing=true;
+    localRoute(C.GARDEN,'garden');
+    try{const path=await C.routeAsync(ui.flowerCart,C.GARDEN,{signal:controller.signal,mode:'walk'});
+      if(token!==ui.cartSequence||controller.signal.aborted||!gardenActive())return;
+      ui.cartPath=path;ui.cartRoutePending=false;render();
+    }catch(error){if(token!==ui.cartSequence||controller.signal.aborted)return;ui.cartFollowing=false;ui.cartRoutePending=false;notify('搬花车暂时无法出发，仍可自己去温室。',true);render();}
+  }
   function enterCityPlace(id){
-    if(!inCity()||ui.modal||state.life.arrangement)return;
-    const nearGarden=state.phase==='prep'&&Math.hypot(ui.city.x-R.garden.ENTRY.x,ui.city.y-R.garden.ENTRY.y)<60;
-    const place=id?cityPlace(id):nearGarden?R.garden.ENTRY:C.near(ui.city);
-    if(!place||Math.hypot(ui.city.x-place.x,ui.city.y-place.y)>65){notify('再靠近一点，就能进去了。');return;}
-    ui.city=C.parkBike(ui.city);ui.cityKeys.clear();ui.cityPath=[];ui.cityTarget=null;ui.cityPlace=place.id;ui.cityMode='place';
-    if(place.id==='garden'){const source=ui.cartFollowing?'cart':undefined;ui.cartFollowing=false;dispatch({type:'gardenVisit',position:{x:ui.city.x,y:ui.city.y},source});}
+    if(!inCity()||!available()||ui.modal||state.life.arrangement||ui.travel)return;
+    const place=id?cityPlace(id):nearVenue();
+    if(place?.id==='garden'&&state.phase!=='prep'){notify('温室日间侧门白天开放。');return;}
+    if(!place||place.id==='garden'&&!gardenActive()||place.districtId!==ui.city.districtId||Math.hypot(ui.city.x-place.x,ui.city.y-place.y)>C.ARRIVAL_RADIUS||!C.segmentWalkable(ui.city,place,'walk')){notify('再靠近一点，就能进去了。');return;}
+    const source=ui.cartFollowing?'cart':undefined;cancelRoutes();ui.city=C.parkBike(ui.city);ui.cityPlace=place.id;ui.cityMode='place';
+    if(place.id==='garden')dispatch({type:'gardenVisit',position:{map:ui.city.map,districtId:ui.city.districtId,x:ui.city.x,y:ui.city.y},source});
     else if(!ui.city.visited.includes(place.id))ui.city.visited.push(place.id);
     save();render();
     if(matchMedia('(max-width: 800px)').matches)$('action-content').scrollIntoView({block:'start',behavior:'auto'});
   }
   function stepCity(seconds){
-    if(state.life.arrangement||!ui.cityKeys.size&&!ui.cityPath.length)return;
-    const wasNearBike=nearBike(),wasNearGarden=Math.hypot(ui.city.x-R.garden.ENTRY.x,ui.city.y-R.garden.ENTRY.y)<45;let position=ui.city,arrived=false;
-    if(ui.cartFollowing){const r=C.moveAlong({...ui.flowerCart,visited:[],bike:{...R.garden.CART,mounted:false}},ui.cartPath,seconds);ui.flowerCart={x:r.position.x,y:r.position.y};ui.cartPath=r.path;}
+    if(state.life.arrangement)return;
+    if(ui.travel?.stage==='moving'){
+      const result=C.advanceTransfer(ui.city,seconds);ui.city=result.position;
+      const status=$('travel-progress');if(status)status.textContent=Math.ceil(ui.city.transit.duration-ui.city.transit.elapsed)+' 秒';
+      if(result.ready)finishLeg();return;
+    }
+    if(!ui.cityKeys.size&&!ui.cityPath.length)return;
+    const wasNearBike=nearBike(),wasNearGarden=gardenActive()&&Math.hypot(ui.city.x-C.GARDEN.x,ui.city.y-C.GARDEN.y)<=C.ARRIVAL_RADIUS;let position=ui.city,arrived=false;
+    if(ui.cartFollowing&&ui.flowerCart){const r=C.moveAlong(ui.flowerCart,ui.cartPath,seconds);ui.flowerCart=r.position;ui.cartPath=r.path;}
     if(ui.cityKeys.size){const held=ui.cityKeys;position=C.move(ui.city,Number(held.has('d')||held.has('arrowright'))-Number(held.has('a')||held.has('arrowleft')),Number(held.has('s')||held.has('arrowdown'))-Number(held.has('w')||held.has('arrowup')),seconds);}
-    else{const followSeconds=ui.cartFollowing&&ui.cartPath.length&&Math.hypot(ui.city.x-ui.flowerCart.x,ui.city.y-ui.flowerCart.y)<55?0:seconds;const result=C.moveAlong(ui.city,ui.cityPath,followSeconds);position=result.position;ui.cityPath=result.path;arrived=result.arrived;}
+    else{const followSeconds=ui.cartFollowing&&ui.cartPath.length&&Math.hypot(ui.city.x-ui.flowerCart.x,ui.city.y-ui.flowerCart.y)<3?0:seconds;const result=C.moveAlong(ui.city,ui.cityPath,followSeconds);position=result.position;ui.cityPath=result.path;arrived=result.arrived;}
     const wasPushing=Boolean(ui.city.bike.pushing);ui.city=position;
-    if(wasPushing!==Boolean(ui.city.bike.pushing)){notify(ui.city.bike.pushing?'窄桥 / 渡轮慢一点，推着车一起过去。':'已经过桥，继续骑行。');save();renderCityToolbar();}
-    const near=C.near(ui.city),nextNear=near?.id||null,onFerry=C.onFerry(ui.city.x,ui.city.y);
-    if(state.phase==='prep'&&!wasNearGarden&&Math.hypot(ui.city.x-R.garden.ENTRY.x,ui.city.y-R.garden.ENTRY.y)<45){enterCityPlace('garden');return;}
-    if(near&&!ui.city.visited.includes(near.id)){ui.city.visited.push(near.id);save();}
-    if(arrived){const target=ui.cityTarget;ui.cityTarget=null;if(target){enterCityPlace(target);return;}save();render();}
-    else if(nextNear!==ui.cityNear||onFerry!==ui.cityFerry||wasNearBike!==nearBike()){ui.cityNear=nextNear;ui.cityFerry=onFerry;renderCityToolbar();if(!ui.cityPath.length)renderCityBoard('<p class="board-eyebrow">TWEEDE KANS / CITY</p>');}
+    if(wasPushing!==Boolean(ui.city.bike.pushing)){notify(ui.city.bike.pushing?'这段路需要推车，宽路上继续骑。':'已经过桥，继续骑行。');save();renderCityToolbar();}
+    const near=nearVenue(),nextNear=near?.id||null;
+    if(!ui.travel&&state.phase==='prep'&&!wasNearGarden&&gardenActive()&&Math.hypot(ui.city.x-C.GARDEN.x,ui.city.y-C.GARDEN.y)<=C.ARRIVAL_RADIUS){enterCityPlace('garden');return;}
+    if(near&&near.id!=='garden'&&!ui.city.visited.includes(near.id)){ui.city.visited.push(near.id);save();}
+    if(arrived){const target=ui.cityTarget,done=ui.routeArrival;ui.cityTarget=null;ui.routeArrival=null;if(done){done();return;}if(target){enterCityPlace(target);return;}save();render();}
+    else if(nextNear!==ui.cityNear||wasNearBike!==nearBike()){ui.cityNear=nextNear;renderCityToolbar();if(!ui.cityPath.length)renderCityBoard('<p class="board-eyebrow">TWEEDE KANS / CITY</p>');}
   }
   function selectedCustomer(){const waiting=R.customers(state);return waiting.find(c=>c.id===ui.selected)||waiting[0]||null;}
   function selectedPour(){return state.night?.pours.find(p=>p.customerId===ui.selected)||null;}
@@ -453,6 +633,7 @@
     return [`DAY ${state.day} / 3 · ${state.phase==='night'?'营业中':'白天的准备'}`,DAYS[state.day-1]];
   }
   function render(){
+    if(!available()){mapPanel();return;}
     document.body.classList.toggle('is-journey',state.phase==='journey');
     document.body.classList.toggle('is-expedition',state.phase==='explore');document.body.classList.toggle('is-auto-expedition',state.phase==='explore'&&Boolean(state.backstage.run.auto?.enabled));$('backstage-controls').hidden=state.phase!=='explore';
     const oldFocus=document.activeElement?.dataset?.focus;
@@ -474,7 +655,7 @@
     $('journal-entries').innerHTML=log.length?log.map(line=>`<li>${esc(line)}</li>`).join(''):'<li>房东说钥匙免费，保管钥匙的杯垫另算。</li><li>三天后开业。许可证需要营业流水，营业需要许可证。</li><li>街坊只想喝杯好酒。他们的要求居然最合理。</li>';
     $('control-hint').textContent=state.phase==='journey'?'WASD 移动 · B 骑车 · E 取放／帮助 · J 格挡 · Space 闪避 · P 暂停':inCity()?'WASD 移动 · 点击地点自动寻路 · B 骑车 · E 进入 · M 地图 · P 暂停':state.phase==='forage'?'A / D 换航道 · Space 打捞 · P 暂停':state.phase==='brew'?'Space 确认工艺 · P 暂停 · H 帮助':state.phase==='night'?'1 / 2 / 3 选客 · E 倒酒 · Space 收杯 · P 暂停':'鼠标或键盘操作 · H 帮助 · P 暂停';
     if(state.phase==='explore')$('control-hint').textContent=state.backstage.run.auto?.enabled?'点击选项 / 数字键做选择 · M 地图 · P 暂停 · H 帮助':'WASD 移动 · J 钩拉 · F 泡沫 · '+(state.backstage.run.street&&state.backstage.run.street.situation!=='legacy'?'N 引声 · R 拖桶 · ':'')+'Space 闪避 · E 互动 · M 地图 · P 暂停';
-    ui.signature=signature();updateMeters();if(state.phase==='explore')backstage.step(0);else if(state.phase==='journey')journey.draw();else scene.draw(state,performance.now(),ui.selected,cityView());
+    ui.signature=signature();updateMeters();drawScene(performance.now());
     if(oldFocus){const next=document.querySelector(`[data-focus="${CSS.escape(oldFocus)}"]`);if(next&&!next.disabled)next.focus({preventScroll:true});}
   }
   function renderQueue(){
@@ -486,11 +667,11 @@
       $('queue').classList.add('city-destinations');
       const destinationButton=p=>`<button class="destination ${ui.cityTarget===p.id||ui.cityMode==='place'&&ui.cityPlace===p.id?'selected':''}" data-action="city-travel" data-place="${p.id}" data-focus="city-${p.id}" aria-label="前往${esc(p.name)}"><span>${p.icon}</span><strong>${esc(p.name)}<small>${esc(p.district)} · ${PLACE_COPY[p.id].brief}</small></strong><i>${ui.city.visited.includes(p.id)?'✓':'·'}</i></button>`;
       if(ui.cityMode==='map'&&ui.cityCamera==='street'){
-        $('queue').innerHTML=['pub','lotte'].map(id=>destinationButton(C.PLACES[id])).join('')+
+        $('queue').innerHTML=Object.values(C.PLACES).filter(p=>p.districtId===ui.city.districtId).map(destinationButton).join('')+
           `<button class="destination city-overview-destination" data-action="city-overview"><span>🗺</span><strong>全城地图<small>Bram 咖啡馆 · 市场 · 花店 · Chen 实验室 · 北岸渡轮，共 5 个去处</small></strong><i>→</i></button>`;
         return;
       }
-      $('queue').innerHTML=Object.values(C.PLACES).map(destinationButton).join('');
+      $('queue').innerHTML=Object.values(C.PLACES).map(destinationButton).join('')+map.session.manifest.districts.map(d=>`<button class="destination" data-action="city-district" data-district="${d.id}">${esc(d.name)} · 街区</button>`).join('');
       return;
     }
     $('queue').classList.remove('city-destinations');
@@ -582,7 +763,7 @@
   function signature(){return JSON.stringify([state.phase,state.day,state.cash,state.actions,state.batches,state.friends,state.promises,state.upgrades,state.hops,state.music,state.brew,state.night?.orders.map(o=>[o.id,o.status]),state.night?.pours.map(p=>[p.customerId,p.beer,p.price]),state.night?.earned,state.night?.event,state.forage&&[state.forage.lane,state.forage.haul,state.forage.items.map(i=>i.status)],state.reports.length,state.life,state.stories]);}
   function updateMeters(){
     if(state.phase==='explore')return;
-    if(inCity()){const note=$('city-route-note');if(note&&ui.cityPath.length){let total=0,prev=ui.city;for(const point of ui.cityPath){total+=Math.hypot(point.x-prev.x,point.y-prev.y);prev=point;}note.textContent=`沿虚线前往 · 约 ${Math.ceil(total/(ui.city.bike.mounted?420:240))} 秒 · 途中可点其他地点改道`;}}
+    if(inCity()){const note=$('city-route-note');if(note&&ui.cityPath.length){let total=0,prev=ui.city;for(const point of ui.cityPath){total+=Math.hypot(point.x-prev.x,point.y-prev.y);prev=point;}note.textContent=`沿虚线前往 · 约 ${Math.ceil(total/(ui.city.bike.mounted?C.BIKE_SPEED:C.WALK_SPEED))} 秒 · 途中可点其他地点改道`;}}
     if(state.phase==='brew'){const needle=$('brew-meter')?.querySelector('.needle');if(needle)needle.style.left=Math.min(.995,ui.brewElapsed/6)*100+'%';}
     if(state.phase==='night'){
       const left=Math.max(0,state.night.duration-state.night.elapsed),mm=Math.floor(left/60),ss=Math.floor(left%60);
@@ -604,11 +785,18 @@
   function brewHit(){if(state.phase!=='brew')return;const position=ui.brewElapsed/6,score=Math.max(0,1-Math.abs(position-.72)/.55);dispatch({type:'brewHit',score});}
   function pourForSelected(){const guest=selectedCustomer(),batch=selectedBatch(guest),contract=guest&&R.trade.forGuest(state,guest.id);if(guest&&batch)dispatch({type:'pour',customerId:guest.id,beer:ui.beer,batchId:batch.id,price:contract?R.trade.terms(state,contract).price:R.BEERS[ui.beer].price+(ui.premium?4:0)});}
   function handleAction(button){
-    if(ui.modal||button.disabled)return;
+    if(button.disabled)return;
     const data=button.dataset;
+    if(data.action==='map-retry'){map.retry?.();return;}
+    if(data.action==='map-cancel'){map.controller?.abort();return;}
+    if(data.action==='travel-cancel'){cancelTravel();return;}
+    if(ui.modal||!available())return;
+    if(data.action==='travel-confirm'){confirmTravel();return;}
+    if(data.action==='travel-board'){boardTravel();return;}
+    if(ui.travel&&!['city-overview','city-street','city-notebook'].includes(data.action))return;
     switch(data.action){
       case 'garden-ask':if(state.phase==='prep'&&ui.cityMode==='place'&&ui.cityPlace==='flowers')dispatch({type:'gardenAsk'});break;
-      case 'garden-follow':if(state.phase==='prep'){ui.flowerCart=ui.flowerCart||{...R.garden.CART};travelTo('garden');ui.cartFollowing=true;ui.cartPath=C.route(ui.flowerCart,R.garden.ENTRY);}break;
+      case 'garden-follow':followCart();break;
       case 'story-day':if(state.phase==='prep'&&ui.cityMode==='place'&&R.stories.CAST[data.id]?.place===ui.cityPlace)dispatch({type:'storyDay',id:data.id,choice:data.choice});break;
       case 'contract':dispatch({type:'contract',id:data.id,choice:data.choice,batchId:data.batch});break;
       case 'batch':ui.batchId=data.batch;render();break;
@@ -620,7 +808,8 @@
       case 'exp-command':backstage.perform(data.verb);break;
       case 'start':{const n=Number($('seed-input')?.value);if(!Number.isInteger(n)||n<1||n>2147483647){notify('顾客安排请输入 1 到 2147483647 的整数。',true);return;}state=R.createGame(n);dispatch({type:'start'});break;}
       case 'city-travel':travelTo(data.place);break;
-      case 'city-bike':if(inCity()&&!state.life.arrangement){const carrying=ui.city.bike.mounted||ui.city.bike.pushing;ui.city=C.toggleBike(ui.city);ui.cityMode='map';notify(ui.city.bike.pushing?'推着车过桥，到宽路上继续骑。':ui.city.bike.mounted?'骑上车了。宽桥直接过，窄桥自动推车。':carrying?'车停好了。回来按 B 就能带走。':'先靠近自行车。');save();render();}break;
+      case 'city-district':travelToDistrict(data.district);break;
+      case 'city-bike':if(inCity()&&!state.life.arrangement){cancelRoutes();const carrying=ui.city.bike.mounted||ui.city.bike.pushing;ui.city=C.toggleBike(ui.city);ui.cityMode='map';notify(ui.city.bike.pushing?'推着车过桥，到宽路上继续骑。':ui.city.bike.mounted?'骑上车了。宽桥直接过，窄桥自动推车。':carrying?'车停好了。回来按 B 就能带走。':'先靠近自行车。');save();render();}break;
       case 'city-bike-find':travelTo(null,ui.city.bike);break;
       case 'city-notebook':ui.notebook=!ui.notebook;render();break;
       case 'flower-start':dispatch({type:'flowerStart'});break;
@@ -631,13 +820,13 @@
       case 'flower-store':if(nearBike())dispatch({type:'flowerStore',stored:!state.life.bouquet.stored});else notify('先走回停放自行车的位置。',true);break;
       case 'flower-use':if(ui.cityMode==='place'&&C.near(ui.city)?.id===(data.target==='display'?'pub':'lotte'))dispatch({type:'flowerUse',target:data.target});break;
       case 'city-map':if(state.life.arrangement)return;ui.cityMode='map';ui.cityKeys.clear();render();break;
-      case 'city-overview':ui.cityCamera='city';ui.cityKeys.clear();render();break;
-      case 'city-street':ui.cityCamera='street';ui.cityKeys.clear();render();break;
+      case 'city-overview':ui.cityMode='map';ui.cityCamera='city';ui.cityKeys.clear();render();break;
+      case 'city-street':ui.cityMode='map';ui.cityCamera='street';ui.cityKeys.clear();render();break;
       case 'street-hint-close':ui.hintDismissed=true;render();break;
       case 'tutorial-dismiss':ui.tutorialSeen=true;save();render();break;
       case 'city-enter':enterCityPlace();break;
       case 'city-zoom':ui.cityZoom=ui.cityZoom===1?2:1;renderCityToolbar();break;
-      case 'city-stop':ui.cityPath=[];ui.cityTarget=null;ui.cartFollowing=false;render();save();break;
+      case 'city-stop':cancelRoutes();render();save();break;
       case 'brew':dispatch({type:'prepare',kind:'brew',beer:data.beer});break;
       case 'scout':if(inCity()&&ui.cityMode==='place'&&ui.cityPlace===data.place)dispatch({type:'scout',place:data.place});break;
       case 'prepare':dispatch({type:'prepare',kind:data.kind});break;
@@ -675,15 +864,16 @@
   $('sound-button').addEventListener('click',()=>{ui.sound=!ui.sound;save();render();if(ui.sound)sound();});
   document.addEventListener('keydown',e=>{
     if(ui.modal){
-      if(e.key==='Escape'){e.preventDefault();if(ui.modal.kind==='event')return;if(ui.modal.kind==='loadout'){closeModal();return;}const callback=ui.modal.buttons[0].run;closeModal();if(callback)callback();syncEvent();}
+      if(e.key==='Escape'){e.preventDefault();if(ui.modal.kind==='event')return;if(['travel','boarding'].includes(ui.modal.kind)){cancelTravel();return;}if(ui.modal.kind==='loadout'){closeModal();return;}const callback=ui.modal.buttons[0].run;closeModal();if(callback)callback();syncEvent();}
       if(e.key==='Tab'){const selector=ui.modal.kind==='loadout'?'button:not(:disabled),a,input,summary':'button:not(:disabled),a,input';const controls=[...$('overlay').querySelectorAll(selector)],first=controls[0],last=controls[controls.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
       return;
     }
+    if(!available())return;
     if(e.target.matches('input,textarea,select')){if(e.key==='Enter'&&e.target.id==='seed-input'){e.preventDefault();handleAction($board.querySelector('[data-action="start"]'));}return;}
     const key=e.key.toLowerCase();
     if(journey.key(e))return;
     if(backstage.key(e))return;
-    if(inCity()&&!state.life.arrangement&&ui.cityMode==='map'&&['w','a','s','d','arrowup','arrowleft','arrowdown','arrowright'].includes(key)){e.preventDefault();const canceledRoute=ui.cityPath.length>0||ui.cityTarget!==null;ui.cityKeys.add(key);ui.cityPath=[];ui.cityTarget=null;ui.cartFollowing=false;if(canceledRoute)render();return;}
+    if(inCity()&&!state.life.arrangement&&ui.cityMode==='map'&&['w','a','s','d','arrowup','arrowleft','arrowdown','arrowright'].includes(key)){e.preventDefault();if(ui.travel)return;const canceledRoute=ui.cityPath.length>0||ui.cityTarget!==null||ui.routePending,held=[...ui.cityKeys];cancelRoutes();held.forEach(k=>ui.cityKeys.add(k));ui.cityKeys.add(key);if(canceledRoute)render();return;}
     if(e.repeat)return;
     if(key==='p'||key==='escape'){e.preventDefault();pause();return;}
     if(key==='h'){e.preventDefault();showHelp();return;}
@@ -701,27 +891,41 @@
   });
   document.addEventListener('keyup',e=>ui.cityKeys.delete(e.key.toLowerCase()));
   window.addEventListener('blur',()=>ui.cityKeys.clear());
-  $('pub-canvas').addEventListener('click',e=>{if(!inCity()||ui.cityMode!=='map'||ui.modal||state.life.arrangement)return;const box=e.currentTarget.getBoundingClientRect(),point=scene.cityWorldPoint((e.clientX-box.left)*1100/box.width,(e.clientY-box.top)*640/box.height);const place=C.near(point,85);if(place)travelTo(place.id);else travelTo(null,point);});
-  document.addEventListener('visibilitychange',()=>{if(document.hidden){ui.cityKeys.clear();backstage.clear();journey.clear();save();if(['night','brew','forage','explore','journey'].includes(state.phase)||inCity()&&ui.cityPath.length)pause('你离开了一会儿，游戏已自动暂停。');}ui.lastFrame=performance.now();});
+  $('pub-canvas').addEventListener('click',e=>{
+    if(!available()||!inCity()||ui.cityMode!=='map'||ui.modal||ui.travel||state.life.arrangement)return;
+    const hit=districtScene.hitTest(e.clientX,e.clientY);
+    if(hit?.type==='place'){
+      const places=C.PLACES,venue=places[hit.id]||Object.values(places).find(p=>p.anchorId===hit.id);
+      if(venue)travelTo(venue.id);
+      else if(hit.id==='flowerCart'){if(state.phase!=='prep')notify('搬花车白天才出发。');else if(gardenActive())followCart();else travelTo(null,C.FLOWER_CART);}
+      else if(hit.id==='garden'){if(state.phase!=='prep')notify('温室日间侧门白天开放。');else travelTo('garden');}
+      else{const marker=map.session.overview.markers.find(p=>p.id===hit.id);if(marker)travelTo(null,marker);}
+      return;
+    }
+    if(hit?.type==='district'){travelToDistrict(hit.id);return;}
+    if(ui.cityCamera!=='city'){const point=districtScene.screenToWorld(e.clientX,e.clientY);if(point)travelTo(null,point);}
+  });
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){ui.cityKeys.clear();backstage.clear();journey.clear();save();if(['night','brew','forage','explore','journey'].includes(state.phase)||inCity()&&(ui.cityPath.length||ui.routePending||ui.cartRoutePending||ui.travel))pause('你离开了一会儿，游戏已自动暂停。');}ui.lastFrame=performance.now();});
   window.addEventListener('pagehide',save);
   function frame(now){
     const seconds=Math.min(.1,Math.max(0,(now-ui.cityFrame)/1000));ui.cityFrame=now;
-    if(inCity()&&ui.cityMode==='map'&&!ui.modal&&!document.hidden)stepCity(seconds);
-    if(state.phase==='explore')backstage.step(seconds);else if(state.phase==='journey')journey.step(seconds);else scene.draw(state,now,ui.selected,cityView());updateMeters();requestAnimationFrame(frame);
+    if(available()){
+      if(inCity()&&!clocksPaused()&&(ui.cityMode==='map'||ui.travel))stepCity(seconds);
+      drawScene(now,seconds);updateMeters();
+    }
+    requestAnimationFrame(frame);
   }
   setInterval(()=>{
     const now=performance.now(),seconds=Math.min(1,Math.max(0,(now-ui.lastFrame)/1000));ui.lastFrame=now;
-    if(document.hidden||ui.modal)return;
+    if(clocksPaused())return;
     if(state.phase==='brew'){ui.brewElapsed+=seconds;if(ui.brewElapsed>=6)dispatch({type:'brewHit',score:0});}
     else if(state.phase==='night'||state.phase==='forage'){
       const before=state.phase;const result=R.act(state,{type:state.phase==='forage'?'forageTick':'tick',seconds});
-      if(result.ok){state=result.state;if(signature()!==ui.signature){render();if(before!==state.phase){if(state.phase==='summary'){homeOnFoot();ui.cityMode='map';render();}save();notify(before==='forage'?state.lastMessage:'营业结束。看看今天的账，也看看谁记住了你。');sound('good');}}}
+      if(result.ok){state=result.state;if(before!==state.phase){if(state.phase==='summary')queueReturn('pub','map');save();notify(before==='forage'?state.lastMessage:'营业结束。看看今天的账，也看看谁记住了你。');sound('good');}if(signature()!==ui.signature)render();}
     }
     syncEvent();
     if(now-ui.lastSave>5000&&state.phase!=='welcome'){save();ui.lastSave=now;}
   },100);
-  render();requestAnimationFrame(frame);
-  if(restored&&['night','brew','forage','explore','journey'].includes(state.phase))pause('上次的进度已恢复。准备好后，从上次停下的地方继续。');
-  else if(restored)notify('进度已恢复。打烊后就能进入夜间探险。');
-  else if(saveError)notify('上次存档无法读取，已准备好一局新的开始。',true);
+  window.ReopeningEntry={ready:()=>map.promise,diagnostics:()=>JSON.parse(JSON.stringify({game:state,city:ui.city,loading:map.loading,error:map.error,available:available(),paused:clocksPaused(),pendingReturn:map.pendingReturn,routePending:ui.routePending,cartRoutePending:ui.cartRoutePending,route:ui.cityPath,routeTarget:ui.cityTarget,travel:ui.travel,mapMode:ui.cityCamera==='city'?'overview':'local',scene:districtScene.diagnostics()}))};
+  startMap();requestAnimationFrame(frame);
 })();

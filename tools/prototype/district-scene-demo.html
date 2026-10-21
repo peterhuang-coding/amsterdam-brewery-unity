@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>District scene — prototype demo</title>
+<style>
+  :root { color-scheme: light; }
+  body { margin: 0; background: #e9e3d2; color: #183b48;
+    font: 15px/1.45 "PingFang SC", "Hiragino Sans GB", system-ui, sans-serif; }
+  main { max-width: 480px; margin: 0 auto; padding: 14px 12px 28px; }
+  h1 { font-size: 17px; margin: 4px 0 6px; }
+  .note { font-size: 12.5px; background: #f4ecd8; border: 1px solid rgba(24,59,72,.25);
+    border-radius: 8px; padding: 8px 10px; margin: 0 0 10px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+  .seg { display: inline-flex; border: 1px solid #183b48; border-radius: 8px; overflow: hidden; }
+  .seg button { border: 0; background: #f4ecd8; color: #183b48; padding: 7px 11px;
+    font: inherit; font-size: 13px; cursor: pointer; }
+  .seg button + button { border-left: 1px solid #183b48; }
+  .seg button[aria-pressed="true"] { background: #183b48; color: #f0e7cd; }
+  canvas { display: block; width: 100%; height: 620px; border: 2px solid #183b48;
+    border-radius: 10px; background: #cfc7ac; touch-action: manipulation; }
+  #status, #hit { font-size: 12px; margin-top: 6px; min-height: 16px; }
+  #hit { font-family: ui-monospace, Menlo, monospace; }
+  footer { margin-top: 12px; font-size: 11.5px; color: #33505c; }
+  .err { color: #8a2f22; }
+</style>
+</head>
+<body>
+<main>
+  <h1>District scene — standalone prototype demo</h1>
+  <p class="note"><strong>Demo only.</strong> This page is not part of the game and
+  does not load any game code. Shapes are simplified illustrations, not collision
+  or navigation authority. Travel links are schematic public-transport journeys
+  (the dashed <em>F3</em> is a ferry); they make no claim of walkable ground.
+  Venues are fictional game locations.</p>
+
+  <div class="controls" role="group" aria-label="Scene controls">
+    <div class="seg" id="modeSeg" role="group" aria-label="View">
+      <button type="button" data-mode="overview" aria-pressed="true">Overview</button>
+      <button type="button" data-mode="district" aria-pressed="false">Local district</button>
+    </div>
+    <div class="seg" id="camSeg" role="group" aria-label="Camera">
+      <button type="button" data-camera="fit" aria-pressed="true">Fit</button>
+      <button type="button" data-camera="street" aria-pressed="false">Street</button>
+    </div>
+    <div class="seg" id="timeSeg" role="group" aria-label="Time of day">
+      <button type="button" data-night="false" aria-pressed="true">Day</button>
+      <button type="button" data-night="true" aria-pressed="false">Night</button>
+    </div>
+  </div>
+
+  <canvas id="scene" aria-label="District map"></canvas>
+  <div id="status">Loading fixtures…</div>
+  <div id="hit">Tap the map to hit-test markers and districts.</div>
+
+  <footer id="attribution">Map data: Kadaster / PDOK BGT, licensed CC0-1.0.</footer>
+</main>
+
+<script src="district-scene.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // Tiny inline city index for the overview, taken from the supplied catalog:
+  // five districts (bounds + snapped entrance), ten markers and the five real
+  // travel links whose from/to use DISTRICT ids. Shapes themselves come from
+  // the attached map-fixture files fetched below.
+  var DISTRICTS = [
+    { id: 'jordaan', name: 'Jordaan', bounds: [800, 2950, 1450, 3550], entrance: { x: 1100.5, y: 3243.5 } },
+    { id: 'depijp', name: 'De Pijp', bounds: [1500, 5200, 2150, 6100], entrance: { x: 1930.5, y: 5497.5 } },
+    { id: 'station', name: 'Centraal / 南岸', bounds: [2100, 2500, 2550, 3000], entrance: { x: 2335.5, y: 2715.5 } },
+    { id: 'noord', name: 'Noord / 北岸', bounds: [2400, 2250, 2950, 2800], entrance: { x: 2591.5, y: 2527.5 } },
+    { id: 'science', name: 'Science Park', bounds: [5900, 5200, 6450, 5750], entrance: { x: 6158.5, y: 5450.5 } }
+  ];
+  var MARKERS = [
+    { id: 'coffee', x: 1890.585, y: 5451.035, districtId: 'depijp' },
+    { id: 'ferryNorth', x: 2590.929, y: 2528.07, districtId: 'noord' },
+    { id: 'ferrySouth', x: 2336.407, y: 2714.803, districtId: 'station' },
+    { id: 'flowerCart', x: 1798.234, y: 5870.4, districtId: 'depijp' },
+    { id: 'flowers', x: 1787.339, y: 5870.28, districtId: 'depijp' },
+    { id: 'garden', x: 1810.35, y: 5801.567, districtId: 'depijp' },
+    { id: 'lab', x: 6158.236, y: 5450.173, districtId: 'science' },
+    { id: 'lotte', x: 1056.057, y: 3247.41, districtId: 'jordaan' },
+    { id: 'market', x: 1930.884, y: 5497.996, districtId: 'depijp' },
+    { id: 'pub', x: 1100.211, y: 3243.117, districtId: 'jordaan' }
+  ];
+  var LINKS = [
+    { from: 'jordaan', mode: 'street', to: 'depijp' },
+    { from: 'jordaan', mode: 'street', to: 'station' },
+    { from: 'depijp', mode: 'street', to: 'science' },
+    { from: 'science', mode: 'street', to: 'station' },
+    { from: 'station', id: 'F3', mode: 'ferry', to: 'noord' }
+  ];
+  // Fictional demo names/icons for the marker ids.
+  var PLACE_INFO = {
+    pub: ['Tweede Kans', 'B'], lotte: ['Lotte', 'N'],
+    coffee: ['Koffiehuis', 'K'], market: ['Markt', 'M'],
+    flowers: ['Bloemenstal', 'F'], flowerCart: ['Bloemenkar', 'C'],
+    garden: ['Moestuin', 'G'], lab: ['Laboratorium', 'L'],
+    ferrySouth: ['F3 zuid', '⛴'], ferryNorth: ['F3 noord', '⛴']
+  };
+
+  var state = { mode: 'overview', camera: 'fit', night: false };
+  var fixtures = null;
+  var scene = null;
+
+  var statusEl = document.getElementById('status');
+  var hitEl = document.getElementById('hit');
+  var canvas = document.getElementById('scene');
+
+  function fail(msg) {
+    statusEl.innerHTML = '<span class="err">' + msg + '</span>';
+  }
+
+  function getJSON(url) {
+    return fetch(url).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + url);
+      return r.json();
+    });
+  }
+
+  function placeFor(m) {
+    var info = PLACE_INFO[m.id] || [m.id.replace(/[-_]/g, ' '), ''];
+    return { id: m.id, name: info[0], icon: info[1], x: m.x, y: m.y, districtId: m.districtId };
+  }
+
+  function overviewView(ov) {
+    return {
+      mode: 'overview',
+      data: {
+        schemaVersion: ov.schemaVersion, mapVersion: ov.mapVersion,
+        bounds: ov.bounds, shapes: ov.shapes,
+        markers: MARKERS, travelLinks: LINKS
+      },
+      districts: DISTRICTS,
+      places: MARKERS.map(placeFor),
+      activeDistrictId: 'depijp',
+      position: { x: 2600, y: 3600, visited: ['lotte'], bike: null },
+      path: [], target: null,
+      afterHours: state.night, camera: state.camera,
+      flowerCart: null, garden: null
+    };
+  }
+
+  function districtView(loc) {
+    var places = [
+      { id: 'pub', name: 'Tweede Kans', icon: 'B', x: 1100.211, y: 3243.117, districtId: loc.id },
+      { id: 'lotte', name: 'Lotte', icon: 'N', x: 1056.057, y: 3247.41, districtId: loc.id }
+    ];
+    return {
+      mode: 'district',
+      data: loc,
+      districts: [{ id: loc.id, name: loc.name, bounds: loc.bounds, entrance: loc.entrance }],
+      places: places,
+      activeDistrictId: loc.id,
+      position: { x: 1100.211, y: 3243.117, visited: ['lotte'], bike: null },
+      path: [{ x: 1090, y: 3245 }, { x: 1070, y: 3247 }],
+      target: 'pub',
+      afterHours: state.night, camera: state.camera,
+      flowerCart: { x: 1095, y: 3262 },
+      garden: { x: 1075, y: 3230, known: true }
+    };
+  }
+
+  function currentView() {
+    return state.mode === 'overview'
+      ? overviewView(fixtures.overview)
+      : districtView(fixtures.district);
+  }
+
+  function render(nowMs) {
+    if (!fixtures) return;
+    scene.draw(currentView(), (nowMs || 0) / 1000);
+    var d = scene.diagnostics();
+    statusEl.textContent = state.mode + ' · ' + (state.night ? 'night' : 'day') +
+      ' · ' + state.camera + ' — static builds ' + d.staticBuilds +
+      ', cache reuses ' + d.cacheReuses + ', live canvases ' + d.liveCanvases +
+      ', backing ' + d.backingWidth + '×' + d.backingHeight + ' @' + d.dpr + 'x';
+    requestAnimationFrame(render);
+  }
+
+  function bindSegment(id, key, apply) {
+    var seg = document.getElementById(id);
+    seg.addEventListener('click', function (e) {
+      var btn = e.target.closest('button');
+      if (!btn) return;
+      seg.querySelectorAll('button').forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
+      apply(btn.dataset[key]);
+    });
+  }
+
+  getJSON('map-fixture/manifest.json')
+    .then(function (manifest) {
+      return Promise.all([
+        getJSON('map-fixture/' + manifest.overview.url),
+        getJSON('map-fixture/' + manifest.districts[0].url)
+      ]).then(function (pair) {
+        fixtures = { overview: pair[0], district: pair[1], manifest: manifest };
+        var attribution = manifest.attribution ||
+          'Map data: Kadaster / PDOK BGT, licensed CC0-1.0.';
+        document.getElementById('attribution').textContent = attribution;
+        if (!window.DistrictScene) throw new Error('district-scene.js failed to load');
+        scene = new window.DistrictScene(canvas);
+        bindSegment('modeSeg', 'mode', function (v) { state.mode = v; });
+        bindSegment('camSeg', 'camera', function (v) { state.camera = v; });
+        bindSegment('timeSeg', 'night', function (v) { state.night = v === 'true'; });
+        canvas.addEventListener('click', function (e) {
+          var rect = canvas.getBoundingClientRect();
+          var hit = scene.hitTest(e.clientX, e.clientY);
+          var world = scene.screenToWorld(e.clientX, e.clientY);
+          if (hit) {
+            hitEl.textContent = 'hit: ' + hit.type + ' "' + hit.id +
+              '" at world (' + world.x.toFixed(1) + ', ' + world.y.toFixed(1) + ')';
+          } else if (world) {
+            hitEl.textContent = 'empty ground at world (' +
+              world.x.toFixed(1) + ', ' + world.y.toFixed(1) + ')';
+          } else {
+            hitEl.textContent = 'clicked outside the map content box.';
+          }
+        });
+        // The module re-measures the CSS content box on every draw, so the
+        // continuous animation frame also picks viewport resizes automatically.
+        requestAnimationFrame(render);
+      });
+    })
+    .catch(function (err) {
+      fail('Could not fetch map fixtures (' + err.message + '). ' +
+        'Serve this folder over HTTP (e.g. python3 -m http.server) so the ' +
+        'attached map-fixture/*.json files load; file:// fetches are blocked.');
+    });
+})();
+</script>
+</body>
+</html>

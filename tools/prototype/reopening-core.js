@@ -296,8 +296,9 @@
         const result=G.ask(state);if(!result.ok)return fail(result.message);say(state,result.message);break;
       }
       case 'gardenVisit': {
-        const p=action.position;
-        if(state.phase!=='prep'||!p||!number(p.x,0,1800)||!number(p.y,0,1120)||Math.hypot(p.x-G.ENTRY.x,p.y-G.ENTRY.y)>60||![undefined,'cart'].includes(action.source))return fail('白天亲自走到温室侧门，才算到访。');
+        // Position predicate is owned by FlowerNetwork: legacy 1800x1120 in
+        // unconfigured compatibility mode, snapped district entry once configured.
+        if(state.phase!=='prep'||!G.isAtEntry(action.position)||![undefined,'cart'].includes(action.source))return fail('白天亲自走到温室侧门，才算到访。');
         G.visit(state,action.source==='cart'?'cart':'self');
         say(state,'你走到温室侧门，认出搬花车留下的车辙。路线已记下：白天可重访，夜里可从温室后门撤离；没有拿走货物或消耗准备次数。');break;
       }

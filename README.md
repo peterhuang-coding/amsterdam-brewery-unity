@@ -6,6 +6,8 @@
 
 ## 近期更新
 
+- 默认入口现已接入简化城市总览和 Jordaan、De Pijp、Centraal、Noord、Science Park 五个局部街区；地图资源随仓库提供，按需加载。新入口已在独立浏览器自然走完三晚并获胜（€310、29 位满意顾客），刷新保留结局；配花、送货、供酒、列车、渡轮、打捞和资源选择也已实际走通。553 项 Node 与 36 项 Python 回归通过；[验收结果与截图](docs/research/2026-10-22-light-map-p0-acceptance.md)。
+
 - 自行车送花串联两格装载、急件、改约与受损补救，交付结果可带来后续供酒邀请。
 - 白天与 Marta、Bram、Ada 约定当晚交流，实际回应和服务结果进入次日回话及结局。
 - 跟随花车、问路或自行发现温室；送花途中可绕路包扎，夜间修泵影响之后的通行。
@@ -21,9 +23,9 @@
 python3 -m http.server 18767 --bind 127.0.0.1 -d tools/prototype
 ```
 
-打开 http://127.0.0.1:18767/?seed=42 。也可直接打开 `tools/prototype/index.html`。
+打开 http://127.0.0.1:18767/?seed=42 。请通过 HTTP 启动，地图需要读取随仓库提供的压缩资源；直接以 `file://` 打开不作为支持入口。
 
-- 主地图有酒吧、咖啡馆、桥边、北岸码头、Albert Cuyp 市场、南街花店和 Science Park 实验室，另有可发现的温室侧门；WASD 走路，点击地点自动寻路，E 进入，M 回地图。过河走桥或渡轮，逛地图不扣行动。
+- 主地图有酒吧、咖啡馆、桥边、北岸码头、Albert Cuyp 市场、南街花店和 Science Park 实验室，另有可发现的温室侧门；WASD 走路，点击本地地点自动寻路，E 进入，M 或地图按钮切换全城总览与当前街区；本地地图可放大。跨街区先确认路线，街区连接以短途旅程表现；F3 需要走到岸边再确认登船。逛地图不扣行动。
 - 市场 €8 买三杯现货；实验室 €6 买两份提高酿造品质的酒花。
 - 白天有两次行动，30 秒运河打捞能带回酒花和密封酒瓶，也可能捞到收费清运的单车。
 - 晚上核对两款酒的口味和价格，在合适时机收杯；倒酒消耗真实库存。
@@ -40,4 +42,4 @@ node --test tools/prototype/test-reopening.js tools/prototype/test-city.js
 node tools/prototype/test-phase-e.js
 ```
 
-玩法规则、Canvas 场景和页面交互分别放在 `reopening-core.js`、`reopening-scene.js`、`reopening-ui.js`。详细操作与验收见 [试玩说明](tools/prototype/README.md)。设计和实施记录位于 `docs/superpowers/`。
+玩法规则、Canvas 场景和页面交互分别放在 `reopening-core.js`、`reopening-scene.js`、`reopening-ui.js`。城市地图由 `district-runtime.js`、`district-city.js`、`district-scene.js` 负责；室内与小游戏保留各自场景。详细操作与验收见 [试玩说明](tools/prototype/README.md)。设计和实施记录位于 `docs/superpowers/`。

@@ -2,47 +2,36 @@
 
 [玩法与 Feature 盘点（2026-10-22 更新）](gameplay-feature-matrix.md)
 
-当前方向是城市总览加可切换的局部街区，优先保留运河、街区和桥梁形态，细节后续逐步增加。原始地理数据用于离线制作，避免浏览器一次加载整份精细地图。
+当前生产入口已接入城市总览与五个局部街区，保留三天酒馆经营和已有小游戏。移动、绘制与加载组件已接入 `index.html`。真实地图的三夜主线已在独立浏览器自然通关：最终获胜、现金 €310、满意及服务顾客均为 29，三次租金均已支付，刷新恢复相同结局。配花、送花急件、次晚供酒、列车、渡轮、打捞、温室认路及资源选择也已实际通过；本轮 P0 闭环已验收，范围与截图见[验收记录](research/2026-10-22-light-map-p0-acceptance.md)。
 
 | Feature | 当前状态 |
 | --- | --- |
-| 城市总览与局部地图 | 离线制作、五街区数据和按需加载已验收；绘制候选独立验收通过，待入口一起采用 |
-| 经营主线 | 现有版本已实测酿酒、第一杯、夜探实际取货、返店与第二天 |
-| 花店小游戏 | 现有版本已实测取消、完成、前篮存取与布置窗台 |
-| 送货、列车与打捞 | 现有地图已实测送花与急件交付、列车往返结算、30 秒打捞及奖励入库 |
-| 街区移动与存档 | 修正候选已通过独立验收：旧档迁移、出发校验、首次加载初始化、渡轮与自行车；待与入口一起采用 |
-| 新地图整合 | 移动与绘制候选均已合格，下一步接入入口并重新验证主线与小游戏 |
+| 城市总览与局部地图 | 入口已使用随仓库发布的五街区资源；M 和 DOM 按钮切换总览/本地，本地可放大 |
+| 按需加载与失败恢复 | 先总览，再当前街区；加载期间所有玩法停表，支持取消/重试，保留一个活动街区及待替换资源 |
+| 街区移动与渡轮 | 米制步行/骑行、步行路段推车、远处停车；沿声明连接规划多段旅程，F3 到岸确认后登船 |
+| 存档与经济返回 | 原存档键保留；经济结算先保存，返店/日切/委托返回意图单独保存，异步定位后清除 |
+| 共享画布 | 地图使用实际内容框；室内、夜探及委托恢复 1100×640 逻辑空间与对应输入坐标 |
+| 三夜经营主线 | 真实新入口自然三晚获胜：€310、29 位满意/服务顾客，三次付租，刷新保留结局 |
+| 可选小游戏 | 配花/赠花、送花急件/供酒、列车、打捞、花车/温室认路、资源选择均已实际操作通过 |
 
-现有规则回归的历史基线为 472 项通过，无失败或跳过；本次移动候选独立复跑 46 项测试通过。上述试玩结果属于现有地图，不代表新地图已完成或已发布。
+## 地图数据与限制
 
-## Main loop and minigame regression coverage
+数据版本为 `amsterdam-shape-d29-v1`。地图取自现有 Kadaster / PDOK BGT 提取物（CC0-1.0），离线简化轮廓；店铺是虚构游戏地点，精细源数据不进入浏览器。可通行网格独立于展示形状生成，不把水域当作陆地。
 
-Added 10 combined scenarios using real public game actions: brewing and first service; after-hours pickup and single reward settlement; salvage success, junk and natural finish; flower cancel/store/retrieve/use; delivery and parcel handoff; supply order fulfilment and cancellation; rail fares and return; saved-game restoration; and a winning three-day ending without mandatory optional activities.
+总览压缩 1,714,916 字节，五个街区各 27,953–153,038 字节，六份资源合计 2,099,378 字节，另有清单。资源位于 `tools/prototype/map-data/amsterdam-shape-d29-v1/`，运行时不请求远程 GIS API。需要通过 HTTP 启动。
 
-The complete existing suite plus these scenarios passes **472 tests, zero failures or skips**. No production core changes were needed for these cases. This verifies game rules; the simplified map integration and its browser acceptance remain in progress.
+普通街区连接显示为 3–12 秒虚构短途。局部步速 48 米/秒、骑速 96 米/秒、F3 速度 32 米/秒采用游戏时间比例；身体半径 0.4 米、地点到达半径 4 米、取车范围 2 米。
 
-## Lightweight map data
+## 自动化与独立验证边界
 
-The offline compiler now produces a simplified city overview and five local districts from the existing BGT extract. The overview is 1,714,916 compressed bytes; districts range from 27,953 to 153,038 compressed bytes. Twenty compiler tests pass. Independent full-source checks found no unsafe cells among 427,277 listed walking/cycling cells; all ten required anchors have safe access and the required local connections.
+新入口测试使用真实 Runtime、DistrictCity、DistrictScene 和小游戏模块；小型五街区资源明确为测试夹具，含真实 gzip 字节、哈希和导航掩码，不是运行时后备地图。覆盖延迟加载、校验失败、取消过期响应、角色/花车独立寻路、渡轮显式登船与暂停、远处自行车、返店与换日重试、刷新不重复结算、窄屏输入和共享画布。
 
-These are generated data and offline checks. The browser loader has passed independent verification; the map scene and game entry still need integration and real playthrough verification. The existing game entry has not switched maps yet.
+本轮冻结代码全量 553 项 Node 测试通过、零失败零跳过，36 项 Python 地图测试通过。历史规则基线为 472 项。已通过的组件独立检查包括移动 46 项、绘制 28 项、实际地图 184 条路线，以及真实浏览器五街区加载和 44 组绘制场景；这些组件结论不能替代集成游戏的完整浏览器试玩。34.3 / 39.9 毫秒历史加载测试数据是采样心跳间隔，不能当作首屏时间或手机性能承诺。
 
-## District loading and navigation
+旧 PubScene 直接几何测试保留为兼容性验证；新入口的地图与非酒馆地点背景使用 DistrictScene。静态缓存复用实际运行时数据对象，不在动画帧重建整份几何数据。
 
-The loader now reads the city overview first and one local district at a time. Resources are committed under `tools/prototype/map-data/amsterdam-shape-d29-v1/` (2,099,378 compressed bytes across six resources, plus the manifest). It validates hashes and limits, supports raw gzip and HTTP Content-Encoding, and keeps the previous district on cancellation or failure.
+## 本轮结果与后续边界
 
-Independent checks passed 184 route cases against the actual five district grids, 44 runtime tests, 16 packaging tests and eight API counterexamples. Real Chrome exercised 20 district loads and ten anchor-route checks per delivery mode, plus cancellation, supersession, retry and disposal. Maximum measured heartbeat gaps were 34.3 ms and 39.9 ms; these local samples are not mobile or peak-memory guarantees.
+完整三天自然通关；首夜实际取货安全返店并进入日2；五街区、七公共地点以及上述可选活动均有独立浏览器操作证据。390px 键盘、暂停、刷新、实际地图图标和缩放通过；26 份入口/脚本/样式/地图 HTTP 响应逐字节匹配，6 份地图解压后符合 manifest。
 
-A source-only encoding normalization replaced three literal control characters in one regular expression with equivalent hexadecimal escapes. All 65,536 UTF-16 code units were checked for identical matching, including DEL; runtime tests were rerun on these final bytes. No navigation or loading logic was rewritten during adoption.
-
-The running game still uses its previous map. Entry, district movement, canvas sharing and full gameplay acceptance remain pending.
-
-## Remaining integration blockers
-
-The corrected district movement adapter has passed independent module acceptance and is preserved as a candidate for integration. All 46 tests and three syntax checks pass. Checks against the actual five-district resources cover 152 movement frames, seven legacy venue migrations, 25 district-pair travel plans, explicit ferry cancellation and refresh, remote bicycle preservation, walking/cycling transitions and garden access guards. Initialization can determine the saved district before downloading local geometry, and invalid departure positions are rejected before save repair.
-
-These candidate checks do not constitute adoption or a new-map browser playthrough. The movement adapter will be adopted together with the entry integration once the map scene qualifies.
-
-The corrected map scene is now a qualified candidate: 28 tests and syntax checks pass. Independent Chrome checks cover 44 actual-data viewport/camera/pixel-density cases, all five painted travel links with a distinct F3 ferry, seven place hit-test round trips, eight actor/target-label cases and 32 standalone-demo control combinations. Four 100-frame checks keep canvas height and footer position stable; idle frames perform no repeated coordinate reads. Four new screenshots were visually reviewed.
-
-The small standalone demo reconstructs its overview data on each frame and therefore rebuilds that static layer; production integration must retain the actual runtime data identity, which passed the independent idle-cache checks. Both movement and drawing remain candidates for atomic entry adoption. Entry switching and a complete playthrough on the new map are still pending. Current mainline/minigame playthrough evidence still belongs to the existing map.
+本机 Chrome、禁用缓存、局域本地 HTTP 的入口可用时间样本约 83.9 ms，20 ms 心跳最大间隔 145.7 ms。该测量不外推实体手机、公网速度或峰值内存。现有主线与核心小游戏已联通，全部剧情策略组合、长期耐玩性和新人引导仍是后续试玩范围；巴黎仍为 P2 提案。

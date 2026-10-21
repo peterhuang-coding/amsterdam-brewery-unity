@@ -117,3 +117,9 @@ details.start-seed input{flex:0 1 130px;min-width:0;border:0;border-bottom:1px s
   details.start-seed input{font-size:16px}
   .destination.city-overview-destination{padding:11px 8px}
 }
+
+/* Keep the shared backing store independent of the map renderer viewport. */
+.pub-room canvas{height:auto;aspect-ratio:1100 / 640}
+.city-toolbar{flex-wrap:wrap;gap:7px}.city-toolbar button{min-height:36px;white-space:normal}
+.map-attribution{font-size:11px;line-height:1.7}#map-progress{overflow-wrap:anywhere}
+@media(max-width:420px){.city-toolbar>span{flex-basis:100%}.city-toolbar button{flex:1 1 44%;min-height:42px}}

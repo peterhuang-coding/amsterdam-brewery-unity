@@ -76,61 +76,11 @@ function plainDay3(){
 
 // --- full daytime UI VM harness (executes the real reopening-ui) ------------
 const noop=()=>{};
-function dayHarness(game,city=City.create()){
-  const gradient={addColorStop:noop};
-  const ctx=new Proxy({},{get:(o,k)=>k==='createLinearGradient'||k==='createRadialGradient'?()=>gradient:noop,set:()=>true});
-  const mkEl=()=>({textContent:'',hidden:false,disabled:false,innerHTML:'',setAttribute:noop,removeAttribute:noop,addEventListener:noop,removeEventListener:noop,
-    classList:{toggle:noop,add:noop,remove:noop},style:{},title:'',focus:noop,scrollIntoView:noop,
-    querySelector:()=>null,querySelectorAll:()=>[],dataset:{},remove:noop,appendChild:noop});
-  const els=new Map();
-  const canvasEl=()=>({...mkEl(),getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:1100,height:640})});
-  const listeners={};
-  const document={
-    addEventListener:(type,cb)=>{(listeners[type]=listeners[type]||[]).push(cb);},
-    hidden:false,activeElement:{isConnected:false},body:{classList:{toggle:noop}},
-    getElementById:id=>{
-      if(id==='pub-canvas'){if(!els.has(id))els.set(id,canvasEl());return els.get(id);}
-      if(!els.has(id))els.set(id,mkEl());return els.get(id);
-    },
-    querySelector:()=>null,querySelectorAll:()=>[]
-  };
-  let capturedSave=null;
-  const localStorage={
-    getItem:()=>JSON.stringify({version:1,game,city,sound:true}),
-    setItem:(k,v)=>{capturedSave=JSON.parse(v);}
-  };
-  const rafs=[];let nowValue=1000;
-  const sandbox={
-    document,matchMedia:()=>({matches:false}),localStorage,
-    performance:{now:()=>nowValue},setTimeout:()=>0,clearTimeout:noop,
-    setInterval:()=>0,requestAnimationFrame:cb=>rafs.push(cb),
-    devicePixelRatio:1,location:{search:''},scrollTo:noop,addEventListener:noop,
-    URLSearchParams:class{get(){return null;}},navigator:{},AudioContext:undefined,CSS:{escape:String}
-  };
-  sandbox.window=sandbox;
-  vm.createContext(sandbox);
-  const load=file=>vm.runInContext(fs.readFileSync(path.join(__dirname,file),'utf8'),sandbox);
-  for(const file of ['journey-core.js','backstage-core.js','backstage-auto.js','delivery-orders.js',
-    'character-stories.js','flower-network.js','reopening-core.js','reopening-city.js','reopening-scene.js',
-    'backstage-scene.js','backstage-ui.js','journey-ui.js','reopening-ui.js'])load(file);
-  const board=()=>els.get('action-content').innerHTML;
-  const click=dataset=>{
-    const button={dataset,disabled:false};
-    const event={target:{closest:sel=>sel==='button[data-action]'?button:null}};
-    for(const cb of listeners.click)cb(event);
-  };
-  function goMarket(){
-    click({action:'city-travel',place:'market'});
-    for(let i=0;i<800;i++){
-      nowValue+=100;
-      const cb=rafs.shift();
-      assert.ok(cb,'frame scheduled');
-      cb(nowValue);
-      if(/market-crate-card|market-receipt-card/.test(board()))return board();
-    }
-    return assert.fail('never reached the market');
-  }
-  return {board,click,goMarket,save:()=>capturedSave,els};
+const { harness } = require('./district-ui-test-fixture.cjs');
+async function dayHarness(game, city=City.create()) {
+  const h=await harness({version:1,game,city,sound:true});
+  h.goMarket=()=>h.travel('market');
+  return h;
 }
 
 // --- night UI VM harness (executes the real backstage-ui) -------------------
@@ -165,9 +115,9 @@ function tradeExtracted(day){
 // ============================================================================
 // Daytime market panel
 // ============================================================================
-test('day 1 market panel: €8 crate, €4 saving, wallet/action guards, no receipt',()=>{
-  const h=dayHarness(start());
-  const html=h.goMarket();
+test('day 1 market panel: €8 crate, €4 saving, wallet/action guards, no receipt',async()=>{
+  const h=await dayHarness(start());
+  const html=await h.goMarket();
   assert.match(html,/€8/);
   assert.match(html,/少花\s*€4|省\s*€4|节省\s*€4/);
   assert.doesNotMatch(html,/少花\s*€2|省\s*€2|节省\s*€2/);
@@ -176,21 +126,21 @@ test('day 1 market panel: €8 crate, €4 saving, wallet/action guards, no rece
   assert.ok(!/data-action="prepare"[^>]*disabled/.test(html),'crate buy enabled with cash and actions');
   // wallet guard
   const broke=structuredClone(start());broke.cash=7;assert.ok(R.restore(broke));
-  assert.match(dayHarness(broke).goMarket(),/data-action="prepare"[^>]*disabled/);
+  assert.match(await (await dayHarness(broke)).goMarket(),/data-action="prepare"[^>]*disabled/);
   // action guard
   const busy=structuredClone(start());busy.actions=0;assert.ok(R.restore(busy));
-  assert.match(dayHarness(busy).goMarket(),/data-action="prepare"[^>]*disabled/);
+  assert.match(await (await dayHarness(busy)).goMarket(),/data-action="prepare"[^>]*disabled/);
 });
 
-test('day 2 safe trade: real claim click yields 3 q1 blond +1 hop for one action; one-shot; claimed after reload',()=>{
+test('day 2 safe trade: real claim click yields 3 q1 blond +1 hop for one action; one-shot; claimed after reload',async()=>{
   const g=safeTradeDay2();
   assert.equal(R.marketInfo(g).price,8);
-  const h=dayHarness(g);
-  const html=h.goMarket();
+  const h=await dayHarness(g);
+  const html=await h.goMarket();
   assert.match(html,/可兑现/);
   assert.ok(html.includes('data-action="market-errand"'));
   assert.ok(!/data-action="market-errand"[^>]*disabled/.test(html),'errand enabled');
-  h.click({action:'market-errand'});
+  await h.click({action:'market-errand'});
   const save=h.save();
   assert.ok(save,'claim produced a durable save');
   assert.equal(save.game.market.history[0].claimed,true);
@@ -199,23 +149,23 @@ test('day 2 safe trade: real claim click yields 3 q1 blond +1 hop for one action
   assert.equal(save.game.actions,g.actions-1);
   // one-shot: second click changes nothing durable
   const before=JSON.stringify(save.game);
-  h.click({action:'market-errand'});
+  await h.click({action:'market-errand'});
   assert.equal(JSON.stringify(h.save().game),before);
   assert.match(h.els.get('notice').textContent,/已经|重复|已兑现/);
   // reload/re-render reflects the claimed state
-  const h2=dayHarness(save.game,save.city);
-  const html2=h2.goMarket();
+  const h2=await dayHarness(save.game,save.city);
+  const html2=await h2.goMarket();
   assert.match(html2,/已兑现|已领取/);
   assert.match(html2,/data-action="market-errand"[^>]*disabled/);
   reject(save.game,{type:'marketErrand'});
 });
 
-test('day 2 after real night 1 theft: €10 crate, €2 saving, real reason; no static €4 claim',()=>{
+test('day 2 after real night 1 theft: €10 crate, €2 saving, real reason; no static €4 claim',async()=>{
   const g=theftDay2();
   const info=R.marketInfo(g);
   assert.equal(info.price,10);assert.ok(info.priceReason.length>0);
-  const h=dayHarness(g);
-  const html=h.goMarket();
+  const h=await dayHarness(g);
+  const html=await h.goMarket();
   assert.match(html,/€10/);
   assert.match(html,/少花\s*€2|省\s*€2|节省\s*€2/);
   assert.doesNotMatch(html,/少花\s*€4|省\s*€4|节省\s*€4/);
@@ -224,12 +174,12 @@ test('day 2 after real night 1 theft: €10 crate, €2 saving, real reason; no 
   assert.ok(!/data-action="prepare"[^>]*disabled/.test(html),'cash 30 affords €10');
   // price guards move with the price
   const canNine=structuredClone(g);canNine.cash=9;assert.ok(R.restore(canNine));
-  assert.match(dayHarness(canNine).goMarket(),/data-action="prepare"[^>]*disabled/,'€9 cannot afford the €10 crate');
+  assert.match(await (await dayHarness(canNine)).goMarket(),/data-action="prepare"[^>]*disabled/,'€9 cannot afford the €10 crate');
   const broke=structuredClone(g);broke.cash=7;assert.ok(R.restore(broke));
-  assert.match(dayHarness(broke).goMarket(),/data-action="prepare"[^>]*disabled/);
+  assert.match(await (await dayHarness(broke)).goMarket(),/data-action="prepare"[^>]*disabled/);
 });
 
-test('receipt errand guards in the live panel: 32-batch disabled, action0 disabled, hops15 still grants 3 cups with no hop or cash',()=>{
+test('receipt errand guards in the live panel: 32-batch disabled, action0 disabled, hops15 still grants 3 cups with no hop or cash',async()=>{
   const g=safeTradeDay2();
   // full 32-batch capacity
   const full=structuredClone(g);let n=0;
@@ -237,29 +187,29 @@ test('receipt errand guards in the live panel: 32-batch disabled, action0 disabl
   assert.ok(R.restore(full));
   assert.equal(R.marketInfo(full).canClaim,false);
   assert.match(R.marketInfo(full).reason,/32/);
-  const fullHtml=dayHarness(full).goMarket();
+  const fullHtml=await (await dayHarness(full)).goMarket();
   assert.match(fullHtml,/data-action="market-errand"[^>]*disabled/);
   assert.match(fullHtml,/32/);
   // zero actions
   const busy=structuredClone(g);busy.actions=0;assert.ok(R.restore(busy));
   assert.equal(R.marketInfo(busy).canClaim,false);
-  const busyHtml=dayHarness(busy).goMarket();
+  const busyHtml=await (await dayHarness(busy)).goMarket();
   assert.match(busyHtml,/data-action="market-errand"[^>]*disabled/);
   assert.match(busyHtml,/行动/);
   // hops already at 15: remains available; real click grants cups only
   const capped=structuredClone(g);capped.hops=15;assert.ok(R.restore(capped));
   assert.equal(R.marketInfo(capped).canClaim,true);
-  const hc=dayHarness(capped);
-  assert.match(hc.goMarket(),/酒花已满\s*15/);
-  hc.click({action:'market-errand'});
+  const hc=await dayHarness(capped);
+  assert.match(await hc.goMarket(),/酒花已满\s*15/);
+  await hc.click({action:'market-errand'});
   const save=hc.save();
   assert.equal(save.game.hops,15,'no extra hop past 15');
   assert.equal(save.game.cash,capped.cash,'no replacement cash at hop cap');
   assert.ok(save.game.batches.some(b=>b.id==='d2-market-errand'&&b.cups===3));
 });
 
-test('day 3 panel: final-night wording and no promise that tonight earns a day-4 errand or price',()=>{
-  const html=dayHarness(plainDay3()).goMarket();
+test('day 3 panel: final-night wording and no promise that tonight earns a day-4 errand or price',async()=>{
+  const html=await (await dayHarness(plainDay3())).goMarket();
   assert.match(html,/第\s*3\s*夜/);
   assert.match(html,/没有第\s*4\s*天/);
   const blocks=[...html.matchAll(/<p class="risk-note">([\s\S]*?)<\/p>/g)].map(m=>m[1]);
@@ -271,7 +221,7 @@ test('day 3 panel: final-night wording and no promise that tonight earns a day-4
 // ============================================================================
 // Manual night decision view
 // ============================================================================
-test('manual pre-choice on nights 1/2: free commitment, dated €10 consequence, real barrel cost, safe errand rewards are not a payout',()=>{
+test('manual pre-choice on nights 1/2: free commitment, dated €10 consequence, real barrel cost, safe errand rewards are not a payout',async()=>{
   for(const day of [1,2]){
     const run=shift(day);run.actors=[];
     const h=nightHarness(run);h.ui.render();
@@ -290,7 +240,7 @@ test('manual pre-choice on nights 1/2: free commitment, dated €10 consequence,
   }
 });
 
-test('manual night 3 pre-choice: final night, no day 4, both choices still offered',()=>{
+test('manual night 3 pre-choice: final night, no day 4, both choices still offered',async()=>{
   const run=shift(3);run.actors=[];
   const h=nightHarness(run);h.ui.render();
   const html=h.board();
@@ -310,7 +260,7 @@ test('manual night 3 pre-choice: final night, no day 4, both choices still offer
   assert.doesNotMatch(finalBlock,/€10/,'no next-day price is promised on the final night');
 });
 
-test('manual after-choice trade copy: committed route; delivery consumes the 3-slot barrel, not 4 cups; night 3 warns the receipt cannot pay',()=>{
+test('manual after-choice trade copy: committed route; delivery consumes the 3-slot barrel, not 4 cups; night 3 warns the receipt cannot pay',async()=>{
   const run=shift(1);run.actors=[];Object.assign(run.p,{x:405,y:1110});
   assert.equal(B.command(run,'market-trade'),true);
   assert.equal(B.command(run,'collect',{itemId:'item2'}),true);
@@ -330,7 +280,7 @@ test('manual after-choice trade copy: committed route; delivery consumes the 3-s
   assert.match(html,/第\s*3\s*夜|没有[^]{0,6}下一天|回执无法兑现/);
 });
 
-test('manual receipt on return: nights 1/2 show the dated next-day voucher; night 3 says there is no next day',()=>{
+test('manual receipt on return: nights 1/2 show the dated next-day voucher; night 3 says there is no next day',async()=>{
   for(const day of [1,2]){
     const h=nightHarness(tradeExtracted(day));h.ui.render();
     const html=h.board();
@@ -345,7 +295,7 @@ test('manual receipt on return: nights 1/2 show the dated next-day voucher; nigh
   assert.doesNotMatch(html,/次日/);
 });
 
-test('manual salvage return copy: nights 1/2 name the dated next-day €10; night 3 says no next-day price',()=>{
+test('manual salvage return copy: nights 1/2 name the dated next-day €10; night 3 says no next-day price',async()=>{
   for(const day of [1,2]){
     const run=shift(day);run.actors=[];
     walkTo(run,{x:405,y:990});
@@ -372,7 +322,7 @@ test('manual salvage return copy: nights 1/2 name the dated next-day €10; nigh
 // ============================================================================
 // Automatic night decision view
 // ============================================================================
-test('auto pre-choice view on nights 1/2 explains the real bargain with no internal labels',()=>{
+test('auto pre-choice view on nights 1/2 explains the real bargain with no internal labels',async()=>{
   for(const day of [1,2]){
     const run=shift(day);run.actors=[];A.enable(run);
     autoPick(run,'market');
@@ -398,7 +348,7 @@ test('auto pre-choice view on nights 1/2 explains the real bargain with no inter
   }
 });
 
-test('auto night 3 pre-choice and intro: final night, no day 4, no tomorrow promise',()=>{
+test('auto night 3 pre-choice and intro: final night, no day 4, no tomorrow promise',async()=>{
   const run=shift(3);run.actors=[];A.enable(run);
   autoPick(run,'market');
   const v=A.view(run);
@@ -409,7 +359,7 @@ test('auto night 3 pre-choice and intro: final night, no day 4, no tomorrow prom
   for(const id of ['mkt-salvage','mkt-trade'])assert.ok(v.choices.some(c=>c.id===id),id+' still offered');
 });
 
-test('auto after-choice copy through real steps: night 1 barrel route then voucher wording; night 3 final delivery earns no receipt',()=>{
+test('auto after-choice copy through real steps: night 1 barrel route then voucher wording; night 3 final delivery earns no receipt',async()=>{
   const run=shift(1);run.actors=[];A.enable(run);
   autoPick(run,'market');autoPick(run,'mkt-trade');
   // In auto mode choosing mkt-trade carries the barrel to the counter and

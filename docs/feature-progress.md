@@ -6,12 +6,12 @@
 
 | Feature | 当前状态 |
 | --- | --- |
-| 城市总览与局部地图 | 离线制作、五街区数据和按需加载已验收；绘制模块待修正 |
+| 城市总览与局部地图 | 离线制作、五街区数据和按需加载已验收；绘制候选独立验收通过，待入口一起采用 |
 | 经营主线 | 现有版本已实测酿酒、第一杯、夜探实际取货、返店与第二天 |
 | 花店小游戏 | 现有版本已实测取消、完成、前篮存取与布置窗台 |
 | 送货、列车与打捞 | 现有地图已实测送花与急件交付、列车往返结算、30 秒打捞及奖励入库 |
 | 街区移动与存档 | 修正候选已通过独立验收：旧档迁移、出发校验、首次加载初始化、渡轮与自行车；待与入口一起采用 |
-| 新地图整合 | 移动候选已合格，仍等绘制模块修复后接入，并重新验证主线与小游戏 |
+| 新地图整合 | 移动与绘制候选均已合格，下一步接入入口并重新验证主线与小游戏 |
 
 现有规则回归的历史基线为 472 项通过，无失败或跳过；本次移动候选独立复跑 46 项测试通过。上述试玩结果属于现有地图，不代表新地图已完成或已发布。
 
@@ -43,4 +43,6 @@ The corrected district movement adapter has passed independent module acceptance
 
 These candidate checks do not constitute adoption or a new-map browser playthrough. The movement adapter will be adopted together with the entry integration once the map scene qualifies.
 
-The partial map scene now avoids repeated coordinate validation on idle frames, verified across viewport sizes and pixel densities. Its five district-to-district links and narrow-screen target-label overlap still need correction, along with incomplete tests and demo delivery; the full scene is not accepted. Entry switching and a complete playthrough on the new map remain pending. Current mainline/minigame playthrough evidence still belongs to the existing map.
+The corrected map scene is now a qualified candidate: 28 tests and syntax checks pass. Independent Chrome checks cover 44 actual-data viewport/camera/pixel-density cases, all five painted travel links with a distinct F3 ferry, seven place hit-test round trips, eight actor/target-label cases and 32 standalone-demo control combinations. Four 100-frame checks keep canvas height and footer position stable; idle frames perform no repeated coordinate reads. Four new screenshots were visually reviewed.
+
+The small standalone demo reconstructs its overview data on each frame and therefore rebuilds that static layer; production integration must retain the actual runtime data identity, which passed the independent idle-cache checks. Both movement and drawing remain candidates for atomic entry adoption. Entry switching and a complete playthrough on the new map are still pending. Current mainline/minigame playthrough evidence still belongs to the existing map.

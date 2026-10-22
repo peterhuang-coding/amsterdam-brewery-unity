@@ -1,0 +1,268 @@
+[
+  {
+    "seed": 2026,
+    "quality": 1,
+    "timing": 0.5,
+    "upgrade": null,
+    "prepActionsUsed": 3,
+    "totalPrepActions": 6,
+    "report": [
+      {
+        "day": 1,
+        "cash": 91,
+        "satisfied": 8,
+        "stock": {
+          "blond": 0,
+          "stout": 5
+        }
+      },
+      {
+        "day": 2,
+        "cash": 140,
+        "satisfied": 17,
+        "stock": {
+          "blond": 0,
+          "stout": 2
+        }
+      },
+      {
+        "day": 3,
+        "cash": 173,
+        "satisfied": 25,
+        "stock": {
+          "blond": 0,
+          "stout": 0
+        }
+      }
+    ],
+    "won": true
+  },
+  {
+    "seed": 2026,
+    "quality": 3,
+    "timing": 0.72,
+    "upgrade": null,
+    "prepActionsUsed": 3,
+    "totalPrepActions": 6,
+    "report": [
+      {
+        "day": 1,
+        "cash": 113,
+        "satisfied": 8,
+        "stock": {
+          "blond": 0,
+          "stout": 5
+        }
+      },
+      {
+        "day": 2,
+        "cash": 206,
+        "satisfied": 17,
+        "stock": {
+          "blond": 0,
+          "stout": 2
+        }
+      },
+      {
+        "day": 3,
+        "cash": 279,
+        "satisfied": 25,
+        "stock": {
+          "blond": 0,
+          "stout": 0
+        }
+      }
+    ],
+    "won": true
+  },
+  {
+    "seed": 42,
+    "quality": 1,
+    "timing": 0.5,
+    "upgrade": null,
+    "prepActionsUsed": 3,
+    "totalPrepActions": 6,
+    "report": [
+      {
+        "day": 1,
+        "cash": 91,
+        "satisfied": 8,
+        "stock": {
+          "blond": 0,
+          "stout": 5
+        }
+      },
+      {
+        "day": 2,
+        "cash": 140,
+        "satisfied": 17,
+        "stock": {
+          "blond": 0,
+          "stout": 2
+        }
+      },
+      {
+        "day": 3,
+        "cash": 173,
+        "satisfied": 25,
+        "stock": {
+          "blond": 0,
+          "stout": 0
+        }
+      }
+    ],
+    "won": true
+  },
+  {
+    "seed": 1,
+    "quality": 1,
+    "timing": 0.5,
+    "upgrade": null,
+    "prepActionsUsed": 3,
+    "totalPrepActions": 6,
+    "report": [
+      {
+        "day": 1,
+        "cash": 91,
+        "satisfied": 8,
+        "stock": {
+          "blond": 0,
+          "stout": 5
+        }
+      },
+      {
+        "day": 2,
+        "cash": 140,
+        "satisfied": 17,
+        "stock": {
+          "blond": 0,
+          "stout": 2
+        }
+      },
+      {
+        "day": 3,
+        "cash": 173,
+        "satisfied": 25,
+        "stock": {
+          "blond": 0,
+          "stout": 0
+        }
+      }
+    ],
+    "won": true
+  },
+  {
+    "seed": 2026,
+    "quality": 3,
+    "timing": 0.72,
+    "upgrade": "stage",
+    "prepActionsUsed": 3,
+    "totalPrepActions": 6,
+    "report": [
+      {
+        "day": 1,
+        "cash": 113,
+        "satisfied": 8,
+        "stock": {
+          "blond": 0,
+          "stout": 5
+        }
+      },
+      {
+        "day": 2,
+        "cash": 224,
+        "satisfied": 17,
+        "stock": {
+          "blond": 0,
+          "stout": 2
+        }
+      },
+      {
+        "day": 3,
+        "cash": 313,
+        "satisfied": 25,
+        "stock": {
+          "blond": 0,
+          "stout": 0
+        }
+      }
+    ],
+    "won": true
+  },
+  {
+    "seed": 2026,
+    "quality": 3,
+    "timing": 0.72,
+    "upgrade": "cellar",
+    "prepActionsUsed": 3,
+    "totalPrepActions": 6,
+    "report": [
+      {
+        "day": 1,
+        "cash": 113,
+        "satisfied": 8,
+        "stock": {
+          "blond": 0,
+          "stout": 5
+        }
+      },
+      {
+        "day": 2,
+        "cash": 212,
+        "satisfied": 17,
+        "stock": {
+          "blond": 0,
+          "stout": 2
+        }
+      },
+      {
+        "day": 3,
+        "cash": 289,
+        "satisfied": 25,
+        "stock": {
+          "blond": 0,
+          "stout": 0
+        }
+      }
+    ],
+    "won": true
+  },
+  {
+    "seed": 2026,
+    "quality": 3,
+    "timing": 0.72,
+    "upgrade": "doubleTap",
+    "prepActionsUsed": 3,
+    "totalPrepActions": 6,
+    "report": [
+      {
+        "day": 1,
+        "cash": 113,
+        "satisfied": 8,
+        "stock": {
+          "blond": 0,
+          "stout": 5
+        }
+      },
+      {
+        "day": 2,
+        "cash": 206,
+        "satisfied": 17,
+        "stock": {
+          "blond": 0,
+          "stout": 2
+        }
+      },
+      {
+        "day": 3,
+        "cash": 279,
+        "satisfied": 25,
+        "stock": {
+          "blond": 0,
+          "stout": 0
+        }
+      }
+    ],
+    "won": true
+  }
+]

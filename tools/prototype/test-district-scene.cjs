@@ -3,7 +3,9 @@
 // mock 2D canvas; no browser, no native canvas, no network.
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const path = require('node:path');
+const { gunzipSync } = require('node:zlib');
 
 const api = require(path.join(__dirname, 'district-scene.js'));
 const DistrictScene = api.DistrictScene;
@@ -842,6 +844,46 @@ test('real attached fixtures render in both modes, day and night', () => {
   });
   const cm = clientFor(scene2, 1100.211, 3243.117);
   assert.deepEqual(scene2.hitTest(cm.clientX, cm.clientY), { type: 'place', id: 'pub' });
+});
+
+test('d30 close street keeps the real pub and Lotte bridgehead visible, labelled and clickable', () => {
+  // Use the actual production geography, not the older public subset. Rendering
+  // stays mocked; the world scale, anchors and marker hit tests are real.
+  const file = path.join(__dirname, 'map-data', 'amsterdam-shape-d30-v1', 'districts', 'jordaan.json.gz');
+  const data = JSON.parse(gunzipSync(fs.readFileSync(file)));
+  assert.equal(data.mapVersion, 'amsterdam-shape-d30-v1');
+  assert.deepEqual(data.anchors.lotte, {
+    x: 1059.5, y: 3256.5, sourceX: 1059.5, sourceY: 3256.5,
+    featureId: 'wegdeel:efcc66b2-c61e-5f1e-a74b-7dca858058fe'
+  });
+  const names = { pub: 'Tweede Kans', lotte: 'Lotte 的桥' };
+  const places = ['pub', 'lotte'].map(id => ({
+    id, name: names[id], icon: id === 'pub' ? 'B' : 'N',
+    x: data.anchors[id].x, y: data.anchors[id].y, districtId: data.id
+  }));
+  for (const [width, height, dpr] of [[750, 436, 1], [360, 390, 2]]) {
+    const canvas = makeCanvas({ rect: { left: 0, top: 0, width, height } });
+    const scene = new DistrictScene(canvas, { canvasFactory: canvasFactory(), dpr });
+    scene.draw({
+      mode: 'district', data,
+      districts: [{ id: data.id, name: data.name, bounds: data.bounds, entrance: data.entrance }],
+      places, activeDistrictId: data.id,
+      position: { ...data.anchors.pub, visited: ['pub'], bike: null },
+      path: [], target: null, afterHours: false, camera: 'street', flowerCart: null, garden: null
+    });
+    const tr = scene.diagnostics().transform;
+    assert.equal(tr.camera, 'street');
+    const chips = labelChips(canvas._ctx);
+    for (const place of places) {
+      const x = place.x * tr.scale + tr.tx, y = place.y * tr.scale + tr.ty;
+      assert.ok(x >= 12 && x <= width - 12 && y >= 12 && y <= height - 12,
+        place.id + ' marker is visibly inside the ' + width + 'px close view');
+      assert.ok(chips.some(chip => chip.text === place.name), place.id + ' has a readable label');
+      assert.deepEqual(scene.hitTest(x, y), { type: 'place', id: place.id },
+        place.id + ' exact marker hit test at DPR ' + dpr);
+    }
+    scene.dispose();
+  }
 });
 
 test('actual catalog: all five district-ID travel links render, F3 ferry distinct, zero dropped', () => {

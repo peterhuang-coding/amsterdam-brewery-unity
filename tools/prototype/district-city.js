@@ -47,6 +47,12 @@
   });
   const LEGACY_RECOGNITION = 60;
 
+  // d29 already uses real metres. Its one unsafe arrival anchor is migrated
+  // only when the active package is the otherwise geometry-identical d30 map.
+  const D29_MAP_VERSION = 'amsterdam-shape-d29-v1';
+  const D30_MAP_VERSION = 'amsterdam-shape-d30-v1';
+  const D29_LOTTE = Object.freeze({ districtId: 'jordaan', x: 1056.5, y: 3247.5 });
+
   // The seven preserved venue identities. Names/kinds/icons/prose/costs are
   // the frozen fictional layer; districtId/anchorId bind each venue to the
   // packaged district map. The Noord venue boards at the north F3 bank.
@@ -556,9 +562,44 @@
     return { state, migrated: true, warnings };
   }
 
+  function isD29Upgrade(value, c) {
+    return c.mapVersion === D30_MAP_VERSION && value && typeof value === 'object' &&
+      !Array.isArray(value) && value.map === D29_MAP_VERSION;
+  }
+
+  function migrateD29(value) {
+    const next = cloneJson(value);
+    next.map = D30_MAP_VERSION;
+    function moveFromOldLotte(point, districtId, parked) {
+      if (!point || districtId !== D29_LOTTE.districtId ||
+          !isNum(point.x) || !isNum(point.y) ||
+          dist(point.x, point.y, D29_LOTTE.x, D29_LOTTE.y) > ARRIVAL_RADIUS) return;
+      const target = resolveAnchor('jordaan', 'lotte');
+      if (!target) throw new Error('DistrictCity: d30 Lotte anchor is missing');
+      point.x = target.x;
+      point.y = target.y;
+      // A remote parked bicycle keeps source metadata until Jordaan activates;
+      // normalizeBike then resolves this same d30 anchor, never a second point.
+      if (parked) point.anchorId = 'lotte';
+    }
+    moveFromOldLotte(next, next.districtId, false);
+    if (next.bike && typeof next.bike === 'object' && !Array.isArray(next.bike)) {
+      moveFromOldLotte(next.bike, next.bike.districtId, !isCarrying(next.bike));
+    }
+    if (next.transit && typeof next.transit === 'object' && !Array.isArray(next.transit)) {
+      moveFromOldLotte(next.transit.departure, next.transit.from, false);
+    }
+    return next;
+  }
+
   function normalize(value, options) {
     const cancelTransit = !options || options.cancelTransit !== false;
     const c = ready();
+    let migrated = false;
+    if (isD29Upgrade(value, c)) {
+      value = migrateD29(value);
+      migrated = true;
+    }
     if (!value || typeof value !== 'object' || Array.isArray(value) ||
         value.map !== c.mapVersion) {
       if (value && typeof value === 'object' && !Array.isArray(value) && value.map !== c.mapVersion) {
@@ -568,7 +609,7 @@
       return { state: freshState(activeId()), warnings, migrated: false };
     }
 
-    const warnings = [];
+    const warnings = migrated ? ['migrated-d29'] : [];
     const visited = sanitizeVisits(value.visited);
     const parsed = parseTransit(value.transit);
     let transit = parsed.transit;
@@ -664,7 +705,7 @@
       bike: bikeResult.bike
     };
     if (transit) state.transit = transit;
-    return { state, warnings, migrated: false };
+    return { state, warnings, migrated };
   }
 
   function restoreInfo(value) {
@@ -1100,7 +1141,7 @@
         typeof savedCity.transit.from === 'string' && c.districts.has(savedCity.transit.from)) {
       return savedCity.transit.from;
     }
-    if (savedCity.map === c.mapVersion) {
+    if (savedCity.map === c.mapVersion || isD29Upgrade(savedCity, c)) {
       if (typeof savedCity.districtId === 'string' && c.districts.has(savedCity.districtId)) {
         return savedCity.districtId;
       }

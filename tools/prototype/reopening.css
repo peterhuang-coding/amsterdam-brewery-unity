@@ -123,3 +123,8 @@ details.start-seed input{flex:0 1 130px;min-width:0;border:0;border-bottom:1px s
 .city-toolbar{flex-wrap:wrap;gap:7px}.city-toolbar button{min-height:36px;white-space:normal}
 .map-attribution{font-size:11px;line-height:1.7}#map-progress{overflow-wrap:anywhere}
 @media(max-width:420px){.city-toolbar>span{flex-basis:100%}.city-toolbar button{flex:1 1 44%;min-height:42px}}
+
+/* Only the geographic map yields desktop width to the persistent action board. */
+@media(min-width:801px){body.is-city-map .play-layout{grid-template-columns:minmax(0,760px) 370px;justify-content:center}}
+@media(min-width:801px) and (max-width:1100px){body.is-city-map .play-layout{grid-template-columns:minmax(0,760px) 330px}}
+@media(min-width:1450px){body.is-city-map .play-layout{grid-template-columns:minmax(0,760px) 400px}}

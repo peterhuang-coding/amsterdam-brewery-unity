@@ -4,7 +4,7 @@
   const $=id=>document.getElementById(id);
   const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const SAVE_KEY='ab_reopening_v1';
-  const ui={selected:null,beer:'blond',premium:false,modal:null,returnFocus:null,brewElapsed:0,sound:true,tutorialSeen:false,signature:'',lastFrame:performance.now(),lastSave:0,noticeTimer:null,audio:null,city:null,cityPath:[],cityTarget:null,cityMode:'map',cityPlace:'pub',cityNear:'pub',cityFerry:false,cityZoom:1,cityCamera:'street',hintDismissed:false,cityKeys:new Set(),cityFrame:performance.now(),notebook:false};
+  const ui={selected:null,beer:'blond',premium:false,modal:null,returnFocus:null,brewElapsed:0,sound:true,tutorialSeen:false,signature:'',lastFrame:performance.now(),lastSave:0,noticeTimer:null,audio:null,city:null,cityPath:[],cityTarget:null,cityMode:'map',cityPlace:'pub',cityNear:'pub',cityFerry:false,cityZoom:2,cityCamera:'street',hintDismissed:false,cityKeys:new Set(),cityFrame:performance.now(),notebook:false};
   let state=R.createGame(seedFromUrl());
   let restored=false,saveError=false,savedCity=null;
   const map={session:null,loading:true,error:null,controller:null,sequence:0,promise:Promise.resolve(),retry:null,pendingReturn:null,travelDeparture:null,progress:null};
@@ -143,7 +143,7 @@
   function restart(seed){
     cancelRoutes();map.controller?.abort();map.sequence++;map.pendingReturn=null;map.travelDeparture=null;ui.travel=null;
     state=R.createGame(seed);ui.selected=null;ui.beer='blond';ui.premium=false;ui.brewElapsed=0;ui.tutorialSeen=false;
-    ui.city=null;savedCity=null;ui.cityMode='map';ui.cityCamera='street';ui.hintDismissed=false;ui.cityPlace='pub';
+    ui.city=null;savedCity=null;ui.cityMode='map';useStreetView();ui.hintDismissed=false;ui.cityPlace='pub';
     save();startMap();window.scrollTo({top:0,behavior:'auto'});
   }
   const inCity=()=>['prep','summary'].includes(state.phase);
@@ -151,6 +151,8 @@
   const gardenActive=()=>available()&&ui.city.districtId==='depijp'&&R.garden.isMapConfigured();
   const cityPlace=id=>id==='garden'?{...C.GARDEN,name:'温室日间侧门',district:'De Pijp'}:C.PLACES[id];
   const nearVenue=()=>{const p=C.near(ui.city);return p?.id==='flowerCart'?null:p?.id==='garden'?cityPlace('garden'):p;};
+  function useStreetView(){ui.cityCamera='street';ui.cityZoom=2;}
+  const cityMapVisible=()=>available()&&inCity()&&(ui.cityMode==='map'||ui.cityPlace!=='pub');
   function cityView(){return {position:ui.city,path:ui.cityPath,target:ui.cityTarget,zoom:ui.cityZoom,camera:ui.cityCamera,mode:ui.cityMode,place:ui.cityPlace,afterHours:state.phase==='summary',notes:mapNotes(),bouquet:state.life.bouquet,display:state.life.display};}
   function cancelRoutes(){
     ui.routeController?.abort();ui.routeSequence++;ui.routePending=false;ui.routeArrival=null;
@@ -179,7 +181,7 @@
   }
   function startMap(){
     return mapOperation(async(signal,current)=>{
-      if(!map.session){map.session=await DistrictRuntime.open('map-data/amsterdam-shape-d29-v1/manifest.json',{signal,onProgress:progress});if(!current()){map.session.dispose();map.session=null;return;}C.configure(map.session);}
+      if(!map.session){map.session=await DistrictRuntime.open('map-data/amsterdam-shape-d30-v1/manifest.json',{signal,onProgress:progress});if(!current()){map.session.dispose();map.session=null;return;}C.configure(map.session);}
       const raw=map.travelDeparture||savedCity;
       await loadDistrict(C.requiredDistrict(raw),signal);if(!current())return;
       ui.city=raw?C.restore(raw):C.create('pub');map.travelDeparture=null;
@@ -200,7 +202,7 @@
     const intent=map.pendingReturn;if(!intent)return;
     const place=C.PLACES[intent.place];if(!place)throw new Error('返回地点无法读取，请重新开始或重试。');
     await loadDistrict(place.districtId,signal);if(!current())return;
-    ui.city=C.relocateToPlace(ui.city,intent.place);ui.cityPlace=intent.place;ui.cityMode=intent.mode==='place'?'place':'map';ui.cityCamera='street';
+    ui.city=C.relocateToPlace(ui.city,intent.place);ui.cityPlace=intent.place;ui.cityMode=intent.mode==='place'?'place':'map';useStreetView();
     map.pendingReturn=null;save();
   }
   function mapPanel(){
@@ -210,7 +212,7 @@
   }
   function drawScene(now,seconds=0){
     if(!available())return;
-    if(inCity()&&(ui.cityMode==='map'||ui.cityPlace!=='pub')){
+    if(cityMapVisible()){
       const overview=ui.cityCamera==='city'&&ui.cityMode==='map',places=C.PLACES;
       // Scene markers use actual anchor identities; economy and UI keep venue IDs.
       const markerId=id=>places[id]?.anchorId||id;
@@ -449,7 +451,7 @@
     $board.innerHTML=headings+'<h2>'+esc(leg?districtName(leg.from)+' → '+districtName(leg.to):'即将抵达')+'</h2><p>'+(trip.stage==='bank'?'沿本地道路走到 F3 岸边。':leg?.mode==='ferry'?'F3 正在渡河；读说明、暂停或离开页面时停止。':'沿已开放的街区连接完成一段虚构短途。')+'</p><p id="travel-progress" role="status">'+(ui.city.transit?Math.ceil(ui.city.transit.duration-ui.city.transit.elapsed)+' 秒':'准备出发')+'</p><button class="secondary" data-action="travel-cancel">取消旅程，返回出发处</button>';
   }
   function travelToDistrict(id){
-    if(id===ui.city.districtId){ui.cityCamera='street';ui.cityMode='map';render();return;}
+    if(id===ui.city.districtId){useStreetView();ui.cityMode='map';render();return;}
     const place=Object.values(C.PLACES).find(p=>p.districtId===id);
     if(place)travelTo(place.id);else{
       const marker=map.session.overview.markers.find(p=>p.districtId===id);if(marker)travelTo(null,marker);
@@ -507,7 +509,7 @@
   }
   async function localRoute(point,id,onArrival,radius=C.ARRIVAL_RADIUS){
     ui.routeController?.abort();const controller=new AbortController(),token=++ui.routeSequence,district=ui.city.districtId;
-    ui.routeController=controller;ui.routePending=true;ui.cityPath=[];ui.cityTarget=id;ui.routeArrival=onArrival||null;ui.cityKeys.clear();ui.cityMode='map';ui.cityCamera='street';render();
+    ui.routeController=controller;ui.routePending=true;ui.cityPath=[];ui.cityTarget=id;ui.routeArrival=onArrival||null;ui.cityKeys.clear();ui.cityMode='map';useStreetView();render();
     try{
       const path=await C.routeAsync(ui.city,point,{mode:ui.city.bike.mounted?'bike':'walk',signal:controller.signal});
       if(token!==ui.routeSequence||controller.signal.aborted||ui.city.districtId!==district||!available())return;
@@ -544,9 +546,9 @@
     const leg=trip.legs[trip.index];
     if(!leg){
       const target=trip.target,point=trip.point;ui.travel=null;map.travelDeparture=null;save();
-      ui.cityCamera='street';travelTo(target,point);return;
+      useStreetView();travelTo(target,point);return;
     }
-    ui.cityCamera='street';ui.cityMode='map';
+    useStreetView();ui.cityMode='map';
     if(leg.mode==='ferry'){
       trip.stage='bank';const bank=C.data.anchors[leg.from==='station'?'ferrySouth':'ferryNorth'];
       localRoute(bank,null,()=>{
@@ -569,12 +571,12 @@
   }
   function cancelTravel(){
     if(ui.modal&&['travel','boarding'].includes(ui.modal.kind))closeModal();
-    const departure=map.travelDeparture;ui.travel=null;cancelRoutes();
+    const departure=map.travelDeparture;ui.travel=null;cancelRoutes();useStreetView();
     map.controller?.abort();map.sequence++;
     if(!departure){map.loading=false;map.error=null;render();return;}
     mapOperation(async(signal,current)=>{
       await loadDistrict(C.requiredDistrict(departure),signal);if(!current())return;
-      ui.city=C.restore(departure);ui.cityMode='map';ui.cityCamera='street';map.travelDeparture=null;save();
+      ui.city=C.restore(departure);ui.cityMode='map';useStreetView();map.travelDeparture=null;save();
     });
   }
   async function followCart(){
@@ -633,12 +635,13 @@
     return [`DAY ${state.day} / 3 · ${state.phase==='night'?'营业中':'白天的准备'}`,DAYS[state.day-1]];
   }
   function render(){
+    document.body.classList.toggle('is-city-map',cityMapVisible());
     if(!available()){mapPanel();return;}
     document.body.classList.toggle('is-journey',state.phase==='journey');
     document.body.classList.toggle('is-expedition',state.phase==='explore');document.body.classList.toggle('is-auto-expedition',state.phase==='explore'&&Boolean(state.backstage.run.auto?.enabled));$('backstage-controls').hidden=state.phase!=='explore';
     const oldFocus=document.activeElement?.dataset?.focus;
     const [kicker,title]=topCopy();$('chapter-kicker').textContent=kicker;$('chapter-title').textContent=title;
-    $('pub-canvas').setAttribute('aria-label',inCity()&&(ui.cityMode==='map'||ui.cityPlace!=='pub')?'阿姆斯特丹七地点城市地图，点击地点规划步行路线；WASD 移动，桥和渡轮可过河':state.phase==='forage'?'北岸运河三航道打捞场景，小船和漂浮物随行动变化；右侧有完整文字信息和操作按钮':'运河边的 Tweede Kans 酒吧，酒瓶随库存变化，顾客和升级出现在柜台前');
+    $('pub-canvas').setAttribute('aria-label',cityMapVisible()?'阿姆斯特丹七地点城市地图，点击地点规划步行路线；WASD 移动，桥和渡轮可过河':state.phase==='forage'?'北岸运河三航道打捞场景，小船和漂浮物随行动变化；右侧有完整文字信息和操作按钮':'运河边的 Tweede Kans 酒吧，酒瓶随库存变化，顾客和升级出现在柜台前');
     $('pub-canvas').style.cursor=inCity()&&ui.cityMode==='map'?'crosshair':'default';
     $('cash').textContent=money(state.cash);
     $('blond-stock').innerHTML=R.stock(state,'blond')+' <small>杯</small>';$('stout-stock').innerHTML=R.stock(state,'stout')+' <small>杯</small>';
@@ -809,7 +812,7 @@
       case 'start':{const n=Number($('seed-input')?.value);if(!Number.isInteger(n)||n<1||n>2147483647){notify('顾客安排请输入 1 到 2147483647 的整数。',true);return;}state=R.createGame(n);dispatch({type:'start'});break;}
       case 'city-travel':travelTo(data.place);break;
       case 'city-district':travelToDistrict(data.district);break;
-      case 'city-bike':if(inCity()&&!state.life.arrangement){cancelRoutes();const carrying=ui.city.bike.mounted||ui.city.bike.pushing;ui.city=C.toggleBike(ui.city);ui.cityMode='map';notify(ui.city.bike.pushing?'推着车过桥，到宽路上继续骑。':ui.city.bike.mounted?'骑上车了。宽桥直接过，窄桥自动推车。':carrying?'车停好了。回来按 B 就能带走。':'先靠近自行车。');save();render();}break;
+      case 'city-bike':if(inCity()&&!state.life.arrangement){cancelRoutes();const carrying=ui.city.bike.mounted||ui.city.bike.pushing;ui.city=C.toggleBike(ui.city);if(ui.cityMode==='place')useStreetView();ui.cityMode='map';notify(ui.city.bike.pushing?'推着车过桥，到宽路上继续骑。':ui.city.bike.mounted?'骑上车了。宽桥直接过，窄桥自动推车。':carrying?'车停好了。回来按 B 就能带走。':'先靠近自行车。');save();render();}break;
       case 'city-bike-find':travelTo(null,ui.city.bike);break;
       case 'city-notebook':ui.notebook=!ui.notebook;render();break;
       case 'flower-start':dispatch({type:'flowerStart'});break;
@@ -819,9 +822,9 @@
       case 'flower-cancel':dispatch({type:'flowerCancel'});break;
       case 'flower-store':if(nearBike())dispatch({type:'flowerStore',stored:!state.life.bouquet.stored});else notify('先走回停放自行车的位置。',true);break;
       case 'flower-use':if(ui.cityMode==='place'&&C.near(ui.city)?.id===(data.target==='display'?'pub':'lotte'))dispatch({type:'flowerUse',target:data.target});break;
-      case 'city-map':if(state.life.arrangement)return;ui.cityMode='map';ui.cityKeys.clear();render();break;
+      case 'city-map':if(state.life.arrangement)return;ui.cityMode='map';useStreetView();ui.cityKeys.clear();render();break;
       case 'city-overview':ui.cityMode='map';ui.cityCamera='city';ui.cityKeys.clear();render();break;
-      case 'city-street':ui.cityMode='map';ui.cityCamera='street';ui.cityKeys.clear();render();break;
+      case 'city-street':ui.cityMode='map';useStreetView();ui.cityKeys.clear();render();break;
       case 'street-hint-close':ui.hintDismissed=true;render();break;
       case 'tutorial-dismiss':ui.tutorialSeen=true;save();render();break;
       case 'city-enter':enterCityPlace();break;
@@ -873,11 +876,11 @@
     const key=e.key.toLowerCase();
     if(journey.key(e))return;
     if(backstage.key(e))return;
-    if(inCity()&&!state.life.arrangement&&ui.cityMode==='map'&&['w','a','s','d','arrowup','arrowleft','arrowdown','arrowright'].includes(key)){e.preventDefault();if(ui.travel)return;const canceledRoute=ui.cityPath.length>0||ui.cityTarget!==null||ui.routePending,held=[...ui.cityKeys];cancelRoutes();held.forEach(k=>ui.cityKeys.add(k));ui.cityKeys.add(key);if(canceledRoute)render();return;}
+    if(inCity()&&!state.life.arrangement&&ui.cityMode==='map'&&['w','a','s','d','arrowup','arrowleft','arrowdown','arrowright'].includes(key)){e.preventDefault();if(ui.travel)return;const returnToLocal=ui.cityCamera==='city',canceledRoute=ui.cityPath.length>0||ui.cityTarget!==null||ui.routePending,held=[...ui.cityKeys];if(returnToLocal)useStreetView();cancelRoutes();held.forEach(k=>ui.cityKeys.add(k));ui.cityKeys.add(key);if(canceledRoute||returnToLocal)render();return;}
     if(e.repeat)return;
     if(key==='p'||key==='escape'){e.preventDefault();pause();return;}
     if(key==='h'){e.preventDefault();showHelp();return;}
-    if(inCity()&&!state.life.arrangement){if(key==='b'){e.preventDefault();handleAction({dataset:{action:'city-bike'}});return;}if(key==='m'){e.preventDefault();if(ui.cityMode==='place')ui.cityMode='map';else ui.cityCamera=ui.cityCamera==='street'?'city':'street';render();return;}if(key==='e'&&ui.cityMode==='map'){e.preventDefault();enterCityPlace();return;}}
+    if(inCity()&&!state.life.arrangement){if(key==='b'){e.preventDefault();handleAction({dataset:{action:'city-bike'}});return;}if(key==='m'){e.preventDefault();if(ui.cityMode==='place'){ui.cityMode='map';useStreetView();}else if(ui.cityCamera==='street')ui.cityCamera='city';else useStreetView();render();return;}if(key==='e'&&ui.cityMode==='map'){e.preventDefault();enterCityPlace();return;}}
     if(state.phase==='brew'&&key===' '){e.preventDefault();brewHit();return;}
     if(state.phase==='forage'){
       if(['a','d','arrowleft','arrowright'].includes(key)){e.preventDefault();dispatch({type:'forageMove',direction:['a','arrowleft'].includes(key)?-1:1});return;}

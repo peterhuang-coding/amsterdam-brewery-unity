@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "mapVersion": "amsterdam-shape-d29-v1",
+  "mapVersion": "amsterdam-shape-d30-v1",
   "cellSize": 1,
   "bodyRadius": 0.4,
   "overviewTolerance": 4,
@@ -114,10 +114,10 @@
       "fictionalVenue": true
     },
     "lotte": {
-      "x": 1056.057,
-      "y": 3247.41,
-      "featureId": "overbruggingsdeel:8b1d9302-4306-51af-ae31-9b60532e81c5",
-      "basis": "Actual BGT bridge deck near fictional pub; not a real named business",
+      "x": 1059.5,
+      "y": 3256.5,
+      "featureId": "wegdeel:efcc66b2-c61e-5f1e-a74b-7dca858058fe",
+      "basis": "Ground-road bridgehead near the fictional pub and Lotte venue; not a real named business",
       "fictionalVenue": true
     },
     "ferrySouth": {

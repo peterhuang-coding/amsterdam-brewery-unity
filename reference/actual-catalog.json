@@ -13,11 +13,11 @@
           1450.0,
           3550.0
         ],
-        "bytes": 376064,
-        "gzipBytes": 117995,
+        "bytes": 376051,
+        "gzipBytes": 117973,
         "id": "jordaan",
         "name": "Jordaan",
-        "sha256": "c378b7a36787560728bcee2332aa70fdf367baca886a84226d18e5f00d671689",
+        "sha256": "02aef7744a7bbcca0efaaf262a3d5aa48d143fc60d18f55a127281f367d85732",
         "url": "districts/jordaan.json.gz"
       },
       {
@@ -38,7 +38,7 @@
         "gzipBytes": 153038,
         "id": "depijp",
         "name": "De Pijp",
-        "sha256": "cb629abc993b5a297875511bf196ed017309274a925f882f167edcba46fb1d7d",
+        "sha256": "5ab1a5075cc57ebce7aa677f60093bd182c8ccb8ab159afd545256b770993119",
         "url": "districts/depijp.json.gz"
       },
       {
@@ -55,7 +55,7 @@
         "gzipBytes": 30896,
         "id": "station",
         "name": "Centraal / 南岸",
-        "sha256": "570de1fe66eec822413288d5881f2f5cacf90af702b5dd20f8457823496f3acf",
+        "sha256": "0ec132a756ea1ac270f826af807f8bcb4918c066b43325f995659d4fd729ef1f",
         "url": "districts/station.json.gz"
       },
       {
@@ -72,7 +72,7 @@
         "gzipBytes": 27953,
         "id": "noord",
         "name": "Noord / 北岸",
-        "sha256": "fa005231d7049dfb77f5dd8c986c18486478aad779a60785961ca2eea839cd01",
+        "sha256": "9551f875b90ea02d356c6e0e0981219d9da3bf4139d2f735e492884d75f0a33c",
         "url": "districts/noord.json.gz"
       },
       {
@@ -89,15 +89,15 @@
         "gzipBytes": 54580,
         "id": "science",
         "name": "Science Park",
-        "sha256": "fc38aba13da19365701b4a988e0e6c2daea259afc4e706490277b50d15f76ea0",
+        "sha256": "e13413fbe2fabaa13753e95c0ab80c3425db7e8eec08ff15bb7f02fc3968a177",
         "url": "districts/science.json.gz"
       }
     ],
-    "mapVersion": "amsterdam-shape-d29-v1",
+    "mapVersion": "amsterdam-shape-d30-v1",
     "overview": {
-      "bytes": 5502634,
-      "gzipBytes": 1714916,
-      "sha256": "51c5e098aecb873b6e57de1e101c80cd820478d3ec7e0452376088ea754cb8ac",
+      "bytes": 5502631,
+      "gzipBytes": 1714914,
+      "sha256": "13d0053893c3fbcf3f51a616ec652650f13e901e3bca9cd2a78a9a2c9e96ef46",
       "url": "overview.json.gz"
     },
     "projection": {
@@ -197,8 +197,8 @@
     {
       "districtId": "jordaan",
       "id": "lotte",
-      "x": 1056.057,
-      "y": 3247.41
+      "x": 1059.5,
+      "y": 3256.5
     },
     {
       "districtId": "depijp",
@@ -217,11 +217,11 @@
     {
       "anchors": {
         "lotte": {
-          "featureId": "overbruggingsdeel:8b1d9302-4306-51af-ae31-9b60532e81c5",
-          "sourceX": 1056.057,
-          "sourceY": 3247.41,
-          "x": 1056.5,
-          "y": 3247.5
+          "featureId": "wegdeel:efcc66b2-c61e-5f1e-a74b-7dca858058fe",
+          "sourceX": 1059.5,
+          "sourceY": 3256.5,
+          "x": 1059.5,
+          "y": 3256.5
         },
         "pub": {
           "featureId": "wegdeel:b5910e46-8d27-5ba7-982d-41b311e24e21",
@@ -242,7 +242,7 @@
         "y": 3243.5
       },
       "id": "jordaan",
-      "mapVersion": "amsterdam-shape-d29-v1",
+      "mapVersion": "amsterdam-shape-d30-v1",
       "name": "Jordaan"
     },
     {
@@ -294,7 +294,7 @@
         "y": 5497.5
       },
       "id": "depijp",
-      "mapVersion": "amsterdam-shape-d29-v1",
+      "mapVersion": "amsterdam-shape-d30-v1",
       "name": "De Pijp"
     },
     {
@@ -318,7 +318,7 @@
         "y": 2715.5
       },
       "id": "station",
-      "mapVersion": "amsterdam-shape-d29-v1",
+      "mapVersion": "amsterdam-shape-d30-v1",
       "name": "Centraal / 南岸"
     },
     {
@@ -342,7 +342,7 @@
         "y": 2527.5
       },
       "id": "noord",
-      "mapVersion": "amsterdam-shape-d29-v1",
+      "mapVersion": "amsterdam-shape-d30-v1",
       "name": "Noord / 北岸"
     },
     {
@@ -366,7 +366,7 @@
         "y": 5450.5
       },
       "id": "science",
-      "mapVersion": "amsterdam-shape-d29-v1",
+      "mapVersion": "amsterdam-shape-d30-v1",
       "name": "Science Park"
     }
   ]

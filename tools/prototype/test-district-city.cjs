@@ -11,6 +11,9 @@ const DC = require('./district-city.js');
 const pubSample = require('./map-fixture/districts/pub-sample.json');
 
 const MAP_VERSION = 'test-shape-v1';
+const D29 = 'amsterdam-shape-d29-v1';
+const D30 = 'amsterdam-shape-d30-v1';
+const OLD_LOTTE = Object.freeze({ x: 1056.5, y: 3247.5 });
 
 // ---------------------------------------------------------------------------
 // Synthetic grid districts: '.' walk+bike, '=' walk only (no bike), '#' blocked
@@ -96,6 +99,19 @@ function buildDocs() {
   ];
 }
 
+function migrationDocs() {
+  const docs = buildDocs();
+  docs[0] = makeDistrict('jordaan', 'Jordaan', [1000, 3200, 1120, 3300], openRows(120, 100),
+    [['pub', 100, 43], ['lotte', 59, 56]]);
+  return docs.map(doc => ({ ...doc, mapVersion: D30 }));
+}
+
+async function configuredMigration(activeId = 'jordaan') {
+  const session = makeSession(migrationDocs(), LINKS, activeId);
+  DC.configure(session);
+  return session;
+}
+
 function makeSession(docs, links, activeId) {
   const byId = new Map(docs.map(d => [d.id, d]));
   const districts = docs.map(d => ({
@@ -110,14 +126,14 @@ function makeSession(docs, links, activeId) {
   }
   const session = {
     manifest: {
-      schemaVersion: 1, mapVersion: MAP_VERSION,
+      schemaVersion: 1, mapVersion: docs[0].mapVersion || MAP_VERSION,
       projection: { type: 'local-equirectangular', units: 'metres' },
       source: { complete: false },
       overview: { bytes: 1, gzipBytes: 1, sha256: 'b'.repeat(64), url: 'overview.json' },
       districts, travelLinks: links
     },
     overview: {
-      schemaVersion: 1, mapVersion: MAP_VERSION, bounds: [0, 0, 2000, 1000],
+      schemaVersion: 1, mapVersion: docs[0].mapVersion || MAP_VERSION, bounds: [0, 0, 2000, 1000],
       shapes: [], markers, travelLinks: links
     },
     active: null,
@@ -857,6 +873,116 @@ test('F3: no mid-transfer parking or local movement', async () => {
   const moved = DC.move(t, 1, 0, 0.1);
   assert.deepEqual([moved.x, moved.y], [86.5, 6.5], 'movement keys do not move a transferring player');
   assert.ok(moved.transit);
+  DC.dispose();
+});
+
+test('d29 restore selects a known remote district before any district download', async () => {
+  DC.dispose();
+  await configuredMigration('jordaan');
+  assert.equal(DC.requiredDistrict({ map: D29, districtId: 'science', x: 1605.2, y: 401.7 }), 'science');
+  assert.equal(DC.requiredDistrict({ map: D29, districtId: 'depijp', x: 602.5, y: 2.5 }), 'depijp');
+  DC.dispose();
+});
+
+test('d29 restore preserves real-metre coordinates, visits and a remote parked bicycle', async () => {
+  DC.dispose();
+  await configuredMigration('science');
+  const saved = {
+    map: D29, districtId: 'science', x: 1605.2, y: 401.7,
+    visited: ['pub', 'lab', 'lotte'],
+    bike: { districtId: 'jordaan', x: 1100.5, y: 3243.5, mounted: false }
+  };
+  const before = snapshot(saved);
+  const info = DC.restoreInfo(saved);
+  assert.equal(info.migrated, true);
+  assert.ok(!info.warnings.includes('migrated-legacy'), 'real metres never enter invented-unit migration');
+  assert.equal(info.position.map, D30);
+  assert.equal(info.position.districtId, 'science');
+  assert.deepEqual([info.position.x, info.position.y], [1605.2, 401.7]);
+  assert.deepEqual(info.position.visited, ['pub', 'lab', 'lotte']);
+  assert.deepEqual(info.position.bike, saved.bike);
+  assert.equal(snapshot(saved), before, 'migration does not mutate the saved object');
+  DC.dispose();
+});
+
+test('d29 remote parked Lotte bicycle retains its anchor until Jordaan activates', async () => {
+  DC.dispose();
+  const session = await configuredMigration('science');
+  const info = DC.restoreInfo({
+    map: D29, districtId: 'science', x: 1605.2, y: 401.7, visited: ['lab'],
+    bike: { districtId: 'jordaan', x: OLD_LOTTE.x, y: OLD_LOTTE.y, mounted: false }
+  });
+  assert.deepEqual([info.position.x, info.position.y], [1605.2, 401.7], 'remote player is not relocated');
+  assert.equal(info.position.bike.districtId, 'jordaan');
+  assert.equal(info.position.bike.anchorId, 'lotte');
+  assert.deepEqual([info.position.bike.x, info.position.bike.y], [DC.PLACES.lotte.x, DC.PLACES.lotte.y],
+    'before activation the bicycle uses the d30 overview marker, not Jordaan navigation');
+  await session.loadDistrict('jordaan');
+  const activated = DC.restoreInfo(info.position);
+  assert.deepEqual(activated.position.bike,
+    { districtId: 'jordaan', x: 1059.5, y: 3256.5, mounted: false, anchorId: 'lotte' },
+    'activation resolves the authoritative snapped d30 anchor');
+  DC.dispose();
+});
+
+test('d29 player and carried bicycle move only from the old Lotte arrival radius to the d30 anchor', async () => {
+  DC.dispose();
+  await configuredMigration('jordaan');
+  for (const bike of [{ mounted: true }, { mounted: false, pushing: true }]) {
+    const at = { x: OLD_LOTTE.x + 3.9, y: OLD_LOTTE.y };
+    const info = DC.restoreInfo({
+      map: D29, districtId: 'jordaan', x: at.x, y: at.y, visited: ['pub', 'lotte'],
+      bike: { districtId: 'jordaan', x: at.x, y: at.y, ...bike }
+    });
+    assert.equal(info.migrated, true);
+    assert.deepEqual([info.position.x, info.position.y], [1059.5, 3256.5]);
+    assert.deepEqual([info.position.bike.x, info.position.bike.y], [1059.5, 3256.5]);
+    assert.equal(Boolean(info.position.bike.mounted), bike.mounted);
+    assert.equal(Boolean(info.position.bike.pushing), !bike.mounted);
+  }
+  const outside = DC.restoreInfo({
+    map: D29, districtId: 'jordaan', x: OLD_LOTTE.x + 4.1, y: OLD_LOTTE.y, visited: ['pub'],
+    bike: { districtId: 'jordaan', x: 1100.5, y: 3243.5, mounted: false }
+  });
+  assert.deepEqual([outside.position.x, outside.position.y], [OLD_LOTTE.x + 4.1, OLD_LOTTE.y],
+    'outside the arrival radius is not globally relocated');
+  DC.dispose();
+});
+
+test('d29 independently parked bicycle at old Lotte migrates without moving the player or other bicycles', async () => {
+  DC.dispose();
+  await configuredMigration('jordaan');
+  const info = DC.restoreInfo({
+    map: D29, districtId: 'jordaan', x: 1100.5, y: 3243.5, visited: ['pub'],
+    bike: { districtId: 'jordaan', x: OLD_LOTTE.x, y: OLD_LOTTE.y, mounted: false }
+  });
+  assert.deepEqual([info.position.x, info.position.y], [1100.5, 3243.5]);
+  assert.deepEqual([info.position.bike.x, info.position.bike.y], [1059.5, 3256.5]);
+  assert.equal(info.position.bike.mounted, false);
+  const elsewhere = DC.restoreInfo({
+    map: D29, districtId: 'jordaan', x: 1100.5, y: 3243.5, visited: ['pub'],
+    bike: { districtId: 'jordaan', x: OLD_LOTTE.x + 4.1, y: OLD_LOTTE.y, mounted: false }
+  });
+  assert.deepEqual([elsewhere.position.bike.x, elsewhere.position.bike.y], [OLD_LOTTE.x + 4.1, OLD_LOTTE.y]);
+  DC.dispose();
+});
+
+test('d29 refresh cancels transit at the same migrated safe departure with its carried bicycle', async () => {
+  DC.dispose();
+  await configuredMigration('jordaan');
+  const info = DC.restoreInfo({
+    map: D29, districtId: 'jordaan', x: OLD_LOTTE.x, y: OLD_LOTTE.y, visited: ['pub', 'lotte'],
+    bike: { districtId: 'jordaan', x: OLD_LOTTE.x, y: OLD_LOTTE.y, mounted: true },
+    transit: {
+      from: 'jordaan', to: 'depijp', mode: 'street', duration: 3, elapsed: 1,
+      departure: { x: OLD_LOTTE.x, y: OLD_LOTTE.y }, carried: true
+    }
+  });
+  assert.equal(info.position.transit, undefined, 'refresh still cancels unfinished travel');
+  assert.deepEqual([info.position.x, info.position.y], [1059.5, 3256.5]);
+  assert.deepEqual([info.position.bike.x, info.position.bike.y], [1059.5, 3256.5]);
+  assert.equal(info.position.bike.mounted, true);
+  assert.ok(!info.warnings.includes('reset-position'));
   DC.dispose();
 });
 

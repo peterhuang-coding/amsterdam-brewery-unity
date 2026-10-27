@@ -7,7 +7,8 @@ const vm = require('node:vm');
 const assert = require('node:assert/strict');
 const { createHash, webcrypto } = require('node:crypto');
 const { gzipSync } = require('node:zlib');
-const MAP_VERSION = 'amsterdam-shape-d29-v1';
+const MAP_VERSION = 'amsterdam-shape-d30-v1';
+const LEGACY_MAP_VERSION = 'amsterdam-shape-d29-v1';
 const SAVE_KEY = 'ab_reopening_v1';
 const noop = () => {};
 const LINKS = [
@@ -94,6 +95,17 @@ function createHarness(saved = null, options = {}) {
     classList:{toggle:noop,add:noop,remove:noop},focus:noop,scrollIntoView:noop,remove:noop,appendChild:noop,
     querySelector:()=>null,querySelectorAll:()=>[],matches:()=>false });
   let document;
+  const bodyClasses = new Set();
+  const bodyClassList = {
+    toggle(name, force) {
+      const enabled = force === undefined ? !bodyClasses.has(name) : Boolean(force);
+      if (enabled) bodyClasses.add(name); else bodyClasses.delete(name);
+      return enabled;
+    },
+    add(name) { bodyClasses.add(name); },
+    remove(name) { bodyClasses.delete(name); },
+    contains(name) { return bodyClasses.has(name); }
+  };
   const bodyFocus = {tag:'body',isConnected:false,matches:()=>false,focus:noop};
   const summary = {tag:'summary',isConnected:true,matches:()=>false,focus(){document.activeElement=this;}};
   let actionHtml='', actionCache;
@@ -115,7 +127,7 @@ function createHarness(saved = null, options = {}) {
       addEventListener(type,cb){if(!offscreen)(canvasListeners[type] ||= []).push(cb);}};
     if(offscreen)offscreens.push(cv);return cv;
   }
-  document={hidden:false,activeElement:bodyFocus,body:{classList:{toggle:noop}},
+  document={hidden:false,activeElement:bodyFocus,body:{classList:bodyClassList},
     addEventListener(type,cb){(listeners[type] ||= []).push(cb);},
     createElement(tag){const e=tag==='canvas'?canvas(true):mkEl();e.ownerDocument=document;return e;},
     getElementById(id){
@@ -178,7 +190,8 @@ function createHarness(saved = null, options = {}) {
     overlay:()=>overlay,kicker:()=>els.get('dialog-kicker')?.textContent||'',dialogTitle:()=>els.get('dialog-title')?.textContent||'',dialogBody:()=>dialogBody.innerHTML,dialogActions:()=>actions.innerHTML,
     controls:()=>overlay.querySelectorAll('button:not(:disabled),a,input,summary'),active:()=>document.activeElement,setActive:e=>{document.activeElement=e;},
     nativeMove(shift){const list=overlay.querySelectorAll('button:not(:disabled),a,input,summary'),i=list.indexOf(document.activeElement);if(i>=0)document.activeElement=list[(i+(shift?-1:1)+list.length)%list.length];},
-    close(){for(const t of timers)clearTimeout(t);timers.clear();}};
+    close(){for(const t of timers)clearTimeout(t);timers.clear();},
+    hasBodyClass:name=>bodyClasses.has(name)};
 }
 async function harness(saved,options){const h=createHarness(saved,options);await h.ready();return h;}
-module.exports={createHarness,harness,makeFixture,MAP_VERSION,SAVE_KEY,recordContext};
+module.exports={createHarness,harness,makeFixture,MAP_VERSION,LEGACY_MAP_VERSION,SAVE_KEY,recordContext};

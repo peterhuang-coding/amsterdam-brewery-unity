@@ -396,3 +396,147 @@ test('the recommendation advances one honest step at a time and never promises r
   await h2.frames(1);
   assert.match(h2.board(), /<h2>Tweede Kans<\/h2>/);
 });
+
+function trackZones(html, id) {
+  const start = html.indexOf('id="' + id + '"');
+  assert.ok(start >= 0, 'missing timing track ' + id);
+  const track = html.slice(start, html.indexOf('</div>', start));
+  function zone(name) {
+    const match = track.match(new RegExp('class="' + name + '" style="left:([\\d.]+)%;width:([\\d.]+)%"'));
+    assert.ok(match, id + ' must inline its real ' + name + ' window: ' + track);
+    return { left: Number(match[1]), width: Number(match[2]) };
+  }
+  return { sweet: zone('sweet-zone'), perfect: zone('perfect-zone') };
+}
+
+function actionText(html, action) {
+  const match = html.match(new RegExp('<button[^>]*data-action="' + action + '"[^>]*>([\\s\\S]*?)<\\/button>'));
+  assert.ok(match, 'missing action ' + action);
+  return match[1].replace(/<[^>]+>/g, '');
+}
+
+async function resume(h) {
+  if (!h.overlay().hidden) await h.clickModal(0);
+}
+
+function friendsNightAt(person) {
+  let state = start();
+  state = act(state, { type: 'prepare', kind: 'coffee' });
+  state = act(state, { type: 'prepare', kind: 'visit' });
+  state = act(state, { type: 'open' });
+  while (state.phase === 'night') {
+    const order = state.night.orders.find(o => o.person === person);
+    if (order.status === 'waiting') return state;
+    const seconds = Math.min(1, Math.max(.01, order.arrival - state.night.elapsed));
+    state = act(state, { type: 'tick', seconds });
+    if (state.night.event?.status === 'pending') state = act(state, { type: 'event', choice: 'refuse' });
+  }
+  assert.fail(person + ' never reached the bar');
+}
+
+async function serveSelectedClassic(h, order) {
+  await h.click({ action: 'select', id: order.id });
+  await h.click({ action: 'pour' });
+  await h.tick(1000);
+  await h.tick(1000);
+  await h.tick(880);
+  await h.frames(1, 0);
+  await h.click({ action: 'serve', id: order.id });
+}
+
+test('night queue, both pour tracks and the stop cue share each guest’s real service window', async () => {
+  let night = skipToNight();
+  const pairArrival = night.night.orders[1].arrival;
+  while (night.night.elapsed < pairArrival) {
+    night = act(night, { type: 'tick', seconds: Math.min(1, pairArrival - night.night.elapsed) });
+  }
+  const h = await harness({ version: 1, game: night, city: City.create(), tutorialSeen: true, sound: false });
+  await resume(h);
+  const queue = h.queue();
+  assert.match(queue, /赶时间/);
+  assert.match(queue, /想满些/);
+  assert.match(queue, /aria-label="[^"]*赶时间[^"]*"/);
+  assert.match(queue, /午市熟人|还可以等/, 'ordinary waiting information remains available');
+
+  h.key('2');
+  const quick = h.save().game.night.orders.find(o => o.service === 'quick');
+  assert.equal(h.diagnostics().game.night.pours.length, 0);
+  h.key('e');
+  await h.flush();
+  const current = h.save().game;
+  const window = R.pourWindow(current, quick);
+  const expected = {
+    sweet: { left: window.min * 100, width: (window.max - window.min) * 100 },
+    perfect: { left: window.perfectMin * 100, width: (window.perfectMax - window.perfectMin) * 100 }
+  };
+  assert.deepEqual(trackZones(h.board(), 'service-pour'), expected);
+  assert.deepEqual(trackZones(h.els.get('pour-stations').innerHTML, 'pour-' + quick.id), expected);
+
+  await h.tick(1000);
+  await h.tick(640);
+  await h.frames(1, 0);
+  assert.match(actionText(h.board(), 'serve'), /漂亮！现在收杯/);
+  const satisfied = h.save().game.night.satisfied;
+  h.key(' ');
+  await h.flush();
+  assert.equal(h.save().game.night.satisfied, satisfied + 1, 'Space still serves the selected pour');
+});
+
+test('window flowers produce one game-time arrival reaction that pauses, expires and never replays from a save', async () => {
+  let prep = start();
+  prep = act(prep, { type: 'flowerStart' });
+  for (const stem of [0, 1, 2]) prep = act(prep, { type: 'flowerPick', stem });
+  prep = act(prep, { type: 'flowerWrap', wrap: 'paper' });
+  prep = act(prep, { type: 'flowerFinish' });
+  prep = act(prep, { type: 'flowerUse', target: 'display' });
+  const patienceBonus = R.flowerFit(prep.life.display, 'display') ? 6 : 3;
+  const h = await harness({ version: 1, game: prep, city: City.create(), tutorialSeen: true, sound: false });
+  await resume(h);
+  await h.click({ action: 'open' });
+  if (!h.overlay().hidden) await h.clickModal(1);
+  let reactions = h.diagnostics().reactions;
+  assert.ok(Array.isArray(reactions), 'entry exposes only local reaction diagnostics');
+  assert.equal(reactions.length, 1);
+  assert.match(reactions[0].text, /窗边的花/);
+  assert.match(reactions[0].text, new RegExp(patienceBonus + ' 秒'));
+  const saved = h.save();
+  assert.equal(saved.reactions, undefined);
+  assert.equal(saved.serviceReactions, undefined);
+
+  h.key('p');
+  const paused = h.diagnostics();
+  await h.tick(1000);
+  await h.frames(1, 100);
+  assert.equal(h.diagnostics().game.night.elapsed, paused.game.night.elapsed);
+  assert.deepEqual(h.diagnostics().reactions, paused.reactions, 'reaction lifetime freezes with night time');
+  await h.clickModal(0);
+  await h.tick(1000);
+  await h.tick(1000);
+  await h.tick(1000);
+  await h.tick(100);
+  assert.deepEqual(h.diagnostics().reactions, [], 'reaction expires after three seconds of play');
+
+  const restored = await harness(saved);
+  await resume(restored);
+  await restored.tick(100);
+  assert.deepEqual(restored.diagnostics().reactions, [], 'refresh does not reconstruct an old arrival reaction');
+  h.close();
+  restored.close();
+});
+
+test('Bram and Lotte acknowledge the real daytime help and kept promise after service', async () => {
+  for (const [person, expected] of [['bram', /午市/], ['lotte', /记得那杯黑啤/]]) {
+    const night = friendsNightAt(person);
+    const order = night.night.orders.find(o => o.person === person);
+    const h = await harness({ version: 1, game: night, city: City.create(), tutorialSeen: true, sound: false });
+    await resume(h);
+    if (person === 'bram') assert.match(h.queue(), /午市熟人 · 多等 10 秒/);
+    await serveSelectedClassic(h, order);
+    const reactions = h.diagnostics().reactions;
+    assert.ok(Array.isArray(reactions), person + ' reactions are local diagnostics');
+    assert.ok(reactions.some(r => r.name === order.name && expected.test(r.text)),
+      person + ' gets a visible response: ' + JSON.stringify(reactions));
+    assert.equal(h.save().reactions, undefined, 'service reactions never enter the save envelope');
+    h.close();
+  }
+});

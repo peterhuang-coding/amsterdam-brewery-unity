@@ -192,11 +192,11 @@ const MARTA = {
 };
 const POUR = { customerId: 'guest-m', beer: 'stout', price: 10, quality: 1, aged: false, startedAt: 1, duration: 4 };
 
-function render(world, state, timestamp = 0, selectedId = null, cityView = null) {
+function render(world, state, timestamp = 0, selectedId = null, cityView = null, reactions = []) {
   const recorder = createRecorder();
   const canvas = { width: 0, height: 0, getContext: () => recorder.ctx };
   const scene = new world.PubScene(canvas);
-  scene.draw(state, timestamp, selectedId, cityView);
+  scene.draw(state, timestamp, selectedId, cityView, reactions);
   return { scene, recorder };
 }
 
@@ -547,4 +547,21 @@ test('rendering never mutates the supplied state, orders or pours', () => {
   assert.equal(JSON.stringify(state), before, 'draw must be read-only against its inputs');
   assert.equal(state.night.orders[0].name, 'Marta');
   assert.equal(state.night.pours[0].beer, 'stout');
+});
+
+test('optional local reactions draw a seat bubble without reviving a served guest', () => {
+  const world = loadWorld();
+  const state = pubState({ night: { elapsed: 10, orders: [], pours: [] } });
+  const reactions = [{ seat: 1, name: 'Bram', text: '午市没白帮忙' }];
+  const before = JSON.stringify(reactions);
+  const withReaction = render(world, state, 0, null, null, reactions).recorder.calls;
+  assert.ok(withReaction.some(q => q.name === 'fillText' && q.args[0] === 'Bram'));
+  assert.ok(withReaction.some(q => q.name === 'fillText' && q.args[0] === '午市没白帮忙'));
+  assert.ok(!withReaction.some(q => q.name === 'ellipse' && q.args[0] === 437 && q.args[1] === 529),
+    'a reaction must not draw a ghost customer body');
+  assert.equal(JSON.stringify(reactions), before, 'renderer leaves local reactions unchanged');
+
+  const legacy = render(world, state, 0).recorder.calls;
+  assert.ok(!legacy.some(q => q.name === 'fillText' && q.args[0] === '午市没白帮忙'),
+    'the old four-argument draw remains reaction-free');
 });

@@ -65,7 +65,8 @@ function servePerfect(state, order, options = {}) {
   state = doAct(state, { type: 'pour', customerId: order.id, beer: options.beer || order.beer,
     price: options.price || R.BEERS[order.beer].price });
   const pour = state.night.pours.find(p => p.customerId === order.id);
-  state = advance(state, pour.duration * 0.72);
+  const window = R.pourWindow(state, order);
+  state = advance(state, pour.duration * (window.perfectMin + window.perfectMax) / 2);
   return doAct(state, { type: 'serve', customerId: order.id });
 }
 function playNight(state, choose = () => 'serve') {
@@ -87,7 +88,7 @@ test('CommonJS and browser expose the same public contract', () => {
   const context = {};
   vm.runInNewContext(fs.readFileSync(corePath, 'utf8'), context);
   assert.deepEqual(Object.keys(context.Reopening).sort(), Object.keys(R).sort());
-  for (const key of ['createGame', 'act', 'stock', 'customers', 'pourProgress', 'restore'])
+  for (const key of ['createGame', 'act', 'stock', 'customers', 'pourProgress', 'pourWindow', 'restore'])
     assert.equal(typeof R[key], 'function');
   assert.deepEqual(Object.keys(R.BEERS).sort(), ['blond', 'stout']);
   assert.deepEqual(Object.keys(R.UPGRADES).sort(), ['cellar', 'doubleTap', 'stage']);
@@ -316,6 +317,61 @@ test('later nights include a simultaneous pair so the second tap has a real use'
   }
 });
 
+test('first night pairs a quick and a full pour with clear recovery space', () => {
+  for (let seed = 1; seed <= 20; seed++) {
+    const state = doAct(prep(seed), { type: 'open' });
+    const orders = state.night.orders;
+    assert.equal(orders[0].service, 'classic');
+    assert.equal(orders.find(o => o.person === 'lotte').service, 'classic');
+    assert.equal(orders[1].service, 'quick');
+    assert.equal(orders[2].service, 'full');
+    assert.equal(orders[1].arrival, orders[2].arrival);
+    assert.ok(orders[1].patience >= 13 && orders[1].patience <= 16);
+    assert.ok(orders[2].patience >= 25 && orders[2].patience <= 28);
+    assert.ok(orders[3].arrival - orders[2].arrival >= 15);
+    assert.ok(orders.filter(o => o.service === 'quick').length >= 2);
+    assert.ok(orders.filter(o => o.service === 'full').length >= 2);
+    for (const order of orders) {
+      if (order.service === 'quick') assert.match(order.quote, /赶|少一点/);
+      if (order.service === 'full') assert.match(order.quote, /满一些/);
+    }
+    assert.deepEqual(R.pourWindow(state, orders[0]), { min: .45, max: .95, perfectMin: .63, perfectMax: .81 });
+    assert.deepEqual(R.pourWindow(state, orders[1]), { min: .22, max: .60, perfectMin: .32, perfectMax: .50 });
+    assert.deepEqual(R.pourWindow(state, orders[2]), { min: .76, max: .98, perfectMin: .82, perfectMax: .94 });
+  }
+});
+
+function serveAt(state, order, progress) {
+  state = doAct(state, { type: 'pour', customerId: order.id, beer: order.beer, price: R.BEERS[order.beer].price });
+  state = advance(state, state.night.pours[0].duration * progress);
+  return doAct(state, { type: 'serve', customerId: order.id });
+}
+
+test('each service style pays its own perfect bonus with basic stock at list price', () => {
+  for (const index of [1, 2]) {
+    const opened = doAct(prep(42), { type: 'open' });
+    const order = opened.night.orders[index];
+    const arrived = advance(opened, order.arrival);
+    const window = R.pourWindow(arrived, order);
+    const perfect = serveAt(arrived, order, (window.perfectMin + window.perfectMax) / 2);
+    const acceptable = serveAt(arrived, order, window.min + .01);
+    assert.equal(perfect.night.satisfied, 1);
+    assert.equal(acceptable.night.satisfied, 1);
+    assert.equal(perfect.night.earned, acceptable.night.earned + 2);
+    assert.equal(perfect.batches[0].quality, 1);
+  }
+});
+
+test('the old 72 percent habit no longer satisfies quick and full guests', () => {
+  for (const index of [1, 2]) {
+    const opened = doAct(prep(42), { type: 'open' });
+    const order = opened.night.orders[index];
+    const served = serveAt(advance(opened, order.arrival), order, .72);
+    assert.equal(served.night.served, 1);
+    assert.equal(served.night.satisfied, 0);
+  }
+});
+
 test('guest budgets include both price-sensitive and premium customers across seeds', () => {
   let priceSensitive = 0;
   let premium = 0;
@@ -384,7 +440,7 @@ test('one deterministic nightly dilemma freezes service and time until a valid c
 test('a dilemma freezes an already-reserved pour and consumes only remaining stock', () => {
   let state = advance(doAct(prep(), { type: 'open' }), 34);
   const order = R.customers(state)[0];
-  state = doAct(state, { type: 'pour', customerId: order.id, beer: 'blond', price: 8 });
+  state = doAct(state, { type: 'pour', customerId: order.id, beer: order.beer, price: R.BEERS[order.beer].price });
   state = doAct(state, { type: 'tick', seconds: 1 });
   assert.equal(state.night.event.status, 'pending');
   const progress = R.pourProgress(state, state.night.pours[0]);
@@ -392,8 +448,9 @@ test('a dilemma freezes an already-reserved pour and consumes only remaining sto
   reject(state, { type: 'tick', seconds: 1 });
   state = doAct(state, { type: 'event', choice: 'comp' });
   assert.equal(R.pourProgress(state, state.night.pours[0]), progress);
-  assert.equal(R.stock(state, 'blond'), 4);
-  state = advance(state, (0.72 - progress) * 4);
+  assert.equal(R.stock(state, order.beer), order.beer === 'blond' ? 4 : 1);
+  const target = (R.pourWindow(state, order).perfectMin + R.pourWindow(state, order).perfectMax) / 2;
+  state = advance(state, (target - progress) * 4);
   state = doAct(state, { type: 'serve', customerId: order.id });
   assert.equal(state.night.satisfied, 1);
 });
@@ -680,6 +737,18 @@ test('restore clones normal snapshots and rejects malformed, infinite, or pollut
   const cyclic = { ...state }; cyclic.extra = cyclic;
   assert.equal(R.restore(cyclic), null);
   assert.equal({}.polluted, undefined);
+});
+
+test('legacy night orders migrate to classic while unknown service styles stay invalid', () => {
+  const state = doAct(prep(), { type: 'open' });
+  const legacy = JSON.parse(JSON.stringify(state));
+  for (const order of legacy.night.orders) delete order.service;
+  const restored = R.restore(legacy);
+  assert.ok(restored);
+  assert.ok(restored.night.orders.every(order => order.service === 'classic'));
+  const invalid = JSON.parse(JSON.stringify(state));
+  invalid.night.orders[0].service = 'mystery';
+  assert.equal(R.restore(invalid), null);
 });
 
 test('restoring rejects forged cumulative scores and contradictory completed reports', () => {

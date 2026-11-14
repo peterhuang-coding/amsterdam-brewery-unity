@@ -105,6 +105,17 @@
     if (!state || !state.night || !pour || !number(pour.duration, 0.1, 60) || !number(pour.startedAt, 0, 1000)) return 0;
     return Math.max(0, Math.min(1, (state.night.elapsed - pour.startedAt) / pour.duration));
   }
+  function pourWindow(state, target) {
+    const order = target && target.customerId
+      ? state.night?.orders.find(item => item.id === target.customerId)
+      : target;
+    const windows = {
+      classic: { min: .45, max: .95, perfectMin: .63, perfectMax: .81 },
+      quick: { min: .22, max: .60, perfectMin: .32, perfectMax: .50 },
+      full: { min: .76, max: .98, perfectMin: .82, perfectMax: .94 }
+    };
+    return windows[order?.service] || windows.classic;
+  }
   function forageProgress(state, item) {
     if (!state || !state.forage || !item || !number(state.forage.elapsed, 0, 30) || !number(item.arrival, 0, 27)) return 0;
     return Math.max(0, Math.min(1, (state.forage.elapsed - item.arrival) / 5));
@@ -139,14 +150,15 @@
     const orders = [];
     for (let i = 0; i < count; i++) {
       const person = i === 0 ? 'marta' : i === Math.floor(count / 2) ? 'bram' : i === count - 2 ? 'lotte' : null;
+      const service = state.day === 1 && !person ? ({ 1: 'quick', 2: 'full', 5: 'quick', 7: 'full' }[i] || 'classic') : 'classic';
       const beer = person === 'lotte' || (person !== 'marta' && i % 3 === 2) ? 'stout' : 'blond';
-      const arrival = i === 0 ? 0 : state.day > 1 && i === 3 ? orders[2].arrival : Math.round(i * (duration - 18) / (count - 1) + (rand() - 0.5) * 4);
-      const patience = 23 + Math.floor(rand() * 5) + (has(state, 'stage') ? 12 : 0) + (state.music ? 8 : 0) + (person === 'bram' && state.friends.bram > 0 ? 10 : 0) + (state.life.display ? flowerFit(state.life.display,'display') ? 6 : 3 : 0);
+      const arrival = i === 0 ? 0 : state.day === 1 && i === 2 ? orders[1].arrival : state.day > 1 && i === 3 ? orders[2].arrival : Math.round(i * (duration - 18) / (count - 1) + (rand() - 0.5) * 4);
+      const patience = (service === 'quick' ? 13 + Math.floor(rand() * 4) : service === 'full' ? 25 + Math.floor(rand() * 4) : 23 + Math.floor(rand() * 5)) + (has(state, 'stage') ? 12 : 0) + (state.music ? 8 : 0) + (person === 'bram' && state.friends.bram > 0 ? 10 : 0) + (state.life.display ? flowerFit(state.life.display,'display') ? 6 : 3 : 0);
       orders.push({ id: 'd' + state.day + '-guest' + i,
         name: person ? PEOPLE[person].name : names[Math.floor(rand() * names.length)], person,
-        beer, budget: BEERS[beer].price + Math.floor(rand() * 6), arrival, patience,
+        beer, budget: BEERS[beer].price + Math.floor(rand() * 6), arrival, patience, service,
         status: 'future', portrait: person === 'lotte' ? '👩🏻‍🎤' : person === 'bram' ? '🧔🏼' : person === 'marta' ? '👩🏼‍🦳' : portraits[Math.floor(rand() * portraits.length)],
-        quote: person ? PEOPLE[person].quote : beer === 'stout' ? '一杯黑啤。论文还在返修，我先完成这一杯。' : '一杯金色艾尔。老板说公司是家，所以加班费算亲情。'
+        quote: person ? PEOPLE[person].quote : service === 'quick' ? '我赶电车，这杯少一点，到浅绿区就收。' : service === 'full' ? '今天不赶时间，这一杯请满一些。' : beer === 'stout' ? '一杯黑啤。论文还在返修，我先完成这一杯。' : '一杯金色艾尔。老板说公司是家，所以加班费算亲情。'
       });
     }
     if (state.backstage.resolution === 'returned') {
@@ -156,6 +168,8 @@
     }
     D.open(state,orders);
     S.open(state,orders);
+    const story = S.current(state);
+    for (const order of orders) if (order.person || D.forGuest(state,order.id) || story?.customerId === order.id) order.service = 'classic';
     return { elapsed: 0, duration, orders, pours: [], earned: 0, served: 0, satisfied: 0, lost: 0, promiseKept: false, promiseBroken: false, event: null, rentAdjustment: 0 };
   }
   function breakPromise(state, order) {
@@ -183,7 +197,7 @@
     const rent = 18 + night.rentAdjustment;
     state.cash = Math.max(0, state.cash - rent);
     state.phase = 'summary';
-    const note = night.promiseKept ? 'Lotte 说今晚的报酬已到账：一杯黑啤，比“积累曝光”实在。' : night.promiseBroken ? 'Lotte 没收到答应的黑啤。她没开罚单，只说明晚先不带琴了。' : night.satisfied >= 5 ? '街坊们约好再来。没人要求做用户访谈，大家直接付了钱。' : '椅子比客人待得久。会计说这是沉淀，你决定先把杯子洗了。';
+    const note = night.promiseKept ? 'Lotte 说今晚的报酬已到账：一杯黑啤，比“积累曝光”实在。' : night.promiseBroken ? (state.day === 3 ? 'Lotte 没收到答应的黑啤。她把吉他收回了琴盒，没有第四晚可以补。' : 'Lotte 没收到答应的黑啤。她没开罚单，只说明晚先不带琴了。') : night.satisfied >= 5 ? '街坊们约好再来。没人要求做用户访谈，大家直接付了钱。' : '椅子比客人待得久。会计说这是沉淀，你决定先把杯子洗了。';
     state.reports.push({ day: state.day, earned: night.earned, served: night.served, satisfied: night.satisfied,
       lost: night.lost, rent, cash: state.cash, promiseKept: night.promiseKept, promiseBroken: night.promiseBroken, note: note+' '+D.notes(state).filter((_,i)=>state.trade.contracts[i].settledDay===state.day).join(' ')+' '+S.notes(state).filter((_,i)=>state.stories.threads[i].day===state.day).join(' ') });
     say(state, '第 ' + state.day + ' 夜收店：' + night.satisfied + ' 位满意的客人，支付租金 €' + rent + '。');
@@ -610,8 +624,9 @@
         const pour = state.night.pours.find(item => item.customerId === action.customerId);
         if (!order || !pour) return fail('请先为这位客人倒一杯酒。');
         const progress = pourProgress(state, pour);
-        const satisfied = progress >= 0.45 - 1e-8 && progress <= 0.95 + 1e-8 && pour.beer === order.beer && pour.price <= order.budget;
-        const perfect = Math.abs(progress - 0.72) <= 0.09 + 1e-8;
+        const window = pourWindow(state, order);
+        const satisfied = progress >= window.min - 1e-8 && progress <= window.max + 1e-8 && pour.beer === order.beer && pour.price <= order.budget;
+        const perfect = progress >= window.perfectMin - 1e-8 && progress <= window.perfectMax + 1e-8;
         const contractBonus=satisfied&&D.forGuest(state,order.id)?2:0;
         let earned = pour.price <= order.budget ? pour.price : 0;
         if (satisfied) {
@@ -629,7 +644,7 @@
         say(state, satisfied ? order.name + (perfect ? '接过漂亮的一杯' : '满意地点点头') + '，收入 €' + earned + '。' : order.name + '收下了酒，但这一杯没有让对方满意。收入 €' + earned + '。');
         if(contractBonus)say(state,'预订单已兑现：约定价 €'+pour.price+'＋履约奖励 €2＋品质与倒酒等小费 €'+(earned-pour.price-2)+'＝€'+earned+'。管理员：“花和酒都到了，谢谢你记得。”');
         if (!satisfied) {D.resolve(state,order.id,false);breakPromise(state, order);}
-        else if (order.person === 'lotte' && state.promises.lotte) say(state, 'Lotte 尝到了答应的黑啤：明晚带吉他。至少这份口头合同兑付了。');
+        else if (order.person === 'lotte' && state.promises.lotte) say(state, state.day === 3 ? 'Lotte 尝到了答应的黑啤。最后一晚，她没有把琴收起来。' : 'Lotte 尝到了答应的黑啤：明晚带吉他。至少这份口头合同兑付了。');
         updateNight(state); break;
       }
       case 'water': {
@@ -777,7 +792,7 @@
       const adjustment = !n.event || n.event.status === 'pending' ? 0 : n.event.id === 'landlord' ? n.event.choice === 'comp' ? -6 : 3 : n.event.id === 'inspector' && n.event.choice === 'tasting' ? 6 : 0;
       if (n.rentAdjustment !== adjustment) return false;
       if (!Array.isArray(n.orders) || n.orders.length !== 6 + 2 * s.day || !unique(n.orders.map(o => o && o.id))) return false;
-      if (!n.orders.every(o => shape(o, 'id name person beer budget arrival patience status portrait quote') && string(o.id) && o.id.length > 0 && string(o.name) && (o.person === null || owns(PEOPLE, o.person)) && owns(BEERS, o.beer) && integer(o.budget, 1, 1000000) && number(o.arrival, 0, n.duration) && number(o.patience, 1, 120) && ['future', 'waiting', 'served', 'lost'].includes(o.status) && string(o.portrait) && string(o.quote))) return false;
+      if (!n.orders.every(o => shape(o, 'id name person beer budget arrival patience service status portrait quote') && string(o.id) && o.id.length > 0 && string(o.name) && (o.person === null || owns(PEOPLE, o.person)) && owns(BEERS, o.beer) && integer(o.budget, 1, 1000000) && number(o.arrival, 0, n.duration) && number(o.patience, 1, 120) && ['classic', 'quick', 'full'].includes(o.service) && ['future', 'waiting', 'served', 'lost'].includes(o.status) && string(o.portrait) && string(o.quote))) return false;
       if (n.orders.filter(o => o.status === 'served').length !== n.served || n.orders.filter(o => o.status === 'lost').length !== n.lost || n.orders.filter(o => o.status === 'waiting').length > seats(s)) return false;
       if (!Array.isArray(n.pours) || n.pours.length > (has(s, 'doubleTap') ? 2 : 1) || !unique(n.pours.map(p => p && p.customerId))) return false;
       if (!n.pours.every(p => shape(p, 'customerId beer price quality aged startedAt duration') && n.orders.some(o => o.id === p.customerId && o.status === 'waiting') && owns(BEERS, p.beer) && integer(p.price, 1, 1000000) && integer(p.quality, 1, 3) && typeof p.aged === 'boolean' && number(p.startedAt, 0, n.elapsed) && p.duration === 4)) return false;
@@ -813,6 +828,7 @@
       }
       if(restored?.backstage&&!owns(restored.backstage,'journal'))restored.backstage.journal=[];
       if(restored&&!owns(restored,'market'))restored.market={version:1,history:[]};
+      if(restored?.night?.orders)for(const order of restored.night.orders)if(order&&!owns(order,'service'))order.service='classic';
       if(restored.backstage.run){
         // marketShift is defined on v4 runs only (B: market(r) => r.version>=4 ? ...).
         // A pre-v4 byte stream cannot carry real market facts; normalize legacy
@@ -826,5 +842,5 @@
     } catch (_) { return null; }
   }
 
-  return Object.freeze({ createGame, act, stock, customers, pourProgress, forageProgress, restore, marketInfo, flowerPalette, flowerFit, FLOWERS, BEERS, UPGRADES, PEOPLE, NIGHT_EVENTS, trade:D, stories:S, garden:G });
+  return Object.freeze({ createGame, act, stock, customers, pourProgress, pourWindow, forageProgress, restore, marketInfo, flowerPalette, flowerFit, FLOWERS, BEERS, UPGRADES, PEOPLE, NIGHT_EVENTS, trade:D, stories:S, garden:G });
 });

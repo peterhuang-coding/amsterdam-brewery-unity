@@ -6,6 +6,51 @@
   const SAVE_KEY='ab_reopening_v1';
   const ui={selected:null,beer:'blond',premium:false,modal:null,returnFocus:null,brewElapsed:0,sound:true,tutorialSeen:false,signature:'',lastFrame:performance.now(),lastSave:0,noticeTimer:null,audio:null,city:null,cityPath:[],cityTarget:null,cityMode:'map',cityPlace:'pub',cityNear:'pub',cityFerry:false,cityZoom:2,cityCamera:'street',hintDismissed:false,cityKeys:new Set(),cityFrame:performance.now(),notebook:false};
   let state=R.createGame(seedFromUrl());
+  const serviceReactions=[];
+  let reactionNightDay=state.day,reactionSequence=0,bouquetReaction=false;
+  const reactionNow=()=>state.night?.elapsed||0;
+  function liveReactions(){return serviceReactions.filter(r=>r.day===state.day&&r.expiresAt>reactionNow());}
+  function clearReactions(){serviceReactions.length=0;bouquetReaction=false;reactionNightDay=state.day;}
+  function pushReaction(reaction){
+    if(!reaction||!reaction.text)return;
+    if(serviceReactions.length>=3)serviceReactions.shift();
+    serviceReactions.push({id:'r'+(++reactionSequence),day:state.day,seat:Math.max(0,Math.min(2,Number(reaction.seat)||0)),name:String(reaction.name||''),text:String(reaction.text),expiresAt:reactionNow()+3});
+  }
+  function addFlowerArrivalReaction(){
+    if(!state.life?.display)return;
+    const first=R.customers(state)[0];
+    const bonus=R.flowerFit(state.life.display,'display')?6:3;
+    pushReaction({seat:0,name:first?.name||'窗边的花',text:`窗边的花让今晚的客人愿意多等 ${bonus} 秒。`});
+  }
+  function addServiceReaction(before,after,id){
+    const order=after.night?.orders.find(o=>o.id===id);
+    if(!order||order.status!=='served')return;
+    const satisfied=after.night.satisfied>before.night.satisfied;
+    const seat=Math.max(0,Math.min(2,R.customers(before).findIndex(o=>o.id===id)));
+    let text;
+    if(order.person==='lotte'&&before.promises.lotte&&after.night.promiseKept){
+      text=after.day===3?'她记得那杯黑啤，也记住了这家店最后一晚。':'她记得那杯黑啤。明晚她带乐队来。';
+    }else if(order.person==='bram'&&before.friends.bram>0){
+      text=before.prepared.includes('coffee')?(satisfied?'午市没白帮忙，今晚他多等了十秒。':'午市没白帮忙，他还是把这杯喝完了。'):(satisfied?'他记得你帮过的午市，今晚多等了十秒。':'他记得你帮过的午市，还是把这杯喝完了。');
+    }else if(satisfied&&before.life?.display&&!bouquetReaction){
+      bouquetReaction=true;
+      text='窗边的花让这桌客人多坐了一会儿。';
+    }else if(order.service==='quick'){
+      text=satisfied?'赶时间的客人拿到酒，赶上了下一班电车。':'杯子没倒够，赶时间的客人先走了。';
+    }else if(order.service==='full'){
+      text=satisfied?'满杯端上，客人慢慢喝完了。':'这杯不够满，客人把杯子推了回来。';
+    }else{
+      text=satisfied?'这一杯端得正好，客人点了点头。':'这一杯没倒好，客人还是付了钱。';
+    }
+    pushReaction({seat,name:order.name,text});
+  }
+  function updateReactions(before,action){
+    if(action.type==='open'){
+      clearReactions();reactionNightDay=state.day;addFlowerArrivalReaction();return;
+    }
+    if(action.type==='serve'){addServiceReaction(before,state,action.customerId);return;}
+    if(state.day!==reactionNightDay||state.phase!=='night'){clearReactions();}
+  }
   let restored=false,saveError=false,savedCity=null;
   const map={session:null,loading:true,error:null,controller:null,sequence:0,promise:Promise.resolve(),retry:null,pendingReturn:null,travelDeparture:null,progress:null};
   Object.assign(ui,{routeController:null,routeSequence:0,routePending:false,cartController:null,cartSequence:0,cartRoutePending:false,cartPath:[],travel:null,routeArrival:null});
@@ -63,10 +108,11 @@
   }
   function dispatch(action){
     if(ui.modal||!available()||ui.travel)return;
-    const previous=state.phase,previousDay=state.day;
+    const previous=state.phase,previousDay=state.day,before=state;
     const result=R.act(state,action);
     if(!result.ok){notify(result.message||'现在无法这样操作。',true);return;}
     state=result.state;
+    updateReactions(before,action);
     if(action.type==='journeyStart'){ui.city=C.parkBike(ui.city);ui.cityKeys.clear();ui.cityPath=[];ui.cityTarget=null;journey.clear();}
     if(action.type==='journeyReturn'){journey.clear();queueReturn('flowers','place');}
     if(action.type==='explore'){ui.city=C.parkBike(ui.city);ui.cityKeys.clear();ui.cityPath=[];backstage.clear();backstage.signature='';backstage.overview=false;}
@@ -223,7 +269,7 @@
         afterHours:state.phase==='summary',garden:gardenActive()?{...C.GARDEN,...R.garden.context(state)}:null,flowerCart:gardenActive()?ui.flowerCart||C.FLOWER_CART:null},now/1000);
     }else{
       scene.prepareCanvas();
-      if(state.phase==='explore')backstage.step(seconds);else if(state.phase==='journey')journey.step(seconds);else scene.draw(state,now,ui.selected,cityView());
+      if(state.phase==='explore')backstage.step(seconds);else if(state.phase==='journey')journey.step(seconds);else scene.draw(state,now,ui.selected,cityView(),state.phase==='night'?liveReactions():[]);
     }
   }
   // Mini scenes use a fixed 1100 x 640 logical space, regardless of backing DPR.
@@ -623,6 +669,14 @@
   }
   function selectedCustomer(){const waiting=R.customers(state);return waiting.find(c=>c.id===ui.selected)||waiting[0]||null;}
   function selectedPour(){return state.night?.pours.find(p=>p.customerId===ui.selected)||null;}
+  function pourCue(order,pour){
+    const progress=R.pourProgress(state,pour),window=R.pourWindow(state,order);
+    return progress>=window.perfectMin&&progress<=window.perfectMax?'perfect':progress>window.max?'over':progress<window.min?'under':'ok';
+  }
+  function serveLabel(order,pour){
+    const cue=pourCue(order,pour);
+    return cue==='perfect'?'漂亮！现在收杯 · Space':cue==='over'?'快满了，收杯！ · Space':cue==='under'?'再倒一点 · Space':`收杯，端给 ${order.name} · Space`;
+  }
   function beerDot(id){return `<i class="beer-dot" style="background:${R.BEERS[id].color}"></i>`;}
   function topCopy(){
     if(state.phase==='journey')return ['DAY '+state.day+' · 一趟有约定的出门','把人、车和故事带回来。'];
@@ -661,6 +715,15 @@
     ui.signature=signature();updateMeters();drawScene(performance.now());
     if(oldFocus){const next=document.querySelector(`[data-focus="${CSS.escape(oldFocus)}"]`);if(next&&!next.disabled)next.focus({preventScroll:true});}
   }
+  function serviceLabel(order){return order.service==='quick'?'赶时间':order.service==='full'?'想满些':'';}
+  function guestNote(order){
+    if(state.night.pours.some(p=>p.customerId===order.id))return '正在为这位客人倒酒';
+    if(order.person==='lotte'&&state.promises.lotte)return '你答应为她留一杯黑啤';
+    if(order.person==='bram'&&state.friends.bram>0)return state.prepared.includes('coffee')?'午市熟人 · 多等 10 秒':'Bram 记得你的帮工 · 多等 10 秒';
+    if(order.service==='quick')return '赶时间 · 到浅绿区就收';
+    if(order.service==='full')return '想满些 · 稍晚收杯';
+    return '还可以等 ';
+  }
   function renderQueue(){
     const waiting=R.customers(state);
     const current=selectedCustomer();ui.selected=current?.id||null;
@@ -682,7 +745,7 @@
       if(!waiting.length){
         const next=state.night.orders.filter(o=>o.status==='future').sort((a,b)=>a.arrival-b.arrival)[0];
         $('queue').innerHTML=`<div class="guest-empty"><strong>片刻安静。</strong><span>${next?'下一位客人正在路上。可以查看库存，准备接单。':'最后一杯已经送出。'}</span></div>`;
-      }else $('queue').innerHTML=waiting.map((o,i)=>`<button class="guest-card ${o.id===ui.selected?'selected':''}" data-action="select" data-id="${esc(o.id)}" data-focus="guest-${esc(o.id)}" aria-label="服务 ${esc(o.name)}，想喝${esc(R.BEERS[o.beer].name)}，预算${money(o.budget)}" aria-pressed="${o.id===ui.selected}"><div class="guest-header"><span class="avatar">${PORTRAITS[o.person]||'🧑🏻'}</span><span><strong>${esc(o.name)}</strong><small>${i+1} 号位 · 预算 ${money(o.budget)}</small></span></div><div class="guest-order">${beerDot(o.beer)}${esc(R.BEERS[o.beer].short||R.BEERS[o.beer].name)}</div><div class="patience" data-patience="${esc(o.id)}"><i></i></div><div class="guest-note">${state.night.pours.some(p=>p.customerId===o.id)?'正在为这位客人倒酒':o.person==='lotte'&&state.promises.lotte?'你答应为她留一杯黑啤':'还可以等 '}<span data-patience-text="${esc(o.id)}"></span></div></button>`).join('');
+      }else $('queue').innerHTML=waiting.map((o,i)=>{const label=serviceLabel(o);return `<button class="guest-card ${o.id===ui.selected?'selected':''}" data-action="select" data-id="${esc(o.id)}" data-focus="guest-${esc(o.id)}" aria-label="服务 ${esc(o.name)}${label?'，'+label:''}，想喝${esc(R.BEERS[o.beer].name)}，预算${money(o.budget)}" aria-pressed="${o.id===ui.selected}"><div class="guest-header"><span class="avatar">${PORTRAITS[o.person]||'🧑🏻'}</span><span><strong>${esc(o.name)}</strong><small>${i+1} 号位 · 预算 ${money(o.budget)}${label?' · '+label:''}</small></span></div><div class="guest-order">${beerDot(o.beer)}${esc(R.BEERS[o.beer].short||R.BEERS[o.beer].name)}${label?' · '+label:''}</div><div class="patience" data-patience="${esc(o.id)}"><i></i></div><div class="guest-note">${guestNote(o)}<span data-patience-text="${esc(o.id)}"></span></div></button>`;}).join('');
     }else $('queue').innerHTML=['marta','bram','lotte'].map(id=>`<div class="guest-card"><div class="guest-header"><span class="avatar">${PORTRAITS[id]}</span><span><strong>${esc(R.PEOPLE[id].name)}</strong><small>${esc(R.PEOPLE[id].role)}</small></span></div><div class="guest-order">${friendStatus(id)}</div></div>`).join('');
   }
   function friendStatus(id){
@@ -696,7 +759,7 @@
   }
   function renderStory(){
     let person='lotte',text='这条运河连倒影都在涨房租。给我留杯黑的。';
-    if(state.phase==='night'){const guest=selectedCustomer();if(guest){person=guest.person||guest.name;text=guest.quote;}}
+    if(state.phase==='night'){const reaction=liveReactions().slice(-1)[0],guest=selectedCustomer();if(reaction){person=reaction.name;text=reaction.text;}else if(guest){person=guest.person||guest.name;text=guest.quote;}}
     else if(state.music){person='lotte';text='你记得给我留的那杯酒。我也记得帮你叫上他们。';}
     else if(state.hops){person='bram';text='酒花留给下一桶。它们的香气不需要写申请。';}
     else if(state.friends.marta>0){person='marta';text='不错。今天带来的投诉信，可以改成情书草稿。';}
@@ -730,7 +793,7 @@
     const won=state.result?.won;
     $board.innerHTML=headings+`<h2>${esc(state.result?.title||(won?'招牌重新亮了。':'下一次机会，还在。'))}</h2><p class="board-copy">${esc(state.result?.description||'你让这家店重新有了声音。')}</p><div class="result-badge">${won?'OPEN':'AGAIN'}</div><div class="receipt"><div><span>留下的现金</span><strong>${money(state.cash)} / €100</strong></div><div><span>满意的客人</span><strong>${state.totalSatisfied} / 12</strong></div><div><span>亲手送出的酒</span><strong>${state.totalServed} 杯</strong></div></div><div class="friend-memories">${['lotte','bram','marta'].map(id=>`<div class="friend-memory"><strong>${esc(R.PEOPLE[id].name)}</strong>${friendStatus(id)}</div>`).join('')}</div><button class="primary" data-action="replay" data-focus="replay">这次换一种安排，再试一次 →</button><button class="text-button" data-action="new-seed">换一组客人，重新开店</button><p class="small-note">${won?'这次，你给这家店留下了一个明天。':'试着多留库存、先照顾快等不及的人。每次重来都从同样的资源开始。'}</p>`;
   }
-  function timingTrack(id){return `<div class="timing-track" id="${id}"><i class="sweet-zone"></i><i class="perfect-zone"></i><i class="needle"></i></div>`;}
+  function timingTrack(id,window){return `<div class="timing-track" id="${id}">${window?`<i class="sweet-zone" style="left:${window.min*100}%;width:${(window.max-window.min)*100}%"></i><i class="perfect-zone" style="left:${window.perfectMin*100}%;width:${(window.perfectMax-window.perfectMin)*100}%"></i>`:'<i class="sweet-zone"></i><i class="perfect-zone"></i>'}<i class="needle"></i></div>`;}
   function receipt(r){return `<div class="receipt"><div><span>今晚营业额</span><strong>+${money(r.earned)}</strong></div><div><span>送出的酒 / 满意顾客</span><strong>${r.served} / ${r.satisfied}</strong></div><div><span>错过的顾客</span><strong>${r.lost}</strong></div><div><span>今夜租金</span><strong>−${money(r.rent)}</strong></div><div class="receipt-total"><span>手头留下</span><strong>${money(r.cash)}</strong></div></div>`;}
   function renderService(headings){
     const guest=selectedCustomer();
@@ -738,17 +801,17 @@
     if(!R.BEERS[ui.beer])ui.beer=guest.beer;
     const contract=R.trade.forGuest(state,guest.id),batch=selectedBatch(guest);
     const terms=contract&&R.trade.terms(state,contract);
-    const beer=R.BEERS[ui.beer],price=terms?terms.price:beer.price+(ui.premium?4:0),pour=selectedPour();
+    const beer=R.BEERS[ui.beer],price=terms?terms.price:beer.price+(ui.premium?4:0),pour=selectedPour(),label=serviceLabel(guest);
     const minQuality=terms?terms.quality:state.day>=state.trade.rulesFromDay&&ui.premium?2:1;
     const blocked=!batch||batch.quality<minQuality||contract&&ui.beer!=='stout';
     const full=state.night.pours.length>=(state.upgrades.includes('doubleTap')?2:1);
     if(pour){
-      $board.innerHTML=headings+`<div class="order-title"><h2>${esc(guest.name)}</h2><span class="order-budget">正在为这位客人倒酒</span></div><p class="order-quote">“${esc(guest.quote)}”</p><p class="service-note">${beerDot(pour.beer)}${esc(R.BEERS[pour.beer].name)} · 报价 ${money(pour.price)}<br>${pour.aged?'陈酿 · 满意后额外 €2':'品质 '+pour.quality+'/3'} · 这一杯已从库存扣除</p>${timingTrack('service-pour')}<div class="timing-labels"><span>太少</span><span>恰到好处</span><span>满出来了</span></div><button class="primary" data-action="serve" data-id="${esc(guest.id)}" data-focus="serve-${esc(guest.id)}">收杯，端给 ${esc(guest.name)} · Space</button><p class="small-note">浅绿色区域最理想。按 P 可随时暂停。</p>`+
+      $board.innerHTML=headings+`<div class="order-title"><h2>${esc(guest.name)}</h2><span class="order-budget">${label?esc(label)+' · ':''}正在为这位客人倒酒</span></div><p class="order-quote">“${esc(guest.quote)}”</p><p class="service-note">${beerDot(pour.beer)}${esc(R.BEERS[pour.beer].name)} · 报价 ${money(pour.price)}<br>${pour.aged?'陈酿 · 满意后额外 €2':'品质 '+pour.quality+'/3'} · 这一杯已从库存扣除</p>${timingTrack('service-pour',R.pourWindow(state,guest))}<div class="timing-labels"><span>太少</span><span>恰到好处</span><span>满出来了</span></div><button class="primary" data-action="serve" data-id="${esc(guest.id)}" data-focus="serve-${esc(guest.id)}">${esc(serveLabel(guest,pour))}</button><p class="small-note">${label==='赶时间'?'这位客人赶时间：浅绿区更早，指针到 22–60% 就收杯。':label==='想满些'?'这位客人想满些：窗口更晚，指针到 76–98% 再收杯。':'浅绿色区域最理想。按 P 可随时暂停。'}</p>`+
         state.night.pours.filter(p=>p.customerId!==guest.id).map(p=>{const other=state.night.orders.find(o=>o.id===p.customerId);return `<button class="secondary" data-action="select" data-id="${esc(p.customerId)}">另一杯正在倒：${esc(other.name)} →</button>`;}).join('')+
         `<button class="text-button" data-action="water" data-id="${esc(guest.id)}">这杯不卖了，送水善后</button>`+nightPlan()+closeButton();
       return;
     }
-    $board.innerHTML=headings+firstGuestCue()+`<div class="order-title"><h2>${esc(guest.name)}</h2><span class="order-budget">预算 ${money(guest.budget)}</span></div><p class="order-quote">“${esc(guest.quote)}”</p><label class="field-label">想喝 ${esc(R.BEERS[guest.beer].name)} · 先选一杯</label><div class="beer-options">${Object.values(R.BEERS).map(b=>`<button class="beer-option ${ui.beer===b.id?'selected':''}" data-action="beer" data-beer="${b.id}" data-focus="beer-${b.id}" aria-pressed="${ui.beer===b.id}">${beerDot(b.id)}${esc(b.name)}<small>库存 ${R.stock(state,b.id)} 杯 · ${money(b.price)} 起</small></button>`).join('')}</div>`+
+    $board.innerHTML=headings+firstGuestCue()+`<div class="order-title"><h2>${esc(guest.name)}</h2><span class="order-budget">${label?esc(label)+' · ':''}预算 ${money(guest.budget)}</span></div><p class="order-quote">“${esc(guest.quote)}”</p>${label?`<p class="small-note">${label==='赶时间'?'这位客人赶时间：浅绿区更早，指针到 22–60% 就收杯。':'这位客人想满些：窗口更晚，指针到 76–98% 再收杯。'}</p>`:''}<label class="field-label">想喝 ${esc(R.BEERS[guest.beer].name)} · 先选一杯</label><div class="beer-options">${Object.values(R.BEERS).map(b=>`<button class="beer-option ${ui.beer===b.id?'selected':''}" data-action="beer" data-beer="${b.id}" data-focus="beer-${b.id}" aria-pressed="${ui.beer===b.id}">${beerDot(b.id)}${esc(b.name)}<small>库存 ${R.stock(state,b.id)} 杯 · ${money(b.price)} 起</small></button>`).join('')}</div>`+
       '<label class="field-label">选择实际使用的批次（预留酒不卖给散客）</label><div class="price-options">'+state.batches.filter(b=>b.beer===ui.beer&&b.cups>0).map(b=>`<button class="price-option ${batch?.id===b.id?'selected':''}" data-action="batch" data-batch="${esc(b.id)}" aria-pressed="${batch?.id===b.id}" ${R.trade.available(state,b,guest.id)<=0?'disabled':''}>第 ${b.madeDay} 天 · 品质 ${b.quality}/3${b.aged?' · 陈酿':''}<small>可用 ${R.trade.available(state,b,guest.id)} 杯</small></button>`).join('')+'</div>'+
       (terms?`<p class="promise-note">${terms.label}固定 €${terms.price} · 品质至少 ${terms.quality} 的黑啤。可在下方协商取消。</p>`:`<label class="field-label">这一杯的报价</label><div class="price-options"><button class="price-option ${!ui.premium?'selected':''}" data-action="price" data-premium="false">街坊价 ${money(beer.price)}</button><button class="price-option ${ui.premium?'selected':''} ${beer.price+4>guest.budget?'over':''}" data-action="price" data-premium="true">品质加价 ${money(beer.price+4)}</button></div>`)+
       (state.day>=state.trade.rulesFromDay?'<p class="small-note">加价需品质至少 2；品质 1 仍可按街坊价出售，预算始终明示。</p>':'<p class="small-note">正在继续旧版营业，本晚保留旧报价规则；下次营业启用品质加价。</p>')+
@@ -758,12 +821,18 @@
       `<button class="primary" data-action="pour" data-focus="pour" ${blocked||full?'disabled':''}>${full?'酒头正在忙':blocked?'请换可用批次、调整报价或取消预订单':'开始倒酒 · '+money(price)+' · E'}</button><p class="small-note">每次开始倒酒消耗选定批次的 1 杯。倒进绿色区域，收杯才有好口感。</p>`+
       `<button class="text-button" data-action="water" data-id="${esc(guest.id)}">${pour?'这杯不卖了，送水善后':'送杯水，婉拒这一单'}</button>`+nightPlan()+closeButton();
   }
-  function nightPlan(){return `<div class="goal-strip"><span>今晚已收入 ${money(state.night.earned)}</span><span>满意 ${state.night.satisfied} 位</span></div>${state.promises.lotte?'<p class="small-note">留杯约定：Lotte · 黑啤</p>':''}`+contractPanel();}
+  function nightPlan(){
+    const notes=[];
+    if(state.promises.lotte)notes.push(state.night.promiseKept?'留杯约定已兑现：Lotte · 黑啤':'留杯约定：Lotte · 黑啤');
+    if(state.prepared.includes('coffee'))notes.push('午市帮工：Bram 今晚多等 10 秒，满意时多 €1。');
+    if(state.life?.display){const bonus=R.flowerFit(state.life.display,'display')?6:3;notes.push(`窗边的花：今晚每位客人多等 ${bonus} 秒。`);}
+    return `<div class="goal-strip"><span>今晚已收入 ${money(state.night.earned)}</span><span>满意 ${state.night.satisfied} 位</span></div>`+notes.map(n=>`<p class="small-note">${esc(n)}</p>`).join('')+contractPanel();
+  }
   function closeButton(){return '<div class="board-bottom"><button class="text-button" data-action="close-night">提前打烊，看看今天的账 →</button></div>';}
   function renderPours(){
-    $('pour-stations').innerHTML=state.phase==='night'?state.night.pours.map(p=>{const guest=state.night.orders.find(o=>o.id===p.customerId);return `<div class="pour-station"><span><strong>${esc(guest?.name||'这一杯')}</strong><small>${esc(R.BEERS[p.beer].short)} · ${money(p.price)}</small></span>${timingTrack('pour-'+p.customerId)}<button data-action="serve" data-id="${esc(p.customerId)}" data-focus="tap-${esc(p.customerId)}" aria-label="为 ${esc(guest?.name)} 收杯">收杯 ↗</button></div>`;}).join(''):'';
+    $('pour-stations').innerHTML=state.phase==='night'?state.night.pours.map(p=>{const guest=state.night.orders.find(o=>o.id===p.customerId);return `<div class="pour-station"><span><strong>${esc(guest?.name||'这一杯')}</strong><small>${esc(R.BEERS[p.beer].short)} · ${money(p.price)}</small></span>${timingTrack('pour-'+p.customerId,R.pourWindow(state,guest))}<button data-action="serve" data-id="${esc(p.customerId)}" data-focus="tap-${esc(p.customerId)}" aria-label="为 ${esc(guest?.name)} 收杯">收杯 ↗</button></div>`;}).join(''):'';
   }
-  function signature(){return JSON.stringify([state.phase,state.day,state.cash,state.actions,state.batches,state.friends,state.promises,state.upgrades,state.hops,state.music,state.brew,state.night?.orders.map(o=>[o.id,o.status]),state.night?.pours.map(p=>[p.customerId,p.beer,p.price]),state.night?.earned,state.night?.event,state.forage&&[state.forage.lane,state.forage.haul,state.forage.items.map(i=>i.status)],state.reports.length,state.life,state.stories]);}
+  function signature(){return JSON.stringify([state.phase,state.day,state.cash,state.actions,state.batches,state.friends,state.promises,state.upgrades,state.hops,state.music,state.brew,state.night?.orders.map(o=>[o.id,o.status]),state.night?.pours.map(p=>[p.customerId,p.beer,p.price,pourCue(state.night.orders.find(o=>o.id===p.customerId),p)]),state.night?.earned,state.night?.event,state.forage&&[state.forage.lane,state.forage.haul,state.forage.items.map(i=>i.status)],state.reports.length,state.life,state.stories]);}
   function updateMeters(){
     if(state.phase==='explore')return;
     if(inCity()){const note=$('city-route-note');if(note&&ui.cityPath.length){let total=0,prev=ui.city;for(const point of ui.cityPath){total+=Math.hypot(point.x-prev.x,point.y-prev.y);prev=point;}note.textContent=`沿虚线前往 · 约 ${Math.ceil(total/(ui.city.bike.mounted?C.BIKE_SPEED:C.WALK_SPEED))} 秒 · 途中可点其他地点改道`;}}
@@ -772,7 +841,7 @@
       const left=Math.max(0,state.night.duration-state.night.elapsed),mm=Math.floor(left/60),ss=Math.floor(left%60);
       $('night-clock').textContent=`${ui.modal?'已暂停 · ':''}打烊前 ${mm}:${String(ss).padStart(2,'0')}`;
       R.customers(state).forEach(o=>{const seconds=Math.max(0,o.patience-(state.night.elapsed-o.arrival)),node=document.querySelector(`[data-patience="${CSS.escape(o.id)}"]`);if(node){node.querySelector('i').style.transform=`scaleX(${Math.min(1,seconds/o.patience)})`;node.classList.toggle('urgent',seconds<10);}const label=document.querySelector(`[data-patience-text="${CSS.escape(o.id)}"]`);if(label)label.textContent=Math.ceil(seconds)+'s';});
-      state.night.pours.forEach(p=>{const progress=R.pourProgress(state,p),position=Math.min(.995,progress)*100+'%';const needle=$('pour-'+p.customerId)?.querySelector('.needle');if(needle)needle.style.left=position;if(p.customerId===ui.selected){const active=$('service-pour')?.querySelector('.needle');if(active)active.style.left=position;const button=$board.querySelector('[data-action="serve"]');if(button){button.textContent=progress>=.63&&progress<=.81?'漂亮！现在收杯 · Space':progress>.81?'快满了，收杯！ · Space':'收杯 · Space';}}});
+      state.night.pours.forEach(p=>{const progress=R.pourProgress(state,p),order=state.night.orders.find(o=>o.id===p.customerId),window=R.pourWindow(state,order),position=Math.min(.995,progress)*100+'%';const needle=$('pour-'+p.customerId)?.querySelector('.needle');if(needle)needle.style.left=position;if(p.customerId===ui.selected){const active=$('service-pour')?.querySelector('.needle');if(active)active.style.left=position;const button=$board.querySelector('[data-action="serve"]');if(button)button.textContent=serveLabel(order,p);}});
     }else if(state.phase==='forage'){
       $('night-clock').textContent=`${ui.modal?'已暂停 · ':''}靠岸前 ${Math.ceil(state.forage.duration-state.forage.elapsed)}s`;
       let catchable=null;
@@ -929,6 +998,6 @@
     syncEvent();
     if(now-ui.lastSave>5000&&state.phase!=='welcome'){save();ui.lastSave=now;}
   },100);
-  window.ReopeningEntry={ready:()=>map.promise,diagnostics:()=>JSON.parse(JSON.stringify({game:state,city:ui.city,loading:map.loading,error:map.error,available:available(),paused:clocksPaused(),pendingReturn:map.pendingReturn,routePending:ui.routePending,cartRoutePending:ui.cartRoutePending,route:ui.cityPath,routeTarget:ui.cityTarget,travel:ui.travel,mapMode:ui.cityCamera==='city'?'overview':'local',scene:districtScene.diagnostics()}))};
+  window.ReopeningEntry={ready:()=>map.promise,diagnostics:()=>JSON.parse(JSON.stringify({game:state,city:ui.city,loading:map.loading,error:map.error,available:available(),paused:clocksPaused(),pendingReturn:map.pendingReturn,routePending:ui.routePending,cartRoutePending:ui.cartRoutePending,route:ui.cityPath,routeTarget:ui.cityTarget,travel:ui.travel,mapMode:ui.cityCamera==='city'?'overview':'local',reactions:liveReactions(),scene:districtScene.diagnostics()}))};
   startMap();requestAnimationFrame(frame);
 })();

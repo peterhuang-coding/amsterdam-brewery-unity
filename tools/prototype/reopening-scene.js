@@ -517,7 +517,7 @@
         }
       }
     }
-    draw(state, timestamp, selectedId, cityView) {
+    draw(state, timestamp, selectedId, cityView, reactions=[]) {
       this.prepareCanvas();
       const c=this.ctx;
       const time=this.reduced.matches?0:timestamp/1000;
@@ -612,6 +612,16 @@
         this.ellipse(x-9,463,2,2,'#3c4435');this.ellipse(x+9,463,2,2,'#3c4435');
         const left=guest.patience-(state.night.elapsed-guest.arrival);this.line([[x-5,477],[x, left<8?474:480],[x+5,477]],'#865f46',1.5);
         if(guest.id===selectedId){this.ellipse(x,416,4,4,'#f1cf8a');this.line([[x-8,410],[x,420],[x+8,410]],'#f1cf8a',2);}
+      });
+      // Short local reactions belong to the person who just left the seat. They
+      // draw as a note bubble and must never redraw a body for a served guest.
+      if(reactions.length)reactions.forEach(reaction=>{
+        const seat=Math.max(0,Math.min(2,Number(reaction.seat)||0)),x=seats[seat],y=386;
+        this.rect(x-130,y-18,260,50,'#f1e5c3ee');
+        this.line([[x-130,y-18],[x+130,y-18],[x+130,y+32],[x-130,y+32],[x-130,y-18]],'#a38c61',1);
+        this.text(String(reaction.name||''),x-118,y,9,'#4d5f43','Georgia','left');
+        this.text(String(reaction.text||''),x-118,y+17,9,'#4d5f43','Georgia','left');
+        this.line([[x-6,y+32],[x,y+42],[x+6,y+32]],'#a38c61',1);
       });
       // Small glasses fill at each active tap. Spilled pours visibly flash amber.
       if(state.night)state.night.pours.forEach((p,i)=>{

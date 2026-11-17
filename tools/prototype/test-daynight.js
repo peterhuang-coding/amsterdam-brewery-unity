@@ -50,9 +50,21 @@ test('a matching window arrangement improves actual guest patience and survives 
   assert.equal(s.night.orders[0].patience,plain.night.orders[0].patience+6);
   s=act(act(s,{type:'close'}),{type:'next'});assert.ok(s.life.display);assert.equal(s.life.bouquet,null);
 });
+test('private Lotte gifts keep their own days apart from window flowers and promises',()=>{
+  let s=bouquet(prep(),[0,1,2],'ribbon');s=act(s,{type:'flowerUse',target:'lotte'});
+  assert.deepEqual(s.life.giftDays,[1]);assert.equal(s.life.gifts,1);assert.equal(s.music,false);assert.equal(s.promises.lotte,false);
+  let d=bouquet(prep(),[3,4,5],'paper');d=act(d,{type:'flowerUse',target:'display'});
+  assert.deepEqual(d.life.giftDays,[]);assert.equal(d.life.gifts,0);
+});
+test('legacy gifts without giftDays migrate without inventing dates',()=>{
+  const s=prep();delete s.life.giftDays;s.life.gifts=1;
+  const r=R.restore(s);assert.ok(r);assert.deepEqual(r.life.giftDays,[]);assert.equal(r.life.gifts,1);
+});
 test('malformed flower saves are rejected while legacy saves migrate',()=>{
   const s=prep();delete s.life;assert.ok(R.restore(s));
   const bad=bouquet(prep());bad.life.bouquet.stored='yes';assert.equal(R.restore(bad),null);
+  const duplicate=prep();duplicate.life.giftDays=[1,1];const duplicateGifts=structuredClone(duplicate);duplicateGifts.life.gifts=2;assert.equal(R.restore(duplicate),null);assert.equal(R.restore(duplicateGifts),null);
+  const overCount=prep();overCount.life.giftDays=[1,2];assert.equal(R.restore(overCount),null);
 });
 test('skipping a later expedition keeps dated discoveries rather than inventing last-night cargo',()=>{
   let s=act(closed(),{type:'explore',kit:'hook'});const r=s.backstage.run,box=r.items.find(i=>i.kind==='parcel');Object.assign(r.p,{x:box.x,y:box.y});B.command(r,'interact');Object.assign(r.p,B.EXIT);B.command(r,'interact');s=act(s,{type:'returnExplore'});

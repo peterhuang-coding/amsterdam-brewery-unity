@@ -49,7 +49,7 @@
   const has = (state, upgrade) => state.upgrades.includes(upgrade);
   const clone = value => JSON.parse(JSON.stringify(value));
   const seats = state => has(state, 'stage') ? 2 : 3;
-  const freshLife = () => ({ arrangement: null, bouquet: null, flowersDay: 0, display: null, gifts: 0, morning: [], clues: [] });
+  const freshLife = () => ({ arrangement: null, bouquet: null, flowersDay: 0, display: null, gifts: 0, giftDays: [], morning: [], clues: [] });
   const FLOWERS = Object.freeze([
     { name: '红郁金香', color: '#c86162', tone: 'warm' }, { name: '橙郁金香', color: '#d78d51', tone: 'warm' },
     { name: '黄郁金香', color: '#d9bb69', tone: 'warm' }, { name: '白郁金香', color: '#f1ecdd', tone: 'cool' },
@@ -457,7 +457,7 @@
       case 'flowerUse': {
         const b=state.life.bouquet;
         if(state.phase!=='prep'||!b||b.stored||!['lotte','display'].includes(action.target))return fail('白天把花拿在手里，再送人或布置酒馆。');
-        if(action.target==='lotte') {const points=flowerFit(b,'lotte')?2:1;state.friends.lotte=Math.min(20,state.friends.lotte+points);state.life.gifts++;
+        if(action.target==='lotte') {const points=flowerFit(b,'lotte')?2:1;state.friends.lotte=Math.min(20,state.friends.lotte+points);state.life.gifts++;state.life.giftDays.push(state.day);
           say(state,points===2?'Lotte 喜欢这束暖色丝带花：“终于有报酬不能写进房东的账。” 好感 +2。':'Lotte 收下花：“比演出曝光券香。” 好感 +1。');}
         else {state.life.display=b;say(state,'花摆上酒馆窗台。以后客人多等 '+(flowerFit(b,'display')?6:3)+' 秒，直到你换一束。');}
         state.life.bouquet=null;break;
@@ -751,7 +751,7 @@
     const afterClose=['summary','ending'].includes(s.phase)||s.phase==='explore'&&s.backstage.from==='summary';
     if(!afterClose&&s.backstage.cashAfterClose!==0)return false;
     const life=s.life,validBouquet=b=>shape(b,'palette wrap stored')&&['warm','cool','mixed'].includes(b.palette)&&['paper','ribbon'].includes(b.wrap)&&typeof b.stored==='boolean';
-    if(!shape(life,'arrangement bouquet flowersDay display gifts morning clues')||!integer(life.flowersDay,0,s.day)||!integer(life.gifts,0,3)||!Array.isArray(life.morning)||life.morning.length>8||!life.morning.every(string))return false;
+    if(!shape(life,'arrangement bouquet flowersDay display gifts giftDays morning clues')||!integer(life.flowersDay,0,s.day)||!integer(life.gifts,0,3)||!Array.isArray(life.giftDays)||life.giftDays.length>3||!unique(life.giftDays)||!life.giftDays.every(d=>integer(d,1,s.day))||life.giftDays.length>life.gifts||!Array.isArray(life.morning)||life.morning.length>8||!life.morning.every(string))return false;
     if(!Array.isArray(life.clues)||life.clues.length>3||!unique(life.clues)||!life.clues.every(id=>['market','club','greenhouse'].includes(id)))return false;
     if(life.bouquet!==null&&!validBouquet(life.bouquet)||life.display!==null&&(!validBouquet(life.display)||life.display.stored))return false;
     if(life.arrangement!==null){const a=life.arrangement;if(s.phase!=='prep'||s.actions<1||s.cash<4||life.flowersDay===s.day||life.bouquet||!shape(a,'stems wrap')||!Array.isArray(a.stems)||a.stems.length>3||!unique(a.stems)||!a.stems.every(i=>integer(i,0,5))||![null,'paper','ribbon'].includes(a.wrap))return false;}
@@ -823,6 +823,7 @@
       if (restored && !owns(restored, 'backstage')) restored.backstage = { run: null, discovered: [], resolution: null, trips: 0 };
       if(restored&&!owns(restored,'life'))restored.life=freshLife();
       if(restored?.life&&!owns(restored.life,'clues'))restored.life.clues=[];
+      if(restored?.life&&!owns(restored.life,'giftDays'))restored.life.giftDays=[];
       if(restored?.backstage&&!owns(restored.backstage,'from')&&!owns(restored.backstage,'cashAfterClose')){
         restored.backstage.from=restored.phase==='explore'?'prep':null;restored.backstage.cashAfterClose=0;
       }

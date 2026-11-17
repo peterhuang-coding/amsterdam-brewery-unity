@@ -540,3 +540,45 @@ test('Bram and Lotte acknowledge the real daytime help and kept promise after se
     h.close();
   }
 });
+
+function giftNightAtLotte() {
+  let state = start();
+  state = act(state, { type: 'flowerStart' });
+  for (const stem of [0, 1, 2]) state = act(state, { type: 'flowerPick', stem });
+  state = act(state, { type: 'flowerWrap', wrap: 'ribbon' });
+  state = act(state, { type: 'flowerFinish' });
+  state = act(state, { type: 'flowerUse', target: 'lotte' });
+  state = act(state, { type: 'open' });
+  while (state.phase === 'night') {
+    const order = state.night.orders.find(o => o.person === 'lotte');
+    if (order.status === 'waiting') return state;
+    const seconds = Math.min(1, Math.max(.01, order.arrival - state.night.elapsed));
+    state = act(state, { type: 'tick', seconds });
+    if (state.night.event?.status === 'pending') state = act(state, { type: 'event', choice: 'refuse' });
+  }
+  assert.fail('Lotte never reached the bar');
+}
+
+test('a private gift is remembered at Lotte’s seat and in the morning, without becoming music', async () => {
+  const night = giftNightAtLotte();
+  const order = night.night.orders.find(o => o.person === 'lotte');
+  const h = await harness({ version: 1, game: night, city: City.create(), tutorialSeen: true, sound: false });
+  await resume(h);
+  assert.match(h.queue(), /她提了提你今天送的花/);
+  assert.doesNotMatch(h.queue(), /你答应为她留一杯黑啤/);
+  await serveSelectedClassic(h, order);
+  const d = h.diagnostics();
+  assert.ok(d.reactions.some(r => r.name === 'Lotte' && /今天送的花/.test(r.text)),
+    'gift is acknowledged at the seat: ' + JSON.stringify(d.reactions));
+  assert.equal(d.game.music, false);
+  assert.equal(d.game.night.promiseKept, false);
+  await h.click({ action: 'close-night' });
+  await h.clickModal(1);
+  await h.click({ action: 'next' });
+  const board = h.board();
+  assert.match(board, /Lotte 的花与酒/);
+  assert.match(board, /第 1 天/);
+  assert.match(board, /不会自动换演出/);
+  assert.doesNotMatch(board, /第 2 晚她带乐队来/);
+  h.close();
+});

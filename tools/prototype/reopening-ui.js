@@ -30,6 +30,8 @@
     let text;
     if(order.person==='lotte'&&before.promises.lotte&&after.night.promiseKept){
       text=after.day===3?'她记得那杯黑啤，也记住了这家店最后一晚。':'她记得那杯黑啤。明晚她带乐队来。';
+    }else if(order.person==='lotte'&&before.life.giftDays?.includes(before.day)){
+      text=satisfied?'她提了提你今天送的花，也满意地喝完了这杯。':'她收下了花，但这一杯没让她满意；礼物和酒分开记。';
     }else if(order.person==='bram'&&before.friends.bram>0){
       text=before.prepared.includes('coffee')?(satisfied?'午市没白帮忙，今晚他多等了十秒。':'午市没白帮忙，他还是把这杯喝完了。'):(satisfied?'他记得你帮过的午市，今晚多等了十秒。':'他记得你帮过的午市，还是把这杯喝完了。');
     }else if(satisfied&&before.life?.display&&!bouquetReaction){
@@ -332,6 +334,31 @@
     const notes=R.stories.notes(state);if(!notes.length)return '';
     return '<details class="character-journal"'+(['summary','ending'].includes(state.phase)?' open':'')+'><summary>街坊的回话 · '+notes.length+' 段</summary><ul>'+notes.map(n=>'<li>'+esc(n)+'</li>').join('')+'</ul></details>';
   }
+  function lotteMorningNote(){
+    if(state.day<2)return '';
+    const previous=state.day-1,gifts=state.life.giftDays||[],report=state.reports.find(r=>r.day===previous),lines=[];
+    if(gifts.includes(previous))lines.push('Lotte 提了提你昨天送的花。花留在她那边，音乐仍只跟留酒有关。');
+    if(report?.promiseKept)lines.push('Lotte 记得昨天那杯黑啤。');
+    if(report?.promiseBroken)lines.push('Lotte 昨天没等到那杯黑啤；她把琴收回了琴盒。');
+    if(!lines.length)return '';
+    return `<div class="morning-post lotte-memory"><strong>桥边的回话</strong><p>${lines.map(esc).join('</p><p>')}</p></div>`;
+  }
+  function lotteMemoryCard(){
+    const gifts=state.life.giftDays||[],reports=state.reports||[],kept=reports.filter(r=>r.promiseKept),broken=reports.filter(r=>r.promiseBroken),lines=[];
+    if(gifts.length)lines.push(`你送过 Lotte ${gifts.length} 束花（第 ${gifts.join('、')} 天）。`);
+    else if(state.life.gifts>0)lines.push(`你送过 Lotte ${state.life.gifts} 束花（旧存档没有逐日日期）。`);
+    if(kept.length||broken.length){
+      const parts=[];
+      if(kept.length)parts.push(`兑现 ${kept.length} 次（第 ${kept.map(r=>r.day).join('、')} 天）`);
+      if(broken.length)parts.push(`失约 ${broken.length} 次（第 ${broken.map(r=>r.day).join('、')} 天）`);
+      lines.push('留酒约定：'+parts.join('；')+'。');
+      const musicNights=kept.filter(r=>r.day<3).map(r=>`第 ${r.day+1} 晚她带乐队来`);
+      lines.push(musicNights.length?musicNights.join('；')+'。':'第三晚的约定只在最后一夜兑现，没有第四晚演出。');
+    }
+    if(!lines.length)return '';
+    lines.push('花是礼物，不会自动换演出；只有当晚满意招待留的黑啤，才影响次晚音乐。');
+    return `<div class="morning-post lotte-memory"><strong>Lotte 的花与酒</strong><p>${lines.map(esc).join('</p><p>')}</p></div>`;
+  }
   function scoutPanel(place){
     const id=place==='market'?'market':place==='coffee'?'club':place==='lab'?'greenhouse':null;
     if(!id)return '';
@@ -479,6 +506,7 @@
     if(ui.cityPath.length)html+=`<div class="city-route"><strong>沿街前往 ${esc(ui.cityTarget?cityPlace(ui.cityTarget)?.name:'所选落脚点')}</strong><button class="text-button" data-action="city-stop">停下来看看</button></div>`;
     if(!late&&gardenActive()&&!ui.cartFollowing&&Math.hypot(ui.city.x-(ui.flowerCart||C.FLOWER_CART).x,ui.city.y-(ui.flowerCart||C.FLOWER_CART).y)<20)html+='<p>搬花车准备回温室。</p><button class="secondary" data-action="garden-follow">跟上搬花车 · 可中途离开</button>';
     if(!late&&state.day===1)html+=firstWalkCard();
+    html+=lotteMorningNote()+lotteMemoryCard();
     // The walk card owns the single primary CTA on the day-1 street board; the
     // generic nearest-place E action stays, styled as a secondary choice.
     html+=`<div class="city-nearby"><h3>${near?esc(near.name):'运河街道'}</h3><p>${near?esc((PLACE_COPY[near.id]?.quote||'花车沿街回温室。')):'河边有路，过河找桥。'}</p>${near?`<button class="${!late&&state.day===1?'secondary':'primary'}" data-action="city-enter">进去看看 · E</button>`:''}</div>`;
@@ -514,6 +542,7 @@
     $board.innerHTML=headings+cityNotebook()+characterNotes()+(!late?contractPanel():'');
     if(!late&&state.day>1&&R.stories.morning(state).length)$board.innerHTML+='<div class="morning-post"><strong>门缝里的回话</strong><p>'+R.stories.morning(state).map(esc).join('</p><p>')+'</p></div>';
     if(!late&&state.day>1&&state.life.morning.length)$board.innerHTML+='<div class="morning-post"><strong>☀ 城市又亮了，旧事还在。</strong><p>'+state.life.morning.map(esc).join('</p><p>')+'</p></div>';
+    $board.innerHTML+=lotteMorningNote()+lotteMemoryCard();
     if(ui.cityMode==='map'){
       const destination=ui.cityTarget&&cityPlace(ui.cityTarget);
       $board.innerHTML+=`<h2>${late?'明信片拍不到的时间。':'骑慢点。<br>这座城值得拐个弯。'}</h2>`+budget+
@@ -705,7 +734,7 @@
     $('room-time').textContent=state.phase==='summary'?'AFTER HOURS · 游客睡了，街道还醒着':state.phase==='night'?'OPEN · '+DAYS[state.day-1]:state.phase==='forage'?'NOORD · 城市把利润扔进了水里':state.phase==='brew'?'BREWING · 比创业鸡汤有营养':state.phase==='prep'?(ui.cityMode==='map'?'AMSTERDAM · 白天属于你，晚上属于账单':cityPlace(ui.cityPlace).district+' · '+cityPlace(ui.cityPlace).name):'TWEEDE KANS · 运河边';
     $('room-caption').textContent=state.phase==='summary'?'前门打烊，后门开场。':state.phase==='prep'?(ui.cityMode==='map'?'过桥别走水里。房东不报销打捞自己。':PLACE_COPY[ui.cityPlace].quote):state.phase==='forage'?'环保与盈利偶尔顺路。单车除外。':['summary','ending'].includes(state.phase)&&state.reports[state.reports.length-1]?.promiseBroken?'没有罚单的人情债，也会被记住。':state.music?'至少今晚，音乐比催租声大。':state.promises.lotte?'给 Lotte 留一杯黑啤。信誉比许可证便宜。':state.day===3?'今晚的目标：灯亮着，门没被封。':'这家店，还没倒。';
     renderQueue();renderBoard();renderPours();renderStory();renderCityToolbar();
-    if(state.phase==='ending')$board.innerHTML+=`<div class="receipt"><div><span>票务待付</span><strong>€${state.journeys.debt}</strong></div><div><span>最终净余额</span><strong>€${state.cash-state.journeys.debt}</strong></div></div>`+journeyHistory()+characterNotes();
+    if(state.phase==='ending')$board.innerHTML+=`<div class="receipt"><div><span>票务待付</span><strong>€${state.journeys.debt}</strong></div><div><span>最终净余额</span><strong>€${state.cash-state.journeys.debt}</strong></div></div>`+journeyHistory()+characterNotes()+lotteMemoryCard();
     if(state.phase==='journey'){$('pub-canvas').setAttribute('aria-label','城市出行：骑车选路、保护花束、街头冲突与列车旅程。下方有状态和方向按钮，右侧提供完整选项。');$('queue-title').textContent='这一趟的状态与操作';journey.render();$('room-time').textContent='城市出行 · 委托内计时';$('room-caption').textContent='一辆车，一束花，一个约定。';}
     if(state.phase==='explore'){$('pub-canvas').setAttribute('aria-label','城市背面：连续工具探险。WASD 移动，J 钩拉，F 泡沫，N 空瓶引声，R 拖动空桶，Space 闪避，E 互动，M 地图。');$('queue-title').textContent='西北：Noor · 东侧：夜店 · 东北：温室';backstage.signature='';backstage.render();}
     const log=(state.log||[]).slice(0,3);
@@ -719,6 +748,7 @@
   function guestNote(order){
     if(state.night.pours.some(p=>p.customerId===order.id))return '正在为这位客人倒酒';
     if(order.person==='lotte'&&state.promises.lotte)return '你答应为她留一杯黑啤';
+    if(order.person==='lotte'&&state.life.giftDays?.includes(state.day))return '她提了提你今天送的花';
     if(order.person==='bram'&&state.friends.bram>0)return state.prepared.includes('coffee')?'午市熟人 · 多等 10 秒':'Bram 记得你的帮工 · 多等 10 秒';
     if(order.service==='quick')return '赶时间 · 到浅绿区就收';
     if(order.service==='full')return '想满些 · 稍晚收杯';
@@ -818,6 +848,7 @@
       (price>guest.budget&&!pour?'<p class="risk-note">这个报价超过预算，客人会拒绝付款。</p>':'')+
       (ui.beer!==guest.beer&&!pour?'<p class="risk-note">这款酒不合客人的口味，会影响满意度。</p>':'')+
       (guest.person==='lotte'&&state.promises.lotte?'<p class="promise-note">她还记得你约好的那杯黑啤。</p>':'')+
+      (guest.person==='lotte'&&state.life.giftDays?.includes(state.day)?'<p class="small-note">你今天送过花。礼物是礼物，音乐只跟今晚兑现的留酒承诺有关。</p>':'')+
       `<button class="primary" data-action="pour" data-focus="pour" ${blocked||full?'disabled':''}>${full?'酒头正在忙':blocked?'请换可用批次、调整报价或取消预订单':'开始倒酒 · '+money(price)+' · E'}</button><p class="small-note">每次开始倒酒消耗选定批次的 1 杯。倒进绿色区域，收杯才有好口感。</p>`+
       `<button class="text-button" data-action="water" data-id="${esc(guest.id)}">${pour?'这杯不卖了，送水善后':'送杯水，婉拒这一单'}</button>`+nightPlan()+closeButton();
   }

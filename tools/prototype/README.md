@@ -200,10 +200,12 @@ python3 -m http.server 18767 --bind 127.0.0.1 -d tools/prototype
 - `A / D` 或左右方向键：打捞时换航道；`Space`：打捞、确认酿造、收杯。
 - `1 / 2 / 3`：选顾客；`E`：开始倒酒。
 - `P / Esc`：暂停；`H`：帮助。事件必须点击选项，不会因按 Esc 自动作出决定。
-- 页面上的按钮涵盖全部操作，适配窄屏。
-- 进度存于 `ab_reopening_v1`，包括酿造阶段内计时、城市位置、自行车、花束与发现地点。刷新会停止未走完的日间路线，但保留位置；旧存档没有城市信息时从酒吧门口开始。可识别的旧地点分别迁移到对应街区安全入口，角色和停车记录独立处理；其他损坏地图位置安全恢复，经济进度照常保留。旧白天探险存档继续接回原白天。进行中的小游戏和探险切到后台、刷新后会暂停，恢复后继续。
+- 页面上的按钮涵盖全部操作，适配窄屏。页眉 `☰` 打开主菜单：继续、手动保存、恢复上一份备份、开始新三天。
+- 暂停菜单提供“保存进度”和“保存并回到主菜单”。“保存并退出”只回到游戏内主菜单，不关闭浏览器；刷新或离开页面会先自动保存。
+- 进度存于 `ab_reopening_v1`（当前格式 2，带校验和），包括酿造阶段内计时、城市位置、自行车、花束与发现地点。刷新会停止未走完的日间路线，但保留位置；旧存档没有城市信息时从酒吧门口开始。可识别的旧地点分别迁移到对应街区安全入口，角色和停车记录独立处理；其他损坏地图位置安全恢复，经济进度照常保留。旧白天探险存档继续接回原白天。进行中的小游戏和探险切到后台、刷新后会暂停，恢复后继续。
+- 每次成功写入前，上一份通过容器校验的主存档会滚入 `ab_reopening_v1_backup`。主存档损坏或来自较新版本时，原文会先复制到 `ab_reopening_v1_recovery` / `ab_reopening_v1_future`，自动保存暂停；启动菜单提供“恢复上一份备份”或“明确保留后开始新一局”。写入失败、浏览器不可写或校验不通过时不会显示“已保存”，也不会静默覆盖坏档或较新版本存档。
+- 旧格式（外层 version 1 / 裸游戏状态）继续读取并经过同一套严格游戏校验；新格式仍保留扁平的 `game` 字段，旧测试与旧工具无需改变读取方式。
 - 暂停菜单可以重开；结束页可以用相同顾客安排重试或换种子。
-- 新入口与旧七天版存档键独立。无法读取或格式不符的试玩存档会提示并新开一局。
 
 ## 代码与验证
 
@@ -215,7 +217,8 @@ python3 -m http.server 18767 --bind 127.0.0.1 -d tools/prototype
 - `backstage-core.js`：连续探险的地图、移动目标、工具、局部威胁、背包、任务处理与撤离结果。
 - `backstage-scene.js` / `backstage-ui.js` / `backstage.css`：探险画面、相机与瞄准转换、键鼠/触控操作、实时状态和结算界面。
 - `reopening-core.js`：可在 Node 测试的不可变状态转移、种子生成、库存、事件与存档验证。
-- `reopening-ui.js`：页面交互、暂停、存档、音效、键盘、教学及计时。
+- `save-guard.js`：存档容器保护：校验和、上一份有效备份、坏档/较新版本隔离、写入回读验证。
+- `reopening-ui.js`：页面交互、暂停、主菜单、存档、音效、键盘、教学及计时。
 - `reopening-scene.js`：随库存、顾客、酒杯、打捞航道与升级变化的 Canvas 场景。
 - `reopening.css`：响应式布局和操作界面。
 
@@ -223,6 +226,7 @@ python3 -m http.server 18767 --bind 127.0.0.1 -d tools/prototype
 node --test tools/prototype/test-reopening.js tools/prototype/test-district-entry.cjs tools/prototype/test-district-city.cjs tools/prototype/test-district-scene.cjs
 node --test tools/prototype/test-backstage.js tools/prototype/test-backstage-auto.js
 node --test tools/prototype/test-daynight.js tools/prototype/test-city-bike.js
+node --test tools/prototype/test-save-guard.js tools/prototype/test-save-protection-ui.js
 node --test tools/prototype/test-night-streets.js tools/prototype/test-location-depth.js tools/prototype/test-location-daynight.js
 node tools/prototype/test-phase-e.js
 node --check tools/prototype/reopening-ui.js

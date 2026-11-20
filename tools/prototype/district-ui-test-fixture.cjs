@@ -145,7 +145,8 @@ function createHarness(saved = null, options = {}) {
     return bytes?new Response(bytes,{status:200}):new Response('missing fixture',{status:404});
   };
   const timers=new Set();
-  const sandbox={document,localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,String(v)),removeItem:k=>storage.delete(k)},
+  const failWrites=options.failWrites instanceof Set?options.failWrites:new Set(options.failWrites||[]);
+  const sandbox={document,localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>{if(failWrites.has(k))throw new Error('quota');storage.set(k,String(v));},removeItem:k=>storage.delete(k)},
     performance:{now:()=>now},setTimeout(cb,ms=0){const id=setTimeout(()=>{timers.delete(id);cb();},ms);id.unref?.();timers.add(id);return id;},clearTimeout(id){clearTimeout(id);timers.delete(id);},
     setInterval(cb,ms){intervals.push({cb,ms});return intervals.length;},clearInterval:noop,
     requestAnimationFrame(cb){rafs.push(cb);return rafs.length;},cancelAnimationFrame:noop,
@@ -158,7 +159,7 @@ function createHarness(saved = null, options = {}) {
   vm.createContext(sandbox);
   for(const file of ['journey-core.js','backstage-core.js','backstage-auto.js','delivery-orders.js','character-stories.js','flower-network.js',
     'reopening-core.js','reopening-city.js','district-runtime.js','district-city.js','district-scene.js','reopening-scene.js',
-    'backstage-scene.js','backstage-ui.js','journey-ui.js','reopening-ui.js'])
+    'backstage-scene.js','backstage-ui.js','journey-ui.js','save-guard.js','reopening-ui.js'])
     vm.runInContext(fs.readFileSync(path.join(__dirname,file),'utf8'),sandbox,{filename:file});
   const flush=()=>new Promise(resolve=>setImmediate(resolve));
   const ready=async()=>{assert.equal(typeof sandbox.ReopeningEntry?.ready,'function','entry exposes asynchronous ready()');await sandbox.ReopeningEntry.ready();for(let i=0;i<100;i++){await new Promise(resolve=>setTimeout(resolve,0));const d=sandbox.ReopeningEntry.diagnostics();if(!d.routePending&&!d.cartRoutePending)break;}await flush();};

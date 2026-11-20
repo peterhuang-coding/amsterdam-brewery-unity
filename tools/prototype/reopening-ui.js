@@ -1,9 +1,8 @@
 (function () {
   'use strict';
-  const R=window.Reopening, C=window.DistrictCity;
+  const R=window.Reopening, C=window.DistrictCity, SG=window.SaveGuard;
   const $=id=>document.getElementById(id);
   const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const SAVE_KEY='ab_reopening_v1';
   const ui={selected:null,beer:'blond',premium:false,modal:null,returnFocus:null,brewElapsed:0,sound:true,tutorialSeen:false,signature:'',lastFrame:performance.now(),lastSave:0,noticeTimer:null,audio:null,city:null,cityPath:[],cityTarget:null,cityMode:'map',cityPlace:'pub',cityNear:'pub',cityFerry:false,cityZoom:2,cityCamera:'street',hintDismissed:false,cityKeys:new Set(),cityFrame:performance.now(),notebook:false};
   let state=R.createGame(seedFromUrl());
   const serviceReactions=[];
@@ -53,13 +52,25 @@
     if(action.type==='serve'){addServiceReaction(before,state,action.customerId);return;}
     if(state.day!==reactionNightDay||state.phase!=='night'){clearReactions();}
   }
-  let restored=false,saveError=false,savedCity=null;
+  let restored=false,lastSaveAt=0,lastSaveOk=null,savedCity=null,bootIssue=null,saveBlocked=false,saveUnavailable=false;
   const map={session:null,loading:true,error:null,controller:null,sequence:0,promise:Promise.resolve(),retry:null,pendingReturn:null,travelDeparture:null,progress:null};
   Object.assign(ui,{routeController:null,routeSequence:0,routePending:false,cartController:null,cartSequence:0,cartRoutePending:false,cartPath:[],travel:null,routeArrival:null});
+  function validateEnvelope(envelope){try{return R.restore(envelope&&(envelope.game||envelope))||null;}catch{return null;}}
+  function applyEnvelope(saved){
+    if(!saved||typeof saved!=='object')return null;
+    const valid=validateEnvelope(saved);if(!valid)return null;
+    state=valid;savedCity=saved.city||null;
+    map.pendingReturn=saved.mapTransition?.pendingReturn||null;map.travelDeparture=saved.mapTransition?.travelDeparture||null;
+    ui.tutorialSeen=Boolean(saved.tutorialSeen);ui.sound=saved.sound!==false;
+    ui.brewElapsed=state.phase==='brew'&&Number.isFinite(saved.brewElapsed)?Math.max(0,Math.min(6,saved.brewElapsed)):0;
+    return valid;
+  }
   try {
-    const saved=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');
-    if(saved){const valid=R.restore(saved.game||saved);if(valid){state=valid;savedCity=saved.city;map.pendingReturn=saved.mapTransition?.pendingReturn||null;map.travelDeparture=saved.mapTransition?.travelDeparture||null;restored=state.phase!=='welcome';ui.tutorialSeen=Boolean(saved.tutorialSeen);ui.sound=saved.sound!==false;ui.brewElapsed=state.phase==='brew'&&Number.isFinite(saved.brewElapsed)?Math.max(0,Math.min(6,saved.brewElapsed)):0;}else saveError=true;}
-  } catch {saveError=true;}
+    const boot=SG.load(localStorage,validateEnvelope);
+    if(boot.status==='ready'){const valid=applyEnvelope(boot.envelope);if(valid)restored=state.phase!=='welcome';else{bootIssue={status:'attention',reason:'invalid',preserved:false,backup:null,raw:boot.raw};saveBlocked=true;}}
+    else if(boot.status==='attention'){bootIssue=boot;saveBlocked=true;}
+    else if(boot.status==='unavailable'){saveUnavailable=true;}
+  } catch {saveUnavailable=true;}
   const scene=new PubScene($('pub-canvas'));
   const districtScene=new DistrictScene($('pub-canvas'));
   const available=()=>Boolean(ui.city&&map.session?.active&&!map.loading&&!map.error&&!map.pendingReturn);
@@ -87,9 +98,27 @@
 
   function seedFromUrl(){const n=Number(new URLSearchParams(location.search).get('seed'));return Number.isSafeInteger(n)&&n>0?n:42;}
   function money(n){return '€'+Math.round(Number(n)||0);}
+  function saveTime(ms){try{return new Date(Number(ms)||0).toLocaleTimeString('zh-CN',{hour12:false,hour:'2-digit',minute:'2-digit'});}catch{return '';}}
+  function setSaveStatus(text,bad){
+    const el=$('save-status');if(!el)return;
+    el.textContent=text;el.classList.toggle('bad',Boolean(bad));el.setAttribute('role',bad?'alert':'status');
+  }
+  function saveSummary(){
+    if(saveBlocked)return '自动保存已暂停 · 上次存档待处理';
+    if(saveUnavailable)return '此浏览器不可写存档 · 请保持页面打开';
+    if(lastSaveOk===false)return '上次保存失败 · 进度未写入';
+    if(!lastSaveAt)return '尚未写入本次进度';
+    return '已保存 · '+saveTime(lastSaveAt);
+  }
   function save(){
-    try{localStorage.setItem(SAVE_KEY,JSON.stringify({version:1,game:state,city:ui.city||savedCity,mapTransition:{pendingReturn:map.pendingReturn,travelDeparture:map.travelDeparture},brewElapsed:ui.brewElapsed,tutorialSeen:ui.tutorialSeen,sound:ui.sound}));$('save-status').textContent='进度已保存在这台设备';}
-    catch{$('save-status').textContent='当前浏览器无法保存 · 请保持页面打开';}
+    if(saveBlocked){setSaveStatus('存档待处理 · 自动保存已暂停',true);return false;}
+    if(saveUnavailable){setSaveStatus('当前浏览器无法保存 · 请保持页面打开',true);return false;}
+    const result=SG.write(localStorage,{game:state,city:ui.city||savedCity,mapTransition:{pendingReturn:map.pendingReturn,travelDeparture:map.travelDeparture},brewElapsed:ui.brewElapsed,tutorialSeen:ui.tutorialSeen,sound:ui.sound},Date.now());
+    if(result.ok){lastSaveAt=result.savedAt;lastSaveOk=true;setSaveStatus('进度已保存 · '+saveTime(lastSaveAt),false);return true;}
+    lastSaveOk=false;setSaveStatus(result.reason==='storage'?'当前浏览器无法保存 · 请保持页面打开':'保存失败 · 进度未写入，请重试',true);return false;
+  }
+  function manualSave(){
+    const ok=save();notify(ok?'进度已保存。':'保存失败，进度未写入。请检查浏览器存储后重试。',!ok);return ok;
   }
   function sound(kind='tap'){
     if(!ui.sound)return;
@@ -183,15 +212,82 @@
   }
   function pause(reason='歇口气，客人会等你。'){
     if(ui.modal)return;
-    modal('PAUSED · 时间停止','暂时逃避现实。',`<p>${esc(reason)}</p><p>船、酒、客人的耐心都停在这里。<br>房东暂时也不能发明新费用。</p>`,[{label:'继续播放 / 回到街上'},{label:'重新开始这三天',secondary:true,run:()=>confirmRestart()}]);
+    modal('PAUSED · 时间停止','暂时逃避现实。',`<p>${esc(reason)}</p><p>船、酒、客人的耐心都停在这里。<br>房东暂时也不能发明新费用。</p><p class="save-note">${esc(saveSummary())}</p>`,[
+      {label:'继续播放 / 回到街上'},
+      {label:'保存进度',run:()=>{const ok=manualSave();pause(ok?'进度已保存。':'保存失败，进度未写入。');}},
+      {label:'保存并回到主菜单',run:()=>{save();showMainMenu('已保存并回到主菜单。');}},
+      {label:'重新开始这三天',secondary:true,run:()=>confirmRestart()}
+    ]);
+  }
+  function showBootIssue(issue){
+    if(!issue)return;
+    const newer=issue.reason==='newer';
+    const preserved=issue.preserved
+      ?`${newer?'较新版本的存档原文':'损坏的存档原文'}已保留一份恢复副本，本版本不会自动覆盖它。`
+      :`<b>未能保留原存档</b>：浏览器存储不可写或已满。在保留成功之前，本版本不会写入主存档。`;
+    const backupLine=issue.backup
+      ?`上一份备份可以恢复：第 ${issue.backup.envelope.game.day} 天 · 现金 ${money(issue.backup.envelope.game.cash)}。`
+      :'没有找到可用的上一份备份。';
+    const body=newer
+      ?`<p>主存档来自较新版本（v${esc(issue.version)}），当前版本不会读取它，也不会静默覆盖它。</p><p>${preserved}</p><p>${esc(backupLine)}</p><p class="small-note">开始新一局会写入当前版本的新存档；较新存档仍留在本浏览器的恢复副本中。</p>`
+      :`<p>主存档没有通过完整性校验，自动保存已暂停，避免把损坏内容当成正常进度继续写入。</p><p>${preserved}</p><p>${esc(backupLine)}</p><p class="small-note">恢复备份或开始新一局都会先处理这份存档；选择“暂不处理”则本次游戏可以继续，但不会写入存档。</p>`;
+    const buttons=[];
+    if(issue.backup&&issue.preserved)buttons.push({label:'恢复上一份备份',run:()=>restoreBackupNow(issue.backup,issue)});
+    buttons.push({
+      label:issue.preserved?'保留原存档，开始新一局':'重试保留原存档，开始新一局',
+      secondary:Boolean(issue.backup&&issue.preserved),
+      run:()=>acceptBootNewGame(issue)
+    });
+    buttons.push({label:'暂不处理（本次不保存）',secondary:true,run:()=>deferBootIssue(issue)});
+    modal(newer?'SAVE VERSION · 存档版本':'SAVE RECOVERY · 存档需要处理',newer?'这个存档来自较新的版本。':'上次的存档没能通过校验。',body,buttons,'boot');
+  }
+  function restoreBackupNow(backup,issue){
+    if(!backup||!applyEnvelope(backup.envelope)){notify('备份也无法通过校验，未覆盖当前存档。',true);if(issue)showBootIssue(issue);return;}
+    saveBlocked=false;bootIssue=null;restored=true;
+    const ok=save();
+    notify(ok?'已恢复上一份备份。':'备份已载入，但当前浏览器无法写入存档。',!ok);
+    startMap();
+  }
+  function acceptBootNewGame(issue){
+    if(!issue.preserved){
+      const copy=SG.preserve(localStorage,issue.reason==='newer'?'newer':'corrupt',issue.raw);
+      if(!copy.ok){notify('仍无法保留原存档，未开始新局。请释放浏览器存储后重试。',true);showBootIssue(issue);return;}
+      issue.preserved=true;
+    }
+    saveBlocked=false;bootIssue=null;
+    const ok=save();render();
+    notify(ok?'原存档已保留恢复副本。新的三天从这里开始。':'原存档已保留，但新进度写入失败；请保持页面打开并重试保存。',!ok);
+  }
+  function deferBootIssue(issue){
+    bootIssue=issue;saveBlocked=true;
+    setSaveStatus('存档待处理 · 自动保存已暂停',true);
+    notify('自动保存已暂停。本次进度不会写入存档，可从主菜单重新处理。',true);
+  }
+  const PHASE_LABELS={welcome:'欢迎',prep:'白天准备',brew:'酿酒',forage:'打捞',explore:'夜探',journey:'出行',night:'营业',summary:'打烊结算',ending:'结局'};
+  function showMainMenu(note=''){
+    const backup=SG.loadBackup(localStorage,validateEnvelope);
+    const body=`<p>第 ${state.day} 天 · ${PHASE_LABELS[state.phase]||esc(state.phase)} · 现金 ${money(state.cash)} · 累计满意 ${state.totalSatisfied} 位</p>`+
+      `<p class="save-note">${esc(saveSummary())}${note?'<br>'+esc(note):''}</p>`+
+      `<p class="small-note">${backup.status==='ready'?`上一份备份：第 ${backup.envelope.game.day} 天 · 现金 ${money(backup.envelope.game.cash)}。`:'没有可用的上一份备份。'} “保存并退出”只回到这个菜单，不关闭浏览器。</p>`;
+    const buttons=[{label:'继续当前进度'}];
+    if(bootIssue){
+      buttons.push({label:'处理上次存档',run:()=>showBootIssue(bootIssue)});
+    }else{
+      buttons.push({label:'手动保存',run:()=>{manualSave();showMainMenu('已尝试保存，结果见下方。');}});
+      if(backup.status==='ready')buttons.push({label:'恢复上一份备份',secondary:true,run:()=>restoreBackupNow(backup)});
+      buttons.push({label:'开始新三天',secondary:true,run:()=>confirmRestart()});
+    }
+    modal('TWEEDE KANS · 主菜单','运河边的第二次机会。',body,buttons,'menu');
   }
   function confirmRestart(){
-    modal('NEW BEGINNING','重新开始这三天？','<p>当前三天的进度会被新一局替换。你可以继续使用这张相同的顾客安排。</p>',[{label:'保留进度，继续玩'},{label:'重新开始',secondary:true,run:()=>restart(state.seed)}]);
+    if(bootIssue){showBootIssue(bootIssue);return;}
+    modal('NEW BEGINNING','重新开始这三天？',`<p>当前三天的进度会被新一局替换。你可以继续使用这张相同的顾客安排。</p><p class="save-note">${esc(saveSummary())}</p>`,[{label:'保留进度，继续玩'},{label:'重新开始',secondary:true,run:()=>restart(state.seed)}]);
   }
   function restart(seed){
     cancelRoutes();map.controller?.abort();map.sequence++;map.pendingReturn=null;map.travelDeparture=null;ui.travel=null;
     state=R.createGame(seed);ui.selected=null;ui.beer='blond';ui.premium=false;ui.brewElapsed=0;ui.tutorialSeen=false;
     ui.city=null;savedCity=null;ui.cityMode='map';useStreetView();ui.hintDismissed=false;ui.cityPlace='pub';
+    saveBlocked=false;bootIssue=null;lastSaveOk=null;
     save();startMap();window.scrollTo({top:0,behavior:'auto'});
   }
   const inCity=()=>['prep','summary'].includes(state.phase);
@@ -235,9 +331,10 @@
       ui.city=raw?C.restore(raw):C.create('pub');map.travelDeparture=null;
       if(map.pendingReturn)await finishReturn(signal,current);
       if(!current())return;
-      if(restored&&['night','brew','forage','explore','journey'].includes(state.phase))pause('上次的进度已恢复。准备好后，从上次停下的地方继续。');
+      if(bootIssue)showBootIssue(bootIssue);
+      else if(restored&&['night','brew','forage','explore','journey'].includes(state.phase))pause('上次的进度已恢复。准备好后，从上次停下的地方继续。');
       else if(restored)notify('进度已恢复。打烊后就能进入夜间探险。');
-      else if(saveError)notify('上次存档无法读取，已准备好一局新的开始。',true);
+      else if(saveUnavailable)notify('当前浏览器无法保存进度；仍可游玩，请保持页面打开。',true);
       restored=false;
     });
   }
@@ -893,6 +990,7 @@
     if(data.action==='map-retry'){map.retry?.();return;}
     if(data.action==='map-cancel'){map.controller?.abort();return;}
     if(data.action==='travel-cancel'){cancelTravel();return;}
+    if(data.action==='menu'){showMainMenu();return;}
     if(ui.modal||!available())return;
     if(data.action==='travel-confirm'){confirmTravel();return;}
     if(data.action==='travel-board'){boardTravel();return;}
@@ -967,7 +1065,7 @@
   $('sound-button').addEventListener('click',()=>{ui.sound=!ui.sound;save();render();if(ui.sound)sound();});
   document.addEventListener('keydown',e=>{
     if(ui.modal){
-      if(e.key==='Escape'){e.preventDefault();if(ui.modal.kind==='event')return;if(['travel','boarding'].includes(ui.modal.kind)){cancelTravel();return;}if(ui.modal.kind==='loadout'){closeModal();return;}const callback=ui.modal.buttons[0].run;closeModal();if(callback)callback();syncEvent();}
+      if(e.key==='Escape'){e.preventDefault();if(ui.modal.kind==='event'||ui.modal.kind==='boot')return;if(['travel','boarding'].includes(ui.modal.kind)){cancelTravel();return;}if(ui.modal.kind==='loadout'){closeModal();return;}const callback=ui.modal.buttons[0].run;closeModal();if(callback)callback();syncEvent();}
       if(e.key==='Tab'){const selector=ui.modal.kind==='loadout'?'button:not(:disabled),a,input,summary':'button:not(:disabled),a,input';const controls=[...$('overlay').querySelectorAll(selector)],first=controls[0],last=controls[controls.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
       return;
     }

@@ -324,7 +324,7 @@ test('explicit new game resets economy and both actor/bike through retryable pub
   const f=makeFixture(),game=act(start(),{type:'prepare',kind:'coffee'});
   const h=await harness(envelope(game,cityAt(f,'lab','flowers')),{fixture:f});
   h.overrides.set('districts/jordaan.json.gz',()=>new Response('unavailable',{status:503}));
-  h.key('p');await h.clickModal(1);await h.clickModal(1);
+  h.key('p');await h.clickModal(3);await h.clickModal(1);
   assert.equal(h.diagnostics().game.phase,'welcome');assert.equal(h.diagnostics().game.cash,R.createGame(42).cash);
   assert.equal(h.diagnostics().available,false);
   h.overrides.clear();await h.click({action:'map-retry'});

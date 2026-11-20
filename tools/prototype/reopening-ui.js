@@ -530,6 +530,27 @@
     return `<div class="city-notebook"><p class="board-eyebrow">景点手册 / 正面给游客，背面留给自己</p><p>北岸渡轮 · 运河桥 · 南街花市。点击下方地点就能实际走过去。宽桥可以骑；窄桥和渡轮推车通过，上岸后继续骑。按 B 或进店才会停好车。</p><strong>地图背面的笔记</strong><ul>${mapNotes().length?mapNotes().map(n=>'<li>'+esc(n)+'</li>').join(''):'<li>夜里亲自走过的地方，才会写在这里。</li>'}</ul><strong>最近几趟夜路</strong><ul class="trip-log">${trips||'<li>还没有夜探记录。打烊后出门，回来把故事写在这里。</li>'}</ul>${journeyHistory()}</div>`;
   }
   function journeyHistory(){return '<strong>白天出行后记</strong><ul class="journey-history">'+(state.journeys.history.map(t=>`<li>第 ${t.day} 天 · ${t.kind==='rail'?'远郊展厅':'桥边送花'} · ${Journey.LABELS[t.outcome]}<br>花束 ${t.quality}/100 · 报酬 €${t.reward} · 已付交通 €${t.paid}<br>${esc(t.note)}${t.help?'<br>同行人记得你帮忙收过纸袋。':''}</li>`).join('')||'<li>还没有出行记录。带车去南街花店看看委托。</li>')+'</ul>'+R.trade.notes(state).map(n=>'<p class="promise-note">'+esc(n)+'</p>').join('');}
+  function tonightObligations(){
+    if(state.phase!=='prep')return '';
+    const contract=state.trade.contracts.find(c=>c.status==='accepted'&&c.dueDay===state.day);
+    const lotte=Boolean(state.promises.lotte);
+    if(!contract&&!lotte)return '';
+    const detail=contract?R.trade.brief(state,contract):null;
+    const stout=state.batches.filter(b=>b.beer==='stout');
+    const total=stout.reduce((sum,b)=>sum+b.cups,0);
+    const qualifying=contract?stout.filter(b=>b.quality>=detail.quality).reduce((sum,b)=>sum+b.cups,0):total;
+    const reserved=contract?.reservedBatch?1:0;
+    const need=(lotte?1:0)+(contract?1:0);
+    const asks=[];
+    if(lotte)asks.push('Lotte 留酒 1 杯');
+    if(contract)asks.push(`供酒单 1 杯 · 品质≥${detail.quality}${reserved?' · 已预留':''}`);
+    const lines=[`今晚要留：${asks.join('；')}。现有黑啤 ${total} 杯${contract?`，其中达标 ${qualifying} 杯`:''}。`];
+    if(total<need)lines.push(`还缺 ${need-total} 杯黑啤。可再酿一批、到市场买现货${contract&&detail.quality>1?'（品质 1 现货不满足供酒单）':''}，或免费取消供酒单。`);
+    else if(contract&&qualifying<1)lines.push(`供酒单没有达标黑啤；市场品质 1 现货不满足，需要自己酿品质≥${detail.quality} 的黑啤。`);
+    else lines.push(`够今晚${contract&&lotte?'两件事':contract?'这张供酒单':'的留酒'}${total>need?`；散客还剩 ${total-need} 杯黑啤可用`:'；散客不要再点黑啤'}。`);
+    if(contract&&state.day===3)lines.push('第三晚是最后一晚，供酒单不能拖到第 4 天。');
+    return `<div class="promise-note" id="tonight-obligations"><strong>今晚的酒去了哪里</strong><br>${lines.map(esc).join('<br>')}</div>`;
+  }
   function contractPanel(){
     const c=state.trade.contracts.find(c=>['offered','accepted'].includes(c.status));if(!c)return '';
     const detail=R.trade.brief(state,c);
@@ -603,7 +624,7 @@
     if(ui.cityPath.length)html+=`<div class="city-route"><strong>沿街前往 ${esc(ui.cityTarget?cityPlace(ui.cityTarget)?.name:'所选落脚点')}</strong><button class="text-button" data-action="city-stop">停下来看看</button></div>`;
     if(!late&&gardenActive()&&!ui.cartFollowing&&Math.hypot(ui.city.x-(ui.flowerCart||C.FLOWER_CART).x,ui.city.y-(ui.flowerCart||C.FLOWER_CART).y)<20)html+='<p>搬花车准备回温室。</p><button class="secondary" data-action="garden-follow">跟上搬花车 · 可中途离开</button>';
     if(!late&&state.day===1)html+=firstWalkCard();
-    html+=lotteMorningNote()+lotteMemoryCard();
+    html+=lotteMorningNote()+lotteMemoryCard()+tonightObligations();
     // The walk card owns the single primary CTA on the day-1 street board; the
     // generic nearest-place E action stays, styled as a secondary choice.
     html+=`<div class="city-nearby"><h3>${near?esc(near.name):'运河街道'}</h3><p>${near?esc((PLACE_COPY[near.id]?.quote||'花车沿街回温室。')):'河边有路，过河找桥。'}</p>${near?`<button class="${!late&&state.day===1?'secondary':'primary'}" data-action="city-enter">进去看看 · E</button>`:''}</div>`;
@@ -636,7 +657,7 @@
     if(ui.cityMode==='map'&&ui.cityCamera==='street'){renderStreetBoard(headings);return;}
     const near=nearVenue(),used=state.prepared,blocked=state.actions<=0,late=state.phase==='summary';
     const budget=late?'':`<div class="action-budget"><span>白天还可以做 <b>${state.actions}</b> 件事 · 漫游免费</span></div>`;
-    $board.innerHTML=headings+cityNotebook()+characterNotes()+(!late?contractPanel():'');
+    $board.innerHTML=headings+cityNotebook()+characterNotes()+(!late?contractPanel()+tonightObligations():'');
     if(!late&&state.day>1&&R.stories.morning(state).length)$board.innerHTML+='<div class="morning-post"><strong>门缝里的回话</strong><p>'+R.stories.morning(state).map(esc).join('</p><p>')+'</p></div>';
     if(!late&&state.day>1&&state.life.morning.length)$board.innerHTML+='<div class="morning-post"><strong>☀ 城市又亮了，旧事还在。</strong><p>'+state.life.morning.map(esc).join('</p><p>')+'</p></div>';
     $board.innerHTML+=lotteMorningNote()+lotteMemoryCard();

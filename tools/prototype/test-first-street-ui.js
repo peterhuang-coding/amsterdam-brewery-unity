@@ -524,6 +524,59 @@ test('window flowers produce one game-time arrival reaction that pauses, expires
   restored.close();
 });
 
+test('a private gift and a kept stout promise stay separate while the band arrives next night', async () => {
+  let state = start();
+  state = act(state, { type: 'flowerStart' });
+  for (const stem of [0, 1, 2]) state = act(state, { type: 'flowerPick', stem });
+  state = act(state, { type: 'flowerWrap', wrap: 'ribbon' });
+  state = act(state, { type: 'flowerFinish' });
+  state = act(state, { type: 'flowerUse', target: 'lotte' });
+  state = act(state, { type: 'prepare', kind: 'visit' });
+  state = act(state, { type: 'open' });
+  while (state.phase === 'night') {
+    const order = state.night.orders.find(o => o.person === 'lotte');
+    if (order.status === 'waiting') break;
+    state = act(state, { type: 'tick', seconds: Math.min(1, Math.max(.01, order.arrival - state.night.elapsed)) });
+    if (state.night.event?.status === 'pending') state = act(state, { type: 'event', choice: 'refuse' });
+  }
+  const order = state.night.orders.find(o => o.person === 'lotte');
+  assert.ok(order && order.status === 'waiting', 'Lotte reaches the bar');
+  assert.equal(state.life.gifts, 1);
+  assert.equal(state.promises.lotte, true);
+
+  const h = await harness({ version: 1, game: state, city: City.create(), tutorialSeen: true, sound: false });
+  await resume(h);
+  assert.match(h.queue(), /你答应为她留一杯黑啤/, 'the promise is the operating note for tonight');
+  assert.doesNotMatch(h.queue(), /她提了提你今天送的花/, 'the gift does not replace the promise note');
+  await serveSelectedClassic(h, order);
+  const d = h.diagnostics();
+  assert.ok(d.reactions.some(r => r.name === 'Lotte' && /记得那杯黑啤/.test(r.text)),
+    'the kept promise is what the service reaction names');
+  assert.equal(d.game.night.promiseKept, true);
+  assert.equal(d.game.music, false, 'music is not granted during the service night');
+
+  await h.click({ action: 'close-night' });
+  await h.clickModal(1);
+  await h.click({ action: 'next' });
+  const morning = h.board();
+  assert.match(morning, /桥边的回话/);
+  assert.match(morning, /Lotte 提了提你昨天送的花/);
+  assert.match(morning, /Lotte 记得昨天那杯黑啤/);
+  assert.match(morning, /Lotte 的花与酒/);
+  assert.match(morning, /兑现 1 次（第 1 天）/);
+  assert.match(morning, /第 2 晚她带乐队来/);
+  assert.match(morning, /花是礼物，不会自动换演出/);
+  assert.equal(h.diagnostics().game.music, true, 'the band arrives on day 2 from the kept promise');
+
+  const saved = h.save();
+  const refreshed = await harness(saved);
+  assert.match(refreshed.board(), /Lotte 的花与酒/);
+  assert.match(refreshed.board(), /第 2 晚她带乐队来/);
+  assert.equal(refreshed.diagnostics().game.music, true, 'refresh keeps the same consequence, not a replay');
+  h.close();
+  refreshed.close();
+});
+
 test('Bram and Lotte acknowledge the real daytime help and kept promise after service', async () => {
   for (const [person, expected] of [['bram', /午市/], ['lotte', /记得那杯黑啤/]]) {
     const night = friendsNightAt(person);
